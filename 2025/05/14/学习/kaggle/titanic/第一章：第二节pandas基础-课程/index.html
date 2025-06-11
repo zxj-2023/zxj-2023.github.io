@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="复习：数据分析的第一步，加载数据我们已经学习完毕了。当数据展现在我们面前的时候，我们所要做的第一步就是认识他，今天我们要学习的就是了解字段含义以及初步观察数据。 1 第一章：数据载入及初步观察1.4 知道你的数据叫什么我们学习pandas的基础操作，那么上一节通过pandas加载之后的数据，其数据类型是什么呢？ 开始前导入numpy和pandas 12import numpy as npimpor">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据分析——第一章：第一节数据载入及初步观察">
+<meta property="og:url" content="http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E7%AC%AC%E4%BA%8C%E8%8A%82pandas%E5%9F%BA%E7%A1%80-%E8%AF%BE%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="复习：数据分析的第一步，加载数据我们已经学习完毕了。当数据展现在我们面前的时候，我们所要做的第一步就是认识他，今天我们要学习的就是了解字段含义以及初步观察数据。 1 第一章：数据载入及初步观察1.4 知道你的数据叫什么我们学习pandas的基础操作，那么上一节通过pandas加载之后的数据，其数据类型是什么呢？ 开始前导入numpy和pandas 12import numpy as npimpor">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-05-13T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-05-14T08:57:42.853Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="数据分析">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E7%AC%AC%E4%BA%8C%E8%8A%82pandas%E5%9F%BA%E7%A1%80-%E8%AF%BE%E7%A8%8B/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E7%AC%AC%E4%BA%8C%E8%8A%82pandas%E5%9F%BA%E7%A1%80-%E8%AF%BE%E7%A8%8B/","path":"2025/05/14/学习/kaggle/titanic/第一章：第二节pandas基础-课程/","title":"数据分析——第一章：第一节数据载入及初步观察"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>数据分析——第一章：第一节数据载入及初步观察 | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E6%95%B0%E6%8D%AE%E8%BD%BD%E5%85%A5%E5%8F%8A%E5%88%9D%E6%AD%A5%E8%A7%82%E5%AF%9F"><span class="nav-number">1.</span> <span class="nav-text">1 第一章：数据载入及初步观察</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-%E7%9F%A5%E9%81%93%E4%BD%A0%E7%9A%84%E6%95%B0%E6%8D%AE%E5%8F%AB%E4%BB%80%E4%B9%88"><span class="nav-number">1.1.</span> <span class="nav-text">1.4 知道你的数据叫什么</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-1-%E4%BB%BB%E5%8A%A1%E4%B8%80%EF%BC%9Apandas%E4%B8%AD%E6%9C%89%E4%B8%A4%E4%B8%AA%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8BDateFrame%E5%92%8CSeries%EF%BC%8C%E9%80%9A%E8%BF%87%E6%9F%A5%E6%89%BE%E7%AE%80%E5%8D%95%E4%BA%86%E8%A7%A3%E4%BB%96%E4%BB%AC%E3%80%82%E7%84%B6%E5%90%8E%E8%87%AA%E5%B7%B1%E5%86%99%E4%B8%80%E4%B8%AA%E5%85%B3%E4%BA%8E%E8%BF%99%E4%B8%A4%E4%B8%AA%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%B0%8F%E4%BE%8B%E5%AD%90%F0%9F%8C%B0-%E5%BC%80%E6%94%BE%E9%A2%98"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.4.1 任务一：pandas中有两个数据类型DateFrame和Series，通过查找简单了解他们。然后自己写一个关于这两个数据类型的小例子🌰[开放题]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-3-%E4%BB%BB%E5%8A%A1%E4%B8%89%EF%BC%9A%E6%9F%A5%E7%9C%8BDataFrame%E6%95%B0%E6%8D%AE%E7%9A%84%E6%AF%8F%E5%88%97%E7%9A%84%E5%90%8D%E7%A7%B0"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.4.3 任务三：查看DataFrame数据的每列的名称</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-4%E4%BB%BB%E5%8A%A1%E5%9B%9B%EF%BC%9A%E6%9F%A5%E7%9C%8B%E2%80%9DCabin%E2%80%9D%E8%BF%99%E5%88%97%E7%9A%84%E6%89%80%E6%9C%89%E5%80%BC-%E6%9C%89%E5%A4%9A%E7%A7%8D%E6%96%B9%E6%B3%95"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.4.4任务四：查看”Cabin”这列的所有值[有多种方法]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-5-%E4%BB%BB%E5%8A%A1%E4%BA%94%EF%BC%9A%E5%8A%A0%E8%BD%BD%E6%96%87%E4%BB%B6%E2%80%9Dtest-1-csv%E2%80%9D%EF%BC%8C%E7%84%B6%E5%90%8E%E5%AF%B9%E6%AF%94%E2%80%9Dtrain-csv%E2%80%9D%EF%BC%8C%E7%9C%8B%E7%9C%8B%E6%9C%89%E5%93%AA%E4%BA%9B%E5%A4%9A%E5%87%BA%E7%9A%84%E5%88%97%EF%BC%8C%E7%84%B6%E5%90%8E%E5%B0%86%E5%A4%9A%E5%87%BA%E7%9A%84%E5%88%97%E5%88%A0%E9%99%A4"><span class="nav-number">1.1.4.</span> <span class="nav-text">1.4.5 任务五：加载文件”test_1.csv”，然后对比”train.csv”，看看有哪些多出的列，然后将多出的列删除</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-6-%E4%BB%BB%E5%8A%A1%E5%85%AD%EF%BC%9A-%E5%B0%86-%E2%80%98PassengerId%E2%80%99-%E2%80%99Name%E2%80%99-%E2%80%99Age%E2%80%99-%E2%80%99Ticket%E2%80%99-%E8%BF%99%E5%87%A0%E4%B8%AA%E5%88%97%E5%85%83%E7%B4%A0%E9%9A%90%E8%97%8F%EF%BC%8C%E5%8F%AA%E8%A7%82%E5%AF%9F%E5%85%B6%E4%BB%96%E5%87%A0%E4%B8%AA%E5%88%97%E5%85%83%E7%B4%A0"><span class="nav-number">1.1.5.</span> <span class="nav-text">1.4.6 任务六： 将[‘PassengerId’,’Name’,’Age’,’Ticket’]这几个列元素隐藏，只观察其他几个列元素</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-%E7%AD%9B%E9%80%89%E7%9A%84%E9%80%BB%E8%BE%91"><span class="nav-number">1.2.</span> <span class="nav-text">1.5 筛选的逻辑</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-1-%E4%BB%BB%E5%8A%A1%E4%B8%80%EF%BC%9A-%E6%88%91%E4%BB%AC%E4%BB%A5%E2%80%9DAge%E2%80%9D%E4%B8%BA%E7%AD%9B%E9%80%89%E6%9D%A1%E4%BB%B6%EF%BC%8C%E6%98%BE%E7%A4%BA%E5%B9%B4%E9%BE%84%E5%9C%A810%E5%B2%81%E4%BB%A5%E4%B8%8B%E7%9A%84%E4%B9%98%E5%AE%A2%E4%BF%A1%E6%81%AF%E3%80%82"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.5.1 任务一： 我们以”Age”为筛选条件，显示年龄在10岁以下的乘客信息。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-3-%E4%BB%BB%E5%8A%A1%E4%B8%89%EF%BC%9A%E5%B0%86midage%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%AD%E7%AC%AC100%E8%A1%8C%E7%9A%84%E2%80%9DPclass%E2%80%9D%E5%92%8C%E2%80%9DSex%E2%80%9D%E7%9A%84%E6%95%B0%E6%8D%AE%E6%98%BE%E7%A4%BA%E5%87%BA%E6%9D%A5"><span class="nav-number">1.2.2.</span> <span class="nav-text">1.5.3 任务三：将midage的数据中第100行的”Pclass”和”Sex”的数据显示出来</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-4-%E4%BB%BB%E5%8A%A1%E5%9B%9B%EF%BC%9A%E4%BD%BF%E7%94%A8loc%E6%96%B9%E6%B3%95%E5%B0%86midage%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%AD%E7%AC%AC100%EF%BC%8C105%EF%BC%8C108%E8%A1%8C%E7%9A%84%E2%80%9DPclass%E2%80%9D%EF%BC%8C%E2%80%9DName%E2%80%9D%E5%92%8C%E2%80%9DSex%E2%80%9D%E7%9A%84%E6%95%B0%E6%8D%AE%E6%98%BE%E7%A4%BA%E5%87%BA%E6%9D%A5"><span class="nav-number">1.2.3.</span> <span class="nav-text">1.5.4 任务四：使用loc方法将midage的数据中第100，105，108行的”Pclass”，”Name”和”Sex”的数据显示出来</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E7%AC%AC%E4%BA%8C%E8%8A%82pandas%E5%9F%BA%E7%A1%80-%E8%AF%BE%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="数据分析——第一章：第一节数据载入及初步观察 | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据分析——第一章：第一节数据载入及初步观察
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-05-14 00:00:00 / 修改时间：16:57:42" itemprop="dateCreated datePublished" datetime="2025-05-14T00:00:00+08:00">2025-05-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/kaggle/" itemprop="url" rel="index"><span itemprop="name">kaggle</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/kaggle/titanic/" itemprop="url" rel="index"><span itemprop="name">titanic</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p><strong>复习：</strong>数据分析的第一步，加载数据我们已经学习完毕了。当数据展现在我们面前的时候，我们所要做的第一步就是认识他，今天我们要学习的就是<strong>了解字段含义以及初步观察数据</strong>。</p>
+<h2 id="1-第一章：数据载入及初步观察"><a href="#1-第一章：数据载入及初步观察" class="headerlink" title="1 第一章：数据载入及初步观察"></a>1 第一章：数据载入及初步观察</h2><h3 id="1-4-知道你的数据叫什么"><a href="#1-4-知道你的数据叫什么" class="headerlink" title="1.4 知道你的数据叫什么"></a>1.4 知道你的数据叫什么</h3><p>我们学习pandas的基础操作，那么上一节通过pandas加载之后的数据，其数据类型是什么呢？</p>
+<p><strong>开始前导入numpy和pandas</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-4-1-任务一：pandas中有两个数据类型DateFrame和Series，通过查找简单了解他们。然后自己写一个关于这两个数据类型的小例子🌰-开放题"><a href="#1-4-1-任务一：pandas中有两个数据类型DateFrame和Series，通过查找简单了解他们。然后自己写一个关于这两个数据类型的小例子🌰-开放题" class="headerlink" title="1.4.1 任务一：pandas中有两个数据类型DateFrame和Series，通过查找简单了解他们。然后自己写一个关于这两个数据类型的小例子🌰[开放题]"></a>1.4.1 任务一：pandas中有两个数据类型DateFrame和Series，通过查找简单了解他们。然后自己写一个关于这两个数据类型的小例子🌰[开放题]</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#我们举的例子</span></span><br><span class="line">sdata = &#123;<span class="string">&#x27;Ohio&#x27;</span>: <span class="number">35000</span>, <span class="string">&#x27;Texas&#x27;</span>: <span class="number">71000</span>, <span class="string">&#x27;Oregon&#x27;</span>: <span class="number">16000</span>, <span class="string">&#x27;Utah&#x27;</span>: <span class="number">5000</span>&#125;</span><br><span class="line">example_1 = pd.Series(sdata)</span><br><span class="line">example_1</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<pre><code>Ohio      35000
+Texas     71000
+Oregon    16000
+Utah       5000
+dtype: int64
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#我们举的例子</span></span><br><span class="line">data = &#123;<span class="string">&#x27;state&#x27;</span>: [<span class="string">&#x27;Ohio&#x27;</span>, <span class="string">&#x27;Ohio&#x27;</span>, <span class="string">&#x27;Ohio&#x27;</span>, <span class="string">&#x27;Nevada&#x27;</span>, <span class="string">&#x27;Nevada&#x27;</span>, <span class="string">&#x27;Nevada&#x27;</span>],</span><br><span class="line">        <span class="string">&#x27;year&#x27;</span>: [<span class="number">2000</span>, <span class="number">2001</span>, <span class="number">2002</span>, <span class="number">2001</span>, <span class="number">2002</span>, <span class="number">2003</span>],<span class="string">&#x27;pop&#x27;</span>: [<span class="number">1.5</span>, <span class="number">1.7</span>, <span class="number">3.6</span>, <span class="number">2.4</span>, <span class="number">2.9</span>, <span class="number">3.2</span>]&#125;</span><br><span class="line">example_2 = pd.DataFrame(data)</span><br><span class="line">example_2</span><br></pre></td></tr></table></figure>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>state</th>
+      <th>year</th>
+      <th>pop</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Ohio</td>
+      <td>2000</td>
+      <td>1.5</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Ohio</td>
+      <td>2001</td>
+      <td>1.7</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Ohio</td>
+      <td>2002</td>
+      <td>3.6</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Nevada</td>
+      <td>2001</td>
+      <td>2.4</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Nevada</td>
+      <td>2002</td>
+      <td>2.9</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Nevada</td>
+      <td>2003</td>
+      <td>3.2</td>
+    </tr>
+  </tbody>
+</table>
+#### 1.4.2 任务二：根据上节课的方法载入"train.csv"文件
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">df=pd.read_csv(<span class="string">&#x27;./titanic/train.csv&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>也可以加载上一节课保存的”train_chinese.csv”文件。通过翻译版train_chinese.csv熟悉了这个数据集，然后我们对trian.csv来进行操作</p>
+<h4 id="1-4-3-任务三：查看DataFrame数据的每列的名称"><a href="#1-4-3-任务三：查看DataFrame数据的每列的名称" class="headerlink" title="1.4.3 任务三：查看DataFrame数据的每列的名称"></a>1.4.3 任务三：查看DataFrame数据的每列的名称</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">df.columns</span><br></pre></td></tr></table></figure>
+
+
+<pre><code>Index([&#39;PassengerId&#39;, &#39;Survived&#39;, &#39;Pclass&#39;, &#39;Name&#39;, &#39;Sex&#39;, &#39;Age&#39;, &#39;SibSp&#39;,
+       &#39;Parch&#39;, &#39;Ticket&#39;, &#39;Fare&#39;, &#39;Cabin&#39;, &#39;Embarked&#39;],
+      dtype=&#39;object&#39;)
+</code></pre>
+<h4 id="1-4-4任务四：查看”Cabin”这列的所有值-有多种方法"><a href="#1-4-4任务四：查看”Cabin”这列的所有值-有多种方法" class="headerlink" title="1.4.4任务四：查看”Cabin”这列的所有值[有多种方法]"></a>1.4.4任务四：查看”Cabin”这列的所有值[有多种方法]</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">df[<span class="string">&#x27;Cabin&#x27;</span>].head(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+
+<pre><code>0     NaN
+1     C85
+2     NaN
+3    C123
+4     NaN
+5     NaN
+6     E46
+7     NaN
+8     NaN
+9     NaN
+Name: Cabin, dtype: object
+</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">df.Cabin.values[:<span class="number">10</span>]</span><br><span class="line">df.Cabin.head(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+
+<pre><code>0     NaN
+1     C85
+2     NaN
+3    C123
+4     NaN
+5     NaN
+6     E46
+7     NaN
+8     NaN
+9     NaN
+Name: Cabin, dtype: object
+</code></pre>
+<h4 id="1-4-5-任务五：加载文件”test-1-csv”，然后对比”train-csv”，看看有哪些多出的列，然后将多出的列删除"><a href="#1-4-5-任务五：加载文件”test-1-csv”，然后对比”train-csv”，看看有哪些多出的列，然后将多出的列删除" class="headerlink" title="1.4.5 任务五：加载文件”test_1.csv”，然后对比”train.csv”，看看有哪些多出的列，然后将多出的列删除"></a>1.4.5 任务五：加载文件”test_1.csv”，然后对比”train.csv”，看看有哪些多出的列，然后将多出的列删除</h4><p>经过我们的观察发现一个测试集test_1.csv有一列是多余的，我们需要将这个多余的列删去</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">test_1=pd.read_csv(<span class="string">&#x27;../第一单元项目集合/test_1.csv&#x27;</span>)</span><br><span class="line">test_1.head()</span><br></pre></td></tr></table></figure>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>PassengerId</th>
+      <th>Survived</th>
+      <th>Pclass</th>
+      <th>Name</th>
+      <th>Sex</th>
+      <th>Age</th>
+      <th>SibSp</th>
+      <th>Parch</th>
+      <th>Ticket</th>
+      <th>Fare</th>
+      <th>Cabin</th>
+      <th>Embarked</th>
+      <th>a</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Braund, Mr. Owen Harris</td>
+      <td>male</td>
+      <td>22.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>A/5 21171</td>
+      <td>7.2500</td>
+      <td>NaN</td>
+      <td>S</td>
+      <td>100</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Cumings, Mrs. John Bradley (Florence Briggs Th...</td>
+      <td>female</td>
+      <td>38.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>PC 17599</td>
+      <td>71.2833</td>
+      <td>C85</td>
+      <td>C</td>
+      <td>100</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2</td>
+      <td>3</td>
+      <td>1</td>
+      <td>3</td>
+      <td>Heikkinen, Miss. Laina</td>
+      <td>female</td>
+      <td>26.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>STON/O2. 3101282</td>
+      <td>7.9250</td>
+      <td>NaN</td>
+      <td>S</td>
+      <td>100</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>4</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Futrelle, Mrs. Jacques Heath (Lily May Peel)</td>
+      <td>female</td>
+      <td>35.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>113803</td>
+      <td>53.1000</td>
+      <td>C123</td>
+      <td>S</td>
+      <td>100</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4</td>
+      <td>5</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Allen, Mr. William Henry</td>
+      <td>male</td>
+      <td>35.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>373450</td>
+      <td>8.0500</td>
+      <td>NaN</td>
+      <td>S</td>
+      <td>100</td>
+    </tr>
+  </tbody>
+</table>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment">#test_1.columns</span></span><br><span class="line">test_1.drop(<span class="string">&#x27;Unnamed: 0&#x27;</span>,axis=<span class="number">1</span>,inplace=<span class="literal">True</span>)</span><br><span class="line">test_1.columns</span><br></pre></td></tr></table></figure>
+
+
+<pre><code>Index([&#39;PassengerId&#39;, &#39;Survived&#39;, &#39;Pclass&#39;, &#39;Name&#39;, &#39;Sex&#39;, &#39;Age&#39;, &#39;SibSp&#39;,
+       &#39;Parch&#39;, &#39;Ticket&#39;, &#39;Fare&#39;, &#39;Cabin&#39;, &#39;Embarked&#39;, &#39;a&#39;],
+      dtype=&#39;object&#39;)
+</code></pre>
+<p>【思考】还有其他的删除多余的列的方式吗？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 思考回答</span></span><br><span class="line"><span class="keyword">del</span> test_1[<span class="string">&#x27;Unnamed: 0&#x27;</span>]</span><br><span class="line">test_1.columns</span><br></pre></td></tr></table></figure>
+
+
+<pre><code>Index([&#39;PassengerId&#39;, &#39;Survived&#39;, &#39;Pclass&#39;, &#39;Name&#39;, &#39;Sex&#39;, &#39;Age&#39;, &#39;SibSp&#39;,
+       &#39;Parch&#39;, &#39;Ticket&#39;, &#39;Fare&#39;, &#39;Cabin&#39;, &#39;Embarked&#39;, &#39;a&#39;],
+      dtype=&#39;object&#39;)
+</code></pre>
+<h4 id="1-4-6-任务六：-将-‘PassengerId’-’Name’-’Age’-’Ticket’-这几个列元素隐藏，只观察其他几个列元素"><a href="#1-4-6-任务六：-将-‘PassengerId’-’Name’-’Age’-’Ticket’-这几个列元素隐藏，只观察其他几个列元素" class="headerlink" title="1.4.6 任务六： 将[‘PassengerId’,’Name’,’Age’,’Ticket’]这几个列元素隐藏，只观察其他几个列元素"></a>1.4.6 任务六： 将[‘PassengerId’,’Name’,’Age’,’Ticket’]这几个列元素隐藏，只观察其他几个列元素</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">df.drop([<span class="string">&#x27;PassengerId&#x27;</span>, <span class="string">&#x27;Name&#x27;</span>, <span class="string">&#x27;Age&#x27;</span>,<span class="string">&#x27;Ticket&#x27;</span>], axis=<span class="number">1</span>).head(<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Survived</th>
+      <th>Pclass</th>
+      <th>Sex</th>
+      <th>SibSp</th>
+      <th>Parch</th>
+      <th>Fare</th>
+      <th>Cabin</th>
+      <th>Embarked</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>3</td>
+      <td>male</td>
+      <td>1</td>
+      <td>0</td>
+      <td>7.2500</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>1</td>
+      <td>female</td>
+      <td>1</td>
+      <td>0</td>
+      <td>71.2833</td>
+      <td>C85</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1</td>
+      <td>3</td>
+      <td>female</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7.9250</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1</td>
+      <td>1</td>
+      <td>female</td>
+      <td>1</td>
+      <td>0</td>
+      <td>53.1000</td>
+      <td>C123</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0</td>
+      <td>3</td>
+      <td>male</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8.0500</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0</td>
+      <td>3</td>
+      <td>male</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8.4583</td>
+      <td>NaN</td>
+      <td>Q</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0</td>
+      <td>1</td>
+      <td>male</td>
+      <td>0</td>
+      <td>0</td>
+      <td>51.8625</td>
+      <td>E46</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>0</td>
+      <td>3</td>
+      <td>male</td>
+      <td>3</td>
+      <td>1</td>
+      <td>21.0750</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>1</td>
+      <td>3</td>
+      <td>female</td>
+      <td>0</td>
+      <td>2</td>
+      <td>11.1333</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>1</td>
+      <td>2</td>
+      <td>female</td>
+      <td>1</td>
+      <td>0</td>
+      <td>30.0708</td>
+      <td>NaN</td>
+      <td>C</td>
+    </tr>
+  </tbody>
+</table>
+【思考】对比任务五和任务六，是不是使用了不一样的方法(函数)，如果使用一样的函数如何完成上面的不同的要求呢？
+
+<p>【思考回答】</p>
+<p>如果想要完全的删除你的数据结构，使用inplace&#x3D;True，因为使用inplace就将原数据覆盖了，所以这里没有用</p>
+<h3 id="1-5-筛选的逻辑"><a href="#1-5-筛选的逻辑" class="headerlink" title="1.5 筛选的逻辑"></a>1.5 筛选的逻辑</h3><p>表格数据中，最重要的一个功能就是要具有可筛选的能力，选出我所需要的信息，丢弃无用的信息。</p>
+<p>下面我们还是用实战来学习pandas这个功能。</p>
+<h4 id="1-5-1-任务一：-我们以”Age”为筛选条件，显示年龄在10岁以下的乘客信息。"><a href="#1-5-1-任务一：-我们以”Age”为筛选条件，显示年龄在10岁以下的乘客信息。" class="headerlink" title="1.5.1 任务一： 我们以”Age”为筛选条件，显示年龄在10岁以下的乘客信息。"></a>1.5.1 任务一： 我们以”Age”为筛选条件，显示年龄在10岁以下的乘客信息。</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="built_in">print</span>((df[<span class="string">&#x27;Age&#x27;</span>]&lt;<span class="number">10</span>).head(<span class="number">2</span>))</span><br><span class="line">df[df[<span class="string">&#x27;Age&#x27;</span>]&lt;<span class="number">10</span>].head(<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<pre><code>0    False
+1    False
+Name: Age, dtype: bool
+</code></pre>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PassengerId</th>
+      <th>Survived</th>
+      <th>Pclass</th>
+      <th>Name</th>
+      <th>Sex</th>
+      <th>Age</th>
+      <th>SibSp</th>
+      <th>Parch</th>
+      <th>Ticket</th>
+      <th>Fare</th>
+      <th>Cabin</th>
+      <th>Embarked</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>7</th>
+      <td>8</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Palsson, Master. Gosta Leonard</td>
+      <td>male</td>
+      <td>2.0</td>
+      <td>3</td>
+      <td>1</td>
+      <td>349909</td>
+      <td>21.075</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>11</td>
+      <td>1</td>
+      <td>3</td>
+      <td>Sandstrom, Miss. Marguerite Rut</td>
+      <td>female</td>
+      <td>4.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>PP 9549</td>
+      <td>16.700</td>
+      <td>G6</td>
+      <td>S</td>
+    </tr>
+  </tbody>
+</table>
+#### 1.5.2 任务二： 以"Age"为条件，将年龄在10岁以上和50岁以下的乘客信息显示出来，并将这个数据命名为midage
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">midage=df[(df[<span class="string">&#x27;Age&#x27;</span>]&gt;<span class="number">10</span>) &amp; (df[<span class="string">&#x27;Age&#x27;</span>]&lt;<span class="number">50</span>)]</span><br><span class="line">midage</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>【提示】了解pandas的条件筛选方式以及如何使用交集和并集操作</p>
+<h4 id="1-5-3-任务三：将midage的数据中第100行的”Pclass”和”Sex”的数据显示出来"><a href="#1-5-3-任务三：将midage的数据中第100行的”Pclass”和”Sex”的数据显示出来" class="headerlink" title="1.5.3 任务三：将midage的数据中第100行的”Pclass”和”Sex”的数据显示出来"></a>1.5.3 任务三：将midage的数据中第100行的”Pclass”和”Sex”的数据显示出来</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">midage = midage.reset_index(drop=<span class="literal">True</span>)</span><br><span class="line"><span class="built_in">print</span>(midage)</span><br><span class="line">midage.loc[<span class="number">1</span>][[<span class="string">&#x27;Pclass&#x27;</span>, <span class="string">&#x27;Sex&#x27;</span>]]</span><br></pre></td></tr></table></figure>
+
+<pre><code>     PassengerId  Survived  Pclass  \
+0              1         0       3   
+1              2         1       1   
+2              3         1       3   
+3              4         1       1   
+4              5         0       3   
+..           ...       ...     ...   
+571          886         0       3   
+572          887         0       2   
+573          888         1       1   
+574          890         1       1   
+575          891         0       3   
+
+                                                  Name     Sex   Age  SibSp  \
+0                              Braund, Mr. Owen Harris    male  22.0      1   
+1    Cumings, Mrs. John Bradley (Florence Briggs Th...  female  38.0      1   
+2                               Heikkinen, Miss. Laina  female  26.0      0   
+3         Futrelle, Mrs. Jacques Heath (Lily May Peel)  female  35.0      1   
+4                             Allen, Mr. William Henry    male  35.0      0   
+..                                                 ...     ...   ...    ...   
+571               Rice, Mrs. William (Margaret Norton)  female  39.0      0   
+572                              Montvila, Rev. Juozas    male  27.0      0   
+573                       Graham, Miss. Margaret Edith  female  19.0      0   
+574                              Behr, Mr. Karl Howell    male  26.0      0   
+575                                Dooley, Mr. Patrick    male  32.0      0   
+
+     Parch            Ticket     Fare Cabin Embarked  
+0        0         A/5 21171   7.2500   NaN        S  
+1        0          PC 17599  71.2833   C85        C  
+2        0  STON/O2. 3101282   7.9250   NaN        S  
+3        0            113803  53.1000  C123        S  
+4        0            373450   8.0500   NaN        S  
+..     ...               ...      ...   ...      ...  
+571      5            382652  29.1250   NaN        Q  
+572      0            211536  13.0000   NaN        S  
+573      0            112053  30.0000   B42        S  
+574      0            111369  30.0000  C148        C  
+575      0            370376   7.7500   NaN        Q  
+
+[576 rows x 12 columns]
+
+
+
+Pclass         1
+Sex       female
+Name: 1, dtype: object
+</code></pre>
+<p>【提示】在抽取数据中，我们希望数据的相对顺序保持不变，用什么函数可以达到这个效果呢？</p>
+<h4 id="1-5-4-任务四：使用loc方法将midage的数据中第100，105，108行的”Pclass”，”Name”和”Sex”的数据显示出来"><a href="#1-5-4-任务四：使用loc方法将midage的数据中第100，105，108行的”Pclass”，”Name”和”Sex”的数据显示出来" class="headerlink" title="1.5.4 任务四：使用loc方法将midage的数据中第100，105，108行的”Pclass”，”Name”和”Sex”的数据显示出来"></a>1.5.4 任务四：使用loc方法将midage的数据中第100，105，108行的”Pclass”，”Name”和”Sex”的数据显示出来</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">midage.loc[[<span class="number">100</span>,<span class="number">105</span>,<span class="number">108</span>],[<span class="string">&#x27;Pclass&#x27;</span>,<span class="string">&#x27;Name&#x27;</span>,<span class="string">&#x27;Sex&#x27;</span>]] </span><br></pre></td></tr></table></figure>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Pclass</th>
+      <th>Name</th>
+      <th>Sex</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>100</th>
+      <td>2</td>
+      <td>Byles, Rev. Thomas Roussel Davids</td>
+      <td>male</td>
+    </tr>
+    <tr>
+      <th>105</th>
+      <td>3</td>
+      <td>Cribb, Mr. John Hatfield</td>
+      <td>male</td>
+    </tr>
+    <tr>
+      <th>108</th>
+      <td>3</td>
+      <td>Calic, Mr. Jovo</td>
+      <td>male</td>
+    </tr>
+  </tbody>
+</table>
+#### 1.5.5 任务五：使用iloc方法将midage的数据中第100，105，108行的"Pclass"，"Name"和"Sex"的数据显示出来
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">midage.iloc[[<span class="number">100</span>,<span class="number">105</span>,<span class="number">108</span>],[<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>]] </span><br></pre></td></tr></table></figure>
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Pclass</th>
+      <th>Name</th>
+      <th>Sex</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>149</th>
+      <td>2</td>
+      <td>Byles, Rev. Thomas Roussel Davids</td>
+      <td>male</td>
+    </tr>
+    <tr>
+      <th>160</th>
+      <td>3</td>
+      <td>Cribb, Mr. John Hatfield</td>
+      <td>male</td>
+    </tr>
+    <tr>
+      <th>163</th>
+      <td>3</td>
+      <td>Calic, Mr. Jovo</td>
+      <td>male</td>
+    </tr>
+  </tbody>
+</table>
+
+
+<p>【思考】对比<code>iloc</code>和<code>loc</code>的异同</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># *   当你需要根据**标签名称**（如行索引名或列名）来选取数据时，使用 `loc`。这使得代码更具可读性，因为你可以直接看到你正在操作的标签。</span></span><br><span class="line"><span class="comment"># *   当你需要根据**整数位置**来选取数据时（不关心标签名称，或者标签不是整数），使用 `iloc`。这在处理没有有意义标签的 DataFrame，或者需要进行与位置相关的操作时很有用。</span></span><br><span class="line"><span class="comment"># *   **注意**：如果 DataFrame 的索引是默认的整数索引 (0, 1, 2, ...)，那么 `loc` 和 `iloc` 在使用单个整数或整数切片进行行选择时，行为可能会相似，但这可能会导致混淆。</span></span><br><span class="line"><span class="comment">#     *   例如，如果 `df.index` 是 `[0, 1, 2, 5, 6]`：</span></span><br><span class="line"><span class="comment">#         *   `df.loc[0]` 会选择索引标签为 `0` 的行。</span></span><br><span class="line"><span class="comment">#         *   `df.iloc[0]` 也会选择第一行（即索引标签为 `0` 的行）。</span></span><br><span class="line"><span class="comment">#         *   `df.loc[3]` 会报错，因为没有索引标签为 `3`。</span></span><br><span class="line"><span class="comment">#         *   `df.iloc[3]` 会选择第四行（即索引标签为 `5` 的行）。</span></span><br><span class="line"><span class="comment"># *   为了避免混淆，最佳实践是：当你知道你正在使用标签时，明确使用 `loc`；当你知道你正在使用整数位置时，明确使用 `iloc`。</span></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag"># 数据分析</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B/" rel="prev" title="数据分析——第三章模型建立和评估---评价">
+                  <i class="fa fa-angle-left"></i> 数据分析——第三章模型建立和评估---评价
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E7%AC%AC%E4%B8%80%E8%8A%82%E6%95%B0%E6%8D%AE%E8%BD%BD%E5%85%A5%E5%8F%8A%E5%88%9D%E6%AD%A5%E8%A7%82%E5%AF%9F-%E8%AF%BE%E7%A8%8B-checkpoint/" rel="next" title="数据分析——第一章：第一节数据载入及初步观察">
+                  数据分析——第一章：第一节数据载入及初步观察 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
