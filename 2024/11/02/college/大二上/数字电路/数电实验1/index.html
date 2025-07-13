@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="实验1 门电路逻辑功能测试 内容一：与非门和异或门逻辑功能的测试 74LS20双4输入与非门逻辑功能测试 74LS20功能：四输入双与非门，其内部结构及真值表如图   1ac35b0a8f06411f05cc80a49ec9c700  电路图如下   1     A B C D Y     1 1 1 1 0   0 1 1 1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数字逻辑电路——数电实验1">
+<meta property="og:url" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="实验1 门电路逻辑功能测试 内容一：与非门和异或门逻辑功能的测试 74LS20双4输入与非门逻辑功能测试 74LS20功能：四输入双与非门，其内部结构及真值表如图   1ac35b0a8f06411f05cc80a49ec9c700  电路图如下   1     A B C D Y     1 1 1 1 0   0 1 1 1">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/1ac35b0a8f06411f05cc80a49ec9c700.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/1.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/a74b68814db1d802db338a7b636a523e.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/6-1730557274344-12.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/4.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/564.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/44.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/546.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/DSFDSG.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/4552.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/456.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/284.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/SAD.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/VX.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/GS.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/dsaf.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/asdfa.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/sad-1730613828885-37.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/sads.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/afdga.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/t0131751fc49c1edcb4.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/63d335349be6acd1189581d69870bd56.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/353484a62261823731307a1969c8278e.png">
+<meta property="og:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/sadsfdf.png">
+<meta property="article:published_time" content="2024-11-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-06-12T10:50:06.277Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="大学">
+<meta property="article:tag" content="数字逻辑电路">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/1ac35b0a8f06411f05cc80a49ec9c700.png">
+
+
+<link rel="canonical" href="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/","path":"2024/11/02/college/大二上/数字电路/数电实验1/","title":"数字逻辑电路——数电实验1"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>数字逻辑电路——数电实验1 | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C1-%E9%97%A8%E7%94%B5%E8%B7%AF%E9%80%BB%E8%BE%91%E5%8A%9F%E8%83%BD%E6%B5%8B%E8%AF%95"><span class="nav-number">1.</span> <span class="nav-text">实验1 门电路逻辑功能测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AE%B9%E4%B8%80%E4%B8%8E%E9%9D%9E%E9%97%A8%E5%92%8C%E5%BC%82%E6%88%96%E9%97%A8%E9%80%BB%E8%BE%91%E5%8A%9F%E8%83%BD%E7%9A%84%E6%B5%8B%E8%AF%95"><span class="nav-number">1.1.</span> <span class="nav-text">内容一：与非门和异或门逻辑功能的测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ls20%E5%8F%8C4%E8%BE%93%E5%85%A5%E4%B8%8E%E9%9D%9E%E9%97%A8%E9%80%BB%E8%BE%91%E5%8A%9F%E8%83%BD%E6%B5%8B%E8%AF%95"><span class="nav-number">1.1.1.</span> <span class="nav-text">74LS20双4输入与非门逻辑功能测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ls86%E5%9B%9B2%E8%BE%93%E5%85%A5%E5%BC%82%E6%88%96%E9%97%A8%E9%80%BB%E8%BE%91%E5%8A%9F%E8%83%BD%E6%B5%8B%E8%AF%95"><span class="nav-number">1.1.2.</span> <span class="nav-text">74LS86四2输入异或门逻辑功能测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AE%B9%E4%BA%8C%E6%A0%B9%E6%8D%AE%E7%94%B5%E8%B7%AF%E5%9B%BE%E5%86%99%E5%87%BA%E9%80%BB%E8%BE%91%E5%85%B3%E7%B3%BB%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">内容二：根据电路图写出逻辑关系表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A874ls00%E6%8C%89%E5%9B%BE%E6%8E%A5%E7%BA%BF%E5%B0%86%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E9%80%BB%E8%BE%91%E5%85%B3%E7%B3%BB%E5%88%86%E5%88%AB%E5%A1%AB%E5%85%A5%E8%A1%A8%E4%B8%AD"><span class="nav-number">1.2.1.</span> <span class="nav-text">用74LS00按图接线，将输入输出逻辑关系分别填入表中。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E5%87%BA%E4%B8%A4%E4%B8%AA%E7%94%B5%E8%B7%AF%E9%80%BB%E8%BE%91%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">1.2.2.</span> <span class="nav-text">写出两个电路逻辑表达式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AE%B9%E4%B8%89%E5%88%A9%E7%94%A8%E4%B8%8E%E9%9D%9E%E9%97%A8%E6%8E%A7%E5%88%B6%E8%BE%93%E5%87%BA"><span class="nav-number">1.3.</span> <span class="nav-text">内容三：利用与非门控制输出</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E4%B8%80%E7%89%8774ls00%E6%8C%89%E5%9B%BE%E6%8E%A5%E7%BA%BFs%E6%8E%A5%E4%BB%BB%E4%B8%80%E7%94%B5%E5%B9%B3%E5%BC%80%E5%85%B3%E7%94%A8%E7%A4%BA%E6%B3%A2%E5%99%A8%E8%A7%82%E5%AF%9Fs%E5%AF%B9%E8%BE%93%E5%87%BA%E8%84%89%E5%86%B2%E7%9A%84%E6%8E%A7%E5%88%B6%E4%BD%9C%E7%94%A8"><span class="nav-number">1.3.1.</span> <span class="nav-text">用一片74LS00按图接线，S接任一电平开关，用示波器观察S对输出脉冲的控制作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E9%A2%98"><span class="nav-number">1.3.2.</span> <span class="nav-text">第一题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E9%A2%98"><span class="nav-number">1.3.3.</span> <span class="nav-text">第二题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AE%B9%E5%9B%9B%E7%94%A8%E4%B8%8E%E9%9D%9E%E9%97%A8%E7%BB%84%E6%88%90%E5%85%B6%E5%AE%83%E9%97%A8%E7%94%B5%E8%B7%AF%E5%B9%B6%E6%B5%8B%E8%AF%95%E9%AA%8C%E8%AF%81"><span class="nav-number">1.4.</span> <span class="nav-text">内容四：用与非门组成其它门电路并测试验证</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E9%A2%98%E7%BB%84%E6%88%90%E6%88%96%E9%9D%9E%E9%97%A8"><span class="nav-number">1.4.1.</span> <span class="nav-text">第一题：组成或非门</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E9%A2%98%E7%BB%84%E6%88%90%E5%BC%82%E6%88%96%E9%97%A8"><span class="nav-number">1.4.2.</span> <span class="nav-text">第二题：组成异或门</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AE%B9%E4%BA%94%E9%80%BB%E8%BE%91%E9%97%A8%E4%BC%A0%E8%BE%93%E5%BB%B6%E8%BF%9F%E6%97%B6%E9%97%B4%E7%9A%84%E6%B5%8B%E9%87%8F"><span class="nav-number">1.5.</span> <span class="nav-text">内容五：逻辑门传输延迟时间的测量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AE%B9%E5%85%AD%E7%94%A8%E5%9F%BA%E6%9C%AC%E9%97%A8%E7%94%B5%E8%B7%AF%E7%BB%84%E8%A3%85%E4%B8%80%E4%B8%AA%E8%AF%91%E7%A0%81%E7%94%B5%E8%B7%AF%E5%B0%86bcd8421%E7%A0%81%E8%BD%AC%E6%8D%A2%E6%88%90%E6%A0%BC%E9%9B%B7%E7%A0%81"><span class="nav-number">1.6.</span> <span class="nav-text">内容六：用基本门电路组装一个译码电路：将BCD8421码转换成格雷码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">1.7.</span> <span class="nav-text">参考文献</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">97</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="数字逻辑电路——数电实验1 | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数字逻辑电路——数电实验1
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-11-02 00:00:00" itemprop="dateCreated datePublished" datetime="2024-11-02T00:00:00+08:00">2024-11-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-12 18:50:06" itemprop="dateModified" datetime="2025-06-12T18:50:06+08:00">2025-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8A/" itemprop="url" rel="index"><span itemprop="name">大二上</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E9%80%BB%E8%BE%91%E7%94%B5%E8%B7%AF/" itemprop="url" rel="index"><span itemprop="name">数字逻辑电路</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="实验1-门电路逻辑功能测试">实验1 门电路逻辑功能测试</h1>
+<h2 id="内容一与非门和异或门逻辑功能的测试">内容一：与非门和异或门逻辑功能的测试</h2>
+<h3 id="ls20双4输入与非门逻辑功能测试">74LS20双4输入与非门逻辑功能测试</h3>
+<p>74LS20功能：<strong>四输入双与非门</strong>，其内部结构及真值表如图</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/1ac35b0a8f06411f05cc80a49ec9c700.png" alt="1ac35b0a8f06411f05cc80a49ec9c700">
+<figcaption aria-hidden="true">1ac35b0a8f06411f05cc80a49ec9c700</figcaption>
+</figure>
+<p>电路图如下</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/1.png" alt="1">
+<figcaption aria-hidden="true">1</figcaption>
+</figure>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">A</th>
+<th style="text-align: center;">B</th>
+<th style="text-align: center;">C</th>
+<th style="text-align: center;">D</th>
+<th style="text-align: center;">Y</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+<p>全1出0，有0出1</p>
+<h3 id="ls86四2输入异或门逻辑功能测试">74LS86四2输入异或门逻辑功能测试</h3>
+<p>74LS86功能：<strong>二输入端四异或门</strong>，其内部结构及真值表如图</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/a74b68814db1d802db338a7b636a523e.png" alt="a74b68814db1d802db338a7b636a523e">
+<figcaption aria-hidden="true">a74b68814db1d802db338a7b636a523e</figcaption>
+</figure>
+<p>电路图如下</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/6-1730557274344-12.png" alt="6">
+<figcaption aria-hidden="true">6</figcaption>
+</figure>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">1</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">A</th>
+<th style="text-align: center;">B</th>
+<th style="text-align: center;">Y</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<h2 id="内容二根据电路图写出逻辑关系表达式">内容二：根据电路图写出逻辑关系表达式</h2>
+<h3 id="用74ls00按图接线将输入输出逻辑关系分别填入表中">用74LS00按图接线，将输入输出逻辑关系分别填入表中。</h3>
+<p>74LS00功能：<strong>二输入端四与非门</strong>，其内部结构及真值表如图</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/4.png" alt="4">
+<figcaption aria-hidden="true">4</figcaption>
+</figure>
+<p>题目如下</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/564.png" alt="564">
+<figcaption aria-hidden="true">564</figcaption>
+</figure>
+<p>电路图如下</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/44.png" alt="44">
+<figcaption aria-hidden="true">44</figcaption>
+</figure>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">A</th>
+<th style="text-align: center;">B</th>
+<th style="text-align: center;">Y</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<p>电路图如下</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/546.png" alt="546">
+<figcaption aria-hidden="true">546</figcaption>
+</figure>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">A</th>
+<th style="text-align: center;">B</th>
+<th style="text-align: center;">Y</th>
+<th style="text-align: center;">Z</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+<h3 id="写出两个电路逻辑表达式">写出两个电路逻辑表达式</h3>
+<p>电路逻辑表达式为<span class="math inline"> <em>Ā</em><em>B</em> + <em>B̄</em><em>A</em></span></p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/DSFDSG.png" alt="DSFDSG">
+<figcaption aria-hidden="true">DSFDSG</figcaption>
+</figure>
+<p>电路逻辑表达式为<span class="math inline"> <em>Y</em> = <em>Ā</em><em>B</em> + <em>B̄</em><em>A</em></span>
+<span class="math inline"> <em>Z</em> = <em>A</em><em>B</em></span></p>
+<h2 id="内容三利用与非门控制输出">内容三：利用与非门控制输出</h2>
+<h3 id="用一片74ls00按图接线s接任一电平开关用示波器观察s对输出脉冲的控制作用">用一片74LS00按图接线，S接任一电平开关，用示波器观察S对输出脉冲的控制作用</h3>
+<h3 id="第一题">第一题</h3>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/4552.png" alt="4552">
+<figcaption aria-hidden="true">4552</figcaption>
+</figure>
+<p>电路图如下</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/456.png" alt="456">
+<figcaption aria-hidden="true">456</figcaption>
+</figure>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/284.png" alt="284">
+<figcaption aria-hidden="true">284</figcaption>
+</figure>
+<h3 id="第二题">第二题</h3>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/SAD.png" alt="SAD">
+<figcaption aria-hidden="true">SAD</figcaption>
+</figure>
+<p>电路图如下</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/VX.png" alt="VX">
+<figcaption aria-hidden="true">VX</figcaption>
+</figure>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/GS.png" alt="GS">
+<figcaption aria-hidden="true">GS</figcaption>
+</figure>
+<h2 id="内容四用与非门组成其它门电路并测试验证">内容四：用与非门组成其它门电路并测试验证</h2>
+<h3 id="第一题组成或非门">第一题：组成或非门</h3>
+<p>用一片2输入端四与非门组成或非门</p>
+<p>电路图如下</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/dsaf.png" alt="dsaf">
+<figcaption aria-hidden="true">dsaf</figcaption>
+</figure>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">A</th>
+<th style="text-align: center;">B</th>
+<th style="text-align: center;">Y</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+<h3 id="第二题组成异或门">第二题：组成异或门</h3>
+<p>同内容二</p>
+<h2 id="内容五逻辑门传输延迟时间的测量">内容五：逻辑门传输延迟时间的测量</h2>
+<p>用六反相器（非门）按图接线，输入200KHz连续脉冲，用双踪示波器测量输入、输出相位差，计算每个门的平均传输延迟时间的值。</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/asdfa.png" alt="asdfa">
+<figcaption aria-hidden="true">asdfa</figcaption>
+</figure>
+<p>74LS04功能：<strong>六反相器</strong>，其内部结构及真值表如图</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/sad-1730613828885-37.png" alt="sad">
+<figcaption aria-hidden="true">sad</figcaption>
+</figure>
+<p>电路图如下</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/sads.png" alt="sads">
+<figcaption aria-hidden="true">sads</figcaption>
+</figure>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/afdga.png" alt="afdga">
+<figcaption aria-hidden="true">afdga</figcaption>
+</figure>
+<h2 id="内容六用基本门电路组装一个译码电路将bcd8421码转换成格雷码">内容六：用基本门电路组装一个译码电路：将BCD8421码转换成格雷码</h2>
+<p>BCD8421码：二进制编码的十进制数，简称BCD码</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/t0131751fc49c1edcb4.png" alt="t0131751fc49c1edcb4">
+<figcaption aria-hidden="true">t0131751fc49c1edcb4</figcaption>
+</figure>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/63d335349be6acd1189581d69870bd56.png" alt="63d335349be6acd1189581d69870bd56">
+<figcaption aria-hidden="true">63d335349be6acd1189581d69870bd56</figcaption>
+</figure>
+<p>一位不产生进位的加法电路用<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=异或门&amp;spm=1001.2101.3001.7020">异或门</a>就可以实现，下图左边为一个二进制-格雷码转换器器，右边为一个格雷码-二进制码转换器。</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/353484a62261823731307a1969c8278e.png" alt="353484a62261823731307a1969c8278e">
+<figcaption aria-hidden="true">353484a62261823731307a1969c8278e</figcaption>
+</figure>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/sadsfdf.png" alt="sadsfdf">
+<figcaption aria-hidden="true">sadsfdf</figcaption>
+</figure>
+<h2 id="参考文献">参考文献</h2>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41628475/article/details/136149964">数字电路逻辑与设计实验一
+门电路逻辑功能及测试_数电实验-CSDN博客</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%A4%A7%E5%AD%A6/" rel="tag"># 大学</a>
+              <a href="/tags/%E6%95%B0%E5%AD%97%E9%80%BB%E8%BE%91%E7%94%B5%E8%B7%AF/" rel="tag"># 数字逻辑电路</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/10/29/%E6%96%87%E6%A1%88/%E4%B8%BA%E4%BD%95%E4%B8%93%E4%B8%80/" rel="prev" title="为何需要专一">
+                  <i class="fa fa-angle-left"></i> 为何需要专一
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/" rel="next" title="大创——初读论文与初步学习">
+                  大创——初读论文与初步学习 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

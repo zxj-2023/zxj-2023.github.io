@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="镜像（Image） 镜像可以被看作是一个轻量级、可执行的独立软件包，包含了运行某个应用所需的所有代码、库、环境变量和配置文件。它是容器的静态模板，在创建容器时用作基础。 只读：镜像本身是只读的，无法修改。 可重用：镜像是可以多次重用的，你可以基于相同的镜像创建多个容器。 容器（Container） 与虚拟机通过操作系统实现隔离不同，容器技术只隔离应用程序的运行时环境但容器之间可以共享同一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker">
+<meta property="og:url" content="http://example.com/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/docker/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="镜像（Image） 镜像可以被看作是一个轻量级、可执行的独立软件包，包含了运行某个应用所需的所有代码、库、环境变量和配置文件。它是容器的静态模板，在创建容器时用作基础。 只读：镜像本身是只读的，无法修改。 可重用：镜像是可以多次重用的，你可以基于相同的镜像创建多个容器。 容器（Container） 与虚拟机通过操作系统实现隔离不同，容器技术只隔离应用程序的运行时环境但容器之间可以共享同一">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/docker/image-20250709095041821.png">
+<meta property="og:image" content="http://example.com/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/docker/image-20250709092539404.png">
+<meta property="og:image" content="http://example.com/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/docker/image-20250709092605183.png">
+<meta property="article:published_time" content="2025-07-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-07-12T04:20:06.748Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="学习">
+<meta property="article:tag" content="docker">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/docker/image-20250709095041821.png">
+
+
+<link rel="canonical" href="http://example.com/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/docker/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/docker/","path":"2025/07/08/实习/晨晟智控/docker/","title":"docker"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>docker | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%95%9C%E5%83%8Fimage"><span class="nav-number">1.</span> <span class="nav-text">镜像（Image）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8container"><span class="nav-number">2.</span> <span class="nav-text">容器（Container）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E4%B8%8E%E5%AE%B9%E5%99%A8%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">3.</span> <span class="nav-text">镜像与容器的关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker"><span class="nav-number">4.</span> <span class="nav-text">docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">5.</span> <span class="nav-text">常用命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker%E9%83%A8%E5%88%86%E6%8C%87%E4%BB%A4"><span class="nav-number">6.</span> <span class="nav-text">docker部分指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E5%8F%82%E6%95%B0"><span class="nav-number">7.</span> <span class="nav-text">常见参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%AF%E6%95%91%E8%A2%ABwsl%E5%8D%A0%E7%94%A8%E7%9A%84%E5%86%85%E5%AD%98"><span class="nav-number">8.</span> <span class="nav-text">拯救被wsl占用的内存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9docker%E5%AD%98%E5%82%A8%E9%95%9C%E5%83%8F%E4%BD%8D%E7%BD%AE"><span class="nav-number">9.</span> <span class="nav-text">修改docker存储镜像位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E9%95%9C%E5%83%8F%E6%BA%90"><span class="nav-number">10.</span> <span class="nav-text">修改镜像源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#buildpull%E4%B8%8Erun"><span class="nav-number">11.</span> <span class="nav-text">build，pull与run</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">12.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">97</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/docker/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="docker | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          docker
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-07-08 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-08T00:00:00+08:00">2025-07-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-07-12 12:20:06" itemprop="dateModified" datetime="2025-07-12T12:20:06+08:00">2025-07-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AE%9E%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">实习</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/" itemprop="url" rel="index"><span itemprop="name">晨晟智控</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="镜像image">镜像（Image）</h2>
+<p>镜像可以被看作是一个轻量级、可执行的独立软件包，包含了运行某个应用所需的所有代码、库、环境变量和配置文件。它是容器的<strong>静态模板</strong>，在创建容器时用作基础。</p>
+<p><strong>只读</strong>：镜像本身是只读的，无法修改。</p>
+<p><strong>可重用</strong>：镜像是可以多次重用的，你可以基于相同的镜像创建多个容器。</p>
+<h2 id="容器container">容器（Container）</h2>
+<p>与虚拟机通过操作系统实现隔离不同，容器技术<strong>只隔离应用程序的运行时环境但容器之间可以共享同一个操作系统</strong>，这里的运行时环境指的是程序运行依赖的各种库以及配置。</p>
+<p>容器更加的<strong>轻量级且占用的资源更少</strong>，与操作系统动辄几G的内存占用相比，容器技术只需数M空间，因此我们可以在同样规格的硬件上<strong>大量部署容器</strong>，这是虚拟机所不能比拟的，而且不同于操作系统数分钟的启动时间容器几乎瞬时启动，容器技术为<strong>打包服务栈</strong>提供了一种更加高效的方式</p>
+<h2 id="镜像与容器的关系">镜像与容器的关系</h2>
+<p><strong>镜像是静态的</strong>：它只包含应用和运行环境，不能进行任何运行时的操作。你可以把它看作是软件的<strong>安装包</strong>。</p>
+<p><strong>容器是动态的</strong>：它是在镜像的基础上创建的，可以运行、执行代码、修改文件系统等。你可以把它看作是镜像的<strong>运行实例</strong>。</p>
+<h2 id="docker">docker</h2>
+<p>docker将程序以及程序所有的依赖都打包到<a target="_blank" rel="noopener" href="https://zhida.zhihu.com/search?content_id=129800958&amp;content_type=Article&amp;match_order=1&amp;q=docker+container&amp;zhida_source=entity">docker
+container</a>，这样你的程序可以在任何环境都会有一致的表现</p>
+<p>此外docker的另一个好处就是<strong>快速部署</strong>，这是当前互联网公司最常见的一个应用场景，一个原因在于容器启动速度非常快，另一个原因在于只要确保一个容器中的程序正确运行，那么你就能确信无论在生产环境部署多少都能正确运行。</p>
+<p>每一种容器都是一个完整的运行环境，容器之间互相隔离。</p>
+<p>简单来说，docker将程序打包部署，方便了软件的部署，避免了环境冲突等问题</p>
+<h2 id="常用命令">常用命令</h2>
+<p>查看所有容器（包括停止的容器）：<code>docker ps -a</code></p>
+<p>在Docker中运行容器：<code>docker run [OPTIONS] IMAGE [COMMAND] [ARG...]</code></p>
+<ul>
+<li>•
+<code>[OPTIONS]</code>：可选参数，用于配置容器的各种选项，如端口映射、容器名称等。</li>
+<li>• <code>IMAGE</code>：要运行的镜像名称或ID。</li>
+<li>•
+<code>[COMMAND] [ARG...]</code>：可选的命令和参数，用于在容器内执行特定的命令。</li>
+</ul>
+<p>停止正在运行的容器：<code>docker stop [OPTIONS] CONTAINER [CONTAINER...]</code></p>
+<p>启动已停止的容器：<code>docker start [OPTIONS] CONTAINER [CONTAINER...]</code></p>
+<p>删除已停止的容器或镜像：<code>docker rm [OPTIONS] CONTAINER [CONTAINER...]   docker rmi [OPTIONS] IMAGE [IMAGE...]</code></p>
+<ul>
+<li>• <code>docker rm</code>：删除容器的命令。</li>
+<li>• <code>docker rmi</code>：删除镜像的命令。</li>
+</ul>
+<p>从Docker仓库中拉取现有的镜像：<code>docker pull [OPTIONS] NAME[:TAG|@DIGEST]</code></p>
+<ul>
+<li>• <code>docker pull</code>：拉取镜像的命令。</li>
+<li>•
+<code>[OPTIONS]</code>：可选参数，用于配置拉取过程，如认证信息等。</li>
+<li>•
+<code>NAME[:TAG|@DIGEST]</code>：要拉取的镜像名称、标签或摘要。</li>
+</ul>
+<h2 id="docker部分指令">docker部分指令</h2>
+<p><strong>linux安装docker</strong>：<code>sudo apt-get update &amp;&amp; sudo apt-get install docker.io</code></p>
+<p><strong>查看 Docker
+版本信息</strong>：<code>docker version</code></p>
+<p><strong>查看镜像</strong>：<code>docker images</code></p>
+<p><strong>查看所有的容器</strong>：<code>docker ps -a</code></p>
+<blockquote>
+<p><code>systemctl</code> 是 <strong>systemd</strong>
+系统和服务管理器的核心工具，用于管理系统和服务的状态及配置。</p>
+</blockquote>
+<p><code>mysql-client</code> 是 MySQL
+数据库的命令行客户端工具。它允许你通过命令行连接和操作 MySQL
+数据库服务器，比如执行 SQL 查询、管理数据库和用户等。</p>
+<p>常用命令格式如下：<code>mysql -h 主机地址 -P 端口号 -u 用户名 -p</code></p>
+<p>你可以在终端输入以下命令来检查是否已安装
+<code>mysql-client</code>：<code>mysql --version</code></p>
+<p>可以使用以下命令安装：<code>sudo apt-get update  sudo apt-get install mysql-client</code></p>
+<blockquote>
+<p><code>sudo apt-get update</code>
+这个命令的作用是<strong>更新本地软件包列表</strong>。</p>
+</blockquote>
+<p><strong>停止并删除容器</strong>：<code>docker stop fastapi  docker rm fastapi</code></p>
+<p><strong>Linux修改镜像源</strong>：<a target="_blank" rel="noopener" href="https://blog.csdn.net/couragehope/article/details/137777158">如何查看docker配置的镜像仓库_查看docker镜像地址-CSDN博客</a></p>
+<h2 id="常见参数">常见参数</h2>
+<p>基础参数：</p>
+<table>
+<thead>
+<tr class="header">
+<th><code>-d</code>或<code>--detach</code></th>
+<th>后台运行容器（detached mode）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>--name &lt;name&gt;</code></td>
+<td>为容器指定名称（如<code>--name my_container</code>）</td>
+</tr>
+<tr class="even">
+<td><code>--rm</code></td>
+<td>容器停止后自动删除（适用于临时容器）</td>
+</tr>
+</tbody>
+</table>
+<p>端口映射：</p>
+<table>
+<colgroup>
+<col style="width: 45%">
+<col style="width: 54%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><code>-p &lt;主机端口&gt;:&lt;容器端口&gt;</code></th>
+<th>映射主机端口到容器端口（如<code>-p 80:80</code>）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>-p &lt;主机IP&gt;:&lt;主机端口&gt;:&lt;容器端口&gt;</code></td>
+<td>指定主机IP绑定（如<code>-p 127.0.0.1:8080:80</code>）</td>
+</tr>
+<tr class="even">
+<td><code>-P</code>或<code>--publish-all</code></td>
+<td>自动映射所有暴露的端口（随机分配主机端口）</td>
+</tr>
+</tbody>
+</table>
+<p>卷挂载：</p>
+<table>
+<thead>
+<tr class="header">
+<th><code>-v &lt;主机路径&gt;:&lt;容器路径&gt;</code></th>
+<th>挂载主机目录到容器（如<code>-v //app</code>）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>-v &lt;卷名&gt;:&lt;容器路径&gt;</code></td>
+<td>使用命名卷（如<code>-v my_volume:/data</code>）</td>
+</tr>
+</tbody>
+</table>
+<p>环境变量：</p>
+<table>
+<thead>
+<tr class="header">
+<th><code>-e &lt;KEY=VALUE&gt;</code></th>
+<th>设置环境变量（如<code>-e DEBUG=true</code>）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>--env-file &lt;文件名&gt;</code></td>
+<td>从文件加载环境变量（每行<code>KEY=VALUE</code>）</td>
+</tr>
+</tbody>
+</table>
+<p>网络配置：</p>
+<table>
+<colgroup>
+<col style="width: 27%">
+<col style="width: 72%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><code>--network &lt;网络名&gt;</code></th>
+<th>指定容器使用的网络（如<code>--network bridge</code>或自定义网络）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>--network host</code></td>
+<td>使用主机网络（共享主机网络命名空间）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="拯救被wsl占用的内存">拯救被wsl占用的内存</h2>
+<p>以笔者的情况来说，我的wsl中只有一些必备的开发环境，项目源代码 和
+docker。前两者显然没啥可操作的空间，所以只有一个靶子 —— docker。</p>
+<p>首先，我们可以进入wsl，通过以下命令，看看 Docker
+的磁盘使用情况和资源总量。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker system df </span><br></pre></td></tr></table></figure>
+<p>大家都知道，docker运行一段时间后，可能会产生一些无用的镜像文件。要清理无用的
+Docker 镜像，则可以运行以下命令：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image prune </span><br></pre></td></tr></table></figure>
+<p>该命令可以删除所有未被任何容器使用的镜像。如果想清理所有已停止的容器和未使用的镜像：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker system prune -a</span><br></pre></td></tr></table></figure>
+<p>执行完后咱们可以再运行第一个命令查看磁盘使用情况，大概率能看到释放了一部分磁盘空间。如果确实长时间为清理过，很大可能可释放几十G。</p>
+<p>然而这时候我们退出wsl回到win10,
+你可能会看到磁盘空间几乎没啥变化。这是因为wsl还需要我们手动释放这部分空间，即压缩磁盘。</p>
+<h2 id="修改docker存储镜像位置">修改docker存储镜像位置</h2>
+<p>windows</p>
+<figure>
+<img src="/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/docker/image-20250709095041821.png" alt="image-20250709095041821">
+<figcaption aria-hidden="true">image-20250709095041821</figcaption>
+</figure>
+<figure>
+<img src="/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/docker/image-20250709092539404.png" alt="image-20250709092539404">
+<figcaption aria-hidden="true">image-20250709092539404</figcaption>
+</figure>
+<figure>
+<img src="/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/docker/image-20250709092605183.png" alt="image-20250709092605183">
+<figcaption aria-hidden="true">image-20250709092605183</figcaption>
+</figure>
+<p>Linux</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43412762/article/details/134571411">修改Docker默认镜像和容器存储位置（超详细！！！）_docker更改存储位置-CSDN博客</a></p>
+<h2 id="修改镜像源">修改镜像源</h2>
+<p>查看可用的镜像源<a target="_blank" rel="noopener" href="https://tools.opsnote.top/registry-mirrors/">DockerHub加速器可用性监控</a></p>
+<h2 id="buildpull与run">build，pull与run</h2>
+<p><strong><code>docker build</code>：从源代码构建镜像</strong></p>
+<ul>
+<li><strong>作用</strong>：根据你提供的
+<code>Dockerfile</code>（一个包含构建镜像所需指令的文本文件）以及上下文（通常是包含
+<code>Dockerfile</code>
+的目录及其子目录），<strong>创建</strong>一个新的 Docker 镜像。</li>
+</ul>
+<p><strong><code>docker pull</code>：从注册中心下载镜像</strong></p>
+<ul>
+<li><strong>作用</strong>：从 Docker 注册中心（默认是 Docker
+Hub，也可以是私有注册中心如 Harbor, GitLab Registry, AWS ECR
+等）<strong>下载</strong>一个已经构建好的 Docker
+镜像到你的本地机器。</li>
+</ul>
+<p><strong><code>docker run</code>：创建并启动容器</strong></p>
+<ul>
+<li><strong>作用</strong>：基于一个<strong>本地已有的镜像</strong>（无论这个镜像是你刚
+<code>build</code> 出来的，还是 <code>pull</code>
+下来的，或是之前就存在的），<strong>创建</strong>一个新的容器实例，并按照指定的命令（或镜像默认的命令）<strong>启动</strong>它。</li>
+</ul>
+<h2 id="参考文献">参考文献</h2>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1ai421S7zj/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">改变软件行业的技术！程序员、软件爱好者必须掌握的Docker，到底是什么？_哔哩哔哩_bilibili</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/187505981">什么是Docker？看这一篇干货文章就够了！
+- 知乎</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Python_0011/article/details/140313812">Docker常用命令大全（非常详细）零基础入门到精通，收藏这一篇就够了-CSDN博客</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1THKyzBER6/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">40分钟的Docker实战攻略，一期视频精通Docker_哔哩哔哩_bilibili</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%AD%A6%E4%B9%A0/" rel="tag"># 学习</a>
+              <a href="/tags/docker/" rel="tag"># docker</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/" rel="prev" title="MinerU">
+                  <i class="fa fa-angle-left"></i> MinerU
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/07/09/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/chunk%E5%88%86%E5%9D%97%E7%AD%96%E7%95%A5/" rel="next" title="chunk分块策略">
+                  chunk分块策略 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="docker部署 使用dockerfile构建镜像： 12wget https:&#x2F;&#x2F;gcore.jsdelivr.net&#x2F;gh&#x2F;opendatalab&#x2F;MinerU@master&#x2F;docker&#x2F;china&#x2F;Dockerfiledocker build -t mineru-sglang:latest -f Dockerfile . 使用wget https:&#x2F;&#x2F;gcore.jsdelivr.n">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MinerU">
+<meta property="og:url" content="http://example.com/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="docker部署 使用dockerfile构建镜像： 12wget https:&#x2F;&#x2F;gcore.jsdelivr.net&#x2F;gh&#x2F;opendatalab&#x2F;MinerU@master&#x2F;docker&#x2F;china&#x2F;Dockerfiledocker build -t mineru-sglang:latest -f Dockerfile . 使用wget https:&#x2F;&#x2F;gcore.jsdelivr.n">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/image-20250708160948192.png">
+<meta property="og:image" content="http://example.com/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/image-20250709152627120.png">
+<meta property="og:image" content="http://example.com/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/image-20250710100047464.png">
+<meta property="og:image" content="http://example.com/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/image-20250710103505453.png">
+<meta property="og:image" content="http://example.com/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/image-20250710103615272.png">
+<meta property="og:image" content="http://example.com/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/115678648318f55f1fe3a5baaeac2aaf.png">
+<meta property="article:published_time" content="2025-07-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-07-11T03:24:54.367Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="实习">
+<meta property="article:tag" content="MineU">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/image-20250708160948192.png">
+
+
+<link rel="canonical" href="http://example.com/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/","path":"2025/07/08/实习/晨晟智控/mineru/","title":"MinerU"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MinerU | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#docker%E9%83%A8%E7%BD%B2"><span class="nav-number">1.</span> <span class="nav-text">docker部署</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8A%A5%E9%94%99%E6%8E%92%E6%9F%A5"><span class="nav-number">1.1.</span> <span class="nav-text">报错排查</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E6%BA%90%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.</span> <span class="nav-text">镜像源配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%8C%87%E5%AE%9A%E5%9F%BA%E7%A1%80%E9%95%9C%E5%83%8F"><span class="nav-number">1.3.</span> <span class="nav-text">为什么要指定基础镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A1%AE%E8%AE%A4%E6%94%AF%E6%8C%81%E7%9A%84cuda%E7%89%88%E6%9C%AC"><span class="nav-number">1.4.</span> <span class="nav-text">确认支持的cuda版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E4%BD%BF%E7%94%A8dockerfile%E7%9B%B4%E6%8E%A5%E9%83%A8%E7%BD%B2%E5%A7%8B%E7%BB%88%E5%87%BA%E7%8E%B0%E7%BD%91%E7%BB%9C%E9%97%AE%E9%A2%98"><span class="nav-number">1.5.</span> <span class="nav-text">问题：使用dockerfile直接部署，始终出现网络问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8"><span class="nav-number">2.</span> <span class="nav-text">启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">调用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E8%B0%83%E7%94%A8sglang-serverclient-%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.1.</span> <span class="nav-text">命令行调用sglang-server&#x2F;client
+模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#fastapi%E8%B0%83%E7%94%A8%E4%B8%8Egradio-webui-%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">3.2.</span> <span class="nav-text">fastapi调用与gradio webui
+可视化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">参数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%8E%E7%AB%AF%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">4.1.</span> <span class="nav-text">后端的区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B5%84%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">97</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="MinerU | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MinerU
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-07-08 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-08T00:00:00+08:00">2025-07-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-07-11 11:24:54" itemprop="dateModified" datetime="2025-07-11T11:24:54+08:00">2025-07-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AE%9E%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">实习</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/" itemprop="url" rel="index"><span itemprop="name">晨晟智控</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="docker部署">docker部署</h3>
+<p>使用dockerfile构建镜像：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://gcore.jsdelivr.net/gh/opendatalab/MinerU@master/docker/china/Dockerfile</span><br><span class="line">docker build -t mineru-sglang:latest -f Dockerfile .</span><br></pre></td></tr></table></figure>
+<p>使用<code>wget https://gcore.jsdelivr.net/gh/opendatalab/MinerU @master/docker/china/Dockerfile -O Dockerfile</code>将指定的
+Dockerfile 下载到本地</p>
+<p>Dockerfile：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># 使用官方的 sglang 镜像作为基础镜像</span><br><span class="line">FROM lmsysorg/sglang:v0.4.9-cu126</span><br><span class="line"></span><br><span class="line"># 安装 OpenCV 依赖库</span><br><span class="line">RUN apt-get update &amp;&amp; apt-get install -y libgl1 &amp;&amp; apt-get clean &amp;&amp; rm -rf /var/lib/apt/lists/*</span><br><span class="line"></span><br><span class="line"># 安装 mineru Python 包</span><br><span class="line">RUN python3 -m pip install -U &#x27;mineru[core]&#x27; -i https://mirrors.aliyun.com/pypi/simple --break-system-packages</span><br><span class="line"></span><br><span class="line"># 下载模型并配置</span><br><span class="line">RUN /bin/bash -c &quot;mineru-models-download -s modelscope -m all&quot;</span><br><span class="line"></span><br><span class="line"># 设置容器入口命令</span><br><span class="line">ENTRYPOINT [&quot;/bin/bash&quot;, &quot;-c&quot;, &quot;export MINERU_MODEL_SOURCE=local &amp;&amp; exec \&quot;$@\&quot;&quot;, &quot;--&quot;]</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>SGLang（全称可能为 <strong>Serving Large Language Models with
+Golang</strong>
+）是由斯坦福大学研究团队开发的一个<strong>高效的大语言模型（LLM）推理服务框架</strong>
+，旨在通过优化模型推理过程，显著提升生成式AI服务的吞吐量和响应速度。</p>
+<ul>
+<li><strong>SGlang 版本</strong> ：<code>v0.4.8.post1</code>（SGlang
+是一个用于大语言模型（LLM）推理和服务的高性能框架）。</li>
+<li><strong>CUDA 版本</strong> ：<code>cu126</code> 表示使用
+<strong>CUDA 12.6</strong> ，适用于 <strong>Turing/Ampere/Ada
+Lovelace/Hopper 架构的 GPU</strong> （如 RTX 30/40
+系列、A100、H100）。</li>
+</ul>
+</blockquote>
+<h4 id="报错排查">报错排查</h4>
+<p>之前由于默认dockerfile内容为<code>FROM lmsysorg/sglang:v0.4.8.post1-cu126</code>报错</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lmsysorg/sglang:v0.4.8.post1-cu126: failed to resolve source metadata for docker.io/lmsysorg/sglang:v0.4.8.post1-cu126: unexpected status from HEAD request to https://yaj2teeh.mirror.aliyuncs.com/v2/lmsysorg/sglang/manifests/v0.4.8.post1-cu126?ns=docker.io: 403 Forbidden</span><br></pre></td></tr></table></figure>
+<p>之前以为是sglang版本问题，然后去dockerhub上查找，并通过<code>docker pull sglang:v0.4.8.post1-cu126</code>测试，是可以拉取的，最后认为原因还是网络问题</p>
+<p>解决方法，更换了镜像源</p>
+<h4 id="镜像源配置">镜像源配置</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&quot;registry-mirrors&quot;: [</span><br><span class="line">  &quot;https://registry.docker-cn.com&quot;,</span><br><span class="line">  &quot;http://hub-mirror.c.163.com&quot;,</span><br><span class="line">  &quot;https://dockerhub.azk8s.cn&quot;,</span><br><span class="line">  &quot;https://mirror.ccs.tencentyun.com&quot;,</span><br><span class="line">  &quot;https://registry.cn-hangzhou.aliyuncs.com&quot;,</span><br><span class="line">  &quot;https://docker.mirrors.ustc.edu.cn&quot;,</span><br><span class="line">  &quot;https://docker.m.daocloud.io&quot;,  </span><br><span class="line">  &quot;https://noohub.ru&quot;, </span><br><span class="line">  &quot;https://huecker.io&quot;,</span><br><span class="line">  &quot;https://dockerhub.timeweb.cloud&quot; </span><br><span class="line"> ]</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1xHA3euEcn/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">保姆级Docker安装+镜像加速
+计算机系必备技能_哔哩哔哩_bilibili</a></p>
+<h4 id="为什么要指定基础镜像">为什么要指定基础镜像</h4>
+<ul>
+<li><strong>提供操作系统和依赖</strong> 基础镜像包含操作系统（如
+Ubuntu、Alpine）、运行时环境（如 Python、Node.js）或框架（如
+TensorFlow、PyTorch）等核心组件，后续所有操作（如安装依赖、拷贝文件）都基于此环境。
+<ul>
+<li>例如：<code>FROM python:3.9</code> 提供了 Python 3.9
+的运行环境，后续可以直接用 <code>pip install</code> 安装 Python
+包。</li>
+</ul></li>
+<li><strong>避免重复造轮子</strong>
+如果直接从空镜像（<code>scratch</code>）开始，需要手动安装所有依赖，效率低下且容易出错。使用现有基础镜像可以复用已验证的环境配置。</li>
+</ul>
+<h4 id="确认支持的cuda版本">确认支持的cuda版本</h4>
+<p>命令<code>nvidia-smi</code></p>
+<figure>
+<img src="/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/image-20250708160948192.png" alt="image-20250708160948192">
+<figcaption aria-hidden="true">image-20250708160948192</figcaption>
+</figure>
+<p><strong>CUDA Version</strong> 显示当前驱动支持的最高 CUDA 版本</p>
+<h4 id="问题使用dockerfile直接部署始终出现网络问题">问题：使用dockerfile直接部署，始终出现网络问题</h4>
+<p>解决方案</p>
+<p>先修改了一下docker储存镜像的位置，太大了</p>
+<p>先拉取基础镜像<code>docker pull lmsysorg/sglang:v0.4.8.post1-cu126</code></p>
+<p>再使用<code>docker build -t mineru-sglang:latest -f Dockerfile .</code>，可以直接跳过基础镜像的拉取</p>
+<h3 id="启动">启动</h3>
+<p>官方启动命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">  --name sglang-server \          # 容器命名（便于管理）</span><br><span class="line">  --gpus all \                   # 启用所有GPU</span><br><span class="line">  --shm-size 32g \               # 共享内存大小</span><br><span class="line">  -p 30000:30000 \               # 端口映射（主机端口:容器端口）</span><br><span class="line">  --ipc=host \                   # 共享主机IPC命名空间</span><br><span class="line">  mineru-sglang:latest \</span><br><span class="line">  mineru-sglang-server --host 0.0.0.0 --port 30000</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --name sglang-server --gpus all --shm-size 32g -p 30000:30000 --ipc=host mineru-sglang:latest mineru-sglang-server --host 0.0.0.0 --port 30000</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>将mineru-sglang-server暴露到30000端口的作用</p>
+<p>为了支持 vlm-sglang-client
+后端模式，使得MinerU客户端可以通过网络连接到这个服务器，实现多个客户端可以同时连接到同一个服务器</p>
+</blockquote>
+<p>使用<code>docker exec -it sglang-server bash</code>命令进入容器</p>
+<p>或</p>
+<p>使用docker desk</p>
+<figure>
+<img src="/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/image-20250709152627120.png" alt="image-20250709152627120">
+<figcaption aria-hidden="true">image-20250709152627120</figcaption>
+</figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run -d --name mineru-server --gpus all --shm-size 32g -p 30000:30000 -p 7860:7860 -p 8000:8000 --ipc=host \</span><br><span class="line">-v &quot;F:/project python/实习/mineru/demo/pdfs:/pdfs&quot; \</span><br><span class="line">-v &quot;F:/project python/实习/mineru/output:/output&quot; \</span><br><span class="line">mineru-sglang:latest \</span><br><span class="line">mineru-sglang-server --host 0.0.0.0 --port 30000</span><br></pre></td></tr></table></figure>
+<p>使用挂载卷启动</p>
+<ul>
+<li>将本地的PDF文件目录挂载到容器内的 /pdfs 目录</li>
+<li>将本地的输出目录挂载到容器内的 /output 目录</li>
+<li>把8000，和7860端口暴露，方便调用fastapi与gradio webui 可视化</li>
+</ul>
+<figure>
+<img src="/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/image-20250710100047464.png" alt="image-20250710100047464">
+<figcaption aria-hidden="true">image-20250710100047464</figcaption>
+</figure>
+<figure>
+<img src="/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/image-20250710103505453.png" alt="image-20250710103505453">
+<figcaption aria-hidden="true">image-20250710103505453</figcaption>
+</figure>
+<h3 id="调用">调用</h3>
+<h4 id="命令行调用sglang-serverclient-模式">命令行调用sglang-server/client
+模式</h4>
+<p><code>docker exec mineru-server mineru -p /pdfs/demo1.pdf -o /output -b vlm-sglang-client -u http://localhost:30000</code></p>
+<p>这条命令在名为 mineru-server 的容器内执行 mineru 工具，处理 /pdfs
+目录下的 demo1.pdf 文件，输出结果到 /output 目录，使用 vlm-sglang-client
+后端，并连接到 http://localhost:30000 的SGLang服务器。</p>
+<figure>
+<img src="/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/image-20250710103615272.png" alt="image-20250710103615272">
+<figcaption aria-hidden="true">image-20250710103615272</figcaption>
+</figure>
+<h4 id="fastapi调用与gradio-webui-可视化">fastapi调用与gradio webui
+可视化</h4>
+<p>在完成docker的端口映射之后，运行<code>mineru-api --host 0.0.0.0 --port 8080</code>启动fastapi服务，</p>
+<p>运行<code>mineru-gradio --server-name 0.0.0.0 --server-port 7860</code>启动gradio
+webui服务</p>
+<p>或<code>mineru-gradio --server-name 0.0.0.0 --server-port 7860 --enable-sglang-engine true</code></p>
+<blockquote>
+<p>注意，模型下载需要配置环境变量</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 在容器内设置环境变量</span><br><span class="line">export MINERU_MODEL_SOURCE=modelscope</span><br><span class="line"># 验证环境变量是否设置成功</span><br><span class="line">echo $MINERU_MODEL_SOURCE</span><br></pre></td></tr></table></figure>
+</blockquote>
+<figure>
+<img src="/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/115678648318f55f1fe3a5baaeac2aaf.png" alt="115678648318f55f1fe3a5baaeac2aaf">
+<figcaption aria-hidden="true">115678648318f55f1fe3a5baaeac2aaf</figcaption>
+</figure>
+<p><strong>在调用过程中关于端口的问题与思考</strong></p>
+<p>调用过程中发现，在容器中使用<code>mineru-api --host 127.0.0.1 --port 8000</code>，宿主机无法访问<code>http://127.0.0.1:8000/docs/</code>，经过查询ai，命令改为<code>mineru-api --host 0.0.0.0 --port 8000</code>就可以正常访问，那么关键在于对这两个地址的理解</p>
+<blockquote>
+<p>查看端口<code>netstat -ano | findstr LISTENING</code></p>
+</blockquote>
+<p>127.0.0.1与0.0.0.0</p>
+<ul>
+<li>127.0.0.1 (localhost) ：仅表示本机回环地址，只能在 同一设备内
+访问</li>
+<li>0.0.0.0 ：表示监听所有可用的网络接口，允许 来自任何地址 的连接</li>
+</ul>
+<p>当您在Docker容器内运行服务时：</p>
+<ol type="1">
+<li><p>使用127.0.0.1作为绑定地址 ：</p>
+<ul>
+<li>服务只接受来自容器内部的连接</li>
+<li>即使您映射了端口，宿主机也无法访问该服务</li>
+<li>只有容器内的应用程序可以通过 127.0.0.1:端口 访问</li>
+</ul></li>
+<li><p>使用0.0.0.0作为绑定地址 ：</p>
+<ul>
+<li>服务接受来自任何网络接口的连接请求</li>
+<li>允许从容器外部（包括宿主机）访问该服务</li>
+<li>当您映射端口时（如 -p 8000:8000 ），宿主机可以通过 localhost:8000 或
+127.0.0.1:8000 访问</li>
+</ul></li>
+</ol>
+<p><strong>为什么需要在容器内使用0.0.0.0</strong></p>
+<p>在Docker环境中，容器有自己独立的网络命名空间，这意味着容器内的
+127.0.0.1 与宿主机的 127.0.0.1 是完全不同的两个环境。因此：</p>
+<ul>
+<li>当您在容器内使用 –host 0.0.0.0
+启动服务时，该服务会监听容器的所有网络接口</li>
+<li>当您在宿主机上访问 127.0.0.1:映射端口
+时，Docker会将请求转发到容器内监听在 0.0.0.0:容器端口 的服务</li>
+</ul>
+<h3 id="参数">参数</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Usage: mineru [OPTIONS]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  -v, --version                   显示版本并退出</span><br><span class="line">  -p, --path PATH                 输入文件路径或目录（必填）</span><br><span class="line">  -o, --output PATH               输出目录（必填）</span><br><span class="line">  -m, --method [auto|txt|ocr]     解析方法：auto（默认）、txt、ocr（仅用于 pipeline 后端）</span><br><span class="line">  -b, --backend [pipeline|vlm-transformers|vlm-sglang-engine|vlm-sglang-client]</span><br><span class="line">                                  解析后端（默认为 pipeline）</span><br><span class="line">  -l, --lang [ch|ch_server|ch_lite|en|korean|japan|chinese_cht|ta|te|ka|latin|arabic|east_slavic|cyrillic|devanagari]</span><br><span class="line">                                  指定文档语言（可提升 OCR 准确率，仅用于 pipeline 后端）</span><br><span class="line">  -u, --url TEXT                  当使用 sglang-client 时，需指定服务地址</span><br><span class="line">  -s, --start INTEGER             开始解析的页码（从 0 开始）</span><br><span class="line">  -e, --end INTEGER               结束解析的页码（从 0 开始）</span><br><span class="line">  -f, --formula BOOLEAN           是否启用公式解析（默认开启）</span><br><span class="line">  -t, --table BOOLEAN             是否启用表格解析（默认开启）</span><br><span class="line">  -d, --device TEXT               推理设备（如 cpu/cuda/cuda:0/npu/mps，仅 pipeline 后端）</span><br><span class="line">  --vram INTEGER                  单进程最大 GPU 显存占用(GB)（仅 pipeline 后端）</span><br><span class="line">  --source [huggingface|modelscope|local]</span><br><span class="line">                                  模型来源，默认 huggingface</span><br><span class="line">  --help                          显示帮助信息</span><br></pre></td></tr></table></figure>
+<h4 id="后端的区别">后端的区别</h4>
+<p>pipeline (默认后端) :</p>
+<ul>
+<li>含义 : 这是 MinerU 的默认后端，它使用本地安装的 mineru
+库来执行文档解析任务。它通常不依赖于外部的
+VLM（视觉语言模型）服务，而是直接在本地处理 PDF 文件。</li>
+</ul>
+<p>vlm-transformers :</p>
+<ul>
+<li>含义 : 这个后端利用 Hugging Face transformers 库中提供的 VLM
+模型进行文档分析。它会在本地加载并运行一个基于 transformers 的 VLM
+模型来处理 PDF 中的视觉信息和文本内容。</li>
+</ul>
+<blockquote>
+<p>VLM（Vision-Language
+Model，视觉语言模型）是一种结合计算机视觉和自然语言处理能力的多模态人工智能模型。</p>
+<p>OCR 是 Optical Character
+Recognition（光学字符识别）的缩写。它是一种技术，用于将图像中的手写、打印或打字文本转换为机器编码的文本，使其可以被计算机编辑、搜索、存储和处理。</p>
+</blockquote>
+<p>vlm-sglang-engine :</p>
+<ul>
+<li>含义 : 这个后端表示 MinerU 将直接集成并使用 SGLang 引擎进行 VLM
+推理。SGLang 是一个高性能的推理引擎，旨在优化大型语言模型（LLM）和 VLM
+的推理速度和效率。在这种模式下，SGLang 引擎作为 MinerU
+进程的一部分运行。</li>
+</ul>
+<p>vlm-sglang-client :</p>
+<ul>
+<li>含义 : 这个后端表示 MinerU 作为 SGLang
+服务器的客户端。在这种模式下，MinerU 不会直接运行 VLM 模型，而是将 PDF
+处理请求发送到一个独立的 SGLang 服务器（通过 -u 参数指定的 URL，例如
+http://localhost:30000 ）。SGLang 服务器负责执行实际的 VLM
+推理，并将结果返回给 MinerU 客户端。</li>
+</ul>
+<blockquote>
+<p>用场景 : 这是我们之前讨论的 Docker
+容器部署场景中推荐的模式。它非常适合以下情况： - 资源隔离 : 将 VLM
+推理的计算密集型任务从 MinerU 主进程中分离出来，允许独立扩展和管理
+SGLang 服务器。 - 集中管理 : 可以在一个或多个 SGLang 服务器上集中管理
+VLM 模型，供多个 MinerU 客户端共享使用。 - 性能优化 : SGLang
+服务器可以针对 VLM 推理进行专门优化，提供更好的吞吐量和延迟。 - 灵活部署
+: SGLang
+服务器可以部署在不同的机器上，甚至作为微服务运行，提供更大的部署灵活性。</p>
+</blockquote>
+<h3 id="资料">资料</h3>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/liuzhenghua66/article/details/148980203">MinerU
+2.0部署-CSDN博客</a></p>
+<p>https://github.com/opendatalab/MinerU?tab=readme-ov-file#local-deployment</p>
+<p>https://deepwiki.com/opendatalab/MinerU</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/docker/" rel="tag"># docker</a>
+              <a href="/tags/%E5%AE%9E%E4%B9%A0/" rel="tag"># 实习</a>
+              <a href="/tags/MineU/" rel="tag"># MineU</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/%E6%97%A5%E5%BF%97/7.8/" rel="prev" title="实习日志——7.8">
+                  <i class="fa fa-angle-left"></i> 实习日志——7.8
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/docker/" rel="next" title="docker">
+                  docker <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

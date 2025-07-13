@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="高斯核（RBF核）中 σ² 的作用及其对模型的影响 高斯核（RBF核）的形式为： $$ K(x, x&#39;) &#x3D; \exp\left(-\frac{\|x - x&#39;\|^2}{2\sigma^2}\right) $$ 其中 $ |x - x’| $ 是两个样本点之间的欧氏距离，$ ^2 $ 是高斯核的方差参数，控制核函数的“宽度”或“局部性”。 1. σ² 的几何意义：核函数的“影响范围”">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习——期末复习（查漏补缺）">
+<meta property="og:url" content="http://example.com/2025/06/10/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0%EF%BC%88%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA%EF%BC%89/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="高斯核（RBF核）中 σ² 的作用及其对模型的影响 高斯核（RBF核）的形式为： $$ K(x, x&#39;) &#x3D; \exp\left(-\frac{\|x - x&#39;\|^2}{2\sigma^2}\right) $$ 其中 $ |x - x’| $ 是两个样本点之间的欧氏距离，$ ^2 $ 是高斯核的方差参数，控制核函数的“宽度”或“局部性”。 1. σ² 的几何意义：核函数的“影响范围”">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-06-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-06-15T23:35:40.381Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="大学">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2025/06/10/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0%EF%BC%88%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA%EF%BC%89/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/06/10/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0%EF%BC%88%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA%EF%BC%89/","path":"2025/06/10/college/大二下/机器学习/期末复习（查漏补缺）/","title":"机器学习——期末复习（查漏补缺）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>机器学习——期末复习（查漏补缺） | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AB%98%E6%96%AF%E6%A0%B8rbf%E6%A0%B8%E4%B8%AD-%CF%83%C2%B2-%E7%9A%84%E4%BD%9C%E7%94%A8%E5%8F%8A%E5%85%B6%E5%AF%B9%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="nav-number">1.</span> <span class="nav-text">高斯核（RBF核）中 σ²
+的作用及其对模型的影响</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E9%AB%98%E6%96%AF%E6%A0%B8%E4%B9%8B%E5%89%8D%E8%A6%81%E5%BD%92%E4%B8%80%E5%8C%96"><span class="nav-number">2.</span> <span class="nav-text">为什么使用高斯核之前要归一化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#svm%E7%9A%84hinge%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">SVM的Hinge损失函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%A0%91%E7%9A%84%E6%95%B0%E9%87%8F%E5%A2%9E%E5%8A%A0%E4%B8%8D%E4%BC%9A%E5%AF%BC%E8%87%B4%E8%BF%87%E6%8B%9F%E5%90%88"><span class="nav-number">4.</span> <span class="nav-text">为什么树的数量增加不会导致过拟合？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AC%A7%E5%BC%8F%E8%B7%9D%E7%A6%BB%E7%9A%84%E7%89%B9%E6%80%A7%E5%88%86%E6%9E%90"><span class="nav-number">5.</span> <span class="nav-text">欧式距离的特性分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E5%88%97%E5%93%AA%E4%B8%AA%E4%B8%8D%E5%B1%9E%E4%BA%8E%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96"><span class="nav-number">6.</span> <span class="nav-text">下列哪个不属于特征提取</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">97</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/06/10/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0%EF%BC%88%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="机器学习——期末复习（查漏补缺） | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          机器学习——期末复习（查漏补缺）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-06-10 00:00:00" itemprop="dateCreated datePublished" datetime="2025-06-10T00:00:00+08:00">2025-06-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-16 07:35:40" itemprop="dateModified" datetime="2025-06-16T07:35:40+08:00">2025-06-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/" itemprop="url" rel="index"><span itemprop="name">大二下</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="高斯核rbf核中-σ²-的作用及其对模型的影响">高斯核（RBF核）中 σ²
+的作用及其对模型的影响</h3>
+<p>高斯核（RBF核）的形式为： <span class="math display">$$
+K(x, x') = \exp\left(-\frac{\|x - x'\|^2}{2\sigma^2}\right)
+$$</span> 其中 $ |x - x’| $ 是两个样本点之间的欧氏距离，$ ^2 $
+是高斯核的方差参数，控制核函数的“宽度”或“局部性”。</p>
+<p><strong>1. σ² 的几何意义：核函数的“影响范围”</strong></p>
+<ul>
+<li><p><strong>σ² 较小时</strong>：<br>
+分母较小，指数项中的 $ $ 会更大，导致指数函数值快速衰减。<br>
+<strong>结果</strong>：只有当 $ x $ 和 $ x’ $
+非常接近时，核函数值才接近1；稍远一点的距离会导致核函数值迅速趋近于0。<br>
+<strong>直观理解</strong>：模型只关注局部区域内的样本点，决策边界会围绕每个样本点“弯曲”，形成复杂的非线性形状。</p></li>
+<li><p><strong>σ² 较大时</strong>：<br>
+分母较大，指数项中的 $ $ 会更小，指数函数值衰减缓慢。<br>
+<strong>结果</strong>：即使 $ x $ 和 $ x’ $
+相距较远，核函数值仍可能较大。<br>
+<strong>直观理解</strong>：模型会考虑更大范围的样本点，决策边界更平滑，接近线性分隔。</p></li>
+</ul>
+<p><strong>2. σ² 如何影响模型的复杂度</strong></p>
+<ul>
+<li><strong>σ² 小 → 局部敏感，高复杂度</strong>：
+<ul>
+<li>每个样本点的影响范围有限，模型需要“记住”每个局部区域的细节。<br>
+</li>
+<li>决策边界会围绕每个样本点剧烈弯曲，甚至形成孤立的环形区域（如图1）。<br>
+</li>
+<li>容易过拟合：模型过度适应训练数据的噪声和细节。</li>
+</ul></li>
+<li><strong>σ² 大 → 全局平滑，低复杂度</strong>：
+<ul>
+<li>样本点的影响范围扩大，模型倾向于用简单的全局模式区分数据。<br>
+</li>
+<li>决策边界接近线性（如图2），可能无法捕捉数据中的非线性结构。<br>
+</li>
+<li>容易欠拟合：模型无法拟合数据中的局部特征。</li>
+</ul></li>
+</ul>
+<p><strong>3. 数学与直观示例</strong></p>
+<p>假设两个样本点 $ x_1 $ 和 $ x_2 $ 距离为 $ d $，核函数值 $ K(x_1,
+x_2) $ 随 $ ^2 $ 的变化如下：</p>
+<table>
+<colgroup>
+<col style="width: 13%">
+<col style="width: 22%">
+<col style="width: 31%">
+<col style="width: 32%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>$ ^2 $</th>
+<th>$ d = 1 $</th>
+<th>$ d = 2 $</th>
+<th>$ d = 3 $</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>$ ^2 = 0.1 $</td>
+<td>$ (-5) $</td>
+<td>$ (-20) ^{-9} $</td>
+<td>$ (-45) ^{-20} $</td>
+</tr>
+<tr class="even">
+<td>$ ^2 = 1 $</td>
+<td>$ (-0.5) $</td>
+<td>$ (-2) $</td>
+<td>$ (-4.5) $</td>
+</tr>
+<tr class="odd">
+<td>$ ^2 = 10 $</td>
+<td>$ (-0.05) $</td>
+<td>$ (-0.2) $</td>
+<td>$ (-0.45) $</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>σ² 小（如
+0.1）</strong>：距离稍大的样本点之间几乎无关联，模型仅依赖极邻近的点做决策。<br>
+</li>
+<li><strong>σ² 大（如
+10）</strong>：即使距离较远的样本点仍有显著关联，模型决策边界更平滑。</li>
+</ul>
+<h3 id="为什么使用高斯核之前要归一化">为什么使用高斯核之前要归一化</h3>
+<p>在使用高斯核（RBF核）之前对数据进行归一化，是机器学习中至关重要的预处理步骤。其核心原因是<strong>高斯核对特征的尺度（scale）极度敏感</strong>，而归一化能消除特征间尺度差异带来的负面影响。以下是详细解释：</p>
+<ol type="1">
+<li><strong>高斯核的本质依赖距离计算</strong></li>
+</ol>
+<p>高斯核的公式为： <span class="math display">$$
+K(x, x') = \exp\left(-\frac{\|x - x'\|^2}{2\sigma^2}\right)
+$$</span> 其中 <span class="math inline">∥<em>x</em> − <em>x</em>′∥</span>
+是两个样本点之间的欧氏距离。<br>
+<strong>问题</strong>：欧氏距离的计算受特征尺度影响极大。例如： -
+假设特征A的取值范围是 [0,1]，特征B的取值范围是 [0,1000]。 -
+此时特征B的差异会主导距离计算（如 $ (0.5)^2 + (500)^2
+$），特征A的贡献几乎被忽略。</p>
+<p><strong>结果</strong>：模型决策边界会过度依赖尺度大的特征，导致性能下降。</p>
+<ol start="2" type="1">
+<li><strong>归一化消除特征尺度差异</strong></li>
+</ol>
+<p>归一化（如标准化或最小-最大缩放）将所有特征调整到相似的数值范围（如
+[0,1] 或均值为0、方差为1）。<br>
+<strong>效果</strong>： -
+<strong>公平比较特征</strong>：每个特征对距离的贡献权重均衡。 -
+<strong>防止“大尺度特征主导”</strong>：避免模型因某些特征数值过大而忽略其他重要特征。</p>
+<p><strong>示例</strong>：<br>
+假设两个样本：<br>
+- 未归一化：$ x_1 = [1, 100], x_2 = [2, 200] $，距离为 $ <span class="math inline">。 − <em>归</em><em>一</em><em>化</em><em>后</em>（<em>假</em><em>设</em><em>缩</em><em>放</em><em>到</em>[0,1]）：</span>
+x_1 = [0.1, 0.1], x_2 = [0.2, 0.2] $，距离为 $ $。<br>
+此时两个特征的贡献比例从 1:100 变为 1:1。</p>
+<ol start="3" type="1">
+<li><strong>高斯核参数 σ² 的有效性依赖归一化</strong></li>
+</ol>
+<p>高斯核的参数 σ²（或 γ =
+1/σ²）决定了核函数的“局部性”（即模型关注局部还是全局模式）。<br>
+- <strong>未归一化时</strong>：σ²
+的选择必须同时适应不同尺度的特征，导致参数调优困难。 -
+例如：若某特征尺度极大，需要极小的 σ²
+才能捕捉其局部变化，但这可能使其他小尺度特征的核函数失效。 -
+<strong>归一化后</strong>：所有特征尺度一致，σ²
+的调参只需关注数据整体分布，而非单个特征的尺度。</p>
+<h3 id="svm的hinge损失函数">SVM的Hinge损失函数</h3>
+<p>Hinge损失函数是支持向量机（SVM）中用于分类任务的核心损失函数，其核心思想是<strong>最大化分类间隔</strong>，同时惩罚分类错误或置信度不足的样本。以下是详细解析：</p>
+<p><strong>1. 数学定义</strong></p>
+<p>对于二分类问题，假设真实标签 $ y {+1, -1} $，模型输出 $ f(x) = w^T x
++ b $，则 <strong>Hinge损失</strong> 的定义为： <span class="math display">ℒ(<em>y</em>,<em>f</em>(<em>x</em>)) = max (0,1−<em>y</em>⋅<em>f</em>(<em>x</em>))</span>
+- <strong>关键含义</strong>： - 当 $ y f(x)
+$：样本被正确分类且置信度足够（位于间隔边界外），损失为0。 - 当 $ y f(x)
+&lt; 1 $：样本位于间隔内或被错误分类，损失随 $ y f(x) $ 线性增长。</p>
+<p><strong>2. 几何意义：最大化间隔</strong></p>
+<p>Hinge损失的设计与SVM的<strong>硬间隔（Hard
+Margin）</strong>和<strong>软间隔（Soft Margin）</strong>目标直接相关：
+- <strong>硬间隔</strong>：要求所有样本严格满足 $ y_i (w^T x_i + b)
+$，即完全线性可分。 -
+<strong>软间隔</strong>：允许部分样本违反间隔约束，通过Hinge损失将约束转化为优化目标：
+<span class="math display">$$
+  \min_{w,b} \left( \frac{1}{2} \|w\|^2 + C \sum_{i=1}^n \max(0, 1 - y_i
+(w^T x_i + b)) \right)
+  $$</span> - <strong>第一项</strong> $ |w|^2 $：最大化间隔（间隔宽度与
+$ |w| $ 成反比）。 - <strong>第二项</strong>
+Hinge损失：惩罚违反间隔约束的样本，$ C $ 控制惩罚强度。</p>
+<h3 id="为什么树的数量增加不会导致过拟合">为什么树的数量增加不会导致过拟合？</h3>
+<p><strong>核心原因</strong>：随机森林通过<strong>集成学习</strong>和<strong>多样性机制</strong>抑制了单棵决策树的过拟合风险。具体来说：</p>
+<ol type="1">
+<li><p><strong>Bagging（自助聚合）机制</strong>：<br>
+每棵树的训练数据是通过有放回采样（Bootstrap）得到的子集，这意味着每棵树看到的数据略有不同，减少了对训练数据的“记忆”依赖。</p></li>
+<li><p><strong>特征随机选择</strong>：<br>
+每次分裂节点时，仅从随机选择的特征子集中挑选最优特征，进一步降低了各树之间的相关性。</p></li>
+<li><p><strong>投票/平均机制</strong>：<br>
+多棵树的预测结果通过投票（分类）或平均（回归）结合，高方差的个体树被平滑，整体模型的泛化能力增强。</p></li>
+<li><p><strong>收敛性保证</strong>：<br>
+随着树的数量增加，模型性能逐渐收敛到一个稳定值。即使继续增加树的数量，也不会显著提升训练集性能，更不会过拟合。</p></li>
+</ol>
+<h3 id="欧式距离的特性分析">欧式距离的特性分析</h3>
+<p><strong>欧式距离</strong>（Euclidean
+Distance）是衡量欧几里得空间中两点之间直线距离的常用方法，其公式为：
+<span class="math display">$$
+d(x, y) = \sqrt{\sum_{i=1}^n (x_i - y_i)^2}
+$$</span> 以下是对其特性的详细分析：</p>
+<p><strong>A. 旋转不变性</strong></p>
+<p><strong>正确</strong><br>
+- <strong>定义</strong>：若坐标系旋转，两点间的欧式距离保持不变。<br>
+- <strong>原因</strong>：旋转是刚性变换（rigid
+transformation），仅改变点的坐标表示，但不改变几何距离。<br>
+- <strong>示例</strong>：在二维平面中，将坐标系旋转θ角度，两点 <span class="math inline">(<em>x</em><sub>1</sub>,<em>y</em><sub>1</sub>)</span>
+和 <span class="math inline">(<em>x</em><sub>2</sub>,<em>y</em><sub>2</sub>)</span>
+的旋转后坐标分别为： <span class="math display">(<em>x</em><sub>1</sub>′,<em>y</em><sub>1</sub>′) = (<em>x</em><sub>1</sub>cos<em>θ</em>−<em>y</em><sub>1</sub>sin<em>θ</em>,<em>x</em><sub>1</sub>sin<em>θ</em>+<em>y</em><sub>1</sub>cos<em>θ</em>)</span>
+<span class="math display">(<em>x</em><sub>2</sub>′,<em>y</em><sub>2</sub>′) = (<em>x</em><sub>2</sub>cos<em>θ</em>−<em>y</em><sub>2</sub>sin<em>θ</em>,<em>x</em><sub>2</sub>sin<em>θ</em>+<em>y</em><sub>2</sub>cos<em>θ</em>)</span>
+计算旋转后的距离仍等于原始距离。</p>
+<p><strong>B. 尺度缩放不变性</strong></p>
+<p><strong>错误</strong><br>
+-
+<strong>定义</strong>：若对坐标轴进行非均匀或均匀缩放，欧式距离会发生变化。<br>
+- <strong>反例</strong>：假设对某维特征缩放 <span class="math inline"><em>k</em></span> 倍（如将 <span class="math inline"><em>x</em><sub><em>i</em></sub></span> 变为 <span class="math inline"><em>k</em><em>x</em><sub><em>i</em></sub></span>），则距离变为原来的
+<span class="math inline"><em>k</em></span> 倍。<br>
+-
+<strong>结论</strong>：欧式距离<strong>依赖于特征的绝对尺度</strong>，不具备缩放不变性。</p>
+<p><strong>C. 不受量纲影响的特性</strong></p>
+<p><strong>错误</strong><br>
+-
+<strong>定义</strong>：若不同特征的量纲不同（如身高[m]与体重[kg]），欧式距离的计算会因量纲差异而失真。<br>
+- <strong>反例</strong>：<br>
+- 点A：(1.8m, 70kg)，点B：(1.7m, 65kg)<br>
+-
+若不标准化，身高差（0.1m）与体重差（5kg）的贡献会被直接相加，但两者量纲不同，结果无实际意义。<br>
+-
+<strong>解决方法</strong>：需通过标准化（如Z-score归一化）消除量纲影响。</p>
+<h3 id="下列哪个不属于特征提取">下列哪个不属于特征提取</h3>
+<p><strong>答案：D. 主成分分析</strong></p>
+<p><strong>解析：</strong></p>
+<p>在文本分类的特征选择中，常用的方法包括：</p>
+<ul>
+<li><strong>A.
+卡方检验值</strong>：通过统计检验评估特征与类别的相关性，属于过滤式特征选择方法。</li>
+<li><strong>B.
+互信息</strong>：基于信息论，衡量特征与类别的依赖关系，属于无监督或半监督的特征选择方法。</li>
+<li><strong>C.
+信息增益</strong>：基于熵的指标，评估特征对分类的贡献，常用于决策树等算法中的特征选择。</li>
+</ul>
+<p>而 <strong>D. 主成分分析（PCA）</strong> 是一种
+<strong>降维技术</strong>，通过线性变换将高维数据映射到低维空间，其核心目标是保留数据的主要方差，而非直接选择原始特征。它属于
+<strong>特征提取</strong>（Feature Extraction）而非传统意义上的
+<strong>特征选择</strong>（Feature
+Selection）。因此，主成分分析不属于常用的文本分类特征选择算法。</p>
+<p>### ridge回归和lasso回归</p>
+<p>Ridge回归（岭回归）和Lasso回归（套索回归）是两种常用的<strong>正则化线性回归方法</strong>，主要用于解决线性回归中的<strong>过拟合问题</strong>和<strong>特征选择问题</strong>。它们的核心思想是在损失函数中添加正则化项（惩罚项），从而限制模型参数的大小，提升模型的泛化能力。</p>
+<p><strong>1. Ridge回归（岭回归）</strong></p>
+<p><strong>目标函数</strong> <span class="math display">$$
+\min_{\mathbf{w}} \left\{ \sum_{i=1}^n (y_i - \mathbf{w}^T
+\mathbf{x}_i)^2 + \lambda \|\mathbf{w}\|_2^2 \right\}
+$$</span> - 第一项是普通线性回归的均方误差（MSE）。 -
+第二项是L2正则化项（权重平方的和），<span class="math inline"><em>λ</em> ≥ 0</span>
+是正则化系数，控制惩罚强度。</p>
+<p><strong>特点</strong></p>
+<ul>
+<li><strong>L2正则化</strong>：通过缩小权重系数（但不会完全置零）来减少模型复杂度。</li>
+<li><strong>解决多重共线性</strong>：当特征之间存在高度相关性时，Ridge回归能稳定回归系数。</li>
+<li><strong>唯一解</strong>：目标函数是凸函数，且严格凸，因此有唯一最优解。</li>
+<li><strong>计算效率高</strong>：可以通过解析解（闭式解）求解： <span class="math display"><strong>w</strong><sub>Ridge</sub> = (<strong>X</strong><sup><em>T</em></sup><strong>X</strong>+<em>λ</em><strong>I</strong>)<sup>−1</sup><strong>X</strong><sup><em>T</em></sup><strong>y</strong></span></li>
+</ul>
+<p><strong>应用场景</strong></p>
+<ul>
+<li>特征维度较低，但存在多重共线性。</li>
+<li>需要保留所有特征，但希望抑制其影响（如基因数据分析）。</li>
+</ul>
+<p><strong>2. Lasso回归（套索回归）</strong></p>
+<p><strong>目标函数</strong> <span class="math display">$$
+\min_{\mathbf{w}} \left\{ \sum_{i=1}^n (y_i - \mathbf{w}^T
+\mathbf{x}_i)^2 + \lambda \|\mathbf{w}\|_1 \right\}
+$$</span> - 第一项是均方误差。 -
+第二项是L1正则化项（权重绝对值的和），<span class="math inline"><em>λ</em> ≥ 0</span> 是正则化系数。</p>
+<p><strong>特点</strong></p>
+<ul>
+<li><strong>L1正则化</strong>：强制部分权重系数为零，实现特征选择。</li>
+<li><strong>稀疏模型</strong>：适用于高维数据（如文本分类、基因数据），自动筛选关键特征。</li>
+<li><strong>非唯一解</strong>：目标函数是凸函数，但可能有多个解（当特征高度相关时）。</li>
+<li><strong>计算复杂度较高</strong>：通常需要迭代优化算法（如坐标下降法、近端梯度下降）。</li>
+</ul>
+<p><strong>应用场景</strong></p>
+<ul>
+<li>特征维度极高（如万维以上），需降维。</li>
+<li>需要可解释性强的模型（如金融风控中的关键特征筛选）。</li>
+</ul>
+<p><strong>3. 总结</strong></p>
+<ul>
+<li><strong>Ridge回归</strong>：适合特征较少且需要稳定系数的场景。</li>
+<li><strong>Lasso回归</strong>：适合高维数据和特征选择场景。</li>
+<li><strong>实际选择</strong>：
+<ul>
+<li>如果特征数量远大于样本数量（<span class="math inline"><em>p</em> ≫ <em>n</em></span>），优先使用Lasso。</li>
+<li>如果特征间存在强相关性，优先使用Ridge或弹性网络。</li>
+</ul></li>
+</ul>
+<p>通过调整正则化系数 <span class="math inline"><em>λ</em></span>，可以控制模型的复杂度与泛化能力。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/%E5%A4%A7%E5%AD%A6/" rel="tag"># 大学</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/" rel="prev" title="计算机系统基础——期末复习">
+                  <i class="fa fa-angle-left"></i> 计算机系统基础——期末复习
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/06/12/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/%E7%AE%97%E6%B3%95%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/" rel="next" title="算法期末复习">
+                  算法期末复习 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

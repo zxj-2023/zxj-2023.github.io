@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="机器学习数据预处理基础 1. One-Hot编码 任务介绍  使用Pandas中的value_counts()函数，查看data中的特征User continent的取值类型， 并打印输出的内容； 使用pandas中的get_dummies()函数对data中的特征User continent进行One-Hot编码，参数prefix为User continent_； 将编码后的结果">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习——第二次上机——数据预处理基础">
+<meta property="og:url" content="http://example.com/2025/03/06/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%B8%8A%E6%9C%BA/%E4%B8%8A%E6%9C%BA2%E2%80%94%E2%80%94%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="机器学习数据预处理基础 1. One-Hot编码 任务介绍  使用Pandas中的value_counts()函数，查看data中的特征User continent的取值类型， 并打印输出的内容； 使用pandas中的get_dummies()函数对data中的特征User continent进行One-Hot编码，参数prefix为User continent_； 将编码后的结果">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ai-studio-static-online.cdn.bcebos.com/bac5b83fc21a435fabddd64a5ab463600c7d80dc00e44fd6ae1715ae25355db6">
+<meta property="og:image" content="https://ai-studio-static-online.cdn.bcebos.com/2f183364e29348079537f8ad38d9489004d4498e9b5d483fa9432f2bae06654e">
+<meta property="og:image" content="https://ai-studio-static-online.cdn.bcebos.com/573d921570d34dc08c44f863ee8732f8d5816c88af7b467aa8cae7a2ce188129">
+<meta property="og:image" content="http://example.com/2025/03/06/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%B8%8A%E6%9C%BA/%E4%B8%8A%E6%9C%BA2%E2%80%94%E2%80%94%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%E5%9F%BA%E7%A1%80/fa64d89b-3dc9-4b07-b27f-210b56e583ed-1741258230441-1.png">
+<meta property="og:image" content="https://ai-studio-static-online.cdn.bcebos.com/98a830f8c5594920883029b03ae2882f516aef4a6af244ff93061ef21aa09836">
+<meta property="og:image" content="https://ai-studio-static-online.cdn.bcebos.com/22fd81b1a5614b418f88cbe90bf7f99ba6c553820c2542be80f1a90421779026">
+<meta property="og:image" content="https://ai-studio-static-online.cdn.bcebos.com/a4729a315ee6483687f3a819d01d905b025fa5f90da04f3e893a7a80ce5e5107">
+<meta property="og:image" content="https://ai-studio-static-online.cdn.bcebos.com/40e316267fc542339a74291e8438e340109ece96fc2a439591b75414e12085d2">
+<meta property="article:published_time" content="2025-03-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-06-12T11:00:46.243Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="大学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ai-studio-static-online.cdn.bcebos.com/bac5b83fc21a435fabddd64a5ab463600c7d80dc00e44fd6ae1715ae25355db6">
+
+
+<link rel="canonical" href="http://example.com/2025/03/06/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%B8%8A%E6%9C%BA/%E4%B8%8A%E6%9C%BA2%E2%80%94%E2%80%94%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%E5%9F%BA%E7%A1%80/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/03/06/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%B8%8A%E6%9C%BA/%E4%B8%8A%E6%9C%BA2%E2%80%94%E2%80%94%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%E5%9F%BA%E7%A1%80/","path":"2025/03/06/college/大二下/机器学习/上机/上机2——数据预处理基础/","title":"机器学习——第二次上机——数据预处理基础"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>机器学习——第二次上机——数据预处理基础 | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%E5%9F%BA%E7%A1%80"><span class="nav-number">1.</span> <span class="nav-text">机器学习数据预处理基础</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#one-hot%E7%BC%96%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">1. One-Hot编码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.1.</span> <span class="nav-text">任务介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E6%9C%9F%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="nav-number">2.2.</span> <span class="nav-text">预期实验结果</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%BA%E5%A4%B1%E5%80%BC%E5%A1%AB%E8%A1%A5"><span class="nav-number">3.</span> <span class="nav-text">2. 缺失值填补</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%BB%8B%E7%BB%8D-1"><span class="nav-number">3.1.</span> <span class="nav-text">任务介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E6%9C%9F%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C-1"><span class="nav-number">3.2.</span> <span class="nav-text">预期实验结果</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E6%A0%87%E5%87%86%E5%8C%96"><span class="nav-number">4.</span> <span class="nav-text">3. 特征标准化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A11"><span class="nav-number">4.1.</span> <span class="nav-text">任务1:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E6%9C%9F%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C-2"><span class="nav-number">4.2.</span> <span class="nav-text">预期实验结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A12"><span class="nav-number">4.3.</span> <span class="nav-text">任务2：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E6%9C%9F%E7%BB%93%E6%9E%9C"><span class="nav-number">4.4.</span> <span class="nav-text">预期结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A13"><span class="nav-number">4.5.</span> <span class="nav-text">任务3：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E6%9C%9F%E7%BB%93%E6%9E%9C-1"><span class="nav-number">4.6.</span> <span class="nav-text">预期结果：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E7%A6%BB%E6%95%A3%E5%8C%96"><span class="nav-number">5.</span> <span class="nav-text">4. 特征离散化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%BB%8B%E7%BB%8D-2"><span class="nav-number">5.1.</span> <span class="nav-text">任务介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E6%9C%9F%E7%BB%93%E6%9E%9C-2"><span class="nav-number">5.2.</span> <span class="nav-text">预期结果</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A6%BB%E7%BE%A4%E5%80%BC%E6%A3%80%E6%B5%8B"><span class="nav-number">6.</span> <span class="nav-text">5. 离群值检测</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%BB%8B%E7%BB%8D-3"><span class="nav-number">6.1.</span> <span class="nav-text">任务介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E6%9C%9F%E7%BB%93%E6%9E%9C-3"><span class="nav-number">6.2.</span> <span class="nav-text">预期结果</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">97</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/03/06/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%B8%8A%E6%9C%BA/%E4%B8%8A%E6%9C%BA2%E2%80%94%E2%80%94%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="机器学习——第二次上机——数据预处理基础 | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          机器学习——第二次上机——数据预处理基础
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-03-06 00:00:00" itemprop="dateCreated datePublished" datetime="2025-03-06T00:00:00+08:00">2025-03-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-12 19:00:46" itemprop="dateModified" datetime="2025-06-12T19:00:46+08:00">2025-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/" itemprop="url" rel="index"><span itemprop="name">大二下</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="机器学习数据预处理基础">机器学习数据预处理基础</h1>
+<h1 id="one-hot编码">1. One-Hot编码</h1>
+<h2 id="任务介绍">任务介绍</h2>
+<ul>
+<li>使用Pandas中的value_counts()函数，查看data中的特征User
+continent的取值类型， 并打印输出的内容；</li>
+<li>使用pandas中的get_dummies()函数对data中的特征User
+continent进行One-Hot编码，参数prefix为User continent_；</li>
+<li>将编码后的结果保存在encode_uc中，并输出变量的前5行内容。</li>
+</ul>
+<h2 id="预期实验结果">预期实验结果</h2>
+<p><img src="https://ai-studio-static-online.cdn.bcebos.com/bac5b83fc21a435fabddd64a5ab463600c7d80dc00e44fd6ae1715ae25355db6">
+<img src="https://ai-studio-static-online.cdn.bcebos.com/2f183364e29348079537f8ad38d9489004d4498e9b5d483fa9432f2bae06654e"></p>
+<blockquote>
+<p>补全代码;</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd </span><br><span class="line">data = pd.read_csv(<span class="string">&#x27;user_review.csv&#x27;</span>)</span><br><span class="line"><span class="comment"># 请在下方作答 #</span></span><br><span class="line"><span class="comment"># value_counts() 函数统计并输出 &quot;User continent&quot; 列中各大陆出现的次数</span></span><br><span class="line"><span class="built_in">print</span>(data[<span class="string">&#x27;User continent&#x27;</span>].value_counts())</span><br><span class="line"><span class="comment"># 使用 get_dummies() 对 &quot;User continent&quot; 列进行 One-Hot 编码</span></span><br><span class="line"><span class="comment"># One-hot编码是一种将类别变量转换为多个二进制特征列的技术，</span></span><br><span class="line"><span class="comment"># 每个类别对应一列，如果该行数据属于该类别则取值为1，否则为0</span></span><br><span class="line">encode_uc = pd.get_dummies(data[<span class="string">&#x27;User continent&#x27;</span>], prefix=<span class="string">&#x27;User continent_&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(encode_uc)</span><br></pre></td></tr></table></figure>
+<p>​ User continent ​ North America 296 ​ Europe 118 ​ Oceania 41 ​ Asia 36 ​
+Africa 7 ​ South America 6 ​ Name: count, dtype: int64 ​ User
+continent__Africa User continent__Asia User continent__Europe<br>
+​0 False False False<br>
+​1 False False False<br>
+​2 False False False<br>
+​3 False False True<br>
+​4 False False False<br>
+​.. … … …<br>
+​499 False False True<br>
+​500 False False False<br>
+​501 False False False<br>
+​502 False False False<br>
+​503 False False False<br>
+​<br>
+​User continent__North America User continent__Oceania<br>
+​0 True False<br>
+​1 True False<br>
+​2 True False<br>
+​3 False False<br>
+​4 True False<br>
+​.. … …<br>
+​499 False False<br>
+​500 True False<br>
+​501 True False<br>
+​502 True False<br>
+​503 True False<br>
+​<br>
+​User continent__South America<br>
+​0 False<br>
+​1 False<br>
+​2 False<br>
+​3 False<br>
+​4 False<br>
+​.. …<br>
+​499 False<br>
+​500 False<br>
+​501 False<br>
+​502 False<br>
+​503 False<br>
+​<br>
+​[504 rows x 6 columns] ​</p>
+<h1 id="缺失值填补">2. 缺失值填补</h1>
+<h2 id="任务介绍-1">任务介绍</h2>
+<ul>
+<li>使用pandas中的value_counts()函数打印输出data中的特征Traveler
+type的取值统计信息， 并查看其是否含有缺失值；</li>
+<li>如果存在缺失值，将特征Traveler
+type在其他样本中取值频数最多的值保存在变量freq_v中，并使用freq_v进行缺失值填充；</li>
+<li>再次打印输出特征Traveler type的取值统计信息。</li>
+</ul>
+<h2 id="预期实验结果-1">预期实验结果</h2>
+<p><img src="https://ai-studio-static-online.cdn.bcebos.com/573d921570d34dc08c44f863ee8732f8d5816c88af7b467aa8cae7a2ce188129"></p>
+<blockquote>
+<p>补全代码：</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd </span><br><span class="line">data = pd.read_csv(<span class="string">&#x27;user_review.csv&#x27;</span>) </span><br><span class="line"></span><br><span class="line"><span class="comment"># value_counts(dropna=False) 会包括缺失值（NaN）在内</span></span><br><span class="line"><span class="built_in">print</span>(data[<span class="string">&#x27;Traveler type&#x27;</span>].value_counts(dropna=<span class="literal">False</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># idxmax()会获取频数最多的取值</span></span><br><span class="line">freq_v = data[<span class="string">&#x27;Traveler type&#x27;</span>].value_counts().idxmax()</span><br><span class="line"></span><br><span class="line"><span class="comment"># freq_v会替代缺失值</span></span><br><span class="line">data[<span class="string">&#x27;Traveler type&#x27;</span>] = data[<span class="string">&#x27;Traveler type&#x27;</span>].fillna(freq_v)</span><br><span class="line"></span><br><span class="line"><span class="comment">### 打印</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">u&#x27;缺失值填充完之后：&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>( <span class="string">&#x27;&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(data[<span class="string">&#x27;Traveler type&#x27;</span>].value_counts(dropna=<span class="literal">False</span>))</span><br></pre></td></tr></table></figure>
+<h1 id="特征标准化">3. 特征标准化</h1>
+<h2 id="任务1">任务1:</h2>
+<ul>
+<li>使用sklearn中preprocessing模块下的StandardScaler()函数对data的特征Score进行Z-score标准化；</li>
+<li>将特征取值的均值保存在变量score_mean中，并打印；</li>
+<li>将特征取值的方差保存在变量score_var中，并打印。</li>
+</ul>
+<h2 id="预期实验结果-2">预期实验结果</h2>
+<figure>
+<img src="/2025/03/06/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%B8%8A%E6%9C%BA/%E4%B8%8A%E6%9C%BA2%E2%80%94%E2%80%94%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%E5%9F%BA%E7%A1%80/fa64d89b-3dc9-4b07-b27f-210b56e583ed-1741258230441-1.png" alt="fa64d89b-3dc9-4b07-b27f-210b56e583ed">
+<figcaption aria-hidden="true">fa64d89b-3dc9-4b07-b27f-210b56e583ed</figcaption>
+</figure>
+<blockquote>
+<p>补全代码：</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd </span><br><span class="line"><span class="comment"># sklearn是一个用于机器学习的Python库，提供了各种分类、回归、聚类算法，</span></span><br><span class="line"><span class="comment"># 包括支持向量机、随机森林、梯度提升等。它还包含了用于数据预处理、特征提取和模型选择的工具。</span></span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br><span class="line">data = pd.read_csv(<span class="string">&#x27;user_review.csv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 请在下方作答 #</span></span><br><span class="line"><span class="comment">## 创建Z-score对象</span></span><br><span class="line"><span class="comment">## Z-score标准化是一种将数据转换为均值为0，标准差为1的标准正态分布的方法</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 初始化StandardScaler对象，用于执行Z-score标准化</span></span><br><span class="line">std_scaler = StandardScaler()</span><br><span class="line"></span><br><span class="line"><span class="comment">## Score特征标准化，使用fit_transform()方法</span></span><br><span class="line"><span class="comment"># fit_transform() 会先计算出该特征的均值和标准差，然后进行标准化</span></span><br><span class="line">normal_df = std_scaler.fit_transform(data[[<span class="string">&#x27;Score&#x27;</span>]])  </span><br><span class="line"></span><br><span class="line"><span class="comment">## 均值</span></span><br><span class="line"><span class="comment"># StandardScaler 会自动计算并存储 &#x27;Score&#x27; 列的均值，这个值在标准化过程中用来进行数据转换</span></span><br><span class="line">score_mean = std_scaler.mean_</span><br><span class="line"></span><br><span class="line"><span class="comment">## 方差</span></span><br><span class="line"><span class="comment"># 方差也是 StandardScaler 会计算的一个参数，表示数据的离散程度</span></span><br><span class="line">score_var = std_scaler.var_</span><br><span class="line"></span><br><span class="line"><span class="comment">## 打印</span></span><br><span class="line"><span class="built_in">print</span> (score_mean)</span><br><span class="line"><span class="built_in">print</span> (score_var)</span><br><span class="line"></span><br><span class="line"><span class="comment">## 打印前五行内容</span></span><br><span class="line">normal_df[:<span class="number">5</span>]</span><br></pre></td></tr></table></figure>
+<p>​ [4.12301587] ​ [1.01264487] ​</p>
+<p>​ array([[ 0.87149149], ​ [-1.11598231], ​ [ 0.87149149], ​
+[-0.12224541], ​ [-0.12224541]])</p>
+<h2 id="任务2">任务2：</h2>
+<ul>
+<li>自定义函数min_max()实现MinMax标准化，输入参数data为要进行标准化的数据，输出为标准化后的数据。</li>
+<li>使自定义的min_max()函数对data的特征Score进行MinMax标准化，输出结果保存在score_transformed中，并打印变量的前5行内容</li>
+</ul>
+<h2 id="预期结果">预期结果</h2>
+<p><img src="https://ai-studio-static-online.cdn.bcebos.com/98a830f8c5594920883029b03ae2882f516aef4a6af244ff93061ef21aa09836"></p>
+<blockquote>
+<p>补全代码：</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd </span><br><span class="line">data = pd.read_csv(<span class="string">&#x27;user_review.csv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 请在下方作答 #</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">min_max</span>(<span class="params">data</span>):</span><br><span class="line">    </span><br><span class="line">    <span class="comment">## 最小值</span></span><br><span class="line">    data_min = data.<span class="built_in">min</span>()</span><br><span class="line">    <span class="comment">## 最大值</span></span><br><span class="line">    data_max = data.<span class="built_in">max</span>()</span><br><span class="line">    <span class="comment">## 最大值与最小值之间的差值</span></span><br><span class="line">    data_range=data_max-data_min</span><br><span class="line">    <span class="comment">## 根据MinMax标准化的定义实现</span></span><br><span class="line">    <span class="comment">#MinMax 标准化（最小-最大标准化）是一种数据预处理方法，</span></span><br><span class="line">    <span class="comment"># 旨在将数据的所有特征（列）缩放到一个指定的范围，通常是 [0, 1]。</span></span><br><span class="line">    <span class="comment"># 这种标准化方法将原始数据通过线性变换映射到新的范围。</span></span><br><span class="line">    new_data = (data-data_min)/data_range<span class="comment"># MinMax标准化公式： (x - min) / (max - min)</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">## 返回结果</span></span><br><span class="line">    <span class="keyword">return</span> new_data</span><br><span class="line"></span><br><span class="line"><span class="comment">## 调用min_max()函数</span></span><br><span class="line">score_transformed = min_max(data[<span class="string">&#x27;Score&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment">## 打印变量的前5行内容</span></span><br><span class="line">score_transformed.head()</span><br></pre></td></tr></table></figure>
+<p>​ 0 1.00 ​ 1 0.50 ​ 2 1.00 ​ 3 0.75 ​ 4 0.75 ​ Name: Score, dtype:
+float64</p>
+<h2 id="任务3">任务3：</h2>
+<ul>
+<li>自定义logistic()函数，输入参数为要进行标准化的数据，输出结果为经过标准化后的数据；</li>
+<li>使用自定义函数对data的特征Member
+years进行Logsitic标准化，结果保存在member_transformed中，并输出变量的前5行内容。</li>
+</ul>
+<h2 id="预期结果-1">预期结果：</h2>
+<p><img src="https://ai-studio-static-online.cdn.bcebos.com/22fd81b1a5614b418f88cbe90bf7f99ba6c553820c2542be80f1a90421779026"></p>
+<blockquote>
+<p>补全代码</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#ogistic 标准化（Logistic Normalization）是一个将数据转换为 (0, 1) 范围的过程，</span></span><br><span class="line"><span class="comment"># 通常使用 Logistic 函数（也称为 Sigmoid 函数）。</span></span><br><span class="line"><span class="comment"># 它是一种非线性转换方法，常用于神经网络和其他需要将数据映射到概率范围的场景。</span></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd </span><br><span class="line">data = pd.read_csv(<span class="string">&#x27;user_review.csv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 请在下方作答 #</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">logistic</span>(<span class="params">data</span>):</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">    <span class="keyword">import</span> warnings</span><br><span class="line">    warnings.filterwarnings(<span class="string">&quot;ignore&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">## 计算 1 + e^(-x)</span></span><br><span class="line">    denominator = <span class="number">1</span>+ np.exp(-data)<span class="comment"># 使用 np.exp() 计算 e^(-x)</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">## 实现logistic标准化</span></span><br><span class="line">    new_data = <span class="number">1</span>/denominator</span><br><span class="line">    <span class="comment">## 返回结果</span></span><br><span class="line">    <span class="keyword">return</span> new_data</span><br><span class="line"></span><br><span class="line"><span class="comment">## 对特征Member years进行logsitic标准化</span></span><br><span class="line">member_transformed = logistic(data[<span class="string">&#x27;Member years&#x27;</span>]) </span><br><span class="line"></span><br><span class="line"><span class="comment">## 打印内容</span></span><br><span class="line">member_transformed.head()</span><br></pre></td></tr></table></figure>
+<p>​ 0 0.999877 ​ 1 0.952574 ​ 2 0.880797 ​ 3 0.997527 ​ 4 0.999089 ​ Name:
+Member years, dtype: float64</p>
+<h1 id="特征离散化">4. 特征离散化</h1>
+<h2 id="任务介绍-2">任务介绍</h2>
+<ul>
+<li>使用Pandas的qcut()函数对data中的特征Member
+years进行等频离散化，结果保存在bins中；</li>
+<li>使用pd.value_counts()函数统计categorical对象bins的取值信息。</li>
+</ul>
+<h2 id="预期结果-2">预期结果</h2>
+<p><img src="https://ai-studio-static-online.cdn.bcebos.com/a4729a315ee6483687f3a819d01d905b025fa5f90da04f3e893a7a80ce5e5107"></p>
+<blockquote>
+<p>补全代码：</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd </span><br><span class="line">data = pd.read_csv(<span class="string">&#x27;user_review.csv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 请在下方作答 #</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 返回bins</span></span><br><span class="line"><span class="comment"># q=4 表示将数据分成 4 个区间</span></span><br><span class="line">bins = pd.qcut(data[<span class="string">&#x27;Member years&#x27;</span>], q=<span class="number">4</span>, labels=[<span class="string">&quot;(-1806.001, 2.0]&quot;</span>, <span class="string">&quot;(2.0, 4.0]&quot;</span>, <span class="string">&quot;(4.0, 6.0]&quot;</span>, <span class="string">&quot;(6.0, 13.0]&quot;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment">## 统计取值信息</span></span><br><span class="line"><span class="comment"># 使用value_counts()函数统计bins中每个类别的数量，得到离散化后的各个类别的分布情况</span></span><br><span class="line">value_counts = pd.value_counts(bins)  </span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(value_counts)</span><br></pre></td></tr></table></figure>
+<p>​ Member years ​ (-1806.001, 2.0] 156 ​ (6.0, 13.0] 124 ​ (2.0, 4.0] 123 ​
+(4.0, 6.0] 101 ​ Name: count, dtype: int64 ​</p>
+<h1 id="离群值检测">5. 离群值检测</h1>
+<h2 id="任务介绍-3">任务介绍</h2>
+<ul>
+<li>使用拉依达准则对data的特征Member years进行离群值检测；</li>
+<li>如果存在离群值，输出离群值的个数outlier_num，并将包含离群值的数据记录保存在变量outeliers中，并打印变量内容。</li>
+</ul>
+<h2 id="预期结果-3">预期结果</h2>
+<p><img src="https://ai-studio-static-online.cdn.bcebos.com/40e316267fc542339a74291e8438e340109ece96fc2a439591b75414e12085d2"></p>
+<blockquote>
+<p>补全代码：</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取csv文件到DataFrame</span></span><br><span class="line">data = pd.read_csv(<span class="string">&#x27;user_review.csv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 提取&#x27;Member years&#x27;这一列</span></span><br><span class="line">member_data = data[[<span class="string">&#x27;Member years&#x27;</span>]]</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">拉伊达准则</span></span><br><span class="line"><span class="string">计算四分位数（Q1 和 Q3）：计算Member years特征的第25百分位数（Q1）和第75百分位数（Q3）。</span></span><br><span class="line"><span class="string">计算IQR（Interquartile Range）：IQR = Q3 - Q1。</span></span><br><span class="line"><span class="string">判断离群值：低于 Q1 - 1.5 * IQR 或高于 Q3 + 1.5 * IQR 的数据点视为离群值。</span></span><br><span class="line"><span class="string">统计离群值的个数，并提取包含离群值的记录。</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算四分位数</span></span><br><span class="line">Q1 = member_data[<span class="string">&#x27;Member years&#x27;</span>].quantile(<span class="number">0.25</span>)  <span class="comment"># 第25百分位数</span></span><br><span class="line">Q3 = member_data[<span class="string">&#x27;Member years&#x27;</span>].quantile(<span class="number">0.75</span>)  <span class="comment"># 第75百分位数</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算IQR（四分位间距）</span></span><br><span class="line">IQR = Q3 - Q1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 写出过滤条件：低于 Q1 - 1.5 * IQR 或 高于 Q3 + 1.5 * IQR 的值为离群值</span></span><br><span class="line">outlier_judge = (member_data[<span class="string">&#x27;Member years&#x27;</span>] &lt; (Q1 - <span class="number">1.5</span> * IQR)) | (member_data[<span class="string">&#x27;Member years&#x27;</span>] &gt; (Q3 + <span class="number">1.5</span> * IQR))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 统计离群值的个数</span></span><br><span class="line">outlier_num = outlier_judge.<span class="built_in">sum</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 提取包含离群值的样本记录</span></span><br><span class="line">outliers = data[outlier_judge]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印离群值记录</span></span><br><span class="line"><span class="built_in">print</span>(outliers)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>​ User country User continent Member years Traveler type<br>
+​75 USA North America -1806 Solo<br>
+​143 USA North America 13 Couples<br>
+​<br>
+​Hotel name Hotel stars Nr. rooms Score<br>
+​75 Treasure Island- TI Hotel &amp; Casino 4.0 2884 5<br>
+​143 Caesars Palace 5.0 3348 4<br>
+​</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/%E5%A4%A7%E5%AD%A6/" rel="tag"># 大学</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/03/06/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%B8%8A%E6%9C%BA/%E4%B8%8A%E6%9C%BA2%E2%80%94%E2%80%94%E6%B3%A2%E5%A3%AB%E9%A1%BF%E6%88%BF%E4%BB%B7%E9%A2%84%E6%B5%8B%E4%BB%BB%E5%8A%A1%EF%BC%88%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E3%80%81%E5%B2%AD%E5%9B%9E%E5%BD%92%E5%AE%9E%E7%8E%B0%EF%BC%89/" rel="prev" title="机器学习——第二次上机——波士顿房价预测任务（线性回归、岭回归实现）">
+                  <i class="fa fa-angle-left"></i> 机器学习——第二次上机——波士顿房价预测任务（线性回归、岭回归实现）
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/03/06/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BB%AA%E8%AE%BA/" rel="next" title="机器学习——绪论">
+                  机器学习——绪论 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="了解Langchain LangChain是一个强大的框架，旨在帮助开发人员使用语言模型构建端到端的应用程序。它提供了一套工具、组件和接口，可简化创建由大型语言模型 (LLM) 和聊天模型提供支持的应用程序的过程。LangChain 可以轻松管理与语言模型的交互，将多个组件链接在一起，并集成额外的资源，例如 API 和数据库。 一句话概括就是：langchain 完成了对数据一个提炼、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机设——Langchain与LLM集成解决方案">
+<meta property="og:url" content="http://example.com/2024/12/07/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94LangChain/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="了解Langchain LangChain是一个强大的框架，旨在帮助开发人员使用语言模型构建端到端的应用程序。它提供了一套工具、组件和接口，可简化创建由大型语言模型 (LLM) 和聊天模型提供支持的应用程序的过程。LangChain 可以轻松管理与语言模型的交互，将多个组件链接在一起，并集成额外的资源，例如 API 和数据库。 一句话概括就是：langchain 完成了对数据一个提炼、">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2024/12/07/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94LangChain/image-20241216103856131.png">
+<meta property="og:image" content="http://example.com/2024/12/07/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94LangChain/image-20241216115902772.png">
+<meta property="og:image" content="http://example.com/2024/12/07/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94LangChain/image-20241216120328229.png">
+<meta property="og:image" content="http://example.com/2024/12/07/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94LangChain/image-20241216131346999.png">
+<meta property="article:published_time" content="2024-12-06T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-06-12T10:41:43.374Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="科研">
+<meta property="article:tag" content="RAG">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/12/07/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94LangChain/image-20241216103856131.png">
+
+
+<link rel="canonical" href="http://example.com/2024/12/07/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94LangChain/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/12/07/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94LangChain/","path":"2024/12/07/科研/机设/机设——LangChain/","title":"机设——Langchain与LLM集成解决方案"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>机设——Langchain与LLM集成解决方案 | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%86%E8%A7%A3langchain"><span class="nav-number">1.</span> <span class="nav-text">了解Langchain</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E4%BE%9B%E4%B8%80%E7%A7%8Dllm%E9%9B%86%E6%88%90%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E4%B8%80%E4%BB%BD%E4%BB%A3%E7%A0%81%E6%94%AF%E6%8C%81%E5%BF%AB%E9%80%9F%E5%90%8C%E6%97%B6%E6%94%AF%E6%8C%81gpt%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%9B%BD%E4%BA%A7%E5%A4%A7%E6%A8%A1%E5%9E%8B%E9%80%9A%E4%B9%89%E5%8D%83%E9%97%AE%E6%96%87%E5%BF%83%E4%B8%80%E8%A8%80%E7%99%BE%E5%BA%A6%E5%8D%83%E5%B8%86%E8%AE%AF%E9%A3%9E%E6%98%9F%E7%81%AB%E7%AD%89%E6%9C%AC%E5%9C%B0%E5%BC%80%E6%BA%90%E5%A4%A7%E6%A8%A1%E5%9E%8Bollama"><span class="nav-number">3.</span> <span class="nav-text">提供一种LLM集成解决方案，一份代码支持快速同时支持gpt大模型、国产大模型(通义千问、文心一言、百度千帆、讯飞星火等)、本地开源大模型(Ollama)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E6%9C%9F%E5%87%86%E5%A4%87"><span class="nav-number">3.1.</span> <span class="nav-text">前期准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE"><span class="nav-number">3.2.</span> <span class="nav-text">项目</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">4.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">97</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/07/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94LangChain/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="机设——Langchain与LLM集成解决方案 | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          机设——Langchain与LLM集成解决方案
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-12-07 00:00:00" itemprop="dateCreated datePublished" datetime="2024-12-07T00:00:00+08:00">2024-12-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-12 18:41:43" itemprop="dateModified" datetime="2025-06-12T18:41:43+08:00">2025-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%A1%B9%E7%9B%AE%E7%BB%8F%E5%8E%86/" itemprop="url" rel="index"><span itemprop="name">项目经历</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%A1%B9%E7%9B%AE%E7%BB%8F%E5%8E%86/%E6%9C%BA%E8%AE%BE/" itemprop="url" rel="index"><span itemprop="name">机设</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="了解langchain">了解Langchain</h2>
+<p>LangChain是一个强大的框架，旨在帮助开发人员使用语言模型构建端到端的应用程序。它提供了一套工具、组件和接口，可简化创建由大型语言模型
+(LLM) 和聊天模型提供支持的应用程序的过程。LangChain
+可以轻松管理与语言模型的交互，将多个组件链接在一起，并集成额外的资源，例如
+API 和数据库。</p>
+<p>一句话概括就是：<strong>langchain
+完成了对数据一个提炼、查找的完全链路。</strong>它并不能提供数据源、查找理由，只是一种方法的凝练。</p>
+<p>数据源支持由用户等自行提供，因此它支持本地知识库的搭建，合理想象未来的学生课设系统将会是：金融知识系统（使用
+langchain 爬取金融网站提取摘要凝练成知识）、图书简介系统（使用 langchain
+对图书提取摘要进行展示）……</p>
+<h2 id="安装">安装</h2>
+<p>Jupyter 就是一个非常好用的 Python 语言编程工具。</p>
+<p>或者说是一个 Python
+编程语言、以及更多其他编程语言的，交互式集成开发环境。</p>
+<p>Jupyter 的一个非常重要的优点，就是
+写程序的界面，和运行程序的界面，在一起。</p>
+<p>jubyter notebook的安装：<code>pip install jupyterlab</code></p>
+<p>web页面的启动：<code>jupyter-lab</code></p>
+<p>vscode：创建.ipynb格式的文件</p>
+<hr>
+<p>langchain的安装：<code>pip install langchain</code></p>
+<h2 id="提供一种llm集成解决方案一份代码支持快速同时支持gpt大模型国产大模型通义千问文心一言百度千帆讯飞星火等本地开源大模型ollama">提供一种LLM集成解决方案，一份代码支持快速同时支持gpt大模型、国产大模型(通义千问、文心一言、百度千帆、讯飞星火等)、本地开源大模型(Ollama)</h2>
+<p>项目地址：<a target="_blank" rel="noopener" href="https://github.com/NanGePlus/LLMTest">NanGePlus/LLMTest:
+为实现代码的高扩展性和兼容性，提出一套综合解决方案，支持多种大模型类型的无缝集成，包括GPT系列大模型、国内主流模型（如通义千问、智谱AI等），以及本地化部署的大模型（如qwen2.5）。</a></p>
+<h3 id="前期准备">前期准备</h3>
+<p>openai-api代理：<a target="_blank" rel="noopener" href="https://api.wlai.vip/">云雾 API</a></p>
+<p>安装One-Api</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/songquanpeng/one-api">songquanpeng/one-api:
+OpenAI 接口管理 &amp; 分发系统，支持 Azure、Anthropic Claude、Google
+PaLM 2 &amp; Gemini、智谱
+ChatGLM、百度文心一言、讯飞星火认知、阿里通义千问、360
+智脑以及腾讯混元，可用于二次分发管理 key，仅单可执行文件，已打包好
+Docker 镜像，一键部署，开箱即用. OpenAI key management &amp;
+redistribution system, using a single API for all LLMs, and features an
+English UI.</a></p>
+<p>利用exe</p>
+<p><a target="_blank" rel="noopener" href="http://localhost:3000/">One API</a></p>
+<p>默认账号密码：root 12345</p>
+<p>创建渠道，这里以阿里通义千问为例</p>
+<p>获取API-KEY：<a target="_blank" rel="noopener" href="https://bailian.console.aliyun.com/?spm=5176.29619931.J__Z58Z6CX7MY__Ll8p1ZOR.1.136959fcA1q1xF&amp;accounttraceid=a01e32df30fa4776a42f6cb88a6f938dfnlu#/model-market/detail/qwen-plus">阿里云百炼</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_26303031/article/details/140987551">2024年最新免费AI大模型API汇总及国内大模型使用教程（附代码）_免费大模型api-CSDN博客</a></p>
+<figure>
+<img src="/2024/12/07/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94LangChain/image-20241216103856131.png" alt="image-20241216103856131">
+<figcaption aria-hidden="true">image-20241216103856131</figcaption>
+</figure>
+<hr>
+<p>使用 Ollama 非常简单，只需要按照以下步骤：</p>
+<ol type="1">
+<li><strong>安装 Ollama</strong> ： 根据你的操作系统，从 <a target="_blank" rel="noopener" href="https://ollama.com/">Ollama 官网</a>下载并安装最新版本。</li>
+<li><strong>启动 Ollama</strong> ： 打开终端或命令行，输入
+<code>ollama serve</code> 命令启动 Ollama 服务器。</li>
+<li><strong>下载模型</strong>： 在<a target="_blank" rel="noopener" href="https://ollama.com/library">模型仓库</a>找到想要的模型，然后使用
+<code>ollama pull</code> 命令下载，例如
+<code>ollama pull llama3:70b</code> 。</li>
+<li><strong>运行模型</strong> ： 使用 <code>ollama run</code>
+命令启动模型，例如 <code>ollama run llama3:70b</code> 。</li>
+<li><strong>开始聊天</strong> ： 在终端中输入你的问题或指令，Ollama
+会根据模型生成相应的回复。</li>
+<li><strong>查看模型列表</strong> ：<code>ollama list</code></li>
+</ol>
+<figure>
+<img src="/2024/12/07/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94LangChain/image-20241216115902772.png" alt="image-20241216115902772">
+<figcaption aria-hidden="true">image-20241216115902772</figcaption>
+</figure>
+<h3 id="项目">项目</h3>
+<p>初始化：采用pycharm+anaconda</p>
+<figure>
+<img src="/2024/12/07/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94LangChain/image-20241216120328229.png" alt="image-20241216120328229">
+<figcaption aria-hidden="true">image-20241216120328229</figcaption>
+</figure>
+<p>安装依赖</p>
+<p>pip install -r requirements.txt
+每个软件包后面都指定了本次视频测试中固定的版本号 <strong>注意：</strong>
+截止2024.10.18，langchain最新版本为0.3.3，langchain-openai最新版本为0.2.2</p>
+<p>调整api，调整 utils/myLLM.py 内容</p>
+<figure>
+<img src="/2024/12/07/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94LangChain/image-20241216131346999.png" alt="image-20241216131346999">
+<figcaption aria-hidden="true">image-20241216131346999</figcaption>
+</figure>
+<p>调整 llmTest.py 内容</p>
+<p>LLM_TYPE = “oneapi” #
+openai：调用gpt模型;oneapi：调用oneapi方案支持的模型（这里调用通义千问）</p>
+<h2 id="参考文献">参考文献</h2>
+<p><a target="_blank" rel="noopener" href="https://github.com/langchain-ai/langchain?tab=readme-ov-file">langchain-ai/langchain：🦜🔗构建上下文感知推理应用程序</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/680828606">LangChain
+入门与避坑指北 - 知乎</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.langchain.com.cn/docs/introduction/">LangChain中文网</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/franklfeng/article/details/117562667">Jupyter
+是什么-CSDN博客</a></p>
+<p><a target="_blank" rel="noopener" href="https://vscode.github.net.cn/docs/datascience/jupyter-notebooks#_save-your-jupyter-notebook">在
+Visual Studio Code 中使用 Jupyter Notebook_Vscode中文网</a></p>
+<p><a target="_blank" rel="noopener" href="https://cuterwrite.top/p/ollama/#:~:text=如何使用%20Ollama？%201%20安装%20Ollama：%20根据你的操作系统，从%20Ollama%20官网,ollama%20run%20llama3%3A70b%20。%205%20开始聊天：%20在终端中输入你的问题或指令，Ollama%20会根据模型生成相应的回复。">Ollama：从入门到进阶</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E7%A7%91%E7%A0%94/" rel="tag"># 科研</a>
+              <a href="/tags/RAG/" rel="tag"># RAG</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/12/07/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94LightRAG%E4%B8%8EGraphRAG/" rel="prev" title="机设——LightRAG与GraphRAG">
+                  <i class="fa fa-angle-left"></i> 机设——LightRAG与GraphRAG
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/12/08/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B4%E2%80%94%E2%80%94%E7%AB%8B%E9%A1%B9%E7%AD%94%E8%BE%A9/" rel="next" title="大创——立项答辩">
+                  大创——立项答辩 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

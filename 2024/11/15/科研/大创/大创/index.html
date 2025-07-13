@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="视频异常检测初步了解 传统方法检测异常样本：  高斯分布 Gaussian Distribute 高斯混合模型 Gaussian Mixture Model  深度学习方法下的异常检测：  两种主流的异常检测任务：  重构任务 Reconstruction：图像通过深度神经网络DNN输出一张重构图像，通过损失函数，先训练调整DNN，测试结果由AUC评判（AUC（Area U">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大创——初读论文与初步学习">
+<meta property="og:url" content="http://example.com/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="视频异常检测初步了解 传统方法检测异常样本：  高斯分布 Gaussian Distribute 高斯混合模型 Gaussian Mixture Model  深度学习方法下的异常检测：  两种主流的异常检测任务：  重构任务 Reconstruction：图像通过深度神经网络DNN输出一张重构图像，通过损失函数，先训练调整DNN，测试结果由AUC评判（AUC（Area U">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2024/11/15/%E7%A7%91%E7%A0%94/images/%E5%A4%A7%E5%88%9B/v2-39073bacc426f0e464b53336c83e19da_1440w.jpg">
+<meta property="og:image" content="http://example.com/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/v2-4ec2f54d013bb5ab6996585c53f7755d_1440w.png">
+<meta property="og:image" content="http://example.com/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/sadasd.png">
+<meta property="og:image" content="http://example.com/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/v2-f3f49680590c848b02f3e7911c5d7d3c_1440w.png">
+<meta property="og:image" content="http://example.com/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/v2-04335982349266acffdb93355ce2686c_1440w.png">
+<meta property="og:image" content="http://example.com/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/asdasf.png">
+<meta property="article:published_time" content="2024-11-14T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-06-12T10:40:36.349Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="科研">
+<meta property="article:tag" content="计算机视觉">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/11/15/%E7%A7%91%E7%A0%94/images/%E5%A4%A7%E5%88%9B/v2-39073bacc426f0e464b53336c83e19da_1440w.jpg">
+
+
+<link rel="canonical" href="http://example.com/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/","path":"2024/11/15/科研/大创/大创/","title":"大创——初读论文与初步学习"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>大创——初读论文与初步学习 | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%86%E9%A2%91%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B%E5%88%9D%E6%AD%A5%E4%BA%86%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">视频异常检测初步了解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%A0%E7%BB%9F%E6%96%B9%E6%B3%95%E6%A3%80%E6%B5%8B%E5%BC%82%E5%B8%B8%E6%A0%B7%E6%9C%AC"><span class="nav-number">1.1.</span> <span class="nav-text">传统方法检测异常样本：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E4%B8%8B%E7%9A%84%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B"><span class="nav-number">1.2.</span> <span class="nav-text">深度学习方法下的异常检测：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AE%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%88%86%E7%B1%BB"><span class="nav-number">1.3.</span> <span class="nav-text">根据学习方法分类：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%86%E9%A2%91%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B%E9%A2%86%E5%9F%9F%E6%9C%AA%E6%9D%A5%E6%8C%91%E6%88%98"><span class="nav-number">1.4.</span> <span class="nav-text">视频异常检测领域未来挑战：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%86%E8%A7%A3yolo"><span class="nav-number">1.5.</span> <span class="nav-text">了解yolo</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E4%B8%80human-action-recognition-from-various-data-modalities-a-review"><span class="nav-number">2.</span> <span class="nav-text">论文一：Human
+Action Recognition from Various Data Modalities: A Review</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">2.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E4%B8%80%E6%A8%A1%E6%80%81-single-modality"><span class="nav-number">2.2.</span> <span class="nav-text">单一模态 SINGLE MODALITY</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#rgb%E6%A8%A1%E6%80%81-rgb-modality"><span class="nav-number">2.2.1.</span> <span class="nav-text">RGB模态 RGB MODALITY</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AA%A8%E9%AA%BC%E6%A8%A1%E6%80%81-skeleton-modality"><span class="nav-number">2.2.2.</span> <span class="nav-text">骨骼模态 SKELETON MODALITY</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E6%A8%A1%E6%80%81-depth-modality"><span class="nav-number">2.2.3.</span> <span class="nav-text">深度模态 DEPTH MODALITY</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%A2%E5%A4%96%E6%A8%A1%E6%80%81-infrared-modality"><span class="nav-number">2.2.4.</span> <span class="nav-text">红外模态 INFRARED MODALITY</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%82%B9%E4%BA%91%E6%A8%A1%E6%80%81-point-cloudmodality"><span class="nav-number">2.2.5.</span> <span class="nav-text">点云模态 POINT CLOUDMODALITY</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E6%B5%81%E6%A8%A1%E6%80%81-event-stream-modality"><span class="nav-number">2.2.6.</span> <span class="nav-text">事件流模态 EVENT STREAM
+MODALITY</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9F%B3%E9%A2%91%E6%A8%A1%E6%80%81-audio-modality"><span class="nav-number">2.2.7.</span> <span class="nav-text">音频模态 AUDIO MODALITY</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E7%BB%AD"><span class="nav-number">2.2.8.</span> <span class="nav-text">后续</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E6%A8%A1%E6%80%81-multi-modality"><span class="nav-number">2.3.</span> <span class="nav-text">多模态 MULTI-MODALITY</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#har%E4%BB%BB%E5%8A%A1%E4%B8%AD%E7%9A%84%E5%A4%9A%E6%A8%A1%E6%80%81%E8%9E%8D%E5%90%88"><span class="nav-number">2.3.1.</span> <span class="nav-text">HAR任务中的多模态融合</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%86%E8%A7%89%E6%A8%A1%E6%80%81%E4%B9%8B%E9%97%B4%E7%9A%84%E8%9E%8D%E5%90%88"><span class="nav-number">2.3.1.1.</span> <span class="nav-text">视觉模态之间的融合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%86%E8%A7%89%E6%A8%A1%E6%80%81%E9%9D%9E%E8%A7%86%E8%A7%89%E6%A8%A1%E6%80%81%E7%9A%84%E8%9E%8D%E5%90%88"><span class="nav-number">2.3.1.2.</span> <span class="nav-text">视觉模态+非视觉模态的融合</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#har%E4%BB%BB%E5%8A%A1%E4%B8%AD%E7%9A%84%E5%A4%9A%E6%A8%A1%E6%80%81%E5%8D%8F%E5%90%8C%E5%AD%A6%E4%B9%A0"><span class="nav-number">2.3.2.</span> <span class="nav-text">HAR任务中的多模态协同学习</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%86%E8%A7%89%E6%A8%A1%E6%80%81%E7%9A%84%E5%8D%8F%E5%90%8C%E5%AD%A6%E4%B9%A0"><span class="nav-number">2.3.2.1.</span> <span class="nav-text">视觉模态的协同学习</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%86%E8%A7%89%E5%92%8C%E9%9D%9E%E8%A7%86%E8%A7%89%E6%A8%A1%E6%80%81%E7%9A%84%E5%8D%8F%E5%90%8C%E5%AD%A6%E4%B9%A0"><span class="nav-number">2.3.2.2.</span> <span class="nav-text">视觉和非视觉模态的协同学习</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E4%BA%8Crwf-2000-an-open-large-scale-video-database-for-violence-detection"><span class="nav-number">3.</span> <span class="nav-text">论文二：RWF-2000:
+An Open Large Scale Video Database for Violence Detection</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">3.1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0-1"><span class="nav-number">3.2.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%88%E5%89%8D%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">3.3.</span> <span class="nav-text">先前数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%88%E5%89%8D%E6%96%B9%E6%B3%95"><span class="nav-number">3.4.</span> <span class="nav-text">先前方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rwf-2000-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E5%BB%BA%E8%AE%AE%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">3.5.</span> <span class="nav-text">RWF-2000 数据库和建议的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86"><span class="nav-number">3.5.1.</span> <span class="nav-text">数据采集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#flow-gated-network"><span class="nav-number">3.5.2.</span> <span class="nav-text">Flow Gated Network</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%90%8E%E7%BB%AD%E5%AD%A6%E4%B9%A0"><span class="nav-number">4.</span> <span class="nav-text">后续学习</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">97</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="大创——初读论文与初步学习 | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          大创——初读论文与初步学习
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-11-15 00:00:00" itemprop="dateCreated datePublished" datetime="2024-11-15T00:00:00+08:00">2024-11-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-12 18:40:36" itemprop="dateModified" datetime="2025-06-12T18:40:36+08:00">2025-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%A1%B9%E7%9B%AE%E7%BB%8F%E5%8E%86/" itemprop="url" rel="index"><span itemprop="name">项目经历</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%A1%B9%E7%9B%AE%E7%BB%8F%E5%8E%86/%E5%A4%A7%E5%88%9B/" itemprop="url" rel="index"><span itemprop="name">大创</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="视频异常检测初步了解">视频异常检测初步了解</h1>
+<h2 id="传统方法检测异常样本">传统方法检测异常样本：</h2>
+<ul>
+<li>高斯分布 Gaussian Distribute</li>
+<li>高斯混合模型 Gaussian Mixture Model</li>
+</ul>
+<h2 id="深度学习方法下的异常检测">深度学习方法下的异常检测：</h2>
+<ul>
+<li>两种主流的异常检测任务：
+<ul>
+<li>重构任务
+Reconstruction：图像通过深度神经网络DNN输出一张重构图像，通过损失函数，先训练调整DNN，测试结果由AUC评判（AUC（Area
+Under the Curve）是用于评估分类模型性能的一个重要指标）</li>
+<li>预测任务
+Prediction：连续输入图像，预测新图像，用预测与非预测比较</li>
+</ul></li>
+<li>自动编码器 Auto-Encoder：U-Net
+是一种用于图像分割的深度学习模型，主要特点是采用了编码器-解码器结构（也叫对称结构），并在编码器和解码器之间引入了跳跃连接（skip
+connections）</li>
+</ul>
+<blockquote>
+<p><strong>编码器（Contracting
+Path）</strong>：这一部分类似于卷积神经网络（CNN），用于提取输入图像的特征。</p>
+<p><strong>瓶颈层（Bottleneck）</strong>：编码器和解码器之间的连接层，负责处理最深层次的特征。</p>
+<p><strong>解码器（Expansive
+Path）</strong>：这一部分用于将编码器提取的特征还原回原始图像的大小。</p>
+<p><strong>跳跃连接（Skip
+Connections）</strong>：解码器部分会与编码器的对应层进行直接连接，从而帮助模型在恢复空间分辨率的过程中更好地保留细节信息。</p>
+<figure>
+<img src="./../../images/大创/v2-39073bacc426f0e464b53336c83e19da_1440w.jpg" alt="v2-39073bacc426f0e464b53336c83e19da_1440w">
+<figcaption aria-hidden="true">v2-39073bacc426f0e464b53336c83e19da_1440w</figcaption>
+</figure>
+</blockquote>
+<h2 id="根据学习方法分类">根据学习方法分类：</h2>
+<ul>
+<li>无监督学习 unsupervised learning 只有正常样本训练</li>
+<li>半监督学习 weakly spervised learning 以不平衡的样本比例训练</li>
+<li>监督学习 spervised learning 都训练</li>
+</ul>
+<h2 id="视频异常检测领域未来挑战">视频异常检测领域未来挑战：</h2>
+<ul>
+<li>异常检测视频大部分采用mini-batch训练方法，非常消耗时间和资源，无法实时进行视频检测</li>
+<li>现实的数据集，模型难以训练</li>
+<li>异常的情况定义模糊</li>
+<li>模型的迁移性差，shanghaiTech的数据集是多摄像头融合的数据集，大部分数据集表现一般</li>
+</ul>
+<h2 id="了解yolo">了解yolo</h2>
+<p>YOLO（You Only Look Once）系列算法是计算机视觉领域中重要的<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=目标检测技术&amp;spm=1001.2101.3001.7020">目标检测技术</a>。凭借其高效的实时处理能力，YOLO被广泛应用于视频监控、自动驾驶等多个领域。</p>
+<h1 id="论文一human-action-recognition-from-various-data-modalities-a-review">论文一：Human
+Action Recognition from Various Data Modalities: A Review</h1>
+<h2 id="概述">概述</h2>
+<p><strong>人类动作识别（Human Action Recognition,
+HAR）</strong>旨在理解人类的行为，并为每个行为分配一个标签。</p>
+<p>多种不同的数据形态都可以用来表示人类的动作和行为。这些模态可以分为2类：<strong>视觉模态和非视觉模态</strong></p>
+<p>视觉模态和非视觉模态的主要区别在于：视觉模态的数据对人类行为的表示相对直观，但是非视觉模态的数据则不是。视觉模态主要包括：如RGB，骨架，深度，红外，点云，事件流（event
+stream）等数据模态，而非视觉模态则主要包括音频，加速度，雷达，wifi信号等数据模态</p>
+<p>然而，由于不同的模态对 HAR
+具有不同的优势和局限性，因此多种数据模态的融合和跨模态的知识传递以提高
+HAR 的准确性和稳健性，近年来也受到了极大的关注
+[23]，[24]。更具体地说，融合是指将两种或多种模态的信息组合起来，以识别动作</p>
+<p>该综述对基于不同数据模态的深度学习HAR方法的最新进展做了一个综合调研。介绍调研的主要内容分为三部分</p>
+<ul>
+<li>当前主流的单模态深度学习方法</li>
+<li>当前主流的多模态深度学习方法，包括基于融合（fusion）和协同学习（co-learning）的学习框架</li>
+<li>当前HAR任务的主流数据集</li>
+</ul>
+<h2 id="单一模态-single-modality">单一模态 SINGLE MODALITY</h2>
+<h3 id="rgb模态-rgb-modality">RGB模态 RGB MODALITY</h3>
+<p>RGB 模态通常是指由 RGB
+相机捕获的图像或视频（图像序列），旨在重现人眼所见。</p>
+<p>RGB模态优点主要有：（1）RGB数据容易收集，通常是最常用的数据模态。（2）RGB模态包含所捕获的场景上下文的信息。（3）基于RGB的HAR方法也可以用来做pretrained
+model。</p>
+<p>缺点主要有：（1）由于RGB数据中存在背景、视点、尺度和光照条件的变化，所以在RGB模态中进行识别通常具有挑战性。（2）RGB
+视频通常具有较大的数据量，导致在为 HAR
+的时空环境建模时会产生高计算成本。</p>
+<p>下面介绍面向基于 RGB 的 HAR 的高级深度学习，主要可分为四大类，即双流
+2D 卷积神经网络 （CNN）、递归神经网络 （RNN）、3D CNN 和基于 Transformer
+的方法</p>
+<figure>
+<img src="/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/v2-4ec2f54d013bb5ab6996585c53f7755d_1440w.png" alt="v2-4ec2f54d013bb5ab6996585c53f7755d_1440w">
+<figcaption aria-hidden="true">v2-4ec2f54d013bb5ab6996585c53f7755d_1440w</figcaption>
+</figure>
+<figure>
+<img src="/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/sadasd.png" alt="sadasd">
+<figcaption aria-hidden="true">sadasd</figcaption>
+</figure>
+<h3 id="骨骼模态-skeleton-modality">骨骼模态 SKELETON MODALITY</h3>
+<p>骨骼序列编码人体关节的轨迹，这些轨迹表征了信息丰富的人体运动。因此，骨架数据也是
+HAR 的合适模式。</p>
+<p>骨架数据提供的是身体结构与姿态信息，其具有两个明显的优点：（1）具有比例不变性。（2）对服装纹理和背景是鲁棒的。</p>
+<p>但同时也有两个缺点：（1）骨架信息的表示比较稀疏，存在噪声。（2）骨架数据缺少人-物交互时可能存在的形状信息。</p>
+<figure>
+<img src="/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/v2-f3f49680590c848b02f3e7911c5d7d3c_1440w.png" alt="v2-f3f49680590c848b02f3e7911c5d7d3c_1440w">
+<figcaption aria-hidden="true">v2-f3f49680590c848b02f3e7911c5d7d3c_1440w</figcaption>
+</figure>
+<h3 id="深度模态-depth-modality">深度模态 DEPTH MODALITY</h3>
+<p>深度图其中像素值表示从给定视点到场景中的点的距离信息。深度模态通常对颜色和纹理的变化具有鲁棒性，提供了可靠的人体三维结构和几何形状信息，因此可用于
+HAR。随着技术的发展，现在已经有多种设备可以捕获场景中的深度图。现有的对深度数据学习的方法大多数还是利用CNN提取深度图中的feature。深度数据可以提供几何形状信息，但是对外观数据的提供是缺失的，所以深度数据通常不单独使用，而是与其他模态的数据融合使用。</p>
+<h3 id="红外模态-infrared-modality">红外模态 INFRARED MODALITY</h3>
+<p>通常，红外传感器不需要依赖外部环境光，因此特别适用于夜间
+HARat。红外传感技术可分为有源和无源两种。一些红外传感器（如
+Kinect）依赖于主动红外技术，该技术发射红外线并利用目标反射光线来感知场景中的物体。在目前基于深度学习的方法中，比较多的做法是把红外图像作为其中一个stream输入双流或多流网络中。红外数据以其不需要依赖外部环境的可见光的特点，特别适合于夜间的HAR，但是，红外图像也有着对比度低和信噪比低的固有缺点。</p>
+<h3 id="点云模态-point-cloudmodality">点云模态 POINT CLOUDMODALITY</h3>
+<p>点云数据由许多点集合组成，这些点表示空间参考系统下目标的空间分布和表面特征。获取
+3D 点云数据有两种主要方法，即 （1） 使用 3D 传感器，例如 LiDAR 和
+Kinect，或 （2） 使用基于图像的 3D 重建。点云作为一种 3D
+数据模态，具有强大的能力来表示主体的空间轮廓和 3D 几何形状，因此可以用于
+HAR。但是点云中通常存在噪声和高度不均匀的点分布。</p>
+<h3 id="事件流模态-event-stream-modality">事件流模态 EVENT STREAM
+MODALITY</h3>
+<p>事件照相机（event
+camera）可以捕捉照明条件的变化并为每个像素独立产生异步事件。传统的摄像机通常会捕捉整个图像阵列，而事件摄像机仅响应视觉场景的变化。事件照相机能够有效地滤除背景信息，而只保留前景运动信息，这样可以避免视觉信息中的大量冗余，但是其捕捉到的信息通常在时间和空间维度上是稀疏的，而且是异步的。因此一些现有的方法主要聚焦于设计事件聚合策略，将事件摄像机的异步输出转换为同步的视觉帧。</p>
+<h3 id="音频模态-audio-modality">音频模态 AUDIO MODALITY</h3>
+<p>音频信号通常与视频信号一起提供，由于音频和视频是同步的，所以音频数据可以用定位动作。因为音频信号中的信息量是不足的，所以单独使用音频数据执行HAR任务相对比较少见。更常见的情况是音频信号作为HAR的补充信息，与其他模态（如rgb图像）一起使用。</p>
+<h3 id="后续">后续</h3>
+<p>还有加速度模态，雷达模态，wifi模态，我先不了解，后续若有需要再完善知识</p>
+<h2 id="多模态-multi-modality">多模态 MULTI-MODALITY</h2>
+<p>在现实生活中，人类经常以多模态认知方式感知环境。同样，多模态机器学习是一种建模方法，旨在处理和关联来自多种模态的感觉信息[358]。通过聚合各种数据模态的优势和功能，多模态机器学习通常可以提供更强大、更准确的
+HAR。</p>
+<p>多模态学习方法主要有两种，融合（fusion）和协同学习（co-learning）。其中融合指的是对来自两个或更多模态的信息进行集成，并将其用于训练或推理，而协同学习指的则是对不同模态之间的知识进行迁移。图4展示了多模态学习方法的分类</p>
+<figure>
+<img src="/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/v2-04335982349266acffdb93355ce2686c_1440w.png" alt="v2-04335982349266acffdb93355ce2686c_1440w">
+<figcaption aria-hidden="true">v2-04335982349266acffdb93355ce2686c_1440w</figcaption>
+</figure>
+<h3 id="har任务中的多模态融合">HAR任务中的多模态融合</h3>
+<p>模态融合的目的是利用不同数据模态的互补优势，以达到更好的识别性能。现有的多模态融合方案主要有两种：（1）评分融合（score
+fusion），即对不同模态输出的score做融合，例如使用加权平均或学习一个分数融合模型。（2）特征融合，即对来自不同模态的特征进行组合。数据融合（在特征提取之前就融合不同模态的输入数据）可以看成是特征融合，因为某一模态的数据数据可以被视为该模态的原始特征。</p>
+<p>依据输入模态的不同，现有的多模态融合方法大概可以分为视觉模态之间的融合，与视觉+非视觉模态之间的融合两种</p>
+<h4 id="视觉模态之间的融合"><strong>视觉模态之间的融合</strong></h4>
+<ol type="1">
+<li>RGB+深度模态：RGB和深度模态分别能够捕捉外观信息和3D形状信息，因此它们具有比较强的互补性。</li>
+<li>RGB+骨架模态：骨架模态可以提供身体位置和关节运动信息，同样和RGB模态是互补的。[28]提出了一个双流深度网络，两个stream分别是CNN和RNN，用以分别处理RGB和骨架数据，融合方式同时尝试了特征融合和分数融合，并发现应用特征融合策略可以取得更好的效果。</li>
+<li>深度图+骨架模态：[31]将身体的每个部分与其他部分之间的相对几何关系作为骨架特征，将不同身体部分周围的深度图像块作为外观特征，以编码身体-对象和身体部分-身体部分之间的关系，进而实现可靠的HAR。</li>
+<li>RGB+深度图+骨架模态：这类方法大多是前文提到了三类多模态融合方法的扩展。</li>
+</ol>
+<h4 id="视觉模态非视觉模态的融合"><strong>视觉模态+非视觉模态的融合</strong></h4>
+<ol type="1">
+<li>视频与音频的融合：前文中已经提到，音频可以为视频的外观和运动信息提供补充信息。所以目前已经有一些基于深度学习的方法来融合这种模态的数据</li>
+<li>视频与加速度模态的融合</li>
+<li>其他类型的模态融合：[43]的核心思想是将非RGB模态的数据，包括骨架、加速度和wifi数据都转换成彩色图像，然后送入CNN中。</li>
+</ol>
+<h3 id="har任务中的多模态协同学习">HAR任务中的多模态协同学习</h3>
+<p>多模态协同学习旨在探索如何利用辅助模态学习到的知识帮助另一个模态的学习，希望通过跨模态的知识传递和迁移可以克服单一模态的缺点，提高性能。多模态协同学习与多模态融合的一个关键区别在于，在多模态协同学习中，辅助模态的数据仅仅在训练阶段需要，测试阶段并不需要。所以多模态协同学习尤其适用于模态缺失的场景。此外对于模态样本数较小的场景，多模态协同学习也可以起到一定的帮助作用。</p>
+<h4 id="视觉模态的协同学习"><strong>视觉模态的协同学习</strong></h4>
+<ol type="1">
+<li>RGB和深度模态的协同学习</li>
+<li>RGB和骨架模态的协同学习。如[48]利用CNN+LSTM执行基于RGB视频的分类，并利用在骨架数据上训练的LSTM模型充当调节器，强制两个模型的输出特征相似。</li>
+</ol>
+<h4 id="视觉和非视觉模态的协同学习"><strong>视觉和非视觉模态的协同学习</strong></h4>
+<p>第一种类型是在不同模态之间进行知识的迁移，如[50]中的teacher
+network使用非视觉模态训练，而student
+network使用RGB模态作为输入，通过强制teacher和student的attention
+map相似以弥补模态间的形态差距，并实现知识的提炼。</p>
+<p>第二种类型是利用不同模态之间的相关性进行自监督学习，比如[51]分别利用音频/视频模态中的无监督聚类结果作为视频/音频模态的监督信号。[52]使用视频和音频的时间同步信息作为自监督信号。</p>
+<h1 id="论文二rwf-2000-an-open-large-scale-video-database-for-violence-detection">论文二：RWF-2000:
+An Open Large Scale Video Database for Violence Detection</h1>
+<p><a target="_blank" rel="noopener" href="https://github.com/mchengny/RWF2000-Video-Database-for-Violence-Detection">mchengny/RWF2000-Video-Database-for-Violence-Detection：一个用于暴力检测的大型视频数据库，其中包含
+2,000 个包含暴力或非暴力行为的视频剪辑。</a></p>
+<h2 id="摘要">摘要</h2>
+<p>近年来，监控摄像头在公共场所广泛部署，由于这些无处不在的设备，总体犯罪率已显著降低。通常，这些摄像头会在犯罪发生后提供线索和证据，而很少用于及时预防或制止犯罪活动。手动监控来自监控摄像头的大量视频数据既费时又费力。因此，从视频信号中自动识别暴力行为变得至关重要。</p>
+<p>本文总结了几个现有的用于暴力检测的视频数据集，并提出了 RWF-2000
+数据库，其中包含监控摄像头在真实场景中捕获的 2,000
+个视频。此外，我们还提出了一种同时利用 3D-CNN
+和光流优点的新方法，即流门控网络。所提出的方法在我们提出的数据库的测试集上获得了
+87.25% 的准确率。数据库和源代码目前对 Access 1 开放。</p>
+<h2 id="概述-1">概述</h2>
+<p>通常，基于视频的暴力检测的定义是检测视频数据中的暴力行为。它是人类动作识别的一个子集，旨在识别常见的人类动作。与静止图像相比，视频数据具有额外的时间序列。一组连续的帧表示连续的运动，而相邻的帧由于帧间相关性高而包含冗余信息。</p>
+<p>一些早期的方法依赖于检测高度相关物体（例如，枪击、火焰、血腥、爆炸）的存在，而不是直接识别暴力事件</p>
+<p>此前数据的劣势：尽管存在一些用于暴力检测的视频数据集，但它们仍然存在规模小、多样性少和图像分辨率低的缺点。此外，一些具有高图像质量的相关数据集来自电影，这些电影与真实场景不够接近。为解决真实暴力活动中高质量数据不足的问题</p>
+<p>本文工作：</p>
+<ol type="1">
+<li>为了解决真实暴力活动中高质量数据不足的问题，我们收集了一个新的视频数据集
+（RWF-2000）
+并将其免费发布给研究界。该数据集规模较大，包含从监控视频中提取的 2,000
+个剪辑</li>
+<li>我们提出了一种新的具有自学习池机制的模型，该模型可以很好地兼顾外观特征和时间特征。</li>
+</ol>
+<h2 id="先前数据集">先前数据集</h2>
+<p>根据注释方法，仍然存在两种用于暴力检测的视频数据集：修剪和未修剪。裁剪后的数据集中的视频都是几秒长的短片，每个视频都有一个视频级标注。而视频未修剪的数据集通常具有更长的持续时间。此外，暴力活动的开始时间和结束时间都有帧级注释。</p>
+<p>总结这些提议的数据集，每个数据集都至少具有以下一个或多个限制：</p>
+<ul>
+<li>图像质量低;缺乏足够的数据量</li>
+<li>视频时长但注释粗糙</li>
+<li>与现实暴力不够接近的视频混合来源</li>
+</ul>
+<p>为了解决上述问题，我们从 YouTube 网站收集了一个新的 RWF
+2000（真实世界格斗）数据集，其中包括 2,000
+个由监控枪式摄像机从真实场景中拍摄的修剪视频剪辑。</p>
+<h2 id="先前方法">先前方法</h2>
+<p>传统方法通常会尝试找到一个 powfer
+特征提取算法，并实现一个基于机器学习的分类器来完成暴力检测任务。</p>
+<p>总之，基于深度学习的方法通常优于传统的基于特征提取的模型。此外，大多数最先进的结果都使用多通道输入（例如，原始
+RGB 图像、光流、加速度图）。同时，复杂模型对过拟合不是很鲁棒。</p>
+<p>在本文中，我们只采用 RGB
+图像和光流来构建神经网络，它可以处理空间和时间信息。此外，我们提出的
+Flow-Gated
+架构可以通过自学习来减少输入视频的时间通道，而不是传统的池化策略。</p>
+<h2 id="rwf-2000-数据库和建议的方法">RWF-2000 数据库和建议的方法</h2>
+<h3 id="数据采集">数据采集</h3>
+<p>为了使暴力检测在现实应用中更加实用，我们从 YouTube
+平台收集了一个新的真实世界格斗 （RWF）
+数据集，其中包含监控摄像头在真实场景中拍摄的 2,000 个视频剪辑。</p>
+<p>拟议的数据集有 2,000 个视频剪辑，分为两部分：训练集 （80%） 和测试集
+（20%）。一半的视频包含暴力行为，而其他视频属于非暴力活动。</p>
+<h3 id="flow-gated-network">Flow Gated Network</h3>
+<p>以前的大多数方法都探索从单个帧中提取外观特征，然后将它们融合以对时间信息进行建模。由于粗略的池化机制，运动信息可能毫无用处，我们的目标是设计一种通过网络自学习实现的时间池化机制</p>
+<figure>
+<img src="/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/asdasf.png" alt="asdasf">
+<figcaption aria-hidden="true">asdasf</figcaption>
+</figure>
+<p>由四个部分组成：RGB 通道、光流通道、合并块和全连接层。RGB
+通道和光流通道由级联的 3D CNN
+组成，它们具有一致的结构，因此它们的输出可以融合。Merging Block
+也由基本的 3D CNN 组成，这些 CNN
+在自学时间池化后处理信息。最后，全连接层生成输出。</p>
+<p>该模型的亮点是利用光流通道的一个分支来帮助构建池化机制。</p>
+<h1 id="后续学习">后续学习</h1>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_32892383/article/details/136413119">基于YOLOv8/YOLOv7/YOLOv6/YOLOv5的暴力行为检测系统（深度学习模型+UI界面+Python代码+训练数据集）-CSDN博客</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_42681787/article/details/134423818">YOLO8实战：暴力行为检测系统_yolov8
+打架检测-CSDN博客</a></p>
+<h1 id="参考文献">参考文献</h1>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1aR4y1J7uv/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">科研分享|视频异常检测_哔哩哔哩_bilibili</a></p>
+<p>[<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/553262457">领域综述] TPAMI
+2022 | Human Action Recognition from Various Data Modalities: A Review -
+知乎</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/105360879">RWF-2000
+暴力行为检测视频数据集 - 知乎</a></p>
+<p>另一个暴力行为数据集<a target="_blank" rel="noopener" href="https://roc-ng.github.io/XD-Violence/">XD-暴力</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E7%A7%91%E7%A0%94/" rel="tag"># 科研</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" rel="tag"># 计算机视觉</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/" rel="prev" title="数字逻辑电路——数电实验1">
+                  <i class="fa fa-angle-left"></i> 数字逻辑电路——数电实验1
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/11/16/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94zinc/" rel="next" title="机设——初识zinc">
+                  机设——初识zinc <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

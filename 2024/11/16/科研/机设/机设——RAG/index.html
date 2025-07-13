@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言 基于 LLM （Large Language Model）最火热的应用技术是什么，检索增强生成（RAG，Retrieval Augmented Generation）技术必占据重要的一席。RAG 最初是为了解决 LLM 的各类问题的产生的，但后面大家发现在现阶段的很多企业痛点上，使用RAG好像是更好的解决方案。 LLM的问题 尽管LLM拥有令人印象深刻的能力，但是它们还面临着一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机设——初识RAG">
+<meta property="og:url" content="http://example.com/2024/11/16/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94RAG/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="前言 基于 LLM （Large Language Model）最火热的应用技术是什么，检索增强生成（RAG，Retrieval Augmented Generation）技术必占据重要的一席。RAG 最初是为了解决 LLM 的各类问题的产生的，但后面大家发现在现阶段的很多企业痛点上，使用RAG好像是更好的解决方案。 LLM的问题 尽管LLM拥有令人印象深刻的能力，但是它们还面临着一">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2024/11/16/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94RAG/v2-76c9a386a70bbcd610f76f1f32423165_1440w.png">
+<meta property="og:image" content="http://example.com/2024/11/16/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94RAG/e9280ebbd3c04d400de7c0619fd0bb50.jpg">
+<meta property="og:image" content="http://example.com/2024/11/16/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94RAG/1_03c0dcc161.png">
+<meta property="og:image" content="http://example.com/2024/11/16/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94RAG/5_8bd8df7ac9.png">
+<meta property="article:published_time" content="2024-11-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-06-12T10:43:11.306Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="科研">
+<meta property="article:tag" content="RAG">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/11/16/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94RAG/v2-76c9a386a70bbcd610f76f1f32423165_1440w.png">
+
+
+<link rel="canonical" href="http://example.com/2024/11/16/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94RAG/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/11/16/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94RAG/","path":"2024/11/16/科研/机设/机设——RAG/","title":"机设——初识RAG"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>机设——初识RAG | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFrag"><span class="nav-number">2.</span> <span class="nav-text">什么是RAG</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%91%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.1.</span> <span class="nav-text">向量数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gpt-%E7%9A%84%E7%BC%BA%E9%99%B7"><span class="nav-number">2.1.1.</span> <span class="nav-text">GPT 的缺陷</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%91%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%B4%9B%E8%B5%B7"><span class="nav-number">2.1.2.</span> <span class="nav-text">向量数据库的崛起</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rag%E7%9A%84%E6%8C%91%E6%88%98"><span class="nav-number">3.</span> <span class="nav-text">RAG的挑战</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#graphrag%E7%9A%84%E8%AF%9E%E7%94%9F"><span class="nav-number">4.</span> <span class="nav-text">GraphRAG的诞生</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#graphrag%E7%9A%84%E4%BC%98%E5%8A%BF"><span class="nav-number">5.</span> <span class="nav-text">GraphRAG的优势</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">6.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">97</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/16/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94RAG/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="机设——初识RAG | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          机设——初识RAG
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-11-16 00:00:00" itemprop="dateCreated datePublished" datetime="2024-11-16T00:00:00+08:00">2024-11-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-12 18:43:11" itemprop="dateModified" datetime="2025-06-12T18:43:11+08:00">2025-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%A1%B9%E7%9B%AE%E7%BB%8F%E5%8E%86/" itemprop="url" rel="index"><span itemprop="name">项目经历</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%A1%B9%E7%9B%AE%E7%BB%8F%E5%8E%86/%E6%9C%BA%E8%AE%BE/" itemprop="url" rel="index"><span itemprop="name">机设</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="前言">前言</h1>
+<p>基于 <strong>LLM （Large Language
+Model）</strong>最火热的应用技术是什么，检索增强生成（<strong>RAG，Retrieval
+Augmented Generation</strong>）技术必占据重要的一席。RAG 最初是为了解决
+LLM
+的各类问题的产生的，但后面大家发现在现阶段的很多企业痛点上，使用RAG好像是更好的解决方案。</p>
+<p>LLM的问题</p>
+<p>尽管LLM拥有令人印象深刻的能力，但是它们还面临着一些问题和挑战：</p>
+<ul>
+<li><p>幻觉问题：大模型的底层原理是基于概率，在没有答案的情况下经常会胡说八道，提供虚假信息。</p></li>
+<li><p>时效性问题：规模越大（参数越多、tokens
+越多），大模型训练的成本越高。类似 ChatGPT3.5，起初训练数据是截止到 2021
+年的，对于之后的事情就不知道了。而且对于一些高时效性的事情，大模型更加无能为力，比如帮我看看今天晚上有什么电影值得去看？这种任务是需要去淘票票、猫眼等网站先去获取最新电影信息的，大模型本身无法完成这个任务。</p></li>
+<li><p>数据安全：OpenAI
+已经遭到过几次隐私数据的投诉，而对于企业来说，如果把自己的经营数据、合同文件等机密文件和数据上传到互联网上的大模型，那想想都可怕。既要保证安全，又要借助
+AI
+能力，那么最好的方式就是<strong>把数据全部放在本地，企业数据的业务计算全部在本地完成</strong>。而在线的大模型仅仅完成一个归纳的功能，甚至，LLM
+都可以完全本地化部署。</p></li>
+</ul>
+<hr>
+<p>解决这些挑战对于 LLMs
+在各个领域的有效利用至关重要。一个有效的解决方案是集成检索增强生成（RAG）技术，该技术通过获取外部数据来响应查询来补充模型，从而确保更准确和最新的输出。主要表现方面如下：</p>
+<ul>
+<li><p>有效避免幻觉问题：虽然无法 100% 解决大模型的幻觉问题，但通过 RAG
+技术能够有效的降低幻觉，在软件系统中结合大模型提供幂等的API接口就可以发挥大模型的重要作用。</p></li>
+<li><p>经济高效的处理知识&amp;开箱即用：只需要借助信息检索和向量技术，将用户的问题和知识库进行相关性搜索结合，就能高效的提供大模型不知道的知识，同时具有权威性。</p></li>
+<li><p>数据安全：企业的数据可以得到有效的保护，通过私有化部署基于 RAG
+系统开发的AI产品，能够在体验AI带来的便利性的同时，又能避免企业隐私数据的泄漏。</p></li>
+</ul>
+<h1 id="什么是rag">什么是RAG</h1>
+<p>RAG 是检索增强生成（Retrieval Augmented Generation
+）的简称，它为大语言模型 (LLMs)
+提供了从数据源检索信息的能力，并以此为基础生成回答。简而言之，RAG
+结合了信息检索技术和大语言模型的提示功能，即模型根据搜索算法找到的信息作为上下文来查询回答问题。无论是查询还是检索的上下文，都会被整合到发给大语言模型的提示中。
+<img src="/2024/11/16/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94RAG/v2-76c9a386a70bbcd610f76f1f32423165_1440w.png" alt="v2-76c9a386a70bbcd610f76f1f32423165_1440w"></p>
+<figure>
+<img src="/2024/11/16/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94RAG/e9280ebbd3c04d400de7c0619fd0bb50.jpg" alt="e9280ebbd3c04d400de7c0619fd0bb50">
+<figcaption aria-hidden="true">e9280ebbd3c04d400de7c0619fd0bb50</figcaption>
+</figure>
+<p>RAG
+的架构如图中所示。它既不是一个特定的开源代码库，也不是某个特定的应用，是一个开发框架。</p>
+<p>完整的 RAG 应用流程主要包含两个阶段：</p>
+<p>数据准备阶段：（A）数据提取–&gt; （B）分块（Chunking）–&gt;
+（C）向量化（embedding）–&gt; （D）数据入库</p>
+<p>检索生成阶段：（1）问题向量化–&gt; （2）根据问题查询匹配数据–&gt;
+（3）获取索引数据 –&gt; （4）将数据注入Prompt–&gt; （5）LLM生成答案</p>
+<h2 id="向量数据库">向量数据库</h2>
+<h3 id="gpt-的缺陷">GPT 的缺陷</h3>
+<p>GPT-3.5/4
+带给我们无限震撼的同时，其天然的缺陷和诸多的限制也让开发者头痛不已，例如其输入端上下文（tokens）大小的限制困扰着很多的开发者和消费者，像
+gpt-3.5-turbo 模型它的限制是 4K
+tokens(～3000字)，这意味着使用者最多只能输入 3000 字给 GPT
+来理解和推理答案。</p>
+<h3 id="向量数据库的崛起">向量数据库的崛起</h3>
+<p>在 GPT
+模型的限制下，开发者们不得不寻找其他的解决方案，而向量数据库就是其中之一。向量数据库的核心思想是将文本转换成向量，然后将向量存储在数据库中，当用户输入问题时，将问题转换成向量，然后在数据库中搜索最相似的向量和上下文，最后将文本返回给用户。</p>
+<p>当我们有一份文档需要 GPT
+处理时，例如这份文档是客服培训资料或者操作手册，我们可以先将这份文档的所有内容转化成向量（这个过程称之为
+Vector
+Embedding），然后当用户提出相关问题时，我们将用户的搜索内容转换成向量，然后在数据库中搜索最相似的向量，匹配最相似的几个上下文，最后将上下文返回给
+GPT。这样不仅可以大大减少 GPT
+的计算量，从而提高响应速度，更重要的是降低成本，并绕过 GPT 的 tokens
+限制。</p>
+<h1 id="rag的挑战">RAG的挑战</h1>
+<p>一个基本的 RAG 通常集成了一个向量数据库和一个 LLM，其中<a target="_blank" rel="noopener" href="https://zilliz.com/learn/what-is-vector-database">向量数据库</a>存储并检索与用户查询相关的上下文信息，LLM
+根据检索到的上下文生成答案。虽然这种方法在大部分情况下效果都很好，但在处理复杂任务时却面临一些挑战，如多跳推理（multi-hop
+reasoning）或联系不同信息片段全面回答问题。</p>
+<p>以这个问题为例：“<em>What name was given to the son of the man who
+defeated the usurper Allectus?</em>”</p>
+<p>一个基本的 RAG 通常会遵循以下步骤来回答这个问题：</p>
+<ol type="1">
+<li>识别那个人：确定谁打败了 Allectus。</li>
+<li>研究那个人的儿子：查找有关这个人家庭的信息，特别是他的儿子。</li>
+<li>找到名字：确定儿子的名字。</li>
+</ol>
+<p>通常第一步就会面临挑战，因为基本的 RAG 根据<a target="_blank" rel="noopener" href="https://zilliz.com/glossary/semantic-similarity">语义相似性</a>检索文本，而不是基于在数据集中没有明确提及具体细节来回答复杂的查询问题。这种局限性让我们很难找到所需的确切信息。解决方案通常是为常见查询手动创建问答对。但这种解决方案通常十分昂贵甚至不切实际。</p>
+<p>为了应对这些挑战，微软研究院引入了 <a target="_blank" rel="noopener" href="https://microsoft.github.io/graphrag/">GraphRAG</a>，这是一种全新方法，它通过知识图谱增强
+RAG 的检索和生成。</p>
+<h1 id="graphrag的诞生">GraphRAG的诞生</h1>
+<p>与使用向量数据库检索语义相似文本的基本 RAG 不同，GraphRAG
+通过结合知识图谱（KGs）来增强
+RAG。知识图谱是一种数据结构，它根据数据间的关系来存储和联系相关或不相关的数据。</p>
+<p>GraphRAG 流程通常包括两个基本过程：索引和查询。</p>
+<figure>
+<img src="/2024/11/16/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94RAG/1_03c0dcc161.png" alt="1_03c0dcc161">
+<figcaption aria-hidden="true">1_03c0dcc161</figcaption>
+</figure>
+<h1 id="graphrag的优势">GraphRAG的优势</h1>
+<p>基础 RAG 和 GraphRAG
+都被问到了同样的问题，这需要汇总整个数据集中的信息来构成答案。</p>
+<p>问：What are the top 5 themes in the dataset?</p>
+<p>下图为答案。基础 RAG
+提供的结果与战争主题无关，因为向量搜索检索到了无关的文本，导致了答案的不准确。相比之下，GraphRAG
+提供了一个清晰且高度相关的答案，识别了主要的主题和相关细节。结果与数据集一致，并引用了源材料。</p>
+<p>上述例子展示了 GraphRAG
+如何通过结合知识图谱和向量数据库，更有效地处理需要跨数据集整合信息的复杂查询，从而提高答案的相关性和准确性。</p>
+<figure>
+<img src="/2024/11/16/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94RAG/5_8bd8df7ac9.png" alt="5_8bd8df7ac9">
+<figcaption aria-hidden="true">5_8bd8df7ac9</figcaption>
+</figure>
+<p>GraphRAG 在多跳推理和复杂信息总结方面性能明显更佳。研究表明GraphRAG
+在全面性和多样性方面都超过了基础 RAG：</p>
+<ul>
+<li><strong>全面性</strong>：答案覆盖问题的所有方面。</li>
+<li><strong>多样性</strong>：答案提供的观点和见解具有多样性和丰富性。</li>
+</ul>
+<h1 id="参考文献">参考文献</h1>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Python_0011/article/details/139752344">大模型RAG入门及实践（非常详细）零基础入门到精通，收藏这一篇就够了-CSDN博客</a></p>
+<p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2312534">向量数据库｜一文全面了解向量数据库的基本概念、原理、算法、选型-腾讯云开发者社区-腾讯云</a></p>
+<p><a target="_blank" rel="noopener" href="https://zilliz.com.cn/blog/graphrag-explained-enhance-rag-with-knowledge-graphs">GraphRAG
+详解: 通过知识图谱提升 RAG 系统 - Zilliz 向量数据库</a></p>
+<p>论文： https://arxiv.org/pdf/2404.16130</p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av1256338452?vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11&amp;spm_id_from=333.788.videopod.sections">GraphRAG：知识图谱+RAG、更高质量的检索_哔哩哔哩_bilibili</a></p>
+<p>微软开源的GraphRAG代码： https://github.com/microsoft/graphrag</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E7%A7%91%E7%A0%94/" rel="tag"># 科研</a>
+              <a href="/tags/RAG/" rel="tag"># RAG</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/11/16/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94zinc/" rel="prev" title="机设——初识zinc">
+                  <i class="fa fa-angle-left"></i> 机设——初识zinc
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/11/16/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B2/" rel="next" title="大创——基础知识储备">
+                  大创——基础知识储备 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

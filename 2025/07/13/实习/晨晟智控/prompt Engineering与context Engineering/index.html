@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="prompt Engineering Prompt Engineering是与大型语言模型（LLM）交互的基础，其核心在于精心设计输入内容，以引导模型生成期望的输出。 尽管 Prompt Engineering 至关重要，但对于构建稳健、可用于生产环境的系统而言，它存在固有的局限性：  脆弱性&amp;不可复现性： 提示中微小的措辞变化可能导致输出结果的巨大差异，使得这一过程更像是一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="prompt Engineering与context Engineering">
+<meta property="og:url" content="http://example.com/2025/07/13/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/prompt%20Engineering%E4%B8%8Econtext%20Engineering/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="prompt Engineering Prompt Engineering是与大型语言模型（LLM）交互的基础，其核心在于精心设计输入内容，以引导模型生成期望的输出。 尽管 Prompt Engineering 至关重要，但对于构建稳健、可用于生产环境的系统而言，它存在固有的局限性：  脆弱性&amp;不可复现性： 提示中微小的措辞变化可能导致输出结果的巨大差异，使得这一过程更像是一">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-07-12T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-07-13T05:36:33.941Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="大模型">
+<meta property="article:tag" content="学习">
+<meta property="article:tag" content="实习">
+<meta property="article:tag" content="rag">
+<meta property="article:tag" content="prompt">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2025/07/13/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/prompt%20Engineering%E4%B8%8Econtext%20Engineering/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/07/13/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/prompt%20Engineering%E4%B8%8Econtext%20Engineering/","path":"2025/07/13/实习/晨晟智控/prompt Engineering与context Engineering/","title":"prompt Engineering与context Engineering"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>prompt Engineering与context Engineering | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#prompt-engineering"><span class="nav-number">1.</span> <span class="nav-text">prompt Engineering</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#context-engineering"><span class="nav-number">2.</span> <span class="nav-text">Context Engineering</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#context-engineering-%E7%9A%84%E5%9F%BA%E7%9F%B3ragretrieval-augmented-generation"><span class="nav-number">3.</span> <span class="nav-text">Context
+Engineering 的基石：RAG（Retrieval-Augmented Generation）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3llm%E7%9A%84%E6%A0%B8%E5%BF%83%E5%BC%B1%E7%82%B9"><span class="nav-number">3.1.</span> <span class="nav-text">解决LLM的核心弱点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rag%E5%B7%A5%E4%BD%9C%E6%B5%81"><span class="nav-number">3.2.</span> <span class="nav-text">RAG工作流</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#context-%E5%B7%A5%E7%A8%8B%E5%8C%96%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E5%92%8C%E6%8F%90%E5%8F%96%E5%93%AA%E4%BA%9B%E5%86%85%E5%AE%B9%E5%BA%94%E8%AF%A5%E8%BF%9B%E5%85%A5%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="nav-number">4.</span> <span class="nav-text">Context
+工程化：如何判断和提取哪些内容应该进入上下文？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#chunking"><span class="nav-number">4.1.</span> <span class="nav-text">1.chunking</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#reranking"><span class="nav-number">4.2.</span> <span class="nav-text">2.Reranking</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AA%97%E5%8F%A3%E5%8E%8B%E7%BC%A9%E4%B8%8E%E6%91%98%E8%A6%81"><span class="nav-number">4.3.</span> <span class="nav-text">3.优化上下文窗口：压缩与摘要</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%99%BA%E8%83%BD%E4%BD%93%E6%9E%B6%E6%9E%84%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E6%B5%81%E4%B8%8E%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%BC%96%E6%8E%92"><span class="nav-number">5.</span> <span class="nav-text">智能体架构中的数据流与工作流编排</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%B5%81workflow-vs.-%E6%99%BA%E8%83%BD%E4%BD%93agent"><span class="nav-number">5.1.</span> <span class="nav-text">工作流（Workflow）
+vs. 智能体（Agent）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84%E9%A2%84%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E6%B5%81%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.2.</span> <span class="nav-text">核心架构：预定义数据流的实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A1%86%E6%9E%B6%E4%B8%8E%E5%B7%A5%E5%85%B7"><span class="nav-number">5.3.</span> <span class="nav-text">框架与工具</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">97</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/13/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/prompt%20Engineering%E4%B8%8Econtext%20Engineering/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="prompt Engineering与context Engineering | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          prompt Engineering与context Engineering
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-07-13 00:00:00 / 修改时间：13:36:33" itemprop="dateCreated datePublished" datetime="2025-07-13T00:00:00+08:00">2025-07-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AE%9E%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">实习</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/" itemprop="url" rel="index"><span itemprop="name">晨晟智控</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="prompt-engineering">prompt Engineering</h3>
+<p>Prompt
+Engineering是与大型语言模型（LLM）交互的基础，其核心在于精心设计输入内容，以引导模型生成期望的输出。</p>
+<p>尽管 Prompt Engineering
+至关重要，但对于构建稳健、可用于生产环境的系统而言，它存在固有的局限性：</p>
+<ul>
+<li><p><strong>脆弱性&amp;不可复现性：</strong>
+提示中微小的措辞变化可能导致输出结果的巨大差异，使得这一过程更像是一种依赖反复试错的“艺术”，而非可复现的“科学”
+。</p></li>
+<li><p><strong>扩展性差：</strong>
+手动、迭代地优化提示的过程，在面对大量用户、多样化用例和不断出现的边缘情况时，难以有效扩展
+。</p></li>
+<li><p><strong>用户负担：</strong>
+这种方法将精心构建一套详尽指令的负担完全压在了用户身上，对于需要自主运行、或处理高并发请求的系统而言是不切实际的
+。</p></li>
+<li><p><strong>无状态性：</strong> Prompt Engineering
+本质上是为单轮、“一次性”的交互而设计的，难以处理需要记忆和状态管理的长对话或多步骤任务
+。</p></li>
+</ul>
+<h3 id="context-engineering">Context Engineering</h3>
+<p><strong>Context
+Engineering是一门设计、构建并优化动态自动化系统的学科，旨在为大型语言模型在正确的时间、以正确的格式，提供正确的信息和工具，从而可靠、可扩展地完成复杂任务</strong>
+。</p>
+<p><strong>prompt 告诉模型如何思考，而 Context
+则赋予模型完成工作所需的知识和工具。</strong></p>
+<ul>
+<li><p>Context Engineering 决定<strong>用什么内容填充 Context
+Window</strong> ，</p></li>
+<li><p>Prompt Engineering 则负责优化<strong>窗口内的具体指令</strong>
+。</p></li>
+</ul>
+<h3 id="context-engineering-的基石ragretrieval-augmented-generation">Context
+Engineering 的基石：RAG（Retrieval-Augmented Generation）</h3>
+<p>本部分将阐述检索增强生成（RAG）作为实现 Context Engineering
+的主要架构模式。</p>
+<h4 id="解决llm的核心弱点">解决LLM的核心弱点</h4>
+<p>RAG直接解决了标准LLM在企业应用中存在的固有局限性：</p>
+<ul>
+<li><p><strong>知识冻结：</strong>
+LLM的知识被冻结在<strong>其训练数据的时间点</strong>。RAG通过在推理时注入实时的、最新的信息来解决这个问题
+。</p></li>
+<li><p><strong>缺乏领域专有知识：</strong>
+标准LLM无法访问组织的内部私有数据。RAG则能够将LLM连接到这些内部知识库，如技术手册、政策文件等
+。</p></li>
+<li><p><strong>幻觉（Hallucination）：</strong> LLM
+会不同程度上地编造事实。RAG通过将模型的回答“锚定”在可验证的、检索到的证据上，提高事实的准确性和可信度
+。</p></li>
+</ul>
+<h4 id="rag工作流">RAG工作流</h4>
+<ol type="1">
+<li><p><strong>索引（离线阶段）：</strong>
+在这个阶段，系统会处理外部知识源。文档被加载、分割成更小的
+chunks，然后通过Embedding Model
+转换为向量表示，并最终存储在专门的向量数据库中以备检索 。</p></li>
+<li><p><strong>推理（在线阶段）：</strong>
+当用户提出请求时，系统执行以下步骤：</p>
+<ol type="1">
+<li><strong>检索（Retrieve）：</strong>
+将用户的查询同样转换为向量，然后在向量数据库中进行相似性搜索，找出与查询最相关的文档块。</li>
+<li><strong>增强（Augment）：</strong>
+将检索到的这些文档块与原始的用户查询、系统指令等结合起来，构建一个内容丰富的、增强的最终提示。</li>
+<li><strong>生成（Generate）：</strong>
+将这个增强后的提示输入给LLM，LLM会基于提供的上下文生成一个有理有据的回答
+。</li>
+</ol></li>
+</ol>
+<h3 id="context-工程化如何判断和提取哪些内容应该进入上下文">Context
+工程化：如何判断和提取哪些内容应该进入上下文？</h3>
+<h4 id="chunking">1.chunking</h4>
+<p>文本分块（Chunking）是RAG流程中最关键也最容易被忽视的一步。其目标是创建在语义上自成一体的文本块。</p>
+<h4 id="reranking">2.Reranking</h4>
+<p>为了平衡检索的速度和准确性，业界普遍采用两阶段检索流程。</p>
+<ul>
+<li><p><strong>两阶段流程：</strong></p>
+<ul>
+<li><strong>第一阶段（召回）：</strong>
+使用一个快速、高效的检索器（如基于 bi-encoder
+的向量搜索或BM25等词法搜索）进行广泛撒网，召回一个较大的候选文档集（例如，前100个）
+。</li>
+<li><strong>第二阶段（精排/重排序）：</strong>
+使用一个更强大但计算成本更高的模型，对这个较小的候选集进行重新评估，以识别出最相关的少数几个文档（例如，前5个）
+。</li>
+</ul></li>
+<li><p><strong>Cross-Encoder：</strong>
+交叉编码器之所以在重排序阶段表现优越，是因为它与双编码器的工作方式不同。双编码器独立地为查询和文档生成嵌入向量，然后计算它们的相似度。而交叉编码器则是将查询和文档<strong>同时</strong>作为输入，让模型在内部通过
+Attention Mechanism
+对二者进行深度交互。这使得模型能够捕捉到更细微的语义关系，从而给出更准确的相关性评分
+。</p></li>
+<li><p><strong>实际影响：</strong>
+重排序显著提高了最终送入LLM的上下文质量，从而产出更准确、幻觉更少的答案。在金融、法律等高风险领域，重排序被认为是必不可少而非可选的步骤
+。</p></li>
+</ul>
+<h4 id="优化上下文窗口压缩与摘要">3.优化上下文窗口：压缩与摘要</h4>
+<p>本节详细介绍用于主动管理上下文的技术，确保最有价值的信息被优先呈现。</p>
+<ul>
+<li><p><strong>上下文压缩的目标：</strong>
+缩短检索到的文档列表和/或精简单个文档的内容，只将<strong>最相关的信息传递给LLM</strong>。这能有效降低API调用成本、减少延迟，并缓解
+Lost in the Middle 的问题 。</p></li>
+<li><p><strong>压缩方法：</strong></p>
+<ul>
+<li><strong>过滤式压缩：</strong>
+这类方法决定是保留还是丢弃整个检索到的文档。
+<ul>
+<li><strong>LLMChainFilter：</strong>
+利用一个LLM对每个文档的相关性做出简单的“是/否”判断 。</li>
+<li><strong>EmbeddingsFilter：</strong>
+更经济快速的方法，根据文档嵌入与查询嵌入的余弦相似度来过滤文档 。</li>
+</ul></li>
+<li><strong>内容提取式压缩：</strong> 这类方法会直接修改文档内容。
+<ul>
+<li><strong>LLMChainExtractor：</strong>
+遍历每个文档，并使用LLM从中提取仅与查询相关的句子或陈述 。</li>
+</ul></li>
+<li><strong>用 top N 代替压缩：</strong>
+像LLMListwiseRerank这样的技术，使用LLM对检索到的文档进行重排序，并只返回排名最高的N个，从而起到高质量过滤器的作用
+。</li>
+</ul></li>
+<li><p><strong>作为压缩策略的摘要：</strong>
+对于非常长的文档或冗长的对话历史，可以利用LLM生成摘要。这些摘要随后被注入上下文，既保留了关键信息，又大幅减少了
+Token 数量。这是在长时程运行的智能体中管理上下文的关键技术 。</p></li>
+</ul>
+<h3 id="智能体架构中的数据流与工作流编排">智能体架构中的数据流与工作流编排</h3>
+<h4 id="工作流workflow-vs.-智能体agent">工作流（Workflow）
+vs. 智能体（Agent）</h4>
+<ul>
+<li><strong>工作流（Workflows）</strong>
+<ul>
+<li>指的是LLM和工具通过<strong>预定义的代码路径</strong>进行编排的系统。在这种模式下，数据流动的路径是固定的、由开发者明确设计的，类似于上世纪流行的“专家系统”。例如，“第一步：分析用户邮件；第二步：根据分析结果在日历中查找空闲时段；第三步：起草会议邀请邮件”。这种模式确定性高，易于调试和控制，非常适合有明确业务流程的场景（如风控需求高、数据敏感、安全等级要求）。</li>
+</ul></li>
+<li><strong>智能体（Agents）</strong>
+<ul>
+<li>指的是LLM<strong>动态地指导</strong>自己的流程和工具使用，自主控制如何完成任务的系统。在这种模式下，数据流动的路径不是预先固定的，而是由LLM在每一步根据当前情况和目标动态决定的。这种模式灵活性高，能处理开放式问题，但可控性和可预测性较低
+。</li>
+</ul></li>
+</ul>
+<p>复杂的智能体通常是这两种模式的混合体，在宏观层面遵循一个预定义的工作流，但在某些节点内部，又赋予LLM一定的自主决策权。管理这一切的核心，我们称之为<strong>编排层（Orchestration
+Layer）</strong> 。</p>
+<h4 id="核心架构预定义数据流的实现"><strong>核心架构：预定义数据流的实现</strong></h4>
+<ol type="1">
+<li><p><strong>链式工作流（Prompt Chaining）</strong></p></li>
+<li><p><strong>路由工作流（Routing)</strong></p></li>
+<li><p><strong>编排器-工作者模式（Orchestrator-Workers）</strong></p></li>
+</ol>
+<h4 id="框架与工具">框架与工具</h4>
+<p>上述的架构和机制并非凭空存在，而是通过具体的开发框架实现的。其中，LangGraph作为LangChain的扩展，为构建具有显式数据流的智能体系统提供了强大的工具集。</p>
+<p><strong>LangGraph：用图（Graph）定义工作流（Workflow）</strong></p>
+<p>LangGraph的核心思想是将智能体应用构建成一个<strong>状态图（State
+Graph）</strong>
+。这个图由节点和边组成，清晰地定义了数据如何在不同模块间流动</p>
+<ul>
+<li><strong>状态（State）：</strong>
+这是整个图的核心，一个所有节点共享的中央数据对象。
+<ul>
+<li>你可以把它想象成一个“数据总线”或共享内存。开发者需要预先定义State的结构，每个节点在执行时都可以读取和更新这个State对象
+。</li>
+</ul></li>
+<li><strong>节点（Nodes）：</strong>
+代表工作流中的一个计算单元或一个步骤。
+<ul>
+<li>每个节点通常是一个Python函数，它接收当前的State作为输入，执行特定任务（如调用LLM、执行工具、处理数据），然后返回对State的更新
+。</li>
+</ul></li>
+<li><strong>边（Edges）</strong>：
+连接节点，定义了工作流的路径，即数据在State更新后应该流向哪个节点。
+<ul>
+<li><strong>简单边（Simple Edges）：</strong>
+定义了固定的、无条件的流向，用于实现链式工作流 。</li>
+<li><strong>条件边（Conditional Edges）：</strong>
+用于实现路由逻辑。它会根据一个函数的输出来决定接下来应该走向哪个节点，从而实现流程的分支
+。</li>
+</ul></li>
+<li><strong>检查点（Checkpointer）：</strong>
+LangGraph提供了持久化机制，可以在每一步执行后自动保存State的状态。这对于构建需要长期记忆、可中断和恢复、或需要
+Human-in-the-Loop 的复杂业务流程至关重要 。</li>
+</ul>
+<p>复杂业务流程的AI智能体，其核心挑战已从单纯优化信息检索（如RAG）或提示词，转向了对内部<strong>工作流和数据流的精心设计与编排</strong>。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" rel="tag"># 大模型</a>
+              <a href="/tags/%E5%AD%A6%E4%B9%A0/" rel="tag"># 学习</a>
+              <a href="/tags/%E5%AE%9E%E4%B9%A0/" rel="tag"># 实习</a>
+              <a href="/tags/rag/" rel="tag"># rag</a>
+              <a href="/tags/prompt/" rel="tag"># prompt</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/07/12/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/dify/" rel="prev" title="">
+                  <i class="fa fa-angle-left"></i> 
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

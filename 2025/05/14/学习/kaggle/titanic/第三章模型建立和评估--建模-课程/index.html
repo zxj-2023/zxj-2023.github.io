@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="第三章 模型搭建和评估–建模 经过前面的两章的知识点的学习，我可以对数数据的本身进行处理，比如数据本身的增删查补，还可以做必要的清洗工作。那么下面我们就要开始使用我们前面处理好的数据了。这一章我们要做的就是使用数据，我们做数据分析的目的也就是，运用我们的数据以及结合我的业务来得到某些我们需要知道的结果。那么分析的第一步就是建模，搭建一个预测模型或者其他模型；我们从这个模型的到结果之后，我们要分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据分析——第三章模型建立和评估--建模">
+<meta property="og:url" content="http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0--%E5%BB%BA%E6%A8%A1-%E8%AF%BE%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="第三章 模型搭建和评估–建模 经过前面的两章的知识点的学习，我可以对数数据的本身进行处理，比如数据本身的增删查补，还可以做必要的清洗工作。那么下面我们就要开始使用我们前面处理好的数据了。这一章我们要做的就是使用数据，我们做数据分析的目的也就是，运用我们的数据以及结合我的业务来得到某些我们需要知道的结果。那么分析的第一步就是建模，搭建一个预测模型或者其他模型；我们从这个模型的到结果之后，我们要分析">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0--%E5%BB%BA%E6%A8%A1-%E8%AF%BE%E7%A8%8B/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0--%E5%BB%BA%E6%A8%A1-%E8%AF%BE%E7%A8%8B_17_0.png">
+<meta property="article:published_time" content="2025-05-13T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-06-12T10:45:38.524Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="数据分析">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0--%E5%BB%BA%E6%A8%A1-%E8%AF%BE%E7%A8%8B/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0--%E5%BB%BA%E6%A8%A1-%E8%AF%BE%E7%A8%8B_17_0.png">
+
+
+<link rel="canonical" href="http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0--%E5%BB%BA%E6%A8%A1-%E8%AF%BE%E7%A8%8B/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0--%E5%BB%BA%E6%A8%A1-%E8%AF%BE%E7%A8%8B/","path":"2025/05/14/学习/kaggle/titanic/第三章模型建立和评估--建模-课程/","title":"数据分析——第三章模型建立和评估--建模"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>数据分析——第三章模型建立和评估--建模 | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E6%90%AD%E5%BB%BA%E5%92%8C%E8%AF%84%E4%BC%B0%E5%BB%BA%E6%A8%A1"><span class="nav-number">1.</span> <span class="nav-text">第三章 模型搭建和评估–建模</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%90%AD%E5%BB%BA"><span class="nav-number">1.1.</span> <span class="nav-text">模型搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%B8%80%E5%88%87%E5%89%B2%E8%AE%AD%E7%BB%83%E9%9B%86%E5%92%8C%E6%B5%8B%E8%AF%95%E9%9B%86"><span class="nav-number">1.1.1.</span> <span class="nav-text">任务一：切割训练集和测试集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E6%8F%90%E7%A4%BA1"><span class="nav-number">1.1.2.</span> <span class="nav-text">任务提示1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%BA%8C%E6%A8%A1%E5%9E%8B%E5%88%9B%E5%BB%BA"><span class="nav-number">1.1.3.</span> <span class="nav-text">任务二：模型创建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%A4%BA"><span class="nav-number">1.1.4.</span> <span class="nav-text">提示</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%B8%89%E8%BE%93%E5%87%BA%E6%A8%A1%E5%9E%8B%E9%A2%84%E6%B5%8B%E7%BB%93%E6%9E%9C"><span class="nav-number">1.1.5.</span> <span class="nav-text">任务三：输出模型预测结果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%A4%BA3"><span class="nav-number">1.1.6.</span> <span class="nav-text">提示3</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">97</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0--%E5%BB%BA%E6%A8%A1-%E8%AF%BE%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="数据分析——第三章模型建立和评估--建模 | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据分析——第三章模型建立和评估--建模
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-05-14 00:00:00" itemprop="dateCreated datePublished" datetime="2025-05-14T00:00:00+08:00">2025-05-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-12 18:45:38" itemprop="dateModified" datetime="2025-06-12T18:45:38+08:00">2025-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/kaggle/" itemprop="url" rel="index"><span itemprop="name">kaggle</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/kaggle/titanic/" itemprop="url" rel="index"><span itemprop="name">titanic</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="第三章-模型搭建和评估建模">第三章 模型搭建和评估–建模</h2>
+<p>经过前面的两章的知识点的学习，我可以对数数据的本身进行处理，比如数据本身的增删查补，还可以做必要的清洗工作。那么下面我们就要开始使用我们前面处理好的数据了。这一章我们要做的就是使用数据，我们做数据分析的目的也就是，运用我们的数据以及结合我的业务来得到某些我们需要知道的结果。那么分析的第一步就是建模，搭建一个预测模型或者其他模型；我们从这个模型的到结果之后，我们要分析我的模型是不是足够的可靠，那我就需要评估这个模型。今天我们学习建模，下一节我们学习评估。</p>
+<p>我们拥有的泰坦尼克号的数据集，那么我们这次的目的就是，完成泰坦尼克号存活预测这个任务。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"><span class="keyword">from</span> IPython.display <span class="keyword">import</span> Image</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%matplotlib inline</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">plt.rcParams[<span class="string">&#x27;font.sans-serif&#x27;</span>] = [<span class="string">&#x27;SimHei&#x27;</span>]  <span class="comment"># 用来正常显示中文标签</span></span><br><span class="line">plt.rcParams[<span class="string">&#x27;axes.unicode_minus&#x27;</span>] = <span class="literal">False</span>  <span class="comment"># 用来正常显示负号</span></span><br><span class="line">plt.rcParams[<span class="string">&#x27;figure.figsize&#x27;</span>] = (<span class="number">10</span>, <span class="number">6</span>)  <span class="comment"># 设置输出图片大小</span></span><br></pre></td></tr></table></figure>
+<p>载入这些库，如果缺少某些库，请安装他们</p>
+<p>【思考】这些库的作用是什么呢？你需要查一查</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考题回答</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">Image 是 IPython.display 模块的一部分，用于在 Jupyter Notebook 或 IPython 环境中直接显示图像。支持从本地路径或网络 URL 加载图像，并控制显示格式（如宽度、高度、格式类型）</span></span><br><span class="line"><span class="string">seaborn 是一个基于 Matplotlib 的高级数据可视化库，专注于统计图形的绘制（如分布图、相关性图、分类图等），能快速生成美观且信息丰富的图表</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>&#39;\nImage 是 IPython.display 模块的一部分，用于在 Jupyter Notebook 或 IPython 环境中直接显示图像。支持从本地路径或网络 URL 加载图像，并控制显示格式（如宽度、高度、格式类型）\nseaborn 是一个基于 Matplotlib 的高级数据可视化库，专注于统计图形的绘制（如分布图、相关性图、分类图等），能快速生成美观且信息丰富的图表\n&#39;</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%matplotlib inline</span><br></pre></td></tr></table></figure>
+<p><strong>载入我们提供清洗之后的数据(clear_data.csv)，大家也将原始数据载入（train.csv），说说他们有什么不同</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">train = pd.read_csv(<span class="string">&#x27;train.csv&#x27;</span>)</span><br><span class="line">train.shape</span><br></pre></td></tr></table></figure>
+<pre><code>(891, 12)</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">train.head()</span><br></pre></td></tr></table></figure>
+<pre><code>.dataframe tbody tr th &#123;
+    vertical-align: top;
+&#125;
+
+.dataframe thead th &#123;
+    text-align: right;
+&#125;</code></pre>
+
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+<th>
+Sex
+</th>
+<th>
+Age
+</th>
+<th>
+SibSp
+</th>
+<th>
+Parch
+</th>
+<th>
+Ticket
+</th>
+<th>
+Fare
+</th>
+<th>
+Cabin
+</th>
+<th>
+Embarked
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Braund, Mr. Owen Harris
+</td>
+<td>
+male
+</td>
+<td>
+22.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+A/5 21171
+</td>
+<td>
+7.2500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+<td>
+female
+</td>
+<td>
+38.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+PC 17599
+</td>
+<td>
+71.2833
+</td>
+<td>
+C85
+</td>
+<td>
+C
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+Heikkinen, Miss. Laina
+</td>
+<td>
+female
+</td>
+<td>
+26.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+STON/O2. 3101282
+</td>
+<td>
+7.9250
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+4
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Futrelle, Mrs. Jacques Heath (Lily May Peel)
+</td>
+<td>
+female
+</td>
+<td>
+35.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+113803
+</td>
+<td>
+53.1000
+</td>
+<td>
+C123
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+5
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Allen, Mr. William Henry
+</td>
+<td>
+male
+</td>
+<td>
+35.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+373450
+</td>
+<td>
+8.0500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+</tbody>
+</table>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">data = pd.read_csv(<span class="string">&#x27;clear_data.csv&#x27;</span>)</span><br><span class="line"></span><br><span class="line">data.head()</span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Pclass
+</th>
+<th>
+Age
+</th>
+<th>
+SibSp
+</th>
+<th>
+Parch
+</th>
+<th>
+Fare
+</th>
+<th>
+Sex_female
+</th>
+<th>
+Sex_male
+</th>
+<th>
+Embarked_C
+</th>
+<th>
+Embarked_Q
+</th>
+<th>
+Embarked_S
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+22.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+7.2500
+</td>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+1
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+38.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+71.2833
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+26.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+7.9250
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+1
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+35.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+53.1000
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+1
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+4
+</td>
+<td>
+3
+</td>
+<td>
+35.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+8.0500
+</td>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+1
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="模型搭建">模型搭建</h3>
+<ul>
+<li>处理完前面的数据我们就得到建模数据，下一步是选择合适模型</li>
+<li>在进行模型选择之前我们需要先知道数据集最终是进行<strong>监督学习</strong>还是<strong>无监督学习</strong></li>
+<li>模型的选择一方面是通过我们的任务来决定的。</li>
+<li>除了根据我们任务来选择模型外，还可以根据数据样本量以及特征的稀疏性来决定</li>
+<li>刚开始我们总是先尝试使用一个基本的模型来作为其baseline，进而再训练其他模型做对比，最终选择泛化能力或性能比较好的模型</li>
+</ul>
+<p>这里我的建模，并不是从零开始，自己一个人完成完成所有代码的编译。我们这里使用一个机器学习最常用的一个库（sklearn）来完成我们的模型的搭建</p>
+<p><strong>下面给出sklearn的算法选择路径，供大家参考</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># sklearn模型算法选择路径图</span></span><br><span class="line">Image(<span class="string">&#x27;sklearn.png&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0--%E5%BB%BA%E6%A8%A1-%E8%AF%BE%E7%A8%8B/第三章模型建立和评估--建模-课程_17_0.png" alt="第三章模型建立和评估–建模-课程_17_0">
+<figcaption aria-hidden="true">第三章模型建立和评估–建模-课程_17_0</figcaption>
+</figure>
+<p>【思考】数据集哪些差异会导致模型在拟合数据是发生变化</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考回答</span></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="任务一切割训练集和测试集">任务一：切割训练集和测试集</h4>
+<p>这里使用留出法划分数据集</p>
+<ul>
+<li>将数据集分为自变量和因变量</li>
+<li>按比例切割训练集和测试集(一般测试集的比例有30%、25%、20%、15%和10%)</li>
+<li>使用分层抽样</li>
+<li>设置随机种子以便结果能复现</li>
+</ul>
+<p>【思考】 * 划分数据集的方法有哪些？ *
+为什么使用分层抽样，这样的好处有什么？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 划分数据集的方法有哪些？</span></span><br><span class="line"><span class="comment"># 1.  **留出法 (Hold-out Cross Validation)**：</span></span><br><span class="line"><span class="comment">#     *   直接将数据集D划分为两个互斥的集合：训练集S和测试集T。</span></span><br><span class="line"><span class="comment">#     *   例如，70%的数据用于训练，30%用于测试。</span></span><br><span class="line"><span class="comment">#     *   优点：简单、计算开销小。</span></span><br><span class="line"><span class="comment">#     *   缺点：划分具有随机性，单次划分的结果可能不够稳定和准确，尤其是在数据集较小时。训练集和测试集的样本比例会影响评估结果。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2.  **交叉验证法 (Cross Validation)**：</span></span><br><span class="line"><span class="comment">#     *   **k折交叉验证 (k-Fold Cross Validation)**：</span></span><br><span class="line"><span class="comment">#         *   将数据集D划分为k个大小相似的互斥子集 D1, D2, ..., Dk。</span></span><br><span class="line"><span class="comment">#         *   每次用k-1个子集的并集作为训练集，余下的那个子集作为测试集。</span></span><br><span class="line"><span class="comment">#         *   这样可以获得k组训练/测试集，从而可进行k次训练和测试，最终返回的是这k个测试结果的均值。</span></span><br><span class="line"><span class="comment">#         *   常用的k值为5或10。</span></span><br><span class="line"><span class="comment">#         *   优点：比留出法更稳定，更充分地利用了数据。</span></span><br><span class="line"><span class="comment">#         *   缺点：计算开销是k倍。</span></span><br><span class="line"><span class="comment">#     *   **留一法 (Leave-One-Out Cross Validation, LOOCV)**：</span></span><br><span class="line"><span class="comment">#         *   k折交叉验证的特例，当k等于样本数N时。</span></span><br><span class="line"><span class="comment">#         *   每次只留下一个样本作为测试集，其余N-1个样本作为训练集。</span></span><br><span class="line"><span class="comment">#         *   优点：评估结果通常被认为比较准确，因为几乎所有数据都用于训练。</span></span><br><span class="line"><span class="comment">#         *   缺点：计算开销非常大，尤其是在数据集很大时。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 3.  **自助法 (Bootstrapping)**：</span></span><br><span class="line"><span class="comment">#     *   以自助采样法为基础。给定包含m个样本的数据集D，对它进行采样产生数据集D&#x27;：每次随机从D中挑选一个样本，将其拷贝放入D&#x27;，然后再将该样本放回初始数据集D中，使得该样本在下次采样时仍有可能被采到。这个过程重复执行m次后，我们就得到了包含m个样本的数据集D&#x27;。</span></span><br><span class="line"><span class="comment">#     *   可以证明，初始数据集D中约有36.8%的样本未出现在采样数据集D&#x27;中。于是我们可将D&#x27;用作训练集，D\D&#x27;用作测试集。</span></span><br><span class="line"><span class="comment">#     *   优点：在数据集较小、难以有效划分训练/测试集时很有用；能从初始数据集中产生多个不同的训练集。</span></span><br><span class="line"><span class="comment">#     *   缺点：自助法产生的数据集改变了初始数据集的分布，会引入估计偏差。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 为什么使用分层抽样，这样的好处有什么？</span></span><br><span class="line"><span class="comment"># **分层抽样 (Stratified Sampling)** 是一种抽样技术，它将总体（数据集）划分为若干个互不重叠的子群（称为“层”），然后从每个层中独立地进行简单随机抽样。在划分训练集和测试集时，特别是对于分类任务，通常是根据目标变量的类别进行分层。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># **好处：**</span></span><br><span class="line"><span class="comment"># 1.  **保持类别比例一致性**：</span></span><br><span class="line"><span class="comment">#     *   确保训练集和测试集中的各个类别的样本比例与原始数据集中各个类别的样本比例大致相同。</span></span><br><span class="line"><span class="comment">#     *   这对于类别不平衡的数据集尤为重要。如果进行纯随机抽样，可能会导致训练集或测试集中某些少数类别的样本过少，甚至没有，从而影响模型的训练效果和评估的可靠性。</span></span><br><span class="line"><span class="comment"># 2.  **提高模型的泛化能力和评估的准确性**：</span></span><br><span class="line"><span class="comment">#     *   由于训练集和测试集都较好地代表了原始数据的类别分布，模型在训练时能学习到各个类别的特征，评估时也能更准确地反映模型在所有类别上的表现。</span></span><br><span class="line"><span class="comment">#     *   避免了因随机划分导致训练集和测试集在类别分布上产生较大差异，从而使得模型评估结果更加稳定和可信。</span></span><br><span class="line"><span class="comment"># 3.  **减少抽样误差**：</span></span><br><span class="line"><span class="comment">#     *   相比于简单随机抽样，分层抽样通常能得到更具代表性的样本，从而减少因抽样带来的误差，使得基于样本的推断更加精确。</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="任务提示1">任务提示1</h4>
+<ul>
+<li>切割数据集是为了后续能评估模型泛化能力</li>
+<li>sklearn中切割数据集的方法为<code>train_test_split</code></li>
+<li>查看函数文档可以在jupyter
+noteboo里面使用<code>train_test_split?</code>后回车即可看到</li>
+<li>分层和随机种子在参数里寻找</li>
+</ul>
+<p>要从clear_data.csv和train.csv中提取train_test_split()所需的参数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="comment"># 一般先取出X和y后再切割，有些情况会使用到未切割的，这时候X和y就可以用,x是清洗好的数据，y是我们要预测的存活数据&#x27;Survived&#x27;</span></span><br><span class="line">X = data</span><br><span class="line">y = train[<span class="string">&#x27;Survived&#x27;</span>]</span><br><span class="line"><span class="comment"># 对数据集进行切割</span></span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"></span><br><span class="line">X_train.shape, X_test.shape</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>((668, 11), (223, 11))</code></pre>
+<p>【思考】 * 什么情况下切割数据集的时候不用进行随机选取</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考回答</span></span><br><span class="line"><span class="comment"># 在以下情况下切割数据集时可能不需要或不适合进行随机选取：</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 1.  **时间序列数据 (Time Series Data)**：</span></span><br><span class="line"><span class="comment">#     *   对于时间序列数据，数据的顺序至关重要，因为它包含了时间依赖性。随机打乱顺序会破坏这种依赖关系。</span></span><br><span class="line"><span class="comment">#     *   通常的做法是按时间顺序划分，例如，将较早的数据作为训练集，较晚的数据作为测试集（或验证集）。这更符合实际应用中用过去预测未来的场景。</span></span><br><span class="line"><span class="comment">#     *   例如，用前几年的股票数据训练模型，用最近一年的数据测试模型。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2.  **数据已经预先排序或具有特定结构**：</span></span><br><span class="line"><span class="comment">#     *   如果数据集已经按照某种对分析有意义的顺序排列（例如，按地理区域、按实验批次等），并且你希望测试集来自与训练集不同的、特定的部分，那么可能需要按顺序或按特定规则划分，而不是随机划分。</span></span><br><span class="line"><span class="comment">#     *   例如，在一个全国性的调查数据中，你可能想用某些省份的数据做训练，用另一些省份的数据做测试，以检验模型的地域泛化能力。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 3.  **数据集非常大且分布均匀**：</span></span><br><span class="line"><span class="comment">#     *   当数据集非常庞大，并且可以合理假设数据是独立同分布 (i.i.d.) 且分布均匀时，简单地按顺序取一部分作为训练集，另一部分作为测试集，其效果可能与随机选取相差不大。随机选取的计算开销在这种情况下可能显得不必要。</span></span><br><span class="line"><span class="comment">#     *   然而，即使在这种情况下，随机选取通常仍然是更稳妥的做法，以避免潜在的未知偏差。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 4.  **特定的交叉验证策略**：</span></span><br><span class="line"><span class="comment">#     *   某些交叉验证方法本身就定义了非随机的划分方式。例如，在k折交叉验证中，虽然整体上数据被分成了k折，但每一折的选择是确定的（通常是按顺序分割）。留一法交叉验证更是每次只留一个特定的样本作为测试集。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 5.  **当需要完全复现特定的、非随机的划分结果时**：</span></span><br><span class="line"><span class="comment">#     *   如果之前的研究或实验使用了某种特定的非随机划分方式，为了比较或复现结果，也需要采用相同的划分方式。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 6.  **流式数据或在线学习场景**：</span></span><br><span class="line"><span class="comment">#     *   在数据持续不断流入的场景中，模型可能需要用新到达的数据进行测试或持续训练。这种情况下，测试集自然是最新的一部分数据，而不是从历史数据中随机抽取的。</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="任务二模型创建">任务二：模型创建</h4>
+<ul>
+<li>创建基于线性模型的分类模型（逻辑回归）</li>
+<li>创建基于树的分类模型（决策树、随机森林）</li>
+<li>分别使用这些模型进行训练，分别的到训练集和测试集的得分</li>
+<li>查看模型的参数，并更改参数值，观察模型变化</li>
+</ul>
+<h4 id="提示">提示</h4>
+<ul>
+<li>逻辑回归不是回归模型而是分类模型，不要与<code>LinearRegression</code>混淆</li>
+<li>随机森林其实是决策树集成为了降低决策树过拟合的情况</li>
+<li>线性模型所在的模块为<code>sklearn.linear_model</code></li>
+<li>树模型所在的模块为<code>sklearn.ensemble</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LogisticRegression</span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment"># 默认参数逻辑回归模型</span></span><br><span class="line">lr = LogisticRegression()</span><br><span class="line">lr.fit(X_train, y_train)</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>/root/.pyenv/versions/3.11.1/lib/python3.11/site-packages/sklearn/linear_model/_logistic.py:465: ConvergenceWarning: lbfgs failed to converge (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT.
+
+Increase the number of iterations (max_iter) or scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment"># 查看训练集和测试集score值</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Training set score: &#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(lr.score(X_train, y_train)))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Testing set score: &#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(lr.score(X_test, y_test)))</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>Training set score: 0.80
+Testing set score: 0.79</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment"># 调整参数后的逻辑回归模型</span></span><br><span class="line">lr2 = LogisticRegression(C=<span class="number">100</span>)</span><br><span class="line">lr2.fit(X_train, y_train)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Training set score: &#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(lr2.score(X_train, y_train)))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Testing set score: &#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(lr2.score(X_test, y_test)))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>Training set score: 0.79
+Testing set score: 0.78
+
+
+/root/.pyenv/versions/3.11.1/lib/python3.11/site-packages/sklearn/linear_model/_logistic.py:465: ConvergenceWarning: lbfgs failed to converge (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT.
+
+Increase the number of iterations (max_iter) or scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 默认参数的随机森林分类模型</span></span><br><span class="line">rfc = RandomForestClassifier()</span><br><span class="line">rfc.fit(X_train, y_train)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Training set score: &#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(rfc.score(X_train, y_train)))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Testing set score: &#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(rfc.score(X_test, y_test)))</span><br></pre></td></tr></table></figure>
+<pre><code>Training set score: 1.00
+Testing set score: 0.82</code></pre>
+<p>【思考】 * 为什么线性模型可以进行分类任务，背后是怎么的数学关系 *
+对于多分类问题，线性模型是怎么进行分类的</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考回答</span></span><br><span class="line"><span class="comment"># 为什么线性模型可以进行分类任务，背后是怎么的数学关系</span></span><br><span class="line"><span class="comment"># 线性模型（如逻辑回归 Logistic Regression，或者支持向量机 SVM 的线性核）之所以能用于分类任务，是因为它们通过以下方式将线性组合的输入特征映射到类别预测：</span></span><br><span class="line"><span class="comment"># 1.  **线性组合**：首先，模型计算输入特征的线性组合，形式通常为 `z = w_1*x_1 + w_2*x_2 + ... + w_n*x_n + b`，或者用向量表示为 `z = w^T * x + b`。</span></span><br><span class="line"><span class="comment">#     *   `x` 是输入特征向量。</span></span><br><span class="line"><span class="comment">#     *   `w` 是模型学习到的权重（或系数）。</span></span><br><span class="line"><span class="comment">#     *   `b` 是偏置项（或截距）。</span></span><br><span class="line"><span class="comment">#     这个 `z` 值可以看作是样本点到决策边界的某种度量。</span></span><br><span class="line"><span class="comment"># 2.  **决策函数/激活函数**：然后，这个线性组合的结果 `z` 会被传递给一个决策函数或激活函数，该函数将其转换为类别预测或类别概率。</span></span><br><span class="line"><span class="comment">#     *   **对于逻辑回归 (Logistic Regression)**：</span></span><br><span class="line"><span class="comment">#         *   它使用 Sigmoid (Logistic) 函数：`p = 1 / (1 + e^(-z))`。</span></span><br><span class="line"><span class="comment">#         *   Sigmoid 函数将任意实数值 `z` 映射到 (0, 1) 区间，这个输出 `p` 可以解释为样本属于正类（通常是类别1）的概率。</span></span><br><span class="line"><span class="comment">#         *   通过设定一个阈值（通常是0.5），如果 `p &gt; 0.5` (即 `z &gt; 0`)，则预测为正类；否则预测为负类。</span></span><br><span class="line"><span class="comment">#         *   因此，决策边界是 `z = 0`，即 `w^T * x + b = 0`，这是一个超平面。</span></span><br><span class="line"><span class="comment">#     *   **对于线性支持向量机 (Linear SVM)**：</span></span><br><span class="line"><span class="comment">#         *   它直接使用 `z` 的符号来决定类别。如果 `z &gt; 0`，预测为一类；如果 `z &lt; 0`，预测为另一类。</span></span><br><span class="line"><span class="comment">#         *   SVM 的目标是找到一个能最大化两类样本之间间隔（margin）的决策边界（超平面）。</span></span><br><span class="line"><span class="comment"># 总结来说，线性模型通过学习一个线性决策边界（直线、平面或超平面）来分隔不同类别的样本。它们首先计算一个线性得分，然后通过一个非线性函数（如Sigmoid）或直接根据得分的符号来做出分类决策。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 对于多分类问题，线性模型是怎么进行分类的</span></span><br><span class="line"><span class="comment"># 当类别数量大于两个时（即多分类问题），线性模型通常采用以下两种主要策略之一将问题转化为多个二分类问题：</span></span><br><span class="line"><span class="comment"># 1.  **一对余 (One-vs-Rest, OvR) 或 一对所有 (One-vs-All, OvA)**：</span></span><br><span class="line"><span class="comment">#     *   **原理**：如果有个 `K` 个类别，OvR 策略会训练 `K` 个独立的二分类器。</span></span><br><span class="line"><span class="comment">#     *   第 `i` 个分类器 (`i` 从 1 到 `K`) 会将类别 `i` 的样本视为正类，而将所有其他 `K-1` 个类别的样本视为负类。</span></span><br><span class="line"><span class="comment">#     *   **预测**：对于一个新的样本，它会被输入到所有 `K` 个分类器中。每个分类器都会输出一个分数或概率，表示该样本属于其对应“正类”的置信度。最终，样本被分配给那个给出最高置信度分数的类别。</span></span><br><span class="line"><span class="comment">#     *   **优点**：直观，实现相对简单，计算效率较高（只需要训练K个分类器）。</span></span><br><span class="line"><span class="comment">#     *   **缺点**：当类别数量很多时，每个二分类器的负类可能包含非常多样化的样本，可能导致类别不平衡问题。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2.  **一对一 (One-vs-One, OvO)**：</span></span><br><span class="line"><span class="comment">#     *   **原理**：如果有个 `K` 个类别，OvO 策略会为每一对类别 `(i, j)` 训练一个二分类器，其中 `i != j`。总共需要训练 `K * (K-1) / 2` 个分类器。</span></span><br><span class="line"><span class="comment">#     *   每个分类器只负责区分两个特定的类别。</span></span><br><span class="line"><span class="comment">#     *   **预测**：对于一个新的样本，它会被输入到所有 `K * (K-1) / 2` 个分类器中。每个分类器都会对样本属于其两个类别中的哪一个进行投票。最终，样本被分配给获得最多投票的类别。</span></span><br><span class="line"><span class="comment">#     *   **优点**：每个分类器只需要处理两个类别的数据，通常训练速度更快，且对于某些对类别不平衡不敏感的算法（如SVM）可能表现更好。</span></span><br><span class="line"><span class="comment">#     *   **缺点**：当类别数量 `K` 很大时，需要训练的分类器数量会急剧增加，导致计算成本和存储成本较高。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># **在 scikit-learn 中**：</span></span><br><span class="line"><span class="comment"># *   `LogisticRegression` 默认使用 OvR 策略进行多分类 (可以通过 `multi_class` 参数设置为 `&#x27;multinomial&#x27;` 来使用 Softmax 回归，这是一种直接处理多分类的方法，但其基础仍然是线性的)。</span></span><br><span class="line"><span class="comment"># *   `LinearSVC` (线性支持向量机) 默认使用 OvR 策略。</span></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="任务三输出模型预测结果">任务三：输出模型预测结果</h4>
+<ul>
+<li>输出模型预测分类标签</li>
+<li>输出不同分类标签的预测概率</li>
+</ul>
+<h4 id="提示3">提示3</h4>
+<ul>
+<li>一般监督模型在sklearn里面有个<code>predict</code>能输出预测标签，<code>predict_proba</code>则可以输出标签概率</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">pred = lr.predict(X_train)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">pred[:<span class="number">10</span>]</span><br></pre></td></tr></table></figure>
+<pre><code>array([0, 1, 1, 1, 0, 0, 1, 0, 1, 1])</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">pred_proba = lr.predict_proba(X_train)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">pred_proba[:<span class="number">10</span>]</span><br></pre></td></tr></table></figure>
+<pre><code>array([[0.60887905, 0.39112095],
+       [0.17668722, 0.82331278],
+       [0.40624596, 0.59375404],
+       [0.18896449, 0.81103551],
+       [0.87984221, 0.12015779],
+       [0.91385758, 0.08614242],
+       [0.13282516, 0.86717484],
+       [0.90555878, 0.09444122],
+       [0.05280619, 0.94719381],
+       [0.10934565, 0.89065435]])</code></pre>
+<p>【思考】 * 预测标签的概率对我们有什么帮助</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考回答</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="tag"># 数据分析</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B/" rel="prev" title="数据分析——第三章模型建立和评估---评价">
+                  <i class="fa fa-angle-left"></i> 数据分析——第三章模型建立和评估---评价
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E7%AC%AC%E4%B8%89%E8%8A%82%E6%8E%A2%E7%B4%A2%E6%80%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90-%E8%AF%BE%E7%A8%8B/" rel="next" title="数据分析——第一章：第三节探索性数据分析">
+                  数据分析——第一章：第三节探索性数据分析 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

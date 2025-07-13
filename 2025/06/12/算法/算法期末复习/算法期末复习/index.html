@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="贪心问题 找零钱 用最少数量的钱币凑出目标金额 m 元。 核心思想 ： 每次选择不超过剩余金额的最大面值 ，直到凑够目标金额。 步骤：  将钱币面值按从大到小排序。 对于当前剩余金额，不断减去最大可用面值，直到金额为 0。  贪心策略的适用性 仅当钱币面值满足以下条件时有效 ：  面值序列中每个元素都是前一个元素的因数（如 1, 2, 5, 10）。 否则，贪心可能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="算法期末复习">
+<meta property="og:url" content="http://example.com/2025/06/12/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/%E7%AE%97%E6%B3%95%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="贪心问题 找零钱 用最少数量的钱币凑出目标金额 m 元。 核心思想 ： 每次选择不超过剩余金额的最大面值 ，直到凑够目标金额。 步骤：  将钱币面值按从大到小排序。 对于当前剩余金额，不断减去最大可用面值，直到金额为 0。  贪心策略的适用性 仅当钱币面值满足以下条件时有效 ：  面值序列中每个元素都是前一个元素的因数（如 1, 2, 5, 10）。 否则，贪心可能">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-06-11T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-06-14T14:26:13.585Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2025/06/12/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/%E7%AE%97%E6%B3%95%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/06/12/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/%E7%AE%97%E6%B3%95%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/","path":"2025/06/12/算法/算法期末复习/算法期末复习/","title":"算法期末复习"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>算法期末复习 | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B4%AA%E5%BF%83%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">贪心问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%BE%E9%9B%B6%E9%92%B1"><span class="nav-number">1.1.</span> <span class="nav-text">找零钱</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%80%E4%BC%98%E8%A3%85%E8%BD%BD%E9%97%AE%E9%A2%98"><span class="nav-number">1.2.</span> <span class="nav-text">最优装载问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B4%BB%E5%8A%A8%E9%80%89%E6%8B%A9%E9%97%AE%E9%A2%98%E6%9C%80%E5%A4%A7%E7%9B%B8%E5%AE%B9%E6%B4%BB%E5%8A%A8%E5%AD%90%E9%9B%86"><span class="nav-number">1.3.</span> <span class="nav-text">活动选择问题（最大相容活动子集）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%A0%86%E4%BC%98%E5%8C%96%E7%9A%84-dijkstra-%E7%AE%97%E6%B3%95python-%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.4.</span> <span class="nav-text">使用堆优化的 Dijkstra
+算法（Python 实现）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%93%88%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81"><span class="nav-number">1.5.</span> <span class="nav-text">哈夫曼编码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#prim"><span class="nav-number">1.6.</span> <span class="nav-text">prim</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#kruskal"><span class="nav-number">1.7.</span> <span class="nav-text">kruskal</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92"><span class="nav-number">2.</span> <span class="nav-text">动态规划</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%8C%E5%85%A8%E8%83%8C%E5%8C%85"><span class="nav-number">2.1.</span> <span class="nav-text">完全背包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%80%E4%BC%98%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91"><span class="nav-number">2.2.</span> <span class="nav-text">最优二叉搜索树</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E6%BA%AF%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">回溯法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%AB%E7%9A%87%E5%90%8E"><span class="nav-number">3.1.</span> <span class="nav-text">八皇后</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">97</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/06/12/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/%E7%AE%97%E6%B3%95%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="算法期末复习 | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          算法期末复习
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-06-12 00:00:00" itemprop="dateCreated datePublished" datetime="2025-06-12T00:00:00+08:00">2025-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-14 22:26:13" itemprop="dateModified" datetime="2025-06-14T22:26:13+08:00">2025-06-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="贪心问题">贪心问题</h3>
+<h4 id="找零钱">找零钱</h4>
+<p>用最少数量的钱币凑出目标金额 m 元。</p>
+<p><strong>核心思想</strong> ：
+每次选择<strong>不超过剩余金额的最大面值</strong>
+，直到凑够目标金额。</p>
+<p><strong>步骤：</strong></p>
+<ol type="1">
+<li>将钱币面值按从大到小排序。</li>
+<li>对于当前剩余金额，不断减去最大可用面值，直到金额为 0。</li>
+</ol>
+<p><strong>贪心策略的适用性</strong></p>
+<p><strong>仅当钱币面值满足以下条件时有效</strong> ：</p>
+<ul>
+<li>面值序列中每个元素都是前一个元素的因数（如
+<code>1, 2, 5, 10</code>）。</li>
+<li>否则，贪心可能失败（例如面值 <code>[1, 3, 4]</code>，目标
+<code>6</code>：贪心选 <code>4+1+1</code> 需 3 枚，而最优解是
+<code>3+3</code> 需 2 枚）。</li>
+</ul>
+<p><strong>代码问题分析</strong></p>
+<p>用户提供的代码是一个基于贪心策略的找零钱实现，但在<strong>硬币面值不满足贪心条件</strong>时可能无法得到最优解。以下是具体分析：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">findMinCoins</span>(<span class="params">coins, amount</span>):</span><br><span class="line">    coins.sort(reverse=<span class="literal">True</span>)  <span class="comment"># 降序排序</span></span><br><span class="line">    res = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(coins)):</span><br><span class="line">        <span class="keyword">while</span> amount &gt;= coins[i]:</span><br><span class="line">            res.append(coins[i])</span><br><span class="line">            amount -= coins[i]</span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">coins = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">10</span>, <span class="number">50</span>, <span class="number">100</span>]</span><br><span class="line">amount = <span class="number">1136</span></span><br><span class="line">out = findMinCoins(coins, amount)</span><br><span class="line"><span class="built_in">print</span>(out)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;钱币数量为<span class="subst">&#123;<span class="built_in">len</span>(out)&#125;</span>.&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>问题点：</strong></p>
+<ol type="1">
+<li><p><strong>贪心策略的局限性</strong><br>
+仅当硬币面值满足 <strong>每种面值是前一种面值的因数</strong>（如
+<code>[1, 2, 5, 10, 50, 100]</code>）时，贪心算法才能保证最优解。若面值不满足此条件（如
+<code>[1, 3, 4]</code>），则可能失败。</p></li>
+<li><p><strong>未处理特殊情况</strong></p>
+<ul>
+<li>若 <code>amount</code> 无法被硬币组合凑出（如硬币为
+<code>[2, 5]</code>，目标
+<code>3</code>），代码会返回非最优解或死循环。</li>
+</ul></li>
+</ol>
+<p><strong>改进方案</strong></p>
+<p>适用于任意硬币面值，确保最优解： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">min_coins_dp</span>(<span class="params">coins, amount</span>):</span><br><span class="line">    dp = [<span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>)] * (amount + <span class="number">1</span>)</span><br><span class="line">    dp[<span class="number">0</span>] = <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> a <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, amount + <span class="number">1</span>):</span><br><span class="line">        <span class="keyword">for</span> coin <span class="keyword">in</span> coins:</span><br><span class="line">            <span class="keyword">if</span> a &gt;= coin <span class="keyword">and</span> dp[a - coin] + <span class="number">1</span> &lt; dp[a]:</span><br><span class="line">                dp[a] = dp[a - coin] + <span class="number">1</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> dp[amount] <span class="keyword">if</span> dp[amount] != <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>) <span class="keyword">else</span> -<span class="number">1</span></span><br><span class="line"></span><br><span class="line">coins = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">10</span>, <span class="number">50</span>, <span class="number">100</span>]</span><br><span class="line">amount = <span class="number">1136</span></span><br><span class="line"><span class="built_in">print</span>(min_coins_dp(coins, amount))  <span class="comment"># 输出 16</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="最优装载问题">最优装载问题</h4>
+<p>🧮 问题描述</p>
+<p>给定一个集装箱重量列表 <code>weights</code> 和轮船的最大载重
+<code>W</code>，目标是
+<strong>尽可能多地装载集装箱</strong>（不考虑体积限制）。</p>
+<p>✅ 算法思路</p>
+<ol type="1">
+<li><strong>排序</strong>：将所有集装箱按重量从小到大排序。</li>
+<li><strong>贪心装载</strong>：依次尝试装载每个集装箱，若当前总重量加上该集装箱的重量不超过
+<code>W</code>，则装载；否则停止。</li>
+<li><strong>返回结果</strong>：返回成功装载的集装箱数量。</li>
+</ol>
+<p>🧾 Python 实现</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">max_loaded_containers</span>(<span class="params">weights, W</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    返回在总载重 W 下，最多可以装载的集装箱数量。</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    参数:</span></span><br><span class="line"><span class="string">    weights (list of int/float): 集装箱重量列表</span></span><br><span class="line"><span class="string">    W (int/float): 轮船的最大载重</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    返回:</span></span><br><span class="line"><span class="string">    int: 最多可以装载的集装箱数量</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># 按重量从小到大排序</span></span><br><span class="line">    weights.sort()</span><br><span class="line">    </span><br><span class="line">    total_weight = <span class="number">0</span></span><br><span class="line">    count = <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> weight <span class="keyword">in</span> weights:</span><br><span class="line">        <span class="keyword">if</span> total_weight + weight &lt;= W:</span><br><span class="line">            total_weight += weight</span><br><span class="line">            count += <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> count</span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例测试</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    weights = [<span class="number">3</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">2</span>]</span><br><span class="line">    W = <span class="number">10</span></span><br><span class="line">    result = max_loaded_containers(weights, W)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;最多可以装载 <span class="subst">&#123;result&#125;</span> 个集装箱&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="活动选择问题最大相容活动子集">活动选择问题（最大相容活动子集）</h4>
+<p>📌 问题描述</p>
+<p>给定 $ n $ 个活动的集合 $ C = {1, 2, …, n} $，每个活动 $ i $
+都有起始时间 $ s_i $ 和结束时间 $ f_i $（满足 $ s_i &lt; f_i
+$）。要求选择一个<strong>最大相容活动子集</strong>，使得被选中的活动之间<strong>时间互不重叠</strong>。</p>
+<p>两个活动 $ i $ 和 $ j $ 相容的条件为： <span class="math display"><em>s</em><sub><em>i</em></sub> ≥ <em>f</em><sub><em>j</em></sub>  或  <em>s</em><sub><em>j</em></sub> ≥ <em>f</em><sub><em>i</em></sub></span></p>
+<p>✅ 贪心策略与正确性</p>
+<p><strong>贪心策略</strong>：<br>
+1. <strong>按活动结束时间 $ f_i $ 从小到大排序</strong>。 2.
+<strong>依次选择结束最早的活动</strong>，并跳过与其冲突的所有活动。</p>
+<p><strong>正确性证明（归纳法）</strong>：</p>
+<ul>
+<li><strong>基础情况</strong>：当只有一项活动时，显然选择它是最优的。</li>
+<li><strong>归纳假设</strong>：对于前 $ k $
+个活动，该策略能得到最大相容子集。</li>
+<li><strong>归纳步骤</strong>：考虑第 $ k+1 $
+个活动。若选择结束最早的活动 $ A $，则剩下的可用时间区间为 $ [f_A, +)
+$，此时在该区间内继续应用该策略，仍能得到最大子集。若不选 $ A $
+而选其他活动，则剩余时间更少，无法容纳更多活动。</li>
+</ul>
+<p>🧾 Python 实现</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">max_compatible_activities</span>(<span class="params">activities</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    返回最大相容活动子集的数量及具体活动列表。</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    参数:</span></span><br><span class="line"><span class="string">    activities (list of tuples): 每个元素为 (s_i, f_i)，表示活动的起始和结束时间</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    返回:</span></span><br><span class="line"><span class="string">    tuple: (最大活动数量, 相容活动列表)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># 按结束时间从小到大排序</span></span><br><span class="line">    sorted_activities = <span class="built_in">sorted</span>(activities, key=<span class="keyword">lambda</span> x: x[<span class="number">1</span>])</span><br><span class="line">    </span><br><span class="line">    selected = []</span><br><span class="line">    last_end = -<span class="number">1</span>  <span class="comment"># 上一个选中的活动的结束时间</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> activity <span class="keyword">in</span> sorted_activities:</span><br><span class="line">        s, f = activity</span><br><span class="line">        <span class="keyword">if</span> s &gt;= last_end:</span><br><span class="line">            selected.append(activity)</span><br><span class="line">            last_end = f</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">len</span>(selected), selected</span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例测试</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    activities = [</span><br><span class="line">        (<span class="number">1</span>, <span class="number">4</span>), (<span class="number">3</span>, <span class="number">5</span>), (<span class="number">0</span>, <span class="number">6</span>), (<span class="number">5</span>, <span class="number">7</span>), </span><br><span class="line">        (<span class="number">3</span>, <span class="number">8</span>), (<span class="number">5</span>, <span class="number">9</span>), (<span class="number">6</span>, <span class="number">10</span>), (<span class="number">8</span>, <span class="number">11</span>)</span><br><span class="line">    ]</span><br><span class="line">    count, selected = max_compatible_activities(activities)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;最大相容活动数: <span class="subst">&#123;count&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;所选活动:&quot;</span>, selected)</span><br></pre></td></tr></table></figure>
+<h4 id="使用堆优化的-dijkstra-算法python-实现">使用堆优化的 Dijkstra
+算法（Python 实现）</h4>
+<p>🧠 <strong>核心思想</strong></p>
+<ul>
+<li>使用<strong>最小堆</strong>（优先队列）高效选择当前距离最小的节点，避免暴力遍历。</li>
+<li>每次从堆中取出当前最短路径的节点，进行<strong>松弛操作</strong>（Relaxation）。</li>
+<li>若发现堆中存在过时的路径记录，则跳过（因为已找到更优路径）。</li>
+</ul>
+<p>📦 <strong>图的表示</strong></p>
+<p>使用邻接表（字典嵌套列表）： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">graph = &#123;</span><br><span class="line">    <span class="string">&#x27;A&#x27;</span>: [(<span class="string">&#x27;B&#x27;</span>, <span class="number">1</span>), (<span class="string">&#x27;C&#x27;</span>, <span class="number">4</span>)],</span><br><span class="line">    <span class="string">&#x27;B&#x27;</span>: [(<span class="string">&#x27;A&#x27;</span>, <span class="number">1</span>), (<span class="string">&#x27;C&#x27;</span>, <span class="number">2</span>), (<span class="string">&#x27;D&#x27;</span>, <span class="number">5</span>)],</span><br><span class="line">    <span class="string">&#x27;C&#x27;</span>: [(<span class="string">&#x27;A&#x27;</span>, <span class="number">4</span>), (<span class="string">&#x27;B&#x27;</span>, <span class="number">2</span>), (<span class="string">&#x27;D&#x27;</span>, <span class="number">1</span>)],</span><br><span class="line">    <span class="string">&#x27;D&#x27;</span>: [(<span class="string">&#x27;B&#x27;</span>, <span class="number">5</span>), (<span class="string">&#x27;C&#x27;</span>, <span class="number">1</span>)]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>🧾 <strong>Python 代码实现</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> heapq</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dijkstra_with_heap</span>(<span class="params">graph, start</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    使用堆优化的 Dijkstra 算法求单源最短路径。</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    参数:</span></span><br><span class="line"><span class="string">    graph (dict): 邻接表形式的图，格式为 &#123;节点: [(邻接节点, 权重), ...]&#125;</span></span><br><span class="line"><span class="string">    start (str/int): 起始节点</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    返回:</span></span><br><span class="line"><span class="string">    dict: 从起始节点到所有节点的最短路径长度</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># 初始化距离字典，所有节点初始距离为无穷大</span></span><br><span class="line">    distances = &#123;node: <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>) <span class="keyword">for</span> node <span class="keyword">in</span> graph&#125;</span><br><span class="line">    distances[start] = <span class="number">0</span>  <span class="comment"># 起始节点到自身的距离为 0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 优先队列（最小堆），存储 (距离, 节点)</span></span><br><span class="line">    heap = [(<span class="number">0</span>, start)]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> heap:</span><br><span class="line">        current_distance, current_node = heapq.heappop(heap)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 如果当前弹出的距离大于记录的距离，说明该节点已被处理过，跳过</span></span><br><span class="line">        <span class="keyword">if</span> current_distance &gt; distances[current_node]:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 遍历当前节点的所有邻接边</span></span><br><span class="line">        <span class="keyword">for</span> neighbor, weight <span class="keyword">in</span> graph[current_node]:</span><br><span class="line">            distance = current_distance + weight</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># 如果找到更短路径，更新距离并推入堆</span></span><br><span class="line">            <span class="keyword">if</span> distance &lt; distances[neighbor]:</span><br><span class="line">                distances[neighbor] = distance</span><br><span class="line">                heapq.heappush(heap, (distance, neighbor))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> distances</span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例测试</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    graph = &#123;</span><br><span class="line">        <span class="string">&#x27;A&#x27;</span>: [(<span class="string">&#x27;B&#x27;</span>, <span class="number">1</span>), (<span class="string">&#x27;C&#x27;</span>, <span class="number">4</span>)],</span><br><span class="line">        <span class="string">&#x27;B&#x27;</span>: [(<span class="string">&#x27;A&#x27;</span>, <span class="number">1</span>), (<span class="string">&#x27;C&#x27;</span>, <span class="number">2</span>), (<span class="string">&#x27;D&#x27;</span>, <span class="number">5</span>)],</span><br><span class="line">        <span class="string">&#x27;C&#x27;</span>: [(<span class="string">&#x27;A&#x27;</span>, <span class="number">4</span>), (<span class="string">&#x27;B&#x27;</span>, <span class="number">2</span>), (<span class="string">&#x27;D&#x27;</span>, <span class="number">1</span>)],</span><br><span class="line">        <span class="string">&#x27;D&#x27;</span>: [(<span class="string">&#x27;B&#x27;</span>, <span class="number">5</span>), (<span class="string">&#x27;C&#x27;</span>, <span class="number">1</span>)]</span><br><span class="line">    &#125;</span><br><span class="line">    start_node = <span class="string">&#x27;A&#x27;</span></span><br><span class="line">    shortest_paths = dijkstra_with_heap(graph, start_node)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;从节点 <span class="subst">&#123;start_node&#125;</span> 出发的最短路径：&quot;</span>)</span><br><span class="line">    <span class="keyword">for</span> node, dist <span class="keyword">in</span> shortest_paths.items():</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;start_node&#125;</span> → <span class="subst">&#123;node&#125;</span> : <span class="subst">&#123;dist&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="哈夫曼编码"><strong>哈夫曼编码</strong></h4>
+<p><strong>2. 构建哈夫曼树的步骤</strong></p>
+<p><strong>步骤 1：统计字符频率</strong></p>
+<p>假设输入字符串为
+<code>"BCCABBDDAECCBAAAEC"</code>，统计每个字符的出现次数：
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A: 6, B: 4, C: 5, D: 2, E: 1</span><br></pre></td></tr></table></figure></p>
+<p><strong>步骤 2：创建最小堆（优先队列）</strong></p>
+<ul>
+<li>将每个字符及其频率构建成节点，并按频率升序排列。</li>
+<li>初始堆：<code>[E(1), D(2), B(4), C(5), A(6)]</code></li>
+</ul>
+<p><strong>步骤 3：合并节点，构建哈夫曼树</strong></p>
+<ol type="1">
+<li>取出两个频率最小的节点 <code>E(1)</code> 和
+<code>D(2)</code>，合并为新节点 <code>ED(3)</code>。</li>
+<li>将新节点插入堆：<code>[B(4), C(5), ED(3), A(6)]</code> → 重新排序为
+<code>[ED(3), B(4), C(5), A(6)]</code></li>
+<li>重复上述步骤，直到堆中只剩一个根节点（哈夫曼树）。</li>
+</ol>
+<p>最终树结构示意图（频率越小越靠近叶子）： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">        (18)</span><br><span class="line">       /    \</span><br><span class="line">     (8)    A(6)</span><br><span class="line">    /   \</span><br><span class="line"> (4)   (4)</span><br><span class="line">B     C(5)</span><br></pre></td></tr></table></figure></p>
+<p><strong>步骤 4：生成哈夫曼编码表</strong></p>
+<p>从根节点出发，左子树标记为 <code>0</code>，右子树标记为
+<code>1</code>： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">A: 11</span><br><span class="line">B: 00</span><br><span class="line">C: 01</span><br><span class="line">D: 100</span><br><span class="line">E: 101</span><br></pre></td></tr></table></figure></p>
+<p><strong>4. Python 实现哈夫曼编码</strong></p>
+<p>以下代码展示如何用 Python 构建哈夫曼树并生成编码表：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> heapq</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Counter</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">HuffmanNode</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, char, freq</span>):</span><br><span class="line">        <span class="variable language_">self</span>.char = char</span><br><span class="line">        <span class="variable language_">self</span>.freq = freq</span><br><span class="line">        <span class="variable language_">self</span>.left = <span class="literal">None</span></span><br><span class="line">        <span class="variable language_">self</span>.right = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__lt__</span>(<span class="params">self, other</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.freq &lt; other.freq</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">build_huffman_tree</span>(<span class="params">text</span>):</span><br><span class="line">    <span class="comment"># 统计频率</span></span><br><span class="line">    frequency = Counter(text)</span><br><span class="line">    <span class="comment"># 创建最小堆</span></span><br><span class="line">    heap = [HuffmanNode(char, freq) <span class="keyword">for</span> char, freq <span class="keyword">in</span> frequency.items()]</span><br><span class="line">    heapq.heapify(heap)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 合并节点</span></span><br><span class="line">    <span class="keyword">while</span> <span class="built_in">len</span>(heap) &gt; <span class="number">1</span>:</span><br><span class="line">        left = heapq.heappop(heap)</span><br><span class="line">        right = heapq.heappop(heap)</span><br><span class="line">        merged = HuffmanNode(<span class="literal">None</span>, left.freq + right.freq)</span><br><span class="line">        merged.left = left</span><br><span class="line">        merged.right = right</span><br><span class="line">        heapq.heappush(heap, merged)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> heapq.heappop(heap) <span class="keyword">if</span> heap <span class="keyword">else</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">build_huffman_codes</span>(<span class="params">root</span>):</span><br><span class="line">    codes = &#123;&#125;</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">dfs</span>(<span class="params">node, current_code</span>):</span><br><span class="line">        <span class="keyword">if</span> node:</span><br><span class="line">            <span class="keyword">if</span> node.char <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">                codes[node.char] = current_code</span><br><span class="line">            dfs(node.left, current_code + <span class="string">&quot;0&quot;</span>)</span><br><span class="line">            dfs(node.right, current_code + <span class="string">&quot;1&quot;</span>)</span><br><span class="line">    dfs(root, <span class="string">&quot;&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> codes</span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例</span></span><br><span class="line">text = <span class="string">&quot;BCCABBDDAECCBAAAEC&quot;</span></span><br><span class="line">root = build_huffman_tree(text)</span><br><span class="line">codes = build_huffman_codes(root)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;哈夫曼编码表:&quot;</span>, codes)</span><br></pre></td></tr></table></figure>
+<p><strong>输出示例：</strong> <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">哈夫曼编码表: &#123;&#x27;B&#x27;: &#x27;0&#x27;, &#x27;C&#x27;: &#x27;10&#x27;, &#x27;A&#x27;: &#x27;11&#x27;, &#x27;D&#x27;: &#x27;110&#x27;, &#x27;E&#x27;: &#x27;111&#x27;&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="prim">prim</h4>
+<p>以下是 <strong>朴素 Prim 算法</strong>
+的实现与详解，适用于稠密图（如邻接矩阵存储的图）：</p>
+<p><strong>Prim 算法核心思想</strong></p>
+<ol type="1">
+<li>从任意顶点开始（如 <code>start=0</code>）。</li>
+<li>维护一个集合 <code>selected</code>，记录已加入生成树的顶点。</li>
+<li>每次从未选顶点中选择到当前生成树的最小权重边的顶点。</li>
+<li>重复步骤 3，直到所有顶点加入生成树。</li>
+</ol>
+<p>时间复杂度：<strong>O(V²)</strong>，其中 V 是顶点数。</p>
+<p><strong>Python 实现</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">prim</span>(<span class="params">graph, start=<span class="number">0</span></span>):</span><br><span class="line">    V = <span class="built_in">len</span>(graph)  <span class="comment"># 顶点数量</span></span><br><span class="line">    selected = [<span class="literal">False</span>] * V  <span class="comment"># 标记顶点是否已加入生成树</span></span><br><span class="line">    key = [sys.maxsize] * V  <span class="comment"># 记录各顶点到生成树的最小权重</span></span><br><span class="line">    parent = [-<span class="number">1</span>] * V         <span class="comment"># 记录最小生成树的父节点</span></span><br><span class="line"></span><br><span class="line">    key[start] = <span class="number">0</span>  <span class="comment"># 起始顶点的权值设为0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(V):</span><br><span class="line">        <span class="comment"># 找到当前未选顶点中 key 最小的顶点 u</span></span><br><span class="line">        min_key = sys.maxsize</span><br><span class="line">        u = -<span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> <span class="built_in">range</span>(V):</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> selected[v] <span class="keyword">and</span> key[v] &lt; min_key:</span><br><span class="line">                min_key = key[v]</span><br><span class="line">                u = v</span><br><span class="line">        <span class="keyword">if</span> u == -<span class="number">1</span>:</span><br><span class="line">            <span class="keyword">break</span>  <span class="comment"># 无连通顶点，生成树结束</span></span><br><span class="line">        </span><br><span class="line">        selected[u] = <span class="literal">True</span>  <span class="comment"># 将 u 加入生成树</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 更新 u 的所有邻接顶点的 key 值</span></span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> <span class="built_in">range</span>(V):</span><br><span class="line">            <span class="keyword">if</span> graph[u][v] &gt; <span class="number">0</span> <span class="keyword">and</span> <span class="keyword">not</span> selected[v] <span class="keyword">and</span> graph[u][v] &lt; key[v]:</span><br><span class="line">                key[v] = graph[u][v]</span><br><span class="line">                parent[v] = u  <span class="comment"># 记录 v 的父节点为 u</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> key, parent</span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例：邻接矩阵表示的图</span></span><br><span class="line">graph = [</span><br><span class="line">    [<span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">0</span>],</span><br><span class="line">    [<span class="number">2</span>, <span class="number">0</span>, <span class="number">3</span>, <span class="number">8</span>, <span class="number">5</span>],</span><br><span class="line">    [<span class="number">0</span>, <span class="number">3</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">7</span>],</span><br><span class="line">    [<span class="number">6</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">9</span>],</span><br><span class="line">    [<span class="number">0</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>, <span class="number">0</span>]</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">key, parent = prim(graph)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;最小生成树的总权重:&quot;</span>, <span class="built_in">sum</span>(key))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;父节点数组:&quot;</span>, parent)</span><br></pre></td></tr></table></figure>
+<h4 id="kruskal">kruskal</h4>
+<p><strong>2. Kruskal 算法的核心思想</strong></p>
+<ol type="1">
+<li><strong>按权重从小到大排序所有边</strong>。</li>
+<li><strong>依次选择边</strong>：
+<ul>
+<li>如果这条边的两个顶点不在同一个连通分量中（即不形成环），则将这条边加入生成树。</li>
+<li>否则跳过这条边。</li>
+</ul></li>
+<li><strong>重复步骤2，直到生成树中有 <code>V-1</code>
+条边</strong>（<code>V</code> 是顶点数）。</li>
+</ol>
+<p><strong>6. Python 实现示例</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">UnionFind</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, size</span>):</span><br><span class="line">        <span class="variable language_">self</span>.parent = <span class="built_in">list</span>(<span class="built_in">range</span>(size))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">find</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.parent[x] != x:</span><br><span class="line">            <span class="variable language_">self</span>.parent[x] = <span class="variable language_">self</span>.find(<span class="variable language_">self</span>.parent[x])  <span class="comment"># 路径压缩</span></span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.parent[x]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">union</span>(<span class="params">self, x, y</span>):</span><br><span class="line">        rootX = <span class="variable language_">self</span>.find(x)</span><br><span class="line">        rootY = <span class="variable language_">self</span>.find(y)</span><br><span class="line">        <span class="keyword">if</span> rootX == rootY:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span>  <span class="comment"># 已在同一个集合</span></span><br><span class="line">        <span class="variable language_">self</span>.parent[rootY] = rootX  <span class="comment"># 合并</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">kruskal</span>(<span class="params">n, edges</span>):</span><br><span class="line">    <span class="comment"># edges: [(权重, u, v), ...]</span></span><br><span class="line">    edges.sort()</span><br><span class="line">    uf = UnionFind(n)</span><br><span class="line">    mst = []</span><br><span class="line">    cost = <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> weight, u, v <span class="keyword">in</span> edges:</span><br><span class="line">        <span class="keyword">if</span> uf.union(u, v):</span><br><span class="line">            mst.append((u, v))</span><br><span class="line">            cost += weight</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">len</span>(mst) == n - <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">break</span>  <span class="comment"># 已选够 n-1 条边</span></span><br><span class="line">    <span class="keyword">return</span> mst, cost</span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例</span></span><br><span class="line">n = <span class="number">5</span>  <span class="comment"># 顶点数（0~4）</span></span><br><span class="line">edges = [</span><br><span class="line">    (<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>),  <span class="comment"># A(0)-B(1)</span></span><br><span class="line">    (<span class="number">2</span>, <span class="number">1</span>, <span class="number">2</span>),  <span class="comment"># B(1)-C(2)</span></span><br><span class="line">    (<span class="number">3</span>, <span class="number">2</span>, <span class="number">3</span>),  <span class="comment"># C(2)-D(3)</span></span><br><span class="line">    (<span class="number">4</span>, <span class="number">3</span>, <span class="number">4</span>),  <span class="comment"># D(3)-E(4)</span></span><br><span class="line">    (<span class="number">5</span>, <span class="number">0</span>, <span class="number">4</span>),  <span class="comment"># A(0)-E(4)</span></span><br><span class="line">    (<span class="number">6</span>, <span class="number">1</span>, <span class="number">3</span>)   <span class="comment"># B(1)-D(3)</span></span><br><span class="line">]</span><br><span class="line">mst, total = kruskal(n, edges)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;MST 边：&quot;</span>, mst)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;总权重：&quot;</span>, total)</span><br></pre></td></tr></table></figure>
+<h3 id="动态规划">动态规划</h3>
+<h4 id="完全背包">完全背包</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">def unbounded_knapsack_2d(weights, values, capacity):</span><br><span class="line">    n = len(weights)</span><br><span class="line">    dp = [[0] * (capacity + 1) for _ in range(n + 1)]</span><br><span class="line"></span><br><span class="line">    for i in range(1, n + 1):</span><br><span class="line">        for j in range(1, capacity + 1):</span><br><span class="line">            if weights[i-1] &lt;= j:</span><br><span class="line">                dp[i][j] = max(</span><br><span class="line">                    dp[i-1][j],</span><br><span class="line">                    dp[i][j - weights[i-1]] + values[i-1]</span><br><span class="line">                )</span><br><span class="line">            else:</span><br><span class="line">                dp[i][j] = dp[i-1][j]</span><br><span class="line">    </span><br><span class="line">    return dp[n][capacity]</span><br><span class="line"></span><br><span class="line"># 示例</span><br><span class="line">weights = [1, 2, 3]</span><br><span class="line">values = [15, 20, 50]</span><br><span class="line">capacity = 5</span><br><span class="line">print(unbounded_knapsack_2d(weights, values, capacity))  # 输出 80</span><br></pre></td></tr></table></figure>
+<h4 id="最优二叉搜索树">最优二叉搜索树</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">def optimal_bst(p, q, n):</span><br><span class="line">    # 初始化 dp 和 w 数组（大小为 (n+2) x (n+2)，避免越界）</span><br><span class="line">    dp = [[0] * (n+2) for _ in range(n+2)]</span><br><span class="line">    w = [[0] * (n+2) for _ in range(n+2)]</span><br><span class="line">    root = [[0] * (n+2) for _ in range(n+2)]</span><br><span class="line"></span><br><span class="line">    # 初始化虚拟键的权重</span><br><span class="line">    for i in range(n+1):</span><br><span class="line">        w[i][i] = q[i]</span><br><span class="line">    </span><br><span class="line">    # 填表顺序：链长从 1 到 n</span><br><span class="line">    for l in range(1, n+1):  # l 为关键字数量</span><br><span class="line">        for i in range(n - l + 1):</span><br><span class="line">            j = i + l</span><br><span class="line">            w[i][j] = w[i][j-1] + p[j] + q[j]</span><br><span class="line">            dp[i][j] = float(&#x27;inf&#x27;)</span><br><span class="line">            # 枚举根节点 r（i &lt; r ≤ j）</span><br><span class="line">            for r in range(i+1, j+1):</span><br><span class="line">                cost = dp[i][r-1] + dp[r][j]</span><br><span class="line">                if cost &lt; dp[i][j]:</span><br><span class="line">                    dp[i][j] = cost</span><br><span class="line">                    root[i][j] = r</span><br><span class="line">    </span><br><span class="line">    return dp[0][n], root</span><br><span class="line"></span><br><span class="line"># 示例输入</span><br><span class="line">p = [0, 0.15, 0.1, 0.05]  # 关键字概率（从 k₁ 开始）</span><br><span class="line">q = [0.05, 0.1, 0.05, 0.05]  # 虚拟键概率（从 d₀ 开始）</span><br><span class="line">n = 3  # 关键字数量</span><br><span class="line">min_cost, root = optimal_bst(p, q, n)</span><br><span class="line">print(&quot;最小期望搜索代价:&quot;, min_cost)</span><br></pre></td></tr></table></figure>
+<h3 id="回溯法">回溯法</h3>
+<h4 id="八皇后">八皇后</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&#x27;&#x27;&#x27;</span><br><span class="line">https://leetcode.cn/problems/n-queens/</span><br><span class="line">&#x27;&#x27;&#x27;</span><br><span class="line">n=4</span><br><span class="line">ans=[]</span><br><span class="line">path=[]</span><br><span class="line">onpath=[False]*n#记录哪一列有皇后</span><br><span class="line">diag1=[False]*(2*n-1)#记录主对角线是否有皇后</span><br><span class="line">diag2=[False]*(2*n-1)#记录副对角线是否有皇后</span><br><span class="line">def dfs(row,path:list):</span><br><span class="line">    if row==n:</span><br><span class="line">        #print(path)</span><br><span class="line">        chess=[]</span><br><span class="line">        # 生成棋盘</span><br><span class="line">        for i in range(n):</span><br><span class="line">            chess.append(&quot;.&quot;*path[i]+&quot;Q&quot;+&quot;.&quot;*(n-path[i]-1))</span><br><span class="line">        ans.append(chess)</span><br><span class="line">        return</span><br><span class="line">    for col in range(n):</span><br><span class="line">        if isvalid(row,col):</span><br><span class="line">            path.append(col)#放置皇后</span><br><span class="line">            onpath[col]=diag1[row+col]=diag2[row-col+n-1]=True</span><br><span class="line">            dfs(row+1,path)#递归下一行</span><br><span class="line">            path.pop()#回溯，取消放置</span><br><span class="line">            onpath[col]=diag1[row+col]=diag2[row-col+n-1]=False</span><br><span class="line">    </span><br><span class="line">def isvalid(row,col):</span><br><span class="line">    if onpath[col] or diag1[row+col] or diag2[row-col+n-1]:</span><br><span class="line">        return False</span><br><span class="line">    return True</span><br><span class="line">dfs(0,path)</span><br><span class="line">print(ans)</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+              <a href="/tags/python/" rel="tag"># python</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/06/10/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0%EF%BC%88%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA%EF%BC%89/" rel="prev" title="机器学习——期末复习（查漏补缺）">
+                  <i class="fa fa-angle-left"></i> 机器学习——期末复习（查漏补缺）
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/06/14/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0%EF%BC%88%E4%B8%8A%EF%BC%89/" rel="next" title="机器学习——期末复习（上）">
+                  机器学习——期末复习（上） <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

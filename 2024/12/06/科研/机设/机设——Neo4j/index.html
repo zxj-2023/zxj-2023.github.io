@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="什么是 Neo4j？ Neo4j 是一个开源的图形数据库，由 Neo4j 公司开发和维护。作为图数据库的代表，Neo4j 使用图理论中的节点和边（关系）来表示和存储数据，相较于传统的关系型数据库（如 MySQL、PostgreSQL）和其他 NoSQL 数据库（如文档型、键值型数据库），Neo4j 在处理复杂关系和连接性强的数据方面具有显著优势。 主要特点：  图模型：使用节点、关">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机设——Neo4j">
+<meta property="og:url" content="http://example.com/2024/12/06/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94Neo4j/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="什么是 Neo4j？ Neo4j 是一个开源的图形数据库，由 Neo4j 公司开发和维护。作为图数据库的代表，Neo4j 使用图理论中的节点和边（关系）来表示和存储数据，相较于传统的关系型数据库（如 MySQL、PostgreSQL）和其他 NoSQL 数据库（如文档型、键值型数据库），Neo4j 在处理复杂关系和连接性强的数据方面具有显著优势。 主要特点：  图模型：使用节点、关">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2024/12/06/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94Neo4j/ed250b8ea580015278be07a9233448c2.png">
+<meta property="article:published_time" content="2024-12-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-06-12T10:42:12.547Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="科研">
+<meta property="article:tag" content="RAG">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/12/06/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94Neo4j/ed250b8ea580015278be07a9233448c2.png">
+
+
+<link rel="canonical" href="http://example.com/2024/12/06/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94Neo4j/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/12/06/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94Neo4j/","path":"2024/12/06/科研/机设/机设——Neo4j/","title":"机设——Neo4j"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>机设——Neo4j | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-neo4j"><span class="nav-number">1.</span> <span class="nav-text">什么是 Neo4j？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E7%89%B9%E7%82%B9"><span class="nav-number">1.1.</span> <span class="nav-text">主要特点：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81-neo4j"><span class="nav-number">2.</span> <span class="nav-text">为什么需要 Neo4j？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E9%9C%80%E6%B1%82%E5%8E%9F%E5%9B%A0"><span class="nav-number">2.1.</span> <span class="nav-text">主要需求原因：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#graphrag%E7%9A%84%E7%90%86%E8%A7%A3"><span class="nav-number">3.</span> <span class="nav-text">GraphRAG的理解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#neo4j%E7%9A%84%E5%AE%89%E8%A3%85"><span class="nav-number">4.</span> <span class="nav-text">Neo4j的安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#apoc%E7%94%A8%E5%A4%84"><span class="nav-number">5.</span> <span class="nav-text">apoc用处</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#apoc%E6%8F%92%E4%BB%B6%E5%AE%89%E8%A3%85"><span class="nav-number">6.</span> <span class="nav-text">apoc插件安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">7.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">97</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/06/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94Neo4j/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="机设——Neo4j | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          机设——Neo4j
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-12-06 00:00:00" itemprop="dateCreated datePublished" datetime="2024-12-06T00:00:00+08:00">2024-12-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-12 18:42:12" itemprop="dateModified" datetime="2025-06-12T18:42:12+08:00">2025-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%A1%B9%E7%9B%AE%E7%BB%8F%E5%8E%86/" itemprop="url" rel="index"><span itemprop="name">项目经历</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%A1%B9%E7%9B%AE%E7%BB%8F%E5%8E%86/%E6%9C%BA%E8%AE%BE/" itemprop="url" rel="index"><span itemprop="name">机设</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="什么是-neo4j">什么是 Neo4j？</h2>
+<p><strong>Neo4j</strong> 是一个开源的<strong>图形数据库</strong>，由
+Neo4j 公司开发和维护。作为图数据库的代表，Neo4j
+使用图理论中的节点和边（关系）来表示和存储数据，相较于传统的关系型数据库（如
+MySQL、PostgreSQL）和其他 NoSQL 数据库（如文档型、键值型数据库），Neo4j
+在处<strong>理复杂关系和连接性强的数据方面</strong>具有显著优势。</p>
+<h3 id="主要特点">主要特点：</h3>
+<ul>
+<li><strong>图模型</strong>：使用节点、关系和属性来建模数据，直观地反映实体及其之间的关联。</li>
+<li><strong>Cypher
+查询语言</strong>：专为图数据库设计的声明式查询语言，语法简洁，易于表达复杂的图形查询。</li>
+<li><strong>高性能</strong>：优化的存储和索引机制，能够高效地处理大规模图数据和复杂查询。</li>
+<li><strong>ACID
+事务支持</strong>：保证数据的一致性和可靠性，适用于需要强事务保障的应用场景。</li>
+</ul>
+<h2 id="为什么需要-neo4j">为什么需要 Neo4j？</h2>
+<p>在许多应用场景中，<strong>数据之间存在复杂的关系和连接性</strong>。传统的关系型数据库在处理多层级的关联查询时，往往需要大量的联接操作（JOIN），这会导致查询性能下降，尤其是在数据规模庞大时。而
+Neo4j
+通过图模型天然适合表示和处理这种高度连接的数据，能够更高效地执行复杂的关系查询。</p>
+<h3 id="主要需求原因">主要需求原因：</h3>
+<ol type="1">
+<li><strong>复杂关系处理</strong>：需要频繁进行多级关联查询，如社交网络、推荐系统等。</li>
+<li><strong>灵活的数据模型</strong>：数据结构可能随时间变化，图数据库提供了更大的灵活性。</li>
+<li><strong>性能需求</strong>：需要在大规模数据集上执行快速的关系查询和遍历操作。</li>
+<li><strong>实时性</strong>：需要实时分析和处理数据关系，如欺诈检测、网络安全等。</li>
+</ol>
+<figure>
+<img src="/2024/12/06/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94Neo4j/ed250b8ea580015278be07a9233448c2.png" alt="ed250b8ea580015278be07a9233448c2">
+<figcaption aria-hidden="true">ed250b8ea580015278be07a9233448c2</figcaption>
+</figure>
+<h2 id="graphrag的理解">GraphRAG的理解</h2>
+<p><strong>GraphRAG=Graph(知识图谱)+RAG技术</strong></p>
+<p><strong>GraphRAG</strong>
+是一种结合了<strong>图结构</strong>和<strong>检索增强生成（RAG）</strong>的方法，旨在增强语言模型（如大规模预训练的变换器模型）的推理能力和信息检索能力。这个方法通常用于处理复杂的推理任务，尤其是当涉及到大规模知识库或图形数据时，GraphRAG可以通过图的结构来有效地组织信息，从而提高模型在生成和推理时的效率和准确性。</p>
+<p><strong>图结构（Graph）</strong>：</p>
+<ul>
+<li><strong>图</strong>通常用于表示节点之间的关系和依赖，在处理复杂知识结构时非常有用。在GraphRAG中，图结构帮助捕捉信息之间的关系，能够有效地组织和链接不同的知识点，尤其是在涉及多个实体和关系的任务中。</li>
+</ul>
+<p><strong>检索增强生成（RAG）</strong>：</p>
+<ul>
+<li>RAG
+是一种将信息检索与生成模型结合的框架。它的核心思想是，模型在生成答案时不仅仅依赖于其预训练时获得的知识，还会从一个外部数据库或文档库中检索相关的信息来增强回答的准确性和上下文适应性。</li>
+</ul>
+<h2 id="neo4j的安装">Neo4j的安装</h2>
+<ol type="1">
+<li>官网下载社区版</li>
+<li>安装JDK，java11</li>
+<li>配置环境变量</li>
+<li>启动Neo4j</li>
+</ol>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">常用命令</span><br><span class="line"># 启动服务</span><br><span class="line">neo4j(.bat) start</span><br><span class="line"># 重启服务</span><br><span class="line">neo4j(.bat) restart</span><br><span class="line"># 停止服务</span><br><span class="line">neo4j(.bat) stop</span><br><span class="line"># 控制台模式启动</span><br><span class="line">neo4j(.bat) console</span><br></pre></td></tr></table></figure>
+</blockquote>
+<ol start="5" type="1">
+<li>进入到 http://localhost:7474</li>
+</ol>
+<p>账号密码 neo4j zxj03051218</p>
+<p>第一次进入前安装neo4j 的服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">neo4j install-service</span><br></pre></td></tr></table></figure>
+<p>查看版本 neo4j –version</p>
+<h2 id="apoc用处">apoc用处</h2>
+<p>数据导入和导出：使用APOC插件可以轻松导入和导出不同格式的数据到Neo4j图数据库。您可以将数据从关系型数据库、CSV文件、JSON等转换为图形数据，并相反地，将图形数据导出到其他格式。
+图形算法：APOC提供了许多有用的图形算法，如PageRank、社区发现（例如Louvain算法），路径分析等。这些算法可以帮助您发现数据之间的关联性和模式，并从中提取有价值的信息。
+数据清洗和转换：APOC提供了丰富的过程和函数，用于数据清洗和转换。您可以使用它来处理字符串、时间、密码学等方面的数据，并进行必要的清洗和格式化。
+可视化：APOC支持将图形数据转换为其他可视化工具所需的格式，例如Gephi、D3.js等。这使得您可以将您的图形数据以更直观的方式呈现，进一步探索和交流。
+地理空间分析：APOC提供了与地理空间数据相关的功能，如计算两个地点之间的距离、查找附近的地点等。这对于在地理空间上分析和查询数据特别有用。</p>
+<p>我应该是主要用到了数据导入和导出的功能，因为要将构建好的所以传到本地neo4j上</p>
+<h2 id="apoc插件安装">apoc插件安装</h2>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/shdabai/article/details/132880323">知识图谱基本工具Neo4j使用笔记
+五 ：APOC插件安装及简单应用_neo4j apoc-CSDN博客</a></p>
+<p>版本 neo4j 4.4.39</p>
+<p>APOC插件下载：apoc-4.4.0.9-all.jar（注意apoc要与neo4j版本对应）</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/neo4j/apoc/releases?page=2">Releases ·
+neo4j/apoc</a></p>
+<p>将下载的 <code>apoc-4.4.0.9-all.jar</code>
+直接复制到neo4j/plugins文件夹</p>
+<p>修改APOC的配置文件</p>
+<p>打开配置文件将，这一下内容的注释去掉</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dbms.security.procedures.unrestricted=apoc.*</span><br></pre></td></tr></table></figure>
+<h2 id="参考文献">参考文献</h2>
+<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000037690548#item-0-2">java -
+我的Neo4j探索之旅 - 初识Neo4j（一） - 个人文章 - SegmentFault
+思否</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E7%A7%91%E7%A0%94/" rel="tag"># 科研</a>
+              <a href="/tags/RAG/" rel="tag"># RAG</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/12/05/%E6%AF%94%E8%B5%9B/%E4%B8%AD%E6%95%B0%E6%9D%AF/" rel="prev" title="AIGC——中数杯">
+                  <i class="fa fa-angle-left"></i> AIGC——中数杯
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/12/07/%E7%A7%91%E7%A0%94/%E6%9C%BA%E8%AE%BE/%E6%9C%BA%E8%AE%BE%E2%80%94%E2%80%94LightRAG%E4%B8%8EGraphRAG/" rel="next" title="机设——LightRAG与GraphRAG">
+                  机设——LightRAG与GraphRAG <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
