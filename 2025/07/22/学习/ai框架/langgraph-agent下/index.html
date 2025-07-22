@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言 本教程为langchain官方教程的学习记录 academy.langchain.com&#x2F;enrollments module-4 Parallel node execution 并行节点执行 Waiting for nodes to finish 等待节点完成 现在，让我们考虑一个案例，其中一个并行路径的步骤比另一个多。 1234567891011121314151617">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LangGraph学习——agent——下">
+<meta property="og:url" content="http://example.com/2025/07/22/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langgraph-agent%E4%B8%8B/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="前言 本教程为langchain官方教程的学习记录 academy.langchain.com&#x2F;enrollments module-4 Parallel node execution 并行节点执行 Waiting for nodes to finish 等待节点完成 现在，让我们考虑一个案例，其中一个并行路径的步骤比另一个多。 1234567891011121314151617">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2025/07/22/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langgraph-agent%E4%B8%8B/image-20250722143802652.png">
+<meta property="og:image" content="http://example.com/2025/07/22/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langgraph-agent%E4%B8%8B/image-20250722153534867.png">
+<meta property="og:image" content="http://example.com/2025/07/22/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langgraph-agent%E4%B8%8B/66dbb1abf89f2d847ee6f1ff_sub-graph1.png">
+<meta property="article:published_time" content="2025-07-21T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-07-22T07:50:26.034Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="langgraph">
+<meta property="article:tag" content="fastapi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2025/07/22/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langgraph-agent%E4%B8%8B/image-20250722143802652.png">
+
+
+<link rel="canonical" href="http://example.com/2025/07/22/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langgraph-agent%E4%B8%8B/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/07/22/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langgraph-agent%E4%B8%8B/","path":"2025/07/22/学习/ai框架/langgraph-agent下/","title":"LangGraph学习——agent——下"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>LangGraph学习——agent——下 | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#module-4"><span class="nav-number">2.</span> <span class="nav-text">module-4</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#parallel-node-execution-%E5%B9%B6%E8%A1%8C%E8%8A%82%E7%82%B9%E6%89%A7%E8%A1%8C"><span class="nav-number">2.1.</span> <span class="nav-text">Parallel node
+execution 并行节点执行</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#waiting-for-nodes-to-finish-%E7%AD%89%E5%BE%85%E8%8A%82%E7%82%B9%E5%AE%8C%E6%88%90"><span class="nav-number">2.1.1.</span> <span class="nav-text">Waiting for
+nodes to finish 等待节点完成</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#setting-the-order-of-state-updates-%E8%AE%BE%E7%BD%AE%E7%8A%B6%E6%80%81%E6%9B%B4%E6%96%B0%E7%9A%84%E9%A1%BA%E5%BA%8F"><span class="nav-number">2.1.2.</span> <span class="nav-text">Setting
+the order of state updates
+设置状态更新的顺序</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#working-with-llms-%E4%BD%BF%E7%94%A8-llms"><span class="nav-number">2.1.3.</span> <span class="nav-text">Working with LLMs
+使用 LLMs</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sub-graphs-%E5%AD%90%E5%9B%BE"><span class="nav-number">2.2.</span> <span class="nav-text">Sub-graphs 子图</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#sub-graphs"><span class="nav-number">2.2.1.</span> <span class="nav-text">Sub graphs</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">104</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">37</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">44</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/22/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langgraph-agent%E4%B8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="LangGraph学习——agent——下 | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          LangGraph学习——agent——下
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-07-22 00:00:00 / 修改时间：15:50:26" itemprop="dateCreated datePublished" datetime="2025-07-22T00:00:00+08:00">2025-07-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ai%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index"><span itemprop="name">ai框架</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ai%E6%A1%86%E6%9E%B6/langgraph/" itemprop="url" rel="index"><span itemprop="name">langgraph</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="前言">前言</h3>
+<p>本教程为langchain官方教程的学习记录</p>
+<p><a target="_blank" rel="noopener" href="https://academy.langchain.com/enrollments">academy.langchain.com/enrollments</a></p>
+<h3 id="module-4">module-4</h3>
+<h4 id="parallel-node-execution-并行节点执行"><strong>Parallel node
+execution</strong> <strong>并行节点执行</strong></h4>
+<h5 id="waiting-for-nodes-to-finish-等待节点完成"><strong>Waiting for
+nodes to finish</strong> <strong>等待节点完成</strong></h5>
+<p>现在，让我们考虑一个案例，其中一个并行路径的步骤比另一个多。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">builder = StateGraph(State)</span><br><span class="line"></span><br><span class="line"># Initialize each node with node_secret </span><br><span class="line">builder.add_node(&quot;a&quot;, ReturnNodeValue(&quot;I&#x27;m A&quot;))</span><br><span class="line">builder.add_node(&quot;b&quot;, ReturnNodeValue(&quot;I&#x27;m B&quot;))</span><br><span class="line">builder.add_node(&quot;b2&quot;, ReturnNodeValue(&quot;I&#x27;m B2&quot;))</span><br><span class="line">builder.add_node(&quot;c&quot;, ReturnNodeValue(&quot;I&#x27;m C&quot;))</span><br><span class="line">builder.add_node(&quot;d&quot;, ReturnNodeValue(&quot;I&#x27;m D&quot;))</span><br><span class="line"></span><br><span class="line"># Flow</span><br><span class="line">builder.add_edge(START, &quot;a&quot;)</span><br><span class="line">builder.add_edge(&quot;a&quot;, &quot;b&quot;)</span><br><span class="line">builder.add_edge(&quot;a&quot;, &quot;c&quot;)</span><br><span class="line">builder.add_edge(&quot;b&quot;, &quot;b2&quot;)</span><br><span class="line">builder.add_edge([&quot;b2&quot;, &quot;c&quot;], &quot;d&quot;)</span><br><span class="line">builder.add_edge(&quot;d&quot;, END)</span><br><span class="line">graph = builder.compile()</span><br><span class="line"></span><br><span class="line">display(Image(graph.get_graph().draw_mermaid_png()))</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="/2025/07/22/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langgraph-agent%E4%B8%8B/image-20250722143802652.png" alt="image-20250722143802652">
+<figcaption aria-hidden="true">image-20250722143802652</figcaption>
+</figure>
+<p>在这种情况下，<code>b</code>、<code>b2</code> 和 <code>c</code>
+都是同一个步骤的一部分。图形将在进入 <code>d</code>
+步骤之前等待所有这些操作完成。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">graph.invoke(&#123;&quot;state&quot;: []&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Adding I&#x27;m A to []</span><br><span class="line">Adding I&#x27;m B to [&quot;I&#x27;m A&quot;]</span><br><span class="line">Adding I&#x27;m C to [&quot;I&#x27;m A&quot;]</span><br><span class="line">Adding I&#x27;m B2 to [&quot;I&#x27;m A&quot;, &quot;I&#x27;m B&quot;, &quot;I&#x27;m C&quot;]</span><br><span class="line">Adding I&#x27;m D to [&quot;I&#x27;m A&quot;, &quot;I&#x27;m B&quot;, &quot;I&#x27;m C&quot;, &quot;I&#x27;m B2&quot;]</span><br><span class="line">&#123;&#x27;state&#x27;: [&quot;I&#x27;m A&quot;, &quot;I&#x27;m B&quot;, &quot;I&#x27;m C&quot;, &quot;I&#x27;m B2&quot;, &quot;I&#x27;m D&quot;]&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="setting-the-order-of-state-updates-设置状态更新的顺序"><strong>Setting
+the order of state updates</strong>
+<strong>设置状态更新的顺序</strong></h5>
+<p>然而，在每个步骤中，我们无法对状态更新的顺序进行具体控制！简单来说，它是基于图拓扑结构由
+LangGraph 确定的确定性顺序，该顺序为
+<strong><em>*我们无法控制*</em></strong>。</p>
+<p>上面，我们看到 <code>c</code> 被添加在 <code>b2</code> 之前</p>
+<p>然而，我们可以使用自定义 reducer
+来定制此功能，例如，对状态更新进行排序。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">def sorting_reducer(left, right):</span><br><span class="line">    &quot;&quot;&quot; 合并并排序列表中的值&quot;&quot;&quot;</span><br><span class="line">    # 如果 left 不是列表，则将其转换为列表</span><br><span class="line">    if not isinstance(left, list):</span><br><span class="line">        left = [left]</span><br><span class="line"></span><br><span class="line">    # 如果 right 不是列表，则将其转换为列表</span><br><span class="line">    if not isinstance(right, list):</span><br><span class="line">        right = [right]</span><br><span class="line">    </span><br><span class="line">    # 合并 left 和 right 列表，然后升序排序</span><br><span class="line">    return sorted(left + right, reverse=False)</span><br><span class="line">class State(TypedDict):</span><br><span class="line">    # sorting_reducer 函数将对 state 中的值进行排序</span><br><span class="line">    state: Annotated[list, sorting_reducer]</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">graph.invoke(&#123;&quot;state&quot;: []&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#x27;state&#x27;: [&quot;I&#x27;m A&quot;, &quot;I&#x27;m B&quot;, &quot;I&#x27;m B2&quot;, &quot;I&#x27;m C&quot;, &quot;I&#x27;m D&quot;]&#125;</span><br></pre></td></tr></table></figure>
+<p>现在，reducer 对更新的状态值进行排序！<code>sorting_reducer</code>
+示例对所有值进行全局排序。我们还可以：</p>
+<ol type="1">
+<li>在并行步骤期间将输出写入状态中的单独字段<br>
+</li>
+<li>在并行步骤之后使用“汇”节点来合并和排序这些输出<br>
+</li>
+<li>合并后清除临时字段</li>
+</ol>
+<p>请参阅 <a target="_blank" rel="noopener" href="https://langchain-ai.github.io/langgraph/how-tos/branching/#stable-sorting">docs</a>
+以获取更多详细信息。</p>
+<h5 id="working-with-llms-使用-llms"><strong>Working with LLMs</strong>
+<strong>使用 LLMs</strong></h5>
+<p>现在，让我们添加一个现实中的例子！我们希望从两个外部来源（Wikipedia
+和 Web-Search）收集上下文信息，并让 LLM 回答一个问题。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">from langchain_core.messages import HumanMessage, SystemMessage</span><br><span class="line"></span><br><span class="line">from langchain_community.document_loaders import WikipediaLoader</span><br><span class="line">from langchain_community.tools import TavilySearchResults</span><br><span class="line"></span><br><span class="line">def search_web(state):</span><br><span class="line">    </span><br><span class="line">    &quot;&quot;&quot; 从网络搜索中检索文档 &quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    # 搜索</span><br><span class="line">    tavily_search = TavilySearchResults(max_results=3)</span><br><span class="line">    search_docs = tavily_search.invoke(state[&#x27;question&#x27;])</span><br><span class="line"></span><br><span class="line">     # 将多个搜索文档转换成了一个统一格式的长文本，每个文档都有自己的元数据（如URL），并且文档之间有明确的分隔，便于后续处理或展示。</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    - 这是一个 列表推导式 (list comprehension) ，它会遍历 search_docs 列表中的每一个元素（这里我们称之为 doc ）。</span><br><span class="line">    - search_docs 里的每个 doc 应该是一个包含 &#x27;url&#x27; 和 &#x27;content&#x27; 键的字典。</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    formatted_search_docs = &quot;\n\n---\n\n&quot;.join(</span><br><span class="line">        [</span><br><span class="line">            f&#x27;&lt;Document href=&quot;&#123;doc[&quot;url&quot;]&#125;&quot;&gt;\n&#123;doc[&quot;content&quot;]&#125;\n&lt;/Document&gt;&#x27;</span><br><span class="line">            for doc in search_docs</span><br><span class="line">        ]</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    return &#123;&quot;context&quot;: [formatted_search_docs]&#125; </span><br><span class="line"></span><br><span class="line">def search_wikipedia(state):</span><br><span class="line">    </span><br><span class="line">    &quot;&quot;&quot; 从维基百科中检索文档 &quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    # 搜索</span><br><span class="line">    search_docs = WikipediaLoader(query=state[&#x27;question&#x27;], </span><br><span class="line">                                  load_max_docs=2).load()</span><br><span class="line"></span><br><span class="line">     # 格式化</span><br><span class="line">    formatted_search_docs = &quot;\n\n---\n\n&quot;.join(</span><br><span class="line">        [</span><br><span class="line">            f&#x27;&lt;Document source=&quot;&#123;doc.metadata[&quot;source&quot;]&#125;&quot; page=&quot;&#123;doc.metadata.get(&quot;page&quot;, &quot;&quot;)&#125;&quot;&gt;\n&#123;doc.page_content&#125;\n&lt;/Document&gt;&#x27;</span><br><span class="line">            for doc in search_docs</span><br><span class="line">        ]</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    return &#123;&quot;context&quot;: [formatted_search_docs]&#125; </span><br><span class="line"></span><br><span class="line">def generate_answer(state):</span><br><span class="line">    </span><br><span class="line">    &quot;&quot;&quot; 用于回答问题的节点 &quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    # 获取状态</span><br><span class="line">    context = state[&quot;context&quot;]</span><br><span class="line">    question = state[&quot;question&quot;]</span><br><span class="line"></span><br><span class="line">    # 模板</span><br><span class="line">    answer_template = &quot;&quot;&quot;使用以下上下文回答问题 &#123;question&#125;: &#123;context&#125;&quot;&quot;&quot;</span><br><span class="line">    answer_instructions = answer_template.format(question=question, </span><br><span class="line">                                                       context=context)    </span><br><span class="line">    </span><br><span class="line">    # 回答</span><br><span class="line">    answer = llm.invoke([SystemMessage(content=answer_instructions)]+[HumanMessage(content=f&quot;回答问题。&quot;)])</span><br><span class="line">      </span><br><span class="line">    # 将其附加到状态</span><br><span class="line">    return &#123;&quot;answer&quot;: answer&#125;</span><br><span class="line"></span><br><span class="line"># 添加节点</span><br><span class="line">builder = StateGraph(State)</span><br><span class="line"></span><br><span class="line"># 初始化每个节点</span><br><span class="line">builder.add_node(&quot;search_web&quot;,search_web)</span><br><span class="line">builder.add_node(&quot;search_wikipedia&quot;, search_wikipedia)</span><br><span class="line">builder.add_node(&quot;generate_answer&quot;, generate_answer)</span><br><span class="line"></span><br><span class="line"># 流程</span><br><span class="line">builder.add_edge(START, &quot;search_wikipedia&quot;)</span><br><span class="line">builder.add_edge(START, &quot;search_web&quot;)</span><br><span class="line">builder.add_edge(&quot;search_wikipedia&quot;, &quot;generate_answer&quot;)</span><br><span class="line">builder.add_edge(&quot;search_web&quot;, &quot;generate_answer&quot;)</span><br><span class="line">builder.add_edge(&quot;generate_answer&quot;, END)</span><br><span class="line">graph = builder.compile()</span><br><span class="line"></span><br><span class="line">display(Image(graph.get_graph().draw_mermaid_png()))</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="/2025/07/22/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langgraph-agent%E4%B8%8B/image-20250722153534867.png" alt="image-20250722153534867">
+<figcaption aria-hidden="true">image-20250722153534867</figcaption>
+</figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">result = graph.invoke(&#123;&quot;question&quot;: &quot;英伟达2025年第一季度财报表现如何&quot;&#125;)</span><br><span class="line">result[&#x27;answer&#x27;].content</span><br></pre></td></tr></table></figure>
+<h4 id="sub-graphs-子图"><strong>Sub-graphs</strong> 子图</h4>
+<p>子图允许你在图表的不同部分创建和管理不同的状态。这在多智能体系统中尤其有用，尤其是在每个智能体都有各自状态的智能体团队中。</p>
+<p>让我们考虑一个简单的例子：</p>
+<ul>
+<li>我有一个系统，它接收日志。</li>
+<li>该系统通过不同的代理执行两个独立的子任务（总结日志，查找故障模式）。</li>
+<li>我希望在两个不同的子图中执行这两个操作。</li>
+</ul>
+<p>最重要的是要理解图表是如何传达信息的！</p>
+<p>简而言之，通信是 <strong><em>*通过重叠密钥*</em></strong>
+实现的：</p>
+<ul>
+<li>子图可以访问父图中的 <code>docs</code>（文档）。</li>
+<li>父图可以从子图中访问 <code>summary</code>（摘要）和
+<code>failure_report</code>（故障报告）。</li>
+</ul>
+<figure>
+<img src="/2025/07/22/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langgraph-agent%E4%B8%8B/66dbb1abf89f2d847ee6f1ff_sub-graph1.png" alt="subgraph.png">
+<figcaption aria-hidden="true">subgraph.png</figcaption>
+</figure>
+<ol type="1">
+<li><strong>Logs (Traces)</strong>:
+<ul>
+<li>这是系统的输入，表示一系列的日志记录。</li>
+</ul></li>
+<li><strong>Entry Graph</strong>:
+<ul>
+<li>这是系统的入口图，它包含了总体状态（Overall State），其中包含：
+<ul>
+<li><code>docs</code>：文档或日志数据。</li>
+<li><code>summary report</code>：摘要报告，这是系统执行摘要任务后生成的。</li>
+<li><code>failure report</code>：故障报告，这是系统执行故障分析任务后生成的。</li>
+</ul></li>
+</ul></li>
+<li><strong>Call sub-graphs</strong>:
+<ul>
+<li>这是从入口图调用两个子图的过程，分别用于执行摘要和故障分析任务。</li>
+</ul></li>
+<li><strong>Summarization</strong>:
+<ul>
+<li>这个子图负责生成日志的摘要。它的状态（Summary State）包含：
+<ul>
+<li><code>docs</code>：与入口图共享的文档数据。</li>
+<li><code>summary</code>：摘要内容。</li>
+<li><code>summary report</code>：摘要报告，这是摘要任务完成后生成的。</li>
+</ul></li>
+</ul></li>
+<li><strong>Failure Analysis</strong>:
+<ul>
+<li>这个子图负责分析日志中的故障模式。它的状态（Failure Analysis
+State）包含：
+<ul>
+<li><code>docs</code>：与入口图共享的文档数据。</li>
+<li><code>failures</code>：故障模式。</li>
+<li><code>failure report</code>：故障报告，这是故障分析任务完成后生成的。</li>
+</ul></li>
+</ul></li>
+<li><strong>Finish</strong>:
+<ul>
+<li>这是流程的结束点，表示两个子图的任务都已完成，并且生成了摘要报告和故障报告。</li>
+</ul></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">from operator import add</span><br><span class="line">from typing_extensions import TypedDict</span><br><span class="line">from typing import List, Optional, Annotated</span><br><span class="line"></span><br><span class="line">#logs结构</span><br><span class="line">class Log(TypedDict):</span><br><span class="line">    id: str</span><br><span class="line">    question: str</span><br><span class="line">    docs: Optional[List]</span><br><span class="line">    answer: str</span><br><span class="line">    grade: Optional[int]</span><br><span class="line">    grader: Optional[str]</span><br><span class="line">    feedback: Optional[str]</span><br></pre></td></tr></table></figure>
+<h5 id="sub-graphs"><strong>Sub graphs</strong></h5>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/langgraph/" rel="tag"># langgraph</a>
+              <a href="/tags/fastapi/" rel="tag"># fastapi</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/07/21/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/Retrieval/" rel="prev" title="Retrieval">
+                  <i class="fa fa-angle-left"></i> Retrieval
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

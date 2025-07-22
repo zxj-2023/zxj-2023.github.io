@@ -155,7 +155,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">103</span>
+          <span class="site-state-item-count">104</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -206,6 +206,204 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/22/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langgraph-agent%E4%B8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/07/22/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langgraph-agent%E4%B8%8B/" class="post-title-link" itemprop="url">LangGraph学习——agent——下</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-07-22 00:00:00 / 修改时间：15:50:26" itemprop="dateCreated datePublished" datetime="2025-07-22T00:00:00+08:00">2025-07-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ai%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index"><span itemprop="name">ai框架</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ai%E6%A1%86%E6%9E%B6/langgraph/" itemprop="url" rel="index"><span itemprop="name">langgraph</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="前言">前言</h3>
+<p>本教程为langchain官方教程的学习记录</p>
+<p><a target="_blank" rel="noopener" href="https://academy.langchain.com/enrollments">academy.langchain.com/enrollments</a></p>
+<h3 id="module-4">module-4</h3>
+<h4 id="parallel-node-execution-并行节点执行"><strong>Parallel node
+execution</strong> <strong>并行节点执行</strong></h4>
+<h5 id="waiting-for-nodes-to-finish-等待节点完成"><strong>Waiting for
+nodes to finish</strong> <strong>等待节点完成</strong></h5>
+<p>现在，让我们考虑一个案例，其中一个并行路径的步骤比另一个多。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">builder = StateGraph(State)</span><br><span class="line"></span><br><span class="line"># Initialize each node with node_secret </span><br><span class="line">builder.add_node(&quot;a&quot;, ReturnNodeValue(&quot;I&#x27;m A&quot;))</span><br><span class="line">builder.add_node(&quot;b&quot;, ReturnNodeValue(&quot;I&#x27;m B&quot;))</span><br><span class="line">builder.add_node(&quot;b2&quot;, ReturnNodeValue(&quot;I&#x27;m B2&quot;))</span><br><span class="line">builder.add_node(&quot;c&quot;, ReturnNodeValue(&quot;I&#x27;m C&quot;))</span><br><span class="line">builder.add_node(&quot;d&quot;, ReturnNodeValue(&quot;I&#x27;m D&quot;))</span><br><span class="line"></span><br><span class="line"># Flow</span><br><span class="line">builder.add_edge(START, &quot;a&quot;)</span><br><span class="line">builder.add_edge(&quot;a&quot;, &quot;b&quot;)</span><br><span class="line">builder.add_edge(&quot;a&quot;, &quot;c&quot;)</span><br><span class="line">builder.add_edge(&quot;b&quot;, &quot;b2&quot;)</span><br><span class="line">builder.add_edge([&quot;b2&quot;, &quot;c&quot;], &quot;d&quot;)</span><br><span class="line">builder.add_edge(&quot;d&quot;, END)</span><br><span class="line">graph = builder.compile()</span><br><span class="line"></span><br><span class="line">display(Image(graph.get_graph().draw_mermaid_png()))</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="/2025/07/22/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langgraph-agent%E4%B8%8B/image-20250722143802652.png" alt="image-20250722143802652">
+<figcaption aria-hidden="true">image-20250722143802652</figcaption>
+</figure>
+<p>在这种情况下，<code>b</code>、<code>b2</code> 和 <code>c</code>
+都是同一个步骤的一部分。图形将在进入 <code>d</code>
+步骤之前等待所有这些操作完成。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">graph.invoke(&#123;&quot;state&quot;: []&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Adding I&#x27;m A to []</span><br><span class="line">Adding I&#x27;m B to [&quot;I&#x27;m A&quot;]</span><br><span class="line">Adding I&#x27;m C to [&quot;I&#x27;m A&quot;]</span><br><span class="line">Adding I&#x27;m B2 to [&quot;I&#x27;m A&quot;, &quot;I&#x27;m B&quot;, &quot;I&#x27;m C&quot;]</span><br><span class="line">Adding I&#x27;m D to [&quot;I&#x27;m A&quot;, &quot;I&#x27;m B&quot;, &quot;I&#x27;m C&quot;, &quot;I&#x27;m B2&quot;]</span><br><span class="line">&#123;&#x27;state&#x27;: [&quot;I&#x27;m A&quot;, &quot;I&#x27;m B&quot;, &quot;I&#x27;m C&quot;, &quot;I&#x27;m B2&quot;, &quot;I&#x27;m D&quot;]&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="setting-the-order-of-state-updates-设置状态更新的顺序"><strong>Setting
+the order of state updates</strong>
+<strong>设置状态更新的顺序</strong></h5>
+<p>然而，在每个步骤中，我们无法对状态更新的顺序进行具体控制！简单来说，它是基于图拓扑结构由
+LangGraph 确定的确定性顺序，该顺序为
+<strong><em>*我们无法控制*</em></strong>。</p>
+<p>上面，我们看到 <code>c</code> 被添加在 <code>b2</code> 之前</p>
+<p>然而，我们可以使用自定义 reducer
+来定制此功能，例如，对状态更新进行排序。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">def sorting_reducer(left, right):</span><br><span class="line">    &quot;&quot;&quot; 合并并排序列表中的值&quot;&quot;&quot;</span><br><span class="line">    # 如果 left 不是列表，则将其转换为列表</span><br><span class="line">    if not isinstance(left, list):</span><br><span class="line">        left = [left]</span><br><span class="line"></span><br><span class="line">    # 如果 right 不是列表，则将其转换为列表</span><br><span class="line">    if not isinstance(right, list):</span><br><span class="line">        right = [right]</span><br><span class="line">    </span><br><span class="line">    # 合并 left 和 right 列表，然后升序排序</span><br><span class="line">    return sorted(left + right, reverse=False)</span><br><span class="line">class State(TypedDict):</span><br><span class="line">    # sorting_reducer 函数将对 state 中的值进行排序</span><br><span class="line">    state: Annotated[list, sorting_reducer]</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">graph.invoke(&#123;&quot;state&quot;: []&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#x27;state&#x27;: [&quot;I&#x27;m A&quot;, &quot;I&#x27;m B&quot;, &quot;I&#x27;m B2&quot;, &quot;I&#x27;m C&quot;, &quot;I&#x27;m D&quot;]&#125;</span><br></pre></td></tr></table></figure>
+<p>现在，reducer 对更新的状态值进行排序！<code>sorting_reducer</code>
+示例对所有值进行全局排序。我们还可以：</p>
+<ol type="1">
+<li>在并行步骤期间将输出写入状态中的单独字段<br>
+</li>
+<li>在并行步骤之后使用“汇”节点来合并和排序这些输出<br>
+</li>
+<li>合并后清除临时字段</li>
+</ol>
+<p>请参阅 <a target="_blank" rel="noopener" href="https://langchain-ai.github.io/langgraph/how-tos/branching/#stable-sorting">docs</a>
+以获取更多详细信息。</p>
+<h5 id="working-with-llms-使用-llms"><strong>Working with LLMs</strong>
+<strong>使用 LLMs</strong></h5>
+<p>现在，让我们添加一个现实中的例子！我们希望从两个外部来源（Wikipedia
+和 Web-Search）收集上下文信息，并让 LLM 回答一个问题。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line">from langchain_core.messages import HumanMessage, SystemMessage</span><br><span class="line"></span><br><span class="line">from langchain_community.document_loaders import WikipediaLoader</span><br><span class="line">from langchain_community.tools import TavilySearchResults</span><br><span class="line"></span><br><span class="line">def search_web(state):</span><br><span class="line">    </span><br><span class="line">    &quot;&quot;&quot; 从网络搜索中检索文档 &quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    # 搜索</span><br><span class="line">    tavily_search = TavilySearchResults(max_results=3)</span><br><span class="line">    search_docs = tavily_search.invoke(state[&#x27;question&#x27;])</span><br><span class="line"></span><br><span class="line">     # 将多个搜索文档转换成了一个统一格式的长文本，每个文档都有自己的元数据（如URL），并且文档之间有明确的分隔，便于后续处理或展示。</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    - 这是一个 列表推导式 (list comprehension) ，它会遍历 search_docs 列表中的每一个元素（这里我们称之为 doc ）。</span><br><span class="line">    - search_docs 里的每个 doc 应该是一个包含 &#x27;url&#x27; 和 &#x27;content&#x27; 键的字典。</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    formatted_search_docs = &quot;\n\n---\n\n&quot;.join(</span><br><span class="line">        [</span><br><span class="line">            f&#x27;&lt;Document href=&quot;&#123;doc[&quot;url&quot;]&#125;&quot;&gt;\n&#123;doc[&quot;content&quot;]&#125;\n&lt;/Document&gt;&#x27;</span><br><span class="line">            for doc in search_docs</span><br><span class="line">        ]</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    return &#123;&quot;context&quot;: [formatted_search_docs]&#125; </span><br><span class="line"></span><br><span class="line">def search_wikipedia(state):</span><br><span class="line">    </span><br><span class="line">    &quot;&quot;&quot; 从维基百科中检索文档 &quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    # 搜索</span><br><span class="line">    search_docs = WikipediaLoader(query=state[&#x27;question&#x27;], </span><br><span class="line">                                  load_max_docs=2).load()</span><br><span class="line"></span><br><span class="line">     # 格式化</span><br><span class="line">    formatted_search_docs = &quot;\n\n---\n\n&quot;.join(</span><br><span class="line">        [</span><br><span class="line">            f&#x27;&lt;Document source=&quot;&#123;doc.metadata[&quot;source&quot;]&#125;&quot; page=&quot;&#123;doc.metadata.get(&quot;page&quot;, &quot;&quot;)&#125;&quot;&gt;\n&#123;doc.page_content&#125;\n&lt;/Document&gt;&#x27;</span><br><span class="line">            for doc in search_docs</span><br><span class="line">        ]</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    return &#123;&quot;context&quot;: [formatted_search_docs]&#125; </span><br><span class="line"></span><br><span class="line">def generate_answer(state):</span><br><span class="line">    </span><br><span class="line">    &quot;&quot;&quot; 用于回答问题的节点 &quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    # 获取状态</span><br><span class="line">    context = state[&quot;context&quot;]</span><br><span class="line">    question = state[&quot;question&quot;]</span><br><span class="line"></span><br><span class="line">    # 模板</span><br><span class="line">    answer_template = &quot;&quot;&quot;使用以下上下文回答问题 &#123;question&#125;: &#123;context&#125;&quot;&quot;&quot;</span><br><span class="line">    answer_instructions = answer_template.format(question=question, </span><br><span class="line">                                                       context=context)    </span><br><span class="line">    </span><br><span class="line">    # 回答</span><br><span class="line">    answer = llm.invoke([SystemMessage(content=answer_instructions)]+[HumanMessage(content=f&quot;回答问题。&quot;)])</span><br><span class="line">      </span><br><span class="line">    # 将其附加到状态</span><br><span class="line">    return &#123;&quot;answer&quot;: answer&#125;</span><br><span class="line"></span><br><span class="line"># 添加节点</span><br><span class="line">builder = StateGraph(State)</span><br><span class="line"></span><br><span class="line"># 初始化每个节点</span><br><span class="line">builder.add_node(&quot;search_web&quot;,search_web)</span><br><span class="line">builder.add_node(&quot;search_wikipedia&quot;, search_wikipedia)</span><br><span class="line">builder.add_node(&quot;generate_answer&quot;, generate_answer)</span><br><span class="line"></span><br><span class="line"># 流程</span><br><span class="line">builder.add_edge(START, &quot;search_wikipedia&quot;)</span><br><span class="line">builder.add_edge(START, &quot;search_web&quot;)</span><br><span class="line">builder.add_edge(&quot;search_wikipedia&quot;, &quot;generate_answer&quot;)</span><br><span class="line">builder.add_edge(&quot;search_web&quot;, &quot;generate_answer&quot;)</span><br><span class="line">builder.add_edge(&quot;generate_answer&quot;, END)</span><br><span class="line">graph = builder.compile()</span><br><span class="line"></span><br><span class="line">display(Image(graph.get_graph().draw_mermaid_png()))</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="/2025/07/22/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langgraph-agent%E4%B8%8B/image-20250722153534867.png" alt="image-20250722153534867">
+<figcaption aria-hidden="true">image-20250722153534867</figcaption>
+</figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">result = graph.invoke(&#123;&quot;question&quot;: &quot;英伟达2025年第一季度财报表现如何&quot;&#125;)</span><br><span class="line">result[&#x27;answer&#x27;].content</span><br></pre></td></tr></table></figure>
+<h4 id="sub-graphs-子图"><strong>Sub-graphs</strong> 子图</h4>
+<p>子图允许你在图表的不同部分创建和管理不同的状态。这在多智能体系统中尤其有用，尤其是在每个智能体都有各自状态的智能体团队中。</p>
+<p>让我们考虑一个简单的例子：</p>
+<ul>
+<li>我有一个系统，它接收日志。</li>
+<li>该系统通过不同的代理执行两个独立的子任务（总结日志，查找故障模式）。</li>
+<li>我希望在两个不同的子图中执行这两个操作。</li>
+</ul>
+<p>最重要的是要理解图表是如何传达信息的！</p>
+<p>简而言之，通信是 <strong><em>*通过重叠密钥*</em></strong>
+实现的：</p>
+<ul>
+<li>子图可以访问父图中的 <code>docs</code>（文档）。</li>
+<li>父图可以从子图中访问 <code>summary</code>（摘要）和
+<code>failure_report</code>（故障报告）。</li>
+</ul>
+<figure>
+<img src="/2025/07/22/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langgraph-agent%E4%B8%8B/66dbb1abf89f2d847ee6f1ff_sub-graph1.png" alt="subgraph.png">
+<figcaption aria-hidden="true">subgraph.png</figcaption>
+</figure>
+<ol type="1">
+<li><strong>Logs (Traces)</strong>:
+<ul>
+<li>这是系统的输入，表示一系列的日志记录。</li>
+</ul></li>
+<li><strong>Entry Graph</strong>:
+<ul>
+<li>这是系统的入口图，它包含了总体状态（Overall State），其中包含：
+<ul>
+<li><code>docs</code>：文档或日志数据。</li>
+<li><code>summary report</code>：摘要报告，这是系统执行摘要任务后生成的。</li>
+<li><code>failure report</code>：故障报告，这是系统执行故障分析任务后生成的。</li>
+</ul></li>
+</ul></li>
+<li><strong>Call sub-graphs</strong>:
+<ul>
+<li>这是从入口图调用两个子图的过程，分别用于执行摘要和故障分析任务。</li>
+</ul></li>
+<li><strong>Summarization</strong>:
+<ul>
+<li>这个子图负责生成日志的摘要。它的状态（Summary State）包含：
+<ul>
+<li><code>docs</code>：与入口图共享的文档数据。</li>
+<li><code>summary</code>：摘要内容。</li>
+<li><code>summary report</code>：摘要报告，这是摘要任务完成后生成的。</li>
+</ul></li>
+</ul></li>
+<li><strong>Failure Analysis</strong>:
+<ul>
+<li>这个子图负责分析日志中的故障模式。它的状态（Failure Analysis
+State）包含：
+<ul>
+<li><code>docs</code>：与入口图共享的文档数据。</li>
+<li><code>failures</code>：故障模式。</li>
+<li><code>failure report</code>：故障报告，这是故障分析任务完成后生成的。</li>
+</ul></li>
+</ul></li>
+<li><strong>Finish</strong>:
+<ul>
+<li>这是流程的结束点，表示两个子图的任务都已完成，并且生成了摘要报告和故障报告。</li>
+</ul></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">from operator import add</span><br><span class="line">from typing_extensions import TypedDict</span><br><span class="line">from typing import List, Optional, Annotated</span><br><span class="line"></span><br><span class="line">#logs结构</span><br><span class="line">class Log(TypedDict):</span><br><span class="line">    id: str</span><br><span class="line">    question: str</span><br><span class="line">    docs: Optional[List]</span><br><span class="line">    answer: str</span><br><span class="line">    grade: Optional[int]</span><br><span class="line">    grader: Optional[str]</span><br><span class="line">    feedback: Optional[str]</span><br></pre></td></tr></table></figure>
+<h5 id="sub-graphs"><strong>Sub graphs</strong></h5>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -391,375 +589,6 @@ k）。</li>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_59614665/article/details/149066780">大模型RAG
 |
 深入了解几种主流的检索策略（BM25、Embedding、混合检索、Reranker）-CSDN博客</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/18/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/libreoffice/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/07/18/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/libreoffice/" class="post-title-link" itemprop="url">Libreoffice</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-07-18 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-18T00:00:00+08:00">2025-07-18</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-07-21 11:22:55" itemprop="dateModified" datetime="2025-07-21T11:22:55+08:00">2025-07-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%AE%9E%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">实习</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/" itemprop="url" rel="index"><span itemprop="name">晨晟智控</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="libreoffice部署">libreoffice部署</h3>
-<h4 id="查看linux发行版">查看Linux发行版</h4>
-<figure>
-<img src="/2025/07/18/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/libreoffice/image-20250718095931232.png" alt="image-20250718095931232">
-<figcaption aria-hidden="true">image-20250718095931232</figcaption>
-</figure>
-<p>系统是 <strong>银河麒麟高级服务器操作系统 V10（Kylin Linux Advanced
-Server V10）</strong>，属于 <strong>中国国产、兼容 CentOS/RHEL
-生态</strong> 的 Linux 发行版。</p>
-<p>因此它使用 <strong>RPM
-包管理</strong>（<code>dnf</code>/<code>yum</code>），而不是
-<code>.deb</code>。</p>
-<h4 id="查看cpu-处理器架构">查看<strong>CPU 处理器架构</strong></h4>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uname -m</span><br></pre></td></tr></table></figure>
-<p>是<strong>x86_64</strong></p>
-<h4 id="不用部署了镜像里有直接用了">不用部署了，镜像里有，直接用了</h4>
-<h4 id="使用libreoffice处理doc文件转成pdf">使用libreoffice处理doc文件，转成pdf</h4>
-<p>将当前目录下所有 <code>.doc</code> 和 <code>.docx</code> 转为
-PDF：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">libreoffice --headless --convert-to pdf *.doc *.docx --outdir ./pdf_output/</span><br></pre></td></tr></table></figure>
-<h3 id="linux扫盲">Linux扫盲</h3>
-<h4 id="发行版">发行版</h4>
-<p>像Ubuntu，CentOS都属于Linux的发行版，就像Windows11属于Windows的关系</p>
-<p>常见发行版分类：</p>
-<table>
-<colgroup>
-<col style="width: 14%">
-<col style="width: 46%">
-<col style="width: 14%">
-<col style="width: 23%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>系列</th>
-<th>代表发行版</th>
-<th>包格式</th>
-<th>特点</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Debian 系</strong></td>
-<td>Debian、Ubuntu、Kali、Linux Mint</td>
-<td><code>.deb</code></td>
-<td>包多、社区大、教程多</td>
-</tr>
-<tr class="even">
-<td><strong>Red Hat 系</strong></td>
-<td>CentOS、RHEL、Rocky、Alma、Fedora</td>
-<td><code>.rpm</code></td>
-<td>企业级稳定、官方支持长</td>
-</tr>
-<tr class="odd">
-<td><strong>SUSE 系</strong></td>
-<td>openSUSE Leap / Tumbleweed</td>
-<td><code>.rpm</code></td>
-<td>YaST 管理工具、欧洲流行</td>
-</tr>
-<tr class="even">
-<td><strong>Arch 系</strong></td>
-<td>Arch Linux、Manjaro</td>
-<td><code>.pkg.tar.zst</code></td>
-<td>滚动更新、极客向</td>
-</tr>
-<tr class="odd">
-<td><strong>轻量/最小</strong></td>
-<td>Alpine、Debian netinst、CentOS Stream Minimal</td>
-<td>任意</td>
-<td>镜像小、资源占用低</td>
-</tr>
-</tbody>
-</table>
-<p>如何查看Linux发行版</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/os-release</span><br></pre></td></tr></table></figure>
-<h4 id="deb和rpm">deb和rpm</h4>
-<p><code>.deb</code> 和 <code>.rpm</code> 想象成 <strong>“Linux
-世界里的安装程序”</strong>，就像 Windows 的 <code>.exe</code> /
-<code>.msi</code></p>
-<table>
-<colgroup>
-<col style="width: 8%">
-<col style="width: 40%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>格式</th>
-<th>适用系统</th>
-<th>安装命令</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong><code>.deb</code></strong></td>
-<td>Debian、Ubuntu、Linux Mint、Kali 等</td>
-<td><code>sudo dpkg -i xxx.deb</code> 或
-<code>sudo apt install ./xxx.deb</code></td>
-</tr>
-<tr class="even">
-<td><strong><code>.rpm</code></strong></td>
-<td>CentOS、RHEL、Fedora、openSUSE、Rocky、Alma 等</td>
-<td><code>sudo rpm -ivh xxx.rpm</code> 或
-<code>sudo dnf/yum install xxx.rpm</code></td>
-</tr>
-</tbody>
-</table>
-<h4 id="cpu处理器架构">cpu处理器架构</h4>
-<table>
-<colgroup>
-<col style="width: 12%">
-<col style="width: 21%">
-<col style="width: 66%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>目录名</th>
-<th>代表架构</th>
-<th>适用场景</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>x86_64</strong></td>
-<td><strong>Intel/AMD 64 位</strong></td>
-<td>绝大多数台式机、服务器（如 Xeon、EPYC、Core、Ryzen）</td>
-</tr>
-<tr class="even">
-<td><strong>aarch64</strong></td>
-<td><strong>ARM 64 位</strong></td>
-<td>树莓派 4/5、苹果 M 系列（Asahi Linux）、鲲鹏、飞腾、Ampere ARM
-服务器等</td>
-</tr>
-</tbody>
-</table>
-<p>查看处理器架构：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uname -m</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/18/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/%E5%AE%9E%E6%88%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/07/18/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/%E5%AE%9E%E6%88%98/" class="post-title-link" itemprop="url">实战</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-07-18 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-18T00:00:00+08:00">2025-07-18</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-07-21 12:03:38" itemprop="dateModified" datetime="2025-07-21T12:03:38+08:00">2025-07-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%AE%9E%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">实习</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/" itemprop="url" rel="index"><span itemprop="name">晨晟智控</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="日志">日志</h3>
-<p>7.16 10：46</p>
-<p>已经将mineru部署至服务器，完成pdf和扫描件的提取测试，但是mineru是没办法直接提取doc与docx的，能不能直接对doc与docx进行文本分块，或者先转换成pdf再提取（官方给出的解决方案：通过独立部署的LibreOffice服务先行转换为PDF格式，再进行后续解析操作。）</p>
-<p>7.17 11：04</p>
-<p>完成mineru脚本的编写，仅输出提取的md与image；实现调用多块gpu；实现数据并行，通过多卡同时处理多个输入来增加吞吐量；使用sglang框架</p>
-<p>7.18 14：37</p>
-<p>发现mineru提取的markdown文档是不带多级标题的，只有一级标题，所以不考虑文档结构分块；语义分块要调用embedding模型，而且文档里有很多表格，我感觉效果不一定会好；后续我想法是使用递归分块，表格在md文档中以html表格格式存储的，大量冗余信息，我想先对其进行预处理，转换成md表格的形式吧（用“
-|”存储），然后再分块，或许效果会好一些，正在进行</p>
-<p>还有一个就是libreoffice是部署在哪里，我没有找到诶</p>
-<p>7.19 10：26</p>
-<p>完成表格预处理的脚本编写，完成对md文档的预处理；完成递归分块，后续完成存入es数据库</p>
-<h3 id="思考">思考</h3>
-<p>查看mineru提取的markdown文档后，发现mineru暂时无法提取多级标题，所以可以舍弃根据markdown文档结构的分块策略</p>
-<p>UnstructuredMarkdownLoader会丢失表格格式，不能使用</p>
-<h3 id="实战">实战</h3>
-<p>将 <code>Markdown</code> 文档加载到 LangChain <a target="_blank" rel="noopener" href="https://python.langchain.com/api_reference/core/documents/langchain_core.documents.base.Document.html#langchain_core.documents.base.Document">文档</a>
-对象中，以便我们可以在后续使用</p>
-<h4 id="使用unstructuredmarkdownloader-对象">使用<a target="_blank" rel="noopener" href="https://python.langchain.com/api_reference/community/document_loaders/langchain_community.document_loaders.markdown.UnstructuredMarkdownLoader.html">UnstructuredMarkdownLoader</a>
-对象</h4>
-<p>UnstructuredMarkdownLoader 是 LangChain 中的一个 文档加载器（Document
-Loader） ，专门用于加载和解析 Markdown ( .md )
-文件。它的特别之处在于，它底层依赖于一个强大的开源库 unstructured 。</p>
-<p><strong>UnstructuredMarkdownLoader 的核心功能</strong></p>
-<p>传统的文本加载器可能会将整个 Markdown 文件作为一个大字符串读入。而
-UnstructuredMarkdownLoader 凭借 unstructured 库的能力，可以 智能地识别
-Markdown 文件内部的结构 。</p>
-<p>它能够将文档分解成多个有意义的<strong>“元素”
-(Elements)</strong>，例如：</p>
-<ul>
-<li>标题 (Titles)</li>
-<li>叙述性文本 (Narrative Text / Paragraphs)</li>
-<li>列表项 (List Items)</li>
-<li>代码块 (Code Blocks) 这种智能分区对于后续的 RAG (Retrieval-Augmented
-Generation)
-应用非常重要，因为它能让您以更小的、逻辑上连贯的块来处理文本，从而提高检索的准确性。</li>
-</ul>
-<p><strong>重要的 mode 参数</strong></p>
-<p>UnstructuredMarkdownLoader 的构造函数中有一个非常重要的 mode
-参数，它决定了文档的加载方式：</p>
-<ol type="1">
-<li><p>mode=“single” (默认值)</p>
-<ul>
-<li>将整个 Markdown 文件的所有内容加载成 一个单独的 Document 对象
-。</li>
-<li>page_content 包含文件的全部文本。</li>
-</ul></li>
-<li><p>mode=“elements”</p>
-<ul>
-<li>这是它最强大的模式。它会将文件解析成多个 Document 对象，
-每个对象对应一个识别出的元素 （如一个标题、一个段落）。</li>
-<li>这对于创建精细的文本块以进行向量嵌入和检索非常有用。</li>
-</ul></li>
-</ol>
-<h4 id="使用libreoffice处理doc文件转成pdf">使用libreoffice处理doc文件，转成pdf</h4>
-<p>将当前目录下所有 <code>.doc</code> 和 <code>.docx</code> 转为
-PDF：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">libreoffice --headless --convert-to pdf *.doc *.docx --outdir ./pdf_output/</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -1426,6 +1255,375 @@ Calling”或“Tool Calling”功能的核心。其结构通常包含：
 相对应。这使得模型能够准确地将结果与请求匹配起来。</li>
 <li>type (str): 固定为字符串 ‘tool’ 。</li>
 </ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/18/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/libreoffice/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/07/18/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/libreoffice/" class="post-title-link" itemprop="url">Libreoffice</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-07-18 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-18T00:00:00+08:00">2025-07-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-07-21 11:22:55" itemprop="dateModified" datetime="2025-07-21T11:22:55+08:00">2025-07-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AE%9E%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">实习</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/" itemprop="url" rel="index"><span itemprop="name">晨晟智控</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="libreoffice部署">libreoffice部署</h3>
+<h4 id="查看linux发行版">查看Linux发行版</h4>
+<figure>
+<img src="/2025/07/18/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/libreoffice/image-20250718095931232.png" alt="image-20250718095931232">
+<figcaption aria-hidden="true">image-20250718095931232</figcaption>
+</figure>
+<p>系统是 <strong>银河麒麟高级服务器操作系统 V10（Kylin Linux Advanced
+Server V10）</strong>，属于 <strong>中国国产、兼容 CentOS/RHEL
+生态</strong> 的 Linux 发行版。</p>
+<p>因此它使用 <strong>RPM
+包管理</strong>（<code>dnf</code>/<code>yum</code>），而不是
+<code>.deb</code>。</p>
+<h4 id="查看cpu-处理器架构">查看<strong>CPU 处理器架构</strong></h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uname -m</span><br></pre></td></tr></table></figure>
+<p>是<strong>x86_64</strong></p>
+<h4 id="不用部署了镜像里有直接用了">不用部署了，镜像里有，直接用了</h4>
+<h4 id="使用libreoffice处理doc文件转成pdf">使用libreoffice处理doc文件，转成pdf</h4>
+<p>将当前目录下所有 <code>.doc</code> 和 <code>.docx</code> 转为
+PDF：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">libreoffice --headless --convert-to pdf *.doc *.docx --outdir ./pdf_output/</span><br></pre></td></tr></table></figure>
+<h3 id="linux扫盲">Linux扫盲</h3>
+<h4 id="发行版">发行版</h4>
+<p>像Ubuntu，CentOS都属于Linux的发行版，就像Windows11属于Windows的关系</p>
+<p>常见发行版分类：</p>
+<table>
+<colgroup>
+<col style="width: 14%">
+<col style="width: 46%">
+<col style="width: 14%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>系列</th>
+<th>代表发行版</th>
+<th>包格式</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Debian 系</strong></td>
+<td>Debian、Ubuntu、Kali、Linux Mint</td>
+<td><code>.deb</code></td>
+<td>包多、社区大、教程多</td>
+</tr>
+<tr class="even">
+<td><strong>Red Hat 系</strong></td>
+<td>CentOS、RHEL、Rocky、Alma、Fedora</td>
+<td><code>.rpm</code></td>
+<td>企业级稳定、官方支持长</td>
+</tr>
+<tr class="odd">
+<td><strong>SUSE 系</strong></td>
+<td>openSUSE Leap / Tumbleweed</td>
+<td><code>.rpm</code></td>
+<td>YaST 管理工具、欧洲流行</td>
+</tr>
+<tr class="even">
+<td><strong>Arch 系</strong></td>
+<td>Arch Linux、Manjaro</td>
+<td><code>.pkg.tar.zst</code></td>
+<td>滚动更新、极客向</td>
+</tr>
+<tr class="odd">
+<td><strong>轻量/最小</strong></td>
+<td>Alpine、Debian netinst、CentOS Stream Minimal</td>
+<td>任意</td>
+<td>镜像小、资源占用低</td>
+</tr>
+</tbody>
+</table>
+<p>如何查看Linux发行版</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/os-release</span><br></pre></td></tr></table></figure>
+<h4 id="deb和rpm">deb和rpm</h4>
+<p><code>.deb</code> 和 <code>.rpm</code> 想象成 <strong>“Linux
+世界里的安装程序”</strong>，就像 Windows 的 <code>.exe</code> /
+<code>.msi</code></p>
+<table>
+<colgroup>
+<col style="width: 8%">
+<col style="width: 40%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>格式</th>
+<th>适用系统</th>
+<th>安装命令</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong><code>.deb</code></strong></td>
+<td>Debian、Ubuntu、Linux Mint、Kali 等</td>
+<td><code>sudo dpkg -i xxx.deb</code> 或
+<code>sudo apt install ./xxx.deb</code></td>
+</tr>
+<tr class="even">
+<td><strong><code>.rpm</code></strong></td>
+<td>CentOS、RHEL、Fedora、openSUSE、Rocky、Alma 等</td>
+<td><code>sudo rpm -ivh xxx.rpm</code> 或
+<code>sudo dnf/yum install xxx.rpm</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="cpu处理器架构">cpu处理器架构</h4>
+<table>
+<colgroup>
+<col style="width: 12%">
+<col style="width: 21%">
+<col style="width: 66%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>目录名</th>
+<th>代表架构</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>x86_64</strong></td>
+<td><strong>Intel/AMD 64 位</strong></td>
+<td>绝大多数台式机、服务器（如 Xeon、EPYC、Core、Ryzen）</td>
+</tr>
+<tr class="even">
+<td><strong>aarch64</strong></td>
+<td><strong>ARM 64 位</strong></td>
+<td>树莓派 4/5、苹果 M 系列（Asahi Linux）、鲲鹏、飞腾、Ampere ARM
+服务器等</td>
+</tr>
+</tbody>
+</table>
+<p>查看处理器架构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uname -m</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/18/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/%E5%AE%9E%E6%88%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/07/18/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/%E5%AE%9E%E6%88%98/" class="post-title-link" itemprop="url">实战</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-07-18 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-18T00:00:00+08:00">2025-07-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-07-21 12:03:38" itemprop="dateModified" datetime="2025-07-21T12:03:38+08:00">2025-07-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AE%9E%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">实习</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/" itemprop="url" rel="index"><span itemprop="name">晨晟智控</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="日志">日志</h3>
+<p>7.16 10：46</p>
+<p>已经将mineru部署至服务器，完成pdf和扫描件的提取测试，但是mineru是没办法直接提取doc与docx的，能不能直接对doc与docx进行文本分块，或者先转换成pdf再提取（官方给出的解决方案：通过独立部署的LibreOffice服务先行转换为PDF格式，再进行后续解析操作。）</p>
+<p>7.17 11：04</p>
+<p>完成mineru脚本的编写，仅输出提取的md与image；实现调用多块gpu；实现数据并行，通过多卡同时处理多个输入来增加吞吐量；使用sglang框架</p>
+<p>7.18 14：37</p>
+<p>发现mineru提取的markdown文档是不带多级标题的，只有一级标题，所以不考虑文档结构分块；语义分块要调用embedding模型，而且文档里有很多表格，我感觉效果不一定会好；后续我想法是使用递归分块，表格在md文档中以html表格格式存储的，大量冗余信息，我想先对其进行预处理，转换成md表格的形式吧（用“
+|”存储），然后再分块，或许效果会好一些，正在进行</p>
+<p>还有一个就是libreoffice是部署在哪里，我没有找到诶</p>
+<p>7.19 10：26</p>
+<p>完成表格预处理的脚本编写，完成对md文档的预处理；完成递归分块，后续完成存入es数据库</p>
+<h3 id="思考">思考</h3>
+<p>查看mineru提取的markdown文档后，发现mineru暂时无法提取多级标题，所以可以舍弃根据markdown文档结构的分块策略</p>
+<p>UnstructuredMarkdownLoader会丢失表格格式，不能使用</p>
+<h3 id="实战">实战</h3>
+<p>将 <code>Markdown</code> 文档加载到 LangChain <a target="_blank" rel="noopener" href="https://python.langchain.com/api_reference/core/documents/langchain_core.documents.base.Document.html#langchain_core.documents.base.Document">文档</a>
+对象中，以便我们可以在后续使用</p>
+<h4 id="使用unstructuredmarkdownloader-对象">使用<a target="_blank" rel="noopener" href="https://python.langchain.com/api_reference/community/document_loaders/langchain_community.document_loaders.markdown.UnstructuredMarkdownLoader.html">UnstructuredMarkdownLoader</a>
+对象</h4>
+<p>UnstructuredMarkdownLoader 是 LangChain 中的一个 文档加载器（Document
+Loader） ，专门用于加载和解析 Markdown ( .md )
+文件。它的特别之处在于，它底层依赖于一个强大的开源库 unstructured 。</p>
+<p><strong>UnstructuredMarkdownLoader 的核心功能</strong></p>
+<p>传统的文本加载器可能会将整个 Markdown 文件作为一个大字符串读入。而
+UnstructuredMarkdownLoader 凭借 unstructured 库的能力，可以 智能地识别
+Markdown 文件内部的结构 。</p>
+<p>它能够将文档分解成多个有意义的<strong>“元素”
+(Elements)</strong>，例如：</p>
+<ul>
+<li>标题 (Titles)</li>
+<li>叙述性文本 (Narrative Text / Paragraphs)</li>
+<li>列表项 (List Items)</li>
+<li>代码块 (Code Blocks) 这种智能分区对于后续的 RAG (Retrieval-Augmented
+Generation)
+应用非常重要，因为它能让您以更小的、逻辑上连贯的块来处理文本，从而提高检索的准确性。</li>
+</ul>
+<p><strong>重要的 mode 参数</strong></p>
+<p>UnstructuredMarkdownLoader 的构造函数中有一个非常重要的 mode
+参数，它决定了文档的加载方式：</p>
+<ol type="1">
+<li><p>mode=“single” (默认值)</p>
+<ul>
+<li>将整个 Markdown 文件的所有内容加载成 一个单独的 Document 对象
+。</li>
+<li>page_content 包含文件的全部文本。</li>
+</ul></li>
+<li><p>mode=“elements”</p>
+<ul>
+<li>这是它最强大的模式。它会将文件解析成多个 Document 对象，
+每个对象对应一个识别出的元素 （如一个标题、一个段落）。</li>
+<li>这对于创建精细的文本块以进行向量嵌入和检索非常有用。</li>
+</ul></li>
+</ol>
+<h4 id="使用libreoffice处理doc文件转成pdf">使用libreoffice处理doc文件，转成pdf</h4>
+<p>将当前目录下所有 <code>.doc</code> 和 <code>.docx</code> 转为
+PDF：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">libreoffice --headless --convert-to pdf *.doc *.docx --outdir ./pdf_output/</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -2443,212 +2641,6 @@ LangGraph提供了持久化机制，可以在每一步执行后自动保存State
 Human-in-the-Loop 的复杂业务流程至关重要 。</li>
 </ul>
 <p>复杂业务流程的AI智能体，其核心挑战已从单纯优化信息检索（如RAG）或提示词，转向了对内部<strong>工作流和数据流的精心设计与编排</strong>。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/11/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/rag%E8%AF%84%E4%BC%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/07/11/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/rag%E8%AF%84%E4%BC%B0/" class="post-title-link" itemprop="url">rag评估</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-07-11 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-11T00:00:00+08:00">2025-07-11</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-07-13 17:07:20" itemprop="dateModified" datetime="2025-07-13T17:07:20+08:00">2025-07-13</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%AE%9E%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">实习</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/" itemprop="url" rel="index"><span itemprop="name">晨晟智控</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="rag评估的指标">rag评估的指标</h3>
-<h4 id="忠诚度faithfulness">忠诚度Faithfulness</h4>
-<p>Faithfulness：衡量生成答案与给定上下文之间的事实一致性。忠实度得分是基于答案和检索到的上下文
-计算出来的，答案的评分范围在0到1之间，分数越高越好。</p>
-<figure>
-<img src="/2025/07/11/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/rag%E8%AF%84%E4%BC%B0/image-20250711154457878.png" alt="image-20250711154457878">
-<figcaption aria-hidden="true">image-20250711154457878</figcaption>
-</figure>
-<p>计算方式：将大模型给出的答案进行切片，检索给出的上下文，计算这些切片是否在上下文中</p>
-<figure>
-<img src="/2025/07/11/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/rag%E8%AF%84%E4%BC%B0/image-20250711155257239.png" alt="image-20250711155257239">
-<figcaption aria-hidden="true">image-20250711155257239</figcaption>
-</figure>
-<h4 id="答案相关性answerrelevance">答案相关性Answerrelevance</h4>
-<p>Answerrelevance：答案相关性的评估指标旨在评估生成的答案与给定提示的相关程度。如果答案不完
-整或包含冗余信息，则会被赋予较低的分数。这个指标使用问题和答案来计算，其值介于0到1之间，得
-分越高表明答案的相关性越好</p>
-<figure>
-<img src="/2025/07/11/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/rag%E8%AF%84%E4%BC%B0/image-20250711155128553.png" alt="image-20250711155128553">
-<figcaption aria-hidden="true">image-20250711155128553</figcaption>
-</figure>
-<p>计算方式：根据答案生成多个问题，然后计算生成的答案与原答案的余弦相似度，再取平均</p>
-<figure>
-<img src="/2025/07/11/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/rag%E8%AF%84%E4%BC%B0/image-20250711155407518.png" alt="image-20250711155407518">
-<figcaption aria-hidden="true">image-20250711155407518</figcaption>
-</figure>
-<h4 id="上下文精确度contextprecision">上下文精确度ContextPrecision</h4>
-<p>ContextPrecision：上下文精确度衡量上下文中所有相关的真实信息是否被排在了较高的位置。理想情
-况下，所有相关的信息块都应该出现在排名的最前面。这个指标是根据问题和上下文来计算的，数值范
-围在0到1之间，分数越高表示精确度越好。 <span class="math display">$$
-\text{Context Precision} = \frac{\sum_{k=1}^{K} (\text{rel}(k) \times
-\frac{\text{Precision@k}}{\text{Ideal Precision@k}})}{\text{Total
-Relevant Documents}}
-$$</span></p>
-<ul>
-<li><code>K</code>：检索返回的文档总数（如 top-5）</li>
-<li><code>rel(k)</code>：第 <code>k</code>
-个文档是否相关（相关=1，无关=0）</li>
-<li><code>Precision@k</code>：前 <code>k</code>
-个文档的精确率（相关文档数 / k）</li>
-<li><code>Ideal Precision@k</code>：理想情况下前 <code>k</code>
-个文档的精确率（假设所有相关文档都排在最前面）</li>
-</ul>
-<h4 id="上下文召回率contextrecall">上下文召回率ContextRecall</h4>
-<p>ContextRecall：用来衡量检索到的上下文与被视为事实真相的标注答案的一致性程度。它根据事实真相
-和检索到的上下文来计算，数值范围在0到1之间，数值越高表示性能越好。
-为了从事实真相的答案中估计上下文召回率，需要分析答案中的每个句子是否可以归因于检索到的
-上下文。在理想情况下，事实真相答案中的所有句子都应该能够对应到检索到的上下文中。
-<span class="math display">$$
-\text{Context Recall} = \frac{|\{\text{返回的相关文档}\} \cap
-\{\text{标准相关文档}\}|}{|\{\text{标准相关文档}\}|}
-$$</span> 计算方式：上下文是否包括了标准答案的内容</p>
-<h3 id="利用ragas评估rag性能">利用RAGAS评估rag性能</h3>
-<p><a target="_blank" rel="noopener" href="https://github.com/zxj-2023/learn-rag-langchain/blob/main/RAGAS-langchian.ipynb">learn-rag-langchain/RAGAS-langchian.ipynb
-at main · zxj-2023/learn-rag-langchain</a></p>
-<p>检索器 1.Contextprecision(上下文精确度)：评估检索质量。 2.Context
-Recall(上下文召回率)：衡量检索的完整性。 生成器
-1.Faithfulness(忠实度)：衡量生成答案中的幻觉情况。
-2.AnswerRelevance(答案相关性):衡量答案对问题的直接性(紧扣问题的核心)。</p>
-<p>最终的RAGAS得分是以上各个指标得分的调和平均值。简而言之，这些指标用来综合评估
--个系统整体的性能。</p>
-<h4 id="rag的构建">RAG的构建</h4>
-<p>创建RAG文本分割、Embedding model 、 向量库存储Chroma</p>
-<p>我们主要使用 <code>RecursiveCharacterTextSplitter</code>
-切割文本，通过<code>OpenAIEmbeddings()</code>进行文本编码，存储到
-<code>VectorStore</code>。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">from langchain.vectorstores import Chroma</span><br><span class="line">from langchain.embeddings import OpenAIEmbeddings</span><br><span class="line">from langchain.text_splitter import RecursiveCharacterTextSplitter</span><br><span class="line">from langchain_community.embeddings import DashScopeEmbeddings</span><br><span class="line">embeddings_model = DashScopeEmbeddings(</span><br><span class="line">        model=&quot;text-embedding-v2&quot;,</span><br><span class="line">        dashscope_api_key=openai.api_key,</span><br><span class="line">    )</span><br><span class="line">text_splitter = RecursiveCharacterTextSplitter(chunk_size=500)</span><br><span class="line">#进行文本分割，生成更小、更易于处理的文档块</span><br><span class="line">docs = text_splitter.split_documents(paper_docs)</span><br><span class="line"></span><br><span class="line">vectorstore = Chroma.from_documents(docs, embeddings_model)</span><br></pre></td></tr></table></figure>
-<p>Chroma
-向量数据库默认情况下是内存存储，这意味着数据在程序运行结束后不会保留。
-但是，Chroma
-也支持持久化存储，您可以指定一个路径将数据保存到磁盘上。这样，即使程序关闭，数据也会被保留，并在下次启动时自动加载。</p>
-<h4 id="检索器的构建">检索器的构建</h4>
-<p>现在我们可以利用 <code>Chroma</code> 向量库的
-<code>.as_retriever()</code> 方式进行检索，需要控制的主要参数为
-<code>k</code></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">base_retriever = vectorstore.as_retriever(search_kwargs=&#123;&quot;k&quot; : 3&#125;)</span><br></pre></td></tr></table></figure>
-<ul>
-<li>ectorstore.as_retriever() : 这个方法的作用是将一个向量数据库实例（
-vectorstore ）转换为 LangChain 中的一个检索器（ Retriever
-）对象。检索器是 LangChain
-中负责根据用户查询从数据源中获取相关文档的核心组件。</li>
-<li>“k” : 这个键表示要检索的“最相似”文档的数量。在这里， “k” : 3
-意味着当检索器接收到一个查询时，它将从向量存储中返回与该查询最相似的 3
-个文档。这在
-RAG（检索增强生成）系统中非常常见，用于限制传递给大型语言模型的上下文信息量，以提高效率和相关性。</li>
-</ul>
-<p>检索器的作用
-检索器（Retriever）是一个核心组件，其主要作用是从一个数据源（如向量数据库、文档加载器等）中根据给定的查询（query）检索出相关的文档或信息。</p>
-<h4 id="prompt的构建">prompt的构建</h4>
-<p>我们需要利用<code>LLM</code>对<code>Context</code>
-生成一系列的问题的<code>answer</code></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">from langchain import PromptTemplate</span><br><span class="line"></span><br><span class="line">template = &quot;&quot;&quot;You are an assistant for question-answering tasks. </span><br><span class="line">Use the following pieces of retrieved context to answer the question. </span><br><span class="line">If you don&#x27;t know the answer, just say that you don&#x27;t know. </span><br><span class="line"></span><br><span class="line">Question: &#123;question&#125; </span><br><span class="line"></span><br><span class="line">Context: &#123;context&#125; </span><br><span class="line"></span><br><span class="line">Answer:</span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">prompt = PromptTemplate(</span><br><span class="line">    template=template, </span><br><span class="line">    input_variables=[&quot;context&quot;,&quot;question&quot;]</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">print(prompt)</span><br></pre></td></tr></table></figure>
-<h4 id="生成answer利用llm">生成<code>answer</code>,利用LLM</h4>
-<p>利用 <code>Runnable</code> 定义一个 <code>chain</code>
-实现rag全流程。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">from langchain.schema.runnable import RunnablePassthrough</span><br><span class="line">from langchain.schema.output_parser import StrOutputParser</span><br><span class="line">from langchain_openai import ChatOpenAI</span><br><span class="line">llm = ChatOpenAI(</span><br><span class="line">    model_name=&quot;qwen-plus-2025-04-28&quot;, </span><br><span class="line">    temperature=0,</span><br><span class="line">    api_key=&quot;&quot;,</span><br><span class="line">    base_url=&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot;</span><br><span class="line">    )</span><br><span class="line">#RunnablePassthrough将输入数据原封不动地传递到输出</span><br><span class="line">#StrOutputParser() 它被用作 RAG 链的最后一步，确保最终的答案以字符串形式输出。</span><br><span class="line">rag_chain = (</span><br><span class="line">    &#123;&quot;context&quot;: base_retriever,  &quot;question&quot;: RunnablePassthrough()&#125; </span><br><span class="line">    | prompt </span><br><span class="line">    | llm</span><br><span class="line">    | StrOutputParser() </span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<h4 id="创建-ragas-所需的数据">创建 RAGAs 所需的数据</h4>
-<p>question Answer contexts ground_truths</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"># Ragas 数据集格式要求  [&#x27;question&#x27;, &#x27;answer&#x27;, &#x27;contexts&#x27;, &#x27;ground_truths&#x27;]</span><br><span class="line">&#x27;&#x27;&#x27;</span><br><span class="line">&#123;</span><br><span class="line">    &quot;question&quot;: [], &lt;-- 问题基于Context的</span><br><span class="line">    &quot;answer&quot;: [], &lt;-- 答案基于LLM生成的</span><br><span class="line">    &quot;contexts&quot;: [], &lt;-- context</span><br><span class="line">    &quot;ground_truths&quot;: [] &lt;-- 标准答案</span><br><span class="line">&#125;</span><br><span class="line">&#x27;&#x27;&#x27;</span><br><span class="line"></span><br><span class="line">from datasets import Dataset</span><br><span class="line">#构建问题与标准答案（黄金数据集）</span><br><span class="line">questions = [&quot;What is faithfulness ?&quot;, </span><br><span class="line">             &quot;How many pages are included in the WikiEval dataset, and which years do they cover information from?&quot;,</span><br><span class="line">             &quot;Why is evaluating Retrieval Augmented Generation (RAG) systems challenging?&quot;,</span><br><span class="line">            ]</span><br><span class="line">ground_truths = [&quot;Faithfulness refers to the idea that the answer should be grounded in the given context.&quot;,</span><br><span class="line">                  &quot; To construct the dataset, we first selected 50 Wikipedia pages covering events that have happened since the start of 2022.&quot;,</span><br><span class="line">                &quot;Evaluating RAG architectures is, however, challenging because there are several dimensions to consider: the ability of the retrieval system to identify relevant and focused context passages, the ability of the LLM to exploit such passages in a faithful way, or the quality of the generation itself.&quot;]              </span><br><span class="line">answers = []</span><br><span class="line">contexts = []</span><br><span class="line"></span><br><span class="line"># 生成答案</span><br><span class="line">for query in questions:</span><br><span class="line">    answers.append(rag_chain.invoke(query))</span><br><span class="line">    contexts.append([docs.page_content for docs in base_retriever.get_relevant_documents(query)])</span><br><span class="line"></span><br><span class="line"># 构建数据</span><br><span class="line">data = &#123;</span><br><span class="line">    &quot;user_input&quot;: questions,</span><br><span class="line">    &quot;response&quot;: answers,</span><br><span class="line">    &quot;retrieved_contexts&quot;: contexts,</span><br><span class="line">    &quot;reference&quot;: ground_truths</span><br><span class="line">&#125;</span><br><span class="line">dataset = Dataset.from_dict(data)</span><br></pre></td></tr></table></figure>
-<h4 id="使用ragas-进行评估">使用RAGAs 进行评估</h4>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#将评估数据转换成 Ragas 框架专用的格式 。</span><br><span class="line">from ragas import EvaluationDataset</span><br><span class="line">evaluation_dataset = EvaluationDataset.from_list(dataset)</span><br></pre></td></tr></table></figure>
-<p>我们可以使用一组常用的RAG评估指标，在收集的数据集上评估我们的RAG系统。您可以选择任何模型作为评估用LLM来进行评估。
-ragas默认使用openai的api</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from ragas.llms import LangchainLLMWrapper</span><br><span class="line">evaluator_llm = LangchainLLMWrapper(llm)</span><br></pre></td></tr></table></figure>
-<p>调用</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from ragas.metrics import LLMContextRecall, Faithfulness, FactualCorrectness</span><br><span class="line">from ragas import evaluate</span><br><span class="line">result = evaluate(dataset=evaluation_dataset,metrics=[LLMContextRecall(), Faithfulness(), FactualCorrectness()],llm=evaluator_llm)</span><br><span class="line">result</span><br></pre></td></tr></table></figure>
-<figure>
-<img src="/2025/07/11/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/rag%E8%AF%84%E4%BC%B0/image-20250713164037571.png" alt="image-20250713164037571">
-<figcaption aria-hidden="true">image-20250713164037571</figcaption>
-</figure>
-<h4 id="查看结果">查看结果</h4>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import pandas as pd</span><br><span class="line">pd.set_option(&quot;display.max_colwidth&quot;, None)</span><br><span class="line"></span><br><span class="line">df = result.to_pandas()</span><br><span class="line">df</span><br></pre></td></tr></table></figure>
-<h3 id="参考资料">参考资料</h3>
-<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/1892529470419736435">RAG系统效果难评？2025年必备的RAG评估框架与工具详解
-- 知乎</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Jz421Q7Lw?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">如何利用RAGAs评估RAG系统的好坏_哔哩哔哩_bilibili</a></p>
-<p>ragas中文文档<a target="_blank" rel="noopener" href="https://www.aidoczh.com/ragas/getstarted/rag_eval/index.html#want-help-in-improving-your-ai-application-using-evals">Evaluate
-a simple RAG - Ragas</a></p>
 
       
     </div>
