@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="环境配置 python虚拟环境构建 1python -m venv .venv 12345pip install langgraph&#x3D;&#x3D;0.2.74                  pip install langchain-openai&#x3D;&#x3D;0.3.6            pip install fastapi&#x3D;&#x3D;0.115.8                         pip i">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LangGraphChatBot">
+<meta property="og:url" content="http://example.com/2025/07/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/LangGraphChatBot/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="环境配置 python虚拟环境构建 1python -m venv .venv 12345pip install langgraph&#x3D;&#x3D;0.2.74                  pip install langchain-openai&#x3D;&#x3D;0.3.6            pip install fastapi&#x3D;&#x3D;0.115.8                         pip i">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2025/07/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/LangGraphChatBot/image-20250715094855646.png">
+<meta property="article:published_time" content="2025-07-13T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-07-15T09:54:48.124Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="langgraph">
+<meta property="article:tag" content="fastapi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2025/07/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/LangGraphChatBot/image-20250715094855646.png">
+
+
+<link rel="canonical" href="http://example.com/2025/07/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/LangGraphChatBot/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/07/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/LangGraphChatBot/","path":"2025/07/14/学习/ai框架/LangGraphChatBot/","title":"LangGraphChatBot"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>LangGraphChatBot | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">环境配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%9F%BA%E6%9C%AC%E7%9A%84fastapilanggraph%E5%BA%94%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">构建一个基本的fastapi+langgraph应用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#llm%E7%A4%BA%E4%BE%8B%E7%9A%84%E6%9E%84%E5%BB%BA%E5%88%A9%E7%94%A8chatopenai"><span class="nav-number">2.1.</span> <span class="nav-text">llm示例的构建（利用ChatOpenAI）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%9A%84%E6%9E%84%E5%BB%BA"><span class="nav-number">2.2.</span> <span class="nav-text">数据类型的构建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89fastapi%E5%BA%94%E7%94%A8%E5%B9%B6%E7%AE%A1%E7%90%86%E5%BA%94%E7%94%A8%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">2.3.</span> <span class="nav-text">定义fastapi应用并管理应用的生命周期</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#langgraph%E6%A0%B8%E5%BF%83%E9%80%BB%E8%BE%91"><span class="nav-number">2.4.</span> <span class="nav-text">langgraph核心逻辑</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%81%E8%A3%85%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.5.</span> <span class="nav-text">封装接口</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#langgraph%E7%9A%84%E7%9F%AD%E6%9C%9F%E8%AE%B0%E5%BF%86%E4%B8%8E%E9%95%BF%E6%9C%9F%E8%AE%B0%E5%BF%86"><span class="nav-number">3.</span> <span class="nav-text">langgraph的短期记忆与长期记忆</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%99%E7%A8%8B%E5%9C%B0%E5%9D%80"><span class="nav-number">4.</span> <span class="nav-text">教程地址</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">103</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">37</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">44</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/LangGraphChatBot/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="LangGraphChatBot | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          LangGraphChatBot
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-07-14 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-14T00:00:00+08:00">2025-07-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-07-15 17:54:48" itemprop="dateModified" datetime="2025-07-15T17:54:48+08:00">2025-07-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ai%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index"><span itemprop="name">ai框架</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ai%E6%A1%86%E6%9E%B6/langgraph/" itemprop="url" rel="index"><span itemprop="name">langgraph</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="环境配置">环境配置</h3>
+<p>python虚拟环境构建</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m venv .venv</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pip install langgraph==0.2.74                  </span><br><span class="line">pip install langchain-openai==0.3.6            </span><br><span class="line">pip install fastapi==0.115.8                         </span><br><span class="line">pip install uvicorn==0.34.0                          </span><br><span class="line">pip install gradio==5.18.0</span><br></pre></td></tr></table></figure>
+<p>查看包<code>pip list</code></p>
+<h3 id="构建一个基本的fastapilanggraph应用">构建一个基本的fastapi+langgraph应用</h3>
+<h4 id="llm示例的构建利用chatopenai">llm示例的构建（利用ChatOpenAI）</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 创建LLM实例</span><br><span class="line">llm = ChatOpenAI(</span><br><span class="line">    base_url=config[&quot;base_url&quot;],</span><br><span class="line">    api_key=config[&quot;api_key&quot;],</span><br><span class="line">    model=config[&quot;model&quot;],</span><br><span class="line">    temperature=DEFAULT_TEMPERATURE,</span><br><span class="line">    timeout=30,  # 添加超时配置（秒）</span><br><span class="line">    max_retries=2  # 添加重试次数</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h4 id="数据类型的构建">数据类型的构建</h4>
+<p>继承于pydantic</p>
+<p>规范化 API 请求和响应的数据结构</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义消息类，用于封装API接口返回数据</span></span><br><span class="line"><span class="comment">#基于 Pydantic 的数据模型</span></span><br><span class="line"><span class="comment"># 定义Message类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Message</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    role (角色): 这是一个字符串，表示消息的发送者。常见的角色包括：</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">- user (用户): 表示用户输入的消息。</span></span><br><span class="line"><span class="string">- assistant (助手): 表示聊天机器人或模型生成的消息。</span></span><br><span class="line"><span class="string">- system (系统): 表示为模型提供上下文或指令的系统消息。</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    role: <span class="built_in">str</span></span><br><span class="line">    content: <span class="built_in">str</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义ChatCompletionRequest类</span></span><br><span class="line"><span class="comment">#聊天 API 请求</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ChatCompletionRequest</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    messages: <span class="type">List</span>[Message]</span><br><span class="line">    stream: <span class="type">Optional</span>[<span class="built_in">bool</span>] = <span class="literal">False</span><span class="comment">#是否流式方式响应</span></span><br><span class="line">    userId: <span class="type">Optional</span>[<span class="built_in">str</span>] = <span class="literal">None</span><span class="comment">#用于标识发起请求的用户</span></span><br><span class="line">    conversationId: <span class="type">Optional</span>[<span class="built_in">str</span>] = <span class="literal">None</span><span class="comment">#用于标识特定的对话会话，这对于管理对话上下文或历史记录非常有用</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义ChatCompletionResponseChoice类</span></span><br><span class="line"><span class="comment">#聊天完成响应中的一个“选择”或一个生成的回复</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ChatCompletionResponseChoice</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    index: <span class="built_in">int</span></span><br><span class="line">    message: Message</span><br><span class="line">    finish_reason: <span class="type">Optional</span>[<span class="built_in">str</span>] = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义ChatCompletionResponse类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ChatCompletionResponse</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    <span class="built_in">id</span>: <span class="built_in">str</span> = Field(default_factory=<span class="keyword">lambda</span>: <span class="string">f&quot;chatcmpl-<span class="subst">&#123;uuid.uuid4().<span class="built_in">hex</span>&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">object</span>: <span class="built_in">str</span> = <span class="string">&quot;chat.completion&quot;</span></span><br><span class="line">    created: <span class="built_in">int</span> = Field(default_factory=<span class="keyword">lambda</span>: <span class="built_in">int</span>(time.time()))</span><br><span class="line">    choices: <span class="type">List</span>[ChatCompletionResponseChoice]<span class="comment">#模型生成的所有可能的回复选项</span></span><br><span class="line">    system_fingerprint: <span class="type">Optional</span>[<span class="built_in">str</span>] = <span class="literal">None</span></span><br></pre></td></tr></table></figure>
+<h4 id="定义fastapi应用并管理应用的生命周期">定义fastapi应用并管理应用的生命周期</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义了一个异步函数lifespan，它接收一个FastAPI应用实例app作为参数。这个函数将管理应用的生命周期，包括启动和关闭时的操作</span></span><br><span class="line"><span class="comment"># 函数在应用启动时执行一些初始化操作，如加载上下文数据、以及初始化问题生成器</span></span><br><span class="line"><span class="comment"># 函数在应用关闭时执行一些清理操作</span></span><br><span class="line"><span class="comment"># @asynccontextmanager 装饰器用于创建一个异步上下文管理器，它允许你在 yield 之前和之后执行特定的代码块，分别表示启动和关闭时的操作</span></span><br><span class="line"><span class="meta">@asynccontextmanager</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">lifespan</span>(<span class="params">app: FastAPI</span>):</span><br><span class="line">    <span class="comment"># 启动时执行</span></span><br><span class="line">    <span class="comment"># 申明引用全局变量，在函数中被初始化，并在整个应用中使用</span></span><br><span class="line">    <span class="keyword">global</span> graph</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        logger.info(<span class="string">&quot;正在初始化模型、定义Graph...&quot;</span>)</span><br><span class="line">        <span class="comment">#（1）初始化LLM</span></span><br><span class="line">        llm = get_llm(llm_type)</span><br><span class="line">        <span class="comment">#（2）定义Graph</span></span><br><span class="line">        graph = create_graph(llm)</span><br><span class="line">        <span class="comment">#（3）将Graph可视化图保存</span></span><br><span class="line">        save_graph_visualization(graph)</span><br><span class="line">        logger.info(<span class="string">&quot;初始化完成&quot;</span>)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        logger.error(<span class="string">f&quot;初始化过程中出错: <span class="subst">&#123;<span class="built_in">str</span>(e)&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="comment"># raise 关键字重新抛出异常，以确保程序不会在错误状态下继续运行</span></span><br><span class="line">        <span class="keyword">raise</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># yield 关键字将控制权交还给FastAPI框架，使应用开始运行</span></span><br><span class="line">    <span class="comment"># 分隔了启动和关闭的逻辑。在yield 之前的代码在应用启动时运行，yield 之后的代码在应用关闭时运行</span></span><br><span class="line">    <span class="keyword">yield</span></span><br><span class="line">    <span class="comment"># 关闭时执行</span></span><br><span class="line">    logger.info(<span class="string">&quot;正在关闭...&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># lifespan参数用于在应用程序生命周期的开始和结束时执行一些初始化或清理工作</span></span><br><span class="line">app = FastAPI(lifespan=lifespan)</span><br></pre></td></tr></table></figure>
+<h4 id="langgraph核心逻辑">langgraph核心逻辑</h4>
+<p>创建langgraph</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义chatbot的状态</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">State</span>(<span class="title class_ inherited__">TypedDict</span>):</span><br><span class="line">    messages: Annotated[<span class="built_in">list</span>, add_messages]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建和配置chatbot的状态图</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_graph</span>(<span class="params">llm</span>) -&gt; StateGraph:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment"># 构建graph</span></span><br><span class="line">        <span class="comment">#创建一个 StateGraph 的实例，并将其配置为使用 State 类作为其状态管理的数据模型</span></span><br><span class="line">        graph_builder = StateGraph(State)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 定义chatbot的node</span></span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">chatbot</span>(<span class="params">state: State</span>) -&gt; <span class="built_in">dict</span>:</span><br><span class="line">            <span class="comment"># 处理当前状态并返回 LLM 响应</span></span><br><span class="line">            <span class="keyword">return</span> &#123;<span class="string">&quot;messages&quot;</span>: [llm.invoke(state[<span class="string">&quot;messages&quot;</span>])]&#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 配置graph</span></span><br><span class="line">        <span class="comment">#第二个参数 chatbot ：这是一个可调用对象（通常是一个函数或方法），它定义了当执行流程到达这个名为 &quot;chatbot&quot; 的节点时，应该执行什么操作。</span></span><br><span class="line">        graph_builder.add_node(<span class="string">&quot;chatbot&quot;</span>, chatbot)</span><br><span class="line">        graph_builder.add_edge(START, <span class="string">&quot;chatbot&quot;</span>)</span><br><span class="line">        graph_builder.add_edge(<span class="string">&quot;chatbot&quot;</span>, END)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 这里使用内存存储 也可以持久化到数据库</span></span><br><span class="line">        memory = MemorySaver()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 编译生成graph并返回</span></span><br><span class="line">        <span class="comment">#checkpointer 参数将 memory 实例传递给编译过程，使得图能够管理其状态的保存和加载。编译后的图对象被返回，这个对象可以被调用来运行聊天机器人。</span></span><br><span class="line">        <span class="keyword">return</span> graph_builder.<span class="built_in">compile</span>(checkpointer=memory)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="keyword">raise</span> RuntimeError(<span class="string">f&quot;Failed to create graph: <span class="subst">&#123;<span class="built_in">str</span>(e)&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>可视化langgraph节点</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 将构建的graph可视化保存为 PNG 文件</span><br><span class="line">def save_graph_visualization(graph: StateGraph, filename: str = &quot;graph.png&quot;) -&gt; None:</span><br><span class="line">    try:</span><br><span class="line">        with open(filename, &quot;wb&quot;) as f:</span><br><span class="line">            f.write(graph.get_graph().draw_mermaid_png())</span><br><span class="line">        logger.info(f&quot;Graph visualization saved as &#123;filename&#125;&quot;)</span><br><span class="line">    except IOError as e:</span><br><span class="line">        logger.info(f&quot;Warning: Failed to save graph visualization: &#123;str(e)&#125;&quot;)</span><br></pre></td></tr></table></figure>
+<h4 id="封装接口">封装接口</h4>
+<p>包含流式输出与非流式输出的处理</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 封装POST请求接口，与大模型进行问答</span></span><br><span class="line"><span class="meta">@app.post(<span class="params"><span class="string">&quot;/v1/chat/completions&quot;</span></span>)</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">chat_completions</span>(<span class="params">request: ChatCompletionRequest</span>):</span><br><span class="line">    <span class="comment"># 判断初始化是否完成</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> graph:</span><br><span class="line">        logger.error(<span class="string">&quot;服务未初始化&quot;</span>)</span><br><span class="line">        <span class="keyword">raise</span> HTTPException(status_code=<span class="number">500</span>, detail=<span class="string">&quot;服务未初始化&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        logger.info(<span class="string">f&quot;收到聊天完成请求: <span class="subst">&#123;request&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">        query_prompt = request.messages[-<span class="number">1</span>].content</span><br><span class="line">        logger.info(<span class="string">f&quot;用户问题是: <span class="subst">&#123;query_prompt&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">        config = &#123;<span class="string">&quot;configurable&quot;</span>: &#123;<span class="string">&quot;thread_id&quot;</span>: request.userId+<span class="string">&quot;@@&quot;</span>+request.conversationId&#125;&#125;</span><br><span class="line">        logger.info(<span class="string">f&quot;用户当前会话信息: <span class="subst">&#123;config&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">        prompt_template_system = PromptTemplate.from_file(PROMPT_TEMPLATE_TXT_SYS)</span><br><span class="line">        prompt_template_user = PromptTemplate.from_file(PROMPT_TEMPLATE_TXT_USER)</span><br><span class="line">        prompt = [</span><br><span class="line">            &#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;system&quot;</span>, <span class="string">&quot;content&quot;</span>: prompt_template_system.template&#125;,</span><br><span class="line">            &#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: prompt_template_user.template.<span class="built_in">format</span>(query=query_prompt)&#125;</span><br><span class="line">        ]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 处理流式响应</span></span><br><span class="line">        <span class="keyword">if</span> request.stream:</span><br><span class="line">            <span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">generate_stream</span>():</span><br><span class="line">                chunk_id = <span class="string">f&quot;chatcmpl-<span class="subst">&#123;uuid.uuid4().<span class="built_in">hex</span>&#125;</span>&quot;</span></span><br><span class="line">                <span class="keyword">async</span> <span class="keyword">for</span> message_chunk, metadata <span class="keyword">in</span> graph.astream(&#123;<span class="string">&quot;messages&quot;</span>: prompt&#125;, config, stream_mode=<span class="string">&quot;messages&quot;</span>):</span><br><span class="line">                    chunk = message_chunk.content</span><br><span class="line">                    logger.info(<span class="string">f&quot;chunk: <span class="subst">&#123;chunk&#125;</span>&quot;</span>)</span><br><span class="line">                    <span class="comment"># 在处理过程中产生每个块</span></span><br><span class="line">                    <span class="keyword">yield</span> <span class="string">f&quot;data: <span class="subst">&#123;json.dumps(&#123;<span class="string">&#x27;id&#x27;</span>: chunk_id,<span class="string">&#x27;object&#x27;</span>: <span class="string">&#x27;chat.completion.chunk&#x27;</span>,<span class="string">&#x27;created&#x27;</span>: <span class="built_in">int</span>(time.time()),<span class="string">&#x27;choices&#x27;</span>: [&#123;<span class="string">&#x27;index&#x27;</span>: <span class="number">0</span>,<span class="string">&#x27;delta&#x27;</span>: &#123;<span class="string">&#x27;content&#x27;</span>: chunk&#125;</span>,&#x27;finish_reason&#x27;: None&#125;]&#125;)&#125;\n\n&quot;</span></span><br><span class="line">                <span class="comment"># 流结束的最后一块</span></span><br><span class="line">                <span class="keyword">yield</span> <span class="string">f&quot;data: <span class="subst">&#123;json.dumps(&#123;<span class="string">&#x27;id&#x27;</span>: chunk_id,<span class="string">&#x27;object&#x27;</span>: <span class="string">&#x27;chat.completion.chunk&#x27;</span>,<span class="string">&#x27;created&#x27;</span>: <span class="built_in">int</span>(time.time()),<span class="string">&#x27;choices&#x27;</span>: [&#123;<span class="string">&#x27;index&#x27;</span>: <span class="number">0</span>,<span class="string">&#x27;delta&#x27;</span>: &#123;&#125;</span>,&#x27;finish_reason&#x27;: &#x27;stop&#x27;&#125;]&#125;)&#125;\n\n&quot;</span></span><br><span class="line">            <span class="comment"># 返回fastapi.responses中StreamingResponse对象</span></span><br><span class="line">            <span class="keyword">return</span> StreamingResponse(generate_stream(), media_type=<span class="string">&quot;text/event-stream&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 处理非流式响应处理</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                events = graph.stream(&#123;<span class="string">&quot;messages&quot;</span>: prompt&#125;, config)</span><br><span class="line">                <span class="keyword">for</span> event <span class="keyword">in</span> events:</span><br><span class="line">                    <span class="keyword">for</span> value <span class="keyword">in</span> event.values():</span><br><span class="line">                        result = value[<span class="string">&quot;messages&quot;</span>][-<span class="number">1</span>].content</span><br><span class="line">            <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">                logger.info(<span class="string">f&quot;Error processing response: <span class="subst">&#123;<span class="built_in">str</span>(e)&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">            formatted_response = <span class="built_in">str</span>(format_response(result))</span><br><span class="line">            logger.info(<span class="string">f&quot;格式化的搜索结果: <span class="subst">&#123;formatted_response&#125;</span>&quot;</span>)</span><br><span class="line">			<span class="comment">#封装响应</span></span><br><span class="line">            response = ChatCompletionResponse(</span><br><span class="line">                choices=[</span><br><span class="line">                    ChatCompletionResponseChoice(</span><br><span class="line">                        index=<span class="number">0</span>,</span><br><span class="line">                        message=Message(role=<span class="string">&quot;assistant&quot;</span>, content=formatted_response),</span><br><span class="line">                        finish_reason=<span class="string">&quot;stop&quot;</span></span><br><span class="line">                    )</span><br><span class="line">                ]</span><br><span class="line">            )</span><br><span class="line">            logger.info(<span class="string">f&quot;发送响应内容: \n<span class="subst">&#123;response&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="comment"># 返回fastapi.responses中JSONResponse对象</span></span><br><span class="line">            <span class="comment"># model_dump()方法通常用于将Pydantic模型实例的内容转换为一个标准的Python字典，以便进行序列化</span></span><br><span class="line">            <span class="keyword">return</span> JSONResponse(content=response.model_dump())</span><br><span class="line"></span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        logger.error(<span class="string">f&quot;处理聊天完成时出错:\n\n <span class="subst">&#123;<span class="built_in">str</span>(e)&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="keyword">raise</span> HTTPException(status_code=<span class="number">500</span>, detail=<span class="built_in">str</span>(e))</span><br></pre></td></tr></table></figure>
+<h3 id="langgraph的短期记忆与长期记忆">langgraph的短期记忆与长期记忆</h3>
+<p>LangGraph支持两种对于构建对话代理至关重要的内存类型：</p>
+<ul>
+<li><strong><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langgraph/agents/memory/#short-term-memory">短期内存</a></strong>：通过在会话中维护消息历史来跟踪正在进行的对话。</li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langgraph/agents/memory/#long-term-memory">长期内存</a></strong>：在不同会话之间存储用户特定或应用程序级别的数据。</li>
+</ul>
+<figure>
+<img src="/2025/07/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/LangGraphChatBot/image-20250715094855646.png" alt="image-20250715094855646">
+<figcaption aria-hidden="true">image-20250715094855646</figcaption>
+</figure>
+<p>在LangGraph中</p>
+<ul>
+<li><em>短期内存</em>也称为<strong>线程级内存</strong>。</li>
+<li><em>长期内存</em>也称为<strong>跨线程内存</strong>。</li>
+</ul>
+<h3 id="教程地址">教程地址</h3>
+<p><a target="_blank" rel="noopener" href="https://github.com/NanGePlus/LangGraphChatBot">NanGePlus/LangGraphChatBot:
+使用LangGraph+DeepSeek-R1+FastAPI+Gradio实现一个带有记忆功能的流量包推荐智能客服web端用例,同时也支持gpt大模型、国产大模型(OneApi方式)、Ollama本地开源大模型、阿里通义千问大模型</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1m89NYKE2J/?vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">LangGraph+deepseek-r1+FastAPI+Gradio实现拥有记忆的流量包推荐智能客服web端用例,同时也支持gpt、国产大模型、Ollama_哔哩哔哩_bilibili</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/langgraph/" rel="tag"># langgraph</a>
+              <a href="/tags/fastapi/" rel="tag"># fastapi</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/07/13/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/prompt%20Engineering%E4%B8%8Econtext%20Engineering/" rel="prev" title="prompt Engineering与context Engineering">
+                  <i class="fa fa-angle-left"></i> prompt Engineering与context Engineering
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/07/15/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langgraph%E5%AD%A6%E4%B9%A0/" rel="next" title="LangGraph学习——快速入门">
+                  LangGraph学习——快速入门 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
