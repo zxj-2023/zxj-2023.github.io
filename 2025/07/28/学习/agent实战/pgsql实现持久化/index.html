@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言pgsql与redis皆是配合langgraph的checkpoint与store进行持久化储存，完成长期记忆与短期记忆的实现 pgsql实现持久化什么是pgsqlPostgreSQL（常简称pgsql或Postgres）是一个功能强大的开源对象-关系型数据库管理系统（ORDBMS），以其稳定性、扩展性和符合SQL标准著称。 docker拉取docker-compose 12345678910">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pgsql实现持久化">
+<meta property="og:url" content="http://example.com/2025/07/28/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/pgsql%E5%AE%9E%E7%8E%B0%E6%8C%81%E4%B9%85%E5%8C%96/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="前言pgsql与redis皆是配合langgraph的checkpoint与store进行持久化储存，完成长期记忆与短期记忆的实现 pgsql实现持久化什么是pgsqlPostgreSQL（常简称pgsql或Postgres）是一个功能强大的开源对象-关系型数据库管理系统（ORDBMS），以其稳定性、扩展性和符合SQL标准著称。 docker拉取docker-compose 12345678910">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-07-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-07-31T07:32:17.841Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="langgraph">
+<meta property="article:tag" content="agent">
+<meta property="article:tag" content="pgsql">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2025/07/28/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/pgsql%E5%AE%9E%E7%8E%B0%E6%8C%81%E4%B9%85%E5%8C%96/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/07/28/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/pgsql%E5%AE%9E%E7%8E%B0%E6%8C%81%E4%B9%85%E5%8C%96/","path":"2025/07/28/学习/agent实战/pgsql实现持久化/","title":"pgsql实现持久化"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>pgsql实现持久化 | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pgsql%E5%AE%9E%E7%8E%B0%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">2.</span> <span class="nav-text">pgsql实现持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFpgsql"><span class="nav-number">2.1.</span> <span class="nav-text">什么是pgsql</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#docker%E6%8B%89%E5%8F%96"><span class="nav-number">2.2.</span> <span class="nav-text">docker拉取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8pgsqsl%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="nav-number">2.3.</span> <span class="nav-text">在pgsqsl安装依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5pgsql"><span class="nav-number">2.4.</span> <span class="nav-text">连接pgsql</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96pgsql"><span class="nav-number">2.5.</span> <span class="nav-text">初始化pgsql</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#fastapi%E5%AE%9E%E7%8E%B0%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%9A%84%E7%AE%A1%E7%90%86"><span class="nav-number">2.6.</span> <span class="nav-text">fastapi实现生命周期的管理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pgsql%E7%9A%84%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84"><span class="nav-number">3.</span> <span class="nav-text">pgsql的存储结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81Checkpoints-%E7%B3%BB%E5%88%97"><span class="nav-number">3.1.</span> <span class="nav-text">一、Checkpoints 系列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81Store-%E7%B3%BB%E5%88%97"><span class="nav-number">3.2.</span> <span class="nav-text">二、Store 系列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E8%B0%83%E7%94%A8%E9%93%BE%E8%84%91%E5%9B%BE"><span class="nav-number">3.3.</span> <span class="nav-text">三、调用链脑图</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%8D%A2apt%E9%95%9C%E5%83%8F%E6%BA%90"><span class="nav-number">4.</span> <span class="nav-text">更换apt镜像源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">112</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/28/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/pgsql%E5%AE%9E%E7%8E%B0%E6%8C%81%E4%B9%85%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="pgsql实现持久化 | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          pgsql实现持久化
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-07-28 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-28T00:00:00+08:00">2025-07-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-07-31 15:32:17" itemprop="dateModified" datetime="2025-07-31T15:32:17+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/agent%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">agent实战</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>pgsql与redis皆是配合langgraph的checkpoint与store进行持久化储存，完成长期记忆与短期记忆的实现</p>
+<h3 id="pgsql实现持久化"><a href="#pgsql实现持久化" class="headerlink" title="pgsql实现持久化"></a>pgsql实现持久化</h3><h4 id="什么是pgsql"><a href="#什么是pgsql" class="headerlink" title="什么是pgsql"></a>什么是pgsql</h4><p>PostgreSQL（常简称pgsql或Postgres）是一个功能强大的开源对象-关系型数据库管理系统（ORDBMS），以其稳定性、扩展性和符合SQL标准著称。</p>
+<h4 id="docker拉取"><a href="#docker拉取" class="headerlink" title="docker拉取"></a>docker拉取</h4><p>docker-compose</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">version: &#x27;3.8&#x27;</span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">  postgres:</span><br><span class="line">    image: postgres:15        # 指定具体版本</span><br><span class="line">    container_name: postgres_db</span><br><span class="line">    environment:</span><br><span class="line">      POSTGRES_USER: postgres</span><br><span class="line">      POSTGRES_PASSWORD: postgres</span><br><span class="line">      POSTGRES_DB: postgres</span><br><span class="line">      TZ: Asia/Shanghai       # 设置时区</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;5432:5432&quot;</span><br><span class="line">    volumes:</span><br><span class="line">      - pgdata:/var/lib/postgresql/data</span><br><span class="line">    restart: unless-stopped</span><br><span class="line">    healthcheck:             # 健康检查</span><br><span class="line">      test: [&quot;CMD&quot;, &quot;pg_isready&quot;, &quot;-U&quot;, &quot;nange&quot;]</span><br><span class="line">      interval: 10s</span><br><span class="line">      timeout: 5s</span><br><span class="line">      retries: 5</span><br><span class="line">    command: [&quot;postgres&quot;, &quot;-c&quot;, &quot;max_connections=200&quot;]  # 自定义配置</span><br><span class="line"></span><br><span class="line">volumes:</span><br><span class="line">  pgdata:</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>Docker Compose</strong> 是一个 <strong>定义和运行多容器 Docker 应用</strong> 的 <strong>声明式工具</strong>。<br>它通过一个 <strong>YAML 文件（通常叫 <code>docker-compose.yml</code>）</strong> 描述整个应用的服务、网络、存储等配置，然后用一条命令即可 <strong>启动/停止/管理</strong> 所有容器，无需手动逐个 <code>docker run</code>。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#拉取并运行</span><br><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+<h4 id="在pgsqsl安装依赖"><a href="#在pgsqsl安装依赖" class="headerlink" title="在pgsqsl安装依赖"></a>在pgsqsl安装依赖</h4><p>因为LangGraph的PostgresStore需要使用到pgvector，因此需要在容器中按照如下步骤进行操作，直接使用Docker Desktop软件中进行操作 </p>
+<blockquote>
+<ul>
+<li>为什么需要 <code>pgvector</code>？</li>
+<li><code>PostgresStore</code> 支持将 <strong>向量嵌入（embedding）</strong> 存储在 PostgreSQL 中，并基于它们进行 <strong>语义搜索</strong>。</li>
+<li>该功能依赖 <code>pgvector</code> 扩展提供的 <code>vector</code> 类型和索引机制（如 HNSW）。</li>
+</ul>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">安装依赖           </span><br><span class="line">apt update    #刷新本地软件包索引           </span><br><span class="line">apt install -y git build-essential postgresql-server-dev-15                          </span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>apt install -y git build-essential postgresql-server-dev-15一次性安装 3 类依赖。</p>
+<ul>
+<li><code>git</code> —— 用来克隆 pgvector 源码。</li>
+<li><code>build-essential</code> —— Debian/Ubuntu 的“编译工具链”元包，包含 gcc、make 等。</li>
+<li><code>postgresql-server-dev-15</code> —— 与当前 Postgres <strong>主版本一致</strong> 的开发头文件和 <code>pg_config</code>。</li>
+</ul>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">编译并安装 pgvector      </span><br><span class="line">#把 pgvector 的 v0.7.0 稳定版 源码克隆到本地目录 ./pgvector。</span><br><span class="line">git clone --branch v0.7.0 https://github.com/pgvector/pgvector.git                </span><br><span class="line">cd pgvector  </span><br><span class="line">#调用 Makefile 根据当前操作系统 + PostgreSQL 版本编译出二进制文件（.so 共享库）。</span><br><span class="line">make          </span><br><span class="line">#把刚刚编好的 .so 文件和 .sql/.control 文件复制到 PostgreSQL 的扩展目录</span><br><span class="line">make install                </span><br><span class="line">验证安装，检查扩展文件是否安装成功                    </span><br><span class="line">ls -l /usr/share/postgresql/15/extension/vector* </span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://github.com/pgvector/pgvector">pgvector/pgvector: Open-source vector similarity search for Postgres</a></p>
+<p>接下来，若要在脚本中进行使用，首先在系统环境中需要安装PostgreSQL 的开发库（libpq），因为 psycopg 需要它来编译或运行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install libpq-dev postgresql-server-dev-all</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>psycopg（Python 操作 PostgreSQL 的库）</strong> 在 <strong>Linux/macOS</strong> 上运行时，底层依赖于 <strong>PostgreSQL 的 C 语言开发库 libpq</strong>。<br>如果系统里 <strong>没有 libpq</strong>，psycopg 会出现以下两种问题：</p>
+<ol>
+<li><p><strong>编译安装失败</strong>（源码/旧版本）<br>当 <code>pip install psycopg2</code> 需要现场编译时，会找不到头文件 <code>libpq-fe.h</code> 或动态库 <code>libpq.so</code>，导致报错：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">error: libpq-fe.h: No such file or directory</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>运行时崩溃</strong><br>即使通过预编译的 wheel 包安装成功，运行时也可能提示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ImportError: libpq.so.5: cannot open shared object file</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</blockquote>
+<p>最后，再安装相关依赖包  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pip install langgraph-checkpoint-postgres                    </span><br><span class="line">pip install psycopg psycopg-pool </span><br></pre></td></tr></table></figure>
+<p>psycopg官方 PostgreSQL 驱动，在 <code>psycopg</code> 之上再包一层“<strong>连接池</strong>”，让并发访问更快、更稳定。</p>
+<h4 id="连接pgsql"><a href="#连接pgsql" class="headerlink" title="连接pgsql"></a>连接pgsql</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">from langgraph.store.postgres import PostgresStore</span><br><span class="line">from langgraph.checkpoint.postgres import PostgresSaver</span><br><span class="line">from psycopg_pool import ConnectionPool</span><br><span class="line"># 1) 连接字符串（URI 语法）</span><br><span class="line">DB_URI = &quot;postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable&quot;</span><br><span class="line">#   协议://      用户   : 密码   @ 主机:端口 / 数据库名  ? 额外参数</span><br><span class="line"></span><br><span class="line"># 2) 连接级参数</span><br><span class="line">connection_kwargs = &#123;</span><br><span class="line">    &quot;autocommit&quot;: True,     # 每条 SQL 执行完立即提交，无需手动 commit</span><br><span class="line">    &quot;prepare_threshold&quot;: 0, # 禁用服务器端 prepared statement，可减少一次往返</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 3) 创建池</span><br><span class="line">connection_pool = ConnectionPool(</span><br><span class="line">    conninfo=DB_URI,</span><br><span class="line">    max_size=20,            # 最多 20 条物理连接</span><br><span class="line">    kwargs=connection_kwargs,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"># 4) 显式打开池（psycopg 3 的 ConnectionPool 默认懒启动，调 open() 会立即建 min_size 条连接）</span><br><span class="line">connection_pool.open()</span><br><span class="line">print(&quot;数据库连接池初始化成功&quot;)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>正常情况每次 SQL 都新建一条 TCP 连接、做 SSL 握手、验证密码、分配内存，如果不复用连接，这些动作就要 <strong>每次都重新来一遍</strong>，<strong>成本非常高</strong>。</p>
+<p>连接池（Connection Pool）是一种 <strong>数据库访问层资源管理组件</strong>，其核心目标是在 <strong>高并发、短事务</strong> 场景下，通过 <strong>复用已建立的数据库物理连接</strong> 来降低系统整体延迟、减少资源消耗，并防止数据库因瞬时连接风暴而崩溃。</p>
+</blockquote>
+<h4 id="初始化pgsql"><a href="#初始化pgsql" class="headerlink" title="初始化pgsql"></a>初始化pgsql</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># 初始化PostgresStore</span><br><span class="line">in_postgres_store = PostgresStore(</span><br><span class="line">    pool,</span><br><span class="line">    index=&#123;</span><br><span class="line">        &quot;dims&quot;: 1536,</span><br><span class="line">        &quot;embed&quot;: embedding</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br><span class="line">in_postgres_store.setup()</span><br><span class="line"></span><br><span class="line">#初始化checkpoint</span><br><span class="line"># 使用传入的连接池创建 PostgresSaver</span><br><span class="line">checkpointer = PostgresSaver(pool)</span><br><span class="line">checkpointer.setup()</span><br><span class="line"></span><br><span class="line">#最后编译时添加</span><br><span class="line">graph_builder.compile(checkpointer=checkpointer, store=in_postgres_store)</span><br></pre></td></tr></table></figure>
+<p><code>in_postgres_store.setup()</code> 的角色一句话就能说清：</p>
+<blockquote>
+<p><strong>把数据库里所有为了让向量存储正常工作的“一次性基建”全部建好</strong>——只建一次，后面再跑就不会重复执行。</p>
+</blockquote>
+<p>具体而言，它通常干下面三件事：1.<strong>建表 / 建扩展</strong>；2.<strong>建向量索引</strong>；3.<strong>元数据初始化</strong></p>
+<h4 id="fastapi实现生命周期的管理"><a href="#fastapi实现生命周期的管理" class="headerlink" title="fastapi实现生命周期的管理"></a>fastapi实现生命周期的管理</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"># 定义了一个异步函数lifespan，它接收一个FastAPI应用实例app作为参数。这个函数将管理应用的生命周期，包括启动和关闭时的操作</span><br><span class="line"># 函数在应用启动时执行一些初始化操作，如加载上下文数据、以及初始化问题生成器</span><br><span class="line"># 函数在应用关闭时执行一些清理操作</span><br><span class="line"># @asynccontextmanager 装饰器用于创建一个异步上下文管理器，它允许你在 yield 之前和之后执行特定的代码块，分别表示启动和关闭时的操作</span><br><span class="line">@asynccontextmanager</span><br><span class="line">async def lifespan(app: FastAPI):</span><br><span class="line">    # 启动时执行</span><br><span class="line">    # 申明引用全局变量，在函数中被初始化，并在整个应用中使用</span><br><span class="line">    global graph, connection_pool</span><br><span class="line">    # 启动时执行</span><br><span class="line">    try:</span><br><span class="line">        logger.info(&quot;正在初始化模型、定义 Graph...&quot;)</span><br><span class="line">        # 初始化 LLM</span><br><span class="line">        llm, embedding = get_llm(llm_type)</span><br><span class="line">        # 创建数据库连接池</span><br><span class="line">        DB_URI = &quot;postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable&quot;</span><br><span class="line">        connection_kwargs = &#123;</span><br><span class="line">            &quot;autocommit&quot;: True,</span><br><span class="line">            &quot;prepare_threshold&quot;: 0,</span><br><span class="line">        &#125;</span><br><span class="line">        connection_pool = ConnectionPool(</span><br><span class="line">            conninfo=DB_URI,</span><br><span class="line">            max_size=20,</span><br><span class="line">            kwargs=connection_kwargs,</span><br><span class="line">        )</span><br><span class="line">        connection_pool.open()  # 显式打开连接池</span><br><span class="line">        logger.info(&quot;数据库连接池初始化成功&quot;)</span><br><span class="line">        # 短期记忆 初始化checkpointer</span><br><span class="line">        checkpointer = PostgresSaver(connection_pool)</span><br><span class="line">        checkpointer.setup()</span><br><span class="line">        # 长期记忆 初始化PostgresStore</span><br><span class="line">        in_postgres_store = PostgresStore(</span><br><span class="line">            connection_pool,</span><br><span class="line">            index=&#123;</span><br><span class="line">                &quot;dims&quot;: 1536,</span><br><span class="line">                &quot;embed&quot;: embedding</span><br><span class="line">            &#125;</span><br><span class="line">        )</span><br><span class="line">        in_postgres_store.setup()</span><br><span class="line">        # 定义 Graph</span><br><span class="line">        graph = create_graph(llm, checkpointer, in_postgres_store )</span><br><span class="line">        # 保存 Graph 可视化图</span><br><span class="line">        save_graph_visualization(graph)</span><br><span class="line">        logger.info(&quot;初始化完成&quot;)</span><br><span class="line">    except Exception as e:</span><br><span class="line">        logger.error(f&quot;初始化过程中出错: &#123;str(e)&#125;&quot;)</span><br><span class="line">        raise</span><br><span class="line"></span><br><span class="line">    yield  # 应用运行期间</span><br><span class="line"></span><br><span class="line">    # 关闭时执行</span><br><span class="line">    logger.info(&quot;正在关闭...&quot;)</span><br><span class="line">    if connection_pool:</span><br><span class="line">        connection_pool.close()  # 关闭连接池</span><br><span class="line">        logger.info(&quot;数据库连接池已关闭&quot;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># lifespan参数用于在应用程序生命周期的开始和结束时执行一些初始化或清理工作</span><br><span class="line">app = FastAPI(lifespan=lifespan)</span><br></pre></td></tr></table></figure>
+<h3 id="pgsql的存储结构"><a href="#pgsql的存储结构" class="headerlink" title="pgsql的存储结构"></a>pgsql的存储结构</h3><h4 id="一、Checkpoints-系列"><a href="#一、Checkpoints-系列" class="headerlink" title="一、Checkpoints 系列"></a>一、Checkpoints 系列</h4><blockquote>
+<p>作用：让 <strong>LangGraph Runtime</strong> 能在 <strong>分布式/长流程</strong> 场景下 <strong>断点续跑、重放、并发控制</strong>。</p>
+</blockquote>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>表名</th>
+<th>存什么</th>
+<th>典型字段（示意）</th>
+<th>何时写入</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>checkpoints</strong></td>
+<td>每个「图实例」的 <strong>最新快照</strong>（state 的完整 JSONB）</td>
+<td><code>thread_id</code>, <code>checkpoint_ns</code>, <code>checkpoint_id</code>, <code>parent_checkpoint_id</code>, <code>state</code>, <code>created_at</code></td>
+<td>每次节点执行成功后覆盖更新</td>
+</tr>
+<tr>
+<td><strong>checkpoint_blobs</strong></td>
+<td>checkpoints 里 <strong>大字段的拆分</strong>（避免行过大）</td>
+<td><code>thread_id</code>, <code>checkpoint_ns</code>, <code>channel</code>, <code>type</code>, <code>blob</code></td>
+<td>当 state 过大，自动拆分</td>
+</tr>
+<tr>
+<td><strong>checkpoint_migrations</strong></td>
+<td>记录 <strong>schema 版本/迁移脚本</strong></td>
+<td><code>version</code>, <code>name</code>, <code>applied_at</code></td>
+<td>只在 <code>setup()</code> 时写一次</td>
+</tr>
+<tr>
+<td><strong>checkpoint_writes</strong></td>
+<td><strong>写放大日志</strong>（每个节点写 state 的增量 diff）</td>
+<td><code>thread_id</code>, <code>checkpoint_id</code>, <code>task_id</code>, <code>idx</code>, <code>channel</code>, <code>type</code>, <code>value</code></td>
+<td>每次节点完成时追加</td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>关系：<br><code>checkpoints</code> = 最新完整快照<br><code>checkpoint_writes</code> = 所有增量历史（用于重放/审计）<br><code>checkpoint_blobs</code> = checkpoints 里超大型 value 的切片</p>
+</blockquote>
+<h4 id="二、Store-系列"><a href="#二、Store-系列" class="headerlink" title="二、Store 系列"></a>二、Store 系列</h4><blockquote>
+<p>作用：给 <strong>业务代码（开发者）</strong> 提供 <strong>持久化 KV / 向量存储</strong>，与图运行状态无关。</p>
+</blockquote>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>表名</th>
+<th>存什么</th>
+<th>典型字段（示意）</th>
+<th>何时写入</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>store</strong></td>
+<td><strong>任意 KV 文档</strong>（LangChain Document → JSONB）</td>
+<td><code>uuid</code>, <code>namespace</code>, <code>key</code>, <code>value</code>, <code>created_at</code>, <code>updated_at</code></td>
+<td>你调用 <code>store.amput</code> / <code>amset</code> 等 API</td>
+</tr>
+<tr>
+<td><strong>store_migrations</strong></td>
+<td>同 checkpoint_migrations，记录 store schema 版本</td>
+<td><code>version</code>, <code>name</code>, <code>applied_at</code></td>
+<td>只在第一次 <code>setup()</code></td>
+</tr>
+<tr>
+<td><strong>store_vectors</strong></td>
+<td><strong>向量索引表</strong>（embedding → vector 类型）</td>
+<td><code>uuid</code>, <code>collection_id</code>, <code>embedding</code>, <code>document</code>, <code>metadata</code></td>
+<td>你调用 <code>add_documents(..., embeddings=...)</code></td>
+</tr>
+<tr>
+<td><strong>vector_migrations</strong></td>
+<td>记录 pgvector 扩展及索引迁移版本</td>
+<td><code>version</code>, <code>applied_at</code></td>
+<td><code>setup()</code> 时若第一次装 pgvector</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="三、调用链脑图"><a href="#三、调用链脑图" class="headerlink" title="三、调用链脑图"></a>三、调用链脑图</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">┌──────────────┐</span><br><span class="line">│ LangGraph    │ 运行图实例</span><br><span class="line">└────┬─────────┘</span><br><span class="line">     │1. 写 checkpoints</span><br><span class="line">     │2. 写 checkpoint_writes</span><br><span class="line">     │3. 拆大字段到 checkpoint_blobs</span><br><span class="line">     ▼</span><br><span class="line">┌──────────────┐</span><br><span class="line">│ 业务代码     │ 读写 KV/向量</span><br><span class="line">└────┬─────────┘</span><br><span class="line">     │1. 写 store</span><br><span class="line">     │2. 写 store_vectors</span><br><span class="line">     ▼</span><br><span class="line"> PostgreSQL (pgsql)</span><br></pre></td></tr></table></figure>
+<h3 id="更换apt镜像源"><a href="#更换apt镜像源" class="headerlink" title="更换apt镜像源"></a>更换apt镜像源</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cat &gt; /etc/apt/sources.list &lt;&lt;&#x27;EOF&#x27;</span><br><span class="line">deb http://mirrors.aliyun.com/debian/ bookworm main contrib non-free</span><br><span class="line">deb http://mirrors.aliyun.com/debian/ bookworm-updates main contrib non-free</span><br><span class="line">deb http://mirrors.aliyun.com/debian/ bookworm-backports main contrib non-free</span><br><span class="line">deb http://mirrors.aliyun.com/debian-security bookworm-security main contrib non-free</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">apt update</span><br></pre></td></tr></table></figure>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7470702616906645540">postgresql向量扩展pgvector的安装与入门本文简答的介绍了 rag 的架构，引申出向量数据库的作用，介绍了 - 掘金</a></p>
+<p>langchain支持向量存储<a target="_blank" rel="noopener" href="https://python.langchain.com/docs/integrations/vectorstores/">向量存储 | 🦜️🔗 LangChain —- Vector stores | 🦜️🔗 LangChain</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/langgraph/" rel="tag"># langgraph</a>
+              <a href="/tags/agent/" rel="tag"># agent</a>
+              <a href="/tags/pgsql/" rel="tag"># pgsql</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/07/28/%E5%AD%A6%E4%B9%A0/transfromers/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/" rel="prev" title="Transformer快速入门">
+                  <i class="fa fa-angle-left"></i> Transformer快速入门
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/07/28/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/Plan-and-Execute%E6%A8%A1%E5%BC%8F/" rel="next" title="Plan-and-Execute模式">
+                  Plan-and-Execute模式 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

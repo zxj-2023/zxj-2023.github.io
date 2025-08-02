@@ -22,15 +22,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="概念扫盲 Document 对象 Document 对象是 LangChain 用来封装和处理文本数据的基本单位。无论您是从 PDF、Markdown 文件、网站还是数据库加载数据，LangChain 都会将这些数据转换成一个或多个 Document 对象，以便在后续的流程中使用。 一个 Document 对象主要包含两个部分：  page_content (字符串)  这是文">
+    <meta name="description" content="实战demoagent实战langchain的agent与langgraph的agent主要差异点在create_openai_functions_agent, AgentExecutor这两个函数 前者的作用类似构建 Runnable 链，返回一个RunnablePassthrough.assign(...)|prompt|llm_with_tools|ToolsAgentOutputParse">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LangChain学习">
 <meta property="og:url" content="http://example.com/2025/07/15/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langchain%E5%AD%A6%E4%B9%A0/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="概念扫盲 Document 对象 Document 对象是 LangChain 用来封装和处理文本数据的基本单位。无论您是从 PDF、Markdown 文件、网站还是数据库加载数据，LangChain 都会将这些数据转换成一个或多个 Document 对象，以便在后续的流程中使用。 一个 Document 对象主要包含两个部分：  page_content (字符串)  这是文">
+<meta property="og:description" content="实战demoagent实战langchain的agent与langgraph的agent主要差异点在create_openai_functions_agent, AgentExecutor这两个函数 前者的作用类似构建 Runnable 链，返回一个RunnablePassthrough.assign(...)|prompt|llm_with_tools|ToolsAgentOutputParse">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-07-14T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-07-18T08:42:43.557Z">
+<meta property="article:modified_time" content="2025-08-02T07:52:08.522Z">
 <meta property="article:author" content="张熙浚">
 <meta property="article:tag" content="langchain">
 <meta name="twitter:card" content="summary">
@@ -143,7 +143,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5%E6%89%AB%E7%9B%B2"><span class="nav-number">1.</span> <span class="nav-text">概念扫盲</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#document-%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.1.</span> <span class="nav-text">Document 对象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#runnable%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.2.</span> <span class="nav-text">Runnable协议</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">2.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%88%98demo"><span class="nav-number">1.</span> <span class="nav-text">实战demo</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#agent%E5%AE%9E%E6%88%98"><span class="nav-number">1.1.</span> <span class="nav-text">agent实战</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8"><span class="nav-number">1.2.</span> <span class="nav-text">工具调用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5%E6%89%AB%E7%9B%B2"><span class="nav-number">2.</span> <span class="nav-text">概念扫盲</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Document-%E5%AF%B9%E8%B1%A1"><span class="nav-number">2.1.</span> <span class="nav-text">Document 对象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Runnable%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.2.</span> <span class="nav-text">Runnable协议</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -158,18 +158,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">105</span>
+          <span class="site-state-item-count">112</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-count">49</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -255,7 +255,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-07-18 16:42:43" itemprop="dateModified" datetime="2025-07-18T16:42:43+08:00">2025-07-18</time>
+      <time title="修改时间：2025-08-02 15:52:08" itemprop="dateModified" datetime="2025-08-02T15:52:08+08:00">2025-08-02</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -287,40 +287,81 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h3 id="概念扫盲">概念扫盲</h3>
-<h4 id="document-对象">Document 对象</h4>
-<p>Document 对象是 LangChain
-用来封装和处理文本数据的基本单位。无论您是从 PDF、Markdown
-文件、网站还是数据库加载数据，LangChain 都会将这些数据转换成一个或多个
-Document 对象，以便在后续的流程中使用。</p>
+    <div class="post-body" itemprop="articleBody"><h3 id="实战demo"><a href="#实战demo" class="headerlink" title="实战demo"></a>实战demo</h3><h4 id="agent实战"><a href="#agent实战" class="headerlink" title="agent实战"></a>agent实战</h4><p>langchain的agent与langgraph的agent主要差异点在create_openai_functions_agent, AgentExecutor这两个函数</p>
+<p>前者的作用类似<strong>构建 Runnable 链</strong>，返回一个<code>RunnablePassthrough.assign(...)|prompt|llm_with_tools|ToolsAgentOutputParser()</code>，但其invoke仅能完成单步的调用，而<code>AgentExecutor</code> 会自动完成3 步循环（调用工具→拼回结果→再次调用 LLM），直到任务结束。</p>
+<blockquote>
+<p>以下为ai的解释</p>
+<p><strong>直接使用 <code>agent</code> (Runnable) 的局限性:</strong></p>
+<ol>
+<li><strong>单步执行</strong>: 你直接调用 <code>agent.invoke()</code> 或 <code>agent.ainvoke()</code> 时，它通常只执行<strong>一步</strong>。对于像 <code>create_tool_calling_agent</code> 生成的 <code>agent</code> 来说，这一步就是：<ul>
+<li>接收输入（包括历史消息和 <code>agent_scratchpad</code>）。</li>
+<li>让 LLM 决定是给出最终答案 (<code>AgentFinish</code>) 还是调用工具 (<code>AgentAction</code>)。</li>
+<li>返回这个决定。</li>
+</ul>
+</li>
+<li><strong>工具调用需要手动处理</strong>: 如果 LLM 决定调用工具（返回 <code>AgentAction</code>），<strong>你</strong>需要负责：<ul>
+<li>从返回的 <code>AgentAction</code> 中找出工具名称和输入参数。</li>
+<li>在你的工具列表中找到对应的工具。</li>
+<li>执行这个工具。</li>
+<li>获取工具的输出（Observation）。</li>
+<li><strong>再次手动调用 <code>agent.invoke(...)</code></strong>，把工具的输出（通常需要格式化成 <code>ToolMessage</code>）放回 <code>agent_scratchpad</code> 或 <code>intermediate_steps</code> 中。</li>
+<li>重复这个过程，直到 <code>agent</code> 最终返回 <code>AgentFinish</code>。</li>
+</ul>
+</li>
+</ol>
+<p><strong>使用 <code>AgentExecutor</code> 的优势:</strong></p>
+<p><code>AgentExecutor</code> 就是为了解决上述问题而设计的。它本质上是一个<strong>自动化的执行引擎</strong>，为你管理整个 Agent 的思考-行动-观察循环。</p>
+<ol>
+<li><strong>自动化循环</strong>: <code>AgentExecutor</code> 内部会自动运行那个循环：<ul>
+<li>调用 <code>agent</code> (Runnable)。</li>
+<li>检查返回的是 <code>AgentAction</code> 还是 <code>AgentFinish</code>。</li>
+<li>如果是 <code>AgentAction</code>，它会自动根据你提供的 <code>tools</code> 列表找到并执行对应的工具。</li>
+<li>它会自动将工具的输出（Observation）记录下来，并作为下一步的输入（放入 <code>agent_scratchpad</code>）再次调用 <code>agent</code>。</li>
+<li>这个过程会一直重复。</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">from langchain.agents import create_openai_functions_agent, AgentExecutor</span><br><span class="line">from langchain.tools import tool</span><br><span class="line">from langchain_openai import ChatOpenAI</span><br><span class="line">from pydantic import BaseModel, Field</span><br><span class="line"></span><br><span class="line"># 1. 定义工具</span><br><span class="line">class WeatherInput(BaseModel):</span><br><span class="line">    location: str = Field(description=&quot;城市名称&quot;)</span><br><span class="line"></span><br><span class="line">@tool(&quot;get_weather&quot;, args_schema=WeatherInput)</span><br><span class="line">def get_weather(location: str) -&gt; str:</span><br><span class="line">    &quot;&quot;&quot;查询城市天气&quot;&quot;&quot;</span><br><span class="line">    return f&quot;&#123;location&#125; 今天是晴天，25°C&quot;</span><br><span class="line"></span><br><span class="line"># 2. 创建Agent</span><br><span class="line">llm = ChatOpenAI(model=&quot;gpt-4&quot;)</span><br><span class="line">tools = [get_weather]</span><br><span class="line">prompt = ChatPromptTemplate.from_messages([</span><br><span class="line">    (&quot;system&quot;, &quot;你是一个助手，可以调用工具&quot;),</span><br><span class="line">    (&quot;human&quot;, &quot;&#123;input&#125;&quot;)</span><br><span class="line">])</span><br><span class="line">agent = create_openai_functions_agent(llm, tools, prompt)</span><br><span class="line">agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)</span><br><span class="line"></span><br><span class="line"># 3. 执行</span><br><span class="line">result = agent_executor.invoke(&#123;&quot;input&quot;: &quot;北京天气如何？&quot;&#125;)</span><br><span class="line">print(result[&quot;output&quot;])</span><br></pre></td></tr></table></figure>
+<h4 id="工具调用"><a href="#工具调用" class="headerlink" title="工具调用"></a>工具调用</h4><p>利用bind_tools绑定工具，当大模型需要调用工具的时候，会返回工具信息，tool_calls，如下</p>
+<p>[{‘name’: ‘add_numbers’, ‘args’: {‘a’: 15, ‘b’: 27}, ‘id’: ‘4e7b261cce6d4e3da09134086c704c3c’, ‘type’: ‘tool_call’}]</p>
+<blockquote>
+<p><code>llm_with_tools.invoke(...)</code> 只是一个<strong>单步调用</strong>，LLM 返回的是<strong>“我想调用哪个工具、传什么参数”</strong>（即 <code>tool_calls</code>）。<br><strong>但 LLM 并不会自动执行工具</strong>，所以你必须：</p>
+<ol>
+<li><strong>手动执行工具</strong>（或让 AgentExecutor 帮你执行）。</li>
+<li><strong>把执行结果拼回对话</strong>（作为 <code>ToolMessage</code>）。</li>
+<li><strong>再次调用 LLM</strong>，让它基于工具返回的结果生成最终答案。</li>
+</ol>
+</blockquote>
+<p>这里展示的是手动拼接，并传给大模型，如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 将工具的输出发送回LLM，让LLM基于结果生成最终回答</span><br><span class="line">            # 这是一个关键步骤，通常在Agent中自动处理。这里手动演示。</span><br><span class="line">            final_response = llm_with_tools.invoke([</span><br><span class="line">                HumanMessage(content=&quot;What is 15 + 27?&quot;),</span><br><span class="line">                AIMessage(content=&quot;&quot;, tool_calls=[tool_call]), # 告知LLM它之前建议的工具调用</span><br><span class="line">                ToolMessage(content=str(result), tool_call_id=tool_call[&#x27;id&#x27;]) # 告知LLM工具的执行结果</span><br><span class="line">            ])</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line">from langchain_core.tools import tool</span><br><span class="line">from typing import Literal</span><br><span class="line">from langchain_openai import ChatOpenAI</span><br><span class="line">from langchain_core.messages import HumanMessage, AIMessage, ToolMessage</span><br><span class="line"></span><br><span class="line"># 定义一个加法工具</span><br><span class="line">@tool</span><br><span class="line">def add_numbers(a: float, b: float) -&gt; float:</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    Adds two numbers together.</span><br><span class="line"></span><br><span class="line">    Args:</span><br><span class="line">        a: The first number.</span><br><span class="line">        b: The second number.</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    return a + b</span><br><span class="line"></span><br><span class="line"># 我们可以定义更多的工具，例如一个乘法工具</span><br><span class="line">@tool</span><br><span class="line">def multiply_numbers(a: float, b: float) -&gt; float:</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    Multiplies two numbers together.</span><br><span class="line"></span><br><span class="line">    Args:</span><br><span class="line">        a: The first number.</span><br><span class="line">        b: The second number.</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    return a * b</span><br><span class="line"></span><br><span class="line"># 将我们定义的工具放在一个列表中</span><br><span class="line">tools = [add_numbers, multiply_numbers]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 初始化LLM</span><br><span class="line">llm = ChatOpenAI(</span><br><span class="line">    temperature=0.5,</span><br><span class="line">    model_name=&quot;deepseek-v3-0324&quot;, # 聊天模型通常使用&quot;gpt-3.5-turbo&quot;或&quot;gpt-4&quot;</span><br><span class="line">    openai_api_base=&quot;https://api.qnaigc.com/v1&quot;, # 例如，您可以指定base_url</span><br><span class="line">    openai_api_key=&quot;sk-&quot; # 直接在此处设置API密钥，或者通过环境变量设置</span><br><span class="line">)</span><br><span class="line"># 将工具绑定到LLM</span><br><span class="line"># LLM现在知道了add_numbers和multiply_numbers这两个工具及其功能</span><br><span class="line">llm_with_tools = llm.bind_tools(tools)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 场景一：LLM直接回答，不需要工具</span><br><span class="line">print(&quot;--- 场景一：LLM直接回答 ---&quot;)</span><br><span class="line">response1 = llm_with_tools.invoke([HumanMessage(content=&quot;Hello, what&#x27;s your name?&quot;)])</span><br><span class="line">print(response1.content) # LLM直接生成文本回复</span><br><span class="line"></span><br><span class="line">print(&quot;\n--- 场景二：LLM决定调用工具 ---&quot;)</span><br><span class="line"># 场景二：LLM决定调用工具</span><br><span class="line"># 当LLM的响应中包含tool_calls时，意味着它想要调用一个或多个工具</span><br><span class="line">response2 = llm_with_tools.invoke([HumanMessage(content=&quot;What is 15 + 27?&quot;)])</span><br><span class="line">print(response2.tool_calls) # 打印LLM决定调用的工具信息</span><br><span class="line"></span><br><span class="line"># 检查并执行LLM建议的工具调用</span><br><span class="line">if response2.tool_calls:</span><br><span class="line">    for tool_call in response2.tool_calls:</span><br><span class="line">        if tool_call[&#x27;name&#x27;] == &quot;add_numbers&quot;:</span><br><span class="line">            # 提取LLM为工具调用生成的参数</span><br><span class="line">            args = tool_call[&#x27;args&#x27;]</span><br><span class="line">            result = add_numbers.invoke(args) # 执行工具</span><br><span class="line">            print(f&quot;Tool call: add_numbers(&#123;args[&#x27;a&#x27;]&#125;, &#123;args[&#x27;b&#x27;]&#125;) = &#123;result&#125;&quot;)</span><br><span class="line"></span><br><span class="line">            # 将工具的输出发送回LLM，让LLM基于结果生成最终回答</span><br><span class="line">            # 这是一个关键步骤，通常在Agent中自动处理。这里手动演示。</span><br><span class="line">            final_response = llm_with_tools.invoke([</span><br><span class="line">                HumanMessage(content=&quot;What is 15 + 27?&quot;),</span><br><span class="line">                AIMessage(content=&quot;&quot;, tool_calls=[tool_call]), # 告知LLM它之前建议的工具调用</span><br><span class="line">                ToolMessage(content=str(result), tool_call_id=tool_call[&#x27;id&#x27;]) # 告知LLM工具的执行结果</span><br><span class="line">            ])</span><br><span class="line">            print(&quot;Final LLM response based on tool output:&quot;)</span><br><span class="line">            print(final_response.content)</span><br></pre></td></tr></table></figure>
+<h3 id="概念扫盲"><a href="#概念扫盲" class="headerlink" title="概念扫盲"></a>概念扫盲</h3><h4 id="Document-对象"><a href="#Document-对象" class="headerlink" title="Document 对象"></a>Document 对象</h4><p>Document 对象是 LangChain 用来封装和处理文本数据的基本单位。无论您是从 PDF、Markdown 文件、网站还是数据库加载数据，LangChain 都会将这些数据转换成一个或多个 Document 对象，以便在后续的流程中使用。</p>
 <p>一个 Document 对象主要包含两个部分：</p>
-<ol type="1">
+<ol>
 <li><p>page_content (字符串)</p>
 <ul>
-<li>这是文档对象的核心，存储了原始的文本内容。例如，如果加载一个
-Markdown 文件， page_content 就会包含该文件的所有文本。</li>
-</ul></li>
+<li>这是文档对象的核心，存储了原始的文本内容。例如，如果加载一个 Markdown 文件， page_content 就会包含该文件的所有文本。</li>
+</ul>
+</li>
 <li><p>metadata (字典)</p>
 <ul>
-<li>这是一个字典，用于存储关于文档的“元数据”或附加信息。这些信息对于过滤、追踪或增强文档处理流程非常有用。常见的元数据包括：
-<ul>
+<li>这是一个字典，用于存储关于文档的“元数据”或附加信息。这些信息对于过滤、追踪或增强文档处理流程非常有用。常见的元数据包括：<ul>
 <li>source ：文档的来源，比如文件名、URL等。</li>
 <li>page ：如果文档来自多页文件（如PDF），这里可以存储页码。</li>
 <li>其他自定义信息：您可以添加任何有助于您应用的信息，如作者、创建日期等。</li>
-</ul></li>
-</ul></li>
+</ul>
+</li>
+</ul>
+</li>
 </ol>
-<p>除了通过文档加载器（Loaders）自动创建，您也可以手动创建一个 Document
-对象。这在测试或处理简单文本时非常方便。</p>
+<p>除了通过文档加载器（Loaders）自动创建，您也可以手动创建一个 Document 对象。这在测试或处理简单文本时非常方便。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 创建一个简单的 Document 对象</span><br><span class="line">doc = Document(</span><br><span class="line">    page_content=&quot;这是文档的主要内容。LangChain 真酷！&quot;,</span><br><span class="line">    metadata=&#123;</span><br><span class="line">        &#x27;source&#x27;: &#x27;my_notebook.ipynb&#x27;,</span><br><span class="line">        &#x27;author&#x27;: &#x27;AI Assistant&#x27;,</span><br><span class="line">        &#x27;chapter&#x27;: 2</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<h4 id="runnable协议">Runnable协议</h4>
-<p><a target="_blank" rel="noopener" href="https://python.langchain.com/api_reference/core/runnables/langchain_core.runnables.base.Runnable.html#langchain_core.runnables.base.Runnable">“Runnable”</a>协议</p>
-<h3 id="参考资料">参考资料</h3>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV12TLAzuEni/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">2025最新版！langchain入门到精通实战教程！结合实战案例，干货拉满！99%的人不知道的暴利玩法，学完敢谷歌工程师叫板！_哔哩哔哩_bilibili</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.langchain.com.cn/docs/introduction/">introduction |
-LangChain中文网</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1XudVYzEcW?spm_id_from=333.788.videopod.episodes&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">跟着官网学langchain2025(version
-0.3)_哔哩哔哩_bilibili</a></p>
+<h4 id="Runnable协议"><a href="#Runnable协议" class="headerlink" title="Runnable协议"></a>Runnable协议</h4><p><a target="_blank" rel="noopener" href="https://python.langchain.com/api_reference/core/runnables/langchain_core.runnables.base.Runnable.html#langchain_core.runnables.base.Runnable">“Runnable”</a>协议</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV12TLAzuEni/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">2025最新版！langchain入门到精通实战教程！结合实战案例，干货拉满！99%的人不知道的暴利玩法，学完敢谷歌工程师叫板！_哔哩哔哩_bilibili</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.langchain.com.cn/docs/introduction/">introduction | LangChain中文网</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1XudVYzEcW?spm_id_from=333.788.videopod.episodes&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">跟着官网学langchain2025(version 0.3)_哔哩哔哩_bilibili</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.langchain.com/langgraph-platform">LangGraph Platform - Docs by LangChain</a></p>
 
     </div>
 

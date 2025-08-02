@@ -155,18 +155,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">105</span>
+          <span class="site-state-item-count">112</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-count">49</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -206,6 +206,1004 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/26/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E4%B8%AD%E7%BC%80%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/10/26/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E4%B8%AD%E7%BC%80%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="post-title-link" itemprop="url">数据结构——中缀表达式</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-10-26 00:00:00" itemprop="dateCreated datePublished" datetime="2024-10-26T00:00:00+08:00">2024-10-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-12 18:56:24" itemprop="dateModified" datetime="2025-06-12T18:56:24+08:00">2025-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8A/" itemprop="url" rel="index"><span itemprop="name">大二上</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="数据结构中缀表达式">数据结构——中缀表达式</h1>
+<h2 id="利用中缀表达式直接求值">利用中缀表达式直接求值</h2>
+<p>要实现中缀表达式直接求值，必须设置两个栈，一个栈用于存放操作数，记作
+<code>OPND</code>； 另一个栈用于存放操作符，记作 <code>OPTR</code>。</p>
+<p>中缀表达式求值算法步骤如下：</p>
+<ol type="1">
+<li>初始化：操作符栈中放置一个元素 <code>@</code>。</li>
+<li>依次读取中缀表达式中的每一个字符，对于不同类型的字符按以下情况处理：
+<ol type="1">
+<li>若读到的是操作数，则压入操作数栈，并读取下一个字符。</li>
+<li>若读到的是操作符 <code>c</code>，则将操作符栈的栈顶元素
+<code>pre_op</code>与之进行比较，会出现以下 3 种情况：
+<ul>
+<li>若 <code>pre_op &lt; c</code>，则将 <code>c</code>
+入栈，并读取下一个字符。</li>
+<li>若 <code>pre_op = c</code>，则将 <code>pre_op</code>
+出栈，并读取下一个字符。</li>
+<li>若 <code>pre_op &gt; c</code>，则将 <code>pre_op</code>
+出栈，并在操作数栈中退栈 2 次，依次得到操作数 <code>b</code> 和
+<code>a</code>，然后进行 <code>a pre_op b</code>
+运算，将运算结果压入操作数栈。</li>
+</ul></li>
+</ol></li>
+<li>扫描完毕时，操作数栈中只有一个元素，即计算结果。</li>
+</ol>
+<figure>
+<img src="/2024/10/26/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E4%B8%AD%E7%BC%80%E8%A1%A8%E8%BE%BE%E5%BC%8F/IMG_20241026_164151.jpg" alt="IMG_20241026_164151">
+<figcaption aria-hidden="true">IMG_20241026_164151</figcaption>
+</figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//中缀表达式，实数</span></span><br><span class="line"><span class="function"><span class="type">double</span> <span class="title">Expression_Eval2</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	SeqStack&lt;<span class="type">char</span>, <span class="number">100</span>&gt; OPTR;</span><br><span class="line">	SeqStack&lt;<span class="type">double</span>, <span class="number">100</span>&gt; OPND;</span><br><span class="line">	OPTR.<span class="built_in">Push</span>(<span class="string">&#x27;@&#x27;</span>);</span><br><span class="line">	<span class="type">char</span> ch = <span class="built_in">getchar</span>();</span><br><span class="line">	<span class="keyword">while</span> (ch != <span class="string">&#x27;@&#x27;</span> || OPTR.<span class="built_in">Top</span>() != <span class="string">&#x27;@&#x27;</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="built_in">isdigit</span>(ch) || ch == <span class="string">&#x27;.&#x27;</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="comment">// 处理多位数和小数</span></span><br><span class="line">			string number;</span><br><span class="line">			<span class="keyword">while</span> (<span class="built_in">isdigit</span>(ch) || ch == <span class="string">&#x27;.&#x27;</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				number += ch;</span><br><span class="line">				ch = <span class="built_in">getchar</span>();</span><br><span class="line">			&#125;</span><br><span class="line">			OPND.<span class="built_in">Push</span>(<span class="built_in">stod</span>(number));</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="type">char</span> pre_op = OPTR.<span class="built_in">Top</span>();</span><br><span class="line">			<span class="keyword">switch</span> (<span class="built_in">Precede</span>(pre_op, ch))</span><br><span class="line">			&#123;</span><br><span class="line">			<span class="keyword">case</span> <span class="string">&#x27;&lt;&#x27;</span>:</span><br><span class="line">				OPTR.<span class="built_in">Push</span>(ch);</span><br><span class="line">				ch = <span class="built_in">getchar</span>();</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> <span class="string">&#x27;=&#x27;</span>:</span><br><span class="line">				OPTR.<span class="built_in">Pop</span>();</span><br><span class="line">				ch = <span class="built_in">getchar</span>();</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> <span class="string">&#x27;&gt;&#x27;</span>:</span><br><span class="line">				<span class="type">char</span> pre_op = OPTR.<span class="built_in">Pop</span>();</span><br><span class="line">				<span class="type">double</span> b = OPND.<span class="built_in">Pop</span>();</span><br><span class="line">				<span class="type">double</span> a = OPND.<span class="built_in">Pop</span>();</span><br><span class="line">				OPND.<span class="built_in">Push</span>(<span class="built_in">Operate</span>(a, pre_op, b));</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> OPND.<span class="built_in">Top</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>Precede(pre_op, ch)</code>为进行算符优先级比较的函数</p>
+<p><code>Operate(a, pre_op, b)</code>为计算函数</p>
+<h2 id="利用后缀表达式求值">利用后缀表达式求值</h2>
+<h2 id="优点">优点</h2>
+<p>后缀是指把操作符放在两个操作数的后面。采用后缀表示的算术表达式被称为<strong>后缀表达式</strong>或<strong>后缀算</strong>。
+在后缀表达式中，<strong>完全按照操作符出现的先后顺序进行计算过程，不存在括号，也不存在优先级的差别</strong>。</p>
+<p>将中缀表达式转换成等价的后缀表达式求值时，不需要再考虑操作符的优先级，只需从左到右扫描一边后缀表达式即可。只需设置一个OPND栈用于存放操作数</p>
+<h3 id="先将中缀表达式转成后缀表达式">先将中缀表达式转成后缀表达式</h3>
+<p>把中缀表达式转换为后缀表达式算法的基本思路如下：</p>
+<ol type="1">
+<li><p>初始化：操作符栈中放置一个元素 <code>@</code>。</p></li>
+<li><p>依次读入中缀表达式中的每个字符</p>
+<p>，对于不同类型的字符按不同情况进行处理：</p>
+<ol type="1">
+<li>若读到的是操作数，则输出该操作数，并读取下一个字符。</li>
+<li>若读到的是左括号 <code>(</code>，则把它压入 <code>OPTR</code>
+栈中，并读取下一个字符。</li>
+<li>若读到的是右括号
+<code>)</code>，则表明括号内的中缀表达式已经扫描完毕，将
+<code>OPTR</code>
+栈从栈顶直到左括号之前的操作符依次出栈并输出，然后将左括号出栈，并读取下一个字符。</li>
+<li>若读到的是操作符 <code>c</code>，则将操作符栈的栈顶元素
+<code>pre_op</code>与之进行比较：
+<ul>
+<li>若 <code>pre_op &lt; c</code>，则将 <code>c</code>
+入栈，并读取下一个字符。</li>
+<li>若 <code>pre_op &gt;= c</code>，则将 <code>pre_op</code>
+出栈并输出。</li>
+</ul></li>
+<li>若读到的是结束符
+<code>@</code>，则把栈中剩余的操作符依次出栈并输出，即可得到转换成的后缀表达式。</li>
+</ol></li>
+</ol>
+<h2 id="后缀表达式求值">后缀表达式求值</h2>
+<p>后缀表达式求值算法的基本思路如下</p>
+<ol type="1">
+<li><p>依次读入后缀表达式中的每个字符</p>
+<p>，直至表达式结束。</p>
+<ul>
+<li>若读到的是操作数，则入 <code>OPND</code> 栈。</li>
+<li>若读到的是操作符，则在 <code>OPND</code>
+栈中退栈两个元素（先退出的是操作符右侧，后退出的是操作符左侧），然后用该操作符进行运算，并将运算结果压入
+<code>OPND</code> 栈中。</li>
+</ul></li>
+<li><p><strong>后缀表达式扫描完毕时</strong>，若 <code>OPND</code>
+栈中仅有一个元素，即为运算结果。</p></li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/26/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E7%BA%BF%E6%80%A7%E8%A1%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/10/26/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E7%BA%BF%E6%80%A7%E8%A1%A8/" class="post-title-link" itemprop="url">数据结构——线性表</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-10-26 00:00:00" itemprop="dateCreated datePublished" datetime="2024-10-26T00:00:00+08:00">2024-10-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-12 18:56:10" itemprop="dateModified" datetime="2025-06-12T18:56:10+08:00">2025-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8A/" itemprop="url" rel="index"><span itemprop="name">大二上</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="数据结构线性表">数据结构——线性表</h1>
+<h2 id="线性表的定义">线性表的定义</h2>
+<p><strong>线性表（List）：零个或多个数据元素的有限序列。</strong></p>
+<figure>
+<img src="/2024/10/26/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E7%BA%BF%E6%80%A7%E8%A1%A8/c8b3abeb72098a922a9ac4f6ff62f563.png" alt="c8b3abeb72098a922a9ac4f6ff62f563">
+<figcaption aria-hidden="true">c8b3abeb72098a922a9ac4f6ff62f563</figcaption>
+</figure>
+<h3 id="顺序存储结构">顺序存储结构</h3>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> SEQLIST_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SEQLIST_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 模板类定义，表示顺序表</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="type">int</span> MaxSize&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SeqList</span> &#123;</span><br><span class="line">    T data[MaxSize];  <span class="comment">// 存储顺序表数据的数组</span></span><br><span class="line">    <span class="type">int</span> length;       <span class="comment">// 顺序表的长度</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    </span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="链式存储结构">链式存储结构</h3>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> LINKLIST_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LINKLIST_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Node</span> &#123;</span><br><span class="line">    T data;</span><br><span class="line">    Node&lt;T&gt;* next;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">LinkList</span> &#123;</span><br><span class="line">    Node&lt;T&gt;* head;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// LINKLIST_H</span></span></span><br></pre></td></tr></table></figure>
+<h2 id="归并排序">归并排序</h2>
+<p>[归并排序 |
+菜鸟教程](https://www.runoob.com/data-structures/merge-sort.html#:~:text=归并排序（Merge
+sort）是建立在归并操作上的一种有效、稳定的排序算法，该算法是采用分治法
+(Divide,and Conquer）的一个非常典型的应用。
+将已有序的子序列合并，得到完全有序的序列；即先使每个子序列有序，再使子序列段间有序。
+若将两个有序表合并成一个有序表，称为二路归并。)</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 友元函数：合并两个有序顺序表</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>, <span class="type">int</span> MaxSize1, <span class="type">int</span> MaxSize2&gt;</span><br><span class="line"><span class="function">SeqList&lt;T, MaxSize1 + MaxSize2&gt; <span class="title">Merge</span><span class="params">(<span class="type">const</span> SeqList&lt;T, MaxSize1&gt;&amp; list1, <span class="type">const</span> SeqList&lt;T, MaxSize2&gt;&amp; list2)</span> </span>&#123;</span><br><span class="line">    SeqList&lt;T, MaxSize1 + MaxSize2&gt; MergedList;  <span class="comment">// 创建一个新的顺序表</span></span><br><span class="line">    <span class="type">int</span> i = <span class="number">0</span>, j = <span class="number">0</span>, n = <span class="number">0</span>;                    <span class="comment">// 定义三个指针，分别表示 list1、list2 和合并表的当前索引</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取两个顺序表的长度</span></span><br><span class="line">    <span class="type">int</span> length1 = list<span class="number">1.l</span>ength;</span><br><span class="line">    <span class="type">int</span> length2 = list<span class="number">2.l</span>ength;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 合并两个有序顺序表</span></span><br><span class="line">    <span class="keyword">while</span> (i &lt; length1 &amp;&amp; j &lt; length2) &#123;</span><br><span class="line">        <span class="keyword">if</span> (list<span class="number">1.</span>data[i] &lt;= list<span class="number">2.</span>data[j]) &#123;</span><br><span class="line">            MergedList.data[n++] = list<span class="number">1.</span>data[i++];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            MergedList.data[n++] = list<span class="number">2.</span>data[j++];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将 list1 中剩余的元素插入到 MergedList 中</span></span><br><span class="line">    <span class="keyword">while</span> (i &lt; length1) &#123;</span><br><span class="line">        MergedList.data[n++] = list<span class="number">1.</span>data[i++];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将 list2 中剩余的元素插入到 MergedList 中</span></span><br><span class="line">    <span class="keyword">while</span> (j &lt; length2) &#123;</span><br><span class="line">        MergedList.data[n++] = list<span class="number">2.</span>data[j++];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    MergedList.length = n;  <span class="comment">// 设置合并后的顺序表长度</span></span><br><span class="line">    <span class="keyword">return</span> MergedList;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/24/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E7%B1%BB%E6%A8%A1%E6%9D%BF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/10/24/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E7%B1%BB%E6%A8%A1%E6%9D%BF/" class="post-title-link" itemprop="url">数据结构——类模板</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-10-24 00:00:00" itemprop="dateCreated datePublished" datetime="2024-10-24T00:00:00+08:00">2024-10-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-10-26 15:37:31" itemprop="dateModified" datetime="2024-10-26T15:37:31+08:00">2024-10-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8A/" itemprop="url" rel="index"><span itemprop="name">大二上</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="数据结构类模板">数据结构——类模板</h1>
+<h2 id="类模板">类模板</h2>
+<p>类模板是一种用于创建通用类的机制，它可以让程序员编写一次类，然后让它适用于<strong>多种数据类型</strong>，在实际编程中非常实用。</p>
+<p>优点：使用类模板时，可以为同一个类使用不同的数据类型，这使得代码更加灵活。例如，一个通用的栈类模板可以用于<code>int</code>、<code>double</code>、<code>char</code>等不同类型，而不需要为每种类型分别定义栈类。</p>
+<h3 id="定义方式">定义方式</h3>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyStack</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// 构造函数、析构函数、入栈、出栈等函数</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    T* data;</span><br><span class="line">    <span class="type">int</span> top;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><code>template</code> 关键字用于声明类模板</p>
+<h3 id="函数声明与定义">函数声明与定义</h3>
+<h4 id="类内定义">类内定义</h4>
+<p>如果是在类内进行函数定义，则不需添加<code>template&lt;&gt;</code>，如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// 类模板</span><br><span class="line">template &lt;class T1,class T2&gt;</span><br><span class="line">class Data &#123;</span><br><span class="line">private:</span><br><span class="line">	T1 a;</span><br><span class="line">	T2 b;</span><br><span class="line">public:</span><br><span class="line">	Data(T1 a, T2 b)&#123;</span><br><span class="line">		this-&gt;a = a;</span><br><span class="line">		this-&gt;b = b;</span><br><span class="line">		cout &lt;&lt; &quot;Data的有参构造&quot; &lt;&lt; endl;</span><br><span class="line">	&#125;</span><br><span class="line">	void showData()</span><br><span class="line">	&#123;</span><br><span class="line">		cout &lt;&lt; a &lt;&lt; &quot; &quot; &lt;&lt; b &lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="类外定义">类外定义</h4>
+<p>如果成员函数在类外定义</p>
+<ul>
+<li>在每个成员函数前必须添加<code>template&lt;&gt;</code>。</li>
+<li>作用域需要添加<code>&lt;&gt;</code>修饰。</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="title class_">T1</span>,<span class="keyword">class</span> <span class="title class_">T2</span>&gt;</span><br><span class="line"><span class="type">void</span> Data&lt;T1,T2&gt;::<span class="built_in">showData</span>()</span><br><span class="line">&#123;</span><br><span class="line">	cout &lt;&lt; a &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; b &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="友元函数">友元函数</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//类内声明</span></span><br><span class="line"><span class="function"><span class="keyword">friend</span> <span class="type">void</span> <span class="title">MyPrint</span><span class="params">(Data&lt;T3, T4&gt; &amp;ob)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//类外定义</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T3,<span class="keyword">typename</span> T4&gt;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">MyPrint</span><span class="params">(Data&lt;T3, T4&gt; &amp;ob)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	cout &lt;&lt; <span class="string">&quot;函数模板友元：&quot;</span> &lt;&lt; ob.a &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; ob.b &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="模板类分文件书写问题">模板类分文件书写问题</h3>
+<h4 id="方案一">方案一</h4>
+<p>将类的声明和成员函数的定义全部写在一个.h文件中，如：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> _DATA_H_</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _DATA_H_</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 类模板</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T1</span>, <span class="keyword">class</span> <span class="title class_">T2</span>&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Data</span> &#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	T1 a;</span><br><span class="line">	T2 b;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">showData</span><span class="params">()</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="title class_">T1</span>, <span class="keyword">class</span> <span class="title class_">T2</span>&gt;</span><br><span class="line"><span class="type">void</span> Data&lt;T1, T2&gt;::<span class="built_in">showData</span>()</span><br><span class="line">&#123;</span><br><span class="line">	cout &lt;&lt; a &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; b &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// !_DATA_H_</span></span></span><br></pre></td></tr></table></figure>
+<h4 id="方案二">方案二</h4>
+<p>若将函数的定义写在.cpp文件中，main.cpp中调用时，一定要同时include”.h”和“.cpp”文件，否则编译错误</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//main.cpp</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;Data.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;Data.cpp&quot;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="comment">// 类模板实例化对象</span></span><br><span class="line">	</span><br><span class="line">	<span class="function">Data&lt;<span class="type">int</span>, <span class="type">char</span>&gt; <span class="title">ob2</span><span class="params">(<span class="number">100</span>,<span class="string">&#x27;A&#x27;</span>)</span></span>;</span><br><span class="line">	ob<span class="number">2.</span><span class="built_in">showData</span>();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="参考文献">参考文献</h2>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Long_xu/article/details/131500484">【035】深入理解C++类模板（最全讲解）：从基础到实战-CSDN博客</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/21/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E5%B9%BF%E4%B9%89%E8%A1%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/10/21/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E5%B9%BF%E4%B9%89%E8%A1%A8/" class="post-title-link" itemprop="url">数据结构——广义表</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-10-21 00:00:00" itemprop="dateCreated datePublished" datetime="2024-10-21T00:00:00+08:00">2024-10-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-12 18:52:11" itemprop="dateModified" datetime="2025-06-12T18:52:11+08:00">2025-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8A/" itemprop="url" rel="index"><span itemprop="name">大二上</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="数据结构广义表">数据结构——广义表</h1>
+<h2 id="广义表的定义和相关概念">广义表的定义和相关概念</h2>
+<p>广义表是线性表的推广，其中的元素可以是原子（即不可再分的基本数据项），也可以是子表。广义表的一些常用术语包括：
+- <strong>长度</strong>：广义表的长度是其顶层元素的个数。 -
+<strong>深度</strong>：广义表中元素嵌套的最大深度。 -
+<strong>表头</strong>：广义表中的第一个元素。 -
+<strong>表尾</strong>：去掉表头后剩下的部分。</p>
+<h3 id="例子">例子</h3>
+<ul>
+<li><strong>A = ()</strong></li>
+<li><strong>B = (a, b, c)</strong>c)`</li>
+<li><strong>C = (a, (b, c, d), e)</strong></li>
+<li><strong>D = (a, b, (e, f, g))</strong></li>
+<li><strong>E = ((a, b), c, (d, e, (f, g)))</strong></li>
+<li><strong>F = ((), ((), ()))</strong></li>
+</ul>
+<p>下表展示了图片中的几个广义表的长度、深度、表头和表尾的具体值：</p>
+<table>
+<thead>
+<tr class="header">
+<th>广义表</th>
+<th>长度</th>
+<th>深度</th>
+<th>表头</th>
+<th>表尾</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>0</td>
+<td>1</td>
+<td>空</td>
+<td>()</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>3</td>
+<td>1</td>
+<td>a</td>
+<td>(b, c)</td>
+</tr>
+<tr class="odd">
+<td>C</td>
+<td>3</td>
+<td>2</td>
+<td>a</td>
+<td>((b, c, d), e)</td>
+</tr>
+<tr class="even">
+<td>D</td>
+<td>3</td>
+<td>3</td>
+<td>a</td>
+<td>(b, (e, f, g))</td>
+</tr>
+<tr class="odd">
+<td>E</td>
+<td>4</td>
+<td>3</td>
+<td>(a, b)</td>
+<td>(c, (d, e, (f, g)))</td>
+</tr>
+<tr class="even">
+<td>F</td>
+<td>3</td>
+<td>3</td>
+<td>()</td>
+<td>((), ((), ()))</td>
+</tr>
+</tbody>
+</table>
+<h2 id="广义表的存储结构">广义表的存储结构</h2>
+<figure>
+<img src="/2024/10/21/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E5%B9%BF%E4%B9%89%E8%A1%A8/IMG_20241021_153619-1729496219467-9.jpg" alt="IMG_20241021_153619">
+<figcaption aria-hidden="true">IMG_20241021_153619</figcaption>
+</figure>
+<p>由于广义表中的每个元素可能是原子或子表，因此在广义表的存储结构中存在两类结点：</p>
+<ol type="1">
+<li><strong>原子节点</strong>：用于存储单个元素。</li>
+<li><strong>子表节点</strong>：用于存储子表的指针。</li>
+</ol>
+<p>为了区分元素是原子还是子表，结构中还设置了一个标识域
+<code>type</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">GListNodeType</span> &#123; ATOM, LIST &#125;; <span class="comment">// 结点类型：原子或子表</span></span><br></pre></td></tr></table></figure>
+<p>当type值为1，说明存入原子的值；为2，说明存入子广义表的头指针</p>
+<p>广义表定义如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">char</span> ElemType; <span class="comment">// 原子的类型定义为字符类型</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> <span class="title class_">GListNode</span> &#123;</span><br><span class="line">    GListNodeType type; <span class="comment">// 类型域，表示该节点是原子还是子表</span></span><br><span class="line">    <span class="keyword">union</span> &#123;</span><br><span class="line">        ElemType data; <span class="comment">// 如果是原子节点，则存储数据</span></span><br><span class="line">        <span class="keyword">struct</span> <span class="title class_">GListNode</span> *sublist; <span class="comment">// 如果是子表节点，则存储指向子表的指针</span></span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">GListNode</span> *next; <span class="comment">// 指向下一个表节点的指针</span></span><br><span class="line">&#125; GListNode, *GList; <span class="comment">// GList 表示广义表的指针类型</span></span><br></pre></td></tr></table></figure>
+<figure>
+<img src="/2024/10/21/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E5%B9%BF%E4%B9%89%E8%A1%A8/IMG_20241021_154058-1729496523052-14.jpg" alt="IMG_20241021_154058">
+<figcaption aria-hidden="true">IMG_20241021_154058</figcaption>
+</figure>
+<h2 id="代码">代码</h2>
+<h3 id="求广义表长度">求广义表长度</h3>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 求广义表的长度</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">LengthGList</span><span class="params">(GList list)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> length = <span class="number">0</span>;</span><br><span class="line">    GList current = list;</span><br><span class="line">    <span class="keyword">while</span> (current != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        length++;</span><br><span class="line">        current = current-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> length;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="求广义表深度">求广义表深度</h3>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 求广义表的深度</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">DepthGList</span><span class="params">(GList list)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (list == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;  <span class="comment">// 空表深度为 1</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> maxDepth = <span class="number">1</span>;</span><br><span class="line">    GList current = list;</span><br><span class="line">    <span class="keyword">while</span> (current != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (current-&gt;type == LIST) &#123;</span><br><span class="line">            <span class="type">int</span> sublistDepth = <span class="built_in">DepthGList</span>(current-&gt;value.sublist) + <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> (sublistDepth &gt; maxDepth) &#123;</span><br><span class="line">                maxDepth = sublistDepth;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        current = current-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> maxDepth;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="打印">打印</h3>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 打印广义表</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">PrintGList</span><span class="params">(GList list)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (list == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;()&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;(&quot;</span>);</span><br><span class="line">    GList current = list;</span><br><span class="line">    <span class="keyword">while</span> (current != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (current-&gt;type == ATOM) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>, current-&gt;value.data);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (current-&gt;type == LIST) &#123;</span><br><span class="line">            <span class="built_in">PrintGList</span>(current-&gt;value.sublist);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (current-&gt;next != <span class="literal">NULL</span>) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;, &quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        current = current-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;)&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="线性表章节小结">线性表章节小结</h1>
+<figure>
+<img src="/2024/10/21/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E5%B9%BF%E4%B9%89%E8%A1%A8/IMG_20241021_155320.jpg" alt="IMG_20241021_155320">
+<figcaption aria-hidden="true">IMG_20241021_155320</figcaption>
+</figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/19/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E7%9F%A9%E9%98%B5%E5%8E%8B%E7%BC%A9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/10/19/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E7%9F%A9%E9%98%B5%E5%8E%8B%E7%BC%A9/" class="post-title-link" itemprop="url">数据结构——矩阵压缩</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-10-19 00:00:00" itemprop="dateCreated datePublished" datetime="2024-10-19T00:00:00+08:00">2024-10-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-12 18:52:40" itemprop="dateModified" datetime="2025-06-12T18:52:40+08:00">2025-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8A/" itemprop="url" rel="index"><span itemprop="name">大二上</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="数据结构矩阵压缩">数据结构——矩阵压缩</h1>
+<h2 id="特殊矩阵的压缩">特殊矩阵的压缩</h2>
+<h3 id="对称矩阵">对称矩阵</h3>
+<p>关键点：</p>
+<ul>
+<li>是选择上三角行主序存储还是下三角列主序存储</li>
+<li>组的下标是从1开始还是0开始存储</li>
+</ul>
+<figure>
+<img src="/2024/10/19/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E7%9F%A9%E9%98%B5%E5%8E%8B%E7%BC%A9/image-20241019163345497.png" alt="image-20241019163345497">
+<figcaption aria-hidden="true">image-20241019163345497</figcaption>
+</figure>
+<figure>
+<img src="/2024/10/19/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E7%9F%A9%E9%98%B5%E5%8E%8B%E7%BC%A9/image-20241019163357393.png" alt="image-20241019163357393">
+<figcaption aria-hidden="true">image-20241019163357393</figcaption>
+</figure>
+<h3 id="三件矩阵">三件矩阵</h3>
+<p>注意点：</p>
+<ul>
+<li><p>理解下三角列序和下三角行序的差异，后者是计算<code>a[i][j]</code>后面的元素数量和，再用总数减去后面，得到前面元素数量；前者是直接计算<code>a[i][j]</code>前面元素数量</p></li>
+<li><p>一位数组空间为<code>n(n+1)/2+1</code>，数组最后一位为0</p></li>
+</ul>
+<figure>
+<img src="/2024/10/19/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E7%9F%A9%E9%98%B5%E5%8E%8B%E7%BC%A9/image-20241019162703259.png" alt="image-20241019162703259">
+<figcaption aria-hidden="true">image-20241019162703259</figcaption>
+</figure>
+<figure>
+<img src="/2024/10/19/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E7%9F%A9%E9%98%B5%E5%8E%8B%E7%BC%A9/image-20241019162719970.png" alt="image-20241019162719970">
+<figcaption aria-hidden="true">image-20241019162719970</figcaption>
+</figure>
+<h3 id="对角矩阵">对角矩阵</h3>
+<figure>
+<img src="/2024/10/19/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E7%9F%A9%E9%98%B5%E5%8E%8B%E7%BC%A9/image-20241019163805806.png" alt="image-20241019163805806">
+<figcaption aria-hidden="true">image-20241019163805806</figcaption>
+</figure>
+<h2 id="稀疏矩阵的压缩存储">稀疏矩阵的压缩存储</h2>
+<h3 id="三元组表">三元组表</h3>
+<figure>
+<img src="/2024/10/19/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E7%9F%A9%E9%98%B5%E5%8E%8B%E7%BC%A9/IMG_20241019_164539.jpg" alt="IMG_20241019_164539">
+<figcaption aria-hidden="true">IMG_20241019_164539</figcaption>
+</figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 用于表示稀疏矩阵中非零元素的结构体</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">Triplet</span> &#123;</span><br><span class="line">    <span class="type">int</span> row;</span><br><span class="line">    <span class="type">int</span> col;</span><br><span class="line">    <span class="type">int</span> value;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用于表示稀疏矩阵的类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SparseMatrix</span> &#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">int</span> rows;</span><br><span class="line">    <span class="type">int</span> cols;</span><br><span class="line">    vector&lt;Triplet&gt; triplets; </span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// 构造函数，用于初始化矩阵的维度</span></span><br><span class="line">    <span class="built_in">SparseMatrix</span>(<span class="type">int</span> rows, <span class="type">int</span> cols) : <span class="built_in">rows</span>(rows), <span class="built_in">cols</span>(cols) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 添加非零元素到矩阵的方法</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">add_element</span><span class="params">(<span class="type">int</span> row, <span class="type">int</span> col, <span class="type">int</span> value)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (value != <span class="number">0</span>) &#123;</span><br><span class="line">            triplets.<span class="built_in">push_back</span>(&#123; row, col, value &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 以三元组形式显示稀疏矩阵的方法</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">display</span><span class="params">()</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">const</span> <span class="keyword">auto</span>&amp; triplet : triplets) &#123;</span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;行: &quot;</span> &lt;&lt; triplet.row &lt;&lt; <span class="string">&quot;, 列: &quot;</span> &lt;&lt; triplet.col &lt;&lt; <span class="string">&quot;, 值: &quot;</span> &lt;&lt; triplet.value &lt;&lt; endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将稀疏矩阵转换为密集矩阵表示的方法</span></span><br><span class="line">    vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">to_dense</span>() <span class="type">const</span> &#123;</span><br><span class="line">        vector&lt;vector&lt;<span class="type">int</span>&gt;&gt; <span class="built_in">dense_matrix</span>(rows, <span class="built_in">vector</span>&lt;<span class="type">int</span>&gt;(cols, <span class="number">0</span>));</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">const</span> <span class="keyword">auto</span>&amp; triplet : triplets) &#123;</span><br><span class="line">            dense_matrix[triplet.row][triplet.col] = triplet.value;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dense_matrix;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h4 id="朴素转置">朴素转置</h4>
+<figure>
+<img src="/2024/10/19/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E7%9F%A9%E9%98%B5%E5%8E%8B%E7%BC%A9/IMG_20241019_181951.jpg" alt="IMG_20241019_181951">
+<figcaption aria-hidden="true">IMG_20241019_181951</figcaption>
+</figure>
+<p>因为矩阵A的列是矩阵B的行，所以以此遍历A的列，将其存入新的三元组顺序表</p>
+<p>不能直接交换i和j的值的原因：因为三元组表是行优先顺序，如果直接交换就是列优先</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">vector&lt;Triplet&gt; <span class="title">transposeTripletMatrix</span><span class="params">(<span class="type">const</span> vector&lt;Triplet&gt;&amp; tripletMatrix)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 获取原始三元组矩阵的行数、列数和非零元素个数信息</span></span><br><span class="line">    <span class="type">int</span> rows = tripletMatrix[<span class="number">0</span>].row;</span><br><span class="line">    <span class="type">int</span> cols = tripletMatrix[<span class="number">0</span>].col;</span><br><span class="line">    <span class="type">int</span> numNonZero = tripletMatrix[<span class="number">0</span>].value;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建转置矩阵的三元组顺序表</span></span><br><span class="line">    vector&lt;Triplet&gt; transposedMatrix;</span><br><span class="line">    transposedMatrix.<span class="built_in">push_back</span>(&#123;cols, rows, numNonZero&#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 通过列的顺序插入非零元素到转置矩阵中</span></span><br><span class="line">    <span class="keyword">if</span> (numNonZero &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> col = <span class="number">0</span>; col &lt; cols; ++col) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= numNonZero; ++i) &#123;</span><br><span class="line">                <span class="keyword">if</span> (tripletMatrix[i].col == col) &#123;</span><br><span class="line">                    transposedMatrix.<span class="built_in">push_back</span>(&#123;tripletMatrix[i].col, tripletMatrix[i].row, tripletMatrix[i].value&#125;);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> transposedMatrix;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="快速转置">快速转置</h4>
+<figure>
+<img src="/2024/10/19/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E7%9F%A9%E9%98%B5%E5%8E%8B%E7%BC%A9/IMG_20241019_235512.jpg" alt="IMG_20241019_235512">
+<figcaption aria-hidden="true">IMG_20241019_235512</figcaption>
+</figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">vector&lt;Triplet&gt; <span class="title">fastTransposeTripletMatrix</span><span class="params">(<span class="type">const</span> vector&lt;Triplet&gt;&amp; tripletMatrix)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 获取原始三元组矩阵的行数、列数和非零元素个数信息</span></span><br><span class="line">    <span class="type">int</span> rows = tripletMatrix[<span class="number">0</span>].row;</span><br><span class="line">    <span class="type">int</span> cols = tripletMatrix[<span class="number">0</span>].col;</span><br><span class="line">    <span class="type">int</span> numNonZero = tripletMatrix[<span class="number">0</span>].value;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建转置矩阵的三元组顺序表</span></span><br><span class="line">    <span class="function">vector&lt;Triplet&gt; <span class="title">transposedMatrix</span><span class="params">(numNonZero + <span class="number">1</span>)</span></span>;</span><br><span class="line">    transposedMatrix[<span class="number">0</span>] = &#123;cols, rows, numNonZero&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (numNonZero &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 初始化每一列中非零元素的个数和位置</span></span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">count</span><span class="params">(cols, <span class="number">0</span>)</span></span>;</span><br><span class="line">        <span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">index</span><span class="params">(cols + <span class="number">1</span>, <span class="number">2</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 统计每一列中非零元素的个数</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= numNonZero; ++i) &#123;</span><br><span class="line">            count[tripletMatrix[i].col]++;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 计算每一列在转置矩阵中的起始位置</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; cols; ++i) &#123;</span><br><span class="line">            index[i + <span class="number">1</span>] = index[i] + count[i - <span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 填充转置矩阵的三元组顺序表</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= numNonZero; ++i) &#123;</span><br><span class="line">            <span class="type">int</span> col = tripletMatrix[i].col;</span><br><span class="line">            <span class="type">int</span> pos = index[col];</span><br><span class="line">            transposedMatrix[pos] = &#123;tripletMatrix[i].col, tripletMatrix[i].row, tripletMatrix[i].value&#125;;</span><br><span class="line">            index[col]++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> transposedMatrix;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="十字链表">十字链表</h3>
+<figure>
+<img src="/2024/10/19/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/Data%20Structure/%E7%9F%A9%E9%98%B5%E5%8E%8B%E7%BC%A9/IMG_20241019_170755.jpg" alt="IMG_20241019_170755">
+<figcaption aria-hidden="true">IMG_20241019_170755</figcaption>
+</figure>
+<h4 id="定义">定义</h4>
+<p>类中定义了两个链表数组，用于存储每一行和每一列的头节点指针</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 节点定义</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">OLNode</span> &#123;</span><br><span class="line">    <span class="type">int</span> row;         <span class="comment">// 行号</span></span><br><span class="line">    <span class="type">int</span> col;         <span class="comment">// 列号</span></span><br><span class="line">    <span class="type">int</span> value;       <span class="comment">// 元素值</span></span><br><span class="line">    OLNode* right;   <span class="comment">// 指向右边的节点</span></span><br><span class="line">    OLNode* down;    <span class="comment">// 指向下面的节点</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">OLNode</span>(<span class="type">int</span> r, <span class="type">int</span> c, <span class="type">int</span> val) : <span class="built_in">row</span>(r), <span class="built_in">col</span>(c), <span class="built_in">value</span>(val), <span class="built_in">right</span>(<span class="literal">nullptr</span>), <span class="built_in">down</span>(<span class="literal">nullptr</span>) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 十字链表类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">OrthogonalList</span> &#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="type">int</span> rows, cols;</span><br><span class="line">    vector&lt;OLNode*&gt; row_heads; <span class="comment">// 行头链表数组</span></span><br><span class="line">    vector&lt;OLNode*&gt; col_heads; <span class="comment">// 列头链表数组</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="构造函数">构造函数</h4>
+<p><code>row_heads.resize(rows, nullptr);</code> 是用于调整
+<code>row_heads</code> 向量的大小，使其包含 <code>rows</code>
+个元素，并将每个元素初始化为 <code>nullptr</code>。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">OrthogonalList</span>(<span class="type">int</span> rows, <span class="type">int</span> cols) : <span class="built_in">rows</span>(rows), <span class="built_in">cols</span>(cols) &#123;</span><br><span class="line">        row_heads.<span class="built_in">resize</span>(rows, <span class="literal">nullptr</span>);</span><br><span class="line">        col_heads.<span class="built_in">resize</span>(cols, <span class="literal">nullptr</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h4 id="插入函数">插入函数</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 插入元素</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">insert</span><span class="params">(<span class="type">int</span> r, <span class="type">int</span> c, <span class="type">int</span> value)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (value == <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 检查是否已存在节点，若存在则更新值</span></span><br><span class="line">    OLNode* current = row_heads[r];</span><br><span class="line">    <span class="keyword">while</span> (current &amp;&amp; current-&gt;col &lt; c) &#123;</span><br><span class="line">        current = current-&gt;right;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (current &amp;&amp; current-&gt;col == c) &#123;</span><br><span class="line">        current-&gt;value = value; <span class="comment">// 更新已有节点的值</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    OLNode* newNode = <span class="keyword">new</span> <span class="built_in">OLNode</span>(r, c, value);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 插入到行链表中</span></span><br><span class="line">    <span class="keyword">if</span> (!row_heads[r]) &#123;</span><br><span class="line">        <span class="comment">//如果该行没有头节点，则成为该行头节点</span></span><br><span class="line">        row_heads[r] = newNode;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        current = row_heads[r];</span><br><span class="line">        OLNode* prev = <span class="literal">nullptr</span>;</span><br><span class="line">        <span class="comment">//current向下遍历，直到遍历到该行链表的最后一个，或者到达插入的列的位置</span></span><br><span class="line">        <span class="comment">//注意，该插入方式如果遇到该位置已有节点存在的情况，会用新节点覆盖旧节点</span></span><br><span class="line">        <span class="keyword">while</span> (current &amp;&amp; current-&gt;col &lt; c) &#123;</span><br><span class="line">            prev = current;</span><br><span class="line">            current = current-&gt;right;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//若prev存在，则说明头节点不为零，若为空则说明插在链表最前面</span></span><br><span class="line">        <span class="keyword">if</span> (prev) &#123;</span><br><span class="line">            prev-&gt;right = newNode;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            row_heads[r] = newNode;</span><br><span class="line">        &#125;</span><br><span class="line">        newNode-&gt;right = current;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 插入到列链表中</span></span><br><span class="line">    <span class="keyword">if</span> (!col_heads[c]) &#123;</span><br><span class="line">        col_heads[c] = newNode;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        current = col_heads[c];</span><br><span class="line">        OLNode* prev = <span class="literal">nullptr</span>;</span><br><span class="line">        <span class="keyword">while</span> (current &amp;&amp; current-&gt;row &lt; r) &#123;</span><br><span class="line">            prev = current;</span><br><span class="line">            current = current-&gt;down;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (prev) &#123;</span><br><span class="line">            prev-&gt;down = newNode;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            col_heads[c] = newNode;</span><br><span class="line">        &#125;</span><br><span class="line">        newNode-&gt;down = current;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="打印函数">打印函数</h4>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">   <span class="comment">// 打印矩阵</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; rows; ++i) &#123;</span><br><span class="line">            OLNode* current = row_heads[i];</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; cols; ++j) &#123;</span><br><span class="line">                <span class="keyword">if</span> (current &amp;&amp; current-&gt;col == j) &#123;</span><br><span class="line">                    cout &lt;&lt; current-&gt;value &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">                    current = current-&gt;right;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    cout &lt;&lt; <span class="string">&quot;0 &quot;</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            cout &lt;&lt; endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="参考文献">参考文献</h2>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1WM411A7YQ/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">【数据结构】特殊矩阵的压缩存储/对称矩阵/三角矩阵/对角矩阵（含经典题讲解）_哔哩哔哩_bilibili</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1a8yKYXELM/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">【每个人都听得懂的】稀疏矩阵的快速转置算法_哔哩哔哩_bilibili</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/15/reading/%E5%89%8D%E8%A8%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/10/15/reading/%E5%89%8D%E8%A8%80/" class="post-title-link" itemprop="url">读书笔记——前言</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-10-15 00:00:00" itemprop="dateCreated datePublished" datetime="2024-10-15T00:00:00+08:00">2024-10-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-02-26 18:56:54" itemprop="dateModified" datetime="2025-02-26T18:56:54+08:00">2025-02-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">读书笔记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="前言">前言</h2>
+<p>我从小就不是一个喜欢读书的人，不管是小说还是文学作品，感觉文字始终无法对我产生兴趣，回忆起来，我自从初中开始，书读的可能最多的就是课本，课外甚至没有完整地看下来一本书。但我一直深知读书的重要性，而且把读书的感悟写下是很有意义的一件事，希望自己以后可以多读书，自勉。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/15/%E6%96%87%E6%A1%88/%E5%90%8D%E8%A8%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/10/15/%E6%96%87%E6%A1%88/%E5%90%8D%E8%A8%80/" class="post-title-link" itemprop="url">名言警句</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-10-15 00:00:00" itemprop="dateCreated datePublished" datetime="2024-10-15T00:00:00+08:00">2024-10-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-10-16 00:58:11" itemprop="dateModified" datetime="2024-10-16T00:58:11+08:00">2024-10-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%96%87%E6%A1%88/" itemprop="url" rel="index"><span itemprop="name">文案</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="前言">前言</h2>
+<p>我语文不好，始终羡慕那些说话出口成章，底蕴深厚，时不时冒出几句金句的人，所以，为了让我这么一个没有什么文化底蕴的人，说话不至于太俗气，既然我不会说，那我便学名人说，便有了记录名言警句的习惯，此外，这些名言警句背后的哲理，也经常能让我醍醐灌顶。之前在网上看到一些名言警句，就会顺手记录在手机的备忘录上，现在整理下来，希望再看到时能有所收获。我说的名人警句，不光是真正意义上的名人说的，其中也有部分是我看到网友写的，我觉得，学习一切可以学习的，任何人都可以是我的老师，他们很多的文字也能给我很大感触。</p>
+<hr>
+<h3 id="励志与挑战">1. <strong>励志与挑战</strong></h3>
+<ul>
+<li><strong>十年运到龙困井，一朝得势入青云</strong></li>
+<li><strong>命定的局限尽可永在，不屈的挑战却不可须臾或缺</strong>
+——《霍乱时期的爱情》</li>
+<li><strong>受任于败军之际,奉命于危难之间</strong>
+——诸葛亮《出师表》</li>
+<li><strong>他时若遂凌云志，敢笑黄巢不丈夫</strong> ——唐代罗隐</li>
+<li><strong>燕雀安知鸿鹄之志</strong> ——《史记·陈涉世家》</li>
+<li><strong>攻心为上,攻城为下</strong> ——《孙子兵法》</li>
+<li><strong>技不外漏，海不露底，千两黄金不卖道，十字街头送故交</strong></li>
+<li><strong>将军不下马，各自奔前程</strong></li>
+<li><strong>胜败兵家事不期，包羞忍耻是男儿</strong>
+——宋代陆游《秋夜将晓出篱门迎凉有感二首》</li>
+<li><strong>大丈夫生于天地之间，岂能郁郁久居人下</strong>
+——《三国志·蜀书》</li>
+<li><strong>江东子弟多才俊，卷土重来未可知</strong>
+——唐代杜牧《题乌江亭》</li>
+<li><strong>一位大师曾经说过要像水一样，那我应该就是海啸吧！</strong></li>
+<li><strong>命数如织，当为磐石</strong></li>
+</ul>
+<h3 id="爱情与亲密关系">2. <strong>爱情与亲密关系</strong></h3>
+<ul>
+<li><strong>我想要爱、激情、真诚和亲密的关系、性，这些使我鲜活，然唯有灵魂的交流使我平静</strong></li>
+<li><strong>一顾倾人城，
+再顾倾人国。宁不知倾城与倾国？佳人难再得</strong>
+——《汉书·李延年传》</li>
+<li><strong>不见鹿，不见鲸，亦不见你</strong></li>
+</ul>
+<h3 id="人生与哲理">3. <strong>人生与哲理</strong></h3>
+<ul>
+<li><strong>你不妨大胆去冒险，只因生命终将逝去</strong> ——尼采</li>
+<li><strong>人生不需要意义，意义需要人生</strong></li>
+<li><strong>我曾踏足山巅，也曾进入谷底，二者都让我受益良多</strong></li>
+<li><strong>旧游无处不堪寻。无寻处、惟有少年心</strong>
+——宋代辛弃疾《南乡子·登京口北固亭有怀》</li>
+<li><strong>天下万般兵刃 唯有过往伤人最深</strong></li>
+<li><strong>我见青山多妩媚,料青山见我应如是</strong>
+——宋代辛弃疾《贺新郎·别茂嘉十二弟》</li>
+<li><strong>如果真相带来痛苦，谎言只会雪上加霜</strong></li>
+<li><strong>花团锦簇的节日用来铭记逝者，而我，宁愿被人遗忘</strong></li>
+<li><strong>坟墓里寂静无比,埋葬你的是所有你没说出口的话</strong></li>
+<li><strong>世界既不黑也不白，而是一道极致的灰</strong></li>
+<li><strong>梦醒时夜续，惊慌失措</strong></li>
+</ul>
+<h3 id="自由与个性">4. <strong>自由与个性</strong></h3>
+<ul>
+<li><strong>因为生活过于教条，所以格外欣赏自由野性的东西</strong></li>
+<li><strong>是俗是雅，我已经分不清了，我只知道月亮正圆，我若不看一眼，倒显得我不解风情了</strong></li>
+<li><strong>国王们以世袭的权柄和虚名逼你下跪，诺克萨斯要你站起来，要你在荣耀中重获新生</strong></li>
+</ul>
+<h3 id="孤独与感伤">5. <strong>孤独与感伤</strong></h3>
+<ul>
+<li><strong>忽有清风化剑气,直斩少年二十意</strong></li>
+<li><strong>生活的底片从来都不是遥远的白日梦，而是热爱生活的自己</strong></li>
+<li><strong>黄昏见证虔诚的信徒，巅峰诞生虚伪的拥护</strong></li>
+<li><strong>假作真时真亦假，无为有处有还无</strong> ——《红楼梦》</li>
+<li><strong>林深时雾起，不见归处</strong></li>
+<li><strong>海蓝时浪涌，望而却步</strong></li>
+</ul>
+<h3 id="经典与历史">6. <strong>经典与历史</strong></h3>
+<ul>
+<li><strong>朕非亡国之君，臣乃亡国之臣</strong>
+——明代崇祯帝与大臣对话</li>
+<li><strong>满腹经纶书香气,腹有诗书气自华</strong></li>
+<li><strong>天下熙熙，皆为利往</strong> ——《史记·货殖列传》</li>
+<li><strong>竹杖芒鞋轻胜马，谁怕？一蓑烟雨任平生</strong>
+——宋代苏轼《定风波》</li>
+<li><strong>回首向来萧瑟处，归去，也无风雨也无晴</strong>
+——宋代苏轼《定风波》</li>
+<li><strong>既生瑜何生亮</strong> ——《三国演义》</li>
+<li><strong>欲买桂花同载酒，终不似，少年游</strong>
+——宋代刘过《唐多令》</li>
+<li><strong>愿以深心奉尘刹，不予自身求利益</strong> ——明代张居正</li>
+</ul>
+<h3 id="长文">7.长文</h3>
+<p>最绝望的人有三种，第一种是始出初之人，他没有同类，而身边全是未知，他无时无刻都在害怕着，你无法想象他是如何作为第一个人活下去的，因为他活着这件事本身，就已经违背了他被创造出来的本能。第二种是终焉之人，他也曾拥有同类，而现在，他便是最后之人，在迎接终焉时，他并不会感到孤单，因为同类早已用别的方式存在于他身上。他只能在可以活动的范围内活动，这使他对环境非常了解，了解到令自己感到绝望。第三种是活着之人，活着本身就是一种折磨，当你足够冷静时，你会发现，你做的一切都对自己没有任何意义，你本是一粒尘埃，最后也终回归尘埃，你认为的有意义只是你本能对你的奴役</p>
+<hr>
+<p>我不喜欢读书，但却无比向往哲思的海洋，所以游戏常常成为引导我思考的老师，与其是娱乐消遣的工具，我更愿意把他当做一部艺术品，其背后可以是一次次引人深思的哲理，其背后也可以是作者对某种人，对某件事，对某个价值观的思考，其背后还可以是一部引人入胜的恢宏世界观与史诗，无论是哪一种都令我着迷，引领我思考</p>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -547,236 +1545,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/14/diary/zxj/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/10/14/diary/zxj/" class="post-title-link" itemprop="url">简历备份</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2024-10-14 00:00:00" itemprop="dateCreated datePublished" datetime="2024-10-14T00:00:00+08:00">2024-10-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E9%9A%8F%E7%AC%94/" itemprop="url" rel="index"><span itemprop="name">随笔</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <ul>
-<li><h1 id="张熙浚">🧑‍💻 张熙浚</h1>
-电话：18114477496｜ 个人网站：https://zxj-2023.github.io/ ## 教育背景
-<strong>南京师范大学 - 本科 - 人工智能专业（2023.09-2027.07）</strong>
-<code>211</code> <code>双一流</code>
-<ul>
-<li><p><strong>语言：</strong>英语（CET4，589）</p></li>
-<li><p><strong>校内任职：</strong>现任院学生会主任、班级学习委员；</p></li>
-<li><p><strong>绩点综测：</strong>绩点综测排名均列专业前二；</p></li>
-<li><p><strong>校园经历：</strong>在三次获得校优秀学生奖学金一等奖，校优秀学习奖，校三好学生；</p></li>
-</ul>
-<h2 id="个人荣誉">个人荣誉</h2>
-<ul>
-<li><p><strong>全国大学生计算机设计大赛 - 全国级三等奖</strong>
-(2024)</p></li>
-<li><p><strong>全国大学生数学建模大赛 - 江苏省一等奖</strong>
-(2024)</p></li>
-<li><p><strong>全国大学生蓝桥杯程序算法设计 -
-江苏省三等奖</strong></p></li>
-<li><p><strong>大学生创新创业项目 - 省重点项目</strong> (2024)</p></li>
-<li><p><strong><em>蓝桥杯</em>AIGC 数字内容创意设计大赛 -
-国家级三等奖</strong>（2024）</p></li>
-</ul>
-<h2 id="项目经验">项目经验</h2>
-<strong>计算机设计大赛 - 基于 unity 的 2.5D 国风游戏设计 -（2024.03 -
-2024.06）</strong>
-<ul>
-<li><p>围绕《九章算术》设计并开发了四大游戏场景，多个小游戏，动画，对话系统和ui界面。</p></li>
-<li><p>在unity平台实现2.5D场景构建，利用playmaker插件实现可视化编程。</p></li>
-<li><p>使用C#脚本完成游戏逻辑构建。</p></li>
-</ul>
-<strong>计算机设计大赛 - 基于 LightRAG 的本地安全大模型 -（2024.10 -
-至今）</strong>
-<ul>
-<li><p>完成LightRAG与GraphRAG的对比，利用LightRAG实现知识检索增强功能,并利用neo4j实现知识图谱可视化。</p></li>
-<li><p>采用pycharm+anaconda集成开发环境，使用ollama框架完成本地大模型部署。</p></li>
-<li><p>后续会进行大模型的微调，数据集的清洗，网站搭建等工作。</p></li>
-</ul>
-<strong>25 年大学生创新创业项目 -
-基于多模态特征融合的视频暴力行为识别方法研究 -（2024.09 -
-至今）</strong>
-<ul>
-<li><p>完成了一种基于多模态特征融合的视频暴力行为识别算法，通过融合RGB模态、帧差模态以及Depth模态，使其能够准确、鲁棒地在复杂的真实环境下进行暴力行为识别。</p></li>
-<li><p>完成了一种自适应的注意力算法用于多模态融合。让模型自适应地学习不同模态特征之间的权重关系。</p></li>
-<li><p>完成了系统的设计，后续会继续进行开发。</p></li>
-</ul>
-<h2 id="竞赛经验">竞赛经验</h2>
-<strong>全国大学生数学建模大赛 - 江苏省一等奖 - （2024.09）</strong>
-<strong>认证杯数学建模大赛（小美赛）- s奖 -（2024.12）</strong>
-<ul>
-<li>担任编程手一职，协同建模手完成了部分公式的推导等</li>
-</ul>
-<strong>蓝桥杯AIGC中数杯 - 国家级三等奖 -（2024.10）</strong>
-<ul>
-<li>利用市面上现有AIGC技术完成视频制作，实现docker部署stable
-Diffusion</li>
-</ul>
-<h2 id="自我评价">自我评价</h2>
-<ul>
-<li><p>交际能力强，具备良好的口头表达和书面沟通能力，长于社交，具备丰富的活动组织经验</p></li>
-<li><p>学习能力强，陌生的知识与技术会积极学习，会积极请教问题并听取建议</p></li>
-</ul></li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/13/diary/Blog/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/10/13/diary/Blog/" class="post-title-link" itemprop="url">梦开始的地方</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2024-10-13 00:26:55" itemprop="dateCreated datePublished" datetime="2024-10-13T00:26:55+08:00">2024-10-13</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-10-14 00:00:00" itemprop="dateModified" datetime="2024-10-14T00:00:00+08:00">2024-10-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E9%9A%8F%E7%AC%94/" itemprop="url" rel="index"><span itemprop="name">随笔</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>这是梦开始的地方</p>
-<p>我一直觉得写文章是一件很酷的事情，但奈何自己文采实在有限，又没有练习写作读书的勤奋劲，所以一直搁置，还记得刚上大学那一阵，看了两位学长自己搭的博客，写了很多自己的文章，记录着自己的成长，不仅是对自己成长的记录，也是对后辈的鼓励和启示，真的让我十分崇拜与鼓舞，于是就在心中埋下搭建自己心中埋下搭建自己博客的种子，但因学业和惰性一直搁置下来，还有个重要原因就是，我不知道我的博客应该写些什么，这使我没有动力继续前进。</p>
-<p>直到前阵子，我与我的父亲在车上谈话，他与我聊起了他年轻时做贸易的故事，他说他对市场的判断总能先于他人，甚至08年金融危机，他也做出了正确的判断，他与我分享说，他一个很重要的习惯就是，把他读书看新闻遇到的信息整合，实实在在地写下来，记录下来到一个本子上。可能这对别人觉得很正常，但我却很震撼，我没想到不光是我的同龄人们这样做，我的父母辈也是如此，这样一个宝贵的经验我实在应该学习。</p>
-<p>现在我已经步入大二，接触的事物也比大一扩展了很多，我绝对不能再等待，即使现在写不好，只要开始就是进步，后面我希望能把我的所思所想，进步痕迹通通记录下来，我的博客不光是我的名片，让大家更好地了解我，也是我自己宝贵的回忆！</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/10/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span>
+    <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/10/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/12/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
