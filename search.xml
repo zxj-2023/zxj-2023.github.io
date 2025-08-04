@@ -2165,6 +2165,37 @@ Studio</a> 是一个专门的 UI，您可以连接到 LangGraph API
 <li><code>http://10.117.128.50:5601</code></li>
 <li><a href="http://10.117.128.50:5601/app/dev_tools#/console/shell">http://10.117.128.50:5601/app/dev_tools#/console/shell</a> 开发者工具</li>
 </ul>
+<h4 id="es支持的几种检索函数"><a href="#es支持的几种检索函数" class="headerlink" title="es支持的几种检索函数"></a>es支持的几种检索函数</h4><h5 id="向量搜索"><a href="#向量搜索" class="headerlink" title="向量搜索"></a>向量搜索</h5><p>这里的向量搜索也就是稠密向量检索，过程为<strong>“把文本/图像等非结构化数据映射成高维向量 → 在向量空间里做近似最近邻（ANN）搜索 → 按相似度排序返回结果”</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">def vector_query(search_query: str):</span><br><span class="line">    # 使用与索引时相同的嵌入模型将查询文本转换为向量</span><br><span class="line">    vector = embeddings.embed_query(search_query)</span><br><span class="line">    </span><br><span class="line">    # 构建Elasticsearch KNN查询结构</span><br><span class="line">    return &#123;</span><br><span class="line">        &quot;knn&quot;: &#123;</span><br><span class="line">            &quot;field&quot;: dense_vector_field,      # 指定存储向量的字段名</span><br><span class="line">            &quot;query_vector&quot;: vector,           # 查询向量</span><br><span class="line">            &quot;k&quot;: 5,                          # 返回最相似的5个结果</span><br><span class="line">            &quot;num_candidates&quot;: 10,            # 在10个候选中选择最优的5个（提高搜索效率和准确性）</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h5 id="bm25"><a href="#bm25" class="headerlink" title="bm25"></a>bm25</h5><p>BM25（<strong>Best Matching 25</strong>）也就是全文关键词搜索，或者叫传统关键词搜索，他的核心思想为<strong>“词频越高、文档越短、词越稀有，则相关性越高”</strong>，在 TF-IDF 的基础上引入词频饱和、文档长度归一化两项修正。</p>
+<blockquote>
+<p>TF-IDF（<strong>Term Frequency–Inverse Document Frequency，词频-逆文档频率</strong>）是一种经典的 <strong>文本特征权重计算方法</strong>，用于衡量 <strong>一个词对一篇文档的重要性</strong>。</p>
+</blockquote>
+<p>项目中的bm25检索采取多字段匹配的方式，还有几个参数需要了解，如下</p>
+<ol>
+<li><p><strong>‘type’</strong> :决定了<strong>如何把多个字段的 BM25 打分合并成最终得分</strong>,常用的参数有以下三种</p>
+<p>| type                    | 中文含义     | 打分逻辑                                                     |<br>| :——————————— | :—————- | :—————————————————————————————- |<br>| <strong>best_fields</strong>（默认） | 最佳字段优先 | 取 <strong>得分最高的那个字段</strong> 做最终分（可用 <code>tie_breaker</code> 让次佳字段再贡献一点点）。 |<br>| <strong>most_fields</strong>         | 最多字段优先 | 把所有命中字段的得分 <strong>直接相加</strong>（类似 OR 逻辑），字段越多分越高。 |<br>| <strong>cross_fields</strong>        | 跨字段合并   | 把多个字段视为 <strong>一个虚拟大字段</strong>，统一计算 TF 和 IDF，解决“关键词分散在不同字段”问题。 |</p>
+</li>
+<li><p><strong><code>&#39;tie_breaker&#39;</code></strong>：当多个字段都匹配时，<strong>“最佳字段”得分 + 其余字段得分×tie_breaker</strong> 作为最终得分。</p>
+</li>
+<li><strong><code>&#39;operator&#39;</code></strong>:控制<strong>单个字段内</strong>的多个词项是“AND”还是“OR”关系。<ul>
+<li><strong><code>&quot;AND&quot;</code></strong><br>要求<strong>同一个字段</strong>必须同时包含所有查询词，减少噪音，提高精准度。适合地址、姓名等跨字段严格匹配。</li>
+<li><strong><code>&quot;OR&quot;</code></strong><br>只要字段里出现任意一个词就匹配，召回量大，但可能引入不相关结果。</li>
+</ul>
+</li>
+</ol>
+<p>最后，每个字段还可以人工设置权重，如<code>&quot;fields&quot;: [&quot;title^3&quot;, &quot;content&quot;, &quot;tags^2&quot;]</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">def bm25_query(search_query: str):</span><br><span class="line">    # 使用BM25算法进行传统关键词匹配</span><br><span class="line">    return &#123;</span><br><span class="line">        &quot;query&quot;: &#123;</span><br><span class="line">            &quot;multi_match&quot;: &#123;  # 多字段匹配查询</span><br><span class="line">                &quot;query&quot;: search_query,</span><br><span class="line">                &quot;fields&quot;: [&quot;text&quot;, &quot;report_name&quot;, &quot;report_url&quot;]  # 在这些字段中搜索</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;size&quot;: 8,  # 返回最多8个结果</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h5 id="混合检索"><a href="#混合检索" class="headerlink" title="混合检索"></a>混合检索</h5><p>混合检索也就是 <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/rrf.html">Reciprocal Rank Fusion</a>（RRF），通过结合向量搜索和 BM25 搜索的结果综合判断。</p>
+<p>但由于es中混合检索需要付费使用，后续检索效果评估时不做测试</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">def hybrid_query(search_query: str):</span><br><span class="line">    # 使用与索引时相同的嵌入模型将查询文本转换为向量</span><br><span class="line">    vector = embeddings.embed_query(search_query)</span><br><span class="line">    </span><br><span class="line">    # 构建混合搜索查询结构</span><br><span class="line">    return &#123;</span><br><span class="line">        &quot;retriever&quot;: &#123;</span><br><span class="line">            # 使用RRF (Reciprocal Rank Fusion) 算法融合多个检索器的结果</span><br><span class="line">            &quot;rrf&quot;: &#123;</span><br><span class="line">                # 定义多个检索器列表</span><br><span class="line">                &quot;retrievers&quot;: [</span><br><span class="line">                    &#123;</span><br><span class="line">                        # 第一个检索器：多字段BM25关键词搜索</span><br><span class="line">                        &quot;standard&quot;: &#123;</span><br><span class="line">                            &quot;query&quot;: &#123;</span><br><span class="line">                                # 使用multi_match在多个字段上进行BM25搜索</span><br><span class="line">                                &quot;multi_match&quot;: &#123;</span><br><span class="line">                                    &quot;query&quot;: search_query,</span><br><span class="line">                                    &quot;type&quot;: &quot;best_fields&quot;,      # 选择最佳匹配字段</span><br><span class="line">                                    &quot;fields&quot;: [&quot;text&quot;, &quot;report_name&quot;, &quot;report_url&quot;]  # 在这些字段中搜索</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;,</span><br><span class="line">                    &#123;</span><br><span class="line">                        # 第二个检索器：KNN向量近似搜索</span><br><span class="line">                        &quot;knn&quot;: &#123;</span><br><span class="line">                            &quot;field&quot;: dense_vector_field,      # 向量字段名（使用定义的变量）</span><br><span class="line">                            &quot;query_vector&quot;: vector,           # 查询向量</span><br><span class="line">                            &quot;k&quot;: 5,                          # 返回5个最相似的向量结果</span><br><span class="line">                            &quot;num_candidates&quot;: 10,            # 候选向量数量，用于提高搜索准确性</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;,</span><br><span class="line">                ]</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h5 id="模糊检索"><a href="#模糊检索" class="headerlink" title="模糊检索"></a>模糊检索</h5><p>无论是在网页搜索、文件检索，还是数据库查询中，我们时常会因为拼写错误或信息不完整而无法找到需要的结果。<strong>模糊搜索</strong>（Fuzzy Search）应运而生，它通过识别与查询相似的词语来帮助我们获得更加灵活的搜索结果。</p>
+<p>这里是将bm25与模糊搜索结合起来</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">def fuzzy_query(search_query: str):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    创建模糊搜索查询函数，支持拼写错误和近似匹配</span><br><span class="line">    </span><br><span class="line">    Args:</span><br><span class="line">        search_query (str): 用户输入的搜索查询文本</span><br><span class="line">        </span><br><span class="line">    Returns:</span><br><span class="line">        Dict: Elasticsearch模糊搜索查询体</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    </span><br><span class="line">    return &#123;</span><br><span class="line">        &quot;query&quot;: &#123;</span><br><span class="line">            # 使用match查询进行文本匹配</span><br><span class="line">            &quot;match&quot;: &#123;</span><br><span class="line">                # 在指定的文本字段中进行搜索</span><br><span class="line">                text_field: &#123;</span><br><span class="line">                    &quot;query&quot;: search_query,        # 用户的搜索查询文本</span><br><span class="line">                    &quot;fuzziness&quot;: &quot;AUTO&quot;,          # 自动模糊匹配设置</span><br><span class="line">                    # fuzziness参数说明：</span><br><span class="line">                    # - &quot;AUTO&quot;：根据词长度自动调整模糊度</span><br><span class="line">                    #   - 0-2个字符：不允许错误</span><br><span class="line">                    #   - 3-5个字符：允许1个编辑距离错误</span><br><span class="line">                    #   - 5个以上字符：允许2个编辑距离错误</span><br><span class="line">                    # - 也可以设置具体数值：0, 1, 2</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>AUTO</code> 规则：<strong>0~2 字符</strong>不允许错；<strong>3~5 字符</strong>最多1错；<strong>&gt;5 字符</strong>最多2错。</li>
+<li>对 <strong>text 字段</strong>先分词，再对每个 token 做模糊 → 召回 <code>Elasticsearch</code>。</li>
+</ul>
 <h4 id="相关资料"><a href="#相关资料" class="headerlink" title="相关资料"></a>相关资料</h4><p><a href="https://python.langchain.ac.cn/docs/integrations/retrievers/elasticsearch_retriever/#bm25">Elasticsearch检索器 | 🦜️🔗 LangChain 框架</a></p>
 <h3 id="主流的检索策略"><a href="#主流的检索策略" class="headerlink" title="主流的检索策略"></a>主流的检索策略</h3><h4 id="BM25-全文关键词检索"><a href="#BM25-全文关键词检索" class="headerlink" title="BM25 全文关键词检索"></a>BM25 全文关键词检索</h4><p>BM25（Best Matching 25）是一种久经考验的排序算法，广泛应用于传统搜索引擎中。它基于“词袋模型”，核心思想是通过关键词匹配程度来衡量文档与查询的相关性。</p>
 <p>核心原理概览：</p>
@@ -5342,6 +5373,18 @@ https://prabhatsharma.in/blog/in-search-of-a-search-engine-beyond-elasticsearch-
     <title>最优化方法——期末复习</title>
     <url>/2025/06/18/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%80%E4%BC%98%E5%8C%96/%E6%9C%80%E4%BC%98%E5%8C%96%E6%9C%9F%E6%9C%AB/</url>
     <content><![CDATA[<p><a href="https://www.bilibili.com/video/BV1uP411K7Hf?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">最优化理论与方法-对偶线性规划（例题分析）_哔哩哔哩_bilibili</a></p>
+<h3 id="复习笔记"><a href="#复习笔记" class="headerlink" title="复习笔记"></a>复习笔记</h3><p><img src="/2025/06/18/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%80%E4%BC%98%E5%8C%96/%E6%9C%80%E4%BC%98%E5%8C%96%E6%9C%9F%E6%9C%AB/IMG_20250624_120458.jpg" alt="IMG_20250624_120458"></p>
+<p><img src="/2025/06/18/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%80%E4%BC%98%E5%8C%96/%E6%9C%80%E4%BC%98%E5%8C%96%E6%9C%9F%E6%9C%AB/IMG_20250624_120516.jpg" alt="IMG_20250624_120516"></p>
+<p><img src="/2025/06/18/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%80%E4%BC%98%E5%8C%96/%E6%9C%80%E4%BC%98%E5%8C%96%E6%9C%9F%E6%9C%AB/IMG_20250624_120523.jpg" alt="IMG_20250624_120523"></p>
+<p><img src="/2025/06/18/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%80%E4%BC%98%E5%8C%96/%E6%9C%80%E4%BC%98%E5%8C%96%E6%9C%9F%E6%9C%AB/IMG_20250624_120527.jpg" alt="IMG_20250624_120527"></p>
+<p><img src="/2025/06/18/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%80%E4%BC%98%E5%8C%96/%E6%9C%80%E4%BC%98%E5%8C%96%E6%9C%9F%E6%9C%AB/IMG_20250624_120534.jpg" alt="IMG_20250624_120534"></p>
+<p><img src="/2025/06/18/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%80%E4%BC%98%E5%8C%96/%E6%9C%80%E4%BC%98%E5%8C%96%E6%9C%9F%E6%9C%AB/IMG_20250624_120539.jpg" alt="IMG_20250624_120539"></p>
+<p><img src="/2025/06/18/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%80%E4%BC%98%E5%8C%96/%E6%9C%80%E4%BC%98%E5%8C%96%E6%9C%9F%E6%9C%AB/IMG_20250624_120546.jpg" alt="IMG_20250624_120546"></p>
+<p><img src="/2025/06/18/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%80%E4%BC%98%E5%8C%96/%E6%9C%80%E4%BC%98%E5%8C%96%E6%9C%9F%E6%9C%AB/IMG_20250624_120550.jpg" alt="IMG_20250624_120550"></p>
+<p><img src="/2025/06/18/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%80%E4%BC%98%E5%8C%96/%E6%9C%80%E4%BC%98%E5%8C%96%E6%9C%9F%E6%9C%AB/IMG_20250624_120557.jpg" alt="IMG_20250624_120557"></p>
+<p><img src="/2025/06/18/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%80%E4%BC%98%E5%8C%96/%E6%9C%80%E4%BC%98%E5%8C%96%E6%9C%9F%E6%9C%AB/IMG_20250624_120600.jpg" alt="IMG_20250624_120600"></p>
+<p><img src="/2025/06/18/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%80%E4%BC%98%E5%8C%96/%E6%9C%80%E4%BC%98%E5%8C%96%E6%9C%9F%E6%9C%AB/IMG_20250624_120611.jpg" alt="IMG_20250624_120611"></p>
+<p><img src="/2025/06/18/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%80%E4%BC%98%E5%8C%96/%E6%9C%80%E4%BC%98%E5%8C%96%E6%9C%9F%E6%9C%AB/IMG_20250624_120607.jpg" alt="IMG_20250624_120607"></p>
 ]]></content>
       <categories>
         <category>大二下</category>
@@ -11353,24 +11396,6 @@ y是否溢出)</strong></h4>
 将非零值转换为1，用 <code>x ^ (x &gt;&gt; 31)</code> 处理绝对值。</li>
 </ul>
 <p>如果需要具体函数的详细推导或测试用例，可进一步说明！</p>
-]]></content>
-      <categories>
-        <category>大二下</category>
-        <category>计算机系统基础</category>
-      </categories>
-      <tags>
-        <tag>Linux</tag>
-        <tag>大学</tag>
-        <tag>Ubuntu</tag>
-        <tag>计算机系统基础</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>初识Linux与Ubuntu</title>
-    <url>/2025/03/17/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E5%88%9D%E8%AF%86Linux/</url>
-    <content><![CDATA[<h3 id="正文">正文</h3>
-<p>Linux</p>
-<p>ubuntu</p>
 ]]></content>
       <categories>
         <category>大二下</category>
@@ -25649,7 +25674,7 @@ Custom Model - Accuracy: 0.8240, Precision: 0.6875, Recall: 0.1170, AUC:
   <entry>
     <title>pgsql实现持久化</title>
     <url>/2025/07/28/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/pgsql%E5%AE%9E%E7%8E%B0%E6%8C%81%E4%B9%85%E5%8C%96/</url>
-    <content><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>pgsql与redis皆是配合langgraph的checkpoint与store进行持久化储存，完成长期记忆与短期记忆的实现</p>
+    <content><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>常使用pgsql与redis配合langgraph的checkpoint与store进行持久化储存，完成长期记忆与短期记忆的实现</p>
 <h3 id="pgsql实现持久化"><a href="#pgsql实现持久化" class="headerlink" title="pgsql实现持久化"></a>pgsql实现持久化</h3><h4 id="什么是pgsql"><a href="#什么是pgsql" class="headerlink" title="什么是pgsql"></a>什么是pgsql</h4><p>PostgreSQL（常简称pgsql或Postgres）是一个功能强大的开源对象-关系型数据库管理系统（ORDBMS），以其稳定性、扩展性和符合SQL标准著称。</p>
 <h4 id="docker拉取"><a href="#docker拉取" class="headerlink" title="docker拉取"></a>docker拉取</h4><p>docker-compose</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">version: &#x27;3.8&#x27;</span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">  postgres:</span><br><span class="line">    image: postgres:15        # 指定具体版本</span><br><span class="line">    container_name: postgres_db</span><br><span class="line">    environment:</span><br><span class="line">      POSTGRES_USER: postgres</span><br><span class="line">      POSTGRES_PASSWORD: postgres</span><br><span class="line">      POSTGRES_DB: postgres</span><br><span class="line">      TZ: Asia/Shanghai       # 设置时区</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;5432:5432&quot;</span><br><span class="line">    volumes:</span><br><span class="line">      - pgdata:/var/lib/postgresql/data</span><br><span class="line">    restart: unless-stopped</span><br><span class="line">    healthcheck:             # 健康检查</span><br><span class="line">      test: [&quot;CMD&quot;, &quot;pg_isready&quot;, &quot;-U&quot;, &quot;nange&quot;]</span><br><span class="line">      interval: 10s</span><br><span class="line">      timeout: 5s</span><br><span class="line">      retries: 5</span><br><span class="line">    command: [&quot;postgres&quot;, &quot;-c&quot;, &quot;max_connections=200&quot;]  # 自定义配置</span><br><span class="line"></span><br><span class="line">volumes:</span><br><span class="line">  pgdata:</span><br></pre></td></tr></table></figure>
@@ -25840,6 +25865,142 @@ Custom Model - Accuracy: 0.8240, Precision: 0.6875, Recall: 0.1170, AUC:
       </categories>
       <tags>
         <tag>transformer</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python-logging模块</title>
+    <url>/2025/08/02/%E5%AD%A6%E4%B9%A0/%E6%9D%82%E9%A1%B9/python-uv%E5%8C%85%E7%AE%A1%E7%90%86/</url>
+    <content><![CDATA[<h3 id="什么是uv"><a href="#什么是uv" class="headerlink" title="什么是uv"></a>什么是uv</h3><p><code>uv</code> 是由 <strong>Astral</strong> 团队开发的一个<strong>超高速 Python 包管理器</strong>，用 <strong>Rust</strong> 编写，目标是替代 <code>pip</code>、<code>venv</code>、<code>pip-tools</code>、<code>poetry</code> 等多个工具。</p>
+<h3 id="uv常用命令"><a href="#uv常用命令" class="headerlink" title="uv常用命令"></a>uv常用命令</h3><p>uv init myproj    创建新项目</p>
+<p>source .venv/bin/activate（Linux/macOS）激活虚拟环境</p>
+<p>uv add requests    安装依赖并写入 pyproject.toml</p>
+<p>uv remove requests    移除依赖</p>
+<p>uv sync    同步依赖到虚拟环境</p>
+<p>uv export    导出 lock 文件为 requirements.txt 等格式</p>
+<p>uv build    构建源码包和 wheel</p>
+<p>uv publish    发布到 PyPI</p>
+<h3 id="uvx是什么"><a href="#uvx是什么" class="headerlink" title="uvx是什么"></a>uvx是什么</h3><p><strong><code>uvx</code></strong> 是：</p>
+<blockquote>
+<p><strong>uv tool run</strong> 的<strong>快捷别名</strong>（alias），用于<strong>无需安装即可运行 Python 包提供的命令行工具</strong>。</p>
+</blockquote>
+<p><code>uvx</code> 就像 Python 世界的 <strong><code>npx</code></strong> 或 <strong><code>pipx run</code></strong> ——<br><strong>临时拉取、构建隔离环境、运行工具，用完即走，不留痕迹</strong>。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://www.bilibili.com/video/BV1ajJ7zPEa5/?spm_id_from=333.1387.upload.video_card.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">【uv】Python迄今最好的项目管理+环境管理工具（吧？）_哔哩哔哩_bilibili</a></p>
+<p><a href="https://www.bilibili.com/video/BV13WGHz8EEz?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">从pip到uv：一口气梳理现代Python项目管理全流程！_哔哩哔哩_bilibili</a></p>
+]]></content>
+      <categories>
+        <category>学习</category>
+        <category>杂项</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>学习</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>计算机系统基础期末笔记汇总</title>
+    <url>/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0%E6%B1%87%E6%80%BB/</url>
+    <content><![CDATA[<h3 id="笔记"><a href="#笔记" class="headerlink" title="笔记"></a>笔记</h3><p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0%E6%B1%87%E6%80%BB/IMG_20250706_165933.jpg" alt="IMG_20250706_165933"></p>
+<p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0%E6%B1%87%E6%80%BB/IMG_20250706_165925.jpg" alt="IMG_20250706_165925"></p>
+<p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0%E6%B1%87%E6%80%BB/IMG_20250706_165919.jpg" alt="IMG_20250706_165919"></p>
+<p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0%E6%B1%87%E6%80%BB/IMG_20250706_165914.jpg" alt="IMG_20250706_165914"></p>
+<p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0%E6%B1%87%E6%80%BB/IMG_20250706_165903.jpg" alt="IMG_20250706_165903"></p>
+<p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0%E6%B1%87%E6%80%BB/IMG_20250706_165909.jpg" alt="IMG_20250706_165909"></p>
+]]></content>
+      <categories>
+        <category>大二下</category>
+        <category>计算机系统基础</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>大学</tag>
+        <tag>Ubuntu</tag>
+        <tag>计算机系统基础</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>概率论期末笔记汇总</title>
+    <url>/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E8%AE%BA%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<h3 id="笔记"><a href="#笔记" class="headerlink" title="笔记"></a>笔记</h3><p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E8%AE%BA%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0/IMG_20250627_175733.jpg" alt="IMG_20250627_175733"></p>
+<p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E8%AE%BA%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0/IMG_20250627_175736.jpg" alt="IMG_20250627_175736"></p>
+<p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E8%AE%BA%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0/IMG_20250627_175740.jpg" alt="IMG_20250627_175740"></p>
+<p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E8%AE%BA%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0/IMG_20250627_175743.jpg" alt="IMG_20250627_175743"></p>
+<p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E8%AE%BA%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0/IMG_20250627_175748.jpg" alt="IMG_20250627_175748"></p>
+<p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E8%AE%BA%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0/IMG_20250627_175752.jpg" alt="IMG_20250627_175752"></p>
+<p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E8%AE%BA%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0/IMG_20250627_175755.jpg" alt="IMG_20250627_175755"></p>
+<p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E8%AE%BA%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0/IMG_20250627_175759.jpg" alt="IMG_20250627_175759"></p>
+]]></content>
+      <categories>
+        <category>大二下</category>
+        <category>概率论</category>
+      </categories>
+      <tags>
+        <tag>大学</tag>
+        <tag>概率论</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>python-logging模块</title>
+    <url>/2025/08/02/%E5%AD%A6%E4%B9%A0/%E6%9D%82%E9%A1%B9/python-logging%E6%A8%A1%E5%9D%97/</url>
+    <content><![CDATA[<h3 id="日志级别"><a href="#日志级别" class="headerlink" title="日志级别"></a>日志级别</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>级别</th>
+<th>方法</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DEBUG</td>
+<td><code>logging.debug()</code></td>
+<td>调试信息</td>
+</tr>
+<tr>
+<td>INFO</td>
+<td><code>logging.info()</code></td>
+<td>普通信息</td>
+</tr>
+<tr>
+<td>WARNING</td>
+<td><code>logging.warning()</code></td>
+<td>警告信息</td>
+</tr>
+<tr>
+<td>ERROR</td>
+<td><code>logging.error()</code></td>
+<td>错误信息</td>
+</tr>
+<tr>
+<td>CRITICAL</td>
+<td><code>logging.critical()</code></td>
+<td>严重错误</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>python默认只会打印warning以上级别的日志，可通过<code>basicConfig</code>进行设置，如下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 基础配置</span><br><span class="line">logging.basicConfig(level=logging.DEBUG)</span><br><span class="line"></span><br><span class="line"># 记录不同级别的日志</span><br><span class="line">logging.debug(&quot;这是一个DEBUG级别的日志&quot;)</span><br><span class="line">logging.info(&quot;这是一个INFO级别的日志&quot;)</span><br><span class="line">logging.warning(&quot;这是一个WARNING级别的日志&quot;)</span><br><span class="line">logging.error(&quot;这是一个ERROR级别的日志&quot;)</span><br><span class="line">logging.critical(&quot;这是一个CRITICAL级别的日志&quot;)</span><br></pre></td></tr></table></figure>
+<h3 id="格式化log并输出"><a href="#格式化log并输出" class="headerlink" title="格式化log并输出"></a>格式化log并输出</h3><p>我们可以使用全局配置，完成log的格式化和输出成文件，如下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">logging.basicConfig(level=logging.DEBUG,format=&#x27;%(asctime)s - %(levelname)s - %(message)s&#x27;,filename=&#x27;basic.log&#x27;,filemode=&#x27;w&#x27;)</span><br></pre></td></tr></table></figure>
+<p>同样，我们可以自定义logger</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 创建自定义logger</span><br><span class="line">logger = logging.getLogger(&#x27;my_app&#x27;)</span><br><span class="line">logger.setLevel(logging.DEBUG)</span><br><span class="line"></span><br><span class="line"># 清除之前的处理器</span><br><span class="line">logger.handlers.clear()</span><br><span class="line"></span><br><span class="line"># 创建文件处理器</span><br><span class="line">file_handler = logging.FileHandler(&#x27;logs/my_app.log&#x27;, encoding=&#x27;utf-8&#x27;)</span><br><span class="line">file_handler.setLevel(logging.DEBUG)</span><br><span class="line"></span><br><span class="line"># 创建控制台处理器</span><br><span class="line">console_handler = logging.StreamHandler()</span><br><span class="line">console_handler.setLevel(logging.WARNING)</span><br><span class="line"></span><br><span class="line"># 创建不同的格式器</span><br><span class="line">file_formatter = logging.Formatter(</span><br><span class="line">    &#x27;%(asctime)s | %(name)s | %(levelname)s | %(funcName)s:%(lineno)d | %(message)s&#x27;</span><br><span class="line">)</span><br><span class="line">console_formatter = logging.Formatter(</span><br><span class="line">    &#x27;🚨 %(levelname)s: %(message)s&#x27;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">file_handler.setFormatter(file_formatter)</span><br><span class="line">console_handler.setFormatter(console_formatter)</span><br><span class="line"></span><br><span class="line"># 添加处理器</span><br><span class="line">logger.addHandler(file_handler)</span><br><span class="line">logger.addHandler(console_handler)</span><br><span class="line"></span><br><span class="line"># 测试不同级别的日志</span><br><span class="line">logger.debug(&quot;调试信息 - 只写入文件&quot;)</span><br><span class="line">logger.info(&quot;普通信息 - 只写入文件&quot;)</span><br><span class="line">logger.warning(&quot;警告信息 - 控制台和文件都有&quot;)</span><br><span class="line">logger.error(&quot;错误信息 - 控制台和文件都有&quot;)</span><br></pre></td></tr></table></figure>
+<h3 id="异常捕获"><a href="#异常捕获" class="headerlink" title="异常捕获"></a>异常捕获</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">try:</span><br><span class="line">    result = divide(10, 0)</span><br><span class="line">except ZeroDivisionError as exc:</span><br><span class="line">    # 方式 1：记录异常对象</span><br><span class="line">    logger.error(&quot;除零异常发生: &#123;&#125;&quot;, exc)</span><br><span class="line"></span><br><span class="line">    # 方式 2：记录完整 traceback（推荐）</span><br><span class="line">    logger.exception(&quot;捕获到异常，详情如下&quot;)</span><br></pre></td></tr></table></figure>
+<h3 id="loguru的常用使用方法"><a href="#loguru的常用使用方法" class="headerlink" title="loguru的常用使用方法"></a>loguru的常用使用方法</h3><p>基础用法</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">from loguru import logger</span><br><span class="line"></span><br><span class="line">logger.debug(&quot;这是 debug&quot;)</span><br><span class="line">logger.info(&quot;这是 info&quot;)</span><br><span class="line">logger.warning(&quot;这是 warning&quot;)</span><br><span class="line">logger.error(&quot;这是 error&quot;)</span><br><span class="line">logger.critical(&quot;这是 critical&quot;)</span><br></pre></td></tr></table></figure>
+<p>输出到文件    logger.add(“app.log”)</p>
+<p>过滤级别    logger.add(“app.log”, level=”WARNING”)</p>
+<p>移除默认控制台输出       logger.remove()</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://www.bilibili.com/video/BV1rJv8eNE1x?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">[Python] logging模块怎么用_哔哩哔哩_bilibili</a></p>
+<p><a href="https://www.bilibili.com/video/BV1VnW7edEq7?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">[Python] 打印log神器 —— loguru_哔哩哔哩_bilibili</a></p>
+]]></content>
+      <categories>
+        <category>学习</category>
+        <category>杂项</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+        <tag>学习</tag>
       </tags>
   </entry>
 </search>

@@ -155,18 +155,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">112</span>
+          <span class="site-state-item-count">115</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-count">41</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-count">50</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -206,6 +206,2551 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B/" class="post-title-link" itemprop="url">数据分析——第三章模型建立和评估---评价</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-05-14 00:00:00" itemprop="dateCreated datePublished" datetime="2025-05-14T00:00:00+08:00">2025-05-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-12 18:46:07" itemprop="dateModified" datetime="2025-06-12T18:46:07+08:00">2025-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/kaggle/" itemprop="url" rel="index"><span itemprop="name">kaggle</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/kaggle/titanic/" itemprop="url" rel="index"><span itemprop="name">titanic</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="第三章-模型搭建和评估-评估">第三章 模型搭建和评估-评估</h2>
+<p>根据之前的模型的建模，我们知道如何运用sklearn这个库来完成建模，以及我们知道了的数据集的划分等等操作。那么一个模型我们怎么知道它好不好用呢？以至于我们能不能放心的使用模型给我的结果呢？那么今天的学习的评估，就会很有帮助。</p>
+<p>加载下面的库</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> IPython.display <span class="keyword">import</span> Image</span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LogisticRegression</span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%matplotlib inline</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">plt.rcParams[<span class="string">&#x27;font.sans-serif&#x27;</span>] = [<span class="string">&#x27;SimHei&#x27;</span>]  <span class="comment"># 用来正常显示中文标签</span></span><br><span class="line">plt.rcParams[<span class="string">&#x27;axes.unicode_minus&#x27;</span>] = <span class="literal">False</span>  <span class="comment"># 用来正常显示负号</span></span><br><span class="line">plt.rcParams[<span class="string">&#x27;figure.figsize&#x27;</span>] = (<span class="number">10</span>, <span class="number">6</span>)  <span class="comment"># 设置输出图片大小</span></span><br></pre></td></tr></table></figure>
+<p><strong>任务：加载数据并分割测试集和训练集</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment"># 一般先取出X和y后再切割，有些情况会使用到未切割的，这时候X和y就可以用,x是清洗好的数据，y是我们要预测的存活数据&#x27;Survived&#x27;</span></span><br><span class="line">data = pd.read_csv(<span class="string">&#x27;clear_data.csv&#x27;</span>)</span><br><span class="line">train = pd.read_csv(<span class="string">&#x27;train.csv&#x27;</span>)</span><br><span class="line">X = data</span><br><span class="line">y = train[<span class="string">&#x27;Survived&#x27;</span>]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment"># 对数据集进行切割</span></span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=<span class="number">0</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment"># 默认参数逻辑回归模型</span></span><br><span class="line">lr = LogisticRegression()</span><br><span class="line">lr.fit(X_train, y_train)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>/root/.pyenv/versions/3.11.1/lib/python3.11/site-packages/sklearn/linear_model/_logistic.py:465: ConvergenceWarning: lbfgs failed to converge (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT.
+
+Increase the number of iterations (max_iter) or scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(</code></pre>
+<h3 id="模型评估">模型评估</h3>
+<ul>
+<li>模型评估是为了知道模型的泛化能力。</li>
+<li>交叉验证（cross-validation）是一种评估泛化性能的统计学方法，它比单次划分训练集和测试集的方法更加稳定、全面。</li>
+<li>在交叉验证中，数据被多次划分，并且需要训练多个模型。</li>
+<li>最常用的交叉验证是 k 折交叉验证（k-fold cross-validation），其中 k
+是由用户指定的数字，通常取 5 或 10。</li>
+<li>准确率（precision）度量的是被预测为正例的样本中有多少是真正的正例</li>
+<li>召回率（recall）度量的是正类样本中有多少被预测为正类</li>
+<li>f-分数是准确率与召回率的调和平均</li>
+</ul>
+<p>【思考】：将上面的概念进一步的理解，大家可以做一下总结</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考回答：</span></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="任务一交叉验证">任务一：交叉验证</h4>
+<ul>
+<li>用10折交叉验证来评估之前的逻辑回归模型</li>
+<li>计算交叉验证精度的平均值</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#提示：交叉验证</span></span><br><span class="line">Image(<span class="string">&#x27;Snipaste_2020-01-05_16-37-56.png&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B/第三章模型建立和评估---评价-课程_16_0.png" alt="第三章模型建立和评估—评价-课程_16_0">
+<figcaption aria-hidden="true">第三章模型建立和评估—评价-课程_16_0</figcaption>
+</figure>
+<h4 id="提示4">提示4</h4>
+<ul>
+<li>交叉验证在sklearn中的模块为<code>sklearn.model_selection</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> cross_val_score</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">lr = LogisticRegression(C=<span class="number">100</span>)</span><br><span class="line">scores = cross_val_score(lr, X_train, y_train, cv=<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment"># 平均交叉验证分数</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Average cross-validation score: &#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(scores.mean()))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>Average cross-validation score: 0.78</code></pre>
+<h4 id="思考4">思考4</h4>
+<ul>
+<li>k折越多的情况下会带来什么样的影响？</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考回答</span></span><br><span class="line"><span class="comment"># 当 k 越大时：</span></span><br><span class="line"><span class="comment"># 1. 每次训练使用的数据更多，评估偏差（bias）降低</span></span><br><span class="line"><span class="comment"># 2. 每次测试集样本更少，评估方差（variance）增大</span></span><br><span class="line"><span class="comment"># 3. 需要训练 k 个模型，计算开销显著增加</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="任务二混淆矩阵">任务二：混淆矩阵</h4>
+<ul>
+<li>计算二分类问题的混淆矩阵</li>
+<li>计算精确率、召回率以及f-分数</li>
+</ul>
+<p>【思考】什么是二分类问题的混淆矩阵，理解这个概念，知道它主要是运算到什么任务中的</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考回答</span></span><br><span class="line"><span class="comment"># 混淆矩阵（confusion matrix）是一个 2×2 的表格，用于二分类任务中展示模型预测结果与真实标签的对应关系：</span></span><br><span class="line"><span class="comment">#    - True Positive (TP)：真实为正类，预测也为正类</span></span><br><span class="line"><span class="comment">#    - False Positive (FP)：真实为负类，却被误预测为正类</span></span><br><span class="line"><span class="comment">#    - False Negative (FN)：真实为正类，却被误预测为负类</span></span><br><span class="line"><span class="comment">#    - True Negative (TN)：真实为负类，预测也为负类</span></span><br><span class="line"><span class="comment"># 通过混淆矩阵，可以进一步计算精确率（Precision）、召回率（Recall）、F1 分数等指标，</span></span><br><span class="line"><span class="comment"># 帮助我们评估模型在不同类型错误上的表现，常用于分类模型的性能评估和错误分析。</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#提示：混淆矩阵</span></span><br><span class="line">Image(<span class="string">&#x27;Snipaste_2020-01-05_16-38-26.png&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B/第三章模型建立和评估---评价-课程_27_0.png" alt="第三章模型建立和评估—评价-课程_27_0">
+<figcaption aria-hidden="true">第三章模型建立和评估—评价-课程_27_0</figcaption>
+</figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#提示：准确率 (Accuracy),精确度（Precision）,Recall,f-分数计算方法</span></span><br><span class="line">Image(<span class="string">&#x27;Snipaste_2020-01-05_16-39-27.png&#x27;</span>)</span><br><span class="line">​    </span><br></pre></td></tr></table></figure>
+<figure>
+<img src="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B/第三章模型建立和评估---评价-课程_28_0.png" alt="第三章模型建立和评估—评价-课程_28_0">
+<figcaption aria-hidden="true">第三章模型建立和评估—评价-课程_28_0</figcaption>
+</figure>
+<h4 id="提示5">提示5</h4>
+<ul>
+<li>混淆矩阵的方法在sklearn中的<code>sklearn.metrics</code>模块</li>
+<li>混淆矩阵需要输入真实标签和预测标签</li>
+<li>精确率、召回率以及f-分数可使用<code>classification_report</code>模块</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> confusion_matrix</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment"># 训练模型</span></span><br><span class="line">lr = LogisticRegression(C=<span class="number">100</span>)</span><br><span class="line">lr.fit(X_train, y_train)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>/root/.pyenv/versions/3.11.1/lib/python3.11/site-packages/sklearn/linear_model/_logistic.py:465: ConvergenceWarning: lbfgs failed to converge (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT.
+
+Increase the number of iterations (max_iter) or scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment"># 模型预测结果</span></span><br><span class="line">pred = lr.predict(X_train)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment"># 混淆矩阵</span></span><br><span class="line">confusion_matrix(y_train, pred)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>array([[355,  57],
+       [ 82, 174]])</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> classification_report</span><br><span class="line"><span class="comment"># 精确率、召回率以及f1-score</span></span><br><span class="line"><span class="built_in">print</span>(classification_report(y_train, pred))</span><br></pre></td></tr></table></figure>
+<pre><code>              precision    recall  f1-score   support
+
+           0       0.81      0.86      0.84       412
+           1       0.75      0.68      0.71       256
+
+    accuracy                           0.79       668
+   macro avg       0.78      0.77      0.78       668
+weighted avg       0.79      0.79      0.79       668</code></pre>
+<p>【思考】 * 如果自己实现混淆矩阵的时候该注意什么问题</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考回答</span></span><br><span class="line"><span class="comment"># 如果自己实现混淆矩阵，需要注意：</span></span><br><span class="line"><span class="comment"># 1. 明确行列含义：通常行是真实标签，列是预测标签，并保持一致。</span></span><br><span class="line"><span class="comment"># 2. 类别顺序要固定：最好指定 labels 列表，避免类别稀疏时错位。</span></span><br><span class="line"><span class="comment"># 3. 初始化大小为 n_classes×n_classes 的零矩阵。</span></span><br><span class="line"><span class="comment"># 4. 索引时使用整数或统一的类别映射，避免类型不一致。</span></span><br><span class="line"><span class="comment"># 5. 对每个样本累加到对应的 [真实, 预测] 单元格，最后矩阵元素之和应等于样本数。</span></span><br><span class="line"><span class="comment"># 6. 对于未出现的类别，矩阵对应行或列应保留 0。</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="任务三roc曲线">任务三：ROC曲线</h4>
+<ul>
+<li>绘制ROC曲线</li>
+</ul>
+<p>【思考】什么是ROC曲线，OCR曲线的存在是为了解决什么问题？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考</span></span><br><span class="line"><span class="comment"># ROC曲线（Receiver Operating Characteristic Curve）是一条以假正例率（FPR）为横坐标、</span></span><br><span class="line"><span class="comment"># 真正例率（TPR）为纵坐标绘制的曲线，展示模型在不同阈值下的分类性能变化。</span></span><br><span class="line"><span class="comment"># 它解决了单一阈值下评估不全面的问题，通过曲线下的面积（AUC）能够衡量模型整体区分正负样本的能力；</span></span><br><span class="line"><span class="comment"># 对类别不平衡更稳健，可在不同模型或参数设置间进行客观比较。</span></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="提示6">提示6</h4>
+<ul>
+<li>ROC曲线在sklearn中的模块为<code>sklearn.metrics</code></li>
+<li>ROC曲线下面所包围的面积越大越好</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> roc_curve</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(lr.decision_function(X_test))</span><br></pre></td></tr></table></figure>
+<pre><code>[-1.7776276  -1.68901519 -2.9343385  -2.73339993 -0.7425476   0.1771919
+  0.42300886 -0.95177507 -2.19297241 -2.09492243 -2.09876666 -2.24379328
+ -0.72898893 -0.74448703  1.55206252  2.26736362 -3.0615053  -1.45551632
+  1.82143942  1.10174703  2.80348253  2.20862227 -2.08595792 -1.98565326
+ -2.62459231  2.61608127  2.52054836  0.46386814 -2.26805651 -1.89799476
+ -4.40221097 -2.45118004 -2.11507984  0.25727282  1.56507901 -3.49922092
+  0.09517543  3.1727335  -0.66659502 -2.16889122 -2.31738004 -0.75154631
+  1.34173247 -0.68691348 -2.38317701 -1.48352807  3.30441868  0.37836543
+  0.15120699 -2.39554116  0.71230509 -2.94049784  0.0526656  -0.12124772
+  0.21937853 -0.95736671 -2.91315052  1.73227025 -2.30451919 -0.11949728
+ -2.40406452 -1.23217853 -3.04709277 -2.51149884 -2.91275507  0.36741872
+  1.88515182 -1.73344723  1.61180838 -2.64456699 -2.82671595 -1.32885535
+ -1.89201447 -2.38194062  1.14830497  0.7324757   3.41575634 -0.04718518
+  1.99047031  0.71098531 -2.5002286   2.11220527  1.35687779 -4.65208202
+ -0.50164169 -2.21847127 -0.27744568 -2.1098023  -2.28203956 -2.24087733
+  1.49913758 -0.46745632 -1.76590269 -3.13694507 -2.48969764 -2.52447108
+ -0.31359417 -2.62456277  0.10812447 -3.22505518 -0.54301462 -1.31398633
+ -2.45637232 -0.9392769  -1.99910791 -0.01952273  0.16386412  1.17043699
+  0.83571934 -0.30892412 -2.56236834 -2.52630696 -2.15878988  3.38005162
+ -1.63316112 -2.0470374   1.16802525  1.96428556 -0.85542758 -0.84711271
+ -2.3923425  -2.27467461  1.27340371 -0.16738478  2.77379952 -0.91636487
+  3.49337899  2.22265823 -1.03898765 -1.79576035  3.05405598 -1.72625544
+ -2.08233698  0.14427761 -2.03826492 -1.87510703 -2.43040363  0.88364821
+ -2.31722422  1.21479438 -2.19509856 -1.96948465  2.90456606  1.22909197
+ -0.60993113 -2.40508898  1.79832298 -2.33619419 -1.76964851  0.54894164
+  0.56920781 -1.65544357 -2.18783672 -2.51890544 -1.1167812   1.85506633
+ -2.14366192  2.56003678  1.79741811  2.22038003 -0.93948297  2.11029939
+  3.66773152  3.37255532 -1.62079149 -0.21922341 -2.93532548 -1.8851028
+ -0.11223495 -0.89402373 -2.79168773  0.58319665 -1.20213471  2.11583429
+ -1.78550619 -1.21648746 -2.91538781 -2.80005448 -2.74359191 -0.06775047
+ -1.28645408 -1.17048578 -0.1176852  -1.59958242 -0.65901928 -2.40701243
+  0.57575073 -3.0756839   1.53932753 -2.49031769 -3.03266822  0.30539932
+ -0.05523861 -0.24431132 -2.36483723  3.25595248 -2.11664845 -1.97728592
+ -2.04509461 -3.07727841 -1.11942703 -3.38920295 -2.59088459 -3.55978164
+  0.22449105 -0.3214215   0.05735696  0.02061023 -3.01544378 -0.77973619
+ -1.39798016 -3.10075724 -4.80621573 -3.01948006  3.44366918 -2.88193813
+ -2.01992513 -0.09559774  0.91447527 -1.13270082 -2.45426968 -1.91415803
+ -0.08403516]</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment"># 计算ROC曲线的假正例率(FPR)、真正例率(TPR)和阈值</span></span><br><span class="line">fpr, tpr, thresholds = roc_curve(y_test, lr.decision_function(X_test))</span><br><span class="line">plt.plot(fpr, tpr, label=<span class="string">&quot;ROC Curve&quot;</span>)</span><br><span class="line">plt.xlabel(<span class="string">&quot;FPR&quot;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&quot;TPR (recall)&quot;</span>)</span><br><span class="line"><span class="comment"># 找到最接近于0的阈值</span></span><br><span class="line">close_zero = np.argmin(np.<span class="built_in">abs</span>(thresholds))</span><br><span class="line">plt.plot(fpr[close_zero], tpr[close_zero], <span class="string">&#x27;o&#x27;</span>, markersize=<span class="number">10</span>, label=<span class="string">&quot;threshold zero&quot;</span>, fillstyle=<span class="string">&quot;none&quot;</span>, c=<span class="string">&#x27;k&#x27;</span>, mew=<span class="number">2</span>)</span><br><span class="line">plt.legend(loc=<span class="number">4</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure>
+<img src="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B/第三章模型建立和评估---评价-课程_44_3.png" alt="第三章模型建立和评估—评价-课程_44_3">
+<figcaption aria-hidden="true">第三章模型建立和评估—评价-课程_44_3</figcaption>
+</figure>
+<h4 id="思考6">思考6</h4>
+<ul>
+<li>对于多分类问题如何绘制ROC曲线</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考回答</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>【思考】你能从这条OCR曲线的到什么信息？这些信息可以做什么？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考回答</span></span><br><span class="line"><span class="comment"># 从ROC曲线中可以得到以下信息：</span></span><br><span class="line"><span class="comment"># 1. 模型整体性能：曲线下的面积 (AUC - Area Under the Curve) 是一个常用的评估指标。</span></span><br><span class="line"><span class="comment">#    - AUC = 1：完美分类器。</span></span><br><span class="line"><span class="comment">#    - AUC = 0.5：随机分类器（无区分能力，ROC曲线接近对角线）。</span></span><br><span class="line"><span class="comment">#    - AUC &gt; 0.5：模型优于随机猜测。AUC越大，模型区分正负样本的能力越强。</span></span><br><span class="line"><span class="comment">#    - AUC &lt; 0.5：模型表现差于随机猜测（可能标签反了或者模型非常差）。</span></span><br><span class="line"><span class="comment"># 2. 不同阈值下的权衡：ROC曲线展示了在所有可能的分类阈值下，真正例率 (TPR) 与假正例率 (FPR) 之间的关系。</span></span><br><span class="line"><span class="comment">#    - 曲线上的每个点代表一个特定的阈值。</span></span><br><span class="line"><span class="comment">#    - 曲线越靠近左上角 (FPR低, TPR高)，说明模型在较低的假正例率下能达到较高的真正例率，性能越好。</span></span><br><span class="line"><span class="comment"># 3. 模型的区分能力：曲线的形状可以反映模型区分正负样本的能力。如果曲线显著高于对角线，说明模型具有较好的区分能力。</span></span><br><span class="line"><span class="comment"># 4. 阈值选择的依据：可以根据业务需求，在ROC曲线上选择一个合适的平衡点（即选择一个阈值）。</span></span><br><span class="line"><span class="comment">#    - 例如，如果更关注减少漏报（提高TPR），可以选择曲线上TPR较高的点，即使FPR可能略高。</span></span><br><span class="line"><span class="comment">#    - 如果更关注减少误报（降低FPR），可以选择曲线上FPR较低的点，即使TPR可能略低。</span></span><br><span class="line"><span class="comment">#    - 图中标记的 &quot;threshold zero&quot; 点通常是模型默认的分类阈值对应的性能点。</span></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E7%AC%AC%E4%B8%89%E8%8A%82%E6%95%B0%E6%8D%AE%E9%87%8D%E6%9E%842-%E8%AF%BE%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E7%AC%AC%E4%B8%89%E8%8A%82%E6%95%B0%E6%8D%AE%E9%87%8D%E6%9E%842-%E8%AF%BE%E7%A8%8B/" class="post-title-link" itemprop="url">数据分析——第二章：第三节数据重构2</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-05-14 00:00:00 / 修改时间：17:06:45" itemprop="dateCreated datePublished" datetime="2025-05-14T00:00:00+08:00">2025-05-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/kaggle/" itemprop="url" rel="index"><span itemprop="name">kaggle</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/kaggle/titanic/" itemprop="url" rel="index"><span itemprop="name">titanic</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p><strong>复习：</strong>在前面我们已经学习了Pandas基础，第二章我们开始进入数据分析的业务部分，在第二章第一节的内容中，我们学习了<strong>数据的清洗</strong>，这一部分十分重要，只有数据变得相对干净，我们之后对数据的分析才可以更有力。而这一节，我们要做的是数据重构，数据重构依旧属于数据理解（准备）的范围。</p>
+<h4 id="开始之前导入numpypandas包和数据">开始之前，导入numpy、pandas包和数据</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入基本库</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 载入上一个任务人保存的文件中:result.csv，并查看这个文件</span></span><br><span class="line">text = pd.read_csv(<span class="string">&#x27;result.csv&#x27;</span>)</span><br><span class="line">text.head()</span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+Unnamed: 0
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+<th>
+Sex
+</th>
+<th>
+Age
+</th>
+<th>
+SibSp
+</th>
+<th>
+Parch
+</th>
+<th>
+Ticket
+</th>
+<th>
+Fare
+</th>
+<th>
+Cabin
+</th>
+<th>
+Embarked
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Braund, Mr. Owen Harris
+</td>
+<td>
+male
+</td>
+<td>
+22.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+A/5 21171
+</td>
+<td>
+7.2500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+1
+</td>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+<td>
+female
+</td>
+<td>
+38.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+PC 17599
+</td>
+<td>
+71.2833
+</td>
+<td>
+C85
+</td>
+<td>
+C
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+Heikkinen, Miss. Laina
+</td>
+<td>
+female
+</td>
+<td>
+26.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+STON/O2. 3101282
+</td>
+<td>
+7.9250
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+3
+</td>
+<td>
+4
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Futrelle, Mrs. Jacques Heath (Lily May Peel)
+</td>
+<td>
+female
+</td>
+<td>
+35.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+113803
+</td>
+<td>
+53.1000
+</td>
+<td>
+C123
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+4
+</td>
+<td>
+5
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Allen, Mr. William Henry
+</td>
+<td>
+male
+</td>
+<td>
+35.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+373450
+</td>
+<td>
+8.0500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+</tbody>
+</table>
+<h1 id="第二章数据重构">2 第二章：数据重构</h1>
+<h2 id="第一部分数据聚合与运算">第一部分：数据聚合与运算</h2>
+<h3 id="数据运用">2.6 数据运用</h3>
+<h4 id="任务一通过教材python-for-data-analysisp303google-or-anything来学习了解groupby机制">2.6.1
+任务一：通过教材《Python for Data Analysis》P303、Google or
+anything来学习了解GroupBy机制</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入心得</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">GroupBy机制是Pandas中用于数据分组与聚合的核心操作，其本质是遵循&quot;Split-Apply-Combine&quot;模式：</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Split：按指定键（列、函数、数组等）将数据分割成多个子集</span></span><br><span class="line"><span class="string">Apply：对每个子集独立应用聚合函数（如mean/max）、转换函数（如标准化）或过滤操作</span></span><br><span class="line"><span class="string">Combine：将结果合并为新的数据结构</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<h4 id="任务二计算泰坦尼克号男性与女性的平均票价">2.4.2：任务二：计算泰坦尼克号男性与女性的平均票价</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 写入代码</span></span><br><span class="line">df  = text[<span class="string">&#x27;Fare&#x27;</span>].groupby(text[<span class="string">&#x27;Sex&#x27;</span>])</span><br><span class="line"><span class="built_in">print</span>(df.groups)</span><br><span class="line">means = df.mean()</span><br><span class="line">means</span><br></pre></td></tr></table></figure>
+<pre><code>&#123;&#39;female&#39;: [1, 2, 3, 8, 9, 10, 11, 14, 15, 18, 19, 22, 24, 25, 28, 31, 32, 38, 39, 40, 41, 43, 44, 47, 49, 52, 53, 56, 58, 61, 66, 68, 71, 79, 82, 84, 85, 88, 98, 100, 106, 109, 111, 113, 114, 119, 123, 128, 132, 133, 136, 140, 141, 142, 147, 151, 156, 161, 166, 167, 172, 177, 180, 184, 186, 190, 192, 194, 195, 198, 199, 205, 208, 211, 215, 216, 218, 229, 230, 233, 235, 237, 240, 241, 246, 247, 251, 254, 255, 256, 257, 258, 259, 264, 268, 269, 272, 274, 275, 276, ...], &#39;male&#39;: [0, 4, 5, 6, 7, 12, 13, 16, 17, 20, 21, 23, 26, 27, 29, 30, 33, 34, 35, 36, 37, 42, 45, 46, 48, 50, 51, 54, 55, 57, 59, 60, 62, 63, 64, 65, 67, 69, 70, 72, 73, 74, 75, 76, 77, 78, 80, 81, 83, 86, 87, 89, 90, 91, 92, 93, 94, 95, 96, 97, 99, 101, 102, 103, 104, 105, 107, 108, 110, 112, 115, 116, 117, 118, 120, 121, 122, 124, 125, 126, 127, 129, 130, 131, 134, 135, 137, 138, 139, 143, 144, 145, 146, 148, 149, 150, 152, 153, 154, 155, ...]&#125;
+
+Sex
+female    44.479818
+male      25.523893
+Name: Fare, dtype: float64</code></pre>
+<p>在了解GroupBy机制之后，运用这个机制完成一系列的操作，来达到我们的目的。</p>
+<p>下面通过几个任务来熟悉GroupBy机制。</p>
+<h4 id="任务三统计泰坦尼克号中男女的存活人数">2.4.3：任务三：统计泰坦尼克号中男女的存活人数</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 写入代码</span></span><br><span class="line">survived_sex = text[<span class="string">&#x27;Survived&#x27;</span>].groupby(text[<span class="string">&#x27;Sex&#x27;</span>]).<span class="built_in">sum</span>()</span><br><span class="line">survived_sex.head()</span><br></pre></td></tr></table></figure>
+<pre><code>Sex
+female    233
+male      109
+Name: Survived, dtype: int64</code></pre>
+<h4 id="任务四计算客舱不同等级的存活人数">2.4.4：任务四：计算客舱不同等级的存活人数</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 写入代码</span></span><br><span class="line">survived_pclass = text[<span class="string">&#x27;Survived&#x27;</span>].groupby(text[<span class="string">&#x27;Pclass&#x27;</span>])</span><br><span class="line">survived_pclass.<span class="built_in">sum</span>()</span><br></pre></td></tr></table></figure>
+<pre><code>Pclass
+1    136
+2     87
+3    119
+Name: Survived, dtype: int64</code></pre>
+<p>【<strong>提示：</strong>】表中的存活那一栏，可以发现如果还活着记为1，死亡记为0</p>
+<p>【<strong>思考</strong>】从数据分析的角度，上面的统计结果可以得出那些结论</p>
+<p>【思考】从任务二到任务三中，这些运算可以通过agg()函数来同时计算。并且可以使用rename函数修改列名。你可以按照提示写出这个过程吗？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考心得</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">agg() 函数是 Pandas 中用于对分组后的数据 同时执行多个聚合操作 的核心工具，其全称为 Aggregate（聚合）。它允许你对不同列应用不同的聚合函数，并支持自定义函数，极大提升数据分析效率。</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">text.groupby(<span class="string">&#x27;Sex&#x27;</span>).agg(&#123;<span class="string">&#x27;Fare&#x27;</span>: <span class="string">&#x27;mean&#x27;</span>, <span class="string">&#x27;Pclass&#x27;</span>: <span class="string">&#x27;count&#x27;</span>&#125;).rename(columns=</span><br><span class="line">                            &#123;<span class="string">&#x27;Fare&#x27;</span>: <span class="string">&#x27;mean_fare&#x27;</span>, <span class="string">&#x27;Pclass&#x27;</span>: <span class="string">&#x27;count_pclass&#x27;</span>&#125;)</span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+mean_fare
+</th>
+<th>
+count_pclass
+</th>
+</tr>
+<tr>
+<th>
+Sex
+</th>
+<th>
+</th>
+<th>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+female
+</th>
+<td>
+44.479818
+</td>
+<td>
+314
+</td>
+</tr>
+<tr>
+<th>
+male
+</th>
+<td>
+25.523893
+</td>
+<td>
+577
+</td>
+</tr>
+</tbody>
+</table>
+<h4 id="任务五统计在不同等级的票中的不同年龄的船票花费的平均值">2.4.5：任务五：统计在不同等级的票中的不同年龄的船票花费的平均值</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 写入代码</span></span><br><span class="line">temp=text.groupby([<span class="string">&#x27;Pclass&#x27;</span>,<span class="string">&#x27;Age&#x27;</span>])[<span class="string">&#x27;Fare&#x27;</span>]</span><br><span class="line">temp.groups</span><br><span class="line">temp.mean().head()</span><br></pre></td></tr></table></figure>
+<pre><code>Pclass  Age  
+1       0.92     151.5500
+        2.00     151.5500
+        4.00      81.8583
+        11.00    120.0000
+        14.00    120.0000
+Name: Fare, dtype: float64</code></pre>
+<h4 id="任务六将任务二和任务三的数据合并并保存到sex_fare_survived.csv">2.4.6：任务六：将任务二和任务三的数据合并，并保存到sex_fare_survived.csv</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 写入代码</span></span><br><span class="line">result = pd.merge(means,survived_sex,on=<span class="string">&#x27;Sex&#x27;</span>)</span><br><span class="line">result</span><br><span class="line">result.to_csv(<span class="string">&#x27;sex_fare_survived.csv&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="任务七得出不同年龄的总的存活人数然后找出存活人数最多的年龄段最后计算存活人数最高的存活率存活人数总人数">2.4.7：任务七：得出不同年龄的总的存活人数，然后找出存活人数最多的年龄段，最后计算存活人数最高的存活率（存活人数/总人数）</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 写入代码</span></span><br><span class="line">survived_age = text[<span class="string">&#x27;Survived&#x27;</span>].groupby(text[<span class="string">&#x27;Age&#x27;</span>]).<span class="built_in">sum</span>()</span><br><span class="line">survived_age.head()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>Age
+0.42    1
+0.67    1
+0.75    2
+0.83    2
+0.92    1
+Name: Survived, dtype: int64</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 写入代码</span></span><br><span class="line">survived_age[survived_age.values==survived_age.<span class="built_in">max</span>()]</span><br></pre></td></tr></table></figure>
+<pre><code>Age
+24.0    15
+Name: Survived, dtype: int64</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">_<span class="built_in">sum</span> = text[<span class="string">&#x27;Survived&#x27;</span>].<span class="built_in">sum</span>()</span><br><span class="line"><span class="built_in">print</span>(_<span class="built_in">sum</span>)</span><br></pre></td></tr></table></figure>
+<pre><code>342</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&quot;sum of person:&quot;</span>+<span class="built_in">str</span>(_<span class="built_in">sum</span>))</span><br><span class="line"></span><br><span class="line">precetn =survived_age.<span class="built_in">max</span>()/_<span class="built_in">sum</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;最大存活率：&quot;</span>+<span class="built_in">str</span>(precetn))</span><br></pre></td></tr></table></figure>
+<pre><code>sum of person:342
+最大存活率：0.043859649122807015</code></pre>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0--%E5%BB%BA%E6%A8%A1-%E8%AF%BE%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0--%E5%BB%BA%E6%A8%A1-%E8%AF%BE%E7%A8%8B/" class="post-title-link" itemprop="url">数据分析——第三章模型建立和评估--建模</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-05-14 00:00:00" itemprop="dateCreated datePublished" datetime="2025-05-14T00:00:00+08:00">2025-05-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-12 18:45:38" itemprop="dateModified" datetime="2025-06-12T18:45:38+08:00">2025-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/kaggle/" itemprop="url" rel="index"><span itemprop="name">kaggle</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/kaggle/titanic/" itemprop="url" rel="index"><span itemprop="name">titanic</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="第三章-模型搭建和评估建模">第三章 模型搭建和评估–建模</h2>
+<p>经过前面的两章的知识点的学习，我可以对数数据的本身进行处理，比如数据本身的增删查补，还可以做必要的清洗工作。那么下面我们就要开始使用我们前面处理好的数据了。这一章我们要做的就是使用数据，我们做数据分析的目的也就是，运用我们的数据以及结合我的业务来得到某些我们需要知道的结果。那么分析的第一步就是建模，搭建一个预测模型或者其他模型；我们从这个模型的到结果之后，我们要分析我的模型是不是足够的可靠，那我就需要评估这个模型。今天我们学习建模，下一节我们学习评估。</p>
+<p>我们拥有的泰坦尼克号的数据集，那么我们这次的目的就是，完成泰坦尼克号存活预测这个任务。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"><span class="keyword">from</span> IPython.display <span class="keyword">import</span> Image</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%matplotlib inline</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">plt.rcParams[<span class="string">&#x27;font.sans-serif&#x27;</span>] = [<span class="string">&#x27;SimHei&#x27;</span>]  <span class="comment"># 用来正常显示中文标签</span></span><br><span class="line">plt.rcParams[<span class="string">&#x27;axes.unicode_minus&#x27;</span>] = <span class="literal">False</span>  <span class="comment"># 用来正常显示负号</span></span><br><span class="line">plt.rcParams[<span class="string">&#x27;figure.figsize&#x27;</span>] = (<span class="number">10</span>, <span class="number">6</span>)  <span class="comment"># 设置输出图片大小</span></span><br></pre></td></tr></table></figure>
+<p>载入这些库，如果缺少某些库，请安装他们</p>
+<p>【思考】这些库的作用是什么呢？你需要查一查</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考题回答</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">Image 是 IPython.display 模块的一部分，用于在 Jupyter Notebook 或 IPython 环境中直接显示图像。支持从本地路径或网络 URL 加载图像，并控制显示格式（如宽度、高度、格式类型）</span></span><br><span class="line"><span class="string">seaborn 是一个基于 Matplotlib 的高级数据可视化库，专注于统计图形的绘制（如分布图、相关性图、分类图等），能快速生成美观且信息丰富的图表</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>&#39;\nImage 是 IPython.display 模块的一部分，用于在 Jupyter Notebook 或 IPython 环境中直接显示图像。支持从本地路径或网络 URL 加载图像，并控制显示格式（如宽度、高度、格式类型）\nseaborn 是一个基于 Matplotlib 的高级数据可视化库，专注于统计图形的绘制（如分布图、相关性图、分类图等），能快速生成美观且信息丰富的图表\n&#39;</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%matplotlib inline</span><br></pre></td></tr></table></figure>
+<p><strong>载入我们提供清洗之后的数据(clear_data.csv)，大家也将原始数据载入（train.csv），说说他们有什么不同</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">train = pd.read_csv(<span class="string">&#x27;train.csv&#x27;</span>)</span><br><span class="line">train.shape</span><br></pre></td></tr></table></figure>
+<pre><code>(891, 12)</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">train.head()</span><br></pre></td></tr></table></figure>
+<pre><code>.dataframe tbody tr th &#123;
+    vertical-align: top;
+&#125;
+
+.dataframe thead th &#123;
+    text-align: right;
+&#125;</code></pre>
+
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+<th>
+Sex
+</th>
+<th>
+Age
+</th>
+<th>
+SibSp
+</th>
+<th>
+Parch
+</th>
+<th>
+Ticket
+</th>
+<th>
+Fare
+</th>
+<th>
+Cabin
+</th>
+<th>
+Embarked
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Braund, Mr. Owen Harris
+</td>
+<td>
+male
+</td>
+<td>
+22.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+A/5 21171
+</td>
+<td>
+7.2500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+<td>
+female
+</td>
+<td>
+38.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+PC 17599
+</td>
+<td>
+71.2833
+</td>
+<td>
+C85
+</td>
+<td>
+C
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+Heikkinen, Miss. Laina
+</td>
+<td>
+female
+</td>
+<td>
+26.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+STON/O2. 3101282
+</td>
+<td>
+7.9250
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+4
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Futrelle, Mrs. Jacques Heath (Lily May Peel)
+</td>
+<td>
+female
+</td>
+<td>
+35.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+113803
+</td>
+<td>
+53.1000
+</td>
+<td>
+C123
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+5
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Allen, Mr. William Henry
+</td>
+<td>
+male
+</td>
+<td>
+35.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+373450
+</td>
+<td>
+8.0500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+</tbody>
+</table>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">data = pd.read_csv(<span class="string">&#x27;clear_data.csv&#x27;</span>)</span><br><span class="line"></span><br><span class="line">data.head()</span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Pclass
+</th>
+<th>
+Age
+</th>
+<th>
+SibSp
+</th>
+<th>
+Parch
+</th>
+<th>
+Fare
+</th>
+<th>
+Sex_female
+</th>
+<th>
+Sex_male
+</th>
+<th>
+Embarked_C
+</th>
+<th>
+Embarked_Q
+</th>
+<th>
+Embarked_S
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+22.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+7.2500
+</td>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+1
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+38.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+71.2833
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+2
+</td>
+<td>
+3
+</td>
+<td>
+26.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+7.9250
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+1
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+35.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+53.1000
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+1
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+4
+</td>
+<td>
+3
+</td>
+<td>
+35.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+8.0500
+</td>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+1
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="模型搭建">模型搭建</h3>
+<ul>
+<li>处理完前面的数据我们就得到建模数据，下一步是选择合适模型</li>
+<li>在进行模型选择之前我们需要先知道数据集最终是进行<strong>监督学习</strong>还是<strong>无监督学习</strong></li>
+<li>模型的选择一方面是通过我们的任务来决定的。</li>
+<li>除了根据我们任务来选择模型外，还可以根据数据样本量以及特征的稀疏性来决定</li>
+<li>刚开始我们总是先尝试使用一个基本的模型来作为其baseline，进而再训练其他模型做对比，最终选择泛化能力或性能比较好的模型</li>
+</ul>
+<p>这里我的建模，并不是从零开始，自己一个人完成完成所有代码的编译。我们这里使用一个机器学习最常用的一个库（sklearn）来完成我们的模型的搭建</p>
+<p><strong>下面给出sklearn的算法选择路径，供大家参考</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># sklearn模型算法选择路径图</span></span><br><span class="line">Image(<span class="string">&#x27;sklearn.png&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0--%E5%BB%BA%E6%A8%A1-%E8%AF%BE%E7%A8%8B/第三章模型建立和评估--建模-课程_17_0.png" alt="第三章模型建立和评估–建模-课程_17_0">
+<figcaption aria-hidden="true">第三章模型建立和评估–建模-课程_17_0</figcaption>
+</figure>
+<p>【思考】数据集哪些差异会导致模型在拟合数据是发生变化</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考回答</span></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="任务一切割训练集和测试集">任务一：切割训练集和测试集</h4>
+<p>这里使用留出法划分数据集</p>
+<ul>
+<li>将数据集分为自变量和因变量</li>
+<li>按比例切割训练集和测试集(一般测试集的比例有30%、25%、20%、15%和10%)</li>
+<li>使用分层抽样</li>
+<li>设置随机种子以便结果能复现</li>
+</ul>
+<p>【思考】 * 划分数据集的方法有哪些？ *
+为什么使用分层抽样，这样的好处有什么？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 划分数据集的方法有哪些？</span></span><br><span class="line"><span class="comment"># 1.  **留出法 (Hold-out Cross Validation)**：</span></span><br><span class="line"><span class="comment">#     *   直接将数据集D划分为两个互斥的集合：训练集S和测试集T。</span></span><br><span class="line"><span class="comment">#     *   例如，70%的数据用于训练，30%用于测试。</span></span><br><span class="line"><span class="comment">#     *   优点：简单、计算开销小。</span></span><br><span class="line"><span class="comment">#     *   缺点：划分具有随机性，单次划分的结果可能不够稳定和准确，尤其是在数据集较小时。训练集和测试集的样本比例会影响评估结果。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2.  **交叉验证法 (Cross Validation)**：</span></span><br><span class="line"><span class="comment">#     *   **k折交叉验证 (k-Fold Cross Validation)**：</span></span><br><span class="line"><span class="comment">#         *   将数据集D划分为k个大小相似的互斥子集 D1, D2, ..., Dk。</span></span><br><span class="line"><span class="comment">#         *   每次用k-1个子集的并集作为训练集，余下的那个子集作为测试集。</span></span><br><span class="line"><span class="comment">#         *   这样可以获得k组训练/测试集，从而可进行k次训练和测试，最终返回的是这k个测试结果的均值。</span></span><br><span class="line"><span class="comment">#         *   常用的k值为5或10。</span></span><br><span class="line"><span class="comment">#         *   优点：比留出法更稳定，更充分地利用了数据。</span></span><br><span class="line"><span class="comment">#         *   缺点：计算开销是k倍。</span></span><br><span class="line"><span class="comment">#     *   **留一法 (Leave-One-Out Cross Validation, LOOCV)**：</span></span><br><span class="line"><span class="comment">#         *   k折交叉验证的特例，当k等于样本数N时。</span></span><br><span class="line"><span class="comment">#         *   每次只留下一个样本作为测试集，其余N-1个样本作为训练集。</span></span><br><span class="line"><span class="comment">#         *   优点：评估结果通常被认为比较准确，因为几乎所有数据都用于训练。</span></span><br><span class="line"><span class="comment">#         *   缺点：计算开销非常大，尤其是在数据集很大时。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 3.  **自助法 (Bootstrapping)**：</span></span><br><span class="line"><span class="comment">#     *   以自助采样法为基础。给定包含m个样本的数据集D，对它进行采样产生数据集D&#x27;：每次随机从D中挑选一个样本，将其拷贝放入D&#x27;，然后再将该样本放回初始数据集D中，使得该样本在下次采样时仍有可能被采到。这个过程重复执行m次后，我们就得到了包含m个样本的数据集D&#x27;。</span></span><br><span class="line"><span class="comment">#     *   可以证明，初始数据集D中约有36.8%的样本未出现在采样数据集D&#x27;中。于是我们可将D&#x27;用作训练集，D\D&#x27;用作测试集。</span></span><br><span class="line"><span class="comment">#     *   优点：在数据集较小、难以有效划分训练/测试集时很有用；能从初始数据集中产生多个不同的训练集。</span></span><br><span class="line"><span class="comment">#     *   缺点：自助法产生的数据集改变了初始数据集的分布，会引入估计偏差。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 为什么使用分层抽样，这样的好处有什么？</span></span><br><span class="line"><span class="comment"># **分层抽样 (Stratified Sampling)** 是一种抽样技术，它将总体（数据集）划分为若干个互不重叠的子群（称为“层”），然后从每个层中独立地进行简单随机抽样。在划分训练集和测试集时，特别是对于分类任务，通常是根据目标变量的类别进行分层。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># **好处：**</span></span><br><span class="line"><span class="comment"># 1.  **保持类别比例一致性**：</span></span><br><span class="line"><span class="comment">#     *   确保训练集和测试集中的各个类别的样本比例与原始数据集中各个类别的样本比例大致相同。</span></span><br><span class="line"><span class="comment">#     *   这对于类别不平衡的数据集尤为重要。如果进行纯随机抽样，可能会导致训练集或测试集中某些少数类别的样本过少，甚至没有，从而影响模型的训练效果和评估的可靠性。</span></span><br><span class="line"><span class="comment"># 2.  **提高模型的泛化能力和评估的准确性**：</span></span><br><span class="line"><span class="comment">#     *   由于训练集和测试集都较好地代表了原始数据的类别分布，模型在训练时能学习到各个类别的特征，评估时也能更准确地反映模型在所有类别上的表现。</span></span><br><span class="line"><span class="comment">#     *   避免了因随机划分导致训练集和测试集在类别分布上产生较大差异，从而使得模型评估结果更加稳定和可信。</span></span><br><span class="line"><span class="comment"># 3.  **减少抽样误差**：</span></span><br><span class="line"><span class="comment">#     *   相比于简单随机抽样，分层抽样通常能得到更具代表性的样本，从而减少因抽样带来的误差，使得基于样本的推断更加精确。</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="任务提示1">任务提示1</h4>
+<ul>
+<li>切割数据集是为了后续能评估模型泛化能力</li>
+<li>sklearn中切割数据集的方法为<code>train_test_split</code></li>
+<li>查看函数文档可以在jupyter
+noteboo里面使用<code>train_test_split?</code>后回车即可看到</li>
+<li>分层和随机种子在参数里寻找</li>
+</ul>
+<p>要从clear_data.csv和train.csv中提取train_test_split()所需的参数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="comment"># 一般先取出X和y后再切割，有些情况会使用到未切割的，这时候X和y就可以用,x是清洗好的数据，y是我们要预测的存活数据&#x27;Survived&#x27;</span></span><br><span class="line">X = data</span><br><span class="line">y = train[<span class="string">&#x27;Survived&#x27;</span>]</span><br><span class="line"><span class="comment"># 对数据集进行切割</span></span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"></span><br><span class="line">X_train.shape, X_test.shape</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>((668, 11), (223, 11))</code></pre>
+<p>【思考】 * 什么情况下切割数据集的时候不用进行随机选取</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考回答</span></span><br><span class="line"><span class="comment"># 在以下情况下切割数据集时可能不需要或不适合进行随机选取：</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 1.  **时间序列数据 (Time Series Data)**：</span></span><br><span class="line"><span class="comment">#     *   对于时间序列数据，数据的顺序至关重要，因为它包含了时间依赖性。随机打乱顺序会破坏这种依赖关系。</span></span><br><span class="line"><span class="comment">#     *   通常的做法是按时间顺序划分，例如，将较早的数据作为训练集，较晚的数据作为测试集（或验证集）。这更符合实际应用中用过去预测未来的场景。</span></span><br><span class="line"><span class="comment">#     *   例如，用前几年的股票数据训练模型，用最近一年的数据测试模型。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2.  **数据已经预先排序或具有特定结构**：</span></span><br><span class="line"><span class="comment">#     *   如果数据集已经按照某种对分析有意义的顺序排列（例如，按地理区域、按实验批次等），并且你希望测试集来自与训练集不同的、特定的部分，那么可能需要按顺序或按特定规则划分，而不是随机划分。</span></span><br><span class="line"><span class="comment">#     *   例如，在一个全国性的调查数据中，你可能想用某些省份的数据做训练，用另一些省份的数据做测试，以检验模型的地域泛化能力。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 3.  **数据集非常大且分布均匀**：</span></span><br><span class="line"><span class="comment">#     *   当数据集非常庞大，并且可以合理假设数据是独立同分布 (i.i.d.) 且分布均匀时，简单地按顺序取一部分作为训练集，另一部分作为测试集，其效果可能与随机选取相差不大。随机选取的计算开销在这种情况下可能显得不必要。</span></span><br><span class="line"><span class="comment">#     *   然而，即使在这种情况下，随机选取通常仍然是更稳妥的做法，以避免潜在的未知偏差。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 4.  **特定的交叉验证策略**：</span></span><br><span class="line"><span class="comment">#     *   某些交叉验证方法本身就定义了非随机的划分方式。例如，在k折交叉验证中，虽然整体上数据被分成了k折，但每一折的选择是确定的（通常是按顺序分割）。留一法交叉验证更是每次只留一个特定的样本作为测试集。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 5.  **当需要完全复现特定的、非随机的划分结果时**：</span></span><br><span class="line"><span class="comment">#     *   如果之前的研究或实验使用了某种特定的非随机划分方式，为了比较或复现结果，也需要采用相同的划分方式。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 6.  **流式数据或在线学习场景**：</span></span><br><span class="line"><span class="comment">#     *   在数据持续不断流入的场景中，模型可能需要用新到达的数据进行测试或持续训练。这种情况下，测试集自然是最新的一部分数据，而不是从历史数据中随机抽取的。</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="任务二模型创建">任务二：模型创建</h4>
+<ul>
+<li>创建基于线性模型的分类模型（逻辑回归）</li>
+<li>创建基于树的分类模型（决策树、随机森林）</li>
+<li>分别使用这些模型进行训练，分别的到训练集和测试集的得分</li>
+<li>查看模型的参数，并更改参数值，观察模型变化</li>
+</ul>
+<h4 id="提示">提示</h4>
+<ul>
+<li>逻辑回归不是回归模型而是分类模型，不要与<code>LinearRegression</code>混淆</li>
+<li>随机森林其实是决策树集成为了降低决策树过拟合的情况</li>
+<li>线性模型所在的模块为<code>sklearn.linear_model</code></li>
+<li>树模型所在的模块为<code>sklearn.ensemble</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LogisticRegression</span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment"># 默认参数逻辑回归模型</span></span><br><span class="line">lr = LogisticRegression()</span><br><span class="line">lr.fit(X_train, y_train)</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>/root/.pyenv/versions/3.11.1/lib/python3.11/site-packages/sklearn/linear_model/_logistic.py:465: ConvergenceWarning: lbfgs failed to converge (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT.
+
+Increase the number of iterations (max_iter) or scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment"># 查看训练集和测试集score值</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Training set score: &#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(lr.score(X_train, y_train)))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Testing set score: &#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(lr.score(X_test, y_test)))</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>Training set score: 0.80
+Testing set score: 0.79</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment"># 调整参数后的逻辑回归模型</span></span><br><span class="line">lr2 = LogisticRegression(C=<span class="number">100</span>)</span><br><span class="line">lr2.fit(X_train, y_train)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Training set score: &#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(lr2.score(X_train, y_train)))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Testing set score: &#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(lr2.score(X_test, y_test)))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>Training set score: 0.79
+Testing set score: 0.78
+
+
+/root/.pyenv/versions/3.11.1/lib/python3.11/site-packages/sklearn/linear_model/_logistic.py:465: ConvergenceWarning: lbfgs failed to converge (status=1):
+STOP: TOTAL NO. OF ITERATIONS REACHED LIMIT.
+
+Increase the number of iterations (max_iter) or scale the data as shown in:
+    https://scikit-learn.org/stable/modules/preprocessing.html
+Please also refer to the documentation for alternative solver options:
+    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
+  n_iter_i = _check_optimize_result(</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 默认参数的随机森林分类模型</span></span><br><span class="line">rfc = RandomForestClassifier()</span><br><span class="line">rfc.fit(X_train, y_train)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Training set score: &#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(rfc.score(X_train, y_train)))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Testing set score: &#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(rfc.score(X_test, y_test)))</span><br></pre></td></tr></table></figure>
+<pre><code>Training set score: 1.00
+Testing set score: 0.82</code></pre>
+<p>【思考】 * 为什么线性模型可以进行分类任务，背后是怎么的数学关系 *
+对于多分类问题，线性模型是怎么进行分类的</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考回答</span></span><br><span class="line"><span class="comment"># 为什么线性模型可以进行分类任务，背后是怎么的数学关系</span></span><br><span class="line"><span class="comment"># 线性模型（如逻辑回归 Logistic Regression，或者支持向量机 SVM 的线性核）之所以能用于分类任务，是因为它们通过以下方式将线性组合的输入特征映射到类别预测：</span></span><br><span class="line"><span class="comment"># 1.  **线性组合**：首先，模型计算输入特征的线性组合，形式通常为 `z = w_1*x_1 + w_2*x_2 + ... + w_n*x_n + b`，或者用向量表示为 `z = w^T * x + b`。</span></span><br><span class="line"><span class="comment">#     *   `x` 是输入特征向量。</span></span><br><span class="line"><span class="comment">#     *   `w` 是模型学习到的权重（或系数）。</span></span><br><span class="line"><span class="comment">#     *   `b` 是偏置项（或截距）。</span></span><br><span class="line"><span class="comment">#     这个 `z` 值可以看作是样本点到决策边界的某种度量。</span></span><br><span class="line"><span class="comment"># 2.  **决策函数/激活函数**：然后，这个线性组合的结果 `z` 会被传递给一个决策函数或激活函数，该函数将其转换为类别预测或类别概率。</span></span><br><span class="line"><span class="comment">#     *   **对于逻辑回归 (Logistic Regression)**：</span></span><br><span class="line"><span class="comment">#         *   它使用 Sigmoid (Logistic) 函数：`p = 1 / (1 + e^(-z))`。</span></span><br><span class="line"><span class="comment">#         *   Sigmoid 函数将任意实数值 `z` 映射到 (0, 1) 区间，这个输出 `p` 可以解释为样本属于正类（通常是类别1）的概率。</span></span><br><span class="line"><span class="comment">#         *   通过设定一个阈值（通常是0.5），如果 `p &gt; 0.5` (即 `z &gt; 0`)，则预测为正类；否则预测为负类。</span></span><br><span class="line"><span class="comment">#         *   因此，决策边界是 `z = 0`，即 `w^T * x + b = 0`，这是一个超平面。</span></span><br><span class="line"><span class="comment">#     *   **对于线性支持向量机 (Linear SVM)**：</span></span><br><span class="line"><span class="comment">#         *   它直接使用 `z` 的符号来决定类别。如果 `z &gt; 0`，预测为一类；如果 `z &lt; 0`，预测为另一类。</span></span><br><span class="line"><span class="comment">#         *   SVM 的目标是找到一个能最大化两类样本之间间隔（margin）的决策边界（超平面）。</span></span><br><span class="line"><span class="comment"># 总结来说，线性模型通过学习一个线性决策边界（直线、平面或超平面）来分隔不同类别的样本。它们首先计算一个线性得分，然后通过一个非线性函数（如Sigmoid）或直接根据得分的符号来做出分类决策。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 对于多分类问题，线性模型是怎么进行分类的</span></span><br><span class="line"><span class="comment"># 当类别数量大于两个时（即多分类问题），线性模型通常采用以下两种主要策略之一将问题转化为多个二分类问题：</span></span><br><span class="line"><span class="comment"># 1.  **一对余 (One-vs-Rest, OvR) 或 一对所有 (One-vs-All, OvA)**：</span></span><br><span class="line"><span class="comment">#     *   **原理**：如果有个 `K` 个类别，OvR 策略会训练 `K` 个独立的二分类器。</span></span><br><span class="line"><span class="comment">#     *   第 `i` 个分类器 (`i` 从 1 到 `K`) 会将类别 `i` 的样本视为正类，而将所有其他 `K-1` 个类别的样本视为负类。</span></span><br><span class="line"><span class="comment">#     *   **预测**：对于一个新的样本，它会被输入到所有 `K` 个分类器中。每个分类器都会输出一个分数或概率，表示该样本属于其对应“正类”的置信度。最终，样本被分配给那个给出最高置信度分数的类别。</span></span><br><span class="line"><span class="comment">#     *   **优点**：直观，实现相对简单，计算效率较高（只需要训练K个分类器）。</span></span><br><span class="line"><span class="comment">#     *   **缺点**：当类别数量很多时，每个二分类器的负类可能包含非常多样化的样本，可能导致类别不平衡问题。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2.  **一对一 (One-vs-One, OvO)**：</span></span><br><span class="line"><span class="comment">#     *   **原理**：如果有个 `K` 个类别，OvO 策略会为每一对类别 `(i, j)` 训练一个二分类器，其中 `i != j`。总共需要训练 `K * (K-1) / 2` 个分类器。</span></span><br><span class="line"><span class="comment">#     *   每个分类器只负责区分两个特定的类别。</span></span><br><span class="line"><span class="comment">#     *   **预测**：对于一个新的样本，它会被输入到所有 `K * (K-1) / 2` 个分类器中。每个分类器都会对样本属于其两个类别中的哪一个进行投票。最终，样本被分配给获得最多投票的类别。</span></span><br><span class="line"><span class="comment">#     *   **优点**：每个分类器只需要处理两个类别的数据，通常训练速度更快，且对于某些对类别不平衡不敏感的算法（如SVM）可能表现更好。</span></span><br><span class="line"><span class="comment">#     *   **缺点**：当类别数量 `K` 很大时，需要训练的分类器数量会急剧增加，导致计算成本和存储成本较高。</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># **在 scikit-learn 中**：</span></span><br><span class="line"><span class="comment"># *   `LogisticRegression` 默认使用 OvR 策略进行多分类 (可以通过 `multi_class` 参数设置为 `&#x27;multinomial&#x27;` 来使用 Softmax 回归，这是一种直接处理多分类的方法，但其基础仍然是线性的)。</span></span><br><span class="line"><span class="comment"># *   `LinearSVC` (线性支持向量机) 默认使用 OvR 策略。</span></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="任务三输出模型预测结果">任务三：输出模型预测结果</h4>
+<ul>
+<li>输出模型预测分类标签</li>
+<li>输出不同分类标签的预测概率</li>
+</ul>
+<h4 id="提示3">提示3</h4>
+<ul>
+<li>一般监督模型在sklearn里面有个<code>predict</code>能输出预测标签，<code>predict_proba</code>则可以输出标签概率</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">pred = lr.predict(X_train)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">pred[:<span class="number">10</span>]</span><br></pre></td></tr></table></figure>
+<pre><code>array([0, 1, 1, 1, 0, 0, 1, 0, 1, 1])</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">pred_proba = lr.predict_proba(X_train)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">pred_proba[:<span class="number">10</span>]</span><br></pre></td></tr></table></figure>
+<pre><code>array([[0.60887905, 0.39112095],
+       [0.17668722, 0.82331278],
+       [0.40624596, 0.59375404],
+       [0.18896449, 0.81103551],
+       [0.87984221, 0.12015779],
+       [0.91385758, 0.08614242],
+       [0.13282516, 0.86717484],
+       [0.90555878, 0.09444122],
+       [0.05280619, 0.94719381],
+       [0.10934565, 0.89065435]])</code></pre>
+<p>【思考】 * 预测标签的概率对我们有什么帮助</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考回答</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E7%AC%AC%E4%BA%8C%E8%8A%82%E6%95%B0%E6%8D%AE%E9%87%8D%E6%9E%841-%E8%AF%BE%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E7%AC%AC%E4%BA%8C%E8%8A%82%E6%95%B0%E6%8D%AE%E9%87%8D%E6%9E%841-%E8%AF%BE%E7%A8%8B/" class="post-title-link" itemprop="url">数据分析——第二章：第二节数据重构1</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-05-14 00:00:00 / 修改时间：17:06:05" itemprop="dateCreated datePublished" datetime="2025-05-14T00:00:00+08:00">2025-05-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/kaggle/" itemprop="url" rel="index"><span itemprop="name">kaggle</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/kaggle/titanic/" itemprop="url" rel="index"><span itemprop="name">titanic</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p><strong>复习：</strong>在前面我们已经学习了Pandas基础，第二章我们开始进入数据分析的业务部分，在第二章第一节的内容中，我们学习了<strong>数据的清洗</strong>，这一部分十分重要，只有数据变得相对干净，我们之后对数据的分析才可以更有力。而这一节，我们要做的是数据重构，数据重构依旧属于数据理解（准备）的范围。</p>
+<h4 id="开始之前导入numpypandas包和数据">开始之前，导入numpy、pandas包和数据</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入基本库</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 载入data文件中的:train-left-up.csv</span></span><br><span class="line">text=pd.read_csv(<span class="string">&#x27;../第二章项目集合/data/train-left-up.csv&#x27;</span>)</span><br><span class="line">text.head()</span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Braund, Mr. Owen Harris
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+Heikkinen, Miss. Laina
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+4
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Futrelle, Mrs. Jacques Heath (Lily May Peel)
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+5
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Allen, Mr. William Henry
+</td>
+</tr>
+</tbody>
+</table>
+<h1 id="第二章数据重构">2 第二章：数据重构</h1>
+<h3 id="数据的合并">2.4 数据的合并</h3>
+<h4 id="任务一将data文件夹里面的所有数据都载入观察数据的之间的关系">2.4.1
+任务一：将data文件夹里面的所有数据都载入，观察数据的之间的关系</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">text_left_up=pd.read_csv(<span class="string">&#x27;../第二章项目集合/data/train-left-up.csv&#x27;</span>)</span><br><span class="line">text_left_down=pd.read_csv(<span class="string">&#x27;../第二章项目集合/data/train-left-down.csv&#x27;</span>)</span><br><span class="line">text_right_up=pd.read_csv(<span class="string">&#x27;../第二章项目集合/data/train-right-up.csv&#x27;</span>)</span><br><span class="line">text_right_down=pd.read_csv(<span class="string">&#x27;../第二章项目集合/data/train-right-down.csv&#x27;</span>)</span><br><span class="line">text_left_up.head()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Braund, Mr. Owen Harris
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+Heikkinen, Miss. Laina
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+4
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Futrelle, Mrs. Jacques Heath (Lily May Peel)
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+5
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Allen, Mr. William Henry
+</td>
+</tr>
+</tbody>
+</table>
+<p>【提示】结合之前我们加载的train.csv数据，大致预测一下上面的数据是什么</p>
+<h4 id="任务二使用concat方法将数据train-left-up.csv和train-right-up.csv横向合并为一张表并保存这张表为result_up">2.4.2：任务二：使用concat方法：将数据train-left-up.csv和train-right-up.csv横向合并为一张表，并保存这张表为result_up</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment">#pandas.concat 是 Pandas 中用于连接 Series 或 DataFrame 对象的核心方法，支持横向（列方向）或纵向（行方向）拼接</span></span><br><span class="line">list_up = [text_left_up,text_right_up]</span><br><span class="line">result_up = pd.concat(list_up,axis=<span class="number">1</span>)</span><br><span class="line">result_up.head()</span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+<th>
+Sex
+</th>
+<th>
+Age
+</th>
+<th>
+SibSp
+</th>
+<th>
+Parch
+</th>
+<th>
+Ticket
+</th>
+<th>
+Fare
+</th>
+<th>
+Cabin
+</th>
+<th>
+Embarked
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Braund, Mr. Owen Harris
+</td>
+<td>
+male
+</td>
+<td>
+22.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+A/5 21171
+</td>
+<td>
+7.2500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+<td>
+female
+</td>
+<td>
+38.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+PC 17599
+</td>
+<td>
+71.2833
+</td>
+<td>
+C85
+</td>
+<td>
+C
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+Heikkinen, Miss. Laina
+</td>
+<td>
+female
+</td>
+<td>
+26.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+STON/O2. 3101282
+</td>
+<td>
+7.9250
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+4
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Futrelle, Mrs. Jacques Heath (Lily May Peel)
+</td>
+<td>
+female
+</td>
+<td>
+35.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+113803
+</td>
+<td>
+53.1000
+</td>
+<td>
+C123
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+5
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Allen, Mr. William Henry
+</td>
+<td>
+male
+</td>
+<td>
+35.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+373450
+</td>
+<td>
+8.0500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+</tbody>
+</table>
+<h4 id="任务三使用concat方法将train-left-down和train-right-down横向合并为一张表并保存这张表为result_down然后将上边的result_up和result_down纵向合并为result">2.4.3
+任务三：使用concat方法：将train-left-down和train-right-down横向合并为一张表，并保存这张表为result_down。然后将上边的result_up和result_down纵向合并为result。</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">list_down=[text_left_down,text_right_down]</span><br><span class="line">result_down = pd.concat(list_down,axis=<span class="number">1</span>)</span><br><span class="line">result = pd.concat([result_up,result_down])</span><br><span class="line">result.head()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+<th>
+Sex
+</th>
+<th>
+Age
+</th>
+<th>
+SibSp
+</th>
+<th>
+Parch
+</th>
+<th>
+Ticket
+</th>
+<th>
+Fare
+</th>
+<th>
+Cabin
+</th>
+<th>
+Embarked
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Braund, Mr. Owen Harris
+</td>
+<td>
+male
+</td>
+<td>
+22.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+A/5 21171
+</td>
+<td>
+7.2500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+<td>
+female
+</td>
+<td>
+38.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+PC 17599
+</td>
+<td>
+71.2833
+</td>
+<td>
+C85
+</td>
+<td>
+C
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+Heikkinen, Miss. Laina
+</td>
+<td>
+female
+</td>
+<td>
+26.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+STON/O2. 3101282
+</td>
+<td>
+7.9250
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+4
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Futrelle, Mrs. Jacques Heath (Lily May Peel)
+</td>
+<td>
+female
+</td>
+<td>
+35.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+113803
+</td>
+<td>
+53.1000
+</td>
+<td>
+C123
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+5
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Allen, Mr. William Henry
+</td>
+<td>
+male
+</td>
+<td>
+35.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+373450
+</td>
+<td>
+8.0500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="任务四使用dataframe自带的方法join方法和append完成任务二和任务三的任务">2.4.4
+任务四：使用DataFrame自带的方法join方法和append：完成任务二和任务三的任务</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">resul_up = text_left_up.join(text_right_up)</span><br><span class="line">result_down = text_left_down.join(text_right_down)</span><br><span class="line">result = result_up.append(result_down)</span><br><span class="line">result.head()</span><br></pre></td></tr></table></figure>
+<h4 id="任务五使用panads的merge方法和dataframe的append方法完成任务二和任务三的任务">2.4.5
+任务五：使用Panads的merge方法和DataFrame的append方法：完成任务二和任务三的任务</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">该代码使用 pandas.merge 方法，以索引（index）为键，将两个 DataFrame (text_left_up 和 text_right_up) 横向合并。</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">result_up = pd.merge(text_left_up,text_right_up,left_index=<span class="literal">True</span>,right_index=<span class="literal">True</span>)</span><br><span class="line">result_down = pd.merge(text_left_down,text_right_down,left_index=<span class="literal">True</span>,right_index=<span class="literal">True</span>)</span><br><span class="line">result = resul_up.append(result_down)</span><br><span class="line">result.head()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>【思考】对比merge、join以及concat的方法的不同以及相同。思考一下在任务四和任务五的情况下，为什么都要求使用DataFrame的append方法，如何只要求使用merge或者join可不可以完成任务四和任务五呢？</p>
+<h4 id="任务六完成的数据保存为result.csv">2.4.6
+任务六：完成的数据保存为result.csv</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"></span><br><span class="line">result.to_csv(<span class="string">&#x27;result.csv&#x27;</span>)</span><br><span class="line">result.head()</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+<th>
+Sex
+</th>
+<th>
+Age
+</th>
+<th>
+SibSp
+</th>
+<th>
+Parch
+</th>
+<th>
+Ticket
+</th>
+<th>
+Fare
+</th>
+<th>
+Cabin
+</th>
+<th>
+Embarked
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Braund, Mr. Owen Harris
+</td>
+<td>
+male
+</td>
+<td>
+22.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+A/5 21171
+</td>
+<td>
+7.2500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+<td>
+female
+</td>
+<td>
+38.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+PC 17599
+</td>
+<td>
+71.2833
+</td>
+<td>
+C85
+</td>
+<td>
+C
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+Heikkinen, Miss. Laina
+</td>
+<td>
+female
+</td>
+<td>
+26.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+STON/O2. 3101282
+</td>
+<td>
+7.9250
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+4
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Futrelle, Mrs. Jacques Heath (Lily May Peel)
+</td>
+<td>
+female
+</td>
+<td>
+35.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+113803
+</td>
+<td>
+53.1000
+</td>
+<td>
+C123
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+5
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Allen, Mr. William Henry
+</td>
+<td>
+male
+</td>
+<td>
+35.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+373450
+</td>
+<td>
+8.0500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="换一种角度看数据">2.5 换一种角度看数据</h3>
+<h4 id="任务一将我们的数据变为series类型的数据">2.5.1
+任务一：将我们的数据变为Series类型的数据</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment">#text.stack() 是 Pandas 中用于将 DataFrame 的列旋转为行的方法</span></span><br><span class="line">text = pd.read_csv(<span class="string">&#x27;result.csv&#x27;</span>)</span><br><span class="line">unit_result=text.stack().head(<span class="number">20</span>)</span><br><span class="line">unit_result.head()</span><br></pre></td></tr></table></figure>
+<pre><code>0  Unnamed: 0                           0
+   PassengerId                          1
+   Survived                             0
+   Pclass                               3
+   Name           Braund, Mr. Owen Harris
+dtype: object</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"></span><br><span class="line">unit_result.to_csv(<span class="string">&#x27;unit_result.csv&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1924,732 +4469,6 @@ yield)_哔哩哔哩_bilibili</a></p>
     <div class="post-body" itemprop="articleBody">
           <h3 id="前言">前言</h3>
 <p>我是一个很珍惜回忆的人，但是任何回忆都有忘却的那一天，所以我能做的就是尽可能把他ji’lu</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/19/%E5%9B%9E%E5%BF%86/%E6%A9%98%E5%AD%90%E6%B5%B7/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/04/19/%E5%9B%9E%E5%BF%86/%E6%A9%98%E5%AD%90%E6%B5%B7/" class="post-title-link" itemprop="url">橘子海</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-04-19 00:00:00" itemprop="dateCreated datePublished" datetime="2025-04-19T00:00:00+08:00">2025-04-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-06-12 18:37:53" itemprop="dateModified" datetime="2025-06-12T18:37:53+08:00">2025-06-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%9B%9E%E5%BF%86/" itemprop="url" rel="index"><span itemprop="name">回忆</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="橘子海">橘子海</h3>
-<p>橘子海，现场超超超超级赞，嗨到爆，完全超出预期</p>
-<p>Give me the faith that we broke</p>
-<p>请重拾我们背叛过的誓言</p>
-<p>Reminds me the verse that we spoke</p>
-<p>不要让我遗忘共同诵读过的诗篇</p>
-<p>There is no chance for start it over</p>
-<p>一切已经永远无法重来</p>
-<p>Back to the check point be my lover</p>
-<p>回不去那个你我还是“我们”的存盘点</p>
-<figure>
-<img src="/2025/04/19/%E5%9B%9E%E5%BF%86/%E6%A9%98%E5%AD%90%E6%B5%B7/1745079894738.jpg" alt="1745079894738">
-<figcaption aria-hidden="true">1745079894738</figcaption>
-</figure>
-<figure>
-<img src="/2025/04/19/%E5%9B%9E%E5%BF%86/%E6%A9%98%E5%AD%90%E6%B5%B7/1745079894693.jpg" alt="1745079894693">
-<figcaption aria-hidden="true">1745079894693</figcaption>
-</figure>
-<figure>
-<img src="/2025/04/19/%E5%9B%9E%E5%BF%86/%E6%A9%98%E5%AD%90%E6%B5%B7/1745079894721.jpg" alt="1745079894721">
-<figcaption aria-hidden="true">1745079894721</figcaption>
-</figure>
-<figure>
-<img src="/2025/04/19/%E5%9B%9E%E5%BF%86/%E6%A9%98%E5%AD%90%E6%B5%B7/1745079894676.jpg" alt="1745079894676">
-<figcaption aria-hidden="true">1745079894676</figcaption>
-</figure>
-<figure>
-<img src="/2025/04/19/%E5%9B%9E%E5%BF%86/%E6%A9%98%E5%AD%90%E6%B5%B7/1745079894659.jpg" alt="1745079894659">
-<figcaption aria-hidden="true">1745079894659</figcaption>
-</figure>
-<figure>
-<img src="/2025/04/19/%E5%9B%9E%E5%BF%86/%E6%A9%98%E5%AD%90%E6%B5%B7/1745079894631.jpg" alt="1745079894631">
-<figcaption aria-hidden="true">1745079894631</figcaption>
-</figure>
-<figure>
-<img src="/2025/04/19/%E5%9B%9E%E5%BF%86/%E6%A9%98%E5%AD%90%E6%B5%B7/1745079894645.jpg" alt="1745079894645">
-<figcaption aria-hidden="true">1745079894645</figcaption>
-</figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/19/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/%E5%8A%A8%E6%89%8B%E5%AD%A6%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/04/19/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/%E5%8A%A8%E6%89%8B%E5%AD%A6%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/" class="post-title-link" itemprop="url">大模型开发学习之路——动手学大模型应用开发</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-04-19 00:00:00" itemprop="dateCreated datePublished" datetime="2025-04-19T00:00:00+08:00">2025-04-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-05-14 15:54:59" itemprop="dateModified" datetime="2025-05-14T15:54:59+08:00">2025-05-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/" itemprop="url" rel="index"><span itemprop="name">大模型开发学习之路</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/%E5%8A%A8%E6%89%8B%E5%AD%A6%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">动手学大模型应用开发</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="笔记">笔记</h3>
-<p>技术栈：streamlit，fastapi，Gradio，langchain，dify，coze</p>
-<h4 id="conda常用指令">conda常用指令</h4>
-<p><strong>列出所有环境</strong>conda env list</p>
-<p><strong>删除指定环境</strong>conda env remove –name 环境名称</p>
-<p>创建 Conda 环境conda create -n llm-universe python==3.9.0</p>
-<p>激活 Conda 环境conda activate llm-universe</p>
-<p>安装依赖项pip install -r requirements.txt</p>
-<h3 id="参考文献">参考文献</h3>
-<p><a target="_blank" rel="noopener" href="https://www.datawhale.cn/learn/content/19/445">动手学大模型应用开发-课程详情
-| Datawhale</a></p>
-<p><a target="_blank" rel="noopener" href="https://datawhalechina.github.io/llm-universe/#/">动手学大模型应用开发</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1QuZAY2EW1?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">10
-分钟！零基础彻底学会 Cursor AI 编程 | Cursor AI 编程｜Cursor 进阶技巧 |
-Cursor 开发小程序 | 小白 AI 编程_哔哩哔哩_bilibili</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV12TLAzuEni?spm_id_from=333.788.videopod.episodes&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11&amp;p=12">【Langchain进阶篇】12.Prompt
-templates Few shot. Example
-selector(提示模板：少镜头。示例选择器)_哔哩哔哩_bilibili</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.langchain.com.cn/docs/concepts/">概念指南 |
-LangChain中文网</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/16/%E5%AD%A6%E4%B9%A0/hexo/hexo%E7%9B%B8%E5%85%B3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/04/16/%E5%AD%A6%E4%B9%A0/hexo/hexo%E7%9B%B8%E5%85%B3/" class="post-title-link" itemprop="url">hexo常用指令</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-04-16 00:00:00" itemprop="dateCreated datePublished" datetime="2025-04-16T00:00:00+08:00">2025-04-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-07-29 15:28:19" itemprop="dateModified" datetime="2025-07-29T15:28:19+08:00">2025-07-29</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%AD%A6%E4%B9%A0/blog/" itemprop="url" rel="index"><span itemprop="name">blog</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>以下是 Hexo 常用的指令整理，方便快速查阅：</p>
-<hr>
-<h3 id="基础操作"><a href="#基础操作" class="headerlink" title="基础操作"></a><strong>基础操作</strong></h3><ol>
-<li><p><strong>初始化博客</strong>  </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo init [文件夹名]  <span class="comment"># 创建新博客（不指定文件夹则在当前目录生成）</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong>安装依赖</strong>  </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install           <span class="comment"># 安装 Hexo 核心依赖（初始化后可能需要执行）</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong>本地预览</strong>  </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo server           <span class="comment"># 启动本地服务器（默认端口 4000），缩写：hexo s</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong>生成静态文件</strong>  </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo generate         <span class="comment"># 生成 public 文件夹的静态文件，缩写：hexo g</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong>部署到服务器</strong>  </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo deploy           <span class="comment"># 部署到 GitHub Pages 或其他平台，缩写：hexo d</span></span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<hr>
-<h3 id="文章与页面"><a href="#文章与页面" class="headerlink" title="文章与页面"></a><strong>文章与页面</strong></h3><ol>
-<li><p><strong>新建文章</strong>  </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new <span class="string">&quot;文章标题&quot;</span>    <span class="comment"># 生成新文章（Markdown 文件），缩写：hexo n</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong>新建页面</strong>  </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page <span class="string">&quot;页面名&quot;</span> <span class="comment"># 创建自定义页面（如 about、tags）</span></span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<hr>
-<h3 id="清理与调试"><a href="#清理与调试" class="headerlink" title="清理与调试"></a><strong>清理与调试</strong></h3><ol>
-<li><p><strong>清理缓存</strong>  </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean            <span class="comment"># 删除生成的 public 和缓存文件（修改主题后建议执行）</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong>查看帮助</strong>  </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo <span class="built_in">help</span>             <span class="comment"># 查看所有指令说明</span></span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<hr>
-<h3 id="组合指令（高效操作）"><a href="#组合指令（高效操作）" class="headerlink" title="组合指令（高效操作）"></a><strong>组合指令（高效操作）</strong></h3><ul>
-<li><p><strong>生成并部署</strong>  </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo g -d          <span class="comment"># 先生成静态文件，再部署（等同 hexo generate &amp;&amp; hexo deploy）</span></span><br><span class="line">hexo d -g          <span class="comment"># 同上，顺序不影响结果</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong>生成并预览</strong>  </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo s -g          <span class="comment"># 先生成文件，再启动本地服务器</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<hr>
-<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a><strong>注意事项</strong></h3><ul>
-<li><strong>部署前配置</strong>：需在 <code>_config.yml</code> 中设置 <code>deploy</code> 参数（如 GitHub 仓库地址）。</li>
-<li><strong>安装部署插件</strong>：首次部署需运行 <code>npm install hexo-deployer-git</code>。</li>
-<li><strong>主题安装</strong>：将主题克隆到 <code>themes/</code> 文件夹后，在配置文件中指定主题名称。</li>
-</ul>
-<p>如果需要更详细的操作说明，可以补充具体场景（如更换主题、设置分类等）！</p>
-<h3 id="hexo-d上传失败，网络连接问题解决方案"><a href="#hexo-d上传失败，网络连接问题解决方案" class="headerlink" title="hexo d上传失败，网络连接问题解决方案"></a>hexo d上传失败，网络连接问题解决方案</h3><p>原因：<strong>Clash 虽然开启了代理，但 Git 默认不会走这个代理</strong>，导致连接 GitHub 时失败</p>
-<p><img src="/2025/04/16/%E5%AD%A6%E4%B9%A0/hexo/hexo%E7%9B%B8%E5%85%B3/image-20250722204420664.png" alt="image-20250722204420664"></p>
-<p>解决方案：</p>
-<p>查看端口号</p>
-<p><img src="/2025/04/16/%E5%AD%A6%E4%B9%A0/hexo/hexo%E7%9B%B8%E5%85%B3/image-20250722204512612.png" alt="image-20250722204512612"></p>
-<p>查看git代理</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global --get http.proxy</span><br><span class="line">git config --global --get https.proxy</span><br></pre></td></tr></table></figure>
-<p>更改代理</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global http.proxy socks5://127.0.0.1:1080</span><br><span class="line">git config --global https.proxy socks5://127.0.0.1:1080</span><br></pre></td></tr></table></figure>
-<h3 id="参考教程"><a href="#参考教程" class="headerlink" title="参考教程"></a>参考教程</h3><p><a target="_blank" rel="noopener" href="https://tech.yemengstar.com/hexo-tutorial-deploy-githubpages-beginner/">HEXO系列教程 | 使用GitHub部署静态博客HEXO | 小白向教程 – 夜梦星尘の折腾日记</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV12H4y1N7Q4/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">Github王炸功能Pages,免费免服务器上线网站,详细教程_哔哩哔哩_bilibili</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/16/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/04/16/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/" class="post-title-link" itemprop="url">机器学习——支持向量机</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-04-16 00:00:00" itemprop="dateCreated datePublished" datetime="2025-04-16T00:00:00+08:00">2025-04-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-06-12 19:00:01" itemprop="dateModified" datetime="2025-06-12T19:00:01+08:00">2025-06-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/" itemprop="url" rel="index"><span itemprop="name">大二下</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="正文">正文</h2>
-<p>下面我将为你详细解释KKT（Karush-Kuhn-Tucker）条件。KKT条件是优化理论中用于求解带约束非线性规划问题的一组必要条件，广泛应用于支持向量机（SVM）等机器学习算法中。我会使用内联数学公式（如
-<span class="math display"><em>f</em>(<strong>x</strong>)</span>）来展示相关表达式。</p>
-<hr>
-<h3 id="优化问题的一般形式">1. 优化问题的一般形式</h3>
-<p>我们考虑一个带有约束的优化问题，数学形式如下： - 目标：<span class="math display">min<sub><strong>x</strong></sub><em>f</em>(<strong>x</strong>)</span>
-- 不等式约束：<span class="math display"><em>g</em><sub><em>i</em></sub>(<strong>x</strong>) ≤ 0</span>，其中
-<span class="math display"><em>i</em> = 1, 2, …, <em>m</em></span> -
-等式约束：<span class="math display"><em>h</em><sub><em>j</em></sub>(<strong>x</strong>) = 0</span>，其中
-<span class="math display"><em>j</em> = 1, 2, …, <em>p</em></span></p>
-<p>这里： - <span class="math display"><em>f</em>(<strong>x</strong>)</span>
-是目标函数，通常是我们希望最小化的函数。 - <span class="math display"><em>g</em><sub><em>i</em></sub>(<strong>x</strong>) ≤ 0</span>
-表示 <span class="math display"><em>m</em></span> 个不等式约束。 - <span class="math display"><em>h</em><sub><em>j</em></sub>(<strong>x</strong>) = 0</span>
-表示 <span class="math display"><em>p</em></span> 个等式约束。</p>
-<p>KKT条件的目标是找到满足这些约束的局部最优解 <span class="math display"><strong>x</strong></span>。</p>
-<hr>
-<h3 id="拉格朗日函数">2. 拉格朗日函数</h3>
-<p>为了引入KKT条件，我们首先定义拉格朗日函数： <span class="math display">$$\mathcal{L}(\mathbf{x}, \boldsymbol{\lambda},
-\boldsymbol{\mu}) = f(\mathbf{x}) + \sum_{i=1}^{m} \lambda_i
-g_i(\mathbf{x}) + \sum_{j=1}^{p} \mu_j h_j(\mathbf{x})$$</span></p>
-<p>其中： - <span class="math display"><strong>λ</strong> = (<em>λ</em><sub>1</sub>,<em>λ</em><sub>2</sub>,…,<em>λ</em><sub><em>m</em></sub>)</span>
-是与不等式约束 <span class="math display"><em>g</em><sub><em>i</em></sub>(<strong>x</strong>) ≤ 0</span>
-对应的拉格朗日乘子。 - <span class="math display"><strong>μ</strong> = (<em>μ</em><sub>1</sub>,<em>μ</em><sub>2</sub>,…,<em>μ</em><sub><em>p</em></sub>)</span>
-是与等式约束 <span class="math display"><em>h</em><sub><em>j</em></sub>(<strong>x</strong>) = 0</span>
-对应的拉格朗日乘子。</p>
-<p>拉格朗日函数将目标函数和约束条件结合在一起，通过引入乘子 <span class="math display"><em>λ</em><sub><em>i</em></sub></span> 和 <span class="math display"><em>μ</em><sub><em>j</em></sub></span>
-来平衡约束对优化的影响。</p>
-<hr>
-<h3 id="kkt条件的组成部分">3. KKT条件的组成部分</h3>
-<p>KKT条件由以下四个部分组成，只有当某些正则性条件（如Slater条件）满足时，局部最优解
-<span class="math display"><strong>x</strong></span>
-才会同时满足这些条件。以下是具体的KKT条件：</p>
-<h4 id="梯度条件stationarity">3.1 梯度条件（Stationarity）</h4>
-<p>拉格朗日函数对 <span class="math display"><strong>x</strong></span>
-的梯度必须为零，即： <span class="math display">$$\nabla_{\mathbf{x}}
-\mathcal{L}(\mathbf{x}, \boldsymbol{\lambda}, \boldsymbol{\mu}) = \nabla
-f(\mathbf{x}) + \sum_{i=1}^{m} \lambda_i \nabla g_i(\mathbf{x}) +
-\sum_{j=1}^{p} \mu_j \nabla h_j(\mathbf{x}) = 0$$</span></p>
-<p>这意味着在最优解处，目标函数的梯度可以通过约束函数梯度的线性组合来表示。</p>
-<h4 id="原始可行性primal-feasibility">3.2 原始可行性（Primal
-Feasibility）</h4>
-<p>解 <span class="math display"><strong>x</strong></span>
-必须满足原始问题的所有约束： - 不等式约束：<span class="math display"><em>g</em><sub><em>i</em></sub>(<strong>x</strong>) ≤ 0</span>，其中
-<span class="math display"><em>i</em> = 1, 2, …, <em>m</em></span> -
-等式约束：<span class="math display"><em>h</em><sub><em>j</em></sub>(<strong>x</strong>) = 0</span>，其中
-<span class="math display"><em>j</em> = 1, 2, …, <em>p</em></span></p>
-<p>这确保了解仍在问题的可行域内。</p>
-<h4 id="对偶可行性dual-feasibility">3.3 对偶可行性（Dual
-Feasibility）</h4>
-<p>对于不等式约束对应的拉格朗日乘子，必须满足： <span class="math display"><em>λ</em><sub><em>i</em></sub> ≥ 0</span>，其中
-<span class="math display"><em>i</em> = 1, 2, …, <em>m</em></span></p>
-<p>这表明不等式约束的乘子非负，反映了约束对优化方向的影响。</p>
-<h4 id="互补松弛条件complementary-slackness">3.4
-互补松弛条件（Complementary Slackness）</h4>
-<p>对于每个不等式约束，乘子与约束函数的乘积必须为零： <span class="math display"><em>λ</em><sub><em>i</em></sub><em>g</em><sub><em>i</em></sub>(<strong>x</strong>) = 0</span>，其中
-<span class="math display"><em>i</em> = 1, 2, …, <em>m</em></span></p>
-<p>这意味着： - 如果某个约束不“紧”（即 <span class="math display"><em>g</em><sub><em>i</em></sub>(<strong>x</strong>) &lt; 0</span>），则对应的乘子
-<span class="math display"><em>λ</em><sub><em>i</em></sub> = 0</span>。
-- 如果 <span class="math display"><em>λ</em><sub><em>i</em></sub> &gt; 0</span>，则该约束必须是“紧”的（即
-<span class="math display"><em>g</em><sub><em>i</em></sub>(<strong>x</strong>) = 0</span>）。</p>
-<hr>
-<h3 id="kkt条件的意义">4. KKT条件的意义</h3>
-<ul>
-<li><strong>梯度条件</strong>：表明最优解处目标函数的改变方向被约束完全平衡。</li>
-<li><strong>原始可行性</strong>：确保解满足所有约束条件。</li>
-<li><strong>对偶可行性</strong>：限制拉格朗日乘子的符号，保证优化方向的合理性。</li>
-<li><strong>互补松弛条件</strong>：揭示哪些约束在最优解处起作用（紧约束），哪些不起作用。</li>
-</ul>
-<hr>
-<h3 id="kkt条件在svm中的应用示例">5. KKT条件在SVM中的应用示例</h3>
-<p>KKT条件在支持向量机（SVM）中尤为重要。SVM的原始优化问题为： -
-目标：<span class="math display">$$\min_{\mathbf{w}, b} \frac{1}{2}
-\|\mathbf{w}\|^2$$</span> - 约束：<span class="math display"><em>y</em><sub><em>i</em></sub>(<strong>w</strong>⋅<strong>x</strong><sub><em>i</em></sub>+<em>b</em>) ≥ 1</span>，其中
-<span class="math display"><em>i</em> = 1, 2, …, <em>n</em></span></p>
-<p>将其改写为标准形式的不等式约束：<span class="math display">1 − <em>y</em><sub><em>i</em></sub>(<strong>w</strong>⋅<strong>x</strong><sub><em>i</em></sub>+<em>b</em>) ≤ 0</span>。</p>
-<p>拉格朗日函数为： <span class="math display">$$\mathcal{L}(\mathbf{w},
-b, \boldsymbol{\alpha}) = \frac{1}{2} \|\mathbf{w}\|^2 + \sum_{i=1}^{n}
-\alpha_i \left[ 1 - y_i (\mathbf{w} \cdot \mathbf{x}_i + b)
-\right]$$</span></p>
-<p>应用KKT条件： 1. <strong>梯度条件</strong>： - 对 <span class="math display"><strong>w</strong></span>：<span class="math display">$$\nabla_{\mathbf{w}} \mathcal{L} = \mathbf{w} -
-\sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i = 0$$</span> - 对 <span class="math display"><em>b</em></span>：<span class="math display">$$\frac{\partial \mathcal{L}}{\partial b} =
--\sum_{i=1}^{n} \alpha_i y_i = 0$$</span> 2.
-<strong>原始可行性</strong>：<span class="math display"><em>y</em><sub><em>i</em></sub>(<strong>w</strong>⋅<strong>x</strong><sub><em>i</em></sub>+<em>b</em>) ≥ 1</span>
-3. <strong>对偶可行性</strong>：<span class="math display"><em>α</em><sub><em>i</em></sub> ≥ 0</span> 4.
-<strong>互补松弛条件</strong>：<span class="math display"><em>α</em><sub><em>i</em></sub>[<em>y</em><sub><em>i</em></sub>(<strong>w</strong>⋅<strong>x</strong><sub><em>i</em></sub>+<em>b</em>)−1] = 0</span></p>
-<p>这些条件帮助我们识别支持向量（<span class="math display"><em>α</em><sub><em>i</em></sub> &gt; 0</span>
-的点）并求解最优的 <span class="math display"><strong>w</strong></span>
-和 <span class="math display"><em>b</em></span>。</p>
-<hr>
-<h3 id="总结">6. 总结</h3>
-<p>KKT条件是求解带约束优化问题的核心工具，它通过梯度条件、原始可行性、对偶可行性和互补松弛条件，确保了解既是最优的，又满足所有约束。在机器学习中，KKT条件为SVM等算法提供了理论支持，是理解和实现这些模型的关键。</p>
-<h3 id="作业">作业</h3>
-<h4 id="关于支持向量机推导目标函数的原始问题转换为对偶问题的过程和条件使用拉格朗日乘子法">关于支持向量机，推导目标函数的原始问题转换为对偶问题的过程和条件。（使用拉格朗日乘子法）</h4>
-<figure>
-<img src="/2025/04/16/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/IMG_20250416_164811.jpg" alt="IMG_20250416_164811">
-<figcaption aria-hidden="true">IMG_20250416_164811</figcaption>
-</figure>
-<p>下面我们将推导支持向量机（SVM）中目标函数从原始问题转换为对偶问题的过程和条件，使用拉格朗日乘子法。我们将一步步展开，确保推导清晰且完整。</p>
-<hr>
-<h3 id="原始问题">1. 原始问题</h3>
-<p>支持向量机（SVM）的目标是找到一个超平面，能够最大化到最近数据点的间隔。对于线性可分的情况，原始优化问题可以定义为：</p>
-<ul>
-<li><p><strong>目标函数</strong>：<br>
-<span class="math display">$$\min_{\mathbf{w}, b} \frac{1}{2}
-\|\mathbf{w}\|^2$$</span></p></li>
-<li><p><strong>约束条件</strong>：<br>
-<span class="math display"><em>y</em><sub><em>i</em></sub>(<strong>w</strong>⋅<strong>x</strong><sub><em>i</em></sub>+<em>b</em>) ≥ 1,  <em>i</em> = 1, 2, …, <em>n</em></span></p></li>
-</ul>
-<p>其中： - <span class="math display"><strong>w</strong></span>
-是超平面的法向量； - <span class="math display"><em>b</em></span>
-是超平面的截距； - <span class="math display"><strong>x</strong><sub><em>i</em></sub></span>
-是训练样本，<span class="math display"><em>y</em><sub><em>i</em></sub> ∈ { − 1, 1}</span>
-是对应的类别标签； - <span class="math display">∥<strong>w</strong>∥<sup>2</sup></span>
-表示法向量的平方范数，目标是最小化它以最大化间隔； -
-约束条件确保所有样本点被正确分类，并且到超平面的归一化距离至少为 1。</p>
-<hr>
-<h3 id="引入拉格朗日乘子法">2. 引入拉格朗日乘子法</h3>
-<p>由于这是一个带不等式约束的优化问题，我们使用拉格朗日乘子法将其转换为无约束形式。引入拉格朗日乘子
-<span class="math display"><strong>α</strong> = (<em>α</em><sub>1</sub>,<em>α</em><sub>2</sub>,…,<em>α</em><sub><em>n</em></sub>)</span>，其中
-<span class="math display"><em>α</em><sub><em>i</em></sub> ≥ 0</span>，构造拉格朗日函数：</p>
-<p><span class="math display">$$\mathcal{L}(\mathbf{w}, b,
-\boldsymbol{\alpha}) = \frac{1}{2} \|\mathbf{w}\|^2 - \sum_{i=1}^{n}
-\alpha_i \left[ y_i (\mathbf{w} \cdot \mathbf{x}_i + b) - 1
-\right]$$</span></p>
-<ul>
-<li>第一项 <span class="math display">$$\frac{1}{2}
-\|\mathbf{w}\|^2$$</span> 是原始目标函数；</li>
-<li>第二项 <span class="math display">$$-\sum_{i=1}^{n} \alpha_i \left[
-y_i (\mathbf{w} \cdot \mathbf{x}_i + b) - 1 \right]$$</span>
-将约束条件引入，由于是 <span class="math display">≥</span> 不等式，乘子
-<span class="math display"><em>α</em><sub><em>i</em></sub> ≥ 0</span>。</li>
-</ul>
-<p>我们的目标是通过拉格朗日函数，将原始问题转换为对偶问题。</p>
-<hr>
-<h3 id="转换为对偶问题">3. 转换为对偶问题</h3>
-<p>对偶问题的核心思想是：先对 <span class="math display"><strong>w</strong></span> 和 <span class="math display"><em>b</em></span> 求拉格朗日函数的极小值，然后对
-<span class="math display"><strong>α</strong></span> 求极大值。即：</p>
-<p><span class="math display">max<sub><strong>α</strong> ≥ 0</sub>min<sub><strong>w</strong>, <em>b</em></sub>ℒ(<strong>w</strong>,<em>b</em>,<strong>α</strong>)</span></p>
-<h4 id="对-mathbfw-和-b-求偏导">3.1 对 <span class="math display"><strong>w</strong></span> 和 <span class="math display"><em>b</em></span> 求偏导</h4>
-<p>为了找到 <span class="math display">ℒ</span> 关于 <span class="math display"><strong>w</strong></span> 和 <span class="math display"><em>b</em></span>
-的极小值，分别求偏导并令其为零：</p>
-<ul>
-<li><p>对 <span class="math display"><strong>w</strong></span>
-求偏导：<br>
-<span class="math display">$$\frac{\partial \mathcal{L}}{\partial
-\mathbf{w}} = \mathbf{w} - \sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i =
-0$$</span><br>
-解得：<br>
-<span class="math display">$$\mathbf{w} = \sum_{i=1}^{n} \alpha_i y_i
-\mathbf{x}_i$$</span></p></li>
-<li><p>对 <span class="math display"><em>b</em></span> 求偏导：<br>
-<span class="math display">$$\frac{\partial \mathcal{L}}{\partial b} =
--\sum_{i=1}^{n} \alpha_i y_i = 0$$</span><br>
-解得：<br>
-<span class="math display">$$\sum_{i=1}^{n} \alpha_i y_i =
-0$$</span></p></li>
-</ul>
-<p>这两个结果是后续推导的关键。</p>
-<h4 id="代入拉格朗日函数">3.2 代入拉格朗日函数</h4>
-<p>将 <span class="math display">$$\mathbf{w} = \sum_{i=1}^{n} \alpha_i
-y_i \mathbf{x}_i$$</span> 代入拉格朗日函数，并利用 <span class="math display">$$\sum_{i=1}^{n} \alpha_i y_i = 0$$</span>
-简化：</p>
-<p><span class="math display">$$\mathcal{L} = \frac{1}{2} \left\|
-\sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i \right\|^2 - \sum_{i=1}^{n}
-\alpha_i \left[ y_i \left( \left( \sum_{j=1}^{n} \alpha_j y_j
-\mathbf{x}_j \right) \cdot \mathbf{x}_i + b \right) - 1
-\right]$$</span></p>
-<ul>
-<li><p>计算第一项：<br>
-<span class="math display">$$\left\| \sum_{i=1}^{n} \alpha_i y_i
-\mathbf{x}_i \right\|^2 = \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i
-\alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j)$$</span></p></li>
-<li><p>计算第二项中的内积部分：<br>
-<span class="math display">$$y_i \left( \sum_{j=1}^{n} \alpha_j y_j
-\mathbf{x}_j \right) \cdot \mathbf{x}_i = y_i \sum_{j=1}^{n} \alpha_j
-y_j (\mathbf{x}_j \cdot \mathbf{x}_i)$$</span><br>
-所以：<br>
-<span class="math display">$$\sum_{i=1}^{n} \alpha_i y_i \left(
-\sum_{j=1}^{n} \alpha_j y_j (\mathbf{x}_j \cdot \mathbf{x}_i) \right) =
-\sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i
-\cdot \mathbf{x}_j)$$</span></p></li>
-<li><p>考虑 <span class="math display"><em>b</em></span> 项：<br>
-<span class="math display">$$\sum_{i=1}^{n} \alpha_i y_i b = b
-\sum_{i=1}^{n} \alpha_i y_i = 0 \quad (\text{因为} \sum_{i=1}^{n}
-\alpha_i y_i = 0)$$</span></p></li>
-</ul>
-<p>代入后，拉格朗日函数变为：<br>
-<span class="math display">$$\mathcal{L} = \frac{1}{2} \sum_{i=1}^{n}
-\sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot
-\mathbf{x}_j) - \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j
-(\mathbf{x}_i \cdot \mathbf{x}_j) + \sum_{i=1}^{n} \alpha_i$$</span></p>
-<p>化简：<br>
-<span class="math display">$$\mathcal{L} = -\frac{1}{2} \sum_{i=1}^{n}
-\sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot
-\mathbf{x}_j) + \sum_{i=1}^{n} \alpha_i$$</span></p>
-<h4 id="对偶优化问题">3.3 对偶优化问题</h4>
-<p>于是，对偶问题是：<br>
-<span class="math display">$$\max_{\boldsymbol{\alpha}} \left[
-\sum_{i=1}^{n} \alpha_i - \frac{1}{2} \sum_{i=1}^{n} \sum_{j=1}^{n}
-\alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j)
-\right]$$</span></p>
-<ul>
-<li><strong>约束条件</strong>：<br>
-<span class="math display">$$\sum_{i=1}^{n} \alpha_i y_i =
-0$$</span><br>
-<span class="math display"><em>α</em><sub><em>i</em></sub> ≥ 0,  <em>i</em> = 1, 2, …, <em>n</em></span></li>
-</ul>
-<p>为了与标准优化形式一致，常将其写为最小化问题：<br>
-<span class="math display">$$\min_{\boldsymbol{\alpha}} \left[
-\frac{1}{2} \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j
-(\mathbf{x}_i \cdot \mathbf{x}_j) - \sum_{i=1}^{n} \alpha_i
-\right]$$</span></p>
-<ul>
-<li><strong>约束条件不变</strong>：<br>
-<span class="math display">$$\sum_{i=1}^{n} \alpha_i y_i =
-0$$</span><br>
-<span class="math display"><em>α</em><sub><em>i</em></sub> ≥ 0</span></li>
-</ul>
-<hr>
-<h3 id="转换的条件">4. 转换的条件</h3>
-<p>原始问题与对偶问题之间的关系由<strong>强对偶性</strong>保证。在SVM中：
-- 目标函数 <span class="math display">$$\frac{1}{2}
-\|\mathbf{w}\|^2$$</span> 是凸函数（二次函数）； - 约束条件 <span class="math display"><em>y</em><sub><em>i</em></sub>(<strong>w</strong>⋅<strong>x</strong><sub><em>i</em></sub>+<em>b</em>) ≥ 1</span>
-是线性不等式； -
-对于线性可分数据，Slater条件满足（存在可行解使约束严格成立）。</p>
-<p>因此，强对偶性成立，原始问题的最优解可以通过对偶问题求解得到。</p>
-<p>此外： - 最优的 <span class="math display"><strong>α</strong></span>
-通过对偶问题求解； - <span class="math display">$$\mathbf{w} =
-\sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i$$</span>； -
-对于支持向量（<span class="math display"><em>α</em><sub><em>i</em></sub> &gt; 0</span>
-的样本），<span class="math display"><em>y</em><sub><em>i</em></sub>(<strong>w</strong>⋅<strong>x</strong><sub><em>i</em></sub>+<em>b</em>) = 1</span>，可据此解出
-<span class="math display"><em>b</em></span>。</p>
-<hr>
-<h3 id="总结-1">5. 总结</h3>
-<ul>
-<li><p><strong>原始问题</strong>：<br>
-<span class="math display">$$\min_{\mathbf{w}, b} \frac{1}{2}
-\|\mathbf{w}\|^2$$</span><br>
-受约束：<span class="math display"><em>y</em><sub><em>i</em></sub>(<strong>w</strong>⋅<strong>x</strong><sub><em>i</em></sub>+<em>b</em>) ≥ 1</span></p></li>
-<li><p><strong>对偶问题</strong>：<br>
-<span class="math display">$$\max_{\boldsymbol{\alpha}} \left[
-\sum_{i=1}^{n} \alpha_i - \frac{1}{2} \sum_{i=1}^{n} \sum_{j=1}^{n}
-\alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j)
-\right]$$</span><br>
-受约束：<span class="math display">$$\sum_{i=1}^{n} \alpha_i y_i =
-0$$</span>，<span class="math display"><em>α</em><sub><em>i</em></sub> ≥ 0</span></p></li>
-<li><p><strong>转换条件</strong>：<br>
-通过拉格朗日乘子法，基于凸优化和强对偶性完成转换。对偶形式不仅便于求解，还为引入核函数奠定了基础。</p></li>
-</ul>
-<p>以上就是SVM目标函数从原始问题到对偶问题的推导过程和条件。</p>
-<h4 id="已知训练数据集中正例点x123x233x332负例点x412-x521x631训练线性svm分类器求最大间隔分类超平面和分类决策函数并画出分类超平面间隔边界以及支持向量">2.已知训练数据集中正例点x1=(2,3)，x2=(3,3)，x3=(3,2)，负例点x4=(1,2)，
-x5=(2,1)，x6=(3,1)，训练线性SVM分类器。求最大间隔分类超平面和分类决策函数，并画出分类超平面、间隔边界以及支持向量。</h4>
-<figure>
-<img src="/2025/04/16/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/IMG_20250416_164804-1744793466526-4.jpg" alt="IMG_20250416_164804">
-<figcaption aria-hidden="true">IMG_20250416_164804</figcaption>
-</figure>
 
       
     </div>
