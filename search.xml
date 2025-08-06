@@ -1821,329 +1821,226 @@ Proxy 一键设置代理 让你的 git clone Github
   <entry>
     <title>LangGraph学习——快速入门</title>
     <url>/2025/07/15/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langgraph%E5%AD%A6%E4%B9%A0/</url>
-    <content><![CDATA[<h3 id="构建langgraph聊天机器人的基本流程">构建langgraph聊天机器人的基本流程</h3>
-<h4 id="创建一个-stategraph">创建一个 <code>StateGraph</code></h4>
-<p>首先创建一个 <code>StateGraph</code>。一个 <code>StateGraph</code>
-对象将我们的聊天机器人结构定义为“状态机”。我们将添加 <code>节点</code>
-来表示 LLM 和聊天机器人可以调用的函数，并添加 <code>边</code>
-来指定机器人应如何在这些函数之间进行转换。</p>
+    <content><![CDATA[<h3 id="构建langgraph聊天机器人的基本流程"><a href="#构建langgraph聊天机器人的基本流程" class="headerlink" title="构建langgraph聊天机器人的基本流程"></a>构建langgraph聊天机器人的基本流程</h3><h4 id="创建一个-StateGraph"><a href="#创建一个-StateGraph" class="headerlink" title="创建一个 StateGraph"></a>创建一个 <code>StateGraph</code></h4><p>首先创建一个 <code>StateGraph</code>。一个 <code>StateGraph</code> 对象将我们的聊天机器人结构定义为“状态机”。我们将添加 <code>节点</code> 来表示 LLM 和聊天机器人可以调用的函数，并添加 <code>边</code> 来指定机器人应如何在这些函数之间进行转换。</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> Annotated</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> typing_extensions <span class="keyword">import</span> TypedDict</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> langgraph.graph <span class="keyword">import</span> StateGraph, START</span><br><span class="line"><span class="keyword">from</span> langgraph.graph.message <span class="keyword">import</span> add_messages</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">State</span>(<span class="title class_ inherited__">TypedDict</span>):</span><br><span class="line">    messages: Annotated[<span class="built_in">list</span>, add_messages]</span><br><span class="line"></span><br><span class="line"><span class="comment">#定义状态</span></span><br><span class="line">graph_builder = StateGraph(State)</span><br></pre></td></tr></table></figure>
-<p>在 langgraph
-中，状态会在图的各个节点之间传递。当一个节点产生新的消息时，它会更新
-State 中的 messages 字段。</p>
+<p>在 langgraph 中，状态会在图的各个节点之间传递。当一个节点产生新的消息时，它会更新 State 中的 messages 字段。</p>
 <p>我们的图现在可以处理两个关键任务</p>
-<ol type="1">
-<li>每个 <code>节点</code> 都可以接收当前 <code>状态</code>
-作为输入，并输出状态的更新。</li>
-<li>对 <code>消息</code> 的更新将追加到现有列表而不是覆盖它，这得益于与
-<code>Annotated</code> 语法一起使用的预构建 <a href="https://github.langchain.ac.cn/langgraph/reference/graphs/?h=add+messages#add_messages"><code>add_messages</code></a>
-函数。</li>
+<ol>
+<li>每个 <code>节点</code> 都可以接收当前 <code>状态</code> 作为输入，并输出状态的更新。</li>
+<li>对 <code>消息</code> 的更新将追加到现有列表而不是覆盖它，这得益于与 <code>Annotated</code> 语法一起使用的预构建 <a href="https://github.langchain.ac.cn/langgraph/reference/graphs/?h=add+messages#add_messages"><code>add_messages</code></a> 函数。</li>
 </ol>
 <blockquote>
 <p>langgraph中每个消息对象通常包含以下关键属性：</p>
 <ul>
-<li>role : 一个字符串，标识消息的发送者（例如 ‘human’ , ‘ai’ , ‘system’
-）。</li>
-<li>content :
-消息的具体内容，通常是字符串，但也可以是更复杂的结构（例如，用于多模态输入）。</li>
+<li>role : 一个字符串，标识消息的发送者（例如 ‘human’ , ‘ai’ , ‘system’ ）。</li>
+<li>content : 消息的具体内容，通常是字符串，但也可以是更复杂的结构（例如，用于多模态输入）。</li>
 <li>id : 一个可选的唯一标识符。</li>
 </ul>
-<p>Annotated 的作用 : 通过使用 Annotated[list, add_messages]
-，你改变了这个默认行为。 add_messages 函数（由 langgraph
-提供或由你自定义）的逻辑是 追加
-而不是覆盖。所以，当一个新节点返回消息时， langgraph 会调用 add_messages
-函数，将新消息 追加 到现有 messages 列表的末尾。</p>
+<p>Annotated 的作用 : 通过使用 Annotated[list, add_messages] ，你改变了这个默认行为。 add_messages 函数（由 langgraph 提供或由你自定义）的逻辑是 追加 而不是覆盖。所以，当一个新节点返回消息时， langgraph 会调用 add_messages 函数，将新消息 追加 到现有 messages 列表的末尾。</p>
 </blockquote>
-<h4 id="定义一个聊天模型">定义一个聊天模型</h4>
-<p>两种方法：</p>
-<p>1.使用 <code>init_chat_model</code>(通用高层封装)
-这是一个通用的辅助函数，旨在提供一个统一的接口来初始化来自 不同提供商
-的聊天模型。</p>
-<p><a href="https://python.langchain.com/api_reference/langchain/chat_models/langchain.chat_models.base.init_chat_model.html">init_chat_model
-— 🦜🔗 LangChain 文档 — init_chat_model — 🦜🔗 LangChain
-documentation</a></p>
-<p>2.使用如ChatOpenAI (特定于提供商的类) 这是一个专门为 OpenAI API
-设计的类，提供了对 OpenAI 模型所有功能的完全访问。</p>
+<h4 id="定义一个聊天模型"><a href="#定义一个聊天模型" class="headerlink" title="定义一个聊天模型"></a>定义一个聊天模型</h4><p>两种方法：</p>
+<p>1.使用 <code>init_chat_model</code>(通用高层封装)<br>这是一个通用的辅助函数，旨在提供一个统一的接口来初始化来自 不同提供商 的聊天模型。</p>
+<p><a href="https://python.langchain.com/api_reference/langchain/chat_models/langchain.chat_models.base.init_chat_model.html">init_chat_model — 🦜🔗 LangChain 文档 —- init_chat_model — 🦜🔗 LangChain documentation</a></p>
+<p>2.使用如ChatOpenAI (特定于提供商的类)<br>这是一个专门为 OpenAI API 设计的类，提供了对 OpenAI 模型所有功能的完全访问。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">from langchain.chat_models import init_chat_model</span><br><span class="line"></span><br><span class="line">os.environ[&quot;OPENAI_API_KEY&quot;] = &quot;sk-&quot;</span><br><span class="line">#使用‘&#123;model_provider&#125;:&#123;model&#125;’格式在单个参数中指定模型和模型提供者，例如“openai:o1”</span><br><span class="line">llm = init_chat_model(&quot;openai:qwen-plus-2025-04-28&quot;,</span><br><span class="line">                      base_url=&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot;</span><br><span class="line">                      )</span><br></pre></td></tr></table></figure>
-<h4 id="添加一个节点">添加一个节点</h4>
-<p>现在我们可以将聊天模型集成到一个简单的节点中</p>
+<h4 id="添加一个节点"><a href="#添加一个节点" class="headerlink" title="添加一个节点"></a>添加一个节点</h4><p>现在我们可以将聊天模型集成到一个简单的节点中</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#定义节点chatbot</span><br><span class="line">def chatbot(state: State):</span><br><span class="line">    return &#123;&quot;messages&quot;: [llm.invoke(state[&quot;messages&quot;])]&#125;</span><br><span class="line"></span><br><span class="line">graph_builder.add_node(&quot;chatbot&quot;, chatbot)</span><br></pre></td></tr></table></figure>
-<p><code>chatbot</code> 节点函数如何将当前 <code>状态</code>
-作为输入，并返回一个包含更新的 <code>消息</code>
-列表的字典，键为“messages”。这是所有 LangGraph 节点函数的基本模式。</p>
-<p>我们 <code>状态</code> 中的 <code>add_messages</code> 函数会将 LLM
-的响应消息追加到状态中已有的消息之后。</p>
-<h4 id="添加一个-入口-点">添加一个 <code>入口</code> 点</h4>
-<p>添加一个 <code>入口</code>
-点，以告诉图每次运行时<strong>从何处开始工作</strong></p>
+<p> <code>chatbot</code> 节点函数如何将当前 <code>状态</code> 作为输入，并返回一个包含更新的 <code>消息</code> 列表的字典，键为“messages”。这是所有 LangGraph 节点函数的基本模式。</p>
+<p>我们 <code>状态</code> 中的 <code>add_messages</code> 函数会将 LLM 的响应消息追加到状态中已有的消息之后。</p>
+<h4 id="添加一个-入口-点"><a href="#添加一个-入口-点" class="headerlink" title="添加一个 入口 点"></a>添加一个 <code>入口</code> 点</h4><p>添加一个 <code>入口</code> 点，以告诉图每次运行时<strong>从何处开始工作</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">graph_builder.add_edge(START, &quot;chatbot&quot;)</span><br></pre></td></tr></table></figure>
-<h4 id="编译图">编译图</h4>
-<p>在运行图之前，我们需要对其进行编译。我们可以通过在图构建器上调用
-<code>compile()</code> 来完成。这将创建一个
-<code>CompiledGraph</code>，我们可以在我们的状态上调用它。</p>
+<h4 id="编译图"><a href="#编译图" class="headerlink" title="编译图"></a>编译图</h4><p>在运行图之前，我们需要对其进行编译。我们可以通过在图构建器上调用 <code>compile()</code> 来完成。这将创建一个 <code>CompiledGraph</code>，我们可以在我们的状态上调用它。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">graph = graph_builder.compile()</span><br></pre></td></tr></table></figure>
-<h4 id="可视化图">可视化图</h4>
-<p>您可以使用 <code>get_graph</code> 方法和其中一个“绘图”方法（例如
-<code>draw_ascii</code> 或 <code>draw_png</code>）来可视化图。这些
-<code>draw</code> 方法都需要额外的依赖项。</p>
+<h4 id="可视化图"><a href="#可视化图" class="headerlink" title="可视化图"></a>可视化图</h4><p>您可以使用 <code>get_graph</code> 方法和其中一个“绘图”方法（例如 <code>draw_ascii</code> 或 <code>draw_png</code>）来可视化图。这些 <code>draw</code> 方法都需要额外的依赖项。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">from IPython.display import Image, display</span><br><span class="line"></span><br><span class="line">try:</span><br><span class="line">    display(Image(graph.get_graph().draw_mermaid_png()))</span><br><span class="line">except Exception:</span><br><span class="line">    # This requires some extra dependencies and is optional</span><br><span class="line">    pass</span><br></pre></td></tr></table></figure>
-<h4 id="运行聊天机器人">运行聊天机器人</h4>
-<p>运行聊天机器人</p>
+<h4 id="运行聊天机器人"><a href="#运行聊天机器人" class="headerlink" title="运行聊天机器人"></a>运行聊天机器人</h4><p>运行聊天机器人</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">stream_graph_updates</span>(<span class="params">user_input: <span class="built_in">str</span></span>):</span><br><span class="line">    <span class="keyword">for</span> event <span class="keyword">in</span> graph.stream(&#123;<span class="string">&quot;messages&quot;</span>: [&#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: user_input&#125;]&#125;):</span><br><span class="line">        <span class="built_in">print</span>(event)</span><br><span class="line">        <span class="comment">#stream 返回的每个 event 通常是一个字典，键是图中节点的名称，值是该节点完成后的状态更新。</span></span><br><span class="line">        <span class="keyword">for</span> value <span class="keyword">in</span> event.values():</span><br><span class="line">            <span class="comment">#消息列表中的最后一条消息的文本内容</span></span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;Assistant:&quot;</span>, value[<span class="string">&quot;messages&quot;</span>][-<span class="number">1</span>].content)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        user_input = <span class="built_in">input</span>(<span class="string">&quot;User: &quot;</span>)</span><br><span class="line">        <span class="comment">#退出</span></span><br><span class="line">        <span class="keyword">if</span> user_input.lower() <span class="keyword">in</span> [<span class="string">&quot;quit&quot;</span>, <span class="string">&quot;exit&quot;</span>, <span class="string">&quot;q&quot;</span>]:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;Goodbye!&quot;</span>)</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        <span class="comment">#调用</span></span><br><span class="line">        stream_graph_updates(user_input)</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="comment"># fallback if input() is not available</span></span><br><span class="line">        user_input = <span class="string">&quot;What do you know about LangGraph?&quot;</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;User: &quot;</span> + user_input)</span><br><span class="line">        stream_graph_updates(user_input)</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>graph.stream() 是 LangGraph
-的核心功能之一。它会执行整个图（Graph），但不是一次性返回最终结果，而是像视频流一样，一步一步地返回中间过程的更新。这使得您可以实时看到模型生成内容的每一个部分。</p>
+<p>graph.stream() 是 LangGraph 的核心功能之一。它会执行整个图（Graph），但不是一次性返回最终结果，而是像视频流一样，一步一步地返回中间过程的更新。这使得您可以实时看到模型生成内容的每一个部分。</p>
 </blockquote>
-<h3 id="添加网页搜索工具">添加网页搜索工具</h3>
-<h4 id="获取tavily-api">获取Tavily api</h4>
-<p><a href="https://tavily.com/">Tavily 的搜索 API</a> 是一款专为 AI
-代理 (LLM) 构建的搜索引擎，能够快速提供实时、准确和基于事实的结果。</p>
+<h3 id="添加网页搜索工具"><a href="#添加网页搜索工具" class="headerlink" title="添加网页搜索工具"></a>添加网页搜索工具</h3><h4 id="获取Tavily-api"><a href="#获取Tavily-api" class="headerlink" title="获取Tavily api"></a>获取Tavily api</h4><p><a href="https://tavily.com/">Tavily 的搜索 API</a> 是一款专为 AI 代理 (LLM) 构建的搜索引擎，能够快速提供实时、准确和基于事实的结果。</p>
 <p>每月 1,000 次免费搜索</p>
-<p><a href="https://python.langchain.ac.cn/docs/integrations/tools/tavily_search/">Tavily
-Search | 🦜️🔗 LangChain 框架</a></p>
-<p>获取api<a href="https://app.tavily.com/home">Tavily AI — Tavily
-AI</a></p>
-<h4 id="添加工具">添加工具</h4>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">from langchain_tavily import TavilySearch</span><br><span class="line"></span><br><span class="line">tool = TavilySearch(</span><br><span class="line">    tavily_api_key=&quot;tvly-dev-&quot;,</span><br><span class="line">    max_results=2)</span><br><span class="line">tools = [tool]</span><br><span class="line">tool.invoke(&quot;李超是谁?&quot;)</span><br></pre></td></tr></table></figure>
-<h4 id="定义图">定义图</h4>
-<p>在LLM上添加<code>bind_tools</code>。这让LLM知道如果它想使用搜索引擎，应使用正确的JSON格式。</p>
+<p><a href="https://python.langchain.ac.cn/docs/integrations/tools/tavily_search/">Tavily Search | 🦜️🔗 LangChain 框架</a></p>
+<p>获取api<a href="https://app.tavily.com/home">Tavily AI —- Tavily AI</a></p>
+<h4 id="添加工具"><a href="#添加工具" class="headerlink" title="添加工具"></a>添加工具</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">from langchain_tavily import TavilySearch</span><br><span class="line"></span><br><span class="line">tool = TavilySearch(</span><br><span class="line">    tavily_api_key=&quot;tvly-dev-&quot;,</span><br><span class="line">    max_results=2)</span><br><span class="line">tools = [tool]</span><br><span class="line">tool.invoke(&quot;李超是谁?&quot;)</span><br></pre></td></tr></table></figure>
+<h4 id="定义图"><a href="#定义图" class="headerlink" title="定义图"></a>定义图</h4><p>在LLM上添加<code>bind_tools</code>。这让LLM知道如果它想使用搜索引擎，应使用正确的JSON格式。</p>
 <p>定义聊天模型llm（代码同上）</p>
 <p>将tools整合到<code>StateGraph</code>中</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> Annotated</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> typing_extensions <span class="keyword">import</span> TypedDict</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> langgraph.graph <span class="keyword">import</span> StateGraph, START, END</span><br><span class="line"><span class="keyword">from</span> langgraph.graph.message <span class="keyword">import</span> add_messages</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">State</span>(<span class="title class_ inherited__">TypedDict</span>):</span><br><span class="line">    messages: Annotated[<span class="built_in">list</span>, add_messages]</span><br><span class="line"></span><br><span class="line">graph_builder = StateGraph(State)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将一个或多个**工具（tools） 绑定到一个 大型语言模型（LLM）**上，从而创建一个新的、具备工具调用能力的 LLM 实例</span></span><br><span class="line">llm_with_tools = llm.bind_tools(tools)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">chatbot</span>(<span class="params">state: State</span>):</span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;messages&quot;</span>: [llm_with_tools.invoke(state[<span class="string">&quot;messages&quot;</span>])]&#125;</span><br><span class="line"></span><br><span class="line">graph_builder.add_node(<span class="string">&quot;chatbot&quot;</span>, chatbot)</span><br></pre></td></tr></table></figure>
-<h4 id="创建一个运行工具的函数">创建一个运行工具的函数</h4>
-<p>现在，创建一个函数来运行被调用的工具。通过将工具添加到一个名为<code>BasicToolNode</code>的新节点来完成，该节点检查状态中的最新消息，如果消息包含<code>tool_calls</code>，则调用工具。它依赖于LLM的<code>tool_calling</code>支持，该支持在Anthropic、OpenAI、Google
-Gemini以及许多其他LLM提供商中可用。</p>
+<h4 id="创建一个运行工具的函数"><a href="#创建一个运行工具的函数" class="headerlink" title="创建一个运行工具的函数"></a>创建一个运行工具的函数</h4><p>现在，创建一个函数来运行被调用的工具。通过将工具添加到一个名为<code>BasicToolNode</code>的新节点来完成，该节点检查状态中的最新消息，如果消息包含<code>tool_calls</code>，则调用工具。它依赖于LLM的<code>tool_calling</code>支持，该支持在Anthropic、OpenAI、Google Gemini以及许多其他LLM提供商中可用。</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 定义 __call__ 方法，让这个类的实例可以像函数一样被调用</span></span><br><span class="line"><span class="comment"># inputs 是 langgraph 传进来的当前状态，是一个字典</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">__call__</span>(<span class="params">self, inputs: <span class="built_in">dict</span></span>):</span><br><span class="line">    <span class="comment"># 1. 从状态中获取最新的消息</span></span><br><span class="line">    <span class="comment"># 使用了“海象操作符” :=，先从 inputs 中获取 &#x27;messages&#x27; 列表，如果不存在则返回空列表 []</span></span><br><span class="line">    <span class="comment"># 然后检查列表是否为空。如果不为空，则取出最后一条消息。</span></span><br><span class="line">    <span class="keyword">if</span> messages := inputs.get(<span class="string">&quot;messages&quot;</span>, []):</span><br><span class="line">        message = messages[-<span class="number">1</span>]  <span class="comment"># 通常，最后一条消息是 AI 发出的，其中包含工具调用请求</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="comment"># 如果没有消息，就报错，因为这个节点不知道该做什么</span></span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">&quot;No message found in input&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 2. 准备一个列表，用来存放所有工具的执行结果</span></span><br><span class="line">    outputs = []</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 3. 遍历 AI 消息中请求的所有工具调用</span></span><br><span class="line">    <span class="keyword">for</span> tool_call <span class="keyword">in</span> message.tool_calls:</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 4. 执行工具</span></span><br><span class="line">        <span class="comment"># a. tool_call[&quot;name&quot;] 获取工具名称 (例如 &#x27;tavily_search_results_json&#x27;)</span></span><br><span class="line">        <span class="comment"># b. self.tools_by_name[...] 从预存的工具字典中找到对应的工具对象</span></span><br><span class="line">        <span class="comment"># c. .invoke(tool_call[&quot;args&quot;]) 使用 LLM 提供的参数来调用该工具</span></span><br><span class="line">        tool_result = <span class="variable language_">self</span>.tools_by_name[tool_call[<span class="string">&quot;name&quot;</span>]].invoke(</span><br><span class="line">            tool_call[<span class="string">&quot;args&quot;</span>]</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 5. 将工具执行结果打包成 ToolMessage</span></span><br><span class="line">        <span class="comment"># 这是 langgraph/langchain 的标准格式，用于告诉 LLM 工具执行的结果是什么</span></span><br><span class="line">        outputs.append(</span><br><span class="line">            ToolMessage(</span><br><span class="line">                content=json.dumps(tool_result),  <span class="comment"># 工具结果必须是字符串，所以用 json.dumps 序列化</span></span><br><span class="line">                name=tool_call[<span class="string">&quot;name&quot;</span>],  <span class="comment"># 告诉 LLM 这是哪个工具的结果</span></span><br><span class="line">                tool_call_id=tool_call[<span class="string">&quot;id&quot;</span>],  <span class="comment"># 必须提供原始请求的 ID，以便 LLM 知道这个结果对应哪个请求</span></span><br><span class="line">            )</span><br><span class="line">        )</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 6. 返回结果，更新图的状态</span></span><br><span class="line">    <span class="comment"># 返回一个字典，其中 &#x27;messages&#x27; 键对应着包含所有 ToolMessage 的列表</span></span><br><span class="line">    <span class="comment"># langgraph 会将这个列表中的消息追加到主状态的 &#x27;messages&#x27; 列表中</span></span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;messages&quot;</span>: outputs&#125;</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p><strong>call</strong> 是 Python 中一个非常特殊的“魔术方法”（magic
-method）。它的作用是 让一个类的实例（对象）能够像函数一样被调用 。</p>
+<p><strong>call</strong> 是 Python 中一个非常特殊的“魔术方法”（magic method）。它的作用是 让一个类的实例（对象）能够像函数一样被调用 。</p>
 <p>这在 langgraph 中是一种常见且核心的设计模式。它的含义是：</p>
-<ol type="1">
-<li>节点即函数 ： BasicToolNode 的实例（比如 tool_node
-）本身就代表了图中的一个可执行节点。</li>
-<li>执行逻辑 ：当 langgraph 的状态机运行到这个 tool_node
-节点时，它会直接“调用”这个节点对象，并把当前的状态（ inputs
-字典）传递给它</li>
+<ol>
+<li>节点即函数 ： BasicToolNode 的实例（比如 tool_node ）本身就代表了图中的一个可执行节点。</li>
+<li>执行逻辑 ：当 langgraph 的状态机运行到这个 tool_node 节点时，它会直接“调用”这个节点对象，并把当前的状态（ inputs 字典）传递给它</li>
 </ol>
 </blockquote>
 <p>可以使用LangGraph预构建的<a href="https://github.langchain.ac.cn/langgraph/reference/agents/#langgraph.prebuilt.tool_node.ToolNode">ToolNode</a>。</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langgraph.prebuilt <span class="keyword">import</span> ToolNode</span><br><span class="line"></span><br><span class="line">tool_node = ToolNode(tools=[tool])</span><br><span class="line">graph_builder.add_node(<span class="string">&quot;tools&quot;</span>, tool_node)</span><br></pre></td></tr></table></figure>
-<h4 id="定义conditional_edges">定义<code>conditional_edges</code></h4>
-<p>添加了工具节点后，现在您可以定义<code>conditional_edges</code>。</p>
-<p><strong>边（Edges）</strong>将控制流从一个节点路由到下一个节点。<strong>条件边（Conditional
-edges）</strong>从单个节点开始，通常包含“if”语句，根据当前图状态路由到不同的节点。这些函数接收当前的图<code>state</code>并返回一个字符串或字符串列表，指示接下来要调用哪个（或哪些）节点。</p>
+<h4 id="定义conditional-edges"><a href="#定义conditional-edges" class="headerlink" title="定义conditional_edges"></a>定义<code>conditional_edges</code></h4><p>添加了工具节点后，现在您可以定义<code>conditional_edges</code>。</p>
+<p><strong>边（Edges）</strong>将控制流从一个节点路由到下一个节点。<strong>条件边（Conditional edges）</strong>从单个节点开始，通常包含“if”语句，根据当前图状态路由到不同的节点。这些函数接收当前的图<code>state</code>并返回一个字符串或字符串列表，指示接下来要调用哪个（或哪些）节点。</p>
 <p>接下来，定义一个名为<code>route_tools</code>的路由函数，它检查聊天机器人输出中的<code>tool_calls</code>。通过调用<code>add_conditional_edges</code>将此函数提供给图，这会告诉图，无论何时<code>chatbot</code>节点完成，都要检查此函数以确定下一步去哪里。</p>
 <p>如果存在工具调用，条件将路由到<code>tools</code>；如果不存在，则路由到<code>END</code>。由于条件可以返回<code>END</code>，因此这次您不需要明确设置<code>finish_point</code>。</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">route_tools</span>(<span class="params"></span></span><br><span class="line"><span class="params">     state: State,</span></span><br><span class="line"><span class="params"> </span>):</span><br><span class="line">     <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">     用于 conditional_edge 的路由函数：</span></span><br><span class="line"><span class="string">     - 如果最后一条消息包含工具调用，则路由到 ToolNode</span></span><br><span class="line"><span class="string">     - 否则路由到结束节点</span></span><br><span class="line"><span class="string">     &quot;&quot;&quot;</span></span><br><span class="line">     <span class="comment"># 处理 state 为列表的情况（可能是消息列表）</span></span><br><span class="line">     <span class="keyword">if</span> <span class="built_in">isinstance</span>(state, <span class="built_in">list</span>):</span><br><span class="line">         ai_message = state[-<span class="number">1</span>]  <span class="comment"># 获取最后一条消息</span></span><br><span class="line">     <span class="comment"># 处理 state 为字典的情况（包含 messages 字段）</span></span><br><span class="line">     <span class="keyword">elif</span> messages := state.get(<span class="string">&quot;messages&quot;</span>, []):</span><br><span class="line">         ai_message = messages[-<span class="number">1</span>]  <span class="comment"># 获取最后一条消息</span></span><br><span class="line">     <span class="keyword">else</span>:</span><br><span class="line">         <span class="keyword">raise</span> ValueError(<span class="string">f&quot;输入状态中没有找到消息: <span class="subst">&#123;state&#125;</span>&quot;</span>)</span><br><span class="line">     </span><br><span class="line">     <span class="comment"># 检查消息是否有工具调用</span></span><br><span class="line">     <span class="keyword">if</span> <span class="built_in">hasattr</span>(ai_message, <span class="string">&quot;tool_calls&quot;</span>) <span class="keyword">and</span> <span class="built_in">len</span>(ai_message.tool_calls) &gt; <span class="number">0</span>:</span><br><span class="line">         <span class="keyword">return</span> <span class="string">&quot;tools&quot;</span>  <span class="comment"># 有工具调用，返回 &quot;tools&quot; 路由到工具节点</span></span><br><span class="line">     <span class="keyword">return</span> END  <span class="comment"># 没有工具调用，返回 END 结束流程</span></span><br></pre></td></tr></table></figure>
 <p>可以使用预构建的<a href="https://github.langchain.ac.cn/langgraph/reference/prebuilt/#tools_condition">tools_condition</a>代替route_tools以使其更简洁。</p>
 <blockquote>
-<p><code>tools_condition</code> 函数在聊天机器人需要使用工具时返回
-“tools”，如果可以不使用响应则返回 “END”。</p>
+<p><code>tools_condition</code> 函数在聊天机器人需要使用工具时返回 “tools”，如果可以不使用响应则返回 “END”。</p>
 </blockquote>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langgraph.prebuilt <span class="keyword">import</span> tools_condition</span><br><span class="line">graph_builder.add_conditional_edges(</span><br><span class="line">    <span class="string">&quot;chatbot&quot;</span>,</span><br><span class="line">    tools_condition,</span><br><span class="line">    &#123;<span class="string">&quot;tools&quot;</span>: <span class="string">&quot;tools&quot;</span>, END: END&#125;,</span><br><span class="line">)</span><br><span class="line">graph_builder.add_edge(<span class="string">&quot;tools&quot;</span>, <span class="string">&quot;chatbot&quot;</span>)</span><br><span class="line">graph_builder.add_edge(START, <span class="string">&quot;chatbot&quot;</span>)</span><br><span class="line">graph = graph_builder.<span class="built_in">compile</span>()</span><br></pre></td></tr></table></figure>
-<h4 id="可视化图-1">可视化图</h4>
+<h4 id="可视化图-1"><a href="#可视化图-1" class="headerlink" title="可视化图"></a>可视化图</h4><p>如上</p>
+<h4 id="向机器人提问"><a href="#向机器人提问" class="headerlink" title="向机器人提问"></a>向机器人提问</h4><p>现在您可以向聊天机器人提出超出其训练数据范围的问题。</p>
 <p>如上</p>
-<h4 id="向机器人提问">向机器人提问</h4>
-<p>现在您可以向聊天机器人提出超出其训练数据范围的问题。</p>
-<p>如上</p>
-<h3 id="添加记忆功能">添加记忆功能</h3>
-<p>LangGraph
-通过<strong>持久性检查点</strong>解决了这个问题。如果您在编译图时提供一个<code>checkpointer</code>，并在调用图时提供一个<code>thread_id</code>，LangGraph
-会在每一步之后自动保存状态。当您使用相同的<code>thread_id</code>再次调用图时，图会加载其保存的状态，允许聊天机器人从上次中断的地方继续。</p>
+<h3 id="添加记忆功能"><a href="#添加记忆功能" class="headerlink" title="添加记忆功能"></a>添加记忆功能</h3><p>LangGraph 通过<strong>持久性检查点</strong>解决了这个问题。如果您在编译图时提供一个<code>checkpointer</code>，并在调用图时提供一个<code>thread_id</code>，LangGraph 会在每一步之后自动保存状态。当您使用相同的<code>thread_id</code>再次调用图时，图会加载其保存的状态，允许聊天机器人从上次中断的地方继续。</p>
 <p>我们稍后会看到，<strong>检查点</strong>比简单的聊天记忆功能<em>强大得多</em>——它允许您随时保存和恢复复杂状态，用于错误恢复、人工干预工作流、时间旅行交互等。但首先，让我们添加检查点以实现多轮对话。</p>
-<h4 id="创建-memorysaver-检查点">创建 <code>MemorySaver</code>
-检查点</h4>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> MemorySaver</span><br><span class="line"></span><br><span class="line">memory = MemorySaver()</span><br></pre></td></tr></table></figure>
-<p>这是一个内存中的检查点，方便本教程使用。然而，在生产应用程序中，您可能会将其更改为使用
-<code>SqliteSaver</code> 或 <code>PostgresSaver</code>
-并连接数据库。</p>
-<h4 id="编译图-1">编译图</h4>
-<p>使用提供的检查点编译图，图在遍历每个节点时将对 <code>State</code>
-进行检查点。</p>
+<h4 id="创建-MemorySaver-检查点"><a href="#创建-MemorySaver-检查点" class="headerlink" title="创建 MemorySaver 检查点"></a>创建 <code>MemorySaver</code> 检查点</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> MemorySaver</span><br><span class="line"></span><br><span class="line">memory = MemorySaver()</span><br></pre></td></tr></table></figure>
+<p>这是一个内存中的检查点，方便本教程使用。然而，在生产应用程序中，您可能会将其更改为使用 <code>SqliteSaver</code> 或 <code>PostgresSaver</code> 并连接数据库。</p>
+<h4 id="编译图-1"><a href="#编译图-1" class="headerlink" title="编译图"></a>编译图</h4><p>使用提供的检查点编译图，图在遍历每个节点时将对 <code>State</code> 进行检查点。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">graph = graph_builder.compile(checkpointer=memory)</span><br></pre></td></tr></table></figure>
-<h4 id="与您的聊天机器人互动">与您的聊天机器人互动</h4>
-<ol type="1">
+<h4 id="与您的聊天机器人互动"><a href="#与您的聊天机器人互动" class="headerlink" title="与您的聊天机器人互动"></a>与您的聊天机器人互动</h4><ol>
 <li><p>选择一个线程作为此对话的键。</p>
 <p>thread_id决定对话窗口</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">config = &#123;&quot;configurable&quot;: &#123;&quot;thread_id&quot;: &quot;1&quot;&#125;&#125;</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">config = &#123;&quot;configurable&quot;: &#123;&quot;thread_id&quot;: &quot;1&quot;&#125;&#125;</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>调用您的聊天机器人</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">user_input = &quot;我是谁&quot;</span><br><span class="line"></span><br><span class="line"># The config is the **second positional argument** to stream() or invoke()!</span><br><span class="line">events = graph.stream(</span><br><span class="line">    &#123;&quot;messages&quot;: [&#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_input&#125;]&#125;,</span><br><span class="line">    config,</span><br><span class="line">    stream_mode=&quot;values&quot;,</span><br><span class="line">)</span><br><span class="line">for event in events:</span><br><span class="line">    event[&quot;messages&quot;][-1].pretty_print()</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">user_input = &quot;我是谁&quot;</span><br><span class="line"></span><br><span class="line"># The config is the **second positional argument** to stream() or invoke()!</span><br><span class="line">events = graph.stream(</span><br><span class="line">    &#123;&quot;messages&quot;: [&#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_input&#125;]&#125;,</span><br><span class="line">    config,</span><br><span class="line">    stream_mode=&quot;values&quot;,</span><br><span class="line">)</span><br><span class="line">for event in events:</span><br><span class="line">    event[&quot;messages&quot;][-1].pretty_print()</span><br></pre></td></tr></table></figure>
+</li>
 </ol>
-<h3 id="添加人工干预">添加人工干预</h3>
-<p>代理可能不可靠，并且可能需要人工输入才能成功完成任务。同样，对于某些操作，您可能需要在运行前要求人工批准，以确保一切按预期运行。</p>
-<p>LangGraph 的<a href="https://github.langchain.ac.cn/langgraph/concepts/persistence/">持久化</a>层支持<strong>人工干预</strong>工作流，允许根据用户反馈暂停和恢复执行。此功能的主要接口是<a href="https://github.langchain.ac.cn/langgraph/how-tos/human_in_the_loop/add-human-in-the-loop/"><code>interrupt</code></a>函数。在节点内调用<code>interrupt</code>将暂停执行。通过传入<a href="https://github.langchain.ac.cn/langgraph/concepts/low_level/#command">Command</a>，可以恢复执行并接收来自人工的新输入。<code>interrupt</code>在功能上类似于
-Python 的内置<code>input()</code>，<a href="https://github.langchain.ac.cn/langgraph/how-tos/human_in_the_loop/add-human-in-the-loop/">但有一些注意事项</a>。</p>
-<h4 id="添加human_assistance工具">添加<code>human_assistance</code>工具</h4>
-<p>将<code>human_assistance</code>工具添加到聊天机器人。此工具使用<code>interrupt</code>从人工接收信息。</p>
+<h3 id="添加人工干预"><a href="#添加人工干预" class="headerlink" title="添加人工干预"></a>添加人工干预</h3><p>代理可能不可靠，并且可能需要人工输入才能成功完成任务。同样，对于某些操作，您可能需要在运行前要求人工批准，以确保一切按预期运行。</p>
+<p>LangGraph 的<a href="https://github.langchain.ac.cn/langgraph/concepts/persistence/">持久化</a>层支持<strong>人工干预</strong>工作流，允许根据用户反馈暂停和恢复执行。此功能的主要接口是<a href="https://github.langchain.ac.cn/langgraph/how-tos/human_in_the_loop/add-human-in-the-loop/"><code>interrupt</code></a>函数。在节点内调用<code>interrupt</code>将暂停执行。通过传入<a href="https://github.langchain.ac.cn/langgraph/concepts/low_level/#command">Command</a>，可以恢复执行并接收来自人工的新输入。<code>interrupt</code>在功能上类似于 Python 的内置<code>input()</code>，<a href="https://github.langchain.ac.cn/langgraph/how-tos/human_in_the_loop/add-human-in-the-loop/">但有一些注意事项</a>。</p>
+<h4 id="添加human-assistance工具"><a href="#添加human-assistance工具" class="headerlink" title="添加human_assistance工具"></a>添加<code>human_assistance</code>工具</h4><p>将<code>human_assistance</code>工具添加到聊天机器人。此工具使用<code>interrupt</code>从人工接收信息。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 添加人工干预功能</span><br><span class="line"># 导入LangGraph的中断机制和命令类型</span><br><span class="line">from langgraph.types import Command, interrupt</span><br><span class="line"># 导入LangChain的工具装饰器</span><br><span class="line">from langchain_core.tools import tool</span><br><span class="line"></span><br><span class="line"># 使用@tool装饰器将函数标记为可被LLM调用的工具</span><br><span class="line">@tool</span><br><span class="line">def human_assistance(query: str) -&gt; str:</span><br><span class="line">    &quot;&quot;&quot;请求人工协助的工具函数。</span><br><span class="line">    当LLM遇到需要人工判断或帮助的情况时，会调用此工具。</span><br><span class="line">    该函数会暂停图的执行，等待人工操作员提供响应。</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    # interrupt()函数会暂停图的执行，等待人工输入</span><br><span class="line">    # 传入的字典包含查询信息，人工操作员会看到这个查询</span><br><span class="line">    human_response = interrupt(&#123;&quot;query&quot;: query&#125;)</span><br><span class="line">    </span><br><span class="line">    # 从人工响应中提取数据并返回给LLM</span><br><span class="line">    # human_response是一个字典，&quot;data&quot;字段包含人工提供的实际响应</span><br><span class="line">    return human_response[&quot;data&quot;]</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>简单来说，
-<strong>调用哪个工具，以及何时调用，完全是由大语言模型（LLM）根据你给它的指令（Prompt）来决定的。</strong></p>
+<p>简单来说， <strong>调用哪个工具，以及何时调用，完全是由大语言模型（LLM）根据你给它的指令（Prompt）来决定的。</strong></p>
 </blockquote>
-<h4 id="定义chatbot">定义chatbot</h4>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">def chatbot(state: State):</span><br><span class="line">    # 调用绑定了工具的LLM（llm_with_tools），传入当前的消息历史</span><br><span class="line">    # LLM会根据最新的消息决定是生成文本回复，还是调用一个或多个工具</span><br><span class="line">    message = llm_with_tools.invoke(state[&quot;messages&quot;])</span><br><span class="line">    </span><br><span class="line">    # --- 关键断言逻辑 ---</span><br><span class="line">    assert len(message.tool_calls) &lt;= 1</span><br><span class="line">    </span><br><span class="line">    # 将LLM生成的新消息（可能是文本回复，也可能是工具调用请求）返回</span><br><span class="line">    # 这个返回值会以字典的形式更新到状态（State）对象中</span><br><span class="line">    return &#123;&quot;messages&quot;: [message]&#125;</span><br><span class="line"></span><br><span class="line"># 将 chatbot 函数作为名为 &quot;chatbot&quot; 的节点添加到图构建器中</span><br><span class="line">graph_builder.add_node(&quot;chatbot&quot;, chatbot)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tool = TavilySearch(max_results=2)</span><br><span class="line">tools = [tool, human_assistance]</span><br><span class="line">llm_with_tools = llm.bind_tools(tools)</span><br></pre></td></tr></table></figure>
+<h4 id="定义chatbot"><a href="#定义chatbot" class="headerlink" title="定义chatbot"></a>定义chatbot</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">def chatbot(state: State):</span><br><span class="line">    # 调用绑定了工具的LLM（llm_with_tools），传入当前的消息历史</span><br><span class="line">    # LLM会根据最新的消息决定是生成文本回复，还是调用一个或多个工具</span><br><span class="line">    message = llm_with_tools.invoke(state[&quot;messages&quot;])</span><br><span class="line">    </span><br><span class="line">    # --- 关键断言逻辑 ---</span><br><span class="line">    assert len(message.tool_calls) &lt;= 1</span><br><span class="line">    </span><br><span class="line">    # 将LLM生成的新消息（可能是文本回复，也可能是工具调用请求）返回</span><br><span class="line">    # 这个返回值会以字典的形式更新到状态（State）对象中</span><br><span class="line">    return &#123;&quot;messages&quot;: [message]&#125;</span><br><span class="line"></span><br><span class="line"># 将 chatbot 函数作为名为 &quot;chatbot&quot; 的节点添加到图构建器中</span><br><span class="line">graph_builder.add_node(&quot;chatbot&quot;, chatbot)</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>中断安全性的断言 ( assert ) : assert len(message.tool_calls) &lt;= 1
-是在实现人工干预时一个非常重要的 安全措施 。</p>
+<p>中断安全性的断言 ( assert ) : assert len(message.tool_calls) &lt;= 1 是在实现人工干预时一个非常重要的 安全措施 。</p>
 <ul>
-<li>问题 : 现代 LLM
-支持并行工具调用（一次请求执行多个工具）。但如果其中一个工具是
-human_assistance
-并触发了中断，整个图会暂停。当人工操作完成后，图会从中断点恢复。此时，如果不对工具调用数量做限制，LangGraph
-可能会重新尝试执行所有在中断前请求的工具，导致已经执行过的工具被再次调用。</li>
-<li>解决方案 : 这个断言强制要求 LLM
-在每一步最多只能请求调用一个工具。这样就保证了当中断发生并恢复后，不会有重复执行工具的风险，确保了流程的稳定性和可预测性。</li>
+<li>问题 : 现代 LLM 支持并行工具调用（一次请求执行多个工具）。但如果其中一个工具是 human_assistance 并触发了中断，整个图会暂停。当人工操作完成后，图会从中断点恢复。此时，如果不对工具调用数量做限制，LangGraph 可能会重新尝试执行所有在中断前请求的工具，导致已经执行过的工具被再次调用。</li>
+<li>解决方案 : 这个断言强制要求 LLM 在每一步最多只能请求调用一个工具。这样就保证了当中断发生并恢复后，不会有重复执行工具的风险，确保了流程的稳定性和可预测性。</li>
 </ul>
 </blockquote>
-<h4 id="编译图-2">编译图</h4>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">memory = MemorySaver()</span><br><span class="line"></span><br><span class="line">graph = graph_builder.compile(checkpointer=memory)</span><br></pre></td></tr></table></figure>
-<h4 id="调用聊天机器人并中断">调用聊天机器人并中断</h4>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">user_input = &quot;我需要一些关于构建 AI 代理的专家指导。你能帮我请求协助吗？&quot;</span><br><span class="line">config = &#123;&quot;configurable&quot;: &#123;&quot;thread_id&quot;: &quot;1&quot;&#125;&#125;</span><br><span class="line"></span><br><span class="line">events = graph.stream(</span><br><span class="line">    &#123;&quot;messages&quot;: [&#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_input&#125;]&#125;,</span><br><span class="line">    config,</span><br><span class="line">    #它的作用是指定在进行流式处理时，你希望接收到的数据是以 完整的、累积的值 的形式返回，而不是以增量的、片段的形式返回。</span><br><span class="line">    stream_mode=&quot;values&quot;,</span><br><span class="line">)</span><br><span class="line">for event in events:</span><br><span class="line">    if &quot;messages&quot; in event:</span><br><span class="line">        event[&quot;messages&quot;][-1].pretty_print()</span><br></pre></td></tr></table></figure>
+<h4 id="编译图-2"><a href="#编译图-2" class="headerlink" title="编译图"></a>编译图</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">memory = MemorySaver()</span><br><span class="line"></span><br><span class="line">graph = graph_builder.compile(checkpointer=memory)</span><br></pre></td></tr></table></figure>
+<h4 id="调用聊天机器人并中断"><a href="#调用聊天机器人并中断" class="headerlink" title="调用聊天机器人并中断"></a>调用聊天机器人并中断</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">user_input = &quot;我需要一些关于构建 AI 代理的专家指导。你能帮我请求协助吗？&quot;</span><br><span class="line">config = &#123;&quot;configurable&quot;: &#123;&quot;thread_id&quot;: &quot;1&quot;&#125;&#125;</span><br><span class="line"></span><br><span class="line">events = graph.stream(</span><br><span class="line">    &#123;&quot;messages&quot;: [&#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_input&#125;]&#125;,</span><br><span class="line">    config,</span><br><span class="line">    #它的作用是指定在进行流式处理时，你希望接收到的数据是以 完整的、累积的值 的形式返回，而不是以增量的、片段的形式返回。</span><br><span class="line">    stream_mode=&quot;values&quot;,</span><br><span class="line">)</span><br><span class="line">for event in events:</span><br><span class="line">    if &quot;messages&quot; in event:</span><br><span class="line">        event[&quot;messages&quot;][-1].pretty_print()</span><br></pre></td></tr></table></figure>
 <p>聊天机器人生成了一个工具调用，但随后执行被中断。如果您检查图状态，您会看到它停止在工具节点</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">snapshot = graph.get_state(config)</span><br><span class="line">snapshot.next</span><br></pre></td></tr></table></figure>
-<h4 id="恢复执行">恢复执行</h4>
-<p>要恢复执行，请传入一个包含工具所需数据的<a href="https://github.langchain.ac.cn/langgraph/concepts/low_level/#command"><code>Command</code></a>对象。此数据的格式可以根据需要进行自定义。对于本示例，请使用一个带有键<code>"data"</code>的字典（由human_assistance决定）</p>
+<h4 id="恢复执行"><a href="#恢复执行" class="headerlink" title="恢复执行"></a>恢复执行</h4><p>要恢复执行，请传入一个包含工具所需数据的<a href="https://github.langchain.ac.cn/langgraph/concepts/low_level/#command"><code>Command</code></a>对象。此数据的格式可以根据需要进行自定义。对于本示例，请使用一个带有键<code>&quot;data&quot;</code>的字典（由human_assistance决定）</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">human_response = (</span><br><span class="line">&quot;我们专家在此为您提供帮助！我们建议您查看 LangGraph 来构建您的代理。它比简单的自主代理更可靠、更具可扩展性。&quot;</span><br><span class="line">)   </span><br><span class="line">#从暂停状态恢复执行</span><br><span class="line">human_command = Command(resume=&#123;&quot;data&quot;: human_response&#125;)</span><br><span class="line"></span><br><span class="line">events = graph.stream(human_command, config, stream_mode=&quot;values&quot;)</span><br><span class="line">for event in events:</span><br><span class="line">    if &quot;messages&quot; in event:</span><br><span class="line">        event[&quot;messages&quot;][-1].pretty_print()</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>1.工具的定义 ( human_assistance function):</p>
 <ul>
 <li>当 LLM 调用 human_assistance 工具时，这个函数被执行。</li>
 <li>函数内部， interrupt() 被调用，导致图暂停，并等待人工输入。</li>
-<li>在图恢复后， interrupt() 函数会返回一个值，这个值就是您通过
-Command(resume=…) 注入的内容，也就是 {“data”: human_response} 。</li>
-<li>因此， human_assistance 函数中的 human_response 变量实际上就等于
-{“data”: human_response} 。</li>
-<li>最后， return human_response[“data”] 从这个字典中提取出 “data”
-键对应的值 ，并将其作为 human_assistance 工具的最终返回结果。</li>
+<li>在图恢复后， interrupt() 函数会返回一个值，这个值就是您通过 Command(resume=…) 注入的内容，也就是 {“data”: human_response} 。</li>
+<li>因此， human_assistance 函数中的 human_response 变量实际上就等于 {“data”: human_response} 。</li>
+<li>最后， return human_response[“data”] 从这个字典中提取出 “data” 键对应的值 ，并将其作为 human_assistance 工具的最终返回结果。</li>
 </ul>
 <p>2.恢复指令 ( Command(resume=…) ):</p>
 <ul>
-<li>当您构建 Command(resume={“data”: human_response})
-时，您正在创建一个符合 human_assistance 函数期望的结构。</li>
+<li>当您构建 Command(resume={“data”: human_response}) 时，您正在创建一个符合 human_assistance 函数期望的结构。</li>
 <li>您将人工回复包装在一个字典里，并使用 “data” 作为键。</li>
-<li>这个结构被传递回 interrupt() ，然后被 human_assistance
-函数接收和解析。</li>
+<li>这个结构被传递回 interrupt() ，然后被 human_assistance 函数接收和解析。</li>
 </ul>
-<p>因为 human_assistance 函数的 return 语句期望从返回的字典中访问 “data”
-键，所以我们在恢复执行时必须提供一个具有相同结构的字典。这是为了确保数据能够正确地在中断和恢复的过程中传递。</p>
+<p>因为 human_assistance 函数的 return 语句期望从返回的字典中访问 “data” 键，所以我们在恢复执行时必须提供一个具有相同结构的字典。这是为了确保数据能够正确地在中断和恢复的过程中传递。</p>
 </blockquote>
-<h3 id="自定义状态">自定义状态</h3>
-<p>在本教程中，您将向状态添加额外字段，以定义复杂行为，而无需依赖消息列表。聊天机器人将使用其搜索工具查找特定信息，并将其转发给人工进行审查。</p>
-<h4 id="向状态添加键">向状态添加键</h4>
-<p>通过向状态添加 <code>name</code> 和 <code>birthday</code>
-键，更新聊天机器人以研究实体的生日</p>
+<p>在 LangGraph 中，<code>Command</code> 是一个用于<strong>控制图执行流程、更新状态、实现人机交互</strong>的核心类。它支持以下四个参数：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">参数名</th>
+<th style="text-align:left">类型</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>update</code></td>
+<td style="text-align:left"><code>dict</code></td>
+<td style="text-align:left">用于更新图的状态（state）。例如：<code>Command(update=&#123;&quot;foo&quot;: &quot;bar&quot;&#125;)</code>。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>resume</code></td>
+<td style="text-align:left"><code>Any</code></td>
+<td style="text-align:left">与 <code>interrupt()</code> 配合使用，用于恢复被中断的图执行，并传递用户输入。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>goto</code></td>
+<td style="text-align:left"><code>str</code> 或 <code>Send</code> 或 `List[str</td>
+<td style="text-align:left">Send]`</td>
+<td>控制下一步要执行的节点，支持跳转到指定节点、多个节点序列，或使用 <code>Send</code> 对象。</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>graph</code></td>
+<td style="text-align:left"><code>str</code></td>
+<td style="text-align:left">可选，指定命令作用的图。默认是当前图，也可以设为 <code>Command.PARENT</code> 表示父图。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="自定义状态"><a href="#自定义状态" class="headerlink" title="自定义状态"></a>自定义状态</h3><p>在本教程中，您将向状态添加额外字段，以定义复杂行为，而无需依赖消息列表。聊天机器人将使用其搜索工具查找特定信息，并将其转发给人工进行审查。</p>
+<h4 id="向状态添加键"><a href="#向状态添加键" class="headerlink" title="向状态添加键"></a>向状态添加键</h4><p>通过向状态添加 <code>name</code> 和 <code>birthday</code> 键，更新聊天机器人以研究实体的生日</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">class State(TypedDict):</span><br><span class="line">    messages: Annotated[list, add_messages]</span><br><span class="line">    name: str</span><br><span class="line">    birthday: str</span><br></pre></td></tr></table></figure>
 <p>将此信息添加到状态中，可以使其轻松被其他图节点（例如存储或处理信息的下游节点）以及图的持久层访问。</p>
-<h4 id="在工具内部更新状态">在工具内部更新状态</h4>
-<p>现在，在 <code>human_assistance</code>
-工具内部填充状态键。这允许人工在信息存储到状态之前对其进行审查。使用 <a href="https://github.langchain.ac.cn/langgraph/concepts/low_level/#using-inside-tools"><code>Command</code></a>
-从<strong>工具内部</strong>发出状态更新。</p>
+<h4 id="在工具内部更新状态"><a href="#在工具内部更新状态" class="headerlink" title="在工具内部更新状态"></a>在工具内部更新状态</h4><p>现在，在 <code>human_assistance</code> 工具内部填充状态键。这允许人工在信息存储到状态之前对其进行审查。使用 <a href="https://github.langchain.ac.cn/langgraph/concepts/low_level/#using-inside-tools"><code>Command</code></a> 从<strong>工具内部</strong>发出状态更新。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 从 langchain_core.messages 导入 ToolMessage，用于创建工具调用的响应消息</span><br><span class="line">from langchain_core.messages import ToolMessage </span><br><span class="line"># 从 langchain_core.tools 导入 InjectedToolCallId（用于自动注入工具调用ID）和 tool（工具装饰器）</span><br><span class="line">from langchain_core.tools import InjectedToolCallId, tool </span><br><span class="line"></span><br><span class="line"># 从 langgraph.types 导入 Command（用于向图发送指令）和 interrupt（用于中断图的执行）</span><br><span class="line">from langgraph.types import Command, interrupt </span><br><span class="line">from typing import Annotated</span><br><span class="line"># @tool 装饰器将这个函数声明为一个可供 LLM 调用的工具</span><br><span class="line">@tool </span><br><span class="line">def human_assistance(</span><br><span class="line">    name: str, </span><br><span class="line">    birthday: str, </span><br><span class="line">    # tool_call_id 这个参数非常特殊。Annotated[...] 和 InjectedToolCallId 告诉 LangGraph：</span><br><span class="line">    # 1. 这个参数不应暴露给 LLM，LLM 在调用此工具时不需要提供它。</span><br><span class="line">    # 2. LangGraph 在执行时，会自动将触发此工具的那个工具调用的 ID 注入到这个参数中。</span><br><span class="line">    # 这个 ID 对于创建与原始请求相关联的 ToolMessage 至关重要。</span><br><span class="line">    tool_call_id: Annotated[str, InjectedToolCallId]</span><br><span class="line">) -&gt; str: </span><br><span class="line">    &quot;&quot;&quot;当需要人工确认或更正信息时，请求人类协助。&quot;&quot;&quot; </span><br><span class="line">    # 调用 interrupt() 来暂停图的执行，并向人类审核者呈现一个包含问题和待确认数据的字典。</span><br><span class="line">    # 图会在此处暂停，直到人类通过 resume 指令提供了响应。</span><br><span class="line">    human_response = interrupt( </span><br><span class="line">        &#123; </span><br><span class="line">            &quot;question&quot;: &quot;Is this correct?&quot;, </span><br><span class="line">            &quot;name&quot;: name, </span><br><span class="line">            &quot;birthday&quot;: birthday, </span><br><span class="line">        &#125;,</span><br><span class="line">    ) </span><br><span class="line">    # 检查人类的响应。如果响应中 &#x27;correct&#x27; 键的值是 &#x27;yes&#x27; 或 &#x27;y&#x27; 开头，</span><br><span class="line">    # 则认为信息是正确的。</span><br><span class="line">    if human_response.get(&quot;correct&quot;, &quot;&quot;).lower().startswith(&quot;y&quot;): </span><br><span class="line">        # 如果信息正确，直接使用从 LLM 获取的原始信息。</span><br><span class="line">        verified_name = name </span><br><span class="line">        verified_birthday = birthday </span><br><span class="line">        response = &quot;Correct&quot; </span><br><span class="line">    # 否则，认为人类审核者提供了更正后的信息。</span><br><span class="line">    else: </span><br><span class="line">        # 从人类的响应中获取更正后的姓名和生日。</span><br><span class="line">        # 如果人类没有提供新的值，则使用 .get() 的默认值，即原始值。</span><br><span class="line">        verified_name = human_response.get(&quot;name&quot;, name) </span><br><span class="line">        verified_birthday = human_response.get(&quot;birthday&quot;, birthday) </span><br><span class="line">        response = f&quot;Made a correction: &#123;human_response&#125;&quot; </span><br><span class="line"></span><br><span class="line">    # 在工具内部直接构造一个用于更新图状态的字典。</span><br><span class="line">    state_update = &#123; </span><br><span class="line">        &quot;name&quot;: verified_name, # 更新状态中的 &#x27;name&#x27; 字段</span><br><span class="line">        &quot;birthday&quot;: verified_birthday, # 更新状态中的 &#x27;birthday&#x27; 字段</span><br><span class="line">        # 创建一个 ToolMessage，将其添加到状态的 &#x27;messages&#x27; 列表中。</span><br><span class="line">        # 这个消息将作为此工具调用的正式“答复”出现在对话历史中。</span><br><span class="line">        # tool_call_id 是必需的，用于将此答复与 LLM 的原始工具调用请求关联起来。</span><br><span class="line">        &quot;messages&quot;: [ToolMessage(response, tool_call_id=tool_call_id)], </span><br><span class="line">    &#125; </span><br><span class="line">    # 这个工具不返回一个简单的字符串或数字，而是返回一个 Command 对象。</span><br><span class="line">    # Command(update=...) 是一个明确的指令，告诉 LangGraph 执行器：</span><br><span class="line">    # “请不要将我的返回值当作普通工具输出，而是用 state_update 字典里的内容来直接更新当前的图状态。”</span><br><span class="line">    return Command(update=state_update) </span><br></pre></td></tr></table></figure>
 <p>图的其余部分保持不变。</p>
-<h4 id="提示聊天机器人调用人工审查">提示聊天机器人调用人工审查</h4>
-<p>提示聊天机器人查找 LangGraph
-库的“生日”，并在其获取所需信息后，指示聊天机器人使用
-<code>human_assistance</code> 工具。通过在工具参数中设置
-<code>name</code> 和
-<code>birthday</code>，您将强制聊天机器人为这些字段生成提议。</p>
+<h4 id="提示聊天机器人调用人工审查"><a href="#提示聊天机器人调用人工审查" class="headerlink" title="提示聊天机器人调用人工审查"></a>提示聊天机器人调用人工审查</h4><p>提示聊天机器人查找 LangGraph 库的“生日”，并在其获取所需信息后，指示聊天机器人使用 <code>human_assistance</code> 工具。通过在工具参数中设置 <code>name</code> 和 <code>birthday</code>，您将强制聊天机器人为这些字段生成提议。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">user_input = (</span><br><span class="line">    &quot;你能查一下 LangGraph 是什么时候发布的吗？ &quot;</span><br><span class="line">    &quot;当你有了答案后，使用 human_assistance 工具进行审查。&quot;</span><br><span class="line">)</span><br><span class="line">config = &#123;&quot;configurable&quot;: &#123;&quot;thread_id&quot;: &quot;1&quot;&#125;&#125;</span><br><span class="line"></span><br><span class="line">events = graph.stream(</span><br><span class="line">    &#123;&quot;messages&quot;: [&#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_input&#125;]&#125;,</span><br><span class="line">    config,</span><br><span class="line">    stream_mode=&quot;values&quot;,</span><br><span class="line">)</span><br><span class="line">for event in events:</span><br><span class="line">    if &quot;messages&quot; in event:</span><br><span class="line">        event[&quot;messages&quot;][-1].pretty_print()</span><br></pre></td></tr></table></figure>
-<p>我们再次在 <code>human_assistance</code> 工具中触发了
-<code>interrupt</code>。</p>
-<h4 id="添加人工协助">添加人工协助</h4>
-<p>聊天机器人未能识别正确的日期，因此为其提供信息</p>
+<p>我们再次在 <code>human_assistance</code> 工具中触发了 <code>interrupt</code>。</p>
+<h4 id="添加人工协助"><a href="#添加人工协助" class="headerlink" title="添加人工协助"></a>添加人工协助</h4><p>聊天机器人未能识别正确的日期，因此为其提供信息</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">human_command = Command(</span><br><span class="line">    resume=&#123;</span><br><span class="line">        &quot;name&quot;: &quot;LangGraph&quot;,</span><br><span class="line">        &quot;birthday&quot;: &quot;Jan 17, 2024&quot;,</span><br><span class="line">    &#125;,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">events = graph.stream(human_command, config, stream_mode=&quot;values&quot;)</span><br><span class="line">for event in events:</span><br><span class="line">    if &quot;messages&quot; in event:</span><br><span class="line">        event[&quot;messages&quot;][-1].pretty_print()</span><br></pre></td></tr></table></figure>
 <p>请注意，这些字段现在已反映在状态中</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">snapshot = graph.get_state(config)</span><br><span class="line"></span><br><span class="line">&#123;k: v for k, v in snapshot.values.items() if k in (&quot;name&quot;, &quot;birthday&quot;)&#125;</span><br></pre></td></tr></table></figure>
 <p>这使得下游节点（例如，进一步处理或存储信息的节点）可以轻松访问它们。</p>
-<h3 id="时间功能从之前的某个状态开始">时间功能（从之前的某个状态开始）</h3>
-<p>在典型的聊天机器人工作流程中，用户与机器人进行一次或多次交互以完成任务。<a href="https://github.langchain.ac.cn/langgraph/tutorials/get-started/3-add-memory/">记忆</a>和<a href="https://github.langchain.ac.cn/langgraph/tutorials/get-started/4-human-in-the-loop/">人工干预</a>功能可以为图状态启用检查点并控制未来的响应。</p>
+<h3 id="时间功能（从之前的某个状态开始）"><a href="#时间功能（从之前的某个状态开始）" class="headerlink" title="时间功能（从之前的某个状态开始）"></a>时间功能（从之前的某个状态开始）</h3><p>在典型的聊天机器人工作流程中，用户与机器人进行一次或多次交互以完成任务。<a href="https://github.langchain.ac.cn/langgraph/tutorials/get-started/3-add-memory/">记忆</a>和<a href="https://github.langchain.ac.cn/langgraph/tutorials/get-started/4-human-in-the-loop/">人工干预</a>功能可以为图状态启用检查点并控制未来的响应。</p>
 <p>如果您希望用户能够从之前的响应开始并探索不同的结果，该怎么办？或者，如果您希望用户能够回溯聊天机器人的工作以纠正错误或尝试不同的策略，这在自主软件工程师等应用程序中很常见，那又该怎么办？</p>
-<p>您可以使用 LangGraph
-内置的<strong>时光旅行</strong>功能创建这些类型的体验。</p>
-<h4 id="回溯您的图">回溯您的图</h4>
-<p>通过使用图的<code>get_state_history</code>方法获取检查点来回溯您的图。然后，您可以从之前的这个时间点恢复执行。</p>
+<p>您可以使用 LangGraph 内置的<strong>时光旅行</strong>功能创建这些类型的体验。</p>
+<h4 id="回溯您的图"><a href="#回溯您的图" class="headerlink" title="回溯您的图"></a>回溯您的图</h4><p>通过使用图的<code>get_state_history</code>方法获取检查点来回溯您的图。然后，您可以从之前的这个时间点恢复执行。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 初始化一个变量 to_replay 为 None，它将用于存储我们想要“时间旅行”回去的特定状态。</span><br><span class="line"># to_replay 将在循环中被赋值为我们感兴趣的那个历史状态快照。</span><br><span class="line">to_replay = None</span><br><span class="line"></span><br><span class="line"># 遍历 `graph` 在给定 `config` 下的所有历史状态。</span><br><span class="line"># `graph.get_state_history(config)` 会返回一个迭代器，其中包含了从开始到当前的所有状态快照。</span><br><span class="line">for state in graph.get_state_history(config):</span><br><span class="line">    # 打印当前状态快照中的一些信息，以便我们观察和选择。</span><br><span class="line">    # `len(state.values[&quot;messages&quot;])` 显示了到该状态为止，对话历史中的消息总数。</span><br><span class="line">    # `state.next` 显示了在该状态之后，图将要执行的下一个节点或步骤的名称。</span><br><span class="line">    print(&quot;Num Messages: &quot;, len(state.values[&quot;messages&quot;]), &quot;Next: &quot;, state.next)</span><br><span class="line">    </span><br><span class="line">    # 打印一条分隔线，使输出更易读。</span><br><span class="line">    print(&quot;-&quot; * 80)</span><br><span class="line">    </span><br><span class="line">    # 这里是选择“时间旅行”目标点的关键逻辑。</span><br><span class="line">    # 我们设定一个条件：当对话历史中的消息数量正好等于4时，我们就找到了想要回到的那个点。</span><br><span class="line">    # 这是一个为了演示而设定的任意条件，在实际应用中，您可以根据需要设置更复杂的选择逻辑。</span><br><span class="line">    if len(state.values[&quot;messages&quot;]) == 4:</span><br><span class="line">        # We are somewhat arbitrarily selecting a specific state based on the number of chat messages in the state.</span><br><span class="line">        # 将当前这个符合条件的状态（state）保存到 to_replay 变量中。</span><br><span class="line">        # 循环结束后，to_replay 变量将持有我们选中的那个历史时刻的完整状态，</span><br><span class="line">        # 之后我们就可以用它来恢复或修改执行流程。</span><br><span class="line">        to_replay = state</span><br></pre></td></tr></table></figure>
 <p>图的每一步都会保存检查点。这<strong>跨越了调用</strong>，因此您可以回溯整个线程的历史。</p>
-<h4 id="从特定时间点加载状态">从特定时间点加载状态</h4>
-<p>从<code>to_replay</code>状态恢复。从这一点恢复将接下来调用<strong>action</strong>节点。</p>
+<h4 id="从特定时间点加载状态"><a href="#从特定时间点加载状态" class="headerlink" title="从特定时间点加载状态"></a>从特定时间点加载状态</h4><p>从<code>to_replay</code>状态恢复。从这一点恢复将接下来调用<strong>action</strong>节点。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">print(to_replay.next)</span><br><span class="line">print(to_replay.config)</span><br></pre></td></tr></table></figure>
-<p>检查点的<code>to_replay.config</code>包含一个<code>checkpoint_id</code>时间戳。提供此<code>checkpoint_id</code>值会告诉
-LangGraph 的检查点器从该时间点<strong>加载</strong>状态。</p>
+<p>检查点的<code>to_replay.config</code>包含一个<code>checkpoint_id</code>时间戳。提供此<code>checkpoint_id</code>值会告诉 LangGraph 的检查点器从该时间点<strong>加载</strong>状态。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">for event in graph.stream(None, to_replay.config, stream_mode=&quot;values&quot;):</span><br><span class="line">    if &quot;messages&quot; in event:</span><br><span class="line">        event[&quot;messages&quot;][-1].pretty_print()</span><br></pre></td></tr></table></figure>
-<h3 id="运行本地服务器">运行本地服务器</h3>
-<h4 id="安装-langgraph-cli">安装 LangGraph CLI</h4>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># Python &gt;= 3.11 is required.</span><br><span class="line"></span><br><span class="line">pip install --upgrade &quot;langgraph-cli[inmem]&quot;</span><br></pre></td></tr></table></figure>
-<h4 id="创建-langgraph-应用">创建 LangGraph 应用 🌱</h4>
-<p>从 <a href="https://github.com/langchain-ai/new-langgraph-project"><code>new-langgraph-project-python</code>
-模板</a> 或 <a href="https://github.com/langchain-ai/new-langgraphjs-project"><code>new-langgraph-project-js</code>
-模板</a>
-创建一个新应用。此模板展示了一个单节点应用程序，您可以根据自己的逻辑进行扩展。</p>
+<h3 id="运行本地服务器"><a href="#运行本地服务器" class="headerlink" title="运行本地服务器"></a>运行本地服务器</h3><h4 id="安装-LangGraph-CLI"><a href="#安装-LangGraph-CLI" class="headerlink" title="安装 LangGraph CLI"></a>安装 LangGraph CLI</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># Python &gt;= 3.11 is required.</span><br><span class="line"></span><br><span class="line">pip install --upgrade &quot;langgraph-cli[inmem]&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="创建-LangGraph-应用-🌱"><a href="#创建-LangGraph-应用-🌱" class="headerlink" title="创建 LangGraph 应用 🌱"></a>创建 LangGraph 应用 🌱</h4><p>从 <a href="https://github.com/langchain-ai/new-langgraph-project"><code>new-langgraph-project-python</code> 模板</a> 或 <a href="https://github.com/langchain-ai/new-langgraphjs-project"><code>new-langgraph-project-js</code> 模板</a> 创建一个新应用。此模板展示了一个单节点应用程序，您可以根据自己的逻辑进行扩展。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">langgraph new . --template new-langgraph-project-python</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>使用 <code>langgraph new</code>
-而不指定模板，系统将显示一个交互式菜单，您可以从中选择可用的模板列表。</p>
+<p>使用 <code>langgraph new</code> 而不指定模板，系统将显示一个交互式菜单，您可以从中选择可用的模板列表。</p>
 </blockquote>
-<h4 id="使用uv安装依赖项">使用uv安装依赖项</h4>
-<p>uv 是一个用 Rust 编写的极速 Python 包和项目管理器 。它旨在解决传统
-Python 包管理工具（如 pip 、 poetry
-等）在速度和效率方面的痛点，提供更快的安装、依赖解析和环境管理。</p>
+<h4 id="使用uv安装依赖项"><a href="#使用uv安装依赖项" class="headerlink" title="使用uv安装依赖项"></a>使用uv安装依赖项</h4><p>uv 是一个用 Rust 编写的极速 Python 包和项目管理器 。它旨在解决传统 Python 包管理工具（如 pip 、 poetry 等）在速度和效率方面的痛点，提供更快的安装、依赖解析和环境管理。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pip install uv#安装uv</span><br></pre></td></tr></table></figure>
-<p>运行<code>uv sync</code>会根据
-<code>pyproject.toml</code>的依赖创建虚拟环境并安装依赖</p>
+<p>运行<code>uv sync</code>会根据 <code>pyproject.toml</code>的依赖创建虚拟环境并安装依赖</p>
 <blockquote>
-<p><code>pyproject.toml</code> 文件是 Python
-项目中用于统一配置项目元数据、构建系统、依赖管理和各种工具设置的标准化文件。它通常用于替代旧的
-requirements.txt 文件，提供更现代和集中的项目配置方式。</p>
+<p><code>pyproject.toml</code> 文件是 Python 项目中用于统一配置项目元数据、构建系统、依赖管理和各种工具设置的标准化文件。它通常用于替代旧的 requirements.txt 文件，提供更现代和集中的项目配置方式。</p>
 </blockquote>
-<h4 id="创建一个-.env-文件">创建一个 <code>.env</code> 文件</h4>
-<p>您将在新 LangGraph 应用的根目录下找到一个 <code>.env.example</code>
-文件。在新 LangGraph 应用的根目录下创建一个 <code>.env</code> 文件，并将
-<code>.env.example</code> 文件的内容复制到其中，填入所需的 API
-密钥。</p>
+<h4 id="创建一个-env-文件"><a href="#创建一个-env-文件" class="headerlink" title="创建一个 .env 文件"></a>创建一个 <code>.env</code> 文件</h4><p>您将在新 LangGraph 应用的根目录下找到一个 <code>.env.example</code> 文件。在新 LangGraph 应用的根目录下创建一个 <code>.env</code> 文件，并将 <code>.env.example</code> 文件的内容复制到其中，填入所需的 API 密钥。</p>
 <p>添加环境变量如LANGSMITH_API_KEY，OPENAI_API_KEY等</p>
-<h4 id="启动-langgraph-服务器">启动 LangGraph 服务器</h4>
-<p>在本地启动 LangGraph API 服务器</p>
+<h4 id="启动-LangGraph-服务器"><a href="#启动-LangGraph-服务器" class="headerlink" title="启动 LangGraph 服务器"></a>启动 LangGraph 服务器</h4><p>在本地启动 LangGraph API 服务器</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">langgraph dev</span><br></pre></td></tr></table></figure>
 <p>示例输出</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&gt;    Ready!</span><br><span class="line">&gt;</span><br><span class="line">&gt;    - API: [https://:2024](https://:2024/)</span><br><span class="line">&gt;</span><br><span class="line">&gt;    - Docs: https://:2024/docs</span><br><span class="line">&gt;</span><br><span class="line">&gt;    - LangGraph Studio Web UI: https://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:2024</span><br></pre></td></tr></table></figure>
-<p>LangGraph 服务器（如您通过 langgraph dev
-命令启动的服务器）的主要作用是提供一个运行环境和接口，用于开发、测试、部署和管理基于
-LangGraph 构建的 AI 代理和应用程序。具体来说，它有以下几个主要用途：</p>
-<ol type="1">
-<li><p>API 接口暴露 ：它将您用 LangGraph
-定义的复杂代理逻辑（即图结构）通过标准的 RESTful API
-接口暴露出来。这意味着其他应用程序、前端界面或者其他服务可以通过 HTTP
-请求与您的 LangGraph 代理进行交互，而无需直接集成 LangGraph 的 Python
-代码。</p></li>
-<li><p>简化部署 ：通过将 LangGraph
-应用程序打包成一个可运行的服务，您可以更容易地将其部署到云服务器、容器（如
-Docker）或其他生产环境中。这使得 LangGraph
-代理可以作为一个独立的微服务运行，方便扩展和管理。</p></li>
+<p>LangGraph 服务器（如您通过 langgraph dev 命令启动的服务器）的主要作用是提供一个运行环境和接口，用于开发、测试、部署和管理基于 LangGraph 构建的 AI 代理和应用程序。具体来说，它有以下几个主要用途：</p>
+<ol>
+<li>API 接口暴露 ：它将您用 LangGraph 定义的复杂代理逻辑（即图结构）通过标准的 RESTful API 接口暴露出来。这意味着其他应用程序、前端界面或者其他服务可以通过 HTTP 请求与您的 LangGraph 代理进行交互，而无需直接集成 LangGraph 的 Python 代码。</li>
+<li>简化部署 ：通过将 LangGraph 应用程序打包成一个可运行的服务，您可以更容易地将其部署到云服务器、容器（如 Docker）或其他生产环境中。这使得 LangGraph 代理可以作为一个独立的微服务运行，方便扩展和管理。</li>
 <li><p>开发和调试便利 ：</p>
 <ul>
-<li>实时预览和调试 ：服务器通常会提供一个 Studio UI（如您在
-http://127.0.0.1:2024/studio
-看到的），让开发者能够可视化地查看代理的图结构、执行流程、状态变化和中间步骤，这对于理解和调试复杂的代理行为至关重要。</li>
-<li>API 文档 ：自动生成的 API 文档（如 http://127.0.0.1:2024/docs
-）提供了所有可用接口的详细说明和交互式测试功能，极大地加速了开发和集成过程。</li>
-</ul></li>
-<li><p>状态管理和持久化 ：LangGraph
-代理通常涉及复杂的状态管理。服务器可以负责处理这些状态的持久化，确保代理在多次交互之间能够记住上下文和历史信息。</p></li>
+<li>实时预览和调试 ：服务器通常会提供一个 Studio UI（如您在 <a href="http://127.0.0.1:2024/studio">http://127.0.0.1:2024/studio</a> 看到的），让开发者能够可视化地查看代理的图结构、执行流程、状态变化和中间步骤，这对于理解和调试复杂的代理行为至关重要。</li>
+<li>API 文档 ：自动生成的 API 文档（如 <a href="http://127.0.0.1:2024/docs">http://127.0.0.1:2024/docs</a> ）提供了所有可用接口的详细说明和交互式测试功能，极大地加速了开发和集成过程。</li>
+</ul>
+</li>
+<li>状态管理和持久化 ：LangGraph 代理通常涉及复杂的状态管理。服务器可以负责处理这些状态的持久化，确保代理在多次交互之间能够记住上下文和历史信息。</li>
 </ol>
-<h4 id="在-langgraph-studio-中测试您的应用程序">在 LangGraph Studio
-中测试您的应用程序</h4>
-<p><a href="https://github.langchain.ac.cn/langgraph/concepts/langgraph_studio/">LangGraph
-Studio</a> 是一个专门的 UI，您可以连接到 LangGraph API
-服务器，以便在本地可视化、交互和调试您的应用程序。通过访问
-<code>langgraph dev</code> 命令输出中提供的 URL，在 LangGraph Studio
-中测试您的图。</p>
+<h4 id="在-LangGraph-Studio-中测试您的应用程序"><a href="#在-LangGraph-Studio-中测试您的应用程序" class="headerlink" title="在 LangGraph Studio 中测试您的应用程序"></a>在 LangGraph Studio 中测试您的应用程序</h4><p><a href="https://github.langchain.ac.cn/langgraph/concepts/langgraph_studio/">LangGraph Studio</a> 是一个专门的 UI，您可以连接到 LangGraph API 服务器，以便在本地可视化、交互和调试您的应用程序。通过访问 <code>langgraph dev</code> 命令输出中提供的 URL，在 LangGraph Studio 中测试您的图。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&gt;    - LangGraph Studio Web UI: https://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:2024</span><br></pre></td></tr></table></figure>
-<h3 id="参考资料">参考资料</h3>
-<p><a href="https://github.langchain.ac.cn/langgraph/tutorials/get-started/1-build-basic-chatbot/#1-install-packages">构建一个基本聊天机器人
-- LangChain 框架</a></p>
-<p>官方教程，但是英文https://academy.langchain.com/collections</p>
-<p><a href="https://www.bilibili.com/video/BV1AY4aeRETY/?spm_id_from=333.1007.top_right_bar_window_history.content.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">3.5
-小时出证！LangGraph 官方课程 🆓 重磅上线🔥🔥🔥_哔哩哔哩_bilibili</a></p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://github.langchain.ac.cn/langgraph/tutorials/get-started/1-build-basic-chatbot/#1-install-packages">构建一个基本聊天机器人 - LangChain 框架</a></p>
+<p>官方教程，但是英文<a href="https://academy.langchain.com/collections">https://academy.langchain.com/collections</a></p>
+<p><a href="https://www.bilibili.com/video/BV1AY4aeRETY/?spm_id_from=333.1007.top_right_bar_window_history.content.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">3.5 小时出证！LangGraph 官方课程 🆓 重磅上线🔥🔥🔥_哔哩哔哩_bilibili</a></p>
 ]]></content>
       <categories>
         <category>ai框架</category>
@@ -2196,6 +2093,8 @@ Studio</a> 是一个专门的 UI，您可以连接到 LangGraph API
 <li><code>AUTO</code> 规则：<strong>0~2 字符</strong>不允许错；<strong>3~5 字符</strong>最多1错；<strong>&gt;5 字符</strong>最多2错。</li>
 <li>对 <strong>text 字段</strong>先分词，再对每个 token 做模糊 → 召回 <code>Elasticsearch</code>。</li>
 </ul>
+<h4 id="elasticsearch的连接"><a href="#elasticsearch的连接" class="headerlink" title="elasticsearch的连接"></a>elasticsearch的连接</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">from langchain_elasticsearch import ElasticsearchRetriever</span><br><span class="line">from embeddings_model import select_embeddings_model</span><br><span class="line"># 根据模型名称选择嵌入模型</span><br><span class="line">embedding_model_name=&#x27;bge&#x27;</span><br><span class="line">embeddings = select_embeddings_model(embedding_model_name)</span><br><span class="line">dense_vector_field=&#x27;vector&#x27;</span><br><span class="line">text_field=&#x27;text&#x27;</span><br><span class="line">search_func=fuzzy_query</span><br><span class="line"># 创建Elasticsearch检索器</span><br><span class="line">retriever = ElasticsearchRetriever.from_es_params(</span><br><span class="line">    index_name=&quot;zxj_test&quot;,  # 指定索引名称</span><br><span class="line">    body_func=fuzzy_query,  # 查询函数</span><br><span class="line">    content_field=&quot;text&quot;,  # 内容字段名</span><br><span class="line">    url=&#x27;http://elasticsearch:9200/&#x27;# Elasticsearch服务器地址</span><br><span class="line">)</span><br><span class="line">print(&quot;连接成功&quot;)</span><br></pre></td></tr></table></figure>
+<h4 id="elasticsearch的入库"><a href="#elasticsearch的入库" class="headerlink" title="elasticsearch的入库"></a>elasticsearch的入库</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">document = []</span><br><span class="line">id_list = []</span><br><span class="line"></span><br><span class="line"># 遍历文件夹中的所有.md文件</span><br><span class="line">for filename in os.listdir(folder_path):</span><br><span class="line">    if filename.endswith(&quot;.md&quot;):</span><br><span class="line">        file_path = os.path.join(folder_path, filename)</span><br><span class="line"></span><br><span class="line">        # 从文件名中提取chunk_id（去除.md扩展名）</span><br><span class="line">        chunk_id = filename.replace(&quot;.md&quot;, &quot;&quot;)</span><br><span class="line"></span><br><span class="line">        # 读取MD文件内容</span><br><span class="line">        with open(file_path, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as file:</span><br><span class="line">            text_content = file.read()</span><br><span class="line">  </span><br><span class="line">        # 查找对应的URL（根据文件名匹配）</span><br><span class="line">        report_url = &quot;&quot;</span><br><span class="line">        # 从folder_name中提取核心文档名（最后一个^后面的部分）</span><br><span class="line">        core_folder_name = folder_name.split(&#x27;^&#x27;)[-1]  # 提取核心文档名</span><br><span class="line"></span><br><span class="line">        # 根据core_folder_name查找对应的URL</span><br><span class="line">        report_url = find_url_by_name_from_list(docs_data, core_folder_name)</span><br><span class="line"></span><br><span class="line">        # 构建document结构</span><br><span class="line">        doc = Document(</span><br><span class="line">            page_content=text_content,</span><br><span class="line">            metadata=&#123;</span><br><span class="line">                &quot;report_name&quot;: folder_name,</span><br><span class="line">                &quot;report_url&quot;: report_url,</span><br><span class="line">                &quot;chunk_id&quot;: chunk_id</span><br><span class="line">            &#125;</span><br><span class="line">        )</span><br><span class="line">        document.append(doc)</span><br><span class="line">        id_list.append(folder_name + &quot;_&quot; + chunk_id)</span><br><span class="line"></span><br><span class="line"># 批量添加到向量库</span><br><span class="line">es_vector_store.add_documents(documents=document, ids=id_list)</span><br><span class="line">print(f&quot;    文件夹 &#123;folder_name&#125; 已成功入库，共 &#123;len(document)&#125; 个文档块&quot;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h4 id="相关资料"><a href="#相关资料" class="headerlink" title="相关资料"></a>相关资料</h4><p><a href="https://python.langchain.ac.cn/docs/integrations/retrievers/elasticsearch_retriever/#bm25">Elasticsearch检索器 | 🦜️🔗 LangChain 框架</a></p>
 <h3 id="主流的检索策略"><a href="#主流的检索策略" class="headerlink" title="主流的检索策略"></a>主流的检索策略</h3><h4 id="BM25-全文关键词检索"><a href="#BM25-全文关键词检索" class="headerlink" title="BM25 全文关键词检索"></a>BM25 全文关键词检索</h4><p>BM25（Best Matching 25）是一种久经考验的排序算法，广泛应用于传统搜索引擎中。它基于“词袋模型”，核心思想是通过关键词匹配程度来衡量文档与查询的相关性。</p>
 <p>核心原理概览：</p>
@@ -2281,6 +2180,29 @@ Score_RRF(doc) = Σ_{s ∈ Systems} (1 / (k + rank_s(doc)))</script><p>其中：
 <li>返回<br>重排后的短列表交给前端或 LLM，完成一次“精读”。</li>
 </ol>
 <h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a href="https://blog.csdn.net/m0_59614665/article/details/149066780">大模型RAG | 深入了解几种主流的检索策略（BM25、Embedding、混合检索、Reranker）-CSDN博客</a></p>
+<h3 id="项目关于elasticsearch代码阅读记录"><a href="#项目关于elasticsearch代码阅读记录" class="headerlink" title="项目关于elasticsearch代码阅读记录"></a>项目关于elasticsearch代码阅读记录</h3><p>阅读elasticsearch代码相关记录:</p>
+<ol>
+<li><strong>embedding_model</strong>.select_embeddings_model:根据指定的模型名称加载</li>
+<li><strong>make_es_vector_store</strong>：<ol>
+<li>docs_url = pd.read_excel(‘docs_new.xlsx’)，从excel加载url并进行数据处理，保存筛选后的ur</li>
+<li>完成文件加载测试：xizhang/retrival/docfile_test/test.py；</li>
+<li>初始化es，使用elastic_search.load_es_index加载存储索引</li>
+<li>完成测试elasticsearch连接与索引构建（索引名zxj_test）：/aisys/repo_dev/xizhang/retrival/elasticsearch_test/test_es_connect.py，/aisys/repo_dev/xizhang/retrival/elasticsearch_test/test_add_es.py</li>
+<li>顺序批量处理文件：共16000多份，每十份为一批进行处理，使用download_pdf.py进行文件下载，使用，使用vector_base.rewrite_file对文件进行处理，这里可以修改代码，增加对mineru处理pdf的markdown文件的处理，返回Document对象列表；</li>
+</ol>
+</li>
+<li><strong>elastic_search</strong></li>
+</ol>
+<p>重写了检索策略的函数，包括BM25，KNN，混合搜索</p>
+<ol>
+<li><p>elastic_retriever创建Elasticsearch检索器：根据搜索类型选择对应的查询函数，创建Elasticsearch检索器ElasticsearchRetriever.from_es_params</p>
+</li>
+<li><p><strong>retrievers</strong></p>
+<ol>
+<li>定义函数select_retriever，根据指定的名称选择并返回相应的检索器，目前只有bm25</li>
+</ol>
+</li>
+</ol>
 ]]></content>
       <categories>
         <category>实习</category>
@@ -2343,6 +2265,8 @@ Score_RRF(doc) = Σ_{s ∈ Systems} (1 / (k + rank_s(doc)))</script><p>其中：
 <p>利用大模型进行分块</p>
 <p>langchain没有提供官方的类实现LLM-based chunking</p>
 <p>但是我在找到了别人实现的agentic_chunker<a href="https://github.com/FullStackRetrieval-com/RetrievalTutorials/blob/main/tutorials/LevelsOfTextSplitting/agentic_chunker.py">RetrievalTutorials/tutorials/LevelsOfTextSplitting/agentic_chunker.py at main · FullStackRetrieval-com/RetrievalTutorials</a>，可供参考</p>
+<p>后记：agentic chunk大概的思路为先进行初步分段，按照长度或递归，然后让大模型生成这一段的概要，将段与段合并生成块，但是测试下来，一个文档的内容同质化很严重，基本上都分到一块里了，而且这个主要还是提示词工程，分块并不系统，看个乐吧</p>
+<p><a href="https://github.com/zxj-2023/chunks-strategy-/blob/main/agentic_chunker.py">chunks-strategy-/agentic_chunker.py at main · zxj-2023/chunks-strategy-</a>代码稍作更新，弃用了部分库</p>
 <h3 id="embedding"><a href="#embedding" class="headerlink" title="embedding"></a>embedding</h3><p>之前对chunking和embedding的理解不够清晰，chunking是对文本进行分块，由于大多数文本嵌入模型对输入文本长度有严格限制，如果不分块则无法embedding，从而无法更好的进行向量化或者更好地储存在知识库中，提升retriever性能；embedding则是将文本映射到向量空间，为了更好的相似度计算</p>
 <h3 id="语义分块的源代码实战"><a href="#语义分块的源代码实战" class="headerlink" title="语义分块的源代码实战"></a>语义分块的源代码实战</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">将文本划分成单句，可以按照标点符号划分</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">single_sentences_list = re.split(<span class="string">r&#x27;(?&lt;=[。！？])&#x27;</span>, essay)</span><br><span class="line"><span class="comment"># 移除可能存在的空字符串</span></span><br><span class="line">single_sentences_list = [s.strip() <span class="keyword">for</span> s <span class="keyword">in</span> single_sentences_list <span class="keyword">if</span> s.strip()]</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">我们需要为单个句子拼接更多的句子，但是 `list` 添加比较困难。因此将其转换为字典列（`List[dict]`）</span></span><br><span class="line"><span class="string">&#123; &#x27;sentence&#x27; : XXX  , &#x27;index&#x27; : 0&#125;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">sentences = [&#123;<span class="string">&#x27;sentence&#x27;</span>: x, <span class="string">&#x27;index&#x27;</span> : i&#125; <span class="keyword">for</span> i, x <span class="keyword">in</span> <span class="built_in">enumerate</span>(single_sentences_list)]</span><br><span class="line"></span><br><span class="line"><span class="comment">#利用滑动窗口分段</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">combine_sentences</span>(<span class="params">sentences, buffer_size=<span class="number">1</span></span>):</span><br><span class="line">    combined_sentences = [</span><br><span class="line">        <span class="string">&#x27; &#x27;</span>.join(sentences[j][<span class="string">&#x27;sentence&#x27;</span>] <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">max</span>(i - buffer_size, <span class="number">0</span>), <span class="built_in">min</span>(i + buffer_size + <span class="number">1</span>, <span class="built_in">len</span>(sentences))))</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(sentences))</span><br><span class="line">    ]   </span><br><span class="line">    <span class="comment"># 更新原始字典列表，添加组合后的句子</span></span><br><span class="line">    <span class="keyword">for</span> i, combined_sentence <span class="keyword">in</span> <span class="built_in">enumerate</span>(combined_sentences):</span><br><span class="line">        sentences[i][<span class="string">&#x27;combined_sentence&#x27;</span>] = combined_sentence</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> sentences</span><br><span class="line"></span><br><span class="line">sentences = combine_sentences(sentences)</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">接下来使用**embedding model**对**sentences** 进行编码</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">from</span> langchain_community.embeddings <span class="keyword">import</span> DashScopeEmbeddings</span><br><span class="line">embeddings_model = DashScopeEmbeddings(</span><br><span class="line">        model=<span class="string">&quot;text-embedding-v2&quot;</span>,</span><br><span class="line">        dashscope_api_key=<span class="string">&quot;&quot;</span>,</span><br><span class="line"></span><br><span class="line">    )</span><br><span class="line"><span class="comment"># 提取所有组合后的句子用于 embedding</span></span><br><span class="line">combined_sentences_to_embed = [x[<span class="string">&#x27;combined_sentence&#x27;</span>] <span class="keyword">for</span> x <span class="keyword">in</span> sentences]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 对句子进行 embedding</span></span><br><span class="line">embeddings = embeddings_model.embed_documents(combined_sentences_to_embed)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;成功对 <span class="subst">&#123;<span class="built_in">len</span>(embeddings)&#125;</span> 个句子进行了 embedding。&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#将embedding添加到sentence中</span></span><br><span class="line"><span class="keyword">for</span> i, sentence <span class="keyword">in</span> <span class="built_in">enumerate</span>(sentences):</span><br><span class="line">    sentence[<span class="string">&#x27;combined_sentence_embedding&#x27;</span>] = embeddings[i]</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">接下来需要根据余弦相似度进行切分</span></span><br><span class="line"><span class="string">通过计算两个向量的夹角余弦值来衡量相似性</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">cosine_similarity</span>(<span class="params">vec1, vec2</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Calculate the cosine similarity between two vectors.&quot;&quot;&quot;</span></span><br><span class="line">    dot_product = np.dot(vec1, vec2)</span><br><span class="line">    norm_vec1 = np.linalg.norm(vec1)</span><br><span class="line">    norm_vec2 = np.linalg.norm(vec2)</span><br><span class="line">    <span class="keyword">return</span> dot_product / (norm_vec1 * norm_vec2)</span><br><span class="line"><span class="comment">#遍历，计算余弦相似度</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calculate_cosine_distances</span>(<span class="params">sentences</span>):</span><br><span class="line">    distances = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(sentences) - <span class="number">1</span>):</span><br><span class="line">        embedding_current = sentences[i][<span class="string">&#x27;combined_sentence_embedding&#x27;</span>]</span><br><span class="line">        embedding_next = sentences[i + <span class="number">1</span>][<span class="string">&#x27;combined_sentence_embedding&#x27;</span>]</span><br><span class="line">        <span class="comment"># Calculate cosine similarity</span></span><br><span class="line">        similarity = cosine_similarity(embedding_current, embedding_next)</span><br><span class="line">        <span class="comment"># Convert to cosine distance</span></span><br><span class="line">        distance = <span class="number">1</span> - similarity</span><br><span class="line">        distances.append(distance)</span><br><span class="line">        <span class="comment"># Store distance in the dictionary</span></span><br><span class="line">        sentences[i][<span class="string">&#x27;distance_to_next&#x27;</span>] = distance</span><br><span class="line">    <span class="keyword">return</span> distances, sentences</span><br><span class="line"></span><br><span class="line">distances, sentences = calculate_cosine_distances(sentences)</span><br><span class="line"></span><br><span class="line"><span class="comment">#根据阈值划分</span></span><br><span class="line">breakpoint_percentile_threshold = <span class="number">95</span></span><br><span class="line">breakpoint_distance_threshold = np.percentile(distances, breakpoint_percentile_threshold)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;距离的第95个百分位阈值是:&quot;</span>, breakpoint_distance_threshold)</span><br><span class="line"><span class="comment"># 找到所有距离大于阈值的点的索引，这些索引就是我们的切分点</span></span><br><span class="line">indices_above_thresh = [i <span class="keyword">for</span> i, x <span class="keyword">in</span> <span class="built_in">enumerate</span>(distances) <span class="keyword">if</span> x &gt; breakpoint_distance_threshold]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化块的起始句子索引。我们将根据之前计算出的语义分割点（`indices_above_thresh`）来切分句子列表。</span></span><br><span class="line">start_index = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个列表，用于存储最终组合成的、具有语义连贯性的文本块。</span></span><br><span class="line">chunks = []</span><br><span class="line"></span><br><span class="line"><span class="comment"># 遍历所有识别出的语义分割点（这些是句子列表 `sentences` 中的索引）。</span></span><br><span class="line"><span class="keyword">for</span> index <span class="keyword">in</span> indices_above_thresh:</span><br><span class="line">    <span class="comment"># 确定当前文本块的结束点，即当前的分割点索引。</span></span><br><span class="line">    end_index = index</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 从原始句子列表（`sentences`）中切片，提取从上一个分割点到当前分割点之间的所有句子。</span></span><br><span class="line">    <span class="comment"># `end_index + 1` 是为了在切片时包含结束索引指向的那个句子。</span></span><br><span class="line">    group = sentences[start_index:end_index + <span class="number">1</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 将切分出的句子组（`group`）中的所有 &#x27;sentence&#x27; 字段的值合并成一个单独的字符串，句子之间用空格隔开。</span></span><br><span class="line">    combined_text = <span class="string">&#x27; &#x27;</span>.join([d[<span class="string">&#x27;sentence&#x27;</span>] <span class="keyword">for</span> d <span class="keyword">in</span> group])</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 将合并后的文本块添加到 `chunks` 列表中。</span></span><br><span class="line">    chunks.append(combined_text)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 更新下一个文本块的起始索引，设置为当前分割点的下一个位置，为处理下一个块做准备。</span></span><br><span class="line">    start_index = index + <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 处理最后一个文本块。</span></span><br><span class="line"><span class="comment"># 循环结束后，如果 `start_index` 仍然小于句子总数，说明从最后一个分割点到文本末尾还有剩余的句子。</span></span><br><span class="line"><span class="keyword">if</span> start_index &lt; <span class="built_in">len</span>(sentences):</span><br><span class="line">    <span class="comment"># 将这些剩余的句子合并成最后一个文本块。</span></span><br><span class="line">    combined_text = <span class="string">&#x27; &#x27;</span>.join([d[<span class="string">&#x27;sentence&#x27;</span>] <span class="keyword">for</span> d <span class="keyword">in</span> sentences[start_index:]])</span><br><span class="line">    chunks.append(combined_text)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 此时，`chunks` 列表包含了所有根据语义距离切分和重组后的文本块。</span></span><br><span class="line"><span class="keyword">for</span> i, chunk <span class="keyword">in</span> <span class="built_in">enumerate</span>(chunks):</span><br><span class="line">    buffer = <span class="number">200</span></span><br><span class="line">    <span class="built_in">print</span> (<span class="string">f&quot;Chunk #<span class="subst">&#123;i&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span> (chunk[:buffer].strip())</span><br><span class="line">    <span class="built_in">print</span> (<span class="string">&quot;...&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span> (chunk[-buffer:].strip())</span><br><span class="line">    <span class="built_in">print</span> (<span class="string">&quot;\n&quot;</span>)</span><br></pre></td></tr></table></figure>
 <h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://www.dailydoseofds.com/p/5-chunking-strategies-for-rag/">RAG 的 5 种分块策略 —- 5 Chunking Strategies For RAG</a></p>
@@ -2719,6 +2643,58 @@ Score_RRF(doc) = Σ_{s ∈ Systems} (1 / (k + rank_s(doc)))</script><p>其中：
 </tbody>
 </table>
 </div>
+<h3 id="mineru的并发测试和吞吐量测试"><a href="#mineru的并发测试和吞吐量测试" class="headerlink" title="mineru的并发测试和吞吐量测试"></a>mineru的并发测试和吞吐量测试</h3><p>并发能力是测试mineru同时处理多个请求的能力，吞吐量是测试mineru处理文件时的tokens</p>
+<p>明确要的是哪个吞吐量：一个是<strong>MinerU 内部推理引擎（如 vLLM/SGLang）的 token/s 输出</strong>，即 <strong>生成阶段（decode）的吞吐量</strong>，一个是你压测 <code>/file_parse</code> 接口时的 <strong>端到端 tokens/s</strong>。</p>
+<p>是否有缓存（kvcache）</p>
+<p><strong>测试场景</strong>：10页的pdf，50用户并发</p>
+<p><strong>工具</strong>：locust</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">locust \</span><br><span class="line">  -f locustfile.py \</span><br><span class="line">  --headless \</span><br><span class="line">  -u 50 \               # 并发用户数</span><br><span class="line">  -r 5 \                # 每秒启动用户数</span><br><span class="line">  --host=http://mineru-server:30000 \</span><br><span class="line">  --html=report.html \  # 自动生成 HTML 报告</span><br><span class="line">  --csv=result          # 同时保存 csv（result_stats.csv / result_failures.csv）</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">locust -f locustfile.py --headless -u 100 -r 5 --host=http://mineru-server:30000 --html=report.html --csv=result</span><br></pre></td></tr></table></figure>
+<p><strong>测试结果</strong></p>
+<p><img src="/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/image-20250805152017255.png" alt="image-20250805152017255"></p>
+<p>对于推理模型的吞吐量，在3个gpu开启数据并行的情况下，平均每秒单个gpu处理tokens为1500左右</p>
+<p><img src="/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/image-20250805152149822.png" alt="image-20250805152149822"></p>
+<p>gpu状态如上:<strong>显存几乎打满 85–87 %</strong>,<strong>GPU 利用率 59–63 %</strong>,<strong>功耗 170–188 W / 350 W</strong></p>
+<p><img src="/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/image-20250805153516235.png" alt="image-20250805153516235"></p>
+<p>完整压测结果如上</p>
+<p>重要指标：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>通俗解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>平均响应时间</strong></td>
+<td><strong>241 秒</strong> ≈ <strong>4 分钟</strong></td>
+<td>上传一个 PDF → 拿到解析结果，平均要等 4 分钟。</td>
+</tr>
+<tr>
+<td><strong>中位数</strong></td>
+<td><strong>215 秒</strong> ≈ <strong>3.6 分钟</strong></td>
+<td>一半请求在 3.6 分钟内完成。</td>
+</tr>
+<tr>
+<td><strong>95% 用户</strong></td>
+<td><strong>361 秒</strong> ≈ <strong>6 分钟</strong></td>
+<td>最慢的 5% 要等 6 分钟以上。</td>
+</tr>
+<tr>
+<td><strong>吞吐量</strong></td>
+<td><strong>0.18 req/s</strong></td>
+<td>这台 MinerU <strong>每分钟只能处理约11 个 PDF</strong>。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><img src="/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/image-20250806104340935.png" alt="image-20250806104340935"></p>
+<p><img src="/2025/07/08/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/mineru/image-20250806110438932.png" alt="image-20250806110438932"></p>
+<p>参考资料</p>
+<p><a href="https://github.com/opendatalab/MinerU/blob/be4f3de32b58ccf81c6a6dcb9d3e4998424cee6a/projects/multi_gpu_v2/README_zh.md">MinerU/projects/multi_gpu_v2/README_zh.md at be4f3de32b58ccf81c6a6dcb9d3e4998424cee6a · opendatalab/MinerU</a></p>
 <h3 id="部署服务器并运行"><a href="#部署服务器并运行" class="headerlink" title="部署服务器并运行"></a>部署服务器并运行</h3><p>load镜像</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker load -i mineru-sglang-latest.tar</span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">free -h</span><br><span class="line">nvidia-smi</span><br></pre></td></tr></table></figure>
@@ -25815,6 +25791,24 @@ Custom Model - Accuracy: 0.8240, Precision: 0.6875, Recall: 0.1170, AUC:
 </table>
 </div>
 <h4 id="三、调用链脑图"><a href="#三、调用链脑图" class="headerlink" title="三、调用链脑图"></a>三、调用链脑图</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">┌──────────────┐</span><br><span class="line">│ LangGraph    │ 运行图实例</span><br><span class="line">└────┬─────────┘</span><br><span class="line">     │1. 写 checkpoints</span><br><span class="line">     │2. 写 checkpoint_writes</span><br><span class="line">     │3. 拆大字段到 checkpoint_blobs</span><br><span class="line">     ▼</span><br><span class="line">┌──────────────┐</span><br><span class="line">│ 业务代码     │ 读写 KV/向量</span><br><span class="line">└────┬─────────┘</span><br><span class="line">     │1. 写 store</span><br><span class="line">     │2. 写 store_vectors</span><br><span class="line">     ▼</span><br><span class="line"> PostgreSQL (pgsql)</span><br></pre></td></tr></table></figure>
+<h3 id="在linux安装postgresql"><a href="#在linux安装postgresql" class="headerlink" title="在linux安装postgresql"></a>在linux安装postgresql</h3><h4 id="查看linux发行版本"><a href="#查看linux发行版本" class="headerlink" title="查看linux发行版本"></a>查看linux发行版本</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 查看发行版名称和版本</span><br><span class="line">cat /etc/os-release</span><br></pre></td></tr></table></figure>
+<p>输出</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">PRETTY_NAME=&quot;Ubuntu 24.04.2 LTS&quot;</span><br><span class="line">NAME=&quot;Ubuntu&quot;</span><br><span class="line">VERSION_ID=&quot;24.04&quot;</span><br><span class="line">VERSION=&quot;24.04.2 LTS (Noble Numbat)&quot;</span><br><span class="line">VERSION_CODENAME=noble</span><br><span class="line">ID=ubuntu</span><br><span class="line">ID_LIKE=debian</span><br><span class="line">HOME_URL=&quot;https://www.ubuntu.com/&quot;</span><br><span class="line">SUPPORT_URL=&quot;https://help.ubuntu.com/&quot;</span><br><span class="line">BUG_REPORT_URL=&quot;https://bugs.launchpad.net/ubuntu/&quot;</span><br><span class="line">PRIVACY_POLICY_URL=&quot;https://www.ubuntu.com/legal/terms-and-policies/privacy-policy&quot;</span><br><span class="line">UBUNTU_CODENAME=noble</span><br><span class="line">LOGO=ubuntu-logo</span><br></pre></td></tr></table></figure>
+<h4 id="安装postgresql"><a href="#安装postgresql" class="headerlink" title="安装postgresql"></a>安装postgresql</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 更新软件包索引</span><br><span class="line">sudo apt update</span><br><span class="line"></span><br><span class="line"># 安装 PostgreSQL 和常用扩展</span><br><span class="line">sudo apt install -y postgresql postgresql-contrib</span><br><span class="line"></span><br><span class="line"># 检查服务状态</span><br><span class="line">#Linux 容器/子系统（ Docker、WSL 或 LXC）没有使用 systemd ，因此 systemctl 无法工作</span><br><span class="line">sudo systemctl status postgresql</span><br><span class="line"></span><br><span class="line">#确认 PostgreSQL 已安装</span><br><span class="line">which psql            # 应该输出 /usr/bin/psql</span><br><span class="line">pg_ctl --version      # 显示版本号即已安装</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>postgresql</code> 是主程序</li>
+<li><code>postgresql-contrib</code> 提供额外扩展（如 <code>uuid-ossp</code>、<code>pgcrypto</code> 等）</li>
+</ul>
+<blockquote>
+<p>systemctl一般用于服务器上，完整的linux系统上</p>
+<p>Linux 容器/子系统（ Docker、WSL 或 LXC）使用 service</p>
+</blockquote>
+<p>启动pgsql服务</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo service postgresql start</span><br></pre></td></tr></table></figure>
+<p>停止pgsql服务</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo service postgresql stop</span><br></pre></td></tr></table></figure>
+<p>查看状态</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo service postgresql status</span><br></pre></td></tr></table></figure>
 <h3 id="更换apt镜像源"><a href="#更换apt镜像源" class="headerlink" title="更换apt镜像源"></a>更换apt镜像源</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cat &gt; /etc/apt/sources.list &lt;&lt;&#x27;EOF&#x27;</span><br><span class="line">deb http://mirrors.aliyun.com/debian/ bookworm main contrib non-free</span><br><span class="line">deb http://mirrors.aliyun.com/debian/ bookworm-updates main contrib non-free</span><br><span class="line">deb http://mirrors.aliyun.com/debian/ bookworm-backports main contrib non-free</span><br><span class="line">deb http://mirrors.aliyun.com/debian-security bookworm-security main contrib non-free</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">apt update</span><br></pre></td></tr></table></figure>
 <h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://juejin.cn/post/7470702616906645540">postgresql向量扩展pgvector的安装与入门本文简答的介绍了 rag 的架构，引申出向量数据库的作用，介绍了 - 掘金</a></p>
 <p>langchain支持向量存储<a href="https://python.langchain.com/docs/integrations/vectorstores/">向量存储 | 🦜️🔗 LangChain —- Vector stores | 🦜️🔗 LangChain</a></p>
@@ -25868,7 +25862,7 @@ Custom Model - Accuracy: 0.8240, Precision: 0.6875, Recall: 0.1170, AUC:
       </tags>
   </entry>
   <entry>
-    <title>python-logging模块</title>
+    <title>python-uv包管理</title>
     <url>/2025/08/02/%E5%AD%A6%E4%B9%A0/%E6%9D%82%E9%A1%B9/python-uv%E5%8C%85%E7%AE%A1%E7%90%86/</url>
     <content><![CDATA[<h3 id="什么是uv"><a href="#什么是uv" class="headerlink" title="什么是uv"></a>什么是uv</h3><p><code>uv</code> 是由 <strong>Astral</strong> 团队开发的一个<strong>超高速 Python 包管理器</strong>，用 <strong>Rust</strong> 编写，目标是替代 <code>pip</code>、<code>venv</code>、<code>pip-tools</code>、<code>poetry</code> 等多个工具。</p>
 <h3 id="uv常用命令"><a href="#uv常用命令" class="headerlink" title="uv常用命令"></a>uv常用命令</h3><p>uv init myproj    创建新项目</p>
@@ -26001,6 +25995,194 @@ Custom Model - Accuracy: 0.8240, Precision: 0.6875, Recall: 0.1170, AUC:
       <tags>
         <tag>python</tag>
         <tag>学习</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>A2A协议</title>
+    <url>/2025/08/04/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/A2A%E5%8D%8F%E8%AE%AE/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>ai相关</category>
+        <category>A2A协议</category>
+      </categories>
+      <tags>
+        <tag>A2A协议</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>langgraph查漏补缺</title>
+    <url>/2025/07/15/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langgraph%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA/</url>
+    <content><![CDATA[<h3 id="注入上下文"><a href="#注入上下文" class="headerlink" title="注入上下文"></a>注入上下文</h3><p>“注入上下文”就是<strong>在运行过程中节点/大模型</strong> 可能需要、但<strong>不会</strong>（也不应该）去改变的<strong>只读信息</strong>的集合。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>注入上下文里可能放什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>权限控制</strong></td>
+<td><code>user_id</code>, <code>tenant_id</code>（决定能访问哪些数据）</td>
+</tr>
+<tr>
+<td><strong>外部依赖</strong></td>
+<td><code>db_connection</code>, <code>api_key</code>, <code>s3_bucket</code>（节点里要用）</td>
+</tr>
+<tr>
+<td><strong>个性化参数</strong></td>
+<td><code>language</code>, <code>timezone</code>, <code>model_temperature</code></td>
+</tr>
+<tr>
+<td><strong>会话元信息</strong></td>
+<td><code>session_id</code>, <code>channel</code>（Slack / 微信 / Web）</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">from dataclasses import dataclass</span><br><span class="line"></span><br><span class="line">from langgraph.graph import StateGraph</span><br><span class="line">from langgraph.runtime import Runtime</span><br><span class="line"></span><br><span class="line">@dataclass</span><br><span class="line">class Context:</span><br><span class="line">    &quot;&quot;&quot;Context schema defined by the developer.&quot;&quot;&quot;    </span><br><span class="line">    user_id: str    </span><br><span class="line">    db_connection: str</span><br><span class="line">    </span><br><span class="line">def node(state: State, runtime: Runtime[Context]):</span><br><span class="line">    # type safe access to context attributes    </span><br><span class="line">    user_id = runtime.context.user_id</span><br><span class="line">    db_conn = runtime.context.db_connection</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">builder = StateGraph(state_schema=State, context_schema=Context)</span><br><span class="line"></span><br><span class="line"># add nodes, edges, compile the graph...</span><br><span class="line"></span><br><span class="line"># top level context arg is typed as Context for autocomplete and type checking</span><br><span class="line">result = graph.invoke(</span><br><span class="line">    &#123;&#x27;input&#x27;: &#x27;abc&#x27;&#125;,</span><br><span class="line">    context=Context(user_id=&#x27;123&#x27;, db_conn=&#x27;conn_mock&#x27;)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p><a href="https://langchain-ai.github.io/langgraph/reference/runtime/#runtime"><code>Runtime</code></a> 类提供了一个单一接口，用于访问信息，例如：</p>
+<ul>
+<li>上下文：在运行开始时传递的静态数据</li>
+<li>存储：长期记忆的存储机制</li>
+<li>流写入器：用于向图输出流写入的自定义函数</li>
+<li>对于功能 API 用户，<code>previous</code> 也可用：给定线程的前一个返回值</li>
+</ul>
+<p>现在，开发者不再需要将上述所有内容作为单独的参数注入到节点函数中，<br>而是可以通过一个 <code>runtime</code> 参数来访问它们。</p>
+]]></content>
+      <categories>
+        <category>ai框架</category>
+        <category>langgraph</category>
+      </categories>
+      <tags>
+        <tag>langgraph</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2025/08/04/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83/</url>
+    <content><![CDATA[<p><a href="https://www.bilibili.com/video/BV13BKozLEXE/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">DIY你的AI梦中情人？Qwen3微调手把手教你！_哔哩哔哩_bilibili</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>实习七月复盘</title>
+    <url>/2025/08/05/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/%E6%97%A5%E5%BF%97/%E4%B8%83%E6%9C%88%E5%A4%8D%E7%9B%98/</url>
+    <content><![CDATA[<h3 id="文件处理阶段"><a href="#文件处理阶段" class="headerlink" title="文件处理阶段"></a>文件处理阶段</h3><ol>
+<li>使用libreoffice将doc，docx文件处理成pdf文件，方便后续使用mineru进行提取</li>
+<li>完成mineru的docker本地部署；搭建fastapi服务，与项目容器构建自定义网络，方便后续服务调用；使用locust完成对mineru的并发性能测试，和吞吐量测试</li>
+<li>对mineru提取的html格式的表格进行预处理工作，将其转化成md格式，方便后续分块，节省tokens</li>
+</ol>
+<h4 id="部分技术细节"><a href="#部分技术细节" class="headerlink" title="部分技术细节"></a>部分技术细节</h4><p><strong>mineru提取效果说明</strong></p>
+<p>可以完整提取表格与图片，将图片以相对链接形式储存在images文件夹下；可以完成pdf与扫描件的提取，可以实现对图片中文字的识别；输出符合人类阅读顺序的文本，适用于单栏、多栏及复杂排版；删除页眉、页脚、脚注、页码等元素，确保语义连贯</p>
+<p>目前问题：仍无法实现对多级标题的识别</p>
+<p><strong>mineru的fastapi启动指令</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">MINERU_MODEL_SOURCE=local CUDA_VISIBLE_DEVICES=1,2,3 mineru-api --host 0.0.0.0 --port 30000 --dp-size 3 --enable-torch-compile</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>MinerU支持通过sglang的多GPU并行模式来提升推理速度。</p>
+<ul>
+<li>如果您有超过多张显卡，可以使用sglang的多卡并行模式来增加吞吐量：<code>--dp-size 2</code></li>
+<li>同时您可以启用<code>torch.compile</code>来将推理速度加速约15%：<code>--enable-torch-compile</code></li>
+</ul>
+<p>注意设置环境变量<code>MINERU_MODEL_SOURCE=local CUDA_VISIBLE_DEVICES=1,2,3</code>保证模型本地加载与调用指定gpu</p>
+</blockquote>
+<p><strong>mineru容器启动指令</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker run -d --name mineru-server --gpus all --shm-size 32g -p 30000:30000 --ipc=host -v /aisys/:/aisys/ --network network_test mineru-sglang:latest tail -f /dev/null</span><br><span class="line">docker start mineru-server</span><br></pre></td></tr></table></figure>
+<p><strong>mineru三种后端模式测试</strong></p>
+<p>pipeline (默认后端) ，vlm-sglang-engine，vlm-sglang-client</p>
+<p>项目中使用的是vlm-sglang-engine，原因如下，pipeline应用场景更多是仅能cpu推理，解析速度大大落后与vlm模式，而我们gpu资源充足，自然不考虑；vlm-sglang-client应用场景更多是有SGLang服务器，这样客户端既可以不用安装sglang，同样不符合我们的条件</p>
+<p><strong>mineru并发与吞吐量测试</strong></p>
+<p><strong>测试场景</strong>：10页的pdf，50用户并发</p>
+<p><strong>工具</strong>：locust</p>
+<p><strong>测试结果</strong></p>
+<p>对于推理模型的吞吐量，在3个gpu开启数据并行的情况下，平均每秒单个gpu处理tokens为1500左右</p>
+<p>gpu状态如上:<strong>显存几乎打满 85–87 %</strong>,<strong>GPU 利用率 59–63 %</strong>,<strong>功耗 170–188 W / 350 W</strong></p>
+<p>压测结果如下，选取部分指标</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+<th>通俗解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>平均响应时间</strong></td>
+<td><strong>241 秒</strong> ≈ <strong>4 分钟</strong></td>
+<td>上传一个 PDF → 拿到解析结果，平均要等 4 分钟。</td>
+</tr>
+<tr>
+<td><strong>中位数</strong></td>
+<td><strong>215 秒</strong> ≈ <strong>3.6 分钟</strong></td>
+<td>一半请求在 3.6 分钟内完成。</td>
+</tr>
+<tr>
+<td><strong>95% 用户</strong></td>
+<td><strong>361 秒</strong> ≈ <strong>6 分钟</strong></td>
+<td>最慢的 5% 要等 6 分钟以上。</td>
+</tr>
+<tr>
+<td><strong>吞吐量</strong></td>
+<td><strong>0.18 req/s</strong></td>
+<td>这台 MinerU <strong>每分钟只能处理约11 个 PDF</strong>。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="分块阶段"><a href="#分块阶段" class="headerlink" title="分块阶段"></a>分块阶段</h3><p>当前主流的分块方式共五种：固定长度分块，语义分块，递归分块，文档结构分块，llm分块。</p>
+<p>最后项目我选择了递归分块，原因如下：</p>
+<ol>
+<li>mineru无法正确提取md文档结构，因此我舍弃了文档结构分块</li>
+<li>测试了agentic chunk（其主要思想是，先进行初步分段，按照长度或递归，然后让大模型生成这一段的概要，将段与段合并生成块），但是测试下来，我们这个一个文档的内容同质化很严重，基本上都分到一块里了，我猜测语义分块也是这种效果，因此舍弃</li>
+<li>我们的文档中存在大量表格，我在预处理阶段增加了对表格的首尾标记，使用递归分块可以更好的保留这些结构</li>
+</ol>
+<h3 id="检索阶段"><a href="#检索阶段" class="headerlink" title="检索阶段"></a>检索阶段</h3><p>基于langchain_elasticsearch完成了向量搜索，bm25，混合检索，模糊检索的检索函数的编写。</p>
+<p>结果如下：</p>
+<ol>
+<li>混合检索elasticsearch需要付费使用</li>
+<li>bm25的多字段搜索有三种模式且字段的权重可以调整，后续评估时调整进行测试</li>
+<li>检索的效果需要后续进行rag评估时判定</li>
+</ol>
+<h3 id="elasticsearch相关"><a href="#elasticsearch相关" class="headerlink" title="elasticsearch相关"></a>elasticsearch相关</h3><p>完成对项目es模块的熟悉阅读；实现对elasticsearch的连接与字段的构建与存入。</p>
+<p>关于字段的存储，我选取了report_name，report_url，page_content</p>
+<h4 id="相关细节"><a href="#相关细节" class="headerlink" title="相关细节"></a>相关细节</h4><h5 id="阅读elasticsearch代码相关记录"><a href="#阅读elasticsearch代码相关记录" class="headerlink" title="阅读elasticsearch代码相关记录:"></a><strong>阅读elasticsearch代码相关记录:</strong></h5><ol>
+<li><strong>embedding_model</strong>.select_embeddings_model:根据指定的模型名称加载</li>
+<li><strong>make_es_vector_store</strong>：<ol>
+<li>docs_url = pd.read_excel(‘docs_new.xlsx’)，从excel加载url并进行数据处理，保存筛选后的ur</li>
+<li>完成文件加载测试：xizhang/retrival/docfile_test/test.py；</li>
+<li>初始化es，使用elastic_search.load_es_index加载存储索引</li>
+<li>完成测试elasticsearch连接与索引构建（索引名zxj_test）：/aisys/repo_dev/xizhang/retrival/elasticsearch_test/test_es_connect.py，/aisys/repo_dev/xizhang/retrival/elasticsearch_test/test_add_es.py</li>
+<li>顺序批量处理文件：共16000多份，每十份为一批进行处理，使用download_pdf.py进行文件下载，使用，使用vector_base.rewrite_file对文件进行处理，这里可以修改代码，增加对mineru处理pdf的markdown文件的处理，返回Document对象列表；</li>
+</ol>
+</li>
+<li><strong>elastic_search</strong></li>
+</ol>
+<p>重写了检索策略的函数，包括BM25，KNN，混合搜索</p>
+<ol>
+<li><p>elastic_retriever创建Elasticsearch检索器：根据搜索类型选择对应的查询函数，创建Elasticsearch检索器ElasticsearchRetriever.from_es_params</p>
+</li>
+<li><p><strong>retrievers</strong></p>
+<ol>
+<li>定义函数select_retriever，根据指定的名称选择并返回相应的检索器，目前只有bm25</li>
+</ol>
+</li>
+</ol>
+<h5 id="文档结构"><a href="#文档结构" class="headerlink" title="文档结构"></a>文档结构</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">doc = Document(</span><br><span class="line">            page_content=text_content,</span><br><span class="line">            metadata=&#123;</span><br><span class="line">                &quot;report_name&quot;: folder_name,</span><br><span class="line">                &quot;report_url&quot;: report_url,</span><br><span class="line">                &quot;chunk_id&quot;: chunk_id</span><br><span class="line">            &#125;</span><br><span class="line">        )</span><br></pre></td></tr></table></figure>
+<h3 id="rag评估"><a href="#rag评估" class="headerlink" title="rag评估"></a>rag评估</h3><p>待补充</p>
+<h3 id="后续优化思考"><a href="#后续优化思考" class="headerlink" title="后续优化思考"></a>后续优化思考</h3><ol>
+<li>重排序部分我没有做过，不知道怎么做，也不知道效果会怎样（我感觉在我们这个场景应该提升有限，听你说也是这样）</li>
+<li>如何存入数据库的部分，可能也是优化的点，比如可以尝试agentic rag这种，在存入数据库前再进行一步处理</li>
+<li>还有一个点我比较好奇，我们项目在召回后是如何处理的，就是上下文拼接吗</li>
+</ol>
+]]></content>
+      <categories>
+        <category>实习</category>
+        <category>晨晟智控</category>
+      </categories>
+      <tags>
+        <tag>实习</tag>
       </tags>
   </entry>
 </search>
