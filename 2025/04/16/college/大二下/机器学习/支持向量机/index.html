@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="正文 下面我将为你详细解释KKT（Karush-Kuhn-Tucker）条件。KKT条件是优化理论中用于求解带约束非线性规划问题的一组必要条件，广泛应用于支持向量机（SVM）等机器学习算法中。我会使用内联数学公式（如 f(x)）来展示相关表达式。  1. 优化问题的一般形式 我们考虑一个带有约束的优化问题，数学形式如下： - 目标：minxf(x) - 不等式约束：gi(x) ≤ 0，">
+    <meta name="description" content="正文下面我将为你详细解释KKT（Karush-Kuhn-Tucker）条件。KKT条件是优化理论中用于求解带约束非线性规划问题的一组必要条件，广泛应用于支持向量机（SVM）等机器学习算法中。我会使用内联数学公式（如 f(\mathbf{x})）来展示相关表达式。  1. 优化问题的一般形式我们考虑一个带有约束的优化问题，数学形式如下：  目标：\min_{\mathbf{x}} f(\mathbf">
 <meta property="og:type" content="article">
 <meta property="og:title" content="机器学习——支持向量机">
 <meta property="og:url" content="http://example.com/2025/04/16/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="正文 下面我将为你详细解释KKT（Karush-Kuhn-Tucker）条件。KKT条件是优化理论中用于求解带约束非线性规划问题的一组必要条件，广泛应用于支持向量机（SVM）等机器学习算法中。我会使用内联数学公式（如 f(x)）来展示相关表达式。  1. 优化问题的一般形式 我们考虑一个带有约束的优化问题，数学形式如下： - 目标：minxf(x) - 不等式约束：gi(x) ≤ 0，">
+<meta property="og:description" content="正文下面我将为你详细解释KKT（Karush-Kuhn-Tucker）条件。KKT条件是优化理论中用于求解带约束非线性规划问题的一组必要条件，广泛应用于支持向量机（SVM）等机器学习算法中。我会使用内联数学公式（如 f(\mathbf{x})）来展示相关表达式。  1. 优化问题的一般形式我们考虑一个带有约束的优化问题，数学形式如下：  目标：\min_{\mathbf{x}} f(\mathbf">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2025/04/16/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/IMG_20250416_164811.jpg">
 <meta property="og:image" content="http://example.com/2025/04/16/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/IMG_20250416_164804-1744793466526-4.jpg">
@@ -147,11 +147,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">1.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E8%88%AC%E5%BD%A2%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">1. 优化问题的一般形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">2. 拉格朗日函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kkt%E6%9D%A1%E4%BB%B6%E7%9A%84%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86"><span class="nav-number">1.3.</span> <span class="nav-text">3. KKT条件的组成部分</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A2%AF%E5%BA%A6%E6%9D%A1%E4%BB%B6stationarity"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 梯度条件（Stationarity）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8E%9F%E5%A7%8B%E5%8F%AF%E8%A1%8C%E6%80%A7primal-feasibility"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 原始可行性（Primal
-Feasibility）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E5%81%B6%E5%8F%AF%E8%A1%8C%E6%80%A7dual-feasibility"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.3 对偶可行性（Dual
-Feasibility）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%92%E8%A1%A5%E6%9D%BE%E5%BC%9B%E6%9D%A1%E4%BB%B6complementary-slackness"><span class="nav-number">1.3.4.</span> <span class="nav-text">3.4
-互补松弛条件（Complementary Slackness）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kkt%E6%9D%A1%E4%BB%B6%E7%9A%84%E6%84%8F%E4%B9%89"><span class="nav-number">1.4.</span> <span class="nav-text">4. KKT条件的意义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kkt%E6%9D%A1%E4%BB%B6%E5%9C%A8svm%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.5.</span> <span class="nav-text">5. KKT条件在SVM中的应用示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.6.</span> <span class="nav-text">6. 总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%9C%E4%B8%9A"><span class="nav-number">1.7.</span> <span class="nav-text">作业</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA%E6%8E%A8%E5%AF%BC%E7%9B%AE%E6%A0%87%E5%87%BD%E6%95%B0%E7%9A%84%E5%8E%9F%E5%A7%8B%E9%97%AE%E9%A2%98%E8%BD%AC%E6%8D%A2%E4%B8%BA%E5%AF%B9%E5%81%B6%E9%97%AE%E9%A2%98%E7%9A%84%E8%BF%87%E7%A8%8B%E5%92%8C%E6%9D%A1%E4%BB%B6%E4%BD%BF%E7%94%A8%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E4%B9%98%E5%AD%90%E6%B3%95"><span class="nav-number">1.7.1.</span> <span class="nav-text">关于支持向量机，推导目标函数的原始问题转换为对偶问题的过程和条件。（使用拉格朗日乘子法）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E5%A7%8B%E9%97%AE%E9%A2%98"><span class="nav-number">1.8.</span> <span class="nav-text">1. 原始问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%95%E5%85%A5%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E4%B9%98%E5%AD%90%E6%B3%95"><span class="nav-number">1.9.</span> <span class="nav-text">2. 引入拉格朗日乘子法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E6%8D%A2%E4%B8%BA%E5%AF%B9%E5%81%B6%E9%97%AE%E9%A2%98"><span class="nav-number">1.10.</span> <span class="nav-text">3. 转换为对偶问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9-mathbfw-%E5%92%8C-b-%E6%B1%82%E5%81%8F%E5%AF%BC"><span class="nav-number">1.10.1.</span> <span class="nav-text">3.1 对 w 和 b 求偏导</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E5%85%A5%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%87%BD%E6%95%B0"><span class="nav-number">1.10.2.</span> <span class="nav-text">3.2 代入拉格朗日函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E5%81%B6%E4%BC%98%E5%8C%96%E9%97%AE%E9%A2%98"><span class="nav-number">1.10.3.</span> <span class="nav-text">3.3 对偶优化问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AC%E6%8D%A2%E7%9A%84%E6%9D%A1%E4%BB%B6"><span class="nav-number">1.11.</span> <span class="nav-text">4. 转换的条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-1"><span class="nav-number">1.12.</span> <span class="nav-text">5. 总结</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%B2%E7%9F%A5%E8%AE%AD%E7%BB%83%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%AD%E6%AD%A3%E4%BE%8B%E7%82%B9x123x233x332%E8%B4%9F%E4%BE%8B%E7%82%B9x412-x521x631%E8%AE%AD%E7%BB%83%E7%BA%BF%E6%80%A7svm%E5%88%86%E7%B1%BB%E5%99%A8%E6%B1%82%E6%9C%80%E5%A4%A7%E9%97%B4%E9%9A%94%E5%88%86%E7%B1%BB%E8%B6%85%E5%B9%B3%E9%9D%A2%E5%92%8C%E5%88%86%E7%B1%BB%E5%86%B3%E7%AD%96%E5%87%BD%E6%95%B0%E5%B9%B6%E7%94%BB%E5%87%BA%E5%88%86%E7%B1%BB%E8%B6%85%E5%B9%B3%E9%9D%A2%E9%97%B4%E9%9A%94%E8%BE%B9%E7%95%8C%E4%BB%A5%E5%8F%8A%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F"><span class="nav-number">1.12.1.</span> <span class="nav-text">2.已知训练数据集中正例点x1&#x3D;(2,3)，x2&#x3D;(3,3)，x3&#x3D;(3,2)，负例点x4&#x3D;(1,2)，
-x5&#x3D;(2,1)，x6&#x3D;(3,1)，训练线性SVM分类器。求最大间隔分类超平面和分类决策函数，并画出分类超平面、间隔边界以及支持向量。</span></a></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">1.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E4%BC%98%E5%8C%96%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E8%88%AC%E5%BD%A2%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">1. 优化问题的一般形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">2. 拉格朗日函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-KKT%E6%9D%A1%E4%BB%B6%E7%9A%84%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86"><span class="nav-number">1.3.</span> <span class="nav-text">3. KKT条件的组成部分</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E6%A2%AF%E5%BA%A6%E6%9D%A1%E4%BB%B6%EF%BC%88Stationarity%EF%BC%89"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 梯度条件（Stationarity）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E5%8E%9F%E5%A7%8B%E5%8F%AF%E8%A1%8C%E6%80%A7%EF%BC%88Primal-Feasibility%EF%BC%89"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 原始可行性（Primal Feasibility）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E5%AF%B9%E5%81%B6%E5%8F%AF%E8%A1%8C%E6%80%A7%EF%BC%88Dual-Feasibility%EF%BC%89"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.3 对偶可行性（Dual Feasibility）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-%E4%BA%92%E8%A1%A5%E6%9D%BE%E5%BC%9B%E6%9D%A1%E4%BB%B6%EF%BC%88Complementary-Slackness%EF%BC%89"><span class="nav-number">1.3.4.</span> <span class="nav-text">3.4 互补松弛条件（Complementary Slackness）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-KKT%E6%9D%A1%E4%BB%B6%E7%9A%84%E6%84%8F%E4%B9%89"><span class="nav-number">1.4.</span> <span class="nav-text">4. KKT条件的意义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-KKT%E6%9D%A1%E4%BB%B6%E5%9C%A8SVM%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.5.</span> <span class="nav-text">5. KKT条件在SVM中的应用示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E6%80%BB%E7%BB%93"><span class="nav-number">1.6.</span> <span class="nav-text">6. 总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%9C%E4%B8%9A"><span class="nav-number">1.7.</span> <span class="nav-text">作业</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA%EF%BC%8C%E6%8E%A8%E5%AF%BC%E7%9B%AE%E6%A0%87%E5%87%BD%E6%95%B0%E7%9A%84%E5%8E%9F%E5%A7%8B%E9%97%AE%E9%A2%98%E8%BD%AC%E6%8D%A2%E4%B8%BA%E5%AF%B9%E5%81%B6%E9%97%AE%E9%A2%98%E7%9A%84%E8%BF%87%E7%A8%8B%E5%92%8C%E6%9D%A1%E4%BB%B6%E3%80%82%EF%BC%88%E4%BD%BF%E7%94%A8%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E4%B9%98%E5%AD%90%E6%B3%95%EF%BC%89"><span class="nav-number">1.7.1.</span> <span class="nav-text">关于支持向量机，推导目标函数的原始问题转换为对偶问题的过程和条件。（使用拉格朗日乘子法）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%8E%9F%E5%A7%8B%E9%97%AE%E9%A2%98"><span class="nav-number">1.8.</span> <span class="nav-text">1. 原始问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%BC%95%E5%85%A5%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E4%B9%98%E5%AD%90%E6%B3%95"><span class="nav-number">1.9.</span> <span class="nav-text">2. 引入拉格朗日乘子法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E8%BD%AC%E6%8D%A2%E4%B8%BA%E5%AF%B9%E5%81%B6%E9%97%AE%E9%A2%98"><span class="nav-number">1.10.</span> <span class="nav-text">3. 转换为对偶问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E5%AF%B9-mathbf-w-%E5%92%8C-b-%E6%B1%82%E5%81%8F%E5%AF%BC"><span class="nav-number">1.10.1.</span> <span class="nav-text">3.1 对 \mathbf{w} 和 b 求偏导</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E4%BB%A3%E5%85%A5%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E5%87%BD%E6%95%B0"><span class="nav-number">1.10.2.</span> <span class="nav-text">3.2 代入拉格朗日函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E5%AF%B9%E5%81%B6%E4%BC%98%E5%8C%96%E9%97%AE%E9%A2%98"><span class="nav-number">1.10.3.</span> <span class="nav-text">3.3 对偶优化问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E8%BD%AC%E6%8D%A2%E7%9A%84%E6%9D%A1%E4%BB%B6"><span class="nav-number">1.11.</span> <span class="nav-text">4. 转换的条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E6%80%BB%E7%BB%93"><span class="nav-number">1.12.</span> <span class="nav-text">5. 总结</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%B7%B2%E7%9F%A5%E8%AE%AD%E7%BB%83%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%AD%E6%AD%A3%E4%BE%8B%E7%82%B9x1-2-3-%EF%BC%8Cx2-3-3-%EF%BC%8Cx3-3-2-%EF%BC%8C%E8%B4%9F%E4%BE%8B%E7%82%B9x4-1-2-%EF%BC%8C-x5-2-1-%EF%BC%8Cx6-3-1-%EF%BC%8C%E8%AE%AD%E7%BB%83%E7%BA%BF%E6%80%A7SVM%E5%88%86%E7%B1%BB%E5%99%A8%E3%80%82%E6%B1%82%E6%9C%80%E5%A4%A7%E9%97%B4%E9%9A%94%E5%88%86%E7%B1%BB%E8%B6%85%E5%B9%B3%E9%9D%A2%E5%92%8C%E5%88%86%E7%B1%BB%E5%86%B3%E7%AD%96%E5%87%BD%E6%95%B0%EF%BC%8C%E5%B9%B6%E7%94%BB%E5%87%BA%E5%88%86%E7%B1%BB%E8%B6%85%E5%B9%B3%E9%9D%A2%E3%80%81%E9%97%B4%E9%9A%94%E8%BE%B9%E7%95%8C%E4%BB%A5%E5%8F%8A%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E3%80%82"><span class="nav-number">1.12.1.</span> <span class="nav-text">2.已知训练数据集中正例点x1&#x3D;(2,3)，x2&#x3D;(3,3)，x3&#x3D;(3,2)，负例点x4&#x3D;(1,2)，    x5&#x3D;(2,1)，x6&#x3D;(3,1)，训练线性SVM分类器。求最大间隔分类超平面和分类决策函数，并画出分类超平面、间隔边界以及支持向量。</span></a></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -166,7 +162,7 @@ x5&#x3D;(2,1)，x6&#x3D;(3,1)，训练线性SVM分类器。求最大间隔分类
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">123</span>
+          <span class="site-state-item-count">124</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -295,262 +291,160 @@ x5&#x3D;(2,1)，x6&#x3D;(3,1)，训练线性SVM分类器。求最大间隔分类
     
     
     
-    <div class="post-body" itemprop="articleBody"><h2 id="正文">正文</h2>
-<p>下面我将为你详细解释KKT（Karush-Kuhn-Tucker）条件。KKT条件是优化理论中用于求解带约束非线性规划问题的一组必要条件，广泛应用于支持向量机（SVM）等机器学习算法中。我会使用内联数学公式（如
-<span class="math display"><em>f</em>(<strong>x</strong>)</span>）来展示相关表达式。</p>
+    <div class="post-body" itemprop="articleBody"><h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>下面我将为你详细解释KKT（Karush-Kuhn-Tucker）条件。KKT条件是优化理论中用于求解带约束非线性规划问题的一组必要条件，广泛应用于支持向量机（SVM）等机器学习算法中。我会使用内联数学公式（如 <script type="math/tex">f(\mathbf{x})</script>）来展示相关表达式。</p>
 <hr>
-<h3 id="优化问题的一般形式">1. 优化问题的一般形式</h3>
-<p>我们考虑一个带有约束的优化问题，数学形式如下： - 目标：<span class="math display">min<sub><strong>x</strong></sub><em>f</em>(<strong>x</strong>)</span>
-- 不等式约束：<span class="math display"><em>g</em><sub><em>i</em></sub>(<strong>x</strong>) ≤ 0</span>，其中
-<span class="math display"><em>i</em> = 1, 2, …, <em>m</em></span> -
-等式约束：<span class="math display"><em>h</em><sub><em>j</em></sub>(<strong>x</strong>) = 0</span>，其中
-<span class="math display"><em>j</em> = 1, 2, …, <em>p</em></span></p>
-<p>这里： - <span class="math display"><em>f</em>(<strong>x</strong>)</span>
-是目标函数，通常是我们希望最小化的函数。 - <span class="math display"><em>g</em><sub><em>i</em></sub>(<strong>x</strong>) ≤ 0</span>
-表示 <span class="math display"><em>m</em></span> 个不等式约束。 - <span class="math display"><em>h</em><sub><em>j</em></sub>(<strong>x</strong>) = 0</span>
-表示 <span class="math display"><em>p</em></span> 个等式约束。</p>
-<p>KKT条件的目标是找到满足这些约束的局部最优解 <span class="math display"><strong>x</strong></span>。</p>
-<hr>
-<h3 id="拉格朗日函数">2. 拉格朗日函数</h3>
-<p>为了引入KKT条件，我们首先定义拉格朗日函数： <span class="math display">$$\mathcal{L}(\mathbf{x}, \boldsymbol{\lambda},
-\boldsymbol{\mu}) = f(\mathbf{x}) + \sum_{i=1}^{m} \lambda_i
-g_i(\mathbf{x}) + \sum_{j=1}^{p} \mu_j h_j(\mathbf{x})$$</span></p>
-<p>其中： - <span class="math display"><strong>λ</strong> = (<em>λ</em><sub>1</sub>,<em>λ</em><sub>2</sub>,…,<em>λ</em><sub><em>m</em></sub>)</span>
-是与不等式约束 <span class="math display"><em>g</em><sub><em>i</em></sub>(<strong>x</strong>) ≤ 0</span>
-对应的拉格朗日乘子。 - <span class="math display"><strong>μ</strong> = (<em>μ</em><sub>1</sub>,<em>μ</em><sub>2</sub>,…,<em>μ</em><sub><em>p</em></sub>)</span>
-是与等式约束 <span class="math display"><em>h</em><sub><em>j</em></sub>(<strong>x</strong>) = 0</span>
-对应的拉格朗日乘子。</p>
-<p>拉格朗日函数将目标函数和约束条件结合在一起，通过引入乘子 <span class="math display"><em>λ</em><sub><em>i</em></sub></span> 和 <span class="math display"><em>μ</em><sub><em>j</em></sub></span>
-来平衡约束对优化的影响。</p>
-<hr>
-<h3 id="kkt条件的组成部分">3. KKT条件的组成部分</h3>
-<p>KKT条件由以下四个部分组成，只有当某些正则性条件（如Slater条件）满足时，局部最优解
-<span class="math display"><strong>x</strong></span>
-才会同时满足这些条件。以下是具体的KKT条件：</p>
-<h4 id="梯度条件stationarity">3.1 梯度条件（Stationarity）</h4>
-<p>拉格朗日函数对 <span class="math display"><strong>x</strong></span>
-的梯度必须为零，即： <span class="math display">$$\nabla_{\mathbf{x}}
-\mathcal{L}(\mathbf{x}, \boldsymbol{\lambda}, \boldsymbol{\mu}) = \nabla
-f(\mathbf{x}) + \sum_{i=1}^{m} \lambda_i \nabla g_i(\mathbf{x}) +
-\sum_{j=1}^{p} \mu_j \nabla h_j(\mathbf{x}) = 0$$</span></p>
-<p>这意味着在最优解处，目标函数的梯度可以通过约束函数梯度的线性组合来表示。</p>
-<h4 id="原始可行性primal-feasibility">3.2 原始可行性（Primal
-Feasibility）</h4>
-<p>解 <span class="math display"><strong>x</strong></span>
-必须满足原始问题的所有约束： - 不等式约束：<span class="math display"><em>g</em><sub><em>i</em></sub>(<strong>x</strong>) ≤ 0</span>，其中
-<span class="math display"><em>i</em> = 1, 2, …, <em>m</em></span> -
-等式约束：<span class="math display"><em>h</em><sub><em>j</em></sub>(<strong>x</strong>) = 0</span>，其中
-<span class="math display"><em>j</em> = 1, 2, …, <em>p</em></span></p>
-<p>这确保了解仍在问题的可行域内。</p>
-<h4 id="对偶可行性dual-feasibility">3.3 对偶可行性（Dual
-Feasibility）</h4>
-<p>对于不等式约束对应的拉格朗日乘子，必须满足： <span class="math display"><em>λ</em><sub><em>i</em></sub> ≥ 0</span>，其中
-<span class="math display"><em>i</em> = 1, 2, …, <em>m</em></span></p>
-<p>这表明不等式约束的乘子非负，反映了约束对优化方向的影响。</p>
-<h4 id="互补松弛条件complementary-slackness">3.4
-互补松弛条件（Complementary Slackness）</h4>
-<p>对于每个不等式约束，乘子与约束函数的乘积必须为零： <span class="math display"><em>λ</em><sub><em>i</em></sub><em>g</em><sub><em>i</em></sub>(<strong>x</strong>) = 0</span>，其中
-<span class="math display"><em>i</em> = 1, 2, …, <em>m</em></span></p>
-<p>这意味着： - 如果某个约束不“紧”（即 <span class="math display"><em>g</em><sub><em>i</em></sub>(<strong>x</strong>) &lt; 0</span>），则对应的乘子
-<span class="math display"><em>λ</em><sub><em>i</em></sub> = 0</span>。
-- 如果 <span class="math display"><em>λ</em><sub><em>i</em></sub> &gt; 0</span>，则该约束必须是“紧”的（即
-<span class="math display"><em>g</em><sub><em>i</em></sub>(<strong>x</strong>) = 0</span>）。</p>
-<hr>
-<h3 id="kkt条件的意义">4. KKT条件的意义</h3>
+<h3 id="1-优化问题的一般形式"><a href="#1-优化问题的一般形式" class="headerlink" title="1. 优化问题的一般形式"></a>1. 优化问题的一般形式</h3><p>我们考虑一个带有约束的优化问题，数学形式如下：</p>
 <ul>
+<li>目标：<script type="math/tex">\min_{\mathbf{x}} f(\mathbf{x})</script></li>
+<li>不等式约束：<script type="math/tex">g_i(\mathbf{x}) \leq 0</script>，其中 <script type="math/tex">i = 1, 2, \dots, m</script></li>
+<li>等式约束：<script type="math/tex">h_j(\mathbf{x}) = 0</script>，其中 <script type="math/tex">j = 1, 2, \dots, p</script></li>
+</ul>
+<p>这里：</p>
+<ul>
+<li><script type="math/tex">f(\mathbf{x})</script> 是目标函数，通常是我们希望最小化的函数。</li>
+<li><script type="math/tex">g_i(\mathbf{x}) \leq 0</script> 表示 <script type="math/tex">m</script> 个不等式约束。</li>
+<li><script type="math/tex">h_j(\mathbf{x}) = 0</script> 表示 <script type="math/tex">p</script> 个等式约束。</li>
+</ul>
+<p>KKT条件的目标是找到满足这些约束的局部最优解 <script type="math/tex">\mathbf{x}</script>。</p>
+<hr>
+<h3 id="2-拉格朗日函数"><a href="#2-拉格朗日函数" class="headerlink" title="2. 拉格朗日函数"></a>2. 拉格朗日函数</h3><p>为了引入KKT条件，我们首先定义拉格朗日函数：</p>
+<script type="math/tex; mode=display">\mathcal{L}(\mathbf{x}, \boldsymbol{\lambda}, \boldsymbol{\mu}) = f(\mathbf{x}) + \sum_{i=1}^{m} \lambda_i g_i(\mathbf{x}) + \sum_{j=1}^{p} \mu_j h_j(\mathbf{x})</script><p>其中：</p>
+<ul>
+<li><script type="math/tex">\boldsymbol{\lambda} = (\lambda_1, \lambda_2, \dots, \lambda_m)</script> 是与不等式约束 <script type="math/tex">g_i(\mathbf{x}) \leq 0</script> 对应的拉格朗日乘子。</li>
+<li><script type="math/tex">\boldsymbol{\mu} = (\mu_1, \mu_2, \dots, \mu_p)</script> 是与等式约束 <script type="math/tex">h_j(\mathbf{x}) = 0</script> 对应的拉格朗日乘子。</li>
+</ul>
+<p>拉格朗日函数将目标函数和约束条件结合在一起，通过引入乘子 <script type="math/tex">\lambda_i</script> 和 <script type="math/tex">\mu_j</script> 来平衡约束对优化的影响。</p>
+<hr>
+<h3 id="3-KKT条件的组成部分"><a href="#3-KKT条件的组成部分" class="headerlink" title="3. KKT条件的组成部分"></a>3. KKT条件的组成部分</h3><p>KKT条件由以下四个部分组成，只有当某些正则性条件（如Slater条件）满足时，局部最优解 <script type="math/tex">\mathbf{x}</script> 才会同时满足这些条件。以下是具体的KKT条件：</p>
+<h4 id="3-1-梯度条件（Stationarity）"><a href="#3-1-梯度条件（Stationarity）" class="headerlink" title="3.1 梯度条件（Stationarity）"></a>3.1 梯度条件（Stationarity）</h4><p>拉格朗日函数对 <script type="math/tex">\mathbf{x}</script> 的梯度必须为零，即：</p>
+<script type="math/tex; mode=display">\nabla_{\mathbf{x}} \mathcal{L}(\mathbf{x}, \boldsymbol{\lambda}, \boldsymbol{\mu}) = \nabla f(\mathbf{x}) + \sum_{i=1}^{m} \lambda_i \nabla g_i(\mathbf{x}) + \sum_{j=1}^{p} \mu_j \nabla h_j(\mathbf{x}) = 0</script><p>这意味着在最优解处，目标函数的梯度可以通过约束函数梯度的线性组合来表示。</p>
+<h4 id="3-2-原始可行性（Primal-Feasibility）"><a href="#3-2-原始可行性（Primal-Feasibility）" class="headerlink" title="3.2 原始可行性（Primal Feasibility）"></a>3.2 原始可行性（Primal Feasibility）</h4><p>解 <script type="math/tex">\mathbf{x}</script> 必须满足原始问题的所有约束：</p>
+<ul>
+<li>不等式约束：<script type="math/tex">g_i(\mathbf{x}) \leq 0</script>，其中 <script type="math/tex">i = 1, 2, \dots, m</script></li>
+<li>等式约束：<script type="math/tex">h_j(\mathbf{x}) = 0</script>，其中 <script type="math/tex">j = 1, 2, \dots, p</script></li>
+</ul>
+<p>这确保了解仍在问题的可行域内。</p>
+<h4 id="3-3-对偶可行性（Dual-Feasibility）"><a href="#3-3-对偶可行性（Dual-Feasibility）" class="headerlink" title="3.3 对偶可行性（Dual Feasibility）"></a>3.3 对偶可行性（Dual Feasibility）</h4><p>对于不等式约束对应的拉格朗日乘子，必须满足：</p>
+<script type="math/tex; mode=display">\lambda_i \geq 0$$，其中 $$i = 1, 2, \dots, m</script><p>这表明不等式约束的乘子非负，反映了约束对优化方向的影响。</p>
+<h4 id="3-4-互补松弛条件（Complementary-Slackness）"><a href="#3-4-互补松弛条件（Complementary-Slackness）" class="headerlink" title="3.4 互补松弛条件（Complementary Slackness）"></a>3.4 互补松弛条件（Complementary Slackness）</h4><p>对于每个不等式约束，乘子与约束函数的乘积必须为零：</p>
+<script type="math/tex; mode=display">\lambda_i g_i(\mathbf{x}) = 0$$，其中 $$i = 1, 2, \dots, m</script><p>这意味着：</p>
+<ul>
+<li>如果某个约束不“紧”（即 <script type="math/tex">g_i(\mathbf{x}) < 0</script>），则对应的乘子 <script type="math/tex">\lambda_i = 0</script>。</li>
+<li>如果 <script type="math/tex">\lambda_i > 0</script>，则该约束必须是“紧”的（即 <script type="math/tex">g_i(\mathbf{x}) = 0</script>）。</li>
+</ul>
+<hr>
+<h3 id="4-KKT条件的意义"><a href="#4-KKT条件的意义" class="headerlink" title="4. KKT条件的意义"></a>4. KKT条件的意义</h3><ul>
 <li><strong>梯度条件</strong>：表明最优解处目标函数的改变方向被约束完全平衡。</li>
 <li><strong>原始可行性</strong>：确保解满足所有约束条件。</li>
 <li><strong>对偶可行性</strong>：限制拉格朗日乘子的符号，保证优化方向的合理性。</li>
 <li><strong>互补松弛条件</strong>：揭示哪些约束在最优解处起作用（紧约束），哪些不起作用。</li>
 </ul>
 <hr>
-<h3 id="kkt条件在svm中的应用示例">5. KKT条件在SVM中的应用示例</h3>
-<p>KKT条件在支持向量机（SVM）中尤为重要。SVM的原始优化问题为： -
-目标：<span class="math display">$$\min_{\mathbf{w}, b} \frac{1}{2}
-\|\mathbf{w}\|^2$$</span> - 约束：<span class="math display"><em>y</em><sub><em>i</em></sub>(<strong>w</strong>⋅<strong>x</strong><sub><em>i</em></sub>+<em>b</em>) ≥ 1</span>，其中
-<span class="math display"><em>i</em> = 1, 2, …, <em>n</em></span></p>
-<p>将其改写为标准形式的不等式约束：<span class="math display">1 − <em>y</em><sub><em>i</em></sub>(<strong>w</strong>⋅<strong>x</strong><sub><em>i</em></sub>+<em>b</em>) ≤ 0</span>。</p>
-<p>拉格朗日函数为： <span class="math display">$$\mathcal{L}(\mathbf{w},
-b, \boldsymbol{\alpha}) = \frac{1}{2} \|\mathbf{w}\|^2 + \sum_{i=1}^{n}
-\alpha_i \left[ 1 - y_i (\mathbf{w} \cdot \mathbf{x}_i + b)
-\right]$$</span></p>
-<p>应用KKT条件： 1. <strong>梯度条件</strong>： - 对 <span class="math display"><strong>w</strong></span>：<span class="math display">$$\nabla_{\mathbf{w}} \mathcal{L} = \mathbf{w} -
-\sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i = 0$$</span> - 对 <span class="math display"><em>b</em></span>：<span class="math display">$$\frac{\partial \mathcal{L}}{\partial b} =
--\sum_{i=1}^{n} \alpha_i y_i = 0$$</span> 2.
-<strong>原始可行性</strong>：<span class="math display"><em>y</em><sub><em>i</em></sub>(<strong>w</strong>⋅<strong>x</strong><sub><em>i</em></sub>+<em>b</em>) ≥ 1</span>
-3. <strong>对偶可行性</strong>：<span class="math display"><em>α</em><sub><em>i</em></sub> ≥ 0</span> 4.
-<strong>互补松弛条件</strong>：<span class="math display"><em>α</em><sub><em>i</em></sub>[<em>y</em><sub><em>i</em></sub>(<strong>w</strong>⋅<strong>x</strong><sub><em>i</em></sub>+<em>b</em>)−1] = 0</span></p>
-<p>这些条件帮助我们识别支持向量（<span class="math display"><em>α</em><sub><em>i</em></sub> &gt; 0</span>
-的点）并求解最优的 <span class="math display"><strong>w</strong></span>
-和 <span class="math display"><em>b</em></span>。</p>
+<h3 id="5-KKT条件在SVM中的应用示例"><a href="#5-KKT条件在SVM中的应用示例" class="headerlink" title="5. KKT条件在SVM中的应用示例"></a>5. KKT条件在SVM中的应用示例</h3><p>KKT条件在支持向量机（SVM）中尤为重要。SVM的原始优化问题为：</p>
+<ul>
+<li>目标：<script type="math/tex">\min_{\mathbf{w}, b} \frac{1}{2} \|\mathbf{w}\|^2</script></li>
+<li>约束：<script type="math/tex">y_i (\mathbf{w} \cdot \mathbf{x}_i + b) \geq 1</script>，其中 <script type="math/tex">i = 1, 2, \dots, n</script></li>
+</ul>
+<p>将其改写为标准形式的不等式约束：<script type="math/tex">1 - y_i (\mathbf{w} \cdot \mathbf{x}_i + b) \leq 0</script>。</p>
+<p>拉格朗日函数为：</p>
+<script type="math/tex; mode=display">\mathcal{L}(\mathbf{w}, b, \boldsymbol{\alpha}) = \frac{1}{2} \|\mathbf{w}\|^2 + \sum_{i=1}^{n} \alpha_i \left[ 1 - y_i (\mathbf{w} \cdot \mathbf{x}_i + b) \right]</script><p>应用KKT条件：</p>
+<ol>
+<li><strong>梯度条件</strong>：<ul>
+<li>对 <script type="math/tex">\mathbf{w}</script>：<script type="math/tex">\nabla_{\mathbf{w}} \mathcal{L} = \mathbf{w} - \sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i = 0</script></li>
+<li>对 <script type="math/tex">b</script>：<script type="math/tex">\frac{\partial \mathcal{L}}{\partial b} = -\sum_{i=1}^{n} \alpha_i y_i = 0</script></li>
+</ul>
+</li>
+<li><strong>原始可行性</strong>：<script type="math/tex">y_i (\mathbf{w} \cdot \mathbf{x}_i + b) \geq 1</script></li>
+<li><strong>对偶可行性</strong>：<script type="math/tex">\alpha_i \geq 0</script></li>
+<li><strong>互补松弛条件</strong>：<script type="math/tex">\alpha_i \left[ y_i (\mathbf{w} \cdot \mathbf{x}_i + b) - 1 \right] = 0</script></li>
+</ol>
+<p>这些条件帮助我们识别支持向量（<script type="math/tex">\alpha_i > 0</script> 的点）并求解最优的 <script type="math/tex">\mathbf{w}</script> 和 <script type="math/tex">b</script>。</p>
 <hr>
-<h3 id="总结">6. 总结</h3>
-<p>KKT条件是求解带约束优化问题的核心工具，它通过梯度条件、原始可行性、对偶可行性和互补松弛条件，确保了解既是最优的，又满足所有约束。在机器学习中，KKT条件为SVM等算法提供了理论支持，是理解和实现这些模型的关键。</p>
-<h3 id="作业">作业</h3>
-<h4 id="关于支持向量机推导目标函数的原始问题转换为对偶问题的过程和条件使用拉格朗日乘子法">关于支持向量机，推导目标函数的原始问题转换为对偶问题的过程和条件。（使用拉格朗日乘子法）</h4>
-<figure>
-<img src="/2025/04/16/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/IMG_20250416_164811.jpg" alt="IMG_20250416_164811">
-<figcaption aria-hidden="true">IMG_20250416_164811</figcaption>
-</figure>
+<h3 id="6-总结"><a href="#6-总结" class="headerlink" title="6. 总结"></a>6. 总结</h3><p>KKT条件是求解带约束优化问题的核心工具，它通过梯度条件、原始可行性、对偶可行性和互补松弛条件，确保了解既是最优的，又满足所有约束。在机器学习中，KKT条件为SVM等算法提供了理论支持，是理解和实现这些模型的关键。</p>
+<h3 id="作业"><a href="#作业" class="headerlink" title="作业"></a>作业</h3><h4 id="关于支持向量机，推导目标函数的原始问题转换为对偶问题的过程和条件。（使用拉格朗日乘子法）"><a href="#关于支持向量机，推导目标函数的原始问题转换为对偶问题的过程和条件。（使用拉格朗日乘子法）" class="headerlink" title="关于支持向量机，推导目标函数的原始问题转换为对偶问题的过程和条件。（使用拉格朗日乘子法）"></a>关于支持向量机，推导目标函数的原始问题转换为对偶问题的过程和条件。（使用拉格朗日乘子法）</h4><p><img src="/2025/04/16/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/IMG_20250416_164811.jpg" alt="IMG_20250416_164811"></p>
 <p>下面我们将推导支持向量机（SVM）中目标函数从原始问题转换为对偶问题的过程和条件，使用拉格朗日乘子法。我们将一步步展开，确保推导清晰且完整。</p>
 <hr>
-<h3 id="原始问题">1. 原始问题</h3>
-<p>支持向量机（SVM）的目标是找到一个超平面，能够最大化到最近数据点的间隔。对于线性可分的情况，原始优化问题可以定义为：</p>
+<h3 id="1-原始问题"><a href="#1-原始问题" class="headerlink" title="1. 原始问题"></a>1. 原始问题</h3><p>支持向量机（SVM）的目标是找到一个超平面，能够最大化到最近数据点的间隔。对于线性可分的情况，原始优化问题可以定义为：</p>
 <ul>
-<li><p><strong>目标函数</strong>：<br>
-<span class="math display">$$\min_{\mathbf{w}, b} \frac{1}{2}
-\|\mathbf{w}\|^2$$</span></p></li>
-<li><p><strong>约束条件</strong>：<br>
-<span class="math display"><em>y</em><sub><em>i</em></sub>(<strong>w</strong>⋅<strong>x</strong><sub><em>i</em></sub>+<em>b</em>) ≥ 1,  <em>i</em> = 1, 2, …, <em>n</em></span></p></li>
+<li><p><strong>目标函数</strong>：  </p>
+<script type="math/tex; mode=display">\min_{\mathbf{w}, b} \frac{1}{2} \|\mathbf{w}\|^2</script></li>
+<li><p><strong>约束条件</strong>：  </p>
+<script type="math/tex; mode=display">y_i (\mathbf{w} \cdot \mathbf{x}_i + b) \geq 1, \quad i = 1, 2, \dots, n</script></li>
 </ul>
-<p>其中： - <span class="math display"><strong>w</strong></span>
-是超平面的法向量； - <span class="math display"><em>b</em></span>
-是超平面的截距； - <span class="math display"><strong>x</strong><sub><em>i</em></sub></span>
-是训练样本，<span class="math display"><em>y</em><sub><em>i</em></sub> ∈ { − 1, 1}</span>
-是对应的类别标签； - <span class="math display">∥<strong>w</strong>∥<sup>2</sup></span>
-表示法向量的平方范数，目标是最小化它以最大化间隔； -
-约束条件确保所有样本点被正确分类，并且到超平面的归一化距离至少为 1。</p>
-<hr>
-<h3 id="引入拉格朗日乘子法">2. 引入拉格朗日乘子法</h3>
-<p>由于这是一个带不等式约束的优化问题，我们使用拉格朗日乘子法将其转换为无约束形式。引入拉格朗日乘子
-<span class="math display"><strong>α</strong> = (<em>α</em><sub>1</sub>,<em>α</em><sub>2</sub>,…,<em>α</em><sub><em>n</em></sub>)</span>，其中
-<span class="math display"><em>α</em><sub><em>i</em></sub> ≥ 0</span>，构造拉格朗日函数：</p>
-<p><span class="math display">$$\mathcal{L}(\mathbf{w}, b,
-\boldsymbol{\alpha}) = \frac{1}{2} \|\mathbf{w}\|^2 - \sum_{i=1}^{n}
-\alpha_i \left[ y_i (\mathbf{w} \cdot \mathbf{x}_i + b) - 1
-\right]$$</span></p>
+<p>其中：</p>
 <ul>
-<li>第一项 <span class="math display">$$\frac{1}{2}
-\|\mathbf{w}\|^2$$</span> 是原始目标函数；</li>
-<li>第二项 <span class="math display">$$-\sum_{i=1}^{n} \alpha_i \left[
-y_i (\mathbf{w} \cdot \mathbf{x}_i + b) - 1 \right]$$</span>
-将约束条件引入，由于是 <span class="math display">≥</span> 不等式，乘子
-<span class="math display"><em>α</em><sub><em>i</em></sub> ≥ 0</span>。</li>
+<li><script type="math/tex">\mathbf{w}</script> 是超平面的法向量；</li>
+<li><script type="math/tex">b</script> 是超平面的截距；</li>
+<li><script type="math/tex">\mathbf{x}_i</script> 是训练样本，<script type="math/tex">y_i \in \{-1, 1\}</script> 是对应的类别标签；</li>
+<li><script type="math/tex">\|\mathbf{w}\|^2</script> 表示法向量的平方范数，目标是最小化它以最大化间隔；</li>
+<li>约束条件确保所有样本点被正确分类，并且到超平面的归一化距离至少为 1。</li>
+</ul>
+<hr>
+<h3 id="2-引入拉格朗日乘子法"><a href="#2-引入拉格朗日乘子法" class="headerlink" title="2. 引入拉格朗日乘子法"></a>2. 引入拉格朗日乘子法</h3><p>由于这是一个带不等式约束的优化问题，我们使用拉格朗日乘子法将其转换为无约束形式。引入拉格朗日乘子 <script type="math/tex">\boldsymbol{\alpha} = (\alpha_1, \alpha_2, \dots, \alpha_n)</script>，其中 <script type="math/tex">\alpha_i \geq 0</script>，构造拉格朗日函数：</p>
+<script type="math/tex; mode=display">\mathcal{L}(\mathbf{w}, b, \boldsymbol{\alpha}) = \frac{1}{2} \|\mathbf{w}\|^2 - \sum_{i=1}^{n} \alpha_i \left[ y_i (\mathbf{w} \cdot \mathbf{x}_i + b) - 1 \right]</script><ul>
+<li>第一项 <script type="math/tex">\frac{1}{2} \|\mathbf{w}\|^2</script> 是原始目标函数；</li>
+<li>第二项 <script type="math/tex">-\sum_{i=1}^{n} \alpha_i \left[ y_i (\mathbf{w} \cdot \mathbf{x}_i + b) - 1 \right]</script> 将约束条件引入，由于是 <script type="math/tex">\geq</script> 不等式，乘子 <script type="math/tex">\alpha_i \geq 0</script>。</li>
 </ul>
 <p>我们的目标是通过拉格朗日函数，将原始问题转换为对偶问题。</p>
 <hr>
-<h3 id="转换为对偶问题">3. 转换为对偶问题</h3>
-<p>对偶问题的核心思想是：先对 <span class="math display"><strong>w</strong></span> 和 <span class="math display"><em>b</em></span> 求拉格朗日函数的极小值，然后对
-<span class="math display"><strong>α</strong></span> 求极大值。即：</p>
-<p><span class="math display">max<sub><strong>α</strong> ≥ 0</sub>min<sub><strong>w</strong>, <em>b</em></sub>ℒ(<strong>w</strong>,<em>b</em>,<strong>α</strong>)</span></p>
-<h4 id="对-mathbfw-和-b-求偏导">3.1 对 <span class="math display"><strong>w</strong></span> 和 <span class="math display"><em>b</em></span> 求偏导</h4>
-<p>为了找到 <span class="math display">ℒ</span> 关于 <span class="math display"><strong>w</strong></span> 和 <span class="math display"><em>b</em></span>
-的极小值，分别求偏导并令其为零：</p>
+<h3 id="3-转换为对偶问题"><a href="#3-转换为对偶问题" class="headerlink" title="3. 转换为对偶问题"></a>3. 转换为对偶问题</h3><p>对偶问题的核心思想是：先对 <script type="math/tex">\mathbf{w}</script> 和 <script type="math/tex">b</script> 求拉格朗日函数的极小值，然后对 <script type="math/tex">\boldsymbol{\alpha}</script> 求极大值。即：</p>
+<script type="math/tex; mode=display">\max_{\boldsymbol{\alpha} \geq 0} \min_{\mathbf{w}, b} \mathcal{L}(\mathbf{w}, b, \boldsymbol{\alpha})</script><h4 id="3-1-对-mathbf-w-和-b-求偏导"><a href="#3-1-对-mathbf-w-和-b-求偏导" class="headerlink" title="3.1 对 \mathbf{w} 和 b 求偏导"></a>3.1 对 <script type="math/tex">\mathbf{w}</script> 和 <script type="math/tex">b</script> 求偏导</h4><p>为了找到 <script type="math/tex">\mathcal{L}</script> 关于 <script type="math/tex">\mathbf{w}</script> 和 <script type="math/tex">b</script> 的极小值，分别求偏导并令其为零：</p>
 <ul>
-<li><p>对 <span class="math display"><strong>w</strong></span>
-求偏导：<br>
-<span class="math display">$$\frac{\partial \mathcal{L}}{\partial
-\mathbf{w}} = \mathbf{w} - \sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i =
-0$$</span><br>
-解得：<br>
-<span class="math display">$$\mathbf{w} = \sum_{i=1}^{n} \alpha_i y_i
-\mathbf{x}_i$$</span></p></li>
-<li><p>对 <span class="math display"><em>b</em></span> 求偏导：<br>
-<span class="math display">$$\frac{\partial \mathcal{L}}{\partial b} =
--\sum_{i=1}^{n} \alpha_i y_i = 0$$</span><br>
-解得：<br>
-<span class="math display">$$\sum_{i=1}^{n} \alpha_i y_i =
-0$$</span></p></li>
+<li><p>对 <script type="math/tex">\mathbf{w}</script> 求偏导：  </p>
+<script type="math/tex; mode=display">\frac{\partial \mathcal{L}}{\partial \mathbf{w}} = \mathbf{w} - \sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i = 0</script><p>解得：  </p>
+<script type="math/tex; mode=display">\mathbf{w} = \sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i</script></li>
+<li><p>对 <script type="math/tex">b</script> 求偏导：  </p>
+<script type="math/tex; mode=display">\frac{\partial \mathcal{L}}{\partial b} = -\sum_{i=1}^{n} \alpha_i y_i = 0</script><p>解得：  </p>
+<script type="math/tex; mode=display">\sum_{i=1}^{n} \alpha_i y_i = 0</script></li>
 </ul>
 <p>这两个结果是后续推导的关键。</p>
-<h4 id="代入拉格朗日函数">3.2 代入拉格朗日函数</h4>
-<p>将 <span class="math display">$$\mathbf{w} = \sum_{i=1}^{n} \alpha_i
-y_i \mathbf{x}_i$$</span> 代入拉格朗日函数，并利用 <span class="math display">$$\sum_{i=1}^{n} \alpha_i y_i = 0$$</span>
-简化：</p>
-<p><span class="math display">$$\mathcal{L} = \frac{1}{2} \left\|
-\sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i \right\|^2 - \sum_{i=1}^{n}
-\alpha_i \left[ y_i \left( \left( \sum_{j=1}^{n} \alpha_j y_j
-\mathbf{x}_j \right) \cdot \mathbf{x}_i + b \right) - 1
-\right]$$</span></p>
-<ul>
-<li><p>计算第一项：<br>
-<span class="math display">$$\left\| \sum_{i=1}^{n} \alpha_i y_i
-\mathbf{x}_i \right\|^2 = \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i
-\alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j)$$</span></p></li>
-<li><p>计算第二项中的内积部分：<br>
-<span class="math display">$$y_i \left( \sum_{j=1}^{n} \alpha_j y_j
-\mathbf{x}_j \right) \cdot \mathbf{x}_i = y_i \sum_{j=1}^{n} \alpha_j
-y_j (\mathbf{x}_j \cdot \mathbf{x}_i)$$</span><br>
-所以：<br>
-<span class="math display">$$\sum_{i=1}^{n} \alpha_i y_i \left(
-\sum_{j=1}^{n} \alpha_j y_j (\mathbf{x}_j \cdot \mathbf{x}_i) \right) =
-\sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i
-\cdot \mathbf{x}_j)$$</span></p></li>
-<li><p>考虑 <span class="math display"><em>b</em></span> 项：<br>
-<span class="math display">$$\sum_{i=1}^{n} \alpha_i y_i b = b
-\sum_{i=1}^{n} \alpha_i y_i = 0 \quad (\text{因为} \sum_{i=1}^{n}
-\alpha_i y_i = 0)$$</span></p></li>
+<h4 id="3-2-代入拉格朗日函数"><a href="#3-2-代入拉格朗日函数" class="headerlink" title="3.2 代入拉格朗日函数"></a>3.2 代入拉格朗日函数</h4><p>将 <script type="math/tex">\mathbf{w} = \sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i</script> 代入拉格朗日函数，并利用 <script type="math/tex">\sum_{i=1}^{n} \alpha_i y_i = 0</script> 简化：</p>
+<script type="math/tex; mode=display">\mathcal{L} = \frac{1}{2} \left\| \sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i \right\|^2 - \sum_{i=1}^{n} \alpha_i \left[ y_i \left( \left( \sum_{j=1}^{n} \alpha_j y_j \mathbf{x}_j \right) \cdot \mathbf{x}_i + b \right) - 1 \right]</script><ul>
+<li><p>计算第一项：  </p>
+<script type="math/tex; mode=display">\left\| \sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i \right\|^2 = \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j)</script></li>
+<li><p>计算第二项中的内积部分：  </p>
+<script type="math/tex; mode=display">y_i \left( \sum_{j=1}^{n} \alpha_j y_j \mathbf{x}_j \right) \cdot \mathbf{x}_i = y_i \sum_{j=1}^{n} \alpha_j y_j (\mathbf{x}_j \cdot \mathbf{x}_i)</script><p>所以：  </p>
+<script type="math/tex; mode=display">\sum_{i=1}^{n} \alpha_i y_i \left( \sum_{j=1}^{n} \alpha_j y_j (\mathbf{x}_j \cdot \mathbf{x}_i) \right) = \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j)</script></li>
+<li><p>考虑 <script type="math/tex">b</script> 项：  </p>
+<script type="math/tex; mode=display">\sum_{i=1}^{n} \alpha_i y_i b = b \sum_{i=1}^{n} \alpha_i y_i = 0 \quad (\text{因为} \sum_{i=1}^{n} \alpha_i y_i = 0)</script></li>
 </ul>
-<p>代入后，拉格朗日函数变为：<br>
-<span class="math display">$$\mathcal{L} = \frac{1}{2} \sum_{i=1}^{n}
-\sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot
-\mathbf{x}_j) - \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j
-(\mathbf{x}_i \cdot \mathbf{x}_j) + \sum_{i=1}^{n} \alpha_i$$</span></p>
-<p>化简：<br>
-<span class="math display">$$\mathcal{L} = -\frac{1}{2} \sum_{i=1}^{n}
-\sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot
-\mathbf{x}_j) + \sum_{i=1}^{n} \alpha_i$$</span></p>
-<h4 id="对偶优化问题">3.3 对偶优化问题</h4>
-<p>于是，对偶问题是：<br>
-<span class="math display">$$\max_{\boldsymbol{\alpha}} \left[
-\sum_{i=1}^{n} \alpha_i - \frac{1}{2} \sum_{i=1}^{n} \sum_{j=1}^{n}
-\alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j)
-\right]$$</span></p>
-<ul>
-<li><strong>约束条件</strong>：<br>
-<span class="math display">$$\sum_{i=1}^{n} \alpha_i y_i =
-0$$</span><br>
-<span class="math display"><em>α</em><sub><em>i</em></sub> ≥ 0,  <em>i</em> = 1, 2, …, <em>n</em></span></li>
+<p>代入后，拉格朗日函数变为：  </p>
+<script type="math/tex; mode=display">\mathcal{L} = \frac{1}{2} \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j) - \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j) + \sum_{i=1}^{n} \alpha_i</script><p>化简：  </p>
+<script type="math/tex; mode=display">\mathcal{L} = -\frac{1}{2} \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j) + \sum_{i=1}^{n} \alpha_i</script><h4 id="3-3-对偶优化问题"><a href="#3-3-对偶优化问题" class="headerlink" title="3.3 对偶优化问题"></a>3.3 对偶优化问题</h4><p>于是，对偶问题是：  </p>
+<script type="math/tex; mode=display">\max_{\boldsymbol{\alpha}} \left[ \sum_{i=1}^{n} \alpha_i - \frac{1}{2} \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j) \right]</script><ul>
+<li><strong>约束条件</strong>：  <script type="math/tex; mode=display">\sum_{i=1}^{n} \alpha_i y_i = 0</script><script type="math/tex; mode=display">\alpha_i \geq 0, \quad i = 1, 2, \dots, n</script></li>
 </ul>
-<p>为了与标准优化形式一致，常将其写为最小化问题：<br>
-<span class="math display">$$\min_{\boldsymbol{\alpha}} \left[
-\frac{1}{2} \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j
-(\mathbf{x}_i \cdot \mathbf{x}_j) - \sum_{i=1}^{n} \alpha_i
-\right]$$</span></p>
-<ul>
-<li><strong>约束条件不变</strong>：<br>
-<span class="math display">$$\sum_{i=1}^{n} \alpha_i y_i =
-0$$</span><br>
-<span class="math display"><em>α</em><sub><em>i</em></sub> ≥ 0</span></li>
+<p>为了与标准优化形式一致，常将其写为最小化问题：  </p>
+<script type="math/tex; mode=display">\min_{\boldsymbol{\alpha}} \left[ \frac{1}{2} \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j) - \sum_{i=1}^{n} \alpha_i \right]</script><ul>
+<li><strong>约束条件不变</strong>：  <script type="math/tex; mode=display">\sum_{i=1}^{n} \alpha_i y_i = 0</script><script type="math/tex; mode=display">\alpha_i \geq 0</script></li>
 </ul>
 <hr>
-<h3 id="转换的条件">4. 转换的条件</h3>
-<p>原始问题与对偶问题之间的关系由<strong>强对偶性</strong>保证。在SVM中：
-- 目标函数 <span class="math display">$$\frac{1}{2}
-\|\mathbf{w}\|^2$$</span> 是凸函数（二次函数）； - 约束条件 <span class="math display"><em>y</em><sub><em>i</em></sub>(<strong>w</strong>⋅<strong>x</strong><sub><em>i</em></sub>+<em>b</em>) ≥ 1</span>
-是线性不等式； -
-对于线性可分数据，Slater条件满足（存在可行解使约束严格成立）。</p>
+<h3 id="4-转换的条件"><a href="#4-转换的条件" class="headerlink" title="4. 转换的条件"></a>4. 转换的条件</h3><p>原始问题与对偶问题之间的关系由<strong>强对偶性</strong>保证。在SVM中：</p>
+<ul>
+<li>目标函数 <script type="math/tex">\frac{1}{2} \|\mathbf{w}\|^2</script> 是凸函数（二次函数）；</li>
+<li>约束条件 <script type="math/tex">y_i (\mathbf{w} \cdot \mathbf{x}_i + b) \geq 1</script> 是线性不等式；</li>
+<li>对于线性可分数据，Slater条件满足（存在可行解使约束严格成立）。</li>
+</ul>
 <p>因此，强对偶性成立，原始问题的最优解可以通过对偶问题求解得到。</p>
-<p>此外： - 最优的 <span class="math display"><strong>α</strong></span>
-通过对偶问题求解； - <span class="math display">$$\mathbf{w} =
-\sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i$$</span>； -
-对于支持向量（<span class="math display"><em>α</em><sub><em>i</em></sub> &gt; 0</span>
-的样本），<span class="math display"><em>y</em><sub><em>i</em></sub>(<strong>w</strong>⋅<strong>x</strong><sub><em>i</em></sub>+<em>b</em>) = 1</span>，可据此解出
-<span class="math display"><em>b</em></span>。</p>
-<hr>
-<h3 id="总结-1">5. 总结</h3>
+<p>此外：</p>
 <ul>
-<li><p><strong>原始问题</strong>：<br>
-<span class="math display">$$\min_{\mathbf{w}, b} \frac{1}{2}
-\|\mathbf{w}\|^2$$</span><br>
-受约束：<span class="math display"><em>y</em><sub><em>i</em></sub>(<strong>w</strong>⋅<strong>x</strong><sub><em>i</em></sub>+<em>b</em>) ≥ 1</span></p></li>
-<li><p><strong>对偶问题</strong>：<br>
-<span class="math display">$$\max_{\boldsymbol{\alpha}} \left[
-\sum_{i=1}^{n} \alpha_i - \frac{1}{2} \sum_{i=1}^{n} \sum_{j=1}^{n}
-\alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j)
-\right]$$</span><br>
-受约束：<span class="math display">$$\sum_{i=1}^{n} \alpha_i y_i =
-0$$</span>，<span class="math display"><em>α</em><sub><em>i</em></sub> ≥ 0</span></p></li>
-<li><p><strong>转换条件</strong>：<br>
-通过拉格朗日乘子法，基于凸优化和强对偶性完成转换。对偶形式不仅便于求解，还为引入核函数奠定了基础。</p></li>
+<li>最优的 <script type="math/tex">\boldsymbol{\alpha}</script> 通过对偶问题求解；</li>
+<li><script type="math/tex">\mathbf{w} = \sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i</script>；</li>
+<li>对于支持向量（<script type="math/tex">\alpha_i > 0</script> 的样本），<script type="math/tex">y_i (\mathbf{w} \cdot \mathbf{x}_i + b) = 1</script>，可据此解出 <script type="math/tex">b</script>。</li>
+</ul>
+<hr>
+<h3 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a>5. 总结</h3><ul>
+<li><p><strong>原始问题</strong>：  </p>
+<script type="math/tex; mode=display">\min_{\mathbf{w}, b} \frac{1}{2} \|\mathbf{w}\|^2</script><p>受约束：<script type="math/tex">y_i (\mathbf{w} \cdot \mathbf{x}_i + b) \geq 1</script></p>
+</li>
+<li><p><strong>对偶问题</strong>：  </p>
+<script type="math/tex; mode=display">\max_{\boldsymbol{\alpha}} \left[ \sum_{i=1}^{n} \alpha_i - \frac{1}{2} \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j) \right]</script><p>受约束：<script type="math/tex">\sum_{i=1}^{n} \alpha_i y_i = 0</script>，<script type="math/tex">\alpha_i \geq 0</script></p>
+</li>
+<li><p><strong>转换条件</strong>：<br>通过拉格朗日乘子法，基于凸优化和强对偶性完成转换。对偶形式不仅便于求解，还为引入核函数奠定了基础。</p>
+</li>
 </ul>
 <p>以上就是SVM目标函数从原始问题到对偶问题的推导过程和条件。</p>
-<h4 id="已知训练数据集中正例点x123x233x332负例点x412-x521x631训练线性svm分类器求最大间隔分类超平面和分类决策函数并画出分类超平面间隔边界以及支持向量">2.已知训练数据集中正例点x1=(2,3)，x2=(3,3)，x3=(3,2)，负例点x4=(1,2)，
-x5=(2,1)，x6=(3,1)，训练线性SVM分类器。求最大间隔分类超平面和分类决策函数，并画出分类超平面、间隔边界以及支持向量。</h4>
-<figure>
-<img src="/2025/04/16/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/IMG_20250416_164804-1744793466526-4.jpg" alt="IMG_20250416_164804">
-<figcaption aria-hidden="true">IMG_20250416_164804</figcaption>
-</figure>
+<h4 id="2-已知训练数据集中正例点x1-2-3-，x2-3-3-，x3-3-2-，负例点x4-1-2-，-x5-2-1-，x6-3-1-，训练线性SVM分类器。求最大间隔分类超平面和分类决策函数，并画出分类超平面、间隔边界以及支持向量。"><a href="#2-已知训练数据集中正例点x1-2-3-，x2-3-3-，x3-3-2-，负例点x4-1-2-，-x5-2-1-，x6-3-1-，训练线性SVM分类器。求最大间隔分类超平面和分类决策函数，并画出分类超平面、间隔边界以及支持向量。" class="headerlink" title="2.已知训练数据集中正例点x1=(2,3)，x2=(3,3)，x3=(3,2)，负例点x4=(1,2)，    x5=(2,1)，x6=(3,1)，训练线性SVM分类器。求最大间隔分类超平面和分类决策函数，并画出分类超平面、间隔边界以及支持向量。"></a>2.已知训练数据集中正例点x1=(2,3)，x2=(3,3)，x3=(3,2)，负例点x4=(1,2)，    x5=(2,1)，x6=(3,1)，训练线性SVM分类器。求最大间隔分类超平面和分类决策函数，并画出分类超平面、间隔边界以及支持向量。</h4><p><img src="/2025/04/16/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/IMG_20250416_164804-1744793466526-4.jpg" alt="IMG_20250416_164804"></p>
 
     </div>
 
