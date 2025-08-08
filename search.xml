@@ -25803,12 +25803,48 @@ Custom Model - Accuracy: 0.8240, Precision: 0.6875, Recall: 0.1170, AUC:
 <p>systemctl一般用于服务器上，完整的linux系统上</p>
 <p>Linux 容器/子系统（ Docker、WSL 或 LXC）使用 service</p>
 </blockquote>
-<p>启动pgsql服务</p>
+<h4 id="pgsql常用指令"><a href="#pgsql常用指令" class="headerlink" title="pgsql常用指令"></a>pgsql常用指令</h4><p>启动pgsql服务</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo service postgresql start</span><br></pre></td></tr></table></figure>
 <p>停止pgsql服务</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo service postgresql stop</span><br></pre></td></tr></table></figure>
 <p>查看状态</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo service postgresql status</span><br></pre></td></tr></table></figure>
+<p>连接PostgreSQL 默认的系统用户，可以执行pgsql的相关指令</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo -u postgres psql</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>psql</strong>为PostgreSQL 的终端客户端，默认会连接与当前操作系统用户名同名的数据库用户和数据库。</p>
+<p><strong>postgres</strong>为PostgreSQL 自带的系统数据库，<code>postgres</code> 默认 <strong>数据库密码为空</strong>，可以通过以下指令进行设置</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 设置postgres用户密码</span><br><span class="line">ALTER USER postgres PASSWORD &#x27;postgres&#x27;;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>数据库关于user的作用</p>
+<p>数据库里的“用户”是 PostgreSQL <strong>内部用来做“访问控制”的一把钥匙</strong>。一句话：<strong>“谁能连哪个库、谁能读哪张表、谁能改哪些行”——全靠这些数据库用户（角色）来判定。</strong></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>作用</th>
+<th>举例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. 认证</strong>（Authentication）</td>
+<td>告诉 PostgreSQL “我连库时提供的用户名+密码是否合法”。</td>
+</tr>
+<tr>
+<td><strong>2. 授权</strong>（Authorization）</td>
+<td>决定 “这个用户连进来后，对哪些库、哪些表、哪些行有何种权限（SELECT/INSERT/UPDATE/DELETE…）”。</td>
+</tr>
+<tr>
+<td><strong>3. 资源隔离</strong>（Isolation）</td>
+<td>不同业务/团队用不同用户，方便审计、限流、回收权限，互不干扰。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>pgsql通用 URL 模板</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">postgresql://&lt;用户名&gt;:&lt;密码&gt;@127.0.0.1:5432/&lt;数据库名&gt;[?参数=值&amp;...]</span><br></pre></td></tr></table></figure>
+<h4 id="连接pgsql-1"><a href="#连接pgsql-1" class="headerlink" title="连接pgsql"></a>连接pgsql</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 基于数据库持久化存储的short-term</span><br><span class="line">db_uri = &quot;postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable&quot;</span><br><span class="line"></span><br><span class="line"># short-term短期记忆 实例化PostgresSaver对象 并初始化checkpointer</span><br><span class="line"># long-term长期记忆 实例化PostgresStore对象 并初始化store</span><br><span class="line">async with (</span><br><span class="line">    AsyncPostgresSaver.from_conn_string(db_uri) as checkpointer,</span><br><span class="line">    AsyncPostgresStore.from_conn_string(db_uri) as store</span><br><span class="line"></span><br><span class="line">):</span><br><span class="line">    await store.setup()</span><br><span class="line">    await checkpointer.setup()</span><br></pre></td></tr></table></figure>
 <h3 id="更换apt镜像源"><a href="#更换apt镜像源" class="headerlink" title="更换apt镜像源"></a>更换apt镜像源</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cat &gt; /etc/apt/sources.list &lt;&lt;&#x27;EOF&#x27;</span><br><span class="line">deb http://mirrors.aliyun.com/debian/ bookworm main contrib non-free</span><br><span class="line">deb http://mirrors.aliyun.com/debian/ bookworm-updates main contrib non-free</span><br><span class="line">deb http://mirrors.aliyun.com/debian/ bookworm-backports main contrib non-free</span><br><span class="line">deb http://mirrors.aliyun.com/debian-security bookworm-security main contrib non-free</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">apt update</span><br></pre></td></tr></table></figure>
 <h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://juejin.cn/post/7470702616906645540">postgresql向量扩展pgvector的安装与入门本文简答的介绍了 rag 的架构，引申出向量数据库的作用，介绍了 - 掘金</a></p>
 <p>langchain支持向量存储<a href="https://python.langchain.com/docs/integrations/vectorstores/">向量存储 | 🦜️🔗 LangChain —- Vector stores | 🦜️🔗 LangChain</a></p>
@@ -25846,19 +25882,6 @@ Custom Model - Accuracy: 0.8240, Precision: 0.6875, Recall: 0.1170, AUC:
       </categories>
       <tags>
         <tag>mcp</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Transformer快速入门</title>
-    <url>/2025/07/28/%E5%AD%A6%E4%B9%A0/transfromers/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/</url>
-    <content><![CDATA[<p><a href="https://transformers.run/">Hello! · Transformers快速入门</a></p>
-<p><a href="https://github.com/jsksxs360/How-to-use-Transformers">jsksxs360/How-to-use-Transformers: Transformers 库快速入门教程</a></p>
-]]></content>
-      <categories>
-        <category>transformer</category>
-      </categories>
-      <tags>
-        <tag>transformer</tag>
       </tags>
   </entry>
   <entry>
@@ -26184,5 +26207,411 @@ Custom Model - Accuracy: 0.8240, Precision: 0.6875, Recall: 0.1170, AUC:
       <tags>
         <tag>实习</tag>
       </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2025/08/06/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langmem/</url>
+    <content><![CDATA[<p><a href="https://github.langchain.ac.cn/langmem/">简介 - LangChain 框架</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>redis存储状态</title>
+    <url>/2025/08/06/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/redis%E5%AD%98%E5%82%A8%E7%8A%B6%E6%80%81/</url>
+    <content><![CDATA[<h3 id="为什么用redis"><a href="#为什么用redis" class="headerlink" title="为什么用redis"></a>为什么用redis</h3><p>Redis通过 RedisSessionManager 类来管理用户会话，存储结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">session:&#123;user_id&#125; -&gt; &#123;</span><br><span class="line">  &quot;session_id&quot;: &quot;会话ID&quot;,</span><br><span class="line">  &quot;status&quot;: &quot;idle|running|interrupted|completed|error&quot;,</span><br><span class="line">  &quot;last_response&quot;: &quot;上次智能体响应&quot;,</span><br><span class="line">  &quot;last_query&quot;: &quot;用户上次查询&quot;,</span><br><span class="line">  &quot;last_updated&quot;: &quot;最后更新时间戳&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>主要功能</p>
+<ul>
+<li>会话创建与维护 ：为每个用户创建唯一会话，支持会话超时自动清理</li>
+<li>状态跟踪 ：实时跟踪智能体执行状态（空闲、运行中、中断、完成、错误）</li>
+<li>中断恢复支持 ：当智能体需要人工干预时，Redis保存中断状态，支持后续恢复执行</li>
+<li>用户管理 ：统计活跃用户数量，管理多用户并发访问</li>
+</ul>
+<p>与PostgreSQL的分工</p>
+<ul>
+<li>Redis ：负责临时会话状态和实时数据（快速读写）</li>
+<li>PostgreSQL ：负责智能体的长期记忆存储（通过LangGraph的checkpointer）</li>
+</ul>
+<blockquote>
+<p>为什么不使用pgsql完成对状态的存储</p>
+<p>频繁读写 ：会话状态需要频繁更新（每次请求都要更新状态），PostgreSQL的磁盘I/O比Redis内存操作慢很多4</p>
+<p>短期记忆（PostgreSQL + LangGraph Checkpointer）</p>
+<p>临时状态记忆（Redis）</p>
+</blockquote>
+<h3 id="redis实现状态存储业务逻辑总览图"><a href="#redis实现状态存储业务逻辑总览图" class="headerlink" title="redis实现状态存储业务逻辑总览图"></a>redis实现状态存储业务逻辑总览图</h3><p><img src="/2025/08/06/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/redis%E5%AD%98%E5%82%A8%E7%8A%B6%E6%80%81/image-20250806164348663.png" alt="image-20250806164348663"></p>
+<h3 id="安装redis"><a href="#安装redis" class="headerlink" title="安装redis"></a>安装redis</h3><h4 id="linux系统"><a href="#linux系统" class="headerlink" title="linux系统"></a>linux系统</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install -y redis-server</span><br><span class="line"># 启动 Redis 服务</span><br><span class="line">sudo service redis-server start</span><br><span class="line"># 检查 Redis 服务状态</span><br><span class="line">sudo service redis-server status</span><br></pre></td></tr></table></figure>
+<h4 id="docker"><a href="#docker" class="headerlink" title="docker"></a>docker</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># Docker Compose 配置文件，用于启动 Redis 服务</span><br><span class="line"># 该配置为 FastAPI 应用提供 Redis 后端，支持分布式会话管理</span><br><span class="line">version: &#x27;3.8&#x27;</span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">  redis:</span><br><span class="line">    # 使用官方 Redis 镜像</span><br><span class="line">    image: redis:latest</span><br><span class="line">    # 服务名称</span><br><span class="line">    container_name: redis</span><br><span class="line">    # 映射 Redis 默认端口到主机</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;6379:6379&quot;</span><br><span class="line">    # 持久化存储配置（可选）</span><br><span class="line">    volumes:</span><br><span class="line">      - redis-data:/data</span><br><span class="line">    # 确保容器在重启时自动启动</span><br><span class="line">    restart: unless-stopped</span><br><span class="line">    # 健康检查：验证 Redis 服务是否正常运行</span><br><span class="line">    healthcheck:</span><br><span class="line">      test: [&quot;CMD&quot;, &quot;redis-cli&quot;, &quot;ping&quot;]</span><br><span class="line">      interval: 30s</span><br><span class="line">      timeout: 10s</span><br><span class="line">      retries: 3</span><br><span class="line">      start_period: 10s</span><br><span class="line">    # 网络配置</span><br><span class="line">    networks:</span><br><span class="line">      - app-network</span><br><span class="line"></span><br><span class="line"># 定义持久化存储卷</span><br><span class="line">volumes:</span><br><span class="line">  redis-data:</span><br><span class="line">    name: redis-data</span><br><span class="line"></span><br><span class="line"># 定义网络</span><br><span class="line">networks:</span><br><span class="line">  app-network:</span><br><span class="line">    driver: bridge</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>agent实战</category>
+      </categories>
+      <tags>
+        <tag>langgraph</tag>
+        <tag>agent</tag>
+        <tag>redis</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>tokenizer</title>
+    <url>/2025/08/08/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/tokenizer/</url>
+    <content><![CDATA[<h3 id="什么是-Tokenizer？"><a href="#什么是-Tokenizer？" class="headerlink" title="什么是 Tokenizer？"></a>什么是 Tokenizer？</h3><p><strong>Tokenizer</strong>（分词器）可以将原始文本（raw text）转换为模型能够理解的数字序列，在模型输入和输出的两个主要阶段中发挥重要作用：</p>
+<h4 id="模型输入（编码-Encode）阶段"><a href="#模型输入（编码-Encode）阶段" class="headerlink" title="模型输入（编码 Encode）阶段"></a>模型输入（编码 Encode）阶段</h4><ol>
+<li><p><strong>分词（Tokenize）</strong></p>
+<p>将文本拆分为词元（Token），常见的分词方式包括字级、词级、子词级（如 BPE、WordPiece）、空格分词等。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">输入: &quot;你好&quot;</span><br><span class="line">分词: [&quot;你&quot;, &quot;好&quot;]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>映射（Mapping）</strong></p>
+<p>将每个词元映射为词汇表中的唯一 ID，生成的数字序列即为模型的输入。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">分词: [&quot;你&quot;, &quot;好&quot;]</span><br><span class="line">映射: [<span class="number">1001</span>, <span class="number">1002</span>]</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="模型输出（解码-Decode）阶段"><a href="#模型输出（解码-Decode）阶段" class="headerlink" title="模型输出（解码 Decode）阶段"></a>模型输出（解码 Decode）阶段</h4><ol>
+<li><p><strong>反映射（De-mapping）</strong></p>
+<p>模型输出的数字序列通过词汇表映射回对应的词元，二者是一一对应的关系。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">输出: [<span class="number">1001</span>, <span class="number">1002</span>]</span><br><span class="line">反映射: [&quot;你&quot;, &quot;好&quot;]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>文本重组</strong></p>
+<p>将解码后的词元以某种规则重新拼接为完整文本。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">反映射: [&quot;你&quot;, &quot;好&quot;]</span><br><span class="line">重组: &quot;你好&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="直观感受"><a href="#直观感受" class="headerlink" title="直观感受"></a>直观感受</h4><p>访问 <a href="https://tiktokenizer.vercel.app">Tiktokenizer</a>，通过右上角选取不同的 Tokenizer 进行尝试</p>
+<h3 id="词汇表"><a href="#词汇表" class="headerlink" title="词汇表"></a>词汇表</h3><p>两种常见的构建词汇表的方法：</p>
+<ul>
+<li><strong>BPE（Byte-Pair Encoding）</strong>：用于 GPT、GPT-2、RoBERTa、BART 和 DeBERTa 等模型。</li>
+<li><strong>WordPiece</strong>：用于 DistilBERT、MobileBERT、Funnel Transformers 和 MPNET 等模型。</li>
+</ul>
+<h4 id="BPE"><a href="#BPE" class="headerlink" title="BPE"></a>BPE</h4><p>BPE（Byte Pair Encoding，字节对编码）在 NLP 里是一种<strong>贪心式的子词（subword）分词算法</strong>。<br>理解：从“字符”开始，反复把<strong>出现次数最多的相邻字符对</strong>合并成新的符号，并加入词汇表，直到达到预设的词汇表大小。</p>
+<blockquote>
+<p>为什么可以处理 OOV（Out-Of-Vocabulary）情况</p>
+<p>因为所有词汇都是由字符或词根组成的，通过对单个字符的学习，可以组成oov的词汇</p>
+<p>为什么需要词汇表</p>
+<p>编码时，从文本到模型：需要将文本分词为 Tokens，再通过词汇表将 Tokens 转换为 Token IDs，再传给transformer</p>
+<p>解码时，从模型到文本：需要通过词汇表Token IDs 转换为 Tokens，再把Tokens 拼接为文本</p>
+</blockquote>
+<h5 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h5><ol>
+<li><strong>初始化词汇表 $V$</strong>：<ul>
+<li>$V$ 包含语料库中的所有唯一字符，即单词字符的集合。</li>
+</ul>
+</li>
+<li><strong>统计字符对的频次</strong>：<ul>
+<li>对于每个单词的字符序列，统计相邻字符对的出现频次。</li>
+</ul>
+</li>
+<li><strong>找到频次（Score）最高的字符对并合并</strong>：<ul>
+<li>选择出现频率最高的字符对 $(x, y)$，将其合并为新符号 $xy$。</li>
+</ul>
+</li>
+<li><strong>更新词汇表并重复步骤 2 到 4</strong>：<ul>
+<li>将新符号添加到词汇表 $V = V \cup {xy}$。</li>
+<li>更新语料库中的单词表示，重复统计和合并过程，直到满足停止条件（例如，词汇表达到预定大小）。</li>
+</ul>
+</li>
+</ol>
+<p><strong>示例</strong></p>
+<p>我们需要将语料库（corpus）的文本拆分为单词，假设当前语料库包含的单词和对应频次如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">(&quot;low&quot;, 5), (&quot;lower&quot;, 2), (&quot;newest&quot;, 6), (&quot;widest&quot;, 3)</span><br></pre></td></tr></table></figure>
+<p><strong>步骤 1：初始化词汇表</strong></p>
+<p><strong>将单词拆分为字符序列</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">(&quot;l&quot;, &quot;o&quot;, &quot;w&quot;), 5  </span><br><span class="line">(&quot;l&quot;, &quot;o&quot;, &quot;w&quot;, &quot;e&quot;, &quot;r&quot;), 2  </span><br><span class="line">(&quot;n&quot;, &quot;e&quot;, &quot;w&quot;, &quot;e&quot;, &quot;s&quot;, &quot;t&quot;), 6  </span><br><span class="line">(&quot;w&quot;, &quot;i&quot;, &quot;d&quot;, &quot;e&quot;, &quot;s&quot;, &quot;t&quot;), 3</span><br></pre></td></tr></table></figure>
+<p><strong>词汇表 V</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;l&#x27;, &#x27;o&#x27;, &#x27;w&#x27;, &#x27;e&#x27;, &#x27;r&#x27;, &#x27;n&#x27;, &#x27;s&#x27;, &#x27;t&#x27;, &#x27;i&#x27;, &#x27;d&#x27;&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>步骤 2：统计字符对的频次</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">字符对频次统计结果:</span><br><span class="line">(&#x27;l&#x27;, &#x27;o&#x27;): 7        # 5 (low) + 2 (lower)</span><br><span class="line">(&#x27;o&#x27;, &#x27;w&#x27;): 7        # 5 (low) + 2 (lower)</span><br><span class="line">(&#x27;w&#x27;, &#x27;e&#x27;): 8        # 2 (lower) + 6 (newest)</span><br><span class="line">(&#x27;e&#x27;, &#x27;r&#x27;): 2</span><br><span class="line">(&#x27;n&#x27;, &#x27;e&#x27;): 6</span><br><span class="line">(&#x27;e&#x27;, &#x27;w&#x27;): 6</span><br><span class="line">(&#x27;e&#x27;, &#x27;s&#x27;): 9        # 6 (newest) + 3 (widest)</span><br><span class="line">(&#x27;s&#x27;, &#x27;t&#x27;): 9        # 6 (newest) + 3 (widest)</span><br><span class="line">(&#x27;w&#x27;, &#x27;i&#x27;): 3</span><br><span class="line">(&#x27;i&#x27;, &#x27;d&#x27;): 3</span><br><span class="line">(&#x27;d&#x27;, &#x27;e&#x27;): 3</span><br></pre></td></tr></table></figure>
+<p><strong>步骤 3：找到频次最高的字符对并合并</strong></p>
+<p><strong>选择频次最高的字符对</strong>：</p>
+<ul>
+<li><code>(&quot;e&quot;, &quot;s&quot;)</code> 和 <code>(&quot;s&quot;, &quot;t&quot;)</code>，频次均为 9。可以任选其一进行合并，假设选择排序第一的： <code>(&quot;e&quot;, &quot;s&quot;)</code>。</li>
+</ul>
+<p><strong>合并 <code>(&quot;e&quot;, &quot;s&quot;)</code> 为新符号 <code>es</code></strong>。</p>
+<p><strong>记录合并操作</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Merge 1: (&quot;e&quot;, &quot;s&quot;) -&gt; &quot;es&quot;</span><br></pre></td></tr></table></figure>
+<p><strong>步骤 4：更新词汇表并重复</strong></p>
+<p><strong>更新单词序列</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">(&quot;l&quot;, &quot;o&quot;, &quot;w&quot;), 5  </span><br><span class="line">(&quot;l&quot;, &quot;o&quot;, &quot;w&quot;, &quot;e&quot;, &quot;r&quot;), 2  </span><br><span class="line">(&quot;n&quot;, &quot;e&quot;, &quot;w&quot;, &quot;es&quot;, &quot;t&quot;), 6  </span><br><span class="line">(&quot;w&quot;, &quot;i&quot;, &quot;d&quot;, &quot;es&quot;, &quot;t&quot;), 3</span><br></pre></td></tr></table></figure>
+<p><strong>更新词汇表 V</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;l&#x27;, &#x27;o&#x27;, &#x27;w&#x27;, &#x27;e&#x27;, &#x27;r&#x27;, &#x27;n&#x27;, &#x27;s&#x27;, &#x27;t&#x27;, &#x27;i&#x27;, &#x27;d&#x27;, &#x27;es&#x27;&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>重复步骤 2 到 4，直到达到预定的词汇表大小</strong>。</p>
+<h4 id="WordPiece"><a href="#WordPiece" class="headerlink" title="WordPiece"></a>WordPiece</h4><p>WordPiece 是 Google 在 2016 年为语音识别与 BERT 提出的<strong>子词（subword）分词算法</strong>，可看作 BPE 的“似然改进版”。理解：“<strong>用概率贪心而不是频次贪心，从字符开始逐步合并子词</strong>。”</p>
+<p>与 BPE 不同，WordPiece 的 Score 由字符对频次与其组成部分频次的比值决定，定义 Score：</p>
+<script type="math/tex; mode=display">
+\text{Score}_{\text{WordPiece}}(x, y) = \frac{\text{freq}(xy)}{\text{freq}(x) \times \text{freq}(y)}</script><p>其中, $\text{freq}(x)$, $\text{freq}(y)$ 和 $\text{freq}(xy)$ 分别表示符号 $x$, $y$ 和它们合并后的符号 $xy$ 的频次。</p>
+<h5 id="步骤-1"><a href="#步骤-1" class="headerlink" title="步骤"></a>步骤</h5><ol>
+<li><strong>初始化词汇表 $V$</strong>：<ul>
+<li>与 BPE 相同, $V$ 包含语料库中的所有唯一字符，但处理方式略有不同：<strong>对于每个单词，除了首个字符外，其他字符前都加上 <code>##</code> 前缀。</strong></li>
+</ul>
+</li>
+<li><strong>统计字符对的频次及 Score</strong>：<ul>
+<li>对于每个可能的字符对 $(x, y)$，计算 $\text{freq}(x)$, $\text{freq}(y)$, $\text{freq}(xy)$，并计算 Score。</li>
+</ul>
+</li>
+<li><strong>找到 Score 最高的字符对并合并</strong>：<ul>
+<li>选择 Score 最高的字符对 $(x, y)$，将其合并为新符号 $xy$，注意：<ul>
+<li>如果第二个符号以 <code>##</code> 开头，合并时去掉 <code>##</code> 前缀再进行连接。</li>
+<li>新符号是否以 <code>##</code> 开头，取决于第一个符号是否以 <code>##</code> 开头。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>更新词汇表并重复步骤 2 到 4</strong>：<ul>
+<li>将新符号添加到词汇表 $V = V \cup {xy}$。</li>
+<li>更新语料库中的单词表示，重复统计和合并过程，直到满足停止条件。</li>
+</ul>
+</li>
+</ol>
+<h3 id="映射（Mapping）"><a href="#映射（Mapping）" class="headerlink" title="映射（Mapping）"></a>映射（Mapping）</h3><p>以 BPE 为例，最终词汇表 $V$ 中的 Token 和对应的频次分别为：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vocab = &#123;</span><br><span class="line">    &#x27;lo&#x27;: 7,</span><br><span class="line">    &#x27;w&#x27;: 16,</span><br><span class="line">    &#x27;e&#x27;: 8,</span><br><span class="line">    &#x27;r&#x27;: 2,</span><br><span class="line">    &#x27;n&#x27;: 6,</span><br><span class="line">    &#x27;est&#x27;: 9,</span><br><span class="line">    &#x27;i&#x27;: 3,</span><br><span class="line">    &#x27;d&#x27;: 3</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>输出</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Token to ID: &#123;&#x27;lo&#x27;: 0, &#x27;w&#x27;: 1, &#x27;e&#x27;: 2, &#x27;r&#x27;: 3, &#x27;n&#x27;: 4, &#x27;est&#x27;: 5, &#x27;i&#x27;: 6, &#x27;d&#x27;: 7&#125;</span><br><span class="line">ID to Token: &#123;0: &#x27;lo&#x27;, 1: &#x27;w&#x27;, 2: &#x27;e&#x27;, 3: &#x27;r&#x27;, 4: &#x27;n&#x27;, 5: &#x27;est&#x27;, 6: &#x27;i&#x27;, 7: &#x27;d&#x27;&#125;</span><br></pre></td></tr></table></figure>
+<p>当然，也可以根据频次或者其他规则进行特殊处理。</p>
+<p>以上是编码部分的概述，实际上在文本预处理的时候还会增加特殊标记，但这些以及后续的解码部分大多是一些文本处理的规则，这里就不过多赘述了，Tokenizer 之间的核心差异在于使用的分割方法和词汇表的构建策略。</p>
+<h3 id="transformer中的分词"><a href="#transformer中的分词" class="headerlink" title="transformer中的分词"></a>transformer中的分词</h3><p>在 Transformers 中，<strong>分词（tokenization）</strong> 实际上包含以下几个步骤：</p>
+<ol>
+<li><strong>标准化（Normalization）</strong>：对文本进行必要的清理操作，例如删除多余空格或重音符号、进行 Unicode 标准化等。</li>
+<li><strong>预分词（Pre-tokenization）</strong>：将输入拆分为单词。</li>
+<li><strong>通过模型处理输入（Running the input through the model）</strong>：使用预分词后的单词生成一系列词元（tokens）。</li>
+<li><strong>后处理（Post-processing）</strong>：添加分词器的特殊标记，生成注意力掩码（attention mask）和词元类型 ID（token type IDs）。</li>
+</ol>
+<p>流程图如下</p>
+<p><img src="/2025/08/08/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/tokenizer/image-20250808100051423.png" alt="image-20250808100051423"></p>
+<h4 id="注意力掩码（Attention-Mask）和词元类型-ID-（Token-Type-IDs）是什么？"><a href="#注意力掩码（Attention-Mask）和词元类型-ID-（Token-Type-IDs）是什么？" class="headerlink" title="注意力掩码（Attention Mask）和词元类型 ID （Token Type IDs）是什么？"></a>注意力掩码（Attention Mask）和词元类型 ID （Token Type IDs）是什么？</h4><p><img src="/2025/08/08/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/tokenizer/image-20250808100813881.png" alt="image-20250808100813881"></p>
+<p>1️⃣ 注意力掩码（Attention Mask）<br>• 目的：告诉模型“哪些位置可以被看到”，其余位置直接屏蔽。<br>• 典型场景：<br>– <strong>自注意力里做 padding 掩码</strong>：把 <code>&lt;pad&gt;</code> 对应的位置设为 −∞，softmax 后权重=0。<br>– <strong>解码器自回归掩码</strong>：生成任务用下三角掩码，避免第 i 个 token 看到未来 token。</p>
+<p>2️⃣ 词元类型 ID（Token Type IDs，也叫 Segment IDs）<br>• 目的：区分<strong>同一次输入里不同句子或段落</strong>，让模型知道“这段属于 A，那段属于 B”。<br>• 典型场景：<br>– BERT 做句子对分类（NSP）：<code>[CLS] 句子A [SEP] 句子B [SEP]</code> → TypeID = 0 0 0 0 1 1 1。<br>– RoBERTa、GPT 等单句模型则<strong>不需要</strong> Token Type IDs。</p>
+<p><strong>注意力掩码</strong>确保模型只关注实际的词元，忽略填充部分，从而避免无效的计算：</p>
+<ul>
+<li><strong>1</strong>：表示模型应关注的词元（Tokens）</li>
+<li><strong>0</strong>：表示模型应忽略的词元（通常是填充 <code>padding</code> 的部分）。</li>
+</ul>
+<p><strong>词元类型 ID</strong> 用于区分输入中的不同句子或段落：</p>
+<ul>
+<li><strong>0</strong>：表示第一个句子的词元。</li>
+<li><strong>1</strong>：表示第二个句子的词元。</li>
+</ul>
+<blockquote>
+<p>CLS，SEP，PAD都是什么意思</p>
+<p><code>[CLS]</code>（Classification），作用：对应位置的隐藏状态被当作<strong>整句/句对的“整体表示”</strong>，用来接分类头做句子级任务（情感分类、NLI 等）。</p>
+<p><code>[SEP]</code>（Separator），作用：让模型知道<strong>分段 / 句子边界</strong>，配合 Token Type IDs 区分句子 A 和句子 B。</p>
+<p><code>[PAD]</code>（padding token）的作用是 <strong>批量训练时把不同长度的序列补齐到同一长度</strong>，让张量可以堆叠成规整的矩阵；模型在计算注意力时通过 Attention Mask 把 <code>[PAD]</code> 对应的位置屏蔽掉，不让它们影响有效 token 的表示。</p>
+</blockquote>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://github.com/Hoper-J/AI-Guide-and-Demos-zh_CN/blob/master/Guide/21. BPE vs WordPiece：理解 Tokenizer 的工作原理与子词分割方法.md">AI-Guide-and-Demos-zh_CN/Guide/21. BPE vs WordPiece：理解 Tokenizer 的工作原理与子词分割方法.md at master · Hoper-J/AI-Guide-and-Demos-zh_CN</a></p>
+]]></content>
+      <categories>
+        <category>大模型算法</category>
+        <category>tokenizer</category>
+      </categories>
+      <tags>
+        <tag>tokenizer</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Transformer学习</title>
+    <url>/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/</url>
+    <content><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本文基于<a href="https://github.com/Hoper-J/AI-Guide-and-Demos-zh_CN/blob/master/PaperNotes/Transformer 论文精读.md#前言">AI-Guide-and-Demos-zh_CN/PaperNotes/Transformer 论文精读.md at master · Hoper-J/AI-Guide-and-Demos-zh_CN</a>与<a href="https://www.bilibili.com/video/BV1pu411o7BE/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">Transformer论文逐段精读【论文精读】_哔哩哔哩_bilibili</a>阅读学习</p>
+<h3 id="transformer贡献"><a href="#transformer贡献" class="headerlink" title="transformer贡献"></a>transformer贡献</h3><p>实际在这一阶段的工作中，<strong>注意力机制</strong>就已经在<strong>编码器-解码器架构</strong>中被广泛应用（与 RNN 一起使用），但 Transformer 彻底颠覆了默认采取的逻辑：<strong>直接放弃 RNN 的递归结构，只使用注意力机制来编码和解码序列信息</strong>。</p>
+<p>Transformer 的主要贡献如下：</p>
+<ul>
+<li><p><strong>取消递归结构，实现并行计算</strong></p>
+<p>通过采用<strong>自注意力机制（Self-Attention）</strong>，Transformer 可以同时处理多个输入序列，极大提高了计算的并行度和训练速度。</p>
+</li>
+<li><p><strong>引入位置编码（Positional Encoding）并结合 Attention 机制巧妙地捕捉位置信息</strong></p>
+<p>在不依赖 RNN 结构的情况下，通过位置编码为序列中的每个元素嵌入位置信息，从而使模型能够感知输入的顺序。</p>
+</li>
+</ul>
+<h3 id="transformer架构"><a href="#transformer架构" class="headerlink" title="transformer架构"></a>transformer架构</h3><p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250807135151542.png" alt="image-20250807135151542"></p>
+<p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250807145354145.png" alt="image-20250807145354145"></p>
+<p><a href="https://www.bilibili.com/video/BV1MY41137AK?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">【Transformer模型】曼妙动画轻松学，形象比喻贼好记_哔哩哔哩_bilibili</a></p>
+<p>Transformer 模型基于<strong>编码器</strong>（左）- <strong>解码器</strong>（右）架构</p>
+<p><strong>Transformer编码器</strong>同样由 <strong>N 个完全相同的层</strong>（原始论文中 N=6）堆叠而成，每层只有两个子层，而解码器有三个。</p>
+<ol>
+<li>多头自注意力（Multi-Head Self-Attention）<br>让输入序列中的每个位置都能关注序列内所有位置，直接建模全局依赖。</li>
+<li>前馈全连接网络（Position-wise Feed-Forward Network）<br>对每个位置独立地做一次两层的全连接变换（通常先升维再降维）。</li>
+</ol>
+<p>同样，每个子层后都有</p>
+<ul>
+<li>残差连接（Residual Connection）</li>
+<li>层归一化（Layer Normalization）</li>
+</ul>
+<p>另外，编码器在输入端还会用到</p>
+<ul>
+<li>位置编码（Positional Encoding）——给模型提供序列位置信息，因为注意力本身不包含顺序信息。</li>
+</ul>
+<p><strong>Transformer解码器</strong>由多个相同的层堆叠而成，每一层包含三个核心子层：</p>
+<ol>
+<li><strong>掩蔽多头自注意力机制</strong>（Masked Multi-Head Attention）<br>用于处理目标序列，通过掩码防止当前位置关注未来位置，确保生成过程的自回归特性。</li>
+<li><strong>编码器-解码器注意力机制</strong>（Encoder-Decoder Attention）<br>使解码器能够关注编码器输出的上下文信息，建立输入与输出序列之间的关联。</li>
+<li><strong>前馈神经网络</strong>（Feed-Forward Neural Network）<br>对注意力机制的输出进行非线性变换，增强模型的表达能力。</li>
+</ol>
+<p>此外，每个子层后均包含<strong>残差连接</strong>（Residual Connection）和<strong>层归一化</strong>（Layer Normalization），以稳定训练过程并加速收敛。最终，解码器的输出通过线性层和Softmax层映射为词汇表上的概率分布。</p>
+<h3 id="嵌入（Embeddings）"><a href="#嵌入（Embeddings）" class="headerlink" title="嵌入（Embeddings）"></a>嵌入（Embeddings）</h3><p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808103256344.png" alt="image-20250808103256344"></p>
+<p>在 Transformer 模型中，<strong>嵌入层</strong>（Embedding Layer） 是处理输入和输出数据的关键步骤，因为模型实际操作的是<strong>张量</strong>（tensor），而非<strong>字符串</strong>（string）。在将输入文本传递给模型之前，首先需要进行<strong>分词</strong>（tokenization），即将文本拆解为多个 <strong>token</strong>，随后这些 token 会被映射为对应的 <strong>token ID</strong>，从而转换为模型可理解的数值形式。此时，数据的形状为 <code>(seq_len,)</code>，其中 <code>seq_len</code> 表示输入序列的长度。</p>
+<p>目的：为了让模型捕捉到 token 背后复杂的语义（Semantic meaning）关系，我们需要将离散的 token ID 映射到一个高维的连续向量空间（Continuous, dense）。这意味着每个 token ID 会被转换为一个<strong>嵌入向量</strong>（embedding vector），期望通过这种方式让语义相近的词汇在向量空间中距离更近，使模型能更好地捕捉词汇之间的关系。</p>
+<p>流程：（前面要进行分词，后面要进行位置编码）</p>
+<p>初始化一个可学习的矩阵 <code>E ∈ ℝ^(|V| × d_model)</code><br><code>|V|</code> = 词表大小（比如 32 k、50 k），<code>d_model</code> = 512/768/1024…</p>
+<p>把 token id 作为行号，直接取对应行：<br><code>x_i = E[token_id_i]</code><br>得到 <code>[batch, seq_len, d_model]</code> 的浮点张量。</p>
+<h3 id="位置编码（Positional-Encoding）"><a href="#位置编码（Positional-Encoding）" class="headerlink" title="位置编码（Positional Encoding）"></a>位置编码（Positional Encoding）</h3><p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808103418150.png" alt="image-20250808103418150"></p>
+<p>Transformer 的自注意力机制（Self-Attention）是<strong>位置无关（position-agnostic）</strong>的。也就是说，如果不做任何处理，模型无法区分“我爱你”和“你爱我”这两个句子的差异，因为自注意力机制只关注 token 之间的相关性，而不考虑它们在序列中的顺序。</p>
+<p>为了让模型感知到 token 的位置信息，Transformer 引入了<strong>位置编码</strong>。</p>
+<p>在原始论文中，Transformer 使用的是固定位置编码（Positional Encoding），其公式如下：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+PE_{(pos, 2i)} &= \sin\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right), \\
+PE_{(pos, 2i+1)} &= \cos\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right).
+\end{aligned}</script><p>其中：</p>
+<ul>
+<li>$pos$ 表示位置索引（Position）。</li>
+<li>$i$ 表示维度索引。</li>
+<li>$d_{\text{model}}$ 是嵌入向量的维度。</li>
+</ul>
+<p>流程：输入的是一个<strong>整数索引</strong>（位置序号 0,1,2,…）。位置编码模块先把这些整数映射成与词向量同维度的向量（例如 512 维），再把结果加到词向量上。</p>
+<h3 id="Softmax"><a href="#Softmax" class="headerlink" title="Softmax"></a>Softmax</h3><p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808111823715.png" alt="image-20250808111823715"></p>
+<p>在 Transformer 模型中，<strong>Softmax</strong> 函数不仅在计算<strong>注意力权重</strong>时用到，在预测阶段的输出处理环节也会用到，因为预测 token 的过程可以看成是<strong>多分类问题</strong>。</p>
+<p><strong>Softmax</strong> 函数是一种常用的激活函数，能够将任意实数向量转换为<strong>概率分布</strong>，确保每个元素的取值范围在 [0, 1] 之间，并且所有元素的和为 1。其数学定义如下：</p>
+<script type="math/tex; mode=display">
+\text{Softmax}(x_i) = \frac{e^{x_i}}{\sum_{j} e^{x_j}}</script><p>其中：</p>
+<ul>
+<li>$x_i$ 表示输入向量中的第 $i$ 个元素。</li>
+<li>$\text{Softmax}(x_i)$ 表示输入 $x_i$ 转换后的概率。</li>
+</ul>
+<p>我们可以把 Softmax 看作一种<strong>归一化的指数变换</strong>。相比于简单的比例归一化 $\frac{x_i}{\sum_j x_j}$, <strong>Softmax 通过指数变换放大数值间的差异，让较大的值对应更高的概率，同时避免了负值和数值过小的问题，让模型聚焦于权重最高的位置</strong>，同时保留全局信息（低权重仍非零）。</p>
+<h3 id="注意力机制"><a href="#注意力机制" class="headerlink" title="注意力机制"></a>注意力机制</h3><p><a href="https://www.bilibili.com/video/BV1xS4y1k7tn?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">【Attention 注意力机制】激情告白transformer、Bert、GNN的精髓_哔哩哔哩_bilibili</a></p>
+<p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808135811744.png" alt="image-20250808135811744"></p>
+<h4 id="缩放点积注意力机制（Scaled-Dot-Product-Attention）"><a href="#缩放点积注意力机制（Scaled-Dot-Product-Attention）" class="headerlink" title="缩放点积注意力机制（Scaled Dot-Product Attention）"></a><strong>缩放点积注意力机制（Scaled Dot-Product Attention）</strong></h4><p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808140834132.png" alt="image-20250808140834132"></p>
+<p>Transformer 的核心是<strong>多头注意力机制（Multi-Head Attention）</strong>，它能够捕捉输入序列中不同位置之间的依赖关系，并从多个角度对信息进行建模。模块将自底向上的进行讲解：在深入理解注意力机制前，首先需要理解论文使用的<strong>缩放点积注意力机制（Scaled Dot-Product Attention）</strong>。</p>
+<p>给定查询矩阵 $Q$、键矩阵 $K$ 和值矩阵 $V$, 其注意力输出的数学表达式如下：</p>
+<script type="math/tex; mode=display">
+\text{Attention}(Q, K, V) = \text{Softmax}\left(\frac{Q K^\top}{\sqrt{d_k}}\right) V</script><ul>
+<li><strong>$Q$（Query）</strong>: 用于查询的向量矩阵。</li>
+<li><strong>$K$（Key）</strong>: 表示键的向量矩阵，用于与查询匹配。</li>
+<li><strong>$V$（Value）</strong>: 值矩阵，注意力权重最终会作用在该矩阵上。</li>
+<li><strong>$d_k$</strong>: 键或查询向量的维度。</li>
+</ul>
+<blockquote>
+<p>理解 Q、K、V 的关键在于代码，它们实际上是通过线性变换从输入序列生成的</p>
+</blockquote>
+<p>公式解释</p>
+<ol>
+<li><p><strong>点积计算（Dot Produce）</strong></p>
+<p>将查询矩阵 $Q$ 与键矩阵的转置 $K^\top$ 做点积，计算每个查询向量与所有键向量之间的相似度：</p>
+<p>$<code>\text&#123;Scores&#125; = Q K^\top</code>$</p>
+<ul>
+<li><strong>每一行</strong>表示某个查询与所有键之间的相似度（匹配分数）。</li>
+<li><strong>每一列</strong>表示某个键与所有查询之间的相似度（匹配分数）。</li>
+</ul>
+</li>
+<li><p><strong>缩放（Scaling）</strong></p>
+<p>当 $d_k$ 较大时，点积的数值可能会过大，导致 Softmax 过后的梯度变得极小，因此除以 $\sqrt{d_k}$ 缩放点积结果的数值范围：</p>
+<p>$<code>\text&#123;Scaled Scores&#125; = \frac&#123;Q K^\top&#125;&#123;\sqrt&#123;d_k&#125;&#125;</code>$</p>
+<p>缩放后（Scaled Dot-Product）也称为注意力分数（<strong>attention scores</strong>）。</p>
+</li>
+<li><p><strong>Softmax 归一化</strong></p>
+<p>使用 Softmax 函数将缩放后的分数转换为概率分布：</p>
+<p>$<code>\text&#123;Attention Weights&#125; = \text&#123;Softmax&#125;\left(\frac&#123;Q K^\top&#125;&#123;\sqrt&#123;d_k&#125;&#125;\right)</code>$</p>
+<blockquote>
+<p><strong>注意</strong>：Softmax 是在每一行上进行的，这意味着每个查询的匹配分数将归一化为概率，总和为 1。</p>
+</blockquote>
+</li>
+<li><p><strong>加权求和（Weighted Sum）</strong></p>
+<p>最后，使用归一化后的注意力权重对值矩阵 $V$ 进行加权求和，得到每个查询位置的最终输出：<br>$<code>\text&#123;Output&#125; = \text&#123;Attention Weights&#125; \times V</code>$</p>
+</li>
+</ol>
+<h3 id="单头注意力机制（Single-Head-Attention）"><a href="#单头注意力机制（Single-Head-Attention）" class="headerlink" title="单头注意力机制（Single-Head Attention）"></a>单头注意力机制（Single-Head Attention）</h3><p>将输入序列（Inputs）通过线性变换生成<strong>查询矩阵</strong>（Query, Q）、<strong>键矩阵</strong>（Key, K）和<strong>值矩阵</strong>（Value, V），随后执行<strong>缩放点积注意力</strong>（Scaled Dot-Product Attention）。</p>
+<h4 id="掩码注意力机制（Masked-Attention）"><a href="#掩码注意力机制（Masked-Attention）" class="headerlink" title="掩码注意力机制（Masked Attention）"></a>掩码注意力机制（Masked Attention）</h4><p>如果使用 mask 掩盖将要预测的词汇，那么 Attention 就延伸为 Masked Attention</p>
+<p>在这段代码中，<code>mask</code> 矩阵用于指定哪些位置应该被遮蔽（即填充为 -∞），从而保证这些位置的注意力权重在 softmax 输出中接近于零。注意，掩码机制并不是直接在截断输入序列，也不是在算分数的时候就排除不应该看到的位置，因为看到也没有关系，不会影响与其他位置的分数，所以在传入 Softmax（计算注意力权重）之前排除就可以了。</p>
+<p>另外，根据输入数据的来源，还可以将注意力分为<strong>自注意力（Self-Attention）和交叉注意力（Cross-Attention)</strong>。</p>
+<h4 id="自注意力机制（Self-attention）"><a href="#自注意力机制（Self-attention）" class="headerlink" title="自注意力机制（Self-attention）"></a>自注意力机制（Self-attention）</h4><p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808142109091.png" alt="image-20250808142109091"></p>
+<p>Transformer 模型架构使用到了三个看起来不同的注意力机制，我们继续忽视共有的 Multi-Head。观察输入，线条一分为三传入 Attention 模块，这意味着查询（query）、键（key）和值（value）实际上都来自<strong>同一输入序列 $\mathbf{X}$</strong>，数学表达如下：</p>
+<script type="math/tex; mode=display">
+Q = XW^Q, \quad K = XW^K, \quad V = XW^V</script><ul>
+<li><strong>$W^Q, W^K, W^V$</strong>：可训练的线性变换权重，实际上就是简单的线性层</li>
+</ul>
+<h4 id="交叉注意力机制（Cross-Attention）"><a href="#交叉注意力机制（Cross-Attention）" class="headerlink" title="交叉注意力机制（Cross-Attention）"></a>交叉注意力机制（Cross-Attention）</h4><p>在 Transformer 解码器中，除了自注意力外，还使用了 <strong>交叉注意力（Cross-Attention）</strong>。</p>
+<p>如下图所示，解码器（右）在自底向上的处理过程中，先执行自注意力机制，然后通过交叉注意力从编码器的输出中获取上下文信息。</p>
+<p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808142428374.png" alt="image-20250808142428374"></p>
+<p>数学表达如下：</p>
+<script type="math/tex; mode=display">
+Q = X_{\text{decoder}} W^Q, \quad K = X_{\text{encoder}} W^K, \quad V = X_{\text{encoder}} W^V</script><h4 id="对比学习"><a href="#对比学习" class="headerlink" title="对比学习"></a>对比学习</h4><p><strong>Masked Attention</strong>、<strong>Self-Attention</strong> 和 <strong>Cross-Attention</strong> 的本质是一致的，这一点从代码调用可以看出来，三者的区别在于未来掩码的使用和输入数据的来源：</p>
+<ul>
+<li><p><strong>Masked Attention</strong>：用于解码过程，通过掩码屏蔽未来的时间步，确保模型只能基于已生成的部分进行预测，论文中解码器部分的第一个 Attention 使用的是 Masked Self-Attention。</p>
+</li>
+<li><p><strong>Self-Attention</strong>：查询、键和值矩阵来自同一输入序列，模型通过自注意力机制学习输入序列的全局依赖关系。</p>
+</li>
+<li><p><strong>Cross-Attention</strong>：查询矩阵来自解码器的输入，而键和值矩阵来自编码器的输出，解码器的第二个 Attention 模块就是 Cross-Attention，用于从编码器输出中获取相关的上下文信息。</p>
+<ul>
+<li><p>以<strong>机器翻译</strong>中的<strong>中译英任务</strong>为例：对于中文句子“<strong>中国的首都是北京</strong>”，假设模型已经生成了部分译文“The capital of China is”，此时需要预测下一个单词。</p>
+<p>在这一阶段，<strong>解码器中的交叉注意力机制</strong>会使用<strong>当前已生成的译文“The capital of China is”的编码表示作为查询</strong>，并将<strong>编码器对输入句子“中国的首都是北京”编码表示</strong>作为<strong>键</strong>和<strong>值</strong>，通过计算<strong>查询与键之间的匹配程度</strong>，生成相应的注意力权重，以此从值中提取上下文信息，基于这些信息生成下一个可能的单词（token），比如：“Beijing”。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="多头注意力机制（Multi-Head-Attention）"><a href="#多头注意力机制（Multi-Head-Attention）" class="headerlink" title="多头注意力机制（Multi-Head Attention）"></a>多头注意力机制（Multi-Head Attention）</h3><p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808143810965.png" alt="image-20250808143810965"></p>
+<p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808143822630.png" alt="image-20250808143822630"></p>
+<p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808143845681.png" alt="image-20250808143845681"></p>
+<p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808145725202.png" alt="image-20250808145725202"></p>
+<p><a href="https://www.bilibili.com/video/BV1MY41137AK?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">【Transformer模型】曼妙动画轻松学，形象比喻贼好记_哔哩哔哩_bilibili</a></p>
+<p><a href="https://www.bilibili.com/video/BV1HsTyz8ECC?spm_id_from=333.788.player.switch&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">Transformer原理及架构：多头自注意力机制_哔哩哔哩_bilibili</a></p>
+<h3 id="残差连接（Residual-Connection）和层归一化（Layer-Normalization-LayerNorm）"><a href="#残差连接（Residual-Connection）和层归一化（Layer-Normalization-LayerNorm）" class="headerlink" title="残差连接（Residual Connection）和层归一化（Layer Normalization, LayerNorm）"></a>残差连接（Residual Connection）和层归一化（Layer Normalization, LayerNorm）</h3><p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808150313758.png" alt="image-20250808150313758"></p>
+<p>在 Transformer 架构中，<strong>残差连接</strong>（Residual Connection）与<strong>层归一化</strong>（LayerNorm）结合使用，统称为 <strong>Add &amp; Norm</strong> 操作。</p>
+<h4 id="Add（残差连接，Residual-Connection）"><a href="#Add（残差连接，Residual-Connection）" class="headerlink" title="Add（残差连接，Residual Connection）"></a>Add（残差连接，Residual Connection）</h4><p>残差连接是一种跳跃连接（Skip Connection），它将层的输入直接加到输出上（观察架构图中的箭头），对应的公式如下：</p>
+<script type="math/tex; mode=display">
+\text{Output} = \text{SubLayer}(x) + x</script><p>这种连接方式有效缓解了<strong>深层神经网络的梯度消失</strong>问题。</p>
+<p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808151004667.png" alt="image-20250808151004667"></p>
+<p>在transform中，就是输入的矩阵x加上经过注意力机制计算出来的z矩阵</p>
+<h4 id="Norm（层归一化，Layer-Normalization）"><a href="#Norm（层归一化，Layer-Normalization）" class="headerlink" title="Norm（层归一化，Layer Normalization）"></a>Norm（层归一化，Layer Normalization）</h4><p><strong>层归一化</strong>（LayerNorm）是一种归一化技术，用于提升训练的稳定性和模型的泛化能力。</p>
+<p>假设输入向量为 $x = (x_1, x_2, \dots, x_d)$, LayerNorm 的计算步骤如下：</p>
+<ol>
+<li><p><strong>计算均值和方差</strong>：<br>对输入的所有特征求均值 $\mu$ 和方差 $\sigma^2$：</p>
+<p>$<code>\mu = \frac&#123;1&#125;&#123;d&#125; \sum_&#123;j=1&#125;^&#123;d&#125; x_j, \quad 
+\sigma^2 = \frac&#123;1&#125;&#123;d&#125; \sum_&#123;j=1&#125;^&#123;d&#125; (x_j - \mu)^2</code>$</p>
+</li>
+<li><p><strong>归一化公式</strong>：<br>将输入特征 $\hat{x}_i$ 进行归一化：</p>
+<p>$<code>\hat&#123;x&#125;_i = \frac&#123;x_i - \mu&#125;&#123;\sqrt&#123;\sigma^2 + \epsilon&#125;&#125;</code>$</p>
+<p>其中, $\epsilon$ 是一个很小的常数（比如 1e-9），用于防止除以零的情况。</p>
+</li>
+<li><p><strong>引入可学习参数</strong>：<br>归一化后的输出乘以 $\gamma$ 并加上 $\beta$, 公式如下：</p>
+<p>$<code>\text&#123;Output&#125; = \gamma \hat&#123;x&#125; + \beta</code>$</p>
+<p>其中 $\gamma$ 和 $\beta$ 是可学习的参数，用于进一步调整归一化后的输出。</p>
+</li>
+</ol>
+<h3 id="前馈神经网络-Position-wise-Feed-Forward-Networks（FFN）"><a href="#前馈神经网络-Position-wise-Feed-Forward-Networks（FFN）" class="headerlink" title="前馈神经网络 Position-wise Feed-Forward Networks（FFN）"></a>前馈神经网络 Position-wise Feed-Forward Networks（FFN）</h3><p>在 Transformer 中，前馈网络层（Feed-Forward Network，FFN）的作用可以概括为一句话：<br><strong>“对每个位置的向量进行非线性变换，增加模型的表达能力。”</strong></p>
+<p>在编码器-解码器架构中，另一个看起来“大一点”的模块就是 Feed Forward，它在每个位置 $i$ 上的计算可以表示为：</p>
+<script type="math/tex; mode=display">
+\text{FFN}(x_i) = \text{max}(0, x_i W_1 + b_1) W_2 + b_2</script><p>其中：</p>
+<ul>
+<li>$x<em>i \in \mathbb{R}^{d</em>{\text{model}}}$ 表示第 $i$ 个位置的输入向量。 </li>
+<li>$W<em>1 \in \mathbb{R}^{d</em>{\text{model}} \times d<em>{\text{ff}}}$ 和 $W_2 \in \mathbb{R}^{d</em>{\text{ff}} \times d_{\text{model}}}$ 是两个线性变换的权重矩阵。</li>
+<li>$b<em>1 \in \mathbb{R}^{d</em>{\text{ff}}}$ 和 $b<em>2 \in \mathbb{R}^{d</em>{\text{model}}}$ 是对应的偏置向量。</li>
+<li>$\text{max}(0, \cdot)$ 是 <strong>ReLU 激活函数</strong>，用于引入非线性。</li>
+</ul>
+<h3 id="大模型发展树"><a href="#大模型发展树" class="headerlink" title="大模型发展树"></a>大模型发展树</h3><p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250807171237889.png" alt="image-20250807171237889"></p>
+<p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250807173520481.png" alt="image-20250807173520481"></p>
+<h3 id="预训练语言模型"><a href="#预训练语言模型" class="headerlink" title="预训练语言模型"></a>预训练语言模型</h3><p>预训练语言模型（PLM）是一种通过大量文本数据进行无监督或弱监督训练的语言模型，目的是学习语言的通用表示（即语言的模式、语法、语义等）。这些模型通常在大规模文本数据上进行预训练，然后可以被微调（Fine - tuning）以适应各种下游任务，如文本分类、问答、命名实体识别等。</p>
+<p>预训练语言模型的核心思想是利用大量的无标注文本数据来学习语言的通用特征，从而为各种自然语言处理任务提供强大的语言理解能力。预训练模型可以显著提高任务的性能，减少对标注数据的依赖，并且能够快速适应新的任务。</p>
+<h4 id="BERT模型（Encoder-only-PLM）"><a href="#BERT模型（Encoder-only-PLM）" class="headerlink" title="BERT模型（Encoder-only PLM）"></a>BERT模型（Encoder-only PLM）</h4><p>针对 Encoder、Decoder 的特点，引入 ELMo 的预训练思路，开始出现不同的、对 Transformer 进行优化的思路。例如，<strong>Google 仅选择了 Encoder 层</strong>，通过将 Encoder 层进行堆叠，再提出不同的预训练任务-掩码语言模型（Masked Language Model，MLM），打造了一统自然语言理解（Natural Language Understanding，NLU）任务的代表模型——<strong>BERT</strong>。</p>
+<p>BERT，全名为 Bidirectional Encoder Representations from Transformers，是由 Google 团队在 2018年发布的预训练语言模型。该模型发布于论文《BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding》，实现了包括 GLUE、MultiNLI 等七个自然语言处理评测任务的最优性能（State Of The Art，SOTA），堪称里程碑式的成果。</p>
+<h4 id="T5（Encoder-Decoder-PLM）"><a href="#T5（Encoder-Decoder-PLM）" class="headerlink" title="T5（Encoder-Decoder PLM）"></a>T5（Encoder-Decoder PLM）</h4><p>BERT 也存在一些问题，例如 MLM 任务和下游任务微调的不一致性，以及无法处理超过模型训练长度的输入等问题。为了解决这些问题，研究者们提出了 <strong>Encoder-Decoder 模型</strong>，通过引入 Decoder 部分来解决这些问题，同时也为 NLP 领域带来了新的思路和方法。</p>
+<p><strong>T5（Text-To-Text Transfer Transformer）是由 Google 提出的一种预训练语言模型</strong>，通过将所有 NLP 任务统一表示为文本到文本的转换问题，大大简化了模型设计和任务处理。T5 基于 Transformer 架构，包含编码器和解码器两个部分，使用自注意力机制和多头注意力捕捉全局依赖关系，利用相对位置编码处理长序列中的位置信息，并在每层中包含前馈神经网络进一步处理特征。</p>
+<h4 id="LLama模型（Decoder-Only-PLM）"><a href="#LLama模型（Decoder-Only-PLM）" class="headerlink" title="LLama模型（Decoder-Only PLM）"></a>LLama模型（Decoder-Only PLM）</h4><p>LLaMA模型是由Meta（前Facebook）开发的一系列大型预训练语言模型。从LLaMA-1到LLaMA-3，LLaMA系列模型展示了大规模预训练语言模型的演进及其在实际应用中的显著潜力。</p>
+<h4 id="GPT模型（Decoder-Only-PLM）"><a href="#GPT模型（Decoder-Only-PLM）" class="headerlink" title="GPT模型（Decoder-Only PLM）"></a>GPT模型（Decoder-Only PLM）</h4><p>GPT，即 Generative Pre-Training Language Model，是由 OpenAI 团队于 2018年发布的预训练语言模型。虽然学界普遍认可 BERT 作为预训练语言模型时代的代表，但首先明确提出<strong>预训练-微调思想的模型</strong>其实是 GPT。</p>
+<p>GPT 提出了通用预训练的概念，也就是在海量无监督语料上预训练，进而在每个特定任务上进行微调，从而实现这些任务的巨大收益。虽然在发布之初，由于性能略输于不久后发布的 BERT，没能取得轰动性成果，也没能让 GPT 所使用的 <strong>Decoder-Only 架构</strong>成为学界研究的主流，但 OpenAI 团队坚定地选择了不断扩大预训练数据、增加模型参数，在 GPT 架构上不断优化，最终在 2020年发布的 GPT-3 成就了 LLM 时代的基础，并以 GPT-3 为基座模型的 ChatGPT 成功打开新时代的大门，成为 LLM 时代的最强竞争者也是目前的最大赢家。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://transformers.run/">Hello! · Transformers快速入门</a></p>
+<p><a href="https://github.com/jsksxs360/How-to-use-Transformers">jsksxs360/How-to-use-Transformers: Transformers 库快速入门教程</a></p>
+<p><a href="https://github.com/Hoper-J/AI-Guide-and-Demos-zh_CN">Hoper-J/AI-Guide-and-Demos-zh_CN: 这是一份入门AI/LLM大模型的逐步指南，包含教程和演示代码，带你从API走进本地大模型部署和微调，代码文件会提供Kaggle或Colab在线版本，即便没有显卡也可以进行学习。项目中还开设了一个小型的代码游乐场🎡，你可以尝试在里面实验一些有意思的AI脚本。同时，包含李宏毅 (HUNG-YI LEE）2024生成式人工智能导论课程的完整中文镜像作业。</a></p>
+<p><a href="https://datawhalechina.github.io/happy-llm/#/">Happy-LLM</a></p>
+<p><a href="https://gengzhige.ai/video.html">梗直哥</a></p>
+<p><a href="https://www.bilibili.com/video/BV1RBdTYxENw/?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">90%人不知道的LLM黑科技：拆解Transformer如何吃透全网知识！_哔哩哔哩_bilibili</a></p>
+]]></content>
+      <categories>
+        <category>大模型算法</category>
+        <category>transformer</category>
+      </categories>
+      <tags>
+        <tag>transformer</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2025/08/07/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/</url>
+    <content><![CDATA[<p><a href="https://zh.d2l.ai/index.html">《动手学深度学习》 — 动手学深度学习 2.0.0 documentation</a></p>
+<p><a href="https://courses.d2l.ai/zh-v2/">课程安排 - 动手学深度学习课程</a></p>
+]]></content>
   </entry>
 </search>

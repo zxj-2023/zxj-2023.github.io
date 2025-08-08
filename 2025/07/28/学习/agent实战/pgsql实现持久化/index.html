@@ -30,7 +30,7 @@
 <meta property="og:description" content="前言常使用pgsql与redis配合langgraph的checkpoint与store进行持久化储存，完成长期记忆与短期记忆的实现 pgsql实现持久化什么是pgsqlPostgreSQL（常简称pgsql或Postgres）是一个功能强大的开源对象-关系型数据库管理系统（ORDBMS），以其稳定性、扩展性和符合SQL标准著称。 docker拉取docker-compose 1234567891">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-07-27T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-08-06T01:50:53.404Z">
+<meta property="article:modified_time" content="2025-08-06T07:00:34.781Z">
 <meta property="article:author" content="张熙浚">
 <meta property="article:tag" content="langgraph">
 <meta property="article:tag" content="agent">
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pgsql%E5%AE%9E%E7%8E%B0%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">2.</span> <span class="nav-text">pgsql实现持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFpgsql"><span class="nav-number">2.1.</span> <span class="nav-text">什么是pgsql</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#docker%E6%8B%89%E5%8F%96"><span class="nav-number">2.2.</span> <span class="nav-text">docker拉取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8pgsqsl%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="nav-number">2.3.</span> <span class="nav-text">在pgsqsl安装依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5pgsql"><span class="nav-number">2.4.</span> <span class="nav-text">连接pgsql</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96pgsql"><span class="nav-number">2.5.</span> <span class="nav-text">初始化pgsql</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#fastapi%E5%AE%9E%E7%8E%B0%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%9A%84%E7%AE%A1%E7%90%86"><span class="nav-number">2.6.</span> <span class="nav-text">fastapi实现生命周期的管理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pgsql%E7%9A%84%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84"><span class="nav-number">3.</span> <span class="nav-text">pgsql的存储结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81Checkpoints-%E7%B3%BB%E5%88%97"><span class="nav-number">3.1.</span> <span class="nav-text">一、Checkpoints 系列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81Store-%E7%B3%BB%E5%88%97"><span class="nav-number">3.2.</span> <span class="nav-text">二、Store 系列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E8%B0%83%E7%94%A8%E9%93%BE%E8%84%91%E5%9B%BE"><span class="nav-number">3.3.</span> <span class="nav-text">三、调用链脑图</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8linux%E5%AE%89%E8%A3%85postgresql"><span class="nav-number">4.</span> <span class="nav-text">在linux安装postgresql</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8Blinux%E5%8F%91%E8%A1%8C%E7%89%88%E6%9C%AC"><span class="nav-number">4.1.</span> <span class="nav-text">查看linux发行版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85postgresql"><span class="nav-number">4.2.</span> <span class="nav-text">安装postgresql</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%8D%A2apt%E9%95%9C%E5%83%8F%E6%BA%90"><span class="nav-number">5.</span> <span class="nav-text">更换apt镜像源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pgsql%E5%AE%9E%E7%8E%B0%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-number">2.</span> <span class="nav-text">pgsql实现持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFpgsql"><span class="nav-number">2.1.</span> <span class="nav-text">什么是pgsql</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#docker%E6%8B%89%E5%8F%96"><span class="nav-number">2.2.</span> <span class="nav-text">docker拉取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8pgsqsl%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="nav-number">2.3.</span> <span class="nav-text">在pgsqsl安装依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5pgsql"><span class="nav-number">2.4.</span> <span class="nav-text">连接pgsql</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96pgsql"><span class="nav-number">2.5.</span> <span class="nav-text">初始化pgsql</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#fastapi%E5%AE%9E%E7%8E%B0%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%9A%84%E7%AE%A1%E7%90%86"><span class="nav-number">2.6.</span> <span class="nav-text">fastapi实现生命周期的管理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pgsql%E7%9A%84%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84"><span class="nav-number">3.</span> <span class="nav-text">pgsql的存储结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81Checkpoints-%E7%B3%BB%E5%88%97"><span class="nav-number">3.1.</span> <span class="nav-text">一、Checkpoints 系列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81Store-%E7%B3%BB%E5%88%97"><span class="nav-number">3.2.</span> <span class="nav-text">二、Store 系列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E8%B0%83%E7%94%A8%E9%93%BE%E8%84%91%E5%9B%BE"><span class="nav-number">3.3.</span> <span class="nav-text">三、调用链脑图</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8linux%E5%AE%89%E8%A3%85postgresql"><span class="nav-number">4.</span> <span class="nav-text">在linux安装postgresql</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8Blinux%E5%8F%91%E8%A1%8C%E7%89%88%E6%9C%AC"><span class="nav-number">4.1.</span> <span class="nav-text">查看linux发行版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85postgresql"><span class="nav-number">4.2.</span> <span class="nav-text">安装postgresql</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pgsql%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4"><span class="nav-number">4.3.</span> <span class="nav-text">pgsql常用指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5pgsql-1"><span class="nav-number">4.4.</span> <span class="nav-text">连接pgsql</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%8D%A2apt%E9%95%9C%E5%83%8F%E6%BA%90"><span class="nav-number">5.</span> <span class="nav-text">更换apt镜像源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -160,18 +160,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">119</span>
+          <span class="site-state-item-count">123</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-count">45</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-count">53</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -257,7 +257,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-08-06 09:50:53" itemprop="dateModified" datetime="2025-08-06T09:50:53+08:00">2025-08-06</time>
+      <time title="修改时间：2025-08-06 15:00:34" itemprop="dateModified" datetime="2025-08-06T15:00:34+08:00">2025-08-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -438,12 +438,48 @@
 <p>systemctl一般用于服务器上，完整的linux系统上</p>
 <p>Linux 容器/子系统（ Docker、WSL 或 LXC）使用 service</p>
 </blockquote>
-<p>启动pgsql服务</p>
+<h4 id="pgsql常用指令"><a href="#pgsql常用指令" class="headerlink" title="pgsql常用指令"></a>pgsql常用指令</h4><p>启动pgsql服务</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service postgresql start</span><br></pre></td></tr></table></figure>
 <p>停止pgsql服务</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service postgresql stop</span><br></pre></td></tr></table></figure>
 <p>查看状态</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service postgresql status</span><br></pre></td></tr></table></figure>
+<p>连接PostgreSQL 默认的系统用户，可以执行pgsql的相关指令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo -u postgres psql</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>psql</strong>为PostgreSQL 的终端客户端，默认会连接与当前操作系统用户名同名的数据库用户和数据库。</p>
+<p><strong>postgres</strong>为PostgreSQL 自带的系统数据库，<code>postgres</code> 默认 <strong>数据库密码为空</strong>，可以通过以下指令进行设置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-- 设置postgres用户密码</span><br><span class="line">ALTER USER postgres PASSWORD &#x27;postgres&#x27;;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>数据库关于user的作用</p>
+<p>数据库里的“用户”是 PostgreSQL <strong>内部用来做“访问控制”的一把钥匙</strong>。一句话：<strong>“谁能连哪个库、谁能读哪张表、谁能改哪些行”——全靠这些数据库用户（角色）来判定。</strong></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>作用</th>
+<th>举例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. 认证</strong>（Authentication）</td>
+<td>告诉 PostgreSQL “我连库时提供的用户名+密码是否合法”。</td>
+</tr>
+<tr>
+<td><strong>2. 授权</strong>（Authorization）</td>
+<td>决定 “这个用户连进来后，对哪些库、哪些表、哪些行有何种权限（SELECT/INSERT/UPDATE/DELETE…）”。</td>
+</tr>
+<tr>
+<td><strong>3. 资源隔离</strong>（Isolation）</td>
+<td>不同业务/团队用不同用户，方便审计、限流、回收权限，互不干扰。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>pgsql通用 URL 模板</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">postgresql://&lt;用户名&gt;:&lt;密码&gt;@127.0.0.1:5432/&lt;数据库名&gt;[?参数=值&amp;...]</span><br></pre></td></tr></table></figure>
+<h4 id="连接pgsql-1"><a href="#连接pgsql-1" class="headerlink" title="连接pgsql"></a>连接pgsql</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 基于数据库持久化存储的short-term</span><br><span class="line">db_uri = &quot;postgresql://postgres:postgres@localhost:5432/postgres?sslmode=disable&quot;</span><br><span class="line"></span><br><span class="line"># short-term短期记忆 实例化PostgresSaver对象 并初始化checkpointer</span><br><span class="line"># long-term长期记忆 实例化PostgresStore对象 并初始化store</span><br><span class="line">async with (</span><br><span class="line">    AsyncPostgresSaver.from_conn_string(db_uri) as checkpointer,</span><br><span class="line">    AsyncPostgresStore.from_conn_string(db_uri) as store</span><br><span class="line"></span><br><span class="line">):</span><br><span class="line">    await store.setup()</span><br><span class="line">    await checkpointer.setup()</span><br></pre></td></tr></table></figure>
 <h3 id="更换apt镜像源"><a href="#更换apt镜像源" class="headerlink" title="更换apt镜像源"></a>更换apt镜像源</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cat &gt; /etc/apt/sources.list &lt;&lt;&#x27;EOF&#x27;</span><br><span class="line">deb http://mirrors.aliyun.com/debian/ bookworm main contrib non-free</span><br><span class="line">deb http://mirrors.aliyun.com/debian/ bookworm-updates main contrib non-free</span><br><span class="line">deb http://mirrors.aliyun.com/debian/ bookworm-backports main contrib non-free</span><br><span class="line">deb http://mirrors.aliyun.com/debian-security bookworm-security main contrib non-free</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">apt update</span><br></pre></td></tr></table></figure>
 <h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7470702616906645540">postgresql向量扩展pgvector的安装与入门本文简答的介绍了 rag 的架构，引申出向量数据库的作用，介绍了 - 掘金</a></p>
 <p>langchain支持向量存储<a target="_blank" rel="noopener" href="https://python.langchain.com/docs/integrations/vectorstores/">向量存储 | 🦜️🔗 LangChain —- Vector stores | 🦜️🔗 LangChain</a></p>
@@ -483,8 +519,8 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2025/07/28/%E5%AD%A6%E4%B9%A0/transfromers/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/" rel="prev" title="Transformer快速入门">
-                  <i class="fa fa-angle-left"></i> Transformer快速入门
+                <a href="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/" rel="prev" title="Transformer学习">
+                  <i class="fa fa-angle-left"></i> Transformer学习
                 </a>
             </div>
             <div class="post-nav-item">
