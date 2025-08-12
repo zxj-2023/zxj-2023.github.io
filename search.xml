@@ -2697,6 +2697,7 @@ Score_RRF(doc) = Σ_{s ∈ Systems} (1 / (k + rank_s(doc)))</script><p>其中：
     <url>/2025/08/06/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/redis%E5%AD%98%E5%82%A8%E7%8A%B6%E6%80%81/</url>
     <content><![CDATA[<h3 id="为什么用redis"><a href="#为什么用redis" class="headerlink" title="为什么用redis"></a>为什么用redis</h3><p>Redis通过 RedisSessionManager 类来管理用户会话，存储结构如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">session:&#123;user_id&#125; -&gt; &#123;</span><br><span class="line">  &quot;session_id&quot;: &quot;会话ID&quot;,</span><br><span class="line">  &quot;status&quot;: &quot;idle|running|interrupted|completed|error&quot;,</span><br><span class="line">  &quot;last_response&quot;: &quot;上次智能体响应&quot;,</span><br><span class="line">  &quot;last_query&quot;: &quot;用户上次查询&quot;,</span><br><span class="line">  &quot;last_updated&quot;: &quot;最后更新时间戳&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2025/08/06/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/redis%E5%AD%98%E5%82%A8%E7%8A%B6%E6%80%81/image-20250809232853613.png" alt="image-20250809232853613"></p>
 <p>主要功能</p>
 <ul>
 <li>会话创建与维护 ：为每个用户创建唯一会话，支持会话超时自动清理</li>
@@ -2716,6 +2717,89 @@ Score_RRF(doc) = Σ_{s ∈ Systems} (1 / (k + rank_s(doc)))</script><p>其中：
 <p>临时状态记忆（Redis）</p>
 </blockquote>
 <h3 id="redis实现状态存储业务逻辑总览图"><a href="#redis实现状态存储业务逻辑总览图" class="headerlink" title="redis实现状态存储业务逻辑总览图"></a>redis实现状态存储业务逻辑总览图</h3><p><img src="/2025/08/06/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/redis%E5%AD%98%E5%82%A8%E7%8A%B6%E6%80%81/image-20250806164348663.png" alt="image-20250806164348663"></p>
+<p>使用redis的根本逻辑：存储对话的状态，当出现由工具调用或者客户端崩溃导致的中断时，可以存储状态在redis，在开始对话时，通过session_id获取redis的状态，并根据状态判断是要恢复中断还是正常对话</p>
+<p>存储的redis（调用invoke<em>agent接口）：开始（创建）对话时要根据会话user<em>id获取或创建redis；再调用agent后，根据响应是否存在<strong>status</strong>字段是否是”__interrupt</em></em>“，判断是否有终端，最后更新redis状态</p>
+<p>恢复的redis（调用resume_agent接口）：获取redis状态，并根据请求的恢复内容，使用Command命令恢复agent，最后更新redis</p>
+<p><img src="/2025/08/06/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/redis%E5%AD%98%E5%82%A8%E7%8A%B6%E6%80%81/image-20250809233037563.png" alt="image-20250809233037563"></p>
+<h3 id="redis类"><a href="#redis类" class="headerlink" title="redis类"></a>redis类</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 初始化异步 Redis 连接和会话配置</span><br><span class="line">def __init__(self, redis_host, redis_port, redis_db, session_timeout):</span><br><span class="line">    self.redis_client = redis.Redis(</span><br><span class="line">        host=redis_host,</span><br><span class="line">        port=redis_port,</span><br><span class="line">        db=redis_db,</span><br><span class="line">        decode_responses=True</span><br><span class="line">    )</span><br><span class="line">    self.session_timeout = session_timeout  # 会话过期时间（秒）</span><br><span class="line"></span><br><span class="line"># 关闭 Redis 连接</span><br><span class="line">async def close(self):</span><br><span class="line">    await self.redis_client.close()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>作用</th>
+<th>输入参数</th>
+<th>返回值</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>__init__</code></td>
+<td>建立与 Redis 的异步连接并设置会话超时</td>
+<td><code>redis_host</code>, <code>redis_port</code>, <code>redis_db</code>, <code>session_timeout</code></td>
+<td>-</td>
+<td><code>decode_responses=True</code> 使 Redis 返回字符串而非字节</td>
+</tr>
+<tr>
+<td><code>close</code></td>
+<td>优雅关闭 Redis 连接</td>
+<td>-</td>
+<td>-</td>
+<td>异步方法，需 <code>await</code></td>
+</tr>
+<tr>
+<td><code>create_session</code></td>
+<td>为指定用户新建（或覆盖）会话记录</td>
+<td><code>user_id</code>, 可选 <code>session_id</code>, <code>status</code>, <code>last_query</code>, <code>last_response</code>, <code>last_updated</code></td>
+<td><code>str</code>：生成的 <code>session_id</code></td>
+<td>会话键格式：<code>session:&#123;user_id&#125;</code>；过期时间为 <code>session_timeout</code></td>
+</tr>
+<tr>
+<td><code>get_session</code></td>
+<td>读取指定用户的完整会话字典</td>
+<td><code>user_id</code></td>
+<td><code>dict</code> 或 <code>None</code></td>
+<td>自动将 JSON 里的 <code>last_response</code> 反序列化为 <code>AgentResponse</code> 对象</td>
+</tr>
+<tr>
+<td><code>update_session</code></td>
+<td>增量更新已有会话的字段</td>
+<td><code>user_id</code>, 可选 <code>status</code>, <code>last_query</code>, <code>last_response</code>, <code>last_updated</code></td>
+<td><code>bool</code>：<code>True</code> 更新成功，<code>False</code> 用户不存在</td>
+<td>更新后刷新过期时间</td>
+</tr>
+<tr>
+<td><code>delete_session</code></td>
+<td>删除单个用户的会话</td>
+<td><code>user_id</code></td>
+<td><code>bool</code>：<code>True</code> 删除成功</td>
+<td>直接删除 <code>session:&#123;user_id&#125;</code></td>
+</tr>
+<tr>
+<td><code>get_session_count</code></td>
+<td>计算当前活跃会话总数</td>
+<td>-</td>
+<td><code>int</code></td>
+<td>使用异步扫描 <code>session:*</code> 键空间</td>
+</tr>
+<tr>
+<td><code>get_all_user_ids</code></td>
+<td>取出所有已创建会话的 <code>user_id</code></td>
+<td>-</td>
+<td><code>List[str]</code></td>
+<td>同样基于 <code>session:*</code> 扫描</td>
+</tr>
+<tr>
+<td><code>user_id_exists</code></td>
+<td>快速判断某用户是否已有会话</td>
+<td><code>user_id</code></td>
+<td><code>bool</code></td>
+<td>利用 <code>EXISTS</code> 命令</td>
+</tr>
+</tbody>
+</table>
+</div>
 <h3 id="安装redis"><a href="#安装redis" class="headerlink" title="安装redis"></a>安装redis</h3><h4 id="linux系统"><a href="#linux系统" class="headerlink" title="linux系统"></a>linux系统</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install -y redis-server</span><br><span class="line"># 启动 Redis 服务</span><br><span class="line">sudo service redis-server start</span><br><span class="line"># 检查 Redis 服务状态</span><br><span class="line">sudo service redis-server status</span><br></pre></td></tr></table></figure>
 <h4 id="docker"><a href="#docker" class="headerlink" title="docker"></a>docker</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># Docker Compose 配置文件，用于启动 Redis 服务</span><br><span class="line"># 该配置为 FastAPI 应用提供 Redis 后端，支持分布式会话管理</span><br><span class="line">version: &#x27;3.8&#x27;</span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">  redis:</span><br><span class="line">    # 使用官方 Redis 镜像</span><br><span class="line">    image: redis:latest</span><br><span class="line">    # 服务名称</span><br><span class="line">    container_name: redis</span><br><span class="line">    # 映射 Redis 默认端口到主机</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;6379:6379&quot;</span><br><span class="line">    # 持久化存储配置（可选）</span><br><span class="line">    volumes:</span><br><span class="line">      - redis-data:/data</span><br><span class="line">    # 确保容器在重启时自动启动</span><br><span class="line">    restart: unless-stopped</span><br><span class="line">    # 健康检查：验证 Redis 服务是否正常运行</span><br><span class="line">    healthcheck:</span><br><span class="line">      test: [&quot;CMD&quot;, &quot;redis-cli&quot;, &quot;ping&quot;]</span><br><span class="line">      interval: 30s</span><br><span class="line">      timeout: 10s</span><br><span class="line">      retries: 3</span><br><span class="line">      start_period: 10s</span><br><span class="line">    # 网络配置</span><br><span class="line">    networks:</span><br><span class="line">      - app-network</span><br><span class="line"></span><br><span class="line"># 定义持久化存储卷</span><br><span class="line">volumes:</span><br><span class="line">  redis-data:</span><br><span class="line">    name: redis-data</span><br><span class="line"></span><br><span class="line"># 定义网络</span><br><span class="line">networks:</span><br><span class="line">  app-network:</span><br><span class="line">    driver: bridge</span><br></pre></td></tr></table></figure>
 ]]></content>
@@ -2731,7 +2815,21 @@ Score_RRF(doc) = Σ_{s ∈ Systems} (1 / (k + rank_s(doc)))</script><p>其中：
   <entry>
     <title>A2A协议</title>
     <url>/2025/08/04/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/A2A%E5%8D%8F%E8%AE%AE/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<h3 id="什么是A2A协议"><a href="#什么是A2A协议" class="headerlink" title="什么是A2A协议"></a>什么是A2A协议</h3><p>A2A 协议（Agent2Agent Protocol，智能体间通信协议）是 Google 在 2025 年 4 月发布并开源的首个 AI 智能体交互标准。它通过统一的通信规范，解决不同团队、不同框架、不同供应商开发的 AI 智能体如何“对话”和协同工作的问题。</p>
+<blockquote>
+<p>与mcp区分，<strong>MCP</strong> 解决 <strong>“单个智能体如何调用外部工具/数据”</strong> 的问题，而<strong>A2A</strong> 解决 <strong>“多个智能体如何协同完成任务”</strong> 的问题。</p>
+</blockquote>
+<p><img src="/2025/08/04/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/A2A%E5%8D%8F%E8%AE%AE/image-20250809222720192.png" alt="image-20250809222720192"></p>
+<h3 id="为什么要使用A2A协议"><a href="#为什么要使用A2A协议" class="headerlink" title="为什么要使用A2A协议"></a>为什么要使用A2A协议</h3><p>随着 AI 应用深化，单一“万能”模型难以兼顾所有领域。A2A 鼓励构建“小而专”的智能体生态：</p>
+<ul>
+<li>每个智能体专注一个领域（如订票、报税、图像处理）。</li>
+<li>通过 A2A 协议，它们像乐高积木一样自由组合，快速响应新的业务需求。</li>
+</ul>
+<p>比如你让一个agent使用多个工具，不仅会浪费tokens，也会降低其调用工具的准确性。所有，专业的领域使用专业的agent，而agent间的通信便要依靠A2A协议</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://github.com/a2aproject/a2a-samples?tab=readme-ov-file">a2aproject/a2a-samples: Samples using the Agent2Agent (A2A) Protocol</a></p>
+<p><a href="https://a2a-protocol.org/latest/">Agent2Agent (A2A) Protocol</a></p>
+<p><a href="https://github.com/a2aproject/a2a-python">a2aproject/a2a-python: Agent2Agent (A2A) 协议的官方 Python SDK —- a2aproject/a2a-python: Official Python SDK for the Agent2Agent (A2A) Protocol</a></p>
+]]></content>
       <categories>
         <category>ai相关</category>
         <category>A2A协议</category>
@@ -5188,12 +5286,6 @@ Score_RRF(doc) = Σ_{s ∈ Systems} (1 / (k + rank_s(doc)))</script><p>其中：
       </tags>
   </entry>
   <entry>
-    <title></title>
-    <url>/2025/08/04/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83/</url>
-    <content><![CDATA[<p><a href="https://www.bilibili.com/video/BV13BKozLEXE/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">DIY你的AI梦中情人？Qwen3微调手把手教你！_哔哩哔哩_bilibili</a></p>
-]]></content>
-  </entry>
-  <entry>
     <title>算法期末复习</title>
     <url>/2025/06/12/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/%E7%AE%97%E6%B3%95%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/</url>
     <content><![CDATA[<h3 id="贪心问题"><a href="#贪心问题" class="headerlink" title="贪心问题"></a>贪心问题</h3><h4 id="找零钱"><a href="#找零钱" class="headerlink" title="找零钱"></a>找零钱</h4><p>用最少数量的钱币凑出目标金额 m 元。</p>
@@ -5462,6 +5554,10 @@ Q = X_{\text{decoder}} W^Q, \quad K = X_{\text{encoder}} W^K, \quad V = X_{\text
 <p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808143822630.png" alt="image-20250808143822630"></p>
 <p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808143845681.png" alt="image-20250808143845681"></p>
 <p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808145725202.png" alt="image-20250808145725202"></p>
+<p>多头注意力机制就是存在多个不同的权重矩阵，形成多个矩阵Z，再把它们 <strong>按最后一维（hidden）拼接（concat）→ 做一次线性变换</strong> 得到最终输出。</p>
+<blockquote>
+<p>线性bian’h把拼接后的多头结果 <code>Z_concat</code>（形状 batch×seq×d_model）重新<strong>线性映射</strong>回与输入相同的维度，同时让网络可以<strong>学习如何融合不同头的信息</strong>。</p>
+</blockquote>
 <p><a href="https://www.bilibili.com/video/BV1MY41137AK?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">【Transformer模型】曼妙动画轻松学，形象比喻贼好记_哔哩哔哩_bilibili</a></p>
 <p><a href="https://www.bilibili.com/video/BV1HsTyz8ECC?spm_id_from=333.788.player.switch&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">Transformer原理及架构：多头自注意力机制_哔哩哔哩_bilibili</a></p>
 <h3 id="残差连接（Residual-Connection）和层归一化（Layer-Normalization-LayerNorm）"><a href="#残差连接（Residual-Connection）和层归一化（Layer-Normalization-LayerNorm）" class="headerlink" title="残差连接（Residual Connection）和层归一化（Layer Normalization, LayerNorm）"></a>残差连接（Residual Connection）和层归一化（Layer Normalization, LayerNorm）</h3><p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808150313758.png" alt="image-20250808150313758"></p>
@@ -17638,6 +17734,456 @@ weighted avg       0.80      0.81      0.80       154
       <tags>
         <tag>大学</tag>
         <tag>机器学习</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>大模型训练流程</title>
+    <url>/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E6%B5%81%E7%A8%8B/</url>
+    <content><![CDATA[<h3 id="什么是大模型"><a href="#什么是大模型" class="headerlink" title="什么是大模型"></a>什么是大模型</h3><p>随着2022年底 ChatGPT 再一次刷新 NLP 的能力上限，大<strong>语言模型（Large Language Model，LLM）开始接替传统的预训练语言模型（Pre-trained Language Model，PLM）</strong> 成为 NLP 的主流方向，基于 LLM 的全新研究范式也正在刷新被 BERT 发扬光大的<strong>预训练-微调范式</strong>，NLP 由此迎来又一次翻天覆地的变化。</p>
+<p>LLM，即 Large Language Model，中文名为大语言模型或大型语言模型，是一种相<strong>较传统语言模型参数量更多、在更大规模语料上进行预训练的语言模型</strong>。</p>
+<p>一般来说，LLM 指包含<strong>数百亿（或更多）参数的语言模型</strong>，它们往往在<strong>数 T token 语料上</strong>通过多卡分布式集群进行预训练，具备远超出传统预训练模型的文本理解与生成能力。不过，随着 LLM 研究的不断深入，多种参数尺寸的 LLM 逐渐丰富，广义的 LLM 一般覆盖了从<strong>十亿参数</strong>（如 Qwen-1.5B）到<strong>千亿参数</strong>（如 Grok-314B）的所有大型语言模型。只要模型展现出<strong>涌现能力</strong>，即在一系列复杂任务上表现出远超传统预训练模型（如 BERT、T5）的能力与潜力，都可以称之为 LLM。</p>
+<p>一般认为，GPT-3（1750亿参数）是 LLM 的开端，基于 GPT-3 通过 <strong>预训练（Pretraining）、监督微调（Supervised Fine-Tuning，SFT）、强化学习与人类反馈（Reinforcement Learning with Human Feedback，RLHF）</strong>三阶段训练得到的 ChatGPT 更是主导了 LLM 时代的到来。</p>
+<blockquote>
+<p>区分 LLM 与传统 PLM 最显著的特征即是 LLM 具备 <code>涌现能力</code> 。涌现能力是指同样的模型架构与预训练任务下，某些能力在小型模型中不明显，但在大型模型中特别突出。</p>
+</blockquote>
+<h3 id="训练流程"><a href="#训练流程" class="headerlink" title="训练流程"></a>训练流程</h3><p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E6%B5%81%E7%A8%8B/image-20250811092459843.png" alt="image-20250811092459843"></p>
+<p>一般而言，训练一个完整的 LLM 需要经过图1中的三个阶段——Pretrain、SFT 和 RLHF。</p>
+<h3 id="Pretrain"><a href="#Pretrain" class="headerlink" title="Pretrain"></a>Pretrain</h3><p>Pretrain，即预训练，是训练 LLM 最核心也是工程量最大的第一步。</p>
+<h4 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h4><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>hidden_layers</th>
+<th>hidden_size</th>
+<th>heads</th>
+<th>整体参数量</th>
+<th>预训练数据量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BERT-base</td>
+<td>12</td>
+<td>768</td>
+<td>12</td>
+<td>0.1B</td>
+<td>3B</td>
+</tr>
+<tr>
+<td>BERT-large</td>
+<td>24</td>
+<td>1024</td>
+<td>16</td>
+<td>0.3B</td>
+<td>3B</td>
+</tr>
+<tr>
+<td>Qwen-1.8B</td>
+<td>24</td>
+<td>2048</td>
+<td>16</td>
+<td>1.8B</td>
+<td>2.2T</td>
+</tr>
+<tr>
+<td>LLaMA-7B</td>
+<td>32</td>
+<td>4096</td>
+<td>32</td>
+<td>7B</td>
+<td>1T</td>
+</tr>
+<tr>
+<td>GPT-3</td>
+<td>96</td>
+<td>12288</td>
+<td>96</td>
+<td>175B</td>
+<td>300B</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>根据定义，LLM 的核心特点即在于其具有<strong>远超传统预训练模型的参数量</strong>，<strong>同时在更海量的语料上进行预训练</strong>。传统预训练模型如 BERT，有 base 和 large 两个版本。BERT-base 模型由 12个 Encoder 层组成，其 hidden_size 为 768，使用 12个头作为多头注意力层，整体参数量为 1亿（110M）；而 BERT-large 模型由 24个 Encoder 层组成，hidden_size 为 1024，有 16个头，整体参数量为 3亿（340M）。同时，BERT 预训练使用了 33亿（3B）token 的语料，在 64块 TPU 上训练了 4天。事实上，相对于传统的深度学习模型，3亿参数量、33亿训练数据的 BERT 已经是一个能力超群、资源消耗巨大的庞然大物。</p>
+<p>但是，前面我们提到，<strong>一般而言的 LLM 通常具有数百亿甚至上千亿参数</strong>，即使是广义上最小的 LLM，一般也有十亿（1B）以上的参数量。例如以开山之作 GPT-3 为例，其有 96个 Decoder 层，12288 的 hidden_size 和 96个头，<strong>共有 1750亿（175B）参数，比 BERT 大出快 3个数量级</strong>。即使是目前流行的小型 LLM 如 Qwen-1.8B，其也有 24个 Decoder 层、2048的 hidden_size 和 16个注意力头，整体参数量达到 18亿（1.8B）。</p>
+<h4 id="分布式训练"><a href="#分布式训练" class="headerlink" title="分布式训练"></a>分布式训练</h4><p>也正因如此，<strong>分布式训练框架也成为 LLM 训练必不可少的组成部分</strong>。分布式训练框架的核心思路是<strong>数据并行和模型并行</strong>。所谓数据并行，是指训练模型的尺寸可以被单个 GPU 内存容纳，但是由于增大训练的 batch_size 会增大显存开销，无法使用较大的 batch_size 进行训练；同时，训练数据量非常大，使用单张 GPU 训练时长难以接受。</p>
+<h4 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h4><p><strong>训练数据本身也是预训练 LLM 的一个重大挑战</strong>。训练一个 LLM，至少需要数百 B 甚至上 T 的预训练语料。根据研究，LLM 所掌握的知识绝大部分都是在预训练过程中学会的，因此，为了使训练出的 LLM 能够覆盖尽可能广的知识面，预训练语料需要组织多种来源的数据，并以一定比例进行混合。目前，主要的开源预训练语料包括 CommonCrawl、C4、Github、Wikipedia 等。<strong>不同的 LLM 往往会在开源预训练语料基础上，加入部分私有高质量语料，再基于自己实验得到的最佳配比来构造预训练数据集</strong>。事实上，<strong>数据配比</strong>向来是预训练 LLM 的“核心秘籍”，不同的配比往往会相当大程度影响最终模型训练出来的性能。</p>
+<p>训练一个中文 LLM，训练数据的难度会更大。目前，高质量语料还是大部分集中在英文范畴，例如上表的 Wikipedia、Arxiv 等，均是英文数据集；而 C4 等多语言数据集中，英文语料也占据主要地位。目前开源的中文 LLM 如 ChatGLM、Baichuan 等模型均未开放其预训练数据集，开源的中文预训练数据集目前仅有昆仑天工开源的<a href="https://huggingface.co/datasets/Skywork/SkyPile-150B">SkyPile</a>（150B）、中科闻歌开源的<a href="https://huggingface.co/datasets/wenge-research/yayi2_pretrain_data">yayi2</a>（100B）等，相较于英文开源数据集有明显差距。</p>
+<h4 id="数据清洗"><a href="#数据清洗" class="headerlink" title="数据清洗"></a>数据清洗</h4><p><strong>预训练数据的处理与清洗</strong>也是 LLM 预训练的一个重要环节。诸多研究证明，预训练数据的质量往往比体量更加重要。预训练数据处理一般包括以下流程：</p>
+<ol>
+<li>文档准备。由于海量预训练语料往往是从互联网上获得，一般需要从爬取的网站来获得自然语言文档。文档准备主要包括 URL 过滤（根据网页 URL 过滤掉有害内容）、文档提取（从 HTML 中提取纯文本）、语言选择（确定提取的文本的语种）等。</li>
+<li>语料过滤。语料过滤的核心目的是去除低质量、无意义、有毒有害的内容，例如乱码、广告等。语料过滤一般有两种方法：基于模型的方法，即通过高质量语料库训练一个文本分类器进行过滤；基于启发式的方法，一般通过人工定义 web 内容的质量指标，计算语料的指标值来进行过滤。</li>
+<li>语料去重。实验表示，大量重复文本会显著影响模型的泛化能力，因此，语料去重即删除训练语料中相似度非常高的文档，也是必不可少的一个步骤。去重一般基于 hash 算法计算数据集内部或跨数据集的文档相似性，将相似性大于指定阈值的文档去除；也可以基于子串在序列级进行精确匹配去重。</li>
+</ol>
+<h3 id="SFT-指令微调"><a href="#SFT-指令微调" class="headerlink" title="SFT 指令微调"></a>SFT 指令微调</h3><p>预训练赋予了 LLM 能力，却还需要第二步将其激发出来。经过预训练的 LLM 好像一个博览群书但又不求甚解的书生，对什么样的偏怪问题，都可以流畅地接出下文，但他偏偏又<strong>不知道问题本身的含义</strong>，只会“死板背书”。这一现象的本质是因为，LLM 的预训练任务就是经典的 <strong>CLM</strong>，也就是训<strong>练其预测下一个 token 的能力</strong>，在没有进一步微调之前，其无法与其他下游任务或是用户指令适配。</p>
+<p>因此，我们还需要第二步来教这个博览群书的学生如何去使用它的知识，也就是 <strong>SFT（Supervised Fine-Tuning，有监督微调）</strong>。</p>
+<p>面对能力强大的 LLM，我们往往不再是在指定下游任务上构造有监督数据进行微调，而是选择训练模型的“通用指令遵循能力”，也就是一般<strong>通过<code>指令微调</code>的方式来进行 SFT</strong>。</p>
+<p>所谓指令微调，即我们训练的输入是各种类型的用户指令，而需要模型拟合的输出则是我们希望模型在收到该指令后做出的回复。例如，我们的一条训练样本可以是：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">input:告诉我今天的天气预报？</span><br><span class="line">output:根据天气预报，今天天气是晴转多云，最高温度26摄氏度，最低温度9摄氏度，昼夜温差大，请注意保暖哦</span><br></pre></td></tr></table></figure>
+<p>也就是说，SFT 的主要目标是让模型从多种类型、多种风格的指令中获得泛化的指令遵循能力，也就是能够理解并回复用户的指令。</p>
+<h3 id="RLHF"><a href="#RLHF" class="headerlink" title="RLHF"></a>RLHF</h3><p>RLHF，全称是 <strong>Reinforcement Learning from Human Feedback，即人类反馈强化学习</strong>，是利用强化学习来训练 LLM 的关键步骤。相较于在 GPT-3 就已经初见雏形的 SFT，RLHF 往往被认为是 ChatGPT 相较于 GPT-3 的最核心突破。事实上，从功能上出发，我们可以将 LLM 的训练过程分成<strong>预训练与对齐（alignment）两个阶段</strong>。预训练的核心作用是赋予模型海量的知识，而所谓对齐，其实就是让模型与人类价值观一致，从而输出人类希望其输出的内容。在这个过程中，SFT 是让 LLM 和人类的指令对齐，从而具有指令遵循能力；而 RLHF 则是从更深层次令 LLM 和人类价值观对齐，令其达到安全、有用、无害的核心标准。</p>
+<p>RLHF 分为两个步骤：<strong>训练 RM 和 PPO 训练</strong>。</p>
+<p><strong>RM，Reward Model，即奖励模型</strong>。RM 是用于拟合人类偏好，来给 LLM 做出反馈的。在强化学习的训练中，对于 LLM 的每一个回复，RM 会进行打分，这个打分反映了生成回复符合人类偏好的程度。然后 LLM 会根据强化学习的原理，基于 RM 的打分来进行优化训练。</p>
+<p>在完成 RM 训练之后，就可以使用 PPO 算法来进行强化学习训练。<strong>PPO，Proximal Policy Optimization，近端策略优化算法</strong>，是一种经典的 RL 算法。事实上，强化学习训练时也可以使用其他的强化学习算法，但目前 PPO 算法因为成熟、成本较低，还是最适合 RLHF 的算法。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://datawhalechina.github.io/happy-llm/#/./chapter4/第四章 大语言模型">第四章 大语言模型</a></p>
+]]></content>
+      <categories>
+        <category>模型</category>
+        <category>微调</category>
+      </categories>
+      <tags>
+        <tag>大模型</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>模型微调——LoRA</title>
+    <url>/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/</url>
+    <content><![CDATA[<h3 id="为什么要微调"><a href="#为什么要微调" class="headerlink" title="为什么要微调"></a>为什么要微调</h3><p>预训练大模型在海量通用语料上学到的知识，在垂直场景（医疗、法律、零售客服等）里往往“泛而浅”。</p>
+<p>从零训练一个同等规模的大模型成本极高（千卡周级别），而微调只需在已有权重上做小步调整，算力/数据量都指数级下降。</p>
+<h3 id="什么是全量微调"><a href="#什么是全量微调" class="headerlink" title="什么是全量微调"></a>什么是全量微调</h3><p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811104846104.png" alt="image-20250811104846104"></p>
+<p>全量微调（full fine-tuning）通俗来说，对于参数的每一个权重，都要学习一个新的值（或者偏移量），更新所有 Transformer 层里的权重矩阵（包括 embedding、attention、FFN），这样的开销是很大的。</p>
+<h3 id="什么是LoRA"><a href="#什么是LoRA" class="headerlink" title="什么是LoRA"></a>什么是LoRA</h3><p>LoRA（Low-Rank Adaptation，低秩适配）是一种<strong>参数高效微调（PEFT）</strong>技术，核心目的：<br><strong>“冻结大模型 99 % 以上原始权重，只额外训练极少量低秩矩阵，就能让模型在下游任务上达到近似全量微调的效果。”</strong></p>
+<p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811105145633.png" alt="image-20250811105145633"></p>
+<p>通俗来说，通过学习两个低秩的矩阵，来近似于完整的矩阵，如图，W=A*B，矩阵相乘</p>
+<p>在实际应用中，<strong>LoRA可以直接和transformer的FFN层（线性层）对齐</strong></p>
+<p>Transformer 模型的核心是注意力机制，其中涉及到 Query, Key, Value 的计算，这些都是线性变换。</p>
+<p>在标准的注意力机制中，计算公式为：</p>
+<script type="math/tex; mode=display">
+\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V</script><p>其中 $Q$, $K$, $V$ 的计算为：</p>
+<script type="math/tex; mode=display">
+Q = X_Q W_Q, \quad K = X_K W_K, \quad V = X_V W_V</script><p> $X_Q$, $X_K$, $X_V$ 的输入可以相同，也可以不同。例如，在 Cross-Attention 中，解码器的隐藏状态作为 $X_Q$，编码器的输出作为 $X_K$ 和 $X_V$。</p>
+<p><strong>LoRA 可以应用到 $W_Q$, $W_K$, $W_V$ 上，采用与线性层类似的方式</strong>。</p>
+<h3 id="为什么要用lora"><a href="#为什么要用lora" class="headerlink" title="为什么要用lora"></a>为什么要用lora</h3><p>首先要理解低秩：秩可以理解成一个矩阵所代表的信息，低秩矩阵，便是带有少量信息的矩阵，当然这样的矩阵计算效率是更高的，</p>
+<p>在全量微调中，由于训练一个完整的矩阵开销是非常大的；在lora中就通过训练低秩矩阵，来近似<strong>模型权重更新</strong>的效果</p>
+<blockquote>
+<p>若模型参数比较小，使用冻结部分参数或全量微调的方式，往往更好</p>
+</blockquote>
+<p>初学者不禁会思考，这样难道不会损失信息导致大模型的性能变差吗？但是，实验下来效果还是不错的，通过牺牲一点性能，来换取开销的大幅度减少</p>
+<blockquote>
+<p> LoRA 原文实验<br>在 GPT-3 175 B 上，仅用 rank 4 的 LoRA 就能在全量微调 99 % 参数量的情况下，保持 97 % 的下游指标。</p>
+</blockquote>
+<h3 id="什么是QLoRA"><a href="#什么是QLoRA" class="headerlink" title="什么是QLoRA"></a>什么是QLoRA</h3><p>QLoRA（Quantized Low-Rank Adaptation，量化低秩适应）是 <strong>LoRA 的“极致省内存”版本</strong>。它把 LoRA 的“低秩增量”思路再往前推一步：<strong>先把整个底座模型权重压到 4-bit，再在上面做 LoRA 微调</strong>。</p>
+<p>QLoRA 是另一个热门术语，它与 LoRA 之间的唯一区别在于首字母“Q”，代表“量化（quantized）”。“量化”一词指的是用来减少存储神经元权重的比特数。</p>
+<p>例如，神经网络的权重通常以浮点数表示，每个权重需要 32 位。量化的思想是将神经网络的权重压缩为更低的精度，而不会显著损失模型性能或产生重大影响。因此，不再使用 32 位，而是可以舍弃部分比特，例如只用 16 位。</p>
+<p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811142432782.png" alt="image-20250811142432782"></p>
+<h3 id="微调工具的介绍"><a href="#微调工具的介绍" class="headerlink" title="微调工具的介绍"></a>微调工具的介绍</h3><h4 id="unsloth"><a href="#unsloth" class="headerlink" title="unsloth"></a>unsloth</h4><p><a href="https://github.com/unslothai/unsloth?tab=readme-ov-file">unslothai/unsloth: Fine-tuning &amp; Reinforcement Learning for LLMs. 🦥 Train OpenAI gpt-oss, Qwen3, Llama 4, DeepSeek-R1, Gemma 3, TTS 2x faster with 70% less VRAM.</a></p>
+<p>unsloth是一个专为大型语言模型（LLM）设计的动态量化与微调框架，旨在提高微调效率并减少显存占用，因此主要用于单机单卡的模型微调。</p>
+<p>值得一提的是，Unsloth动态量化模型：<a href="https://unsloth.ai/blog/dynamic-v2">https://unsloth.ai/blog/dynamic-v2</a></p>
+<p>Unsloth的动态量化方法，特别是其最新的Dynamic 2.0版本，旨在在尽量减少性能损失的同时显著压缩大型语言模型（LLMs）的体积。对于Qwen3模型，尤其是4-bit动态量化版本，现有的评测显示其性能下降非常有限，甚至在某些任务上与原始模型相当。</p>
+<blockquote>
+<p>Unsloth 的「动态量化」可以一句话概括为：<br><strong>“按层、按敏感度自动决定每块权重到底用 2.5 / 3.5 / 4 / 6 / 8 / 32 bit 的精细化量化策略，而不是一股脑全量化到 4 bit。”</strong></p>
+</blockquote>
+<p>这也使得Unsloth的动态量化模型成为<strong>个人配置</strong>下的最佳微调工具。</p>
+<p>不过需要注意的是，动态量化由利也有弊，其<strong>好处在于可以极大程度压缩模型运行所需占用的显存大小，同时几乎不损失性能</strong>，但问题在于动态量化的模型，无论是推理还是微调，<strong>只能单卡运行</strong>，这就使得其吞吐量有限，无法在一台物理机上实现多GPU并行从而扩大吞吐量。</p>
+<h4 id="LLaMA-Factory"><a href="#LLaMA-Factory" class="headerlink" title="LLaMA Factory"></a><strong>LLaMA Factory</strong></h4><p><a href="https://github.com/hiyouga/LLaMA-Factory/tree/main">hiyouga/LLaMA-Factory: Unified Efficient Fine-Tuning of 100+ LLMs &amp; VLMs (ACL 2024)</a></p>
+<p>LLaMA Factory 是一个简单易用且高效的大型语言模型训练与微调平台。通过它，用户可以在无需编写任何代码的前提下，在本地完成上百种预训练模型的微调。</p>
+<p>LLaMA Factory 提供了API Server 和一站式 WebUI Board，方便企业进行模型的管理和部署。适合不会写代码或代码基础比较弱的同学快速上手进行微调。</p>
+<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><p>ms-SWIFT GitHub项目主页：<a href="https://github.com/modelscope/swift">https://github.com/modelscope/swift</a></p>
+<p>ColossalAI GitHub项目主页：<a href="https://github.com/hpcaitech/ColossalAI">https://github.com/hpcaitech/ColossalAI</a></p>
+<p>除此之外，也可以借助更加底层的库，如peft、LoRA、transformer等实现高效微调。</p>
+<h3 id="模型性能评估框架"><a href="#模型性能评估框架" class="headerlink" title="模型性能评估框架"></a>模型性能评估框架</h3><h4 id="EvalScope"><a href="#EvalScope" class="headerlink" title="EvalScope"></a>EvalScope</h4><p>项目地址： <a href="https://github.com/modelscope/evalscope">https://github.com/modelscope/evalscope</a></p>
+<p>EvalScope 是由阿里巴巴魔搭社区（ModelScope）推出的一款开源模型评估框架，旨在为大语言 模型（LLM）和多模态模型提供统一、系统化的性能评估方案。该框架具备高度的自动化和可扩展性， 适用于研究机构、工业界以及模型开发者在模型验证与性能对比场景中的广泛需求。</p>
+<h3 id="可视化框架"><a href="#可视化框架" class="headerlink" title="可视化框架"></a>可视化框架</h3><h4 id="wandb"><a href="#wandb" class="headerlink" title="wandb"></a>wandb</h4><p><strong>Weights &amp; Biases（简称 wandb）</strong> 是一个专为机器学习 / 深度学习设计的 <strong>云端实验管理、可视化与协作平台</strong>。它帮你把“训练过程中发生了什么”全部自动化地记录下来，并以网页仪表盘的形式实时展示，省去你手动保存日志、画图、整理表格的麻烦。</p>
+<p>wandb官网： <a href="https://wandb.ai/site">https://wandb.ai/site</a></p>
+<h4 id="swanlab"><a href="#swanlab" class="headerlink" title="swanlab"></a>swanlab</h4><p>SwanLab 是一款<strong>开源、轻量</strong>的 AI 模型训练跟踪与可视化工具，提供了一个<strong>跟踪、记录、比较、和协作实验</strong>的平台。</p>
+<p>SwanLab 面向人工智能研究者，设计了友好的Python API 和漂亮的UI界面，并提供<strong>训练可视化、自动日志记录、超参数记录、实验对比、多人协同等功能</strong>。在SwanLab上，研究者能基于直观的可视化图表发现训练问题，对比多个实验找到研究灵感，并通过<strong>在线网页</strong>的分享与基于组织的<strong>多人协同训练</strong>，打破团队沟通的壁垒，提高组织训练效率。</p>
+<p><a href="https://docs.swanlab.cn/">SwanLab官方文档 | 先进的AI团队协作与模型创新引擎</a></p>
+<h3 id="构造微调数据集"><a href="#构造微调数据集" class="headerlink" title="构造微调数据集"></a>构造微调数据集</h3><h4 id="为什么要构造微调数据集"><a href="#为什么要构造微调数据集" class="headerlink" title="为什么要构造微调数据集"></a>为什么要构造微调数据集</h4><p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811162229104.png" alt="image-20250811162229104"></p>
+<p>其中 &lt;∣im_start∣&gt; 代表文本开始,而user则代表消息身份,用于构建多轮对话,而<lim_end>则代表文本结束,即用户输入结束,而<lim_start>代表新一段文本开始,assistant代表接下来由模型创建消息,而<lim_end>同样代表模型创建消息的结束。</lim_end></lim_start></lim_end></p>
+<p>而模型其实是通过这样一组<strong>特殊字符标记</strong>来规范自己的行为,<strong>判断当前消息类型,以及通过输出特殊标记来确定停止时间</strong>。对于绝大多数模型,我们可以在模型的<strong>tokenizer_config.json中看到完整的特殊标记符</strong>(以及系统提示词模板):</p>
+<p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811163120092.png" alt="image-20250811163120092"></p>
+<p>而在实际微调过程中,我们都知道需要<strong>有监督的数据集</strong>、也就是需要输入QA对来进行微调。以著名的<strong>alpaca_zh中文微调数据集</strong>来说,其基本格式如下:</p>
+<p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811163232521.png" alt="image-20250811163232521"></p>
+<p>就可以表示为下列json格式数据集:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">json&#123;  &quot;instruction&quot;: &quot;&quot;,  &quot;input&quot;: &quot;输入:你好。&quot;,  &quot;output&quot;: &quot;输出:你好,有什么可以帮到你的?&quot;&#125;</span><br></pre></td></tr></table></figure>
+<p>而在真实的微调过程中,如果是针对Qwen3进行微调,微调脚本会将这条数据集(无论什么格式)转化为如下格式:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">xml&lt;im_start|&gt;user\n你好&lt;im_end|&gt;\n&lt;im_start|&gt;assistant\n你好,有什么可以帮到你的?&lt;im_end|&gt;</span><br></pre></td></tr></table></figure>
+<p>而在实际训练过程中,模型就会根据assistant前的内容,学习assistant后面的输出内容。</p>
+<p><strong>因此我们要在下载数据集后，进行微调前，对数据集进行预处理</strong>，接下来引出构造数据集的几种场景</p>
+<h4 id="带有系统提示微调数据集格式"><a href="#带有系统提示微调数据集格式" class="headerlink" title="带有系统提示微调数据集格式"></a>带有系统提示微调数据集格式</h4><p>在很多场景下,我们还会发现一些<strong>带有instruction字段的微调数据集</strong>,那instruction字段是如何带入到微调过程中的呢?</p>
+<p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811163232521.png" alt="image-20250811163232521"></p>
+<p>答案非常简单,还是依靠特殊字符。例如有一个对话内容如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">- 系统提示词(instruction):你是一名助人为乐的助手。</span><br><span class="line">- 用户输入(input):你好,好久不见。</span><br><span class="line">- 助手回复(output):是的呀,好久不见,最近有什么有趣的事情要和我分享么?</span><br></pre></td></tr></table></figure>
+<p>此时模型的输入和输出如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;lim_start|&gt;system你是一名助人为乐的助手。&lt;/im_end&gt;</span><br><span class="line">&lt;lim_start|&gt;user 你好,好久不见。&lt;/lim_end&gt;</span><br><span class="line">&lt;lim_start|&gt;assistant 是的呀,好久不见,最近有什么有趣的事情要和我分享么?&lt;/lim_end&gt;</span><br></pre></td></tr></table></figure>
+<p>即会通过<lim_start|>system…<lim_end|>来标记系统提示词。实际进行微调时,模型会根据assistant为界,学习assistant之前的文本输入情况下应该如何输出。</lim_end|></lim_start|></p>
+<h4 id="带Function-calling微调数据集格式"><a href="#带Function-calling微调数据集格式" class="headerlink" title="带Function calling微调数据集格式"></a>带Function calling微调数据集格式</h4><p>更进一步的,如果对话过程中带入了<strong>Function calling</strong>,此时首先模型会读取提前准备好的tool schema(也可能是自动生成的,例如MCP即可自动创建tool schema):</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;tool_schema&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;name&quot;: &quot;get_weather&quot;,</span><br><span class="line">      &quot;description&quot;: &quot;查询指定城市的天气信息&quot;,</span><br><span class="line">      &quot;parameters&quot;: &#123;</span><br><span class="line">        &quot;type&quot;: &quot;object&quot;,</span><br><span class="line">        &quot;properties&quot;: &#123;</span><br><span class="line">          &quot;location&quot;: &#123;</span><br><span class="line">            &quot;type&quot;: &quot;string&quot;,</span><br><span class="line">            &quot;description&quot;: &quot;要查询天气的城市名称&quot;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;required&quot;: [&quot;location&quot;]</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而假设我们的对话内容如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">- 系统提示词(instruction):你是一名助人为乐的助手。当用户查询天气的时候,请调用get_weather函数进行天气信息查询。</span><br><span class="line">- 用户输入(input):你好,请帮我查询下北京天气。</span><br><span class="line">- 助手回复(output):&#123;&quot;name&quot;: &quot;get_weather&quot;, &quot;arguments&quot;: &#123;&quot;location&quot;: &quot;北京&quot;&#125;&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>此时回复内容就是一条Function call message</p>
+</blockquote>
+<p>而此时模型真实的输入和输出内容如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;|im_start|&gt;system</span><br><span class="line">你是天气助手，当用户查询天气时请调用 get_weather 函数。</span><br><span class="line"># Tools</span><br><span class="line">You may call one or more functions to assist with the user query.</span><br><span class="line">You are provided with function signatures within &lt;tools&gt;&lt;/tools&gt; XML tags:</span><br><span class="line">&lt;tools&gt;</span><br><span class="line">[&#123;&quot;name&quot;:&quot;get_weather&quot;,&quot;description&quot;:&quot;查询指定城市的天气信息&quot;,&quot;parameters&quot;:&#123;&quot;type&quot;:&quot;object&quot;,&quot;properties&quot;:&#123;&quot;location&quot;:&#123;&quot;type&quot;:&quot;string&quot;,&quot;description&quot;:&quot;要查询天气的城市名称&quot;&#125;&#125;,&quot;required&quot;:[&quot;location&quot;]&#125;&#125;]</span><br><span class="line">&lt;/tools&gt;</span><br><span class="line">&lt;tool_call&gt;</span><br><span class="line"> &#123;&quot;name&quot;: &lt;function-name&gt;, &quot;arguments&quot;: &lt;args-json-object&gt;&#125;</span><br><span class="line">&lt;/tool_call&gt;.</span><br><span class="line">&lt;|im_end|&gt;</span><br><span class="line">&lt;|im_start|&gt;user</span><br><span class="line">北京天气如何？</span><br><span class="line">&lt;|im_end|&gt;</span><br><span class="line">&lt;|im_start|&gt;assistant</span><br><span class="line">&lt;tool_call&gt;&#123;&quot;name&quot;:&quot;get_weather&quot;,&quot;arguments&quot;:&#123;&quot;location&quot;:&quot;北京&quot;&#125;&#125;&lt;/tool_call&gt;</span><br><span class="line">&lt;|im_end|&gt;</span><br></pre></td></tr></table></figure>
+<p>接下来在进行训练时,模型同样根据assistant前的内容,学习assistant后面的输出内容。不过需要注意的是,由于高效微调调整的参数量较少,因此只能优化模型的Function calling能力,并不能从无到有让模型学会Function calling。</p>
+<h4 id="带有思考过程的微调数据集结构"><a href="#带有思考过程的微调数据集结构" class="headerlink" title="带有思考过程的微调数据集结构"></a>带有思考过程的微调数据集结构</h4><p>而如果是带有思考链,则一个简单的问答数据如下:</p>
+<p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811165802090.png" alt="image-20250811165802090"></p>
+<ul>
+<li>系统提示词(instruction):你是一名助人为乐的助手。</li>
+<li>用户输入(input):你好,好久不见。</li>
+<li>助手回复(output):好的,用户发来“你好,好久不见!”,我需要回应。首先,用户可能希望得到亲切的回应,所以应该用友好的语气。/n是的呀,好久不见,最近有什么有趣的事情要和我分享么?</li>
+</ul>
+<p>此时模型真实的内部输入和输出结果如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;lim_start|&gt;system</span><br><span class="line">你是一名助人为乐的助手。&lt;lim_end|&gt;</span><br><span class="line">&lt;lim_start|&gt;user</span><br><span class="line">你好,好久不见。&lt;lim_end|&gt;</span><br><span class="line">&lt;lim_start|&gt;assistant</span><br><span class="line"></span><br><span class="line">&lt;think&gt;  好的,用户发来“你好,好久不见!”,我需要回应。首先,用户可能希望得到亲切的回应,所以应该用友好的语气。&lt;/think&gt;</span><br><span class="line"></span><br><span class="line">是的呀,好久不见,最近有什么有趣的事情要和我分享么?&lt;/lim_end|&gt;</span><br></pre></td></tr></table></figure>
+<p>模型同样根据assistant前的内容,学习assistant后面的输出内容。也就是说,所谓的思考过程,本质上其实是一种文本响应格式,通过模型训练而来。</p>
+<h4 id="混合推理模型构造微调数据集基本方法"><a href="#混合推理模型构造微调数据集基本方法" class="headerlink" title="混合推理模型构造微调数据集基本方法"></a>混合推理模型构造微调数据集基本方法</h4><p>在了解了微调数据集结构背后的基本原理后,接下来的问题是应该如何构造微调数据集呢?</p>
+<p>一般来说我们可以在huggingface、ModelScope或llama- factory中挑选合适的数据集,并根据实际情况进行组装。</p>
+<p>例如围绕Qwen3模型的高效微调,为了确保其仍然<strong>保留混合推理能力,</strong>我们可以考虑在微调数据集中加入如普<strong>通对话数据集</strong><a href="https://huggingface.co/datasets/mlabonne/FineTome-100k">FineTome</a>,以及<strong>带有推理字段的数学类数据集</strong><a href="https://huggingface.co/datasets/nvidia/OpenMathReasoning">OpenMathReasoning</a>,<strong>并围绕这两个数据集进行拼接</strong>,从而在确保能提升模型的数学能力的同时,保留非推理的功能。</p>
+<p>同时还需要在持续微调训练过程中<strong>不断调整COT数学数据集和普通文本问答数据集之间的配比</strong>,以确保模型能够在提升数学能力的同时,保留混合推理的性能。</p>
+<blockquote>
+<p>Qwen3 的「混合推理能力」= <strong>在同一个模型里内置两套“大脑”</strong>：<br>• <strong>快思考（非思考模式）</strong>：轻量算力、秒级响应，适合简单问答；<br>• <strong>慢思考（思考模式）</strong>：多步链式推理、深度推敲，适合复杂逻辑、数学、代码。<br>系统会自动或按用户指令在两种模式之间 <strong>动态切换</strong>，从而 <strong>既省算力又保证难题精度</strong>。</p>
+</blockquote>
+<h3 id="微调的基本流程"><a href="#微调的基本流程" class="headerlink" title="微调的基本流程"></a>微调的基本流程</h3><p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250812105535330.png" alt="image-20250812105535330"></p>
+<h3 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h3><p><strong>安装Unsloth</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pip install --upgrade --force-reinstall --no-cache-dir unsloth unsloth_zoo</span><br></pre></td></tr></table></figure>
+<p><strong>安装Qwen3-8B-unsloth-bnb-4bit</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">modelscope download --model unsloth/Qwen3-8B-unsloth-bnb-4bit --local_dir /workspace/qwen3-8b</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#模型下载</span><br><span class="line">from modelscope import snapshot_download</span><br><span class="line">model_dir = snapshot_download(&#x27;unsloth/Qwen3-8B-unsloth-bnb-4bit&#x27;)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p> <strong>unsloth/Qwen3-8B-unsloth-bnb-4bit</strong> 这个模型它是 <strong>专门为Unsloth微调框架优化过的4bit量化版本</strong></p>
+<p>原始 Qwen3-8B（FP16）需要约 <strong>22GB 显存</strong>，而 4bit 量化后仅需 <strong>6GB 左右</strong></p>
+<p><strong>只要显存允许，原始 FP16/BF16 模型也可以用 Unsloth 做 4-bit LoRA（即 QLoRA）微调；官方预量化 4-bit 模型只是帮你把“量化”这一步提前做完了，二者本质相同。</strong></p>
+<p><strong>Unsloth 的两种用法示例</strong></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">场景</th>
+<th style="text-align:left">代码片段</th>
+<th style="text-align:left">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">A. 用官方已量化好的 4-bit 权重</td>
+<td style="text-align:left"><code>model_name=&quot;unsloth/Qwen3-8B-bnb-4bit&quot;</code></td>
+<td style="text-align:left">显卡 6 GB 就能跑，省去自己量化</td>
+</tr>
+<tr>
+<td style="text-align:left">B. 用原始 FP16 权重并现场 4-bit 量化</td>
+<td style="text-align:left"><code>model_name=&quot;Qwen/Qwen3-8B&quot;</code> + <code>load_in_4bit=True</code></td>
+<td style="text-align:left">显卡仍需 6 GB，显存占用与 A 相同</td>
+</tr>
+</tbody>
+</table>
+</div>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> unsloth <span class="keyword">import</span> FastLanguageModel</span><br><span class="line"></span><br><span class="line"><span class="comment"># 两种写法效果等价</span></span><br><span class="line">model, tokenizer = FastLanguageModel.from_pretrained(</span><br><span class="line">    model_name=<span class="string">&quot;Qwen/Qwen3-8B&quot;</span>,   <span class="comment"># 原始权重</span></span><br><span class="line">    load_in_4bit=<span class="literal">True</span>,            <span class="comment"># 现场量化到 4-bit</span></span><br><span class="line">    max_seq_length=<span class="number">2048</span>,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p><strong>安装EvalScope</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pip install evalscope                </span><br><span class="line"># 安装 Native backend (默认)</span><br><span class="line"> # 额外选项</span><br><span class="line">pip install &#x27;evalscope[opencompass]&#x27;   # 安装 OpenCompass backend</span><br><span class="line"> pip install &#x27;evalscope[vlmeval]&#x27;       </span><br><span class="line"># 安装 VLMEvalKit backend</span><br><span class="line"> pip install &#x27;evalscope[rag]&#x27;           </span><br><span class="line">pip install &#x27;evalscope[perf]&#x27;          </span><br><span class="line">pip install &#x27;evalscope[app]&#x27;           </span><br><span class="line"># 或可以直接输入all，安装全部模块</span><br><span class="line"># pip install &#x27;evalscope[all]&#x27;           </span><br><span class="line"># 安装 RAGEval backend</span><br><span class="line"> # 安装 模型压测模块 依赖</span><br><span class="line"># 安装 可视化 相关依赖</span><br><span class="line"># 安装所有 backends (Native, OpenCompass, </span><br><span class="line">VLMEvalKit, RAGEval)</span><br></pre></td></tr></table></figure>
+<p><strong>安装wandb</strong></p>
+<p>wandb官网： <a href="https://wandb.ai/site">https://wandb.ai/site</a></p>
+<p>安装wandb： </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pip install wandb</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><a href="https://github.com/SwanHubX/SwanLab?tab=readme-ov-file#-快速开始">SwanHubX/SwanLab: ⚡️SwanLab - an open-source, modern-design AI training tracking and visualization tool. Supports Cloud / Self-hosted use. Integrated with PyTorch / Transformers / LLaMA Factory / veRL/ Swift / Ultralytics / MMEngine / Keras etc.</a></p>
+<p>与其类似，一个开源、现代化设计的深度学习训练跟踪与可视化工具</p>
+</blockquote>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a href="https://www.bilibili.com/video/BV13BKozLEXE/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">DIY你的AI梦中情人？Qwen3微调手把手教你！_哔哩哔哩_bilibili</a></p>
+<p><a href="https://www.bilibili.com/video/BV1tthPeFEWb/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">通俗易懂理解全量微调和LoRA微调_哔哩哔哩_bilibili</a></p>
+<p><a href="https://www.bilibili.com/video/BV1DT421r7Et?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">通俗易懂理解大模型预训练和微调_哔哩哔哩_bilibili</a></p>
+<p><a href="https://www.bilibili.com/video/BV1YLE1zyEvX?spm_id_from=333.788.videopod.episodes&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11&amp;p=3">3.四大微调框架及微调硬件环境介绍_哔哩哔哩_bilibili</a></p>
+<p><a href="https://www.bilibili.com/video/BV1s2AUe2EBq/?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">如何把你的 DeePseek-R1 微调为某个领域的专家？（实战篇）_哔哩哔哩_bilibili</a></p>
+<p><a href="https://blog.csdn.net/javatiange/article/details/149964743?fromshare=blogdetail&amp;sharetype=blogdetail&amp;sharerId=149964743&amp;sharerefer=PC&amp;sharesource=2501_91530961&amp;sharefrom=from_link">一文详解：8种常见的大模型微调方法，看这篇就够了！-CSDN博客</a></p>
+]]></content>
+      <categories>
+        <category>模型</category>
+        <category>微调</category>
+      </categories>
+      <tags>
+        <tag>模型微调</tag>
+        <tag>LoRA</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>LoRA其他的模型微调方法</title>
+    <url>/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/LoRA%E5%85%B6%E4%BB%96%E7%9A%84%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<p><a href="https://mp.weixin.qq.com/s?__biz=MzkzODI1NzQyNA==&amp;mid=2247494667&amp;idx=1&amp;sn=c3af7d2472de61752ef8b8df28746f2e&amp;poc_token=HCyNmWijps0ViWD6wPgqFiDYUZVRSs7xUDRfowWE">大模型微调技巧：LoRA 与 QLoRA讲解</a></p>
+<p><a href="https://blog.csdn.net/javatiange/article/details/149964743?fromshare=blogdetail&amp;sharetype=blogdetail&amp;sharerId=149964743&amp;sharerefer=PC&amp;sharesource=2501_91530961&amp;sharefrom=from_link">一文详解：8种常见的大模型微调方法，看这篇就够了！-CSDN博客</a></p>
+]]></content>
+      <categories>
+        <category>模型</category>
+        <category>微调</category>
+      </categories>
+      <tags>
+        <tag>模型微调</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>qwen3-8b微调实战</title>
+    <url>/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/qwen3-8b%E5%BE%AE%E8%B0%83%E5%AE%9E%E6%88%98/</url>
+    <content><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>在完成微调前备知识的学习后，正式开始使用unsloth对Qwen3-8B-unsloth-bnb-4bit模型的lora微调实战</p>
+<h3 id="模型加载"><a href="#模型加载" class="headerlink" title="模型加载"></a>模型加载</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">from unsloth import FastLanguageModel</span><br><span class="line">import torch</span><br><span class="line"></span><br><span class="line">max_seq_length = 8192</span><br><span class="line">dtype = None</span><br><span class="line">load_in_4bit = True</span><br><span class="line"></span><br><span class="line">model, tokenizer = FastLanguageModel.from_pretrained(</span><br><span class="line">    model_name = &quot;/workspace/qwen3-8b&quot;,</span><br><span class="line">    max_seq_length = max_seq_length,</span><br><span class="line">    dtype = dtype,</span><br><span class="line">    load_in_4bit = load_in_4bit,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>FastLanguageModel</code> 是 <strong>Unsloth 框架的核心入口类</strong>，即<strong>“把 Hugging Face 的 transformers 模型‘加速’成支持 QLoRA 微调、显存占用减半、速度提升 2-5 倍的封装器。”</strong></p>
+<p><code>max_seq_length = 8192</code><strong>作用</strong>：告诉框架 <strong>“后续所有输入序列的最大长度”</strong>。</p>
+<p><code>dtype = None</code><strong>作用</strong>：让 Unsloth <strong>自动选择最合适的浮点精度</strong>。</p>
+<p><code>load_in_4bit = True</code><strong>作用</strong>：把模型<strong>权重量化成 4-bit</strong>，显存降到 1/4，QLoRA 微调必备。</p>
+</blockquote>
+<h3 id="查看模型与分词器信息"><a href="#查看模型与分词器信息" class="headerlink" title="查看模型与分词器信息"></a>查看模型与分词器信息</h3><h4 id="模型信息"><a href="#模型信息" class="headerlink" title="模型信息"></a>模型信息</h4><p>运行</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">model</span><br></pre></td></tr></table></figure>
+<p>通过阅读模型信息我们可以了解到：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">(embed_tokens): Embedding(151936, 4096, padding_idx=151654)</span><br></pre></td></tr></table></figure>
+<p><strong>模型有 15 万个 token 的字典，每个字/词被翻译成 4096 维向量，第 151 654 号 token 被官方指定为填充符。</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">(layers): ModuleList(</span><br><span class="line">      (0-2): 3 x Qwen3DecoderLayer(</span><br><span class="line">        (self_attn): Qwen3Attention(</span><br><span class="line">          (q_proj): Linear4bit(in_features=4096, out_features=4096, bias=False)</span><br><span class="line">          (k_proj): Linear4bit(in_features=4096, out_features=1024, bias=False)</span><br><span class="line">          (v_proj): Linear4bit(in_features=4096, out_features=1024, bias=False)</span><br><span class="line">          (o_proj): Linear4bit(in_features=4096, out_features=4096, bias=False)</span><br><span class="line">          (q_norm): Qwen3RMSNorm((128,), eps=1e-06)</span><br><span class="line">          (k_norm): Qwen3RMSNorm((128,), eps=1e-06)</span><br><span class="line">          (rotary_emb): LlamaRotaryEmbedding()</span><br><span class="line">        )</span><br><span class="line">        (mlp): Qwen3MLP(</span><br><span class="line">          (gate_proj): Linear(in_features=4096, out_features=12288, bias=False)</span><br><span class="line">          (up_proj): Linear(in_features=4096, out_features=12288, bias=False)</span><br><span class="line">          (down_proj): Linear(in_features=12288, out_features=4096, bias=False)</span><br><span class="line">          (act_fn): SiLU()</span><br><span class="line">        )</span><br><span class="line">        (input_layernorm): Qwen3RMSNorm((4096,), eps=1e-06)</span><br><span class="line">        (post_attention_layernorm): Qwen3RMSNorm((4096,), eps=1e-06)</span><br><span class="line">      )</span><br></pre></td></tr></table></figure>
+<p>共有36层<strong>Qwen3DecoderLayer</strong>，每层包含<strong>Qwen3Attention</strong>，<strong>Qwen3MLP</strong>（<strong>一个 SwiGLU 前馈网络</strong>），<strong>Qwen3RMSNorm</strong>（两个<strong>归一化层</strong>，对 4096 维的隐藏向量做“均方根归一化”，防止梯度爆炸、稳定训练。）</p>
+<p><img src="/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/qwen3-8b%E5%BE%AE%E8%B0%83%E5%AE%9E%E6%88%98/image-20250812153659843.png" alt="image-20250812153659843"></p>
+<p><a href="https://www.cnblogs.com/cavalier-chen/p/18937098">大模型-qwen3 模型结构解读-66 - jack-chen666 - 博客园</a></p>
+<blockquote>
+<p><strong>LoRA可以插到哪里呢？</strong></p>
+<p><strong>凡是打印里每层 Decoder 中出现的 <code>Linear4bit</code>（q/k/v/o + gate/up/down）就是 LoRA 可插、且默认会被插入的位置。</strong></p>
+</blockquote>
+<h4 id="分词器信息"><a href="#分词器信息" class="headerlink" title="分词器信息"></a>分词器信息</h4><p>运行</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tokenizer</span><br></pre></td></tr></table></figure>
+<p>查看tokenizer信息</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Qwen2TokenizerFast(name_or_path=&#x27;/workspace/qwen3-8b&#x27;, vocab_size=151643, model_max_length=40960, is_fast=True, padding_side=&#x27;left&#x27;, truncation_side=&#x27;right&#x27;, special_tokens=&#123;&#x27;eos_token&#x27;: &#x27;&lt;|im_end|&gt;&#x27;, &#x27;pad_token&#x27;: &#x27;&lt;|vision_pad|&gt;&#x27;, &#x27;additional_special_tokens&#x27;: [&#x27;&lt;|im_start|&gt;&#x27;, &#x27;&lt;|im_end|&gt;&#x27;, &#x27;&lt;|object_ref_start|&gt;&#x27;, &#x27;&lt;|object_ref_end|&gt;&#x27;, &#x27;&lt;|box_start|&gt;&#x27;, &#x27;&lt;|box_end|&gt;&#x27;, &#x27;&lt;|quad_start|&gt;&#x27;, &#x27;&lt;|quad_end|&gt;&#x27;, &#x27;&lt;|vision_start|&gt;&#x27;, &#x27;&lt;|vision_end|&gt;&#x27;, &#x27;&lt;|vision_pad|&gt;&#x27;, &#x27;&lt;|image_pad|&gt;&#x27;, &#x27;&lt;|video_pad|&gt;&#x27;]&#125;, clean_up_tokenization_spaces=False, added_tokens_decoder=&#123;</span><br><span class="line">	151643: AddedToken(&quot;&lt;|endoftext|&gt;&quot;, rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),</span><br><span class="line">	151644: AddedToken(&quot;&lt;|im_start|&gt;&quot;, rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),</span><br><span class="line">	151645: AddedToken(&quot;&lt;|im_end|&gt;&quot;, rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),</span><br><span class="line">	151646: AddedToken(&quot;&lt;|object_ref_start|&gt;&quot;, rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),</span><br><span class="line">	截取部分</span><br><span class="line">&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>vocab_size=151643：<strong>模型真正能理解和生成的子词/符号有这 151643 种，其余位置是预留空白。</strong></p>
+<p>model_max_length=40960：<strong>理论最大输入长度 40k token</strong>（实际受显存限制）</p>
+<p>is_fast=True：表示 <strong>tokenizer 使用的是 Hugging Face 的「Rust 高速实现」</strong>（即 <em>tokenizers</em> 库）</p>
+<p>special_tokens：打印的 <code>special_tokens</code> 字典 &amp; <code>added_tokens_decoder</code> 已经把 <strong>151643-151668</strong> 全部列出，共 <strong>26 个</strong>。</p>
+<h3 id="模拟一次模型处理流程"><a href="#模拟一次模型处理流程" class="headerlink" title="模拟一次模型处理流程"></a>模拟一次模型处理流程</h3><p>将对话内容通过tokenizer进行处理</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">messages = [</span><br><span class="line">    &#123;&quot;role&quot; : &quot;user&quot;, &quot;content&quot; : &quot;你好，好久不见！&quot;&#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">text = tokenizer.apply_chat_template(</span><br><span class="line">    messages,</span><br><span class="line">    tokenize = False,</span><br><span class="line">    add_generation_prompt = True, </span><br><span class="line">    enable_thinking = False, # 设置不思考</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p><code>apply_chat_template</code> 是把「人类对话格式的 Python 列表」一键翻译成 <strong>模型能直接理解的带特殊标记的文本字符串（或 token id 序列）</strong> 的“官方模板引擎”。</p>
+<p>转化后的格式为：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#x27;&lt;|im_start|&gt;user\n你好，好久不见！&lt;|im_end|&gt;\n&lt;|im_start|&gt;assistant\n&lt;think&gt;\n\n&lt;/think&gt;\n\n&#x27;</span><br></pre></td></tr></table></figure>
+<p>然后将转化后的字符串<strong>转成 GPU 上的 PyTorch token 张量，准备直接送进模型推理或训练。</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">inputs = tokenizer(text, return_tensors=&quot;pt&quot;).to(&quot;cuda&quot;)</span><br></pre></td></tr></table></figure>
+<p>以上代码共做了三步：</p>
+<ol>
+<li><strong>tokenizer(text)</strong><br>把前面 <code>apply_chat_template</code> 得到的字符串按词表切成 <strong>token id 列表</strong>。</li>
+<li><strong>return_tensors=”pt”</strong><br>把列表包成 <strong>PyTorch 张量</strong>（shape = [1, seq_len]）。</li>
+<li><strong>.to(“cuda”)</strong><br>把张量搬到 <strong>GPU 显存</strong>。</li>
+</ol>
+<p>输出如下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;input_ids&#x27;: tensor([[151644,    872,    198, 108386,   3837, 111920, 101571,   6313, 151645,</span><br><span class="line">            198, 151644,  77091,    198, 151667,    271, 151668,    271]],</span><br><span class="line">       device=&#x27;cuda:0&#x27;), &#x27;attention_mask&#x27;: tensor([[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]], device=&#x27;cuda:0&#x27;)&#125;</span><br></pre></td></tr></table></figure>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>键</th>
+<th>形状</th>
+<th>每个数字的含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>input_ids</strong></td>
+<td><code>[1, 17]</code></td>
+<td>17 个 token 的 ID 列表，已放到 GPU</td>
+</tr>
+<tr>
+<td><strong>attention_mask</strong></td>
+<td><code>[1, 17]</code></td>
+<td>17 个 <strong>1</strong>，表示“这些位置都是有效 token，无填充”</td>
+</tr>
+</tbody>
+</table>
+</div>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">outputs = model.generate(</span><br><span class="line">    input_ids=inputs.input_ids,</span><br><span class="line">    attention_mask=inputs.attention_mask,</span><br><span class="line">    max_new_tokens=max_seq_length,</span><br><span class="line">    use_cache=True,#启用 KV-Cache，避免重复计算，显存换时间</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>让模型在 GPU 上 <strong>根据已有 token 继续生成文本</strong>，直到达到 <code>max_new_tokens</code> 或遇到终止符。</p>
+<p>outputs格式和inputs类似，使用nput_ids表示后续字符</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">response = tokenizer.batch_decode(outputs)</span><br></pre></td></tr></table></figure>
+<p>把模型输出的 <strong>token id 序列</strong>（<code>outputs</code>）一次性还原成 <strong>人类可读的字符串</strong>。</p>
+<p>输出如下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#x27;&lt;|im_start|&gt;user\n你好，好久不见！&lt;|im_end|&gt;\n&lt;|im_start|&gt;assistant\n&lt;think&gt;\n\n&lt;/think&gt;\n\n你好！好久不见！最近过得怎么样？有什么新鲜事想和我分享吗？😊&lt;|im_end|&gt;&#x27;</span><br></pre></td></tr></table></figure>
+<p>这里展示的是没有思考过程的，最简单对话流程，若设置思考模式，完整代码如下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">text = tokenizer.apply_chat_template(</span><br><span class="line">    messages,</span><br><span class="line">    tools = tools,#同样，可以设置function calling</span><br><span class="line">    tokenize = False,</span><br><span class="line">    add_generation_prompt = True, </span><br><span class="line">    enable_thinking = True, # 设置思考</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">inputs = tokenizer(text, return_tensors=&quot;pt&quot;).to(&quot;cuda&quot;)</span><br><span class="line"></span><br><span class="line">outputs = model.generate(</span><br><span class="line">    input_ids=inputs.input_ids,</span><br><span class="line">    attention_mask=inputs.attention_mask,</span><br><span class="line">    max_new_tokens=max_seq_length,</span><br><span class="line">    use_cache=True,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">response = tokenizer.batch_decode(outputs)</span><br></pre></td></tr></table></figure>
+<p>当然，除了使用上述底层API进行对话外，Unsloth还提供了更加便捷的流式输出模型对话信息的函数，基本对话效果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">messages = [</span><br><span class="line">    &#123;&quot;role&quot; : &quot;user&quot;, &quot;content&quot; : &quot;你好，好久不见！&quot;&#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">text = tokenizer.apply_chat_template(</span><br><span class="line">    messages,</span><br><span class="line">    tokenize = False,</span><br><span class="line">    add_generation_prompt = True, </span><br><span class="line">    enable_thinking = False, </span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">_ = model.generate(</span><br><span class="line">    **tokenizer(text, return_tensors = &quot;pt&quot;).to(&quot;cuda&quot;),</span><br><span class="line">    max_new_tokens = 256, # Increase for longer outputs!</span><br><span class="line">    temperature = 0.7, top_p = 0.8, top_k = 20, # For non thinking</span><br><span class="line">    streamer = TextStreamer(tokenizer, skip_prompt = True),#实时流式输出：每解码一个 token 就立刻打印到终端</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="准备数据集"><a href="#准备数据集" class="headerlink" title="准备数据集"></a>准备数据集</h3><h4 id="下载数据集"><a href="#下载数据集" class="headerlink" title="下载数据集"></a>下载数据集</h4><p>选取的两个数据集</p>
+<ol>
+<li>我们使用 Open Math Reasoning 数据集，该数据集曾被用于赢得 AIMO（AI 数学奥林匹克 - 第二届进步奖）挑战！我们从中抽取了 10% 可验证的推理轨迹，这些轨迹是基于 DeepSeek R1 模型生成的，并且准确率超过 95%。数据集地址：<a href="https://huggingface.co/datasets/unsloth/OpenMathReasoning-mini">https://huggingface.co/datasets/unsloth/OpenMathReasoning-mini</a></li>
+<li>我们还利用了 Maxime Labonne 的 FineTome-100k 数据集，该数据集风格类似 ShareGPT。但我们需要将其转换为 HuggingFace 通用的多轮对话格式。数据集地址：<a href="https://huggingface.co/datasets/mlabonne/FineTome-100k">https://huggingface.co/datasets/mlabonne/FineTome-100k</a></li>
+</ol>
+<p>在实际微调过程中，大多都会使用huggingface的datasets库进行数据集下载和管理，实际下载流程如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">!pip install --upgrade datasets huggingface_hub</span><br></pre></td></tr></table></figure>
+<p><code>datasets</code> 是 Hugging Face 提供的一个高效数据处理库，专为机器学习和大语言模型（LLM）训练而设计。它支持加载、处理、转换和保存各种格式的数据（如 JSON、CSV、Parquet 等），并能与 <code>transformers</code> 模型无缝集成。通过 <code>datasets</code>，开发者可以快速完成数据清洗、切分、tokenization 等常见任务，大大提升训练效率，特别适合用于指令微调、对话生成、Function Calling 等任务的数据预处理。</p>
+<p>然后分别下载并导入这两个库：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">reasoning_dataset = load_dataset(&quot;unsloth/OpenMathReasoning-mini&quot;, split = &quot;cot&quot;)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>cot全称为<strong>Chain-of-Thought，思维链</strong>，是「<strong>一步一步把思考过程写出来</strong>」的解题方式，而不是直接给出最终答案。</p>
+<p><strong>只下 cot 是因为任务只需要“带推理过程”的那部分数据，其他子集对当前微调目标无用，避免冗余下载。</strong></p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">non_reasoning_dataset = load_dataset(&quot;mlabonne/FineTome-100k&quot;, split = &quot;train&quot;)</span><br></pre></td></tr></table></figure>
+<h4 id="查看数据集"><a href="#查看数据集" class="headerlink" title="查看数据集"></a>查看数据集</h4><p>然后输入数据集名称，即可查看数据集基本信息：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">reasoning_dataset</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Dataset(&#123;</span><br><span class="line">    features: [&#x27;expected_answer&#x27;, &#x27;problem_type&#x27;, &#x27;problem_source&#x27;, &#x27;generation_model&#x27;, &#x27;pass_rate_72b_tir&#x27;, &#x27;problem&#x27;, &#x27;generated_solution&#x27;, &#x27;inference_mode&#x27;],</span><br><span class="line">    num_rows: 19252</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p><strong>一共 19 252 条</strong> <strong>CoT（思维链）数学题</strong>，每条包含 8 个字段，可直接用来训练/评估模型的逐步推理能力。</p>
+<p>generated_solution：模型自己写的 逐步推理 + 最终答案（就是你想要的 CoT）</p>
+<p>expected_answer：标准答案（通常是一个简洁数字或表达式）</p>
+<p>generation_model：生成这条 CoT 的“教师模型”名字，比如 qwen2-72b</p>
+<p>加上索引则可以直接查看对应数据集信息：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">reasoning_dataset[0]</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;expected_answer&#x27;: &#x27;14&#x27;,</span><br><span class="line"> &#x27;problem_type&#x27;: &#x27;has_answer_extracted&#x27;,</span><br><span class="line"> &#x27;problem_source&#x27;: &#x27;aops_c4_high_school_math&#x27;,</span><br><span class="line"> &#x27;generation_model&#x27;: &#x27;DeepSeek-R1&#x27;,</span><br><span class="line"> &#x27;pass_rate_72b_tir&#x27;: &#x27;0.96875&#x27;,</span><br><span class="line"> &#x27;problem&#x27;: &#x27;Given $\\sqrt&#123;x^2+165&#125;-\\sqrt&#123;x^2-52&#125;=7$ and $x$ is positive, find all possible values of $x$.&#x27;,</span><br><span class="line"> &#x27;generated_solution&#x27;: &quot;&lt;think&gt;\nOkay, let&#x27;s see. I need to solve the equation √(x² + 165) - √(x² - 52) = 7, a截取部分&quot;,</span><br><span class="line"> &#x27;inference_mode&#x27;: &#x27;cot&#x27;&#125;</span><br></pre></td></tr></table></figure>
+<p>能够看出这是一个基于DeepSeek R1回答的数学数据集，其中<code>problem</code>是问题，<code>generated_solution</code>是数学推导过程（即思考过程），而<code>expected_answer</code>则是最终的答案。该数据集总共接近2万条数据</p>
+<p>而对话数据集如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">non_reasoning_dataset</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Dataset(&#123;</span><br><span class="line">    features: [&#x27;conversations&#x27;, &#x27;source&#x27;, &#x27;score&#x27;],</span><br><span class="line">    num_rows: 100000</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">non_reasoning_dataset[0]</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;conversations&#x27;: [&#123;&#x27;from&#x27;: &#x27;human&#x27;,</span><br><span class="line">   &#x27;value&#x27;: &#x27;Explain what boolean operators are, what they do, and provide examples of how they can be used in programming. Additionally, describe the concept of operator precedence and prov截取&#x27;&#125;,</span><br><span class="line">  &#123;&#x27;from&#x27;: &#x27;gpt&#x27;,</span><br><span class="line">   &#x27;value&#x27;: &#x27;Boolean operators are logical operators used in programming to manipulate boolean values. The截取&#x27;&#125;],</span><br><span class="line"> &#x27;source&#x27;: &#x27;infini-instruct-top-500k&#x27;,</span><br><span class="line"> &#x27;score&#x27;: 5.212620735168457&#125;</span><br></pre></td></tr></table></figure>
+<p>其中每一条数据都是一个对话，包含一组或者多组ChatGPT的聊天信息，其中<code>from</code>代表是用户消息还是大模型回复消息，而<code>value</code>则是对应的文本。该对话数据集总共包含10万条数据</p>
+<p>能够看出dataset是一种类似json的数据格式，每条数据都以字段格式进行存储，在实际微调过程中，我们需要先将数据集的目标字段进行提取和拼接，然后加载到Qwen3模型的提示词模板中，并最终带入Unsloth进行微调。</p>
+<h3 id="数据集清洗"><a href="#数据集清洗" class="headerlink" title="数据集清洗"></a>数据集清洗</h3><h4 id="对话数据集的清洗"><a href="#对话数据集的清洗" class="headerlink" title="对话数据集的清洗"></a>对话数据集的清洗</h4><p>接下来尝试对上述两个格式各异的数据集进行数据清洗，主要是围绕数据集进行<strong>数据格式</strong>的调整，便于后续<strong>带入Qwen3提示词模板</strong>。对于dataset格式的数据对象来说，可以先创建满足格式调整的函数，然后使用map方法对数据集格式进行调整。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">def generate_conversation(examples):</span><br><span class="line">    problems  = examples[&quot;problem&quot;]</span><br><span class="line">    solutions = examples[&quot;generated_solution&quot;]</span><br><span class="line">    conversations = []</span><br><span class="line">    for problem, solution in zip(problems, solutions):</span><br><span class="line">        conversations.append([</span><br><span class="line">            &#123;&quot;role&quot; : &quot;user&quot;,      &quot;content&quot; : problem&#125;,</span><br><span class="line">            &#123;&quot;role&quot; : &quot;assistant&quot;, &quot;content&quot; : solution&#125;,</span><br><span class="line">        ])</span><br><span class="line">    return &#123; &quot;conversations&quot;: conversations, &#125;</span><br></pre></td></tr></table></figure>
+<p>这里先创建generate_conversation函数，用于对reasoning_dataset中的每一条数据进行格式调整，即通过新创建一个新的特征conversations，来以对话形式保存历史问答数据：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">reasoning_data = reasoning_dataset.map(</span><br><span class="line">    generate_conversation,  # 处理函数</span><br><span class="line">    batched=True            # 批量处理，加快速度</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>map：对数据集中的每一批样本调用 generate_conversation</p>
+<p>batched=True：一次传入一批（几百到几千条）样本，避免逐行慢速 Python 循环</p>
+</blockquote>
+<p>接下来将其带入Qwen3的提示词模板中进行转化：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">reasoning_conversations = tokenizer.apply_chat_template(</span><br><span class="line">    reasoning_data[&quot;conversations&quot;],</span><br><span class="line">    tokenize = False,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>之后即可带入这些数据进行微调。能看出每条数据的格式都和Unsloth底层对话API创建的数据格式类似，之后我们或许可以借助Unsloth底层对话API来创建微调数据集。</p>
+<h4 id="推理数据集的推理"><a href="#推理数据集的推理" class="headerlink" title="推理数据集的推理"></a>推理数据集的推理</h4><p>然后继续处理non_reasoning_conversations数据集，由于该数据集采用了sharegpt对话格式，因此可以直接借助Unsloth的standardize_sharegpt库进行数据集的格式转化，转化效果如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">from unsloth.chat_templates import standardize_sharegpt</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>standardize_sharegpt的作用</p>
+<p><strong>把“ShareGPT 格式”的对话数据一键转成 Unsloth / Hugging Face 通用的 <code>role/content</code> 列表，后续就能直接用 <code>apply_chat_template</code> 生成训练文本。</strong></p>
+<p>1️⃣ ShareGPT 原始长什么样？</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;from&quot;</span><span class="punctuation">:</span> <span class="string">&quot;human&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1+1=?&quot;</span><span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;from&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gpt&quot;</span><span class="punctuation">,</span>  <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2&quot;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>2️⃣ 转换后长什么样？</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;user&quot;</span><span class="punctuation">,</span>      <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1+1=?&quot;</span><span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;assistant&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2&quot;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dataset = standardize_sharegpt(non_reasoning_dataset)</span><br></pre></td></tr></table></figure>
+<p>接下来即可直接带入Qwen3对话模板中进行格式调整：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">non_reasoning_conversations = tokenizer.apply_chat_template(</span><br><span class="line">    dataset[&quot;conversations&quot;],</span><br><span class="line">    tokenize = False,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h4 id="数据集采样"><a href="#数据集采样" class="headerlink" title="数据集采样"></a>数据集采样</h4><p>自此即完成了每个数据集的格式调整工作，不过这两个数据集并不均衡，能看得出非推理类数据集的长度更长。我们假设希望模型保留一定的推理能力，但又特别希望它作为一个聊天模型来使用。</p>
+<p>因此，我们需要定义一个 <strong>仅聊天数据的比例</strong>。<strong>目标是从两个数据集中构建一个混合训练集</strong>。这里我们可以设定一个 25% 推理数据、75% 聊天数据的比例：也就是说，从推理数据集中抽取 25%（或者说，抽取占比为 100% - 聊天数据占比 的部分），最后将这两个数据集合并起来即可。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">chat_percentage = 0.75</span><br><span class="line"></span><br><span class="line">import pandas as pd</span><br><span class="line">#先把非推理对话列表转成 Pandas Series，方便后续抽样</span><br><span class="line">non_reasoning_subset = pd.Series(non_reasoning_conversations)</span><br><span class="line"></span><br><span class="line">non_reasoning_subset = non_reasoning_subset.sample(#sample(...)为无放回随机抽样</span><br><span class="line">    int(len(reasoning_conversations) * (1.0 - chat_percentage)),#计算 需要抽多少条非推理样本</span><br><span class="line">    random_state = 2407,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>这里我们需要先将上述list格式的数据转化为pd.Series数据，然后进行采样，并最终将其转化为dataset类型对象。（此外也可以先转化为dataset对象类型，然后再进行采样）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">data = pd.concat([</span><br><span class="line">    pd.Series(reasoning_conversations),</span><br><span class="line">    pd.Series(non_reasoning_subset)</span><br><span class="line">])</span><br><span class="line">data.name = &quot;text&quot;</span><br><span class="line"></span><br><span class="line">from datasets import Dataset</span><br><span class="line"></span><br><span class="line">combined_dataset = Dataset.from_pandas(pd.DataFrame(data))</span><br><span class="line">combined_dataset = combined_dataset.shuffle(seed = 3407)#用固定种子随机打乱顺序</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>pd.concat([…])：纵向拼接 → 一条长 Series，顺序：先推理，后非推理</p>
+<p>Dataset.from_pandas(…)：把 Pandas Series 转成 Hugging Face Dataset</p>
+</blockquote>
+<p><strong>把“推理对话”和“抽样后的非推理对话”合并成一个</strong> <strong>随机打乱</strong> <strong>的 <code>Dataset</code> 对象，后面可直接拿去训练。</strong></p>
+<h4 id="查看数据集-1"><a href="#查看数据集-1" class="headerlink" title="查看数据集"></a>查看数据集</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">combined_dataset[0]</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#x27;text&#x27;: &quot;&lt;|im_start|&gt;user\nCalculate the pH during a titration when 9.54 mL of a 0.15 M HCl solution has reacted with 22.88 mL of a 0.14 M NaOH solution?&lt;|im_end|&gt;\n&lt;|im_st截取&quot;,</span><br><span class="line"> &#x27;__index_level_0__&#x27;: 49038&#125;</span><br></pre></td></tr></table></figure>
+<p>其中text字段就是后续带入微调的字段。</p>
+<h4 id="数据集保存"><a href="#数据集保存" class="headerlink" title="数据集保存"></a>数据集保存</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">combined_dataset.save_to_disk(&quot;/workspace/cleaned_qwen3_dataset&quot;)</span><br></pre></td></tr></table></figure>
+<p>后续使用时即可使用如下代码进行读取：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">from datasets import load_from_disk</span><br><span class="line">combined_dataset = load_from_disk(&quot;cleaned_qwen3_dataset&quot;)</span><br></pre></td></tr></table></figure>
+<h3 id="Qwen3推理能力高效微调流程"><a href="#Qwen3推理能力高效微调流程" class="headerlink" title="Qwen3推理能力高效微调流程"></a>Qwen3推理能力高效微调流程</h3><p>准备完数据之后，即可开始进行微调。这里我们先进行少量数据微调测试，程序能够基本跑通后，我们再进行大规模数据集微调。</p>
+<h4 id="Unsloth微调流程实践"><a href="#Unsloth微调流程实践" class="headerlink" title="Unsloth微调流程实践"></a>Unsloth微调流程实践</h4><h5 id="进行LoRA参数注入"><a href="#进行LoRA参数注入" class="headerlink" title="进行LoRA参数注入"></a>进行LoRA参数注入</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">model = FastLanguageModel.get_peft_model(</span><br><span class="line">    model,</span><br><span class="line">    r = 32,           # 秩（LoRA 低秩矩阵的列数）。越大可学习参数越多，显存也越高。常用 8/16/32/64/128</span><br><span class="line">    target_modules = [&quot;q_proj&quot;, &quot;k_proj&quot;, &quot;v_proj&quot;, &quot;o_proj&quot;,</span><br><span class="line">                      &quot;gate_proj&quot;, &quot;up_proj&quot;, &quot;down_proj&quot;],  # 在哪些线性层插入 LoRA 适配器（Attention + MLP）</span><br><span class="line">    lora_alpha = 32,  # 缩放因子。经验值 = rank 或 2×rank，控制更新强度</span><br><span class="line">    lora_dropout = 0, # LoRA 本身的 dropout 比例；0 省显存且速度最快</span><br><span class="line">    bias = &quot;none&quot;,    # 是否训练原 Linear 的偏置。设为 &quot;none&quot; 不训练，进一步节省显存</span><br><span class="line">    use_gradient_checkpointing = &quot;unsloth&quot;,  # 梯度检查点：True 省显存，&quot;unsloth&quot; 再省 30 %，超长上下文必开</span><br><span class="line">    random_state = 3407,  # 随机种子，保证 LoRA 初始化可复现</span><br><span class="line">    use_rslora = False,   # 默认 False，True 则启用 Rank-Stabilized LoRA（训练更稳，但显存稍高）</span><br><span class="line">    loftq_config = None,  # LoftQ 量化初始化，None 表示不用；若配置可进一步压缩初始权重</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>这一步<strong>“LoRA 参数注入”</strong>就是：<strong>在不改动原模型权重的前提下，给指定层插入少量</strong> <strong>可训练低秩矩阵</strong> <strong>（LoRA 适配器），从而只更新 &lt; 1 % 的参数，完成高效微调。</strong></p>
+<blockquote>
+<p>不是“在原有层之外再增加一层”，而是<strong>把 LoRA 的“小矩阵”插到</strong> <strong>原有线性层内部</strong>：</p>
+<ul>
+<li>原层结构（冻结）：<br><code>x → Linear4bit(W) → y</code></li>
+<li>注入后结构（冻结 + 可训练）：<br><code>x → [Linear4bit(W)  +  LoRA(A·B)] → y</code></li>
+</ul>
+<p><code>A</code> 和 <code>B</code> 两个低秩矩阵被 <strong>注册为同一层的新参数</strong>，<strong>不新建网络层</strong>，参数在 <strong>前向时相加</strong>，<strong>反向只更新 A 和 B</strong>。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>模型</category>
+        <category>微调</category>
+      </categories>
+      <tags>
+        <tag>模型微调</tag>
+        <tag>LoRA</tag>
       </tags>
   </entry>
 </search>

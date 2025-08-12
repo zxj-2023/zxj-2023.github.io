@@ -155,18 +155,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">124</span>
+          <span class="site-state-item-count">127</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-count">47</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">53</span>
+        <span class="site-state-item-count">55</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -206,6 +206,462 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/LangGraphChatBot/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/07/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/LangGraphChatBot/" class="post-title-link" itemprop="url">LangGraphChatBot</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-07-14 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-14T00:00:00+08:00">2025-07-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-07-15 17:54:48" itemprop="dateModified" datetime="2025-07-15T17:54:48+08:00">2025-07-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ai%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index"><span itemprop="name">ai框架</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ai%E6%A1%86%E6%9E%B6/langgraph/" itemprop="url" rel="index"><span itemprop="name">langgraph</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h3><p>python虚拟环境构建</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m venv .venv</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pip install langgraph==0.2.74                  </span><br><span class="line">pip install langchain-openai==0.3.6            </span><br><span class="line">pip install fastapi==0.115.8                         </span><br><span class="line">pip install uvicorn==0.34.0                          </span><br><span class="line">pip install gradio==5.18.0</span><br></pre></td></tr></table></figure>
+<p>查看包<code>pip list</code></p>
+<h3 id="构建一个基本的fastapi-langgraph应用"><a href="#构建一个基本的fastapi-langgraph应用" class="headerlink" title="构建一个基本的fastapi+langgraph应用"></a>构建一个基本的fastapi+langgraph应用</h3><h4 id="llm示例的构建（利用ChatOpenAI）"><a href="#llm示例的构建（利用ChatOpenAI）" class="headerlink" title="llm示例的构建（利用ChatOpenAI）"></a>llm示例的构建（利用ChatOpenAI）</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 创建LLM实例</span><br><span class="line">llm = ChatOpenAI(</span><br><span class="line">    base_url=config[&quot;base_url&quot;],</span><br><span class="line">    api_key=config[&quot;api_key&quot;],</span><br><span class="line">    model=config[&quot;model&quot;],</span><br><span class="line">    temperature=DEFAULT_TEMPERATURE,</span><br><span class="line">    timeout=30,  # 添加超时配置（秒）</span><br><span class="line">    max_retries=2  # 添加重试次数</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h4 id="数据类型的构建"><a href="#数据类型的构建" class="headerlink" title="数据类型的构建"></a>数据类型的构建</h4><p>继承于pydantic</p>
+<p>规范化 API 请求和响应的数据结构</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义消息类，用于封装API接口返回数据</span></span><br><span class="line"><span class="comment">#基于 Pydantic 的数据模型</span></span><br><span class="line"><span class="comment"># 定义Message类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Message</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    role (角色): 这是一个字符串，表示消息的发送者。常见的角色包括：</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">- user (用户): 表示用户输入的消息。</span></span><br><span class="line"><span class="string">- assistant (助手): 表示聊天机器人或模型生成的消息。</span></span><br><span class="line"><span class="string">- system (系统): 表示为模型提供上下文或指令的系统消息。</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    role: <span class="built_in">str</span></span><br><span class="line">    content: <span class="built_in">str</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义ChatCompletionRequest类</span></span><br><span class="line"><span class="comment">#聊天 API 请求</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ChatCompletionRequest</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    messages: <span class="type">List</span>[Message]</span><br><span class="line">    stream: <span class="type">Optional</span>[<span class="built_in">bool</span>] = <span class="literal">False</span><span class="comment">#是否流式方式响应</span></span><br><span class="line">    userId: <span class="type">Optional</span>[<span class="built_in">str</span>] = <span class="literal">None</span><span class="comment">#用于标识发起请求的用户</span></span><br><span class="line">    conversationId: <span class="type">Optional</span>[<span class="built_in">str</span>] = <span class="literal">None</span><span class="comment">#用于标识特定的对话会话，这对于管理对话上下文或历史记录非常有用</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义ChatCompletionResponseChoice类</span></span><br><span class="line"><span class="comment">#聊天完成响应中的一个“选择”或一个生成的回复</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ChatCompletionResponseChoice</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    index: <span class="built_in">int</span></span><br><span class="line">    message: Message</span><br><span class="line">    finish_reason: <span class="type">Optional</span>[<span class="built_in">str</span>] = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义ChatCompletionResponse类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ChatCompletionResponse</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    <span class="built_in">id</span>: <span class="built_in">str</span> = Field(default_factory=<span class="keyword">lambda</span>: <span class="string">f&quot;chatcmpl-<span class="subst">&#123;uuid.uuid4().<span class="built_in">hex</span>&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">object</span>: <span class="built_in">str</span> = <span class="string">&quot;chat.completion&quot;</span></span><br><span class="line">    created: <span class="built_in">int</span> = Field(default_factory=<span class="keyword">lambda</span>: <span class="built_in">int</span>(time.time()))</span><br><span class="line">    choices: <span class="type">List</span>[ChatCompletionResponseChoice]<span class="comment">#模型生成的所有可能的回复选项</span></span><br><span class="line">    system_fingerprint: <span class="type">Optional</span>[<span class="built_in">str</span>] = <span class="literal">None</span></span><br></pre></td></tr></table></figure>
+<h4 id="定义fastapi应用并管理应用的生命周期"><a href="#定义fastapi应用并管理应用的生命周期" class="headerlink" title="定义fastapi应用并管理应用的生命周期"></a>定义fastapi应用并管理应用的生命周期</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义了一个异步函数lifespan，它接收一个FastAPI应用实例app作为参数。这个函数将管理应用的生命周期，包括启动和关闭时的操作</span></span><br><span class="line"><span class="comment"># 函数在应用启动时执行一些初始化操作，如加载上下文数据、以及初始化问题生成器</span></span><br><span class="line"><span class="comment"># 函数在应用关闭时执行一些清理操作</span></span><br><span class="line"><span class="comment"># @asynccontextmanager 装饰器用于创建一个异步上下文管理器，它允许你在 yield 之前和之后执行特定的代码块，分别表示启动和关闭时的操作</span></span><br><span class="line"><span class="meta">@asynccontextmanager</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">lifespan</span>(<span class="params">app: FastAPI</span>):</span><br><span class="line">    <span class="comment"># 启动时执行</span></span><br><span class="line">    <span class="comment"># 申明引用全局变量，在函数中被初始化，并在整个应用中使用</span></span><br><span class="line">    <span class="keyword">global</span> graph</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        logger.info(<span class="string">&quot;正在初始化模型、定义Graph...&quot;</span>)</span><br><span class="line">        <span class="comment">#（1）初始化LLM</span></span><br><span class="line">        llm = get_llm(llm_type)</span><br><span class="line">        <span class="comment">#（2）定义Graph</span></span><br><span class="line">        graph = create_graph(llm)</span><br><span class="line">        <span class="comment">#（3）将Graph可视化图保存</span></span><br><span class="line">        save_graph_visualization(graph)</span><br><span class="line">        logger.info(<span class="string">&quot;初始化完成&quot;</span>)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        logger.error(<span class="string">f&quot;初始化过程中出错: <span class="subst">&#123;<span class="built_in">str</span>(e)&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="comment"># raise 关键字重新抛出异常，以确保程序不会在错误状态下继续运行</span></span><br><span class="line">        <span class="keyword">raise</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># yield 关键字将控制权交还给FastAPI框架，使应用开始运行</span></span><br><span class="line">    <span class="comment"># 分隔了启动和关闭的逻辑。在yield 之前的代码在应用启动时运行，yield 之后的代码在应用关闭时运行</span></span><br><span class="line">    <span class="keyword">yield</span></span><br><span class="line">    <span class="comment"># 关闭时执行</span></span><br><span class="line">    logger.info(<span class="string">&quot;正在关闭...&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># lifespan参数用于在应用程序生命周期的开始和结束时执行一些初始化或清理工作</span></span><br><span class="line">app = FastAPI(lifespan=lifespan)</span><br></pre></td></tr></table></figure>
+<h4 id="langgraph核心逻辑"><a href="#langgraph核心逻辑" class="headerlink" title="langgraph核心逻辑"></a>langgraph核心逻辑</h4><p>创建langgraph</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义chatbot的状态</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">State</span>(<span class="title class_ inherited__">TypedDict</span>):</span><br><span class="line">    messages: Annotated[<span class="built_in">list</span>, add_messages]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建和配置chatbot的状态图</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_graph</span>(<span class="params">llm</span>) -&gt; StateGraph:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment"># 构建graph</span></span><br><span class="line">        <span class="comment">#创建一个 StateGraph 的实例，并将其配置为使用 State 类作为其状态管理的数据模型</span></span><br><span class="line">        graph_builder = StateGraph(State)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 定义chatbot的node</span></span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">chatbot</span>(<span class="params">state: State</span>) -&gt; <span class="built_in">dict</span>:</span><br><span class="line">            <span class="comment"># 处理当前状态并返回 LLM 响应</span></span><br><span class="line">            <span class="keyword">return</span> &#123;<span class="string">&quot;messages&quot;</span>: [llm.invoke(state[<span class="string">&quot;messages&quot;</span>])]&#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 配置graph</span></span><br><span class="line">        <span class="comment">#第二个参数 chatbot ：这是一个可调用对象（通常是一个函数或方法），它定义了当执行流程到达这个名为 &quot;chatbot&quot; 的节点时，应该执行什么操作。</span></span><br><span class="line">        graph_builder.add_node(<span class="string">&quot;chatbot&quot;</span>, chatbot)</span><br><span class="line">        graph_builder.add_edge(START, <span class="string">&quot;chatbot&quot;</span>)</span><br><span class="line">        graph_builder.add_edge(<span class="string">&quot;chatbot&quot;</span>, END)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 这里使用内存存储 也可以持久化到数据库</span></span><br><span class="line">        memory = MemorySaver()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 编译生成graph并返回</span></span><br><span class="line">        <span class="comment">#checkpointer 参数将 memory 实例传递给编译过程，使得图能够管理其状态的保存和加载。编译后的图对象被返回，这个对象可以被调用来运行聊天机器人。</span></span><br><span class="line">        <span class="keyword">return</span> graph_builder.<span class="built_in">compile</span>(checkpointer=memory)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="keyword">raise</span> RuntimeError(<span class="string">f&quot;Failed to create graph: <span class="subst">&#123;<span class="built_in">str</span>(e)&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>可视化langgraph节点</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 将构建的graph可视化保存为 PNG 文件</span><br><span class="line">def save_graph_visualization(graph: StateGraph, filename: str = &quot;graph.png&quot;) -&gt; None:</span><br><span class="line">    try:</span><br><span class="line">        with open(filename, &quot;wb&quot;) as f:</span><br><span class="line">            f.write(graph.get_graph().draw_mermaid_png())</span><br><span class="line">        logger.info(f&quot;Graph visualization saved as &#123;filename&#125;&quot;)</span><br><span class="line">    except IOError as e:</span><br><span class="line">        logger.info(f&quot;Warning: Failed to save graph visualization: &#123;str(e)&#125;&quot;)</span><br></pre></td></tr></table></figure>
+<h4 id="封装接口"><a href="#封装接口" class="headerlink" title="封装接口"></a>封装接口</h4><p>包含流式输出与非流式输出的处理</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 封装POST请求接口，与大模型进行问答</span></span><br><span class="line"><span class="meta">@app.post(<span class="params"><span class="string">&quot;/v1/chat/completions&quot;</span></span>)</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">chat_completions</span>(<span class="params">request: ChatCompletionRequest</span>):</span><br><span class="line">    <span class="comment"># 判断初始化是否完成</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> graph:</span><br><span class="line">        logger.error(<span class="string">&quot;服务未初始化&quot;</span>)</span><br><span class="line">        <span class="keyword">raise</span> HTTPException(status_code=<span class="number">500</span>, detail=<span class="string">&quot;服务未初始化&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        logger.info(<span class="string">f&quot;收到聊天完成请求: <span class="subst">&#123;request&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">        query_prompt = request.messages[-<span class="number">1</span>].content</span><br><span class="line">        logger.info(<span class="string">f&quot;用户问题是: <span class="subst">&#123;query_prompt&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">        config = &#123;<span class="string">&quot;configurable&quot;</span>: &#123;<span class="string">&quot;thread_id&quot;</span>: request.userId+<span class="string">&quot;@@&quot;</span>+request.conversationId&#125;&#125;</span><br><span class="line">        logger.info(<span class="string">f&quot;用户当前会话信息: <span class="subst">&#123;config&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">        prompt_template_system = PromptTemplate.from_file(PROMPT_TEMPLATE_TXT_SYS)</span><br><span class="line">        prompt_template_user = PromptTemplate.from_file(PROMPT_TEMPLATE_TXT_USER)</span><br><span class="line">        prompt = [</span><br><span class="line">            &#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;system&quot;</span>, <span class="string">&quot;content&quot;</span>: prompt_template_system.template&#125;,</span><br><span class="line">            &#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: prompt_template_user.template.<span class="built_in">format</span>(query=query_prompt)&#125;</span><br><span class="line">        ]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 处理流式响应</span></span><br><span class="line">        <span class="keyword">if</span> request.stream:</span><br><span class="line">            <span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">generate_stream</span>():</span><br><span class="line">                chunk_id = <span class="string">f&quot;chatcmpl-<span class="subst">&#123;uuid.uuid4().<span class="built_in">hex</span>&#125;</span>&quot;</span></span><br><span class="line">                <span class="keyword">async</span> <span class="keyword">for</span> message_chunk, metadata <span class="keyword">in</span> graph.astream(&#123;<span class="string">&quot;messages&quot;</span>: prompt&#125;, config, stream_mode=<span class="string">&quot;messages&quot;</span>):</span><br><span class="line">                    chunk = message_chunk.content</span><br><span class="line">                    logger.info(<span class="string">f&quot;chunk: <span class="subst">&#123;chunk&#125;</span>&quot;</span>)</span><br><span class="line">                    <span class="comment"># 在处理过程中产生每个块</span></span><br><span class="line">                    <span class="keyword">yield</span> <span class="string">f&quot;data: <span class="subst">&#123;json.dumps(&#123;<span class="string">&#x27;id&#x27;</span>: chunk_id,<span class="string">&#x27;object&#x27;</span>: <span class="string">&#x27;chat.completion.chunk&#x27;</span>,<span class="string">&#x27;created&#x27;</span>: <span class="built_in">int</span>(time.time()),<span class="string">&#x27;choices&#x27;</span>: [&#123;<span class="string">&#x27;index&#x27;</span>: <span class="number">0</span>,<span class="string">&#x27;delta&#x27;</span>: &#123;<span class="string">&#x27;content&#x27;</span>: chunk&#125;</span>,&#x27;finish_reason&#x27;: None&#125;]&#125;)&#125;\n\n&quot;</span></span><br><span class="line">                <span class="comment"># 流结束的最后一块</span></span><br><span class="line">                <span class="keyword">yield</span> <span class="string">f&quot;data: <span class="subst">&#123;json.dumps(&#123;<span class="string">&#x27;id&#x27;</span>: chunk_id,<span class="string">&#x27;object&#x27;</span>: <span class="string">&#x27;chat.completion.chunk&#x27;</span>,<span class="string">&#x27;created&#x27;</span>: <span class="built_in">int</span>(time.time()),<span class="string">&#x27;choices&#x27;</span>: [&#123;<span class="string">&#x27;index&#x27;</span>: <span class="number">0</span>,<span class="string">&#x27;delta&#x27;</span>: &#123;&#125;</span>,&#x27;finish_reason&#x27;: &#x27;stop&#x27;&#125;]&#125;)&#125;\n\n&quot;</span></span><br><span class="line">            <span class="comment"># 返回fastapi.responses中StreamingResponse对象</span></span><br><span class="line">            <span class="keyword">return</span> StreamingResponse(generate_stream(), media_type=<span class="string">&quot;text/event-stream&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 处理非流式响应处理</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                events = graph.stream(&#123;<span class="string">&quot;messages&quot;</span>: prompt&#125;, config)</span><br><span class="line">                <span class="keyword">for</span> event <span class="keyword">in</span> events:</span><br><span class="line">                    <span class="keyword">for</span> value <span class="keyword">in</span> event.values():</span><br><span class="line">                        result = value[<span class="string">&quot;messages&quot;</span>][-<span class="number">1</span>].content</span><br><span class="line">            <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">                logger.info(<span class="string">f&quot;Error processing response: <span class="subst">&#123;<span class="built_in">str</span>(e)&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">            formatted_response = <span class="built_in">str</span>(format_response(result))</span><br><span class="line">            logger.info(<span class="string">f&quot;格式化的搜索结果: <span class="subst">&#123;formatted_response&#125;</span>&quot;</span>)</span><br><span class="line">			<span class="comment">#封装响应</span></span><br><span class="line">            response = ChatCompletionResponse(</span><br><span class="line">                choices=[</span><br><span class="line">                    ChatCompletionResponseChoice(</span><br><span class="line">                        index=<span class="number">0</span>,</span><br><span class="line">                        message=Message(role=<span class="string">&quot;assistant&quot;</span>, content=formatted_response),</span><br><span class="line">                        finish_reason=<span class="string">&quot;stop&quot;</span></span><br><span class="line">                    )</span><br><span class="line">                ]</span><br><span class="line">            )</span><br><span class="line">            logger.info(<span class="string">f&quot;发送响应内容: \n<span class="subst">&#123;response&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="comment"># 返回fastapi.responses中JSONResponse对象</span></span><br><span class="line">            <span class="comment"># model_dump()方法通常用于将Pydantic模型实例的内容转换为一个标准的Python字典，以便进行序列化</span></span><br><span class="line">            <span class="keyword">return</span> JSONResponse(content=response.model_dump())</span><br><span class="line"></span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        logger.error(<span class="string">f&quot;处理聊天完成时出错:\n\n <span class="subst">&#123;<span class="built_in">str</span>(e)&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="keyword">raise</span> HTTPException(status_code=<span class="number">500</span>, detail=<span class="built_in">str</span>(e))</span><br></pre></td></tr></table></figure>
+<h3 id="langgraph的短期记忆与长期记忆"><a href="#langgraph的短期记忆与长期记忆" class="headerlink" title="langgraph的短期记忆与长期记忆"></a>langgraph的短期记忆与长期记忆</h3><p>LangGraph支持两种对于构建对话代理至关重要的内存类型：</p>
+<ul>
+<li><strong><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langgraph/agents/memory/#short-term-memory">短期内存</a></strong>：通过在会话中维护消息历史来跟踪正在进行的对话。</li>
+<li><strong><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langgraph/agents/memory/#long-term-memory">长期内存</a></strong>：在不同会话之间存储用户特定或应用程序级别的数据。</li>
+</ul>
+<p><img src="/2025/07/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/LangGraphChatBot/image-20250715094855646.png" alt="image-20250715094855646"></p>
+<p>在LangGraph中</p>
+<ul>
+<li><em>短期内存</em>也称为<strong>线程级内存</strong>。</li>
+<li><em>长期内存</em>也称为<strong>跨线程内存</strong>。</li>
+</ul>
+<h3 id="教程地址"><a href="#教程地址" class="headerlink" title="教程地址"></a>教程地址</h3><p><a target="_blank" rel="noopener" href="https://github.com/NanGePlus/LangGraphChatBot">NanGePlus/LangGraphChatBot: 使用LangGraph+DeepSeek-R1+FastAPI+Gradio实现一个带有记忆功能的流量包推荐智能客服web端用例,同时也支持gpt大模型、国产大模型(OneApi方式)、Ollama本地开源大模型、阿里通义千问大模型</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1m89NYKE2J/?vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">LangGraph+deepseek-r1+FastAPI+Gradio实现拥有记忆的流量包推荐智能客服web端用例,同时也支持gpt、国产大模型、Ollama_哔哩哔哩_bilibili</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/13/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/prompt%20Engineering%E4%B8%8Econtext%20Engineering/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/07/13/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/prompt%20Engineering%E4%B8%8Econtext%20Engineering/" class="post-title-link" itemprop="url">prompt Engineering与context Engineering</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-07-13 00:00:00 / 修改时间：13:36:33" itemprop="dateCreated datePublished" datetime="2025-07-13T00:00:00+08:00">2025-07-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AE%9E%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">实习</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/" itemprop="url" rel="index"><span itemprop="name">晨晟智控</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="prompt-Engineering"><a href="#prompt-Engineering" class="headerlink" title="prompt Engineering"></a>prompt Engineering</h3><p>Prompt Engineering是与大型语言模型（LLM）交互的基础，其核心在于精心设计输入内容，以引导模型生成期望的输出。</p>
+<p>尽管 Prompt Engineering 至关重要，但对于构建稳健、可用于生产环境的系统而言，它存在固有的局限性：</p>
+<ul>
+<li><p><strong>脆弱性&amp;不可复现性：</strong> 提示中微小的措辞变化可能导致输出结果的巨大差异，使得这一过程更像是一种依赖反复试错的“艺术”，而非可复现的“科学” 。</p>
+</li>
+<li><p><strong>扩展性差：</strong> 手动、迭代地优化提示的过程，在面对大量用户、多样化用例和不断出现的边缘情况时，难以有效扩展 。</p>
+</li>
+<li><p><strong>用户负担：</strong> 这种方法将精心构建一套详尽指令的负担完全压在了用户身上，对于需要自主运行、或处理高并发请求的系统而言是不切实际的 。</p>
+</li>
+<li><p><strong>无状态性：</strong> Prompt Engineering 本质上是为单轮、“一次性”的交互而设计的，难以处理需要记忆和状态管理的长对话或多步骤任务 。</p>
+</li>
+</ul>
+<h3 id="Context-Engineering"><a href="#Context-Engineering" class="headerlink" title="Context Engineering"></a>Context Engineering</h3><p><strong>Context Engineering是一门设计、构建并优化动态自动化系统的学科，旨在为大型语言模型在正确的时间、以正确的格式，提供正确的信息和工具，从而可靠、可扩展地完成复杂任务</strong> 。</p>
+<p><strong>prompt 告诉模型如何思考，而 Context 则赋予模型完成工作所需的知识和工具。</strong></p>
+<ul>
+<li><p>Context Engineering 决定<strong>用什么内容填充 Context Window</strong> ，</p>
+</li>
+<li><p>Prompt Engineering 则负责优化<strong>窗口内的具体指令</strong> 。</p>
+</li>
+</ul>
+<h3 id="Context-Engineering-的基石：RAG（Retrieval-Augmented-Generation）"><a href="#Context-Engineering-的基石：RAG（Retrieval-Augmented-Generation）" class="headerlink" title="Context Engineering 的基石：RAG（Retrieval-Augmented Generation）"></a>Context Engineering 的基石：RAG（Retrieval-Augmented Generation）</h3><p>本部分将阐述检索增强生成（RAG）作为实现 Context Engineering 的主要架构模式。</p>
+<h4 id="解决LLM的核心弱点"><a href="#解决LLM的核心弱点" class="headerlink" title="解决LLM的核心弱点"></a>解决LLM的核心弱点</h4><p>RAG直接解决了标准LLM在企业应用中存在的固有局限性：</p>
+<ul>
+<li><p><strong>知识冻结：</strong> LLM的知识被冻结在<strong>其训练数据的时间点</strong>。RAG通过在推理时注入实时的、最新的信息来解决这个问题 。</p>
+</li>
+<li><p><strong>缺乏领域专有知识：</strong> 标准LLM无法访问组织的内部私有数据。RAG则能够将LLM连接到这些内部知识库，如技术手册、政策文件等 。</p>
+</li>
+<li><p><strong>幻觉（Hallucination）：</strong> LLM 会不同程度上地编造事实。RAG通过将模型的回答“锚定”在可验证的、检索到的证据上，提高事实的准确性和可信度 。</p>
+</li>
+</ul>
+<h4 id="RAG工作流"><a href="#RAG工作流" class="headerlink" title="RAG工作流"></a>RAG工作流</h4><ol>
+<li><p><strong>索引（离线阶段）：</strong> 在这个阶段，系统会处理外部知识源。文档被加载、分割成更小的 chunks，然后通过Embedding Model 转换为向量表示，并最终存储在专门的向量数据库中以备检索 。</p>
+</li>
+<li><p><strong>推理（在线阶段）：</strong> 当用户提出请求时，系统执行以下步骤：</p>
+<ol>
+<li><strong>检索（Retrieve）：</strong> 将用户的查询同样转换为向量，然后在向量数据库中进行相似性搜索，找出与查询最相关的文档块。</li>
+<li><strong>增强（Augment）：</strong> 将检索到的这些文档块与原始的用户查询、系统指令等结合起来，构建一个内容丰富的、增强的最终提示。</li>
+<li><strong>生成（Generate）：</strong> 将这个增强后的提示输入给LLM，LLM会基于提供的上下文生成一个有理有据的回答 。</li>
+</ol>
+</li>
+</ol>
+<h3 id="Context-工程化：如何判断和提取哪些内容应该进入上下文？"><a href="#Context-工程化：如何判断和提取哪些内容应该进入上下文？" class="headerlink" title="Context 工程化：如何判断和提取哪些内容应该进入上下文？"></a>Context 工程化：如何判断和提取哪些内容应该进入上下文？</h3><h4 id="1-chunking"><a href="#1-chunking" class="headerlink" title="1.chunking"></a>1.chunking</h4><p>文本分块（Chunking）是RAG流程中最关键也最容易被忽视的一步。其目标是创建在语义上自成一体的文本块。</p>
+<h4 id="2-Reranking"><a href="#2-Reranking" class="headerlink" title="2.Reranking"></a>2.Reranking</h4><p>为了平衡检索的速度和准确性，业界普遍采用两阶段检索流程。</p>
+<ul>
+<li><p><strong>两阶段流程：</strong></p>
+<ul>
+<li><strong>第一阶段（召回）：</strong> 使用一个快速、高效的检索器（如基于 bi-encoder 的向量搜索或BM25等词法搜索）进行广泛撒网，召回一个较大的候选文档集（例如，前100个） 。</li>
+<li><strong>第二阶段（精排/重排序）：</strong> 使用一个更强大但计算成本更高的模型，对这个较小的候选集进行重新评估，以识别出最相关的少数几个文档（例如，前5个） 。</li>
+</ul>
+</li>
+<li><p><strong>Cross-Encoder：</strong> 交叉编码器之所以在重排序阶段表现优越，是因为它与双编码器的工作方式不同。双编码器独立地为查询和文档生成嵌入向量，然后计算它们的相似度。而交叉编码器则是将查询和文档<strong>同时</strong>作为输入，让模型在内部通过 Attention Mechanism 对二者进行深度交互。这使得模型能够捕捉到更细微的语义关系，从而给出更准确的相关性评分 。</p>
+</li>
+<li><p><strong>实际影响：</strong> 重排序显著提高了最终送入LLM的上下文质量，从而产出更准确、幻觉更少的答案。在金融、法律等高风险领域，重排序被认为是必不可少而非可选的步骤 。</p>
+</li>
+</ul>
+<h4 id="3-优化上下文窗口：压缩与摘要"><a href="#3-优化上下文窗口：压缩与摘要" class="headerlink" title="3.优化上下文窗口：压缩与摘要"></a>3.优化上下文窗口：压缩与摘要</h4><p>本节详细介绍用于主动管理上下文的技术，确保最有价值的信息被优先呈现。</p>
+<ul>
+<li><p><strong>上下文压缩的目标：</strong> 缩短检索到的文档列表和/或精简单个文档的内容，只将<strong>最相关的信息传递给LLM</strong>。这能有效降低API调用成本、减少延迟，并缓解 Lost in the Middle 的问题 。</p>
+</li>
+<li><p><strong>压缩方法：</strong></p>
+<ul>
+<li><strong>过滤式压缩：</strong> 这类方法决定是保留还是丢弃整个检索到的文档。<ul>
+<li><strong>LLMChainFilter：</strong> 利用一个LLM对每个文档的相关性做出简单的“是/否”判断 。</li>
+<li><strong>EmbeddingsFilter：</strong> 更经济快速的方法，根据文档嵌入与查询嵌入的余弦相似度来过滤文档 。</li>
+</ul>
+</li>
+<li><strong>内容提取式压缩：</strong> 这类方法会直接修改文档内容。<ul>
+<li><strong>LLMChainExtractor：</strong> 遍历每个文档，并使用LLM从中提取仅与查询相关的句子或陈述 。</li>
+</ul>
+</li>
+<li><strong>用 top N 代替压缩：</strong> 像LLMListwiseRerank这样的技术，使用LLM对检索到的文档进行重排序，并只返回排名最高的N个，从而起到高质量过滤器的作用 。</li>
+</ul>
+</li>
+<li><p><strong>作为压缩策略的摘要：</strong> 对于非常长的文档或冗长的对话历史，可以利用LLM生成摘要。这些摘要随后被注入上下文，既保留了关键信息，又大幅减少了 Token 数量。这是在长时程运行的智能体中管理上下文的关键技术 。</p>
+</li>
+</ul>
+<h3 id="智能体架构中的数据流与工作流编排"><a href="#智能体架构中的数据流与工作流编排" class="headerlink" title="智能体架构中的数据流与工作流编排"></a>智能体架构中的数据流与工作流编排</h3><h4 id="工作流（Workflow）-vs-智能体（Agent）"><a href="#工作流（Workflow）-vs-智能体（Agent）" class="headerlink" title="工作流（Workflow） vs. 智能体（Agent）"></a>工作流（Workflow） vs. 智能体（Agent）</h4><ul>
+<li><p><strong>工作流（Workflows）</strong></p>
+<ul>
+<li>指的是LLM和工具通过<strong>预定义的代码路径</strong>进行编排的系统。在这种模式下，数据流动的路径是固定的、由开发者明确设计的，类似于上世纪流行的“专家系统”。例如，“第一步：分析用户邮件；第二步：根据分析结果在日历中查找空闲时段；第三步：起草会议邀请邮件”。这种模式确定性高，易于调试和控制，非常适合有明确业务流程的场景（如风控需求高、数据敏感、安全等级要求）。</li>
+</ul>
+</li>
+<li><p><strong>智能体（Agents）</strong></p>
+<ul>
+<li>指的是LLM<strong>动态地指导</strong>自己的流程和工具使用，自主控制如何完成任务的系统。在这种模式下，数据流动的路径不是预先固定的，而是由LLM在每一步根据当前情况和目标动态决定的。这种模式灵活性高，能处理开放式问题，但可控性和可预测性较低 。</li>
+</ul>
+</li>
+</ul>
+<p>复杂的智能体通常是这两种模式的混合体，在宏观层面遵循一个预定义的工作流，但在某些节点内部，又赋予LLM一定的自主决策权。管理这一切的核心，我们称之为<strong>编排层（Orchestration Layer）</strong> 。</p>
+<h4 id="核心架构：预定义数据流的实现"><a href="#核心架构：预定义数据流的实现" class="headerlink" title="核心架构：预定义数据流的实现"></a><strong>核心架构：预定义数据流的实现</strong></h4><ol>
+<li><p><strong>链式工作流（Prompt Chaining）</strong></p>
+</li>
+<li><p><strong>路由工作流（Routing)</strong></p>
+</li>
+<li><p><strong>编排器-工作者模式（Orchestrator-Workers）</strong></p>
+</li>
+</ol>
+<h4 id="框架与工具"><a href="#框架与工具" class="headerlink" title="框架与工具"></a>框架与工具</h4><p>上述的架构和机制并非凭空存在，而是通过具体的开发框架实现的。其中，LangGraph作为LangChain的扩展，为构建具有显式数据流的智能体系统提供了强大的工具集。</p>
+<p><strong>LangGraph：用图（Graph）定义工作流（Workflow）</strong></p>
+<p>LangGraph的核心思想是将智能体应用构建成一个<strong>状态图（State Graph）</strong> 。这个图由节点和边组成，清晰地定义了数据如何在不同模块间流动</p>
+<ul>
+<li><p><strong>状态（State）：</strong> 这是整个图的核心，一个所有节点共享的中央数据对象。</p>
+<ul>
+<li>你可以把它想象成一个“数据总线”或共享内存。开发者需要预先定义State的结构，每个节点在执行时都可以读取和更新这个State对象 。</li>
+</ul>
+</li>
+<li><p><strong>节点（Nodes）：</strong> 代表工作流中的一个计算单元或一个步骤。</p>
+<ul>
+<li>每个节点通常是一个Python函数，它接收当前的State作为输入，执行特定任务（如调用LLM、执行工具、处理数据），然后返回对State的更新 。</li>
+</ul>
+</li>
+<li><p><strong>边（Edges）</strong>： 连接节点，定义了工作流的路径，即数据在State更新后应该流向哪个节点。</p>
+<ul>
+<li><strong>简单边（Simple Edges）：</strong> 定义了固定的、无条件的流向，用于实现链式工作流 。</li>
+<li><strong>条件边（Conditional Edges）：</strong> 用于实现路由逻辑。它会根据一个函数的输出来决定接下来应该走向哪个节点，从而实现流程的分支 。</li>
+</ul>
+</li>
+<li><p><strong>检查点（Checkpointer）：</strong> LangGraph提供了持久化机制，可以在每一步执行后自动保存State的状态。这对于构建需要长期记忆、可中断和恢复、或需要 Human-in-the-Loop 的复杂业务流程至关重要 。</p>
+</li>
+</ul>
+<p>复杂业务流程的AI智能体，其核心挑战已从单纯优化信息检索（如RAG）或提示词，转向了对内部<strong>工作流和数据流的精心设计与编排</strong>。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/11/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/rag%E8%AF%84%E4%BC%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/07/11/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/rag%E8%AF%84%E4%BC%B0/" class="post-title-link" itemprop="url">rag评估</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-07-11 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-11T00:00:00+08:00">2025-07-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-07-13 17:07:20" itemprop="dateModified" datetime="2025-07-13T17:07:20+08:00">2025-07-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AE%9E%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">实习</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/" itemprop="url" rel="index"><span itemprop="name">晨晟智控</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="rag评估的指标"><a href="#rag评估的指标" class="headerlink" title="rag评估的指标"></a>rag评估的指标</h3><h4 id="忠诚度Faithfulness"><a href="#忠诚度Faithfulness" class="headerlink" title="忠诚度Faithfulness"></a>忠诚度Faithfulness</h4><p>Faithfulness：衡量生成答案与给定上下文之间的事实一致性。忠实度得分是基于答案和检索到的上下文<br>计算出来的，答案的评分范围在0到1之间，分数越高越好。</p>
+<p><img src="/2025/07/11/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/rag%E8%AF%84%E4%BC%B0/image-20250711154457878.png" alt="image-20250711154457878"></p>
+<p>计算方式：将大模型给出的答案进行切片，检索给出的上下文，计算这些切片是否在上下文中</p>
+<p><img src="/2025/07/11/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/rag%E8%AF%84%E4%BC%B0/image-20250711155257239.png" alt="image-20250711155257239"></p>
+<h4 id="答案相关性Answerrelevance"><a href="#答案相关性Answerrelevance" class="headerlink" title="答案相关性Answerrelevance"></a>答案相关性Answerrelevance</h4><p>Answerrelevance：答案相关性的评估指标旨在评估生成的答案与给定提示的相关程度。如果答案不完<br>整或包含冗余信息，则会被赋予较低的分数。这个指标使用问题和答案来计算，其值介于0到1之间，得<br>分越高表明答案的相关性越好</p>
+<p><img src="/2025/07/11/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/rag%E8%AF%84%E4%BC%B0/image-20250711155128553.png" alt="image-20250711155128553"></p>
+<p>计算方式：根据答案生成多个问题，然后计算生成的答案与原答案的余弦相似度，再取平均</p>
+<p><img src="/2025/07/11/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/rag%E8%AF%84%E4%BC%B0/image-20250711155407518.png" alt="image-20250711155407518"></p>
+<h4 id="上下文精确度ContextPrecision"><a href="#上下文精确度ContextPrecision" class="headerlink" title="上下文精确度ContextPrecision"></a>上下文精确度ContextPrecision</h4><p>ContextPrecision：上下文精确度衡量上下文中所有相关的真实信息是否被排在了较高的位置。理想情<br>况下，所有相关的信息块都应该出现在排名的最前面。这个指标是根据问题和上下文来计算的，数值范<br>围在0到1之间，分数越高表示精确度越好。</p>
+<script type="math/tex; mode=display">
+\text{Context Precision} = \frac{\sum_{k=1}^{K} (\text{rel}(k) \times \frac{\text{Precision@k}}{\text{Ideal Precision@k}})}{\text{Total Relevant Documents}}</script><ul>
+<li><code>K</code>：检索返回的文档总数（如 top-5）</li>
+<li><code>rel(k)</code>：第 <code>k</code> 个文档是否相关（相关=1，无关=0）</li>
+<li><code>Precision@k</code>：前 <code>k</code> 个文档的精确率（相关文档数 / k）</li>
+<li><code>Ideal Precision@k</code>：理想情况下前 <code>k</code> 个文档的精确率（假设所有相关文档都排在最前面）</li>
+</ul>
+<h4 id="上下文召回率ContextRecall"><a href="#上下文召回率ContextRecall" class="headerlink" title="上下文召回率ContextRecall"></a>上下文召回率ContextRecall</h4><p>ContextRecall：用来衡量检索到的上下文与被视为事实真相的标注答案的一致性程度。它根据事实真相<br>和检索到的上下文来计算，数值范围在0到1之间，数值越高表示性能越好。<br>为了从事实真相的答案中估计上下文召回率，需要分析答案中的每个句子是否可以归因于检索到的<br>上下文。在理想情况下，事实真相答案中的所有句子都应该能够对应到检索到的上下文中。</p>
+<script type="math/tex; mode=display">
+\text{Context Recall} = \frac{|\{\text{返回的相关文档}\} \cap \{\text{标准相关文档}\}|}{|\{\text{标准相关文档}\}|}</script><p>计算方式：上下文是否包括了标准答案的内容</p>
+<h3 id="利用RAGAS评估rag性能"><a href="#利用RAGAS评估rag性能" class="headerlink" title="利用RAGAS评估rag性能"></a>利用RAGAS评估rag性能</h3><p><a target="_blank" rel="noopener" href="https://github.com/zxj-2023/learn-rag-langchain/blob/main/RAGAS-langchian.ipynb">learn-rag-langchain/RAGAS-langchian.ipynb at main · zxj-2023/learn-rag-langchain</a></p>
+<p>检索器<br>1.Contextprecision(上下文精确度)：评估检索质量。<br>2.Context Recall(上下文召回率)：衡量检索的完整性。<br>生成器<br>1.Faithfulness(忠实度)：衡量生成答案中的幻觉情况。<br>2.AnswerRelevance(答案相关性):衡量答案对问题的直接性(紧扣问题的核心)。</p>
+<p>最终的RAGAS得分是以上各个指标得分的调和平均值。简而言之，这些指标用来综合评估<br>-个系统整体的性能。</p>
+<h4 id="RAG的构建"><a href="#RAG的构建" class="headerlink" title="RAG的构建"></a>RAG的构建</h4><p>创建RAG文本分割、Embedding model 、 向量库存储Chroma</p>
+<p>我们主要使用 <code>RecursiveCharacterTextSplitter</code> 切割文本，通过<code>OpenAIEmbeddings()</code>进行文本编码，存储到 <code>VectorStore</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">from langchain.vectorstores import Chroma</span><br><span class="line">from langchain.embeddings import OpenAIEmbeddings</span><br><span class="line">from langchain.text_splitter import RecursiveCharacterTextSplitter</span><br><span class="line">from langchain_community.embeddings import DashScopeEmbeddings</span><br><span class="line">embeddings_model = DashScopeEmbeddings(</span><br><span class="line">        model=&quot;text-embedding-v2&quot;,</span><br><span class="line">        dashscope_api_key=openai.api_key,</span><br><span class="line">    )</span><br><span class="line">text_splitter = RecursiveCharacterTextSplitter(chunk_size=500)</span><br><span class="line">#进行文本分割，生成更小、更易于处理的文档块</span><br><span class="line">docs = text_splitter.split_documents(paper_docs)</span><br><span class="line"></span><br><span class="line">vectorstore = Chroma.from_documents(docs, embeddings_model)</span><br></pre></td></tr></table></figure>
+<p>Chroma 向量数据库默认情况下是内存存储，这意味着数据在程序运行结束后不会保留。<br>但是，Chroma 也支持持久化存储，您可以指定一个路径将数据保存到磁盘上。这样，即使程序关闭，数据也会被保留，并在下次启动时自动加载。</p>
+<h4 id="检索器的构建"><a href="#检索器的构建" class="headerlink" title="检索器的构建"></a>检索器的构建</h4><p>现在我们可以利用 <code>Chroma</code> 向量库的 <code>.as_retriever()</code> 方式进行检索，需要控制的主要参数为 <code>k</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">base_retriever = vectorstore.as_retriever(search_kwargs=&#123;&quot;k&quot; : 3&#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>ectorstore.as_retriever() : 这个方法的作用是将一个向量数据库实例（ vectorstore ）转换为 LangChain 中的一个检索器（ Retriever ）对象。检索器是 LangChain 中负责根据用户查询从数据源中获取相关文档的核心组件。</li>
+<li>“k” : 这个键表示要检索的“最相似”文档的数量。在这里， “k” : 3 意味着当检索器接收到一个查询时，它将从向量存储中返回与该查询最相似的 3 个文档。这在 RAG（检索增强生成）系统中非常常见，用于限制传递给大型语言模型的上下文信息量，以提高效率和相关性。</li>
+</ul>
+<p>检索器的作用<br>检索器（Retriever）是一个核心组件，其主要作用是从一个数据源（如向量数据库、文档加载器等）中根据给定的查询（query）检索出相关的文档或信息。</p>
+<h4 id="prompt的构建"><a href="#prompt的构建" class="headerlink" title="prompt的构建"></a>prompt的构建</h4><p>我们需要利用<code>LLM</code>对<code>Context</code> 生成一系列的问题的<code>answer</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">from langchain import PromptTemplate</span><br><span class="line"></span><br><span class="line">template = &quot;&quot;&quot;You are an assistant for question-answering tasks. </span><br><span class="line">Use the following pieces of retrieved context to answer the question. </span><br><span class="line">If you don&#x27;t know the answer, just say that you don&#x27;t know. </span><br><span class="line"></span><br><span class="line">Question: &#123;question&#125; </span><br><span class="line"></span><br><span class="line">Context: &#123;context&#125; </span><br><span class="line"></span><br><span class="line">Answer:</span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">prompt = PromptTemplate(</span><br><span class="line">    template=template, </span><br><span class="line">    input_variables=[&quot;context&quot;,&quot;question&quot;]</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">print(prompt)</span><br></pre></td></tr></table></figure>
+<h4 id="生成answer-利用LLM"><a href="#生成answer-利用LLM" class="headerlink" title="生成answer,利用LLM"></a>生成<code>answer</code>,利用LLM</h4><p>利用 <code>Runnable</code> 定义一个 <code>chain</code> 实现rag全流程。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">from langchain.schema.runnable import RunnablePassthrough</span><br><span class="line">from langchain.schema.output_parser import StrOutputParser</span><br><span class="line">from langchain_openai import ChatOpenAI</span><br><span class="line">llm = ChatOpenAI(</span><br><span class="line">    model_name=&quot;qwen-plus-2025-04-28&quot;, </span><br><span class="line">    temperature=0,</span><br><span class="line">    api_key=&quot;&quot;,</span><br><span class="line">    base_url=&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot;</span><br><span class="line">    )</span><br><span class="line">#RunnablePassthrough将输入数据原封不动地传递到输出</span><br><span class="line">#StrOutputParser() 它被用作 RAG 链的最后一步，确保最终的答案以字符串形式输出。</span><br><span class="line">rag_chain = (</span><br><span class="line">    &#123;&quot;context&quot;: base_retriever,  &quot;question&quot;: RunnablePassthrough()&#125; </span><br><span class="line">    | prompt </span><br><span class="line">    | llm</span><br><span class="line">    | StrOutputParser() </span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h4 id="创建-RAGAs-所需的数据"><a href="#创建-RAGAs-所需的数据" class="headerlink" title="创建 RAGAs 所需的数据"></a>创建 RAGAs 所需的数据</h4><p>question  Answer   contexts  ground_truths</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"># Ragas 数据集格式要求  [&#x27;question&#x27;, &#x27;answer&#x27;, &#x27;contexts&#x27;, &#x27;ground_truths&#x27;]</span><br><span class="line">&#x27;&#x27;&#x27;</span><br><span class="line">&#123;</span><br><span class="line">    &quot;question&quot;: [], &lt;-- 问题基于Context的</span><br><span class="line">    &quot;answer&quot;: [], &lt;-- 答案基于LLM生成的</span><br><span class="line">    &quot;contexts&quot;: [], &lt;-- context</span><br><span class="line">    &quot;ground_truths&quot;: [] &lt;-- 标准答案</span><br><span class="line">&#125;</span><br><span class="line">&#x27;&#x27;&#x27;</span><br><span class="line"></span><br><span class="line">from datasets import Dataset</span><br><span class="line">#构建问题与标准答案（黄金数据集）</span><br><span class="line">questions = [&quot;What is faithfulness ?&quot;, </span><br><span class="line">             &quot;How many pages are included in the WikiEval dataset, and which years do they cover information from?&quot;,</span><br><span class="line">             &quot;Why is evaluating Retrieval Augmented Generation (RAG) systems challenging?&quot;,</span><br><span class="line">            ]</span><br><span class="line">ground_truths = [&quot;Faithfulness refers to the idea that the answer should be grounded in the given context.&quot;,</span><br><span class="line">                  &quot; To construct the dataset, we first selected 50 Wikipedia pages covering events that have happened since the start of 2022.&quot;,</span><br><span class="line">                &quot;Evaluating RAG architectures is, however, challenging because there are several dimensions to consider: the ability of the retrieval system to identify relevant and focused context passages, the ability of the LLM to exploit such passages in a faithful way, or the quality of the generation itself.&quot;]              </span><br><span class="line">answers = []</span><br><span class="line">contexts = []</span><br><span class="line"></span><br><span class="line"># 生成答案</span><br><span class="line">for query in questions:</span><br><span class="line">    answers.append(rag_chain.invoke(query))</span><br><span class="line">    contexts.append([docs.page_content for docs in base_retriever.get_relevant_documents(query)])</span><br><span class="line"></span><br><span class="line"># 构建数据</span><br><span class="line">data = &#123;</span><br><span class="line">    &quot;user_input&quot;: questions,</span><br><span class="line">    &quot;response&quot;: answers,</span><br><span class="line">    &quot;retrieved_contexts&quot;: contexts,</span><br><span class="line">    &quot;reference&quot;: ground_truths</span><br><span class="line">&#125;</span><br><span class="line">dataset = Dataset.from_dict(data)</span><br></pre></td></tr></table></figure>
+<h4 id="使用RAGAs-进行评估"><a href="#使用RAGAs-进行评估" class="headerlink" title="使用RAGAs 进行评估"></a>使用RAGAs 进行评估</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#将评估数据转换成 Ragas 框架专用的格式 。</span><br><span class="line">from ragas import EvaluationDataset</span><br><span class="line">evaluation_dataset = EvaluationDataset.from_list(dataset)</span><br></pre></td></tr></table></figure>
+<p>我们可以使用一组常用的RAG评估指标，在收集的数据集上评估我们的RAG系统。您可以选择任何模型作为评估用LLM来进行评估。<br>ragas默认使用openai的api</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from ragas.llms import LangchainLLMWrapper</span><br><span class="line">evaluator_llm = LangchainLLMWrapper(llm)</span><br></pre></td></tr></table></figure>
+<p>调用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">from ragas.metrics import LLMContextRecall, Faithfulness, FactualCorrectness</span><br><span class="line">from ragas import evaluate</span><br><span class="line">result = evaluate(dataset=evaluation_dataset,metrics=[LLMContextRecall(), Faithfulness(), FactualCorrectness()],llm=evaluator_llm)</span><br><span class="line">result</span><br></pre></td></tr></table></figure>
+<p><img src="/2025/07/11/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/rag%E8%AF%84%E4%BC%B0/image-20250713164037571.png" alt="image-20250713164037571"></p>
+<h4 id="查看结果"><a href="#查看结果" class="headerlink" title="查看结果"></a>查看结果</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import pandas as pd</span><br><span class="line">pd.set_option(&quot;display.max_colwidth&quot;, None)</span><br><span class="line"></span><br><span class="line">df = result.to_pandas()</span><br><span class="line">df</span><br></pre></td></tr></table></figure>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/1892529470419736435">RAG系统效果难评？2025年必备的RAG评估框架与工具详解 - 知乎</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Jz421Q7Lw?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">如何利用RAGAs评估RAG系统的好坏_哔哩哔哩_bilibili</a></p>
+<p>ragas中文文档<a target="_blank" rel="noopener" href="https://www.aidoczh.com/ragas/getstarted/rag_eval/index.html#want-help-in-improving-your-ai-application-using-evals">Evaluate a simple RAG - Ragas</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1452,611 +1908,6 @@ y_i (\mathbf{w}^T \phi(\mathbf{x}_i) + b) \geq 1 - \xi_i, \quad \xi_i \geq 0, \q
 f(\mathbf{x}) = \text{sign} \left( \sum_{i=1}^n \alpha_i y_i K(\mathbf{x}_i, \mathbf{x}) + b \right)</script><p>其中 $b$ 可通过任一支持向量（满足 $0 &lt; \alpha_i &lt; C$）计算：</p>
 <script type="math/tex; mode=display">
 b = y_i - \sum_{j=1}^n \alpha_j y_j K(\mathbf{x}_j, \mathbf{x}_i)</script><h5 id="2"><a href="#2" class="headerlink" title="2"></a>2</h5>
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/06/12/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/%E7%AE%97%E6%B3%95%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/06/12/%E7%AE%97%E6%B3%95/%E7%AE%97%E6%B3%95%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/%E7%AE%97%E6%B3%95%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/" class="post-title-link" itemprop="url">算法期末复习</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-06-12 00:00:00" itemprop="dateCreated datePublished" datetime="2025-06-12T00:00:00+08:00">2025-06-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-06-14 22:26:13" itemprop="dateModified" datetime="2025-06-14T22:26:13+08:00">2025-06-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="贪心问题"><a href="#贪心问题" class="headerlink" title="贪心问题"></a>贪心问题</h3><h4 id="找零钱"><a href="#找零钱" class="headerlink" title="找零钱"></a>找零钱</h4><p>用最少数量的钱币凑出目标金额 m 元。</p>
-<p><strong>核心思想</strong> ：<br>每次选择<strong>不超过剩余金额的最大面值</strong> ，直到凑够目标金额。</p>
-<p><strong>步骤：</strong></p>
-<ol>
-<li>将钱币面值按从大到小排序。</li>
-<li>对于当前剩余金额，不断减去最大可用面值，直到金额为 0。</li>
-</ol>
-<p><strong>贪心策略的适用性</strong></p>
-<p><strong>仅当钱币面值满足以下条件时有效</strong> ：</p>
-<ul>
-<li>面值序列中每个元素都是前一个元素的因数（如 <code>1, 2, 5, 10</code>）。</li>
-<li>否则，贪心可能失败（例如面值 <code>[1, 3, 4]</code>，目标 <code>6</code>：贪心选 <code>4+1+1</code> 需 3 枚，而最优解是 <code>3+3</code> 需 2 枚）。</li>
-</ul>
-<p><strong>代码问题分析</strong></p>
-<p>用户提供的代码是一个基于贪心策略的找零钱实现，但在<strong>硬币面值不满足贪心条件</strong>时可能无法得到最优解。以下是具体分析：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">findMinCoins</span>(<span class="params">coins, amount</span>):</span><br><span class="line">    coins.sort(reverse=<span class="literal">True</span>)  <span class="comment"># 降序排序</span></span><br><span class="line">    res = []</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(coins)):</span><br><span class="line">        <span class="keyword">while</span> amount &gt;= coins[i]:</span><br><span class="line">            res.append(coins[i])</span><br><span class="line">            amount -= coins[i]</span><br><span class="line">    <span class="keyword">return</span> res</span><br><span class="line"></span><br><span class="line">coins = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">10</span>, <span class="number">50</span>, <span class="number">100</span>]</span><br><span class="line">amount = <span class="number">1136</span></span><br><span class="line">out = findMinCoins(coins, amount)</span><br><span class="line"><span class="built_in">print</span>(out)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;钱币数量为<span class="subst">&#123;<span class="built_in">len</span>(out)&#125;</span>.&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p><strong>问题点：</strong></p>
-<ol>
-<li><p><strong>贪心策略的局限性</strong><br>仅当硬币面值满足 <strong>每种面值是前一种面值的因数</strong>（如 <code>[1, 2, 5, 10, 50, 100]</code>）时，贪心算法才能保证最优解。若面值不满足此条件（如 <code>[1, 3, 4]</code>），则可能失败。</p>
-</li>
-<li><p><strong>未处理特殊情况</strong>  </p>
-<ul>
-<li>若 <code>amount</code> 无法被硬币组合凑出（如硬币为 <code>[2, 5]</code>，目标 <code>3</code>），代码会返回非最优解或死循环。</li>
-</ul>
-</li>
-</ol>
-<p><strong>改进方案</strong></p>
-<p>适用于任意硬币面值，确保最优解：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">min_coins_dp</span>(<span class="params">coins, amount</span>):</span><br><span class="line">    dp = [<span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>)] * (amount + <span class="number">1</span>)</span><br><span class="line">    dp[<span class="number">0</span>] = <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> a <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, amount + <span class="number">1</span>):</span><br><span class="line">        <span class="keyword">for</span> coin <span class="keyword">in</span> coins:</span><br><span class="line">            <span class="keyword">if</span> a &gt;= coin <span class="keyword">and</span> dp[a - coin] + <span class="number">1</span> &lt; dp[a]:</span><br><span class="line">                dp[a] = dp[a - coin] + <span class="number">1</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> dp[amount] <span class="keyword">if</span> dp[amount] != <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>) <span class="keyword">else</span> -<span class="number">1</span></span><br><span class="line"></span><br><span class="line">coins = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">10</span>, <span class="number">50</span>, <span class="number">100</span>]</span><br><span class="line">amount = <span class="number">1136</span></span><br><span class="line"><span class="built_in">print</span>(min_coins_dp(coins, amount))  <span class="comment"># 输出 16</span></span><br></pre></td></tr></table></figure></p>
-<h4 id="最优装载问题"><a href="#最优装载问题" class="headerlink" title="最优装载问题"></a>最优装载问题</h4><p>🧮 问题描述</p>
-<p>给定一个集装箱重量列表 <code>weights</code> 和轮船的最大载重 <code>W</code>，目标是 <strong>尽可能多地装载集装箱</strong>（不考虑体积限制）。</p>
-<p>✅ 算法思路</p>
-<ol>
-<li><strong>排序</strong>：将所有集装箱按重量从小到大排序。</li>
-<li><strong>贪心装载</strong>：依次尝试装载每个集装箱，若当前总重量加上该集装箱的重量不超过 <code>W</code>，则装载；否则停止。</li>
-<li><strong>返回结果</strong>：返回成功装载的集装箱数量。</li>
-</ol>
-<p>🧾 Python 实现</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">max_loaded_containers</span>(<span class="params">weights, W</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    返回在总载重 W 下，最多可以装载的集装箱数量。</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    参数:</span></span><br><span class="line"><span class="string">    weights (list of int/float): 集装箱重量列表</span></span><br><span class="line"><span class="string">    W (int/float): 轮船的最大载重</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    返回:</span></span><br><span class="line"><span class="string">    int: 最多可以装载的集装箱数量</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># 按重量从小到大排序</span></span><br><span class="line">    weights.sort()</span><br><span class="line">    </span><br><span class="line">    total_weight = <span class="number">0</span></span><br><span class="line">    count = <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> weight <span class="keyword">in</span> weights:</span><br><span class="line">        <span class="keyword">if</span> total_weight + weight &lt;= W:</span><br><span class="line">            total_weight += weight</span><br><span class="line">            count += <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> count</span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例测试</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    weights = [<span class="number">3</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">2</span>]</span><br><span class="line">    W = <span class="number">10</span></span><br><span class="line">    result = max_loaded_containers(weights, W)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;最多可以装载 <span class="subst">&#123;result&#125;</span> 个集装箱&quot;</span>)</span><br></pre></td></tr></table></figure>
-<h4 id="活动选择问题（最大相容活动子集）"><a href="#活动选择问题（最大相容活动子集）" class="headerlink" title="活动选择问题（最大相容活动子集）"></a>活动选择问题（最大相容活动子集）</h4><p>📌 问题描述</p>
-<p>给定 $ n $ 个活动的集合 $ C = {1, 2, …, n} $，每个活动 $ i $ 都有起始时间 $ s_i $ 和结束时间 $ f_i $（满足 $ s_i &lt; f_i $）。要求选择一个<strong>最大相容活动子集</strong>，使得被选中的活动之间<strong>时间互不重叠</strong>。</p>
-<p>两个活动 $ i $ 和 $ j $ 相容的条件为：</p>
-<script type="math/tex; mode=display">
-s_i \geq f_j \quad \text{或} \quad s_j \geq f_i</script><p>✅ 贪心策略与正确性</p>
-<p><strong>贪心策略</strong>：  </p>
-<ol>
-<li><strong>按活动结束时间 $ f_i $ 从小到大排序</strong>。</li>
-<li><strong>依次选择结束最早的活动</strong>，并跳过与其冲突的所有活动。</li>
-</ol>
-<p><strong>正确性证明（归纳法）</strong>：</p>
-<ul>
-<li><strong>基础情况</strong>：当只有一项活动时，显然选择它是最优的。</li>
-<li><strong>归纳假设</strong>：对于前 $ k $ 个活动，该策略能得到最大相容子集。</li>
-<li><strong>归纳步骤</strong>：考虑第 $ k+1 $ 个活动。若选择结束最早的活动 $ A $，则剩下的可用时间区间为 $ [f_A, +\infty) $，此时在该区间内继续应用该策略，仍能得到最大子集。若不选 $ A $ 而选其他活动，则剩余时间更少，无法容纳更多活动。</li>
-</ul>
-<p>🧾 Python 实现</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">max_compatible_activities</span>(<span class="params">activities</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    返回最大相容活动子集的数量及具体活动列表。</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    参数:</span></span><br><span class="line"><span class="string">    activities (list of tuples): 每个元素为 (s_i, f_i)，表示活动的起始和结束时间</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    返回:</span></span><br><span class="line"><span class="string">    tuple: (最大活动数量, 相容活动列表)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># 按结束时间从小到大排序</span></span><br><span class="line">    sorted_activities = <span class="built_in">sorted</span>(activities, key=<span class="keyword">lambda</span> x: x[<span class="number">1</span>])</span><br><span class="line">    </span><br><span class="line">    selected = []</span><br><span class="line">    last_end = -<span class="number">1</span>  <span class="comment"># 上一个选中的活动的结束时间</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> activity <span class="keyword">in</span> sorted_activities:</span><br><span class="line">        s, f = activity</span><br><span class="line">        <span class="keyword">if</span> s &gt;= last_end:</span><br><span class="line">            selected.append(activity)</span><br><span class="line">            last_end = f</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">len</span>(selected), selected</span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例测试</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    activities = [</span><br><span class="line">        (<span class="number">1</span>, <span class="number">4</span>), (<span class="number">3</span>, <span class="number">5</span>), (<span class="number">0</span>, <span class="number">6</span>), (<span class="number">5</span>, <span class="number">7</span>), </span><br><span class="line">        (<span class="number">3</span>, <span class="number">8</span>), (<span class="number">5</span>, <span class="number">9</span>), (<span class="number">6</span>, <span class="number">10</span>), (<span class="number">8</span>, <span class="number">11</span>)</span><br><span class="line">    ]</span><br><span class="line">    count, selected = max_compatible_activities(activities)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;最大相容活动数: <span class="subst">&#123;count&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;所选活动:&quot;</span>, selected)</span><br></pre></td></tr></table></figure>
-<h4 id="使用堆优化的-Dijkstra-算法（Python-实现）"><a href="#使用堆优化的-Dijkstra-算法（Python-实现）" class="headerlink" title="使用堆优化的 Dijkstra 算法（Python 实现）"></a>使用堆优化的 Dijkstra 算法（Python 实现）</h4><p>🧠 <strong>核心思想</strong></p>
-<ul>
-<li>使用<strong>最小堆</strong>（优先队列）高效选择当前距离最小的节点，避免暴力遍历。</li>
-<li>每次从堆中取出当前最短路径的节点，进行<strong>松弛操作</strong>（Relaxation）。</li>
-<li>若发现堆中存在过时的路径记录，则跳过（因为已找到更优路径）。</li>
-</ul>
-<p>📦 <strong>图的表示</strong></p>
-<p>使用邻接表（字典嵌套列表）：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">graph = &#123;</span><br><span class="line">    <span class="string">&#x27;A&#x27;</span>: [(<span class="string">&#x27;B&#x27;</span>, <span class="number">1</span>), (<span class="string">&#x27;C&#x27;</span>, <span class="number">4</span>)],</span><br><span class="line">    <span class="string">&#x27;B&#x27;</span>: [(<span class="string">&#x27;A&#x27;</span>, <span class="number">1</span>), (<span class="string">&#x27;C&#x27;</span>, <span class="number">2</span>), (<span class="string">&#x27;D&#x27;</span>, <span class="number">5</span>)],</span><br><span class="line">    <span class="string">&#x27;C&#x27;</span>: [(<span class="string">&#x27;A&#x27;</span>, <span class="number">4</span>), (<span class="string">&#x27;B&#x27;</span>, <span class="number">2</span>), (<span class="string">&#x27;D&#x27;</span>, <span class="number">1</span>)],</span><br><span class="line">    <span class="string">&#x27;D&#x27;</span>: [(<span class="string">&#x27;B&#x27;</span>, <span class="number">5</span>), (<span class="string">&#x27;C&#x27;</span>, <span class="number">1</span>)]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>🧾 <strong>Python 代码实现</strong></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> heapq</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">dijkstra_with_heap</span>(<span class="params">graph, start</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    使用堆优化的 Dijkstra 算法求单源最短路径。</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    参数:</span></span><br><span class="line"><span class="string">    graph (dict): 邻接表形式的图，格式为 &#123;节点: [(邻接节点, 权重), ...]&#125;</span></span><br><span class="line"><span class="string">    start (str/int): 起始节点</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    返回:</span></span><br><span class="line"><span class="string">    dict: 从起始节点到所有节点的最短路径长度</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># 初始化距离字典，所有节点初始距离为无穷大</span></span><br><span class="line">    distances = &#123;node: <span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>) <span class="keyword">for</span> node <span class="keyword">in</span> graph&#125;</span><br><span class="line">    distances[start] = <span class="number">0</span>  <span class="comment"># 起始节点到自身的距离为 0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 优先队列（最小堆），存储 (距离, 节点)</span></span><br><span class="line">    heap = [(<span class="number">0</span>, start)]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> heap:</span><br><span class="line">        current_distance, current_node = heapq.heappop(heap)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 如果当前弹出的距离大于记录的距离，说明该节点已被处理过，跳过</span></span><br><span class="line">        <span class="keyword">if</span> current_distance &gt; distances[current_node]:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 遍历当前节点的所有邻接边</span></span><br><span class="line">        <span class="keyword">for</span> neighbor, weight <span class="keyword">in</span> graph[current_node]:</span><br><span class="line">            distance = current_distance + weight</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># 如果找到更短路径，更新距离并推入堆</span></span><br><span class="line">            <span class="keyword">if</span> distance &lt; distances[neighbor]:</span><br><span class="line">                distances[neighbor] = distance</span><br><span class="line">                heapq.heappush(heap, (distance, neighbor))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> distances</span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例测试</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    graph = &#123;</span><br><span class="line">        <span class="string">&#x27;A&#x27;</span>: [(<span class="string">&#x27;B&#x27;</span>, <span class="number">1</span>), (<span class="string">&#x27;C&#x27;</span>, <span class="number">4</span>)],</span><br><span class="line">        <span class="string">&#x27;B&#x27;</span>: [(<span class="string">&#x27;A&#x27;</span>, <span class="number">1</span>), (<span class="string">&#x27;C&#x27;</span>, <span class="number">2</span>), (<span class="string">&#x27;D&#x27;</span>, <span class="number">5</span>)],</span><br><span class="line">        <span class="string">&#x27;C&#x27;</span>: [(<span class="string">&#x27;A&#x27;</span>, <span class="number">4</span>), (<span class="string">&#x27;B&#x27;</span>, <span class="number">2</span>), (<span class="string">&#x27;D&#x27;</span>, <span class="number">1</span>)],</span><br><span class="line">        <span class="string">&#x27;D&#x27;</span>: [(<span class="string">&#x27;B&#x27;</span>, <span class="number">5</span>), (<span class="string">&#x27;C&#x27;</span>, <span class="number">1</span>)]</span><br><span class="line">    &#125;</span><br><span class="line">    start_node = <span class="string">&#x27;A&#x27;</span></span><br><span class="line">    shortest_paths = dijkstra_with_heap(graph, start_node)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;从节点 <span class="subst">&#123;start_node&#125;</span> 出发的最短路径：&quot;</span>)</span><br><span class="line">    <span class="keyword">for</span> node, dist <span class="keyword">in</span> shortest_paths.items():</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;start_node&#125;</span> → <span class="subst">&#123;node&#125;</span> : <span class="subst">&#123;dist&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
-<h4 id="哈夫曼编码"><a href="#哈夫曼编码" class="headerlink" title="哈夫曼编码"></a><strong>哈夫曼编码</strong></h4><p><strong>2. 构建哈夫曼树的步骤</strong></p>
-<p><strong>步骤 1：统计字符频率</strong></p>
-<p>假设输入字符串为 <code>&quot;BCCABBDDAECCBAAAEC&quot;</code>，统计每个字符的出现次数：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A: 6, B: 4, C: 5, D: 2, E: 1</span><br></pre></td></tr></table></figure></p>
-<p><strong>步骤 2：创建最小堆（优先队列）</strong></p>
-<ul>
-<li>将每个字符及其频率构建成节点，并按频率升序排列。</li>
-<li>初始堆：<code>[E(1), D(2), B(4), C(5), A(6)]</code></li>
-</ul>
-<p><strong>步骤 3：合并节点，构建哈夫曼树</strong></p>
-<ol>
-<li>取出两个频率最小的节点 <code>E(1)</code> 和 <code>D(2)</code>，合并为新节点 <code>ED(3)</code>。</li>
-<li>将新节点插入堆：<code>[B(4), C(5), ED(3), A(6)]</code> → 重新排序为 <code>[ED(3), B(4), C(5), A(6)]</code></li>
-<li>重复上述步骤，直到堆中只剩一个根节点（哈夫曼树）。</li>
-</ol>
-<p>最终树结构示意图（频率越小越靠近叶子）：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">        (18)</span><br><span class="line">       /    \</span><br><span class="line">     (8)    A(6)</span><br><span class="line">    /   \</span><br><span class="line"> (4)   (4)</span><br><span class="line">B     C(5)</span><br></pre></td></tr></table></figure></p>
-<p><strong>步骤 4：生成哈夫曼编码表</strong></p>
-<p>从根节点出发，左子树标记为 <code>0</code>，右子树标记为 <code>1</code>：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">A: 11</span><br><span class="line">B: 00</span><br><span class="line">C: 01</span><br><span class="line">D: 100</span><br><span class="line">E: 101</span><br></pre></td></tr></table></figure></p>
-<p><strong>4. Python 实现哈夫曼编码</strong></p>
-<p>以下代码展示如何用 Python 构建哈夫曼树并生成编码表：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> heapq</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> Counter</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">HuffmanNode</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, char, freq</span>):</span><br><span class="line">        <span class="variable language_">self</span>.char = char</span><br><span class="line">        <span class="variable language_">self</span>.freq = freq</span><br><span class="line">        <span class="variable language_">self</span>.left = <span class="literal">None</span></span><br><span class="line">        <span class="variable language_">self</span>.right = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__lt__</span>(<span class="params">self, other</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.freq &lt; other.freq</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">build_huffman_tree</span>(<span class="params">text</span>):</span><br><span class="line">    <span class="comment"># 统计频率</span></span><br><span class="line">    frequency = Counter(text)</span><br><span class="line">    <span class="comment"># 创建最小堆</span></span><br><span class="line">    heap = [HuffmanNode(char, freq) <span class="keyword">for</span> char, freq <span class="keyword">in</span> frequency.items()]</span><br><span class="line">    heapq.heapify(heap)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 合并节点</span></span><br><span class="line">    <span class="keyword">while</span> <span class="built_in">len</span>(heap) &gt; <span class="number">1</span>:</span><br><span class="line">        left = heapq.heappop(heap)</span><br><span class="line">        right = heapq.heappop(heap)</span><br><span class="line">        merged = HuffmanNode(<span class="literal">None</span>, left.freq + right.freq)</span><br><span class="line">        merged.left = left</span><br><span class="line">        merged.right = right</span><br><span class="line">        heapq.heappush(heap, merged)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> heapq.heappop(heap) <span class="keyword">if</span> heap <span class="keyword">else</span> <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">build_huffman_codes</span>(<span class="params">root</span>):</span><br><span class="line">    codes = &#123;&#125;</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">dfs</span>(<span class="params">node, current_code</span>):</span><br><span class="line">        <span class="keyword">if</span> node:</span><br><span class="line">            <span class="keyword">if</span> node.char <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">                codes[node.char] = current_code</span><br><span class="line">            dfs(node.left, current_code + <span class="string">&quot;0&quot;</span>)</span><br><span class="line">            dfs(node.right, current_code + <span class="string">&quot;1&quot;</span>)</span><br><span class="line">    dfs(root, <span class="string">&quot;&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> codes</span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例</span></span><br><span class="line">text = <span class="string">&quot;BCCABBDDAECCBAAAEC&quot;</span></span><br><span class="line">root = build_huffman_tree(text)</span><br><span class="line">codes = build_huffman_codes(root)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;哈夫曼编码表:&quot;</span>, codes)</span><br></pre></td></tr></table></figure>
-<p><strong>输出示例：</strong><br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">哈夫曼编码表: &#123;&#x27;B&#x27;: &#x27;0&#x27;, &#x27;C&#x27;: &#x27;10&#x27;, &#x27;A&#x27;: &#x27;11&#x27;, &#x27;D&#x27;: &#x27;110&#x27;, &#x27;E&#x27;: &#x27;111&#x27;&#125;</span><br></pre></td></tr></table></figure></p>
-<h4 id="prim"><a href="#prim" class="headerlink" title="prim"></a>prim</h4><p>以下是 <strong>朴素 Prim 算法</strong> 的实现与详解，适用于稠密图（如邻接矩阵存储的图）：</p>
-<p><strong>Prim 算法核心思想</strong></p>
-<ol>
-<li>从任意顶点开始（如 <code>start=0</code>）。</li>
-<li>维护一个集合 <code>selected</code>，记录已加入生成树的顶点。</li>
-<li>每次从未选顶点中选择到当前生成树的最小权重边的顶点。</li>
-<li>重复步骤 3，直到所有顶点加入生成树。</li>
-</ol>
-<p>时间复杂度：<strong>O(V²)</strong>，其中 V 是顶点数。</p>
-<p><strong>Python 实现</strong></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">prim</span>(<span class="params">graph, start=<span class="number">0</span></span>):</span><br><span class="line">    V = <span class="built_in">len</span>(graph)  <span class="comment"># 顶点数量</span></span><br><span class="line">    selected = [<span class="literal">False</span>] * V  <span class="comment"># 标记顶点是否已加入生成树</span></span><br><span class="line">    key = [sys.maxsize] * V  <span class="comment"># 记录各顶点到生成树的最小权重</span></span><br><span class="line">    parent = [-<span class="number">1</span>] * V         <span class="comment"># 记录最小生成树的父节点</span></span><br><span class="line"></span><br><span class="line">    key[start] = <span class="number">0</span>  <span class="comment"># 起始顶点的权值设为0</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(V):</span><br><span class="line">        <span class="comment"># 找到当前未选顶点中 key 最小的顶点 u</span></span><br><span class="line">        min_key = sys.maxsize</span><br><span class="line">        u = -<span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> <span class="built_in">range</span>(V):</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> selected[v] <span class="keyword">and</span> key[v] &lt; min_key:</span><br><span class="line">                min_key = key[v]</span><br><span class="line">                u = v</span><br><span class="line">        <span class="keyword">if</span> u == -<span class="number">1</span>:</span><br><span class="line">            <span class="keyword">break</span>  <span class="comment"># 无连通顶点，生成树结束</span></span><br><span class="line">        </span><br><span class="line">        selected[u] = <span class="literal">True</span>  <span class="comment"># 将 u 加入生成树</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 更新 u 的所有邻接顶点的 key 值</span></span><br><span class="line">        <span class="keyword">for</span> v <span class="keyword">in</span> <span class="built_in">range</span>(V):</span><br><span class="line">            <span class="keyword">if</span> graph[u][v] &gt; <span class="number">0</span> <span class="keyword">and</span> <span class="keyword">not</span> selected[v] <span class="keyword">and</span> graph[u][v] &lt; key[v]:</span><br><span class="line">                key[v] = graph[u][v]</span><br><span class="line">                parent[v] = u  <span class="comment"># 记录 v 的父节点为 u</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> key, parent</span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例：邻接矩阵表示的图</span></span><br><span class="line">graph = [</span><br><span class="line">    [<span class="number">0</span>, <span class="number">2</span>, <span class="number">0</span>, <span class="number">6</span>, <span class="number">0</span>],</span><br><span class="line">    [<span class="number">2</span>, <span class="number">0</span>, <span class="number">3</span>, <span class="number">8</span>, <span class="number">5</span>],</span><br><span class="line">    [<span class="number">0</span>, <span class="number">3</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">7</span>],</span><br><span class="line">    [<span class="number">6</span>, <span class="number">8</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">9</span>],</span><br><span class="line">    [<span class="number">0</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">9</span>, <span class="number">0</span>]</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">key, parent = prim(graph)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;最小生成树的总权重:&quot;</span>, <span class="built_in">sum</span>(key))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;父节点数组:&quot;</span>, parent)</span><br></pre></td></tr></table></figure>
-<h4 id="kruskal"><a href="#kruskal" class="headerlink" title="kruskal"></a>kruskal</h4><p><strong>2. Kruskal 算法的核心思想</strong></p>
-<ol>
-<li><strong>按权重从小到大排序所有边</strong>。</li>
-<li><strong>依次选择边</strong>：<ul>
-<li>如果这条边的两个顶点不在同一个连通分量中（即不形成环），则将这条边加入生成树。</li>
-<li>否则跳过这条边。</li>
-</ul>
-</li>
-<li><strong>重复步骤2，直到生成树中有 <code>V-1</code> 条边</strong>（<code>V</code> 是顶点数）。</li>
-</ol>
-<p><strong>6. Python 实现示例</strong></p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">UnionFind</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, size</span>):</span><br><span class="line">        <span class="variable language_">self</span>.parent = <span class="built_in">list</span>(<span class="built_in">range</span>(size))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">find</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.parent[x] != x:</span><br><span class="line">            <span class="variable language_">self</span>.parent[x] = <span class="variable language_">self</span>.find(<span class="variable language_">self</span>.parent[x])  <span class="comment"># 路径压缩</span></span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.parent[x]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">union</span>(<span class="params">self, x, y</span>):</span><br><span class="line">        rootX = <span class="variable language_">self</span>.find(x)</span><br><span class="line">        rootY = <span class="variable language_">self</span>.find(y)</span><br><span class="line">        <span class="keyword">if</span> rootX == rootY:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span>  <span class="comment"># 已在同一个集合</span></span><br><span class="line">        <span class="variable language_">self</span>.parent[rootY] = rootX  <span class="comment"># 合并</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">kruskal</span>(<span class="params">n, edges</span>):</span><br><span class="line">    <span class="comment"># edges: [(权重, u, v), ...]</span></span><br><span class="line">    edges.sort()</span><br><span class="line">    uf = UnionFind(n)</span><br><span class="line">    mst = []</span><br><span class="line">    cost = <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> weight, u, v <span class="keyword">in</span> edges:</span><br><span class="line">        <span class="keyword">if</span> uf.union(u, v):</span><br><span class="line">            mst.append((u, v))</span><br><span class="line">            cost += weight</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">len</span>(mst) == n - <span class="number">1</span>:</span><br><span class="line">                <span class="keyword">break</span>  <span class="comment"># 已选够 n-1 条边</span></span><br><span class="line">    <span class="keyword">return</span> mst, cost</span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例</span></span><br><span class="line">n = <span class="number">5</span>  <span class="comment"># 顶点数（0~4）</span></span><br><span class="line">edges = [</span><br><span class="line">    (<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>),  <span class="comment"># A(0)-B(1)</span></span><br><span class="line">    (<span class="number">2</span>, <span class="number">1</span>, <span class="number">2</span>),  <span class="comment"># B(1)-C(2)</span></span><br><span class="line">    (<span class="number">3</span>, <span class="number">2</span>, <span class="number">3</span>),  <span class="comment"># C(2)-D(3)</span></span><br><span class="line">    (<span class="number">4</span>, <span class="number">3</span>, <span class="number">4</span>),  <span class="comment"># D(3)-E(4)</span></span><br><span class="line">    (<span class="number">5</span>, <span class="number">0</span>, <span class="number">4</span>),  <span class="comment"># A(0)-E(4)</span></span><br><span class="line">    (<span class="number">6</span>, <span class="number">1</span>, <span class="number">3</span>)   <span class="comment"># B(1)-D(3)</span></span><br><span class="line">]</span><br><span class="line">mst, total = kruskal(n, edges)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;MST 边：&quot;</span>, mst)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;总权重：&quot;</span>, total)</span><br></pre></td></tr></table></figure>
-<h3 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h3><h4 id="完全背包"><a href="#完全背包" class="headerlink" title="完全背包"></a>完全背包</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">def unbounded_knapsack_2d(weights, values, capacity):</span><br><span class="line">    n = len(weights)</span><br><span class="line">    dp = [[0] * (capacity + 1) for _ in range(n + 1)]</span><br><span class="line"></span><br><span class="line">    for i in range(1, n + 1):</span><br><span class="line">        for j in range(1, capacity + 1):</span><br><span class="line">            if weights[i-1] &lt;= j:</span><br><span class="line">                dp[i][j] = max(</span><br><span class="line">                    dp[i-1][j],</span><br><span class="line">                    dp[i][j - weights[i-1]] + values[i-1]</span><br><span class="line">                )</span><br><span class="line">            else:</span><br><span class="line">                dp[i][j] = dp[i-1][j]</span><br><span class="line">    </span><br><span class="line">    return dp[n][capacity]</span><br><span class="line"></span><br><span class="line"># 示例</span><br><span class="line">weights = [1, 2, 3]</span><br><span class="line">values = [15, 20, 50]</span><br><span class="line">capacity = 5</span><br><span class="line">print(unbounded_knapsack_2d(weights, values, capacity))  # 输出 80</span><br></pre></td></tr></table></figure>
-<h4 id="最优二叉搜索树"><a href="#最优二叉搜索树" class="headerlink" title="最优二叉搜索树"></a>最优二叉搜索树</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">def optimal_bst(p, q, n):</span><br><span class="line">    # 初始化 dp 和 w 数组（大小为 (n+2) x (n+2)，避免越界）</span><br><span class="line">    dp = [[0] * (n+2) for _ in range(n+2)]</span><br><span class="line">    w = [[0] * (n+2) for _ in range(n+2)]</span><br><span class="line">    root = [[0] * (n+2) for _ in range(n+2)]</span><br><span class="line"></span><br><span class="line">    # 初始化虚拟键的权重</span><br><span class="line">    for i in range(n+1):</span><br><span class="line">        w[i][i] = q[i]</span><br><span class="line">    </span><br><span class="line">    # 填表顺序：链长从 1 到 n</span><br><span class="line">    for l in range(1, n+1):  # l 为关键字数量</span><br><span class="line">        for i in range(n - l + 1):</span><br><span class="line">            j = i + l</span><br><span class="line">            w[i][j] = w[i][j-1] + p[j] + q[j]</span><br><span class="line">            dp[i][j] = float(&#x27;inf&#x27;)</span><br><span class="line">            # 枚举根节点 r（i &lt; r ≤ j）</span><br><span class="line">            for r in range(i+1, j+1):</span><br><span class="line">                cost = dp[i][r-1] + dp[r][j]</span><br><span class="line">                if cost &lt; dp[i][j]:</span><br><span class="line">                    dp[i][j] = cost</span><br><span class="line">                    root[i][j] = r</span><br><span class="line">    </span><br><span class="line">    return dp[0][n], root</span><br><span class="line"></span><br><span class="line"># 示例输入</span><br><span class="line">p = [0, 0.15, 0.1, 0.05]  # 关键字概率（从 k₁ 开始）</span><br><span class="line">q = [0.05, 0.1, 0.05, 0.05]  # 虚拟键概率（从 d₀ 开始）</span><br><span class="line">n = 3  # 关键字数量</span><br><span class="line">min_cost, root = optimal_bst(p, q, n)</span><br><span class="line">print(&quot;最小期望搜索代价:&quot;, min_cost)</span><br></pre></td></tr></table></figure>
-<h3 id="回溯法"><a href="#回溯法" class="headerlink" title="回溯法"></a>回溯法</h3><h4 id="八皇后"><a href="#八皇后" class="headerlink" title="八皇后"></a>八皇后</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&#x27;&#x27;&#x27;</span><br><span class="line">https://leetcode.cn/problems/n-queens/</span><br><span class="line">&#x27;&#x27;&#x27;</span><br><span class="line">n=4</span><br><span class="line">ans=[]</span><br><span class="line">path=[]</span><br><span class="line">onpath=[False]*n#记录哪一列有皇后</span><br><span class="line">diag1=[False]*(2*n-1)#记录主对角线是否有皇后</span><br><span class="line">diag2=[False]*(2*n-1)#记录副对角线是否有皇后</span><br><span class="line">def dfs(row,path:list):</span><br><span class="line">    if row==n:</span><br><span class="line">        #print(path)</span><br><span class="line">        chess=[]</span><br><span class="line">        # 生成棋盘</span><br><span class="line">        for i in range(n):</span><br><span class="line">            chess.append(&quot;.&quot;*path[i]+&quot;Q&quot;+&quot;.&quot;*(n-path[i]-1))</span><br><span class="line">        ans.append(chess)</span><br><span class="line">        return</span><br><span class="line">    for col in range(n):</span><br><span class="line">        if isvalid(row,col):</span><br><span class="line">            path.append(col)#放置皇后</span><br><span class="line">            onpath[col]=diag1[row+col]=diag2[row-col+n-1]=True</span><br><span class="line">            dfs(row+1,path)#递归下一行</span><br><span class="line">            path.pop()#回溯，取消放置</span><br><span class="line">            onpath[col]=diag1[row+col]=diag2[row-col+n-1]=False</span><br><span class="line">    </span><br><span class="line">def isvalid(row,col):</span><br><span class="line">    if onpath[col] or diag1[row+col] or diag2[row-col+n-1]:</span><br><span class="line">        return False</span><br><span class="line">    return True</span><br><span class="line">dfs(0,path)</span><br><span class="line">print(ans)</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/06/10/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0%EF%BC%88%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA%EF%BC%89/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/06/10/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0%EF%BC%88%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA%EF%BC%89/" class="post-title-link" itemprop="url">机器学习——期末复习（查漏补缺）</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-06-10 00:00:00" itemprop="dateCreated datePublished" datetime="2025-06-10T00:00:00+08:00">2025-06-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-06-16 07:35:40" itemprop="dateModified" datetime="2025-06-16T07:35:40+08:00">2025-06-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/" itemprop="url" rel="index"><span itemprop="name">大二下</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="高斯核（RBF核）中-σ²-的作用及其对模型的影响"><a href="#高斯核（RBF核）中-σ²-的作用及其对模型的影响" class="headerlink" title="高斯核（RBF核）中 σ² 的作用及其对模型的影响"></a>高斯核（RBF核）中 σ² 的作用及其对模型的影响</h3><p>高斯核（RBF核）的形式为：</p>
-<script type="math/tex; mode=display">
-K(x, x') = \exp\left(-\frac{\|x - x'\|^2}{2\sigma^2}\right)</script><p>其中 $ |x - x’| $ 是两个样本点之间的欧氏距离，$ \sigma^2 $ 是高斯核的方差参数，控制核函数的“宽度”或“局部性”。</p>
-<p><strong>1. σ² 的几何意义：核函数的“影响范围”</strong></p>
-<ul>
-<li><p><strong>σ² 较小时</strong>：<br>分母较小，指数项中的 $ \frac{|x - x’|^2}{2\sigma^2} $ 会更大，导致指数函数值快速衰减。<br><strong>结果</strong>：只有当 $ x $ 和 $ x’ $ 非常接近时，核函数值才接近1；稍远一点的距离会导致核函数值迅速趋近于0。<br><strong>直观理解</strong>：模型只关注局部区域内的样本点，决策边界会围绕每个样本点“弯曲”，形成复杂的非线性形状。</p>
-</li>
-<li><p><strong>σ² 较大时</strong>：<br>分母较大，指数项中的 $ \frac{|x - x’|^2}{2\sigma^2} $ 会更小，指数函数值衰减缓慢。<br><strong>结果</strong>：即使 $ x $ 和 $ x’ $ 相距较远，核函数值仍可能较大。<br><strong>直观理解</strong>：模型会考虑更大范围的样本点，决策边界更平滑，接近线性分隔。</p>
-</li>
-</ul>
-<p><strong>2. σ² 如何影响模型的复杂度</strong></p>
-<ul>
-<li><p><strong>σ² 小 → 局部敏感，高复杂度</strong>：  </p>
-<ul>
-<li>每个样本点的影响范围有限，模型需要“记住”每个局部区域的细节。  </li>
-<li>决策边界会围绕每个样本点剧烈弯曲，甚至形成孤立的环形区域（如图1）。  </li>
-<li>容易过拟合：模型过度适应训练数据的噪声和细节。</li>
-</ul>
-</li>
-<li><p><strong>σ² 大 → 全局平滑，低复杂度</strong>：  </p>
-<ul>
-<li>样本点的影响范围扩大，模型倾向于用简单的全局模式区分数据。  </li>
-<li>决策边界接近线性（如图2），可能无法捕捉数据中的非线性结构。  </li>
-<li>容易欠拟合：模型无法拟合数据中的局部特征。</li>
-</ul>
-</li>
-</ul>
-<p><strong>3. 数学与直观示例</strong></p>
-<p>假设两个样本点 $ x_1 $ 和 $ x_2 $ 距离为 $ d $，核函数值 $ K(x_1, x_2) $ 随 $ \sigma^2 $ 的变化如下：</p>
-<div class="table-container">
-<table>
-<thead>
-<tr>
-<th>$ \sigma^2 $</th>
-<th>$ d = 1 $</th>
-<th>$ d = 2 $</th>
-<th>$ d = 3 $</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>$ \sigma^2 = 0.1 $</td>
-<td>$ \exp(-5) \approx 0.0067 $</td>
-<td>$ \exp(-20) \approx 2.06 \times 10^{-9} $</td>
-<td>$ \exp(-45) \approx 2.87 \times 10^{-20} $</td>
-</tr>
-<tr>
-<td>$ \sigma^2 = 1 $</td>
-<td>$ \exp(-0.5) \approx 0.6065 $</td>
-<td>$ \exp(-2) \approx 0.1353 $</td>
-<td>$ \exp(-4.5) \approx 0.0111 $</td>
-</tr>
-<tr>
-<td>$ \sigma^2 = 10 $</td>
-<td>$ \exp(-0.05) \approx 0.9512 $</td>
-<td>$ \exp(-0.2) \approx 0.8187 $</td>
-<td>$ \exp(-0.45) \approx 0.6376 $</td>
-</tr>
-</tbody>
-</table>
-</div>
-<ul>
-<li><strong>σ² 小（如 0.1）</strong>：距离稍大的样本点之间几乎无关联，模型仅依赖极邻近的点做决策。  </li>
-<li><strong>σ² 大（如 10）</strong>：即使距离较远的样本点仍有显著关联，模型决策边界更平滑。</li>
-</ul>
-<h3 id="为什么使用高斯核之前要归一化"><a href="#为什么使用高斯核之前要归一化" class="headerlink" title="为什么使用高斯核之前要归一化"></a>为什么使用高斯核之前要归一化</h3><p>在使用高斯核（RBF核）之前对数据进行归一化，是机器学习中至关重要的预处理步骤。其核心原因是<strong>高斯核对特征的尺度（scale）极度敏感</strong>，而归一化能消除特征间尺度差异带来的负面影响。以下是详细解释：</p>
-<ol>
-<li><strong>高斯核的本质依赖距离计算</strong></li>
-</ol>
-<p>高斯核的公式为：</p>
-<script type="math/tex; mode=display">
-K(x, x') = \exp\left(-\frac{\|x - x'\|^2}{2\sigma^2}\right)</script><p>其中 $|x - x’|$ 是两个样本点之间的欧氏距离。<br><strong>问题</strong>：欧氏距离的计算受特征尺度影响极大。例如：</p>
-<ul>
-<li>假设特征A的取值范围是 [0,1]，特征B的取值范围是 [0,1000]。</li>
-<li>此时特征B的差异会主导距离计算（如 $ (0.5)^2 + (500)^2 \approx 250000 $），特征A的贡献几乎被忽略。</li>
-</ul>
-<p><strong>结果</strong>：模型决策边界会过度依赖尺度大的特征，导致性能下降。</p>
-<ol>
-<li><strong>归一化消除特征尺度差异</strong></li>
-</ol>
-<p>归一化（如标准化或最小-最大缩放）将所有特征调整到相似的数值范围（如 [0,1] 或均值为0、方差为1）。<br><strong>效果</strong>：</p>
-<ul>
-<li><strong>公平比较特征</strong>：每个特征对距离的贡献权重均衡。</li>
-<li><strong>防止“大尺度特征主导”</strong>：避免模型因某些特征数值过大而忽略其他重要特征。</li>
-</ul>
-<p><strong>示例</strong>：<br>假设两个样本：  </p>
-<ul>
-<li>未归一化：$ x_1 = [1, 100], x_2 = [2, 200] $，距离为 $ \sqrt{(1)^2 + (100)^2} \approx 100.005 $。  </li>
-<li>归一化后（假设缩放到 [0,1]）：$ x_1 = [0.1, 0.1], x_2 = [0.2, 0.2] $，距离为 $ \sqrt{(0.1)^2 + (0.1)^2} \approx 0.141 $。<br>此时两个特征的贡献比例从 1:100 变为 1:1。</li>
-</ul>
-<ol>
-<li><strong>高斯核参数 σ² 的有效性依赖归一化</strong></li>
-</ol>
-<p>高斯核的参数 σ²（或 γ = 1/σ²）决定了核函数的“局部性”（即模型关注局部还是全局模式）。  </p>
-<ul>
-<li><strong>未归一化时</strong>：σ² 的选择必须同时适应不同尺度的特征，导致参数调优困难。<ul>
-<li>例如：若某特征尺度极大，需要极小的 σ² 才能捕捉其局部变化，但这可能使其他小尺度特征的核函数失效。</li>
-</ul>
-</li>
-<li><strong>归一化后</strong>：所有特征尺度一致，σ² 的调参只需关注数据整体分布，而非单个特征的尺度。</li>
-</ul>
-<h3 id="SVM的Hinge损失函数"><a href="#SVM的Hinge损失函数" class="headerlink" title="SVM的Hinge损失函数"></a>SVM的Hinge损失函数</h3><p>Hinge损失函数是支持向量机（SVM）中用于分类任务的核心损失函数，其核心思想是<strong>最大化分类间隔</strong>，同时惩罚分类错误或置信度不足的样本。以下是详细解析：</p>
-<p><strong>1. 数学定义</strong></p>
-<p>对于二分类问题，假设真实标签 $ y \in {+1, -1} $，模型输出 $ f(x) = w^T x + b $，则 <strong>Hinge损失</strong> 的定义为：</p>
-<script type="math/tex; mode=display">
-\mathcal{L}(y, f(x)) = \max(0, 1 - y \cdot f(x))</script><ul>
-<li><strong>关键含义</strong>：<ul>
-<li>当 $ y \cdot f(x) \geq 1 $：样本被正确分类且置信度足够（位于间隔边界外），损失为0。</li>
-<li>当 $ y \cdot f(x) &lt; 1 $：样本位于间隔内或被错误分类，损失随 $ y \cdot f(x) $ 线性增长。</li>
-</ul>
-</li>
-</ul>
-<p><strong>2. 几何意义：最大化间隔</strong></p>
-<p>Hinge损失的设计与SVM的<strong>硬间隔（Hard Margin）</strong>和<strong>软间隔（Soft Margin）</strong>目标直接相关：</p>
-<ul>
-<li><strong>硬间隔</strong>：要求所有样本严格满足 $ y_i (w^T x_i + b) \geq 1 $，即完全线性可分。</li>
-<li><strong>软间隔</strong>：允许部分样本违反间隔约束，通过Hinge损失将约束转化为优化目标：<script type="math/tex; mode=display">
-\min_{w,b} \left( \frac{1}{2} \|w\|^2 + C \sum_{i=1}^n \max(0, 1 - y_i (w^T x_i + b)) \right)</script><ul>
-<li><strong>第一项</strong> $ \frac{1}{2} |w|^2 $：最大化间隔（间隔宽度与 $ |w| $ 成反比）。</li>
-<li><strong>第二项</strong> Hinge损失：惩罚违反间隔约束的样本，$ C $ 控制惩罚强度。</li>
-</ul>
-</li>
-</ul>
-<h3 id="为什么树的数量增加不会导致过拟合？"><a href="#为什么树的数量增加不会导致过拟合？" class="headerlink" title="为什么树的数量增加不会导致过拟合？"></a>为什么树的数量增加不会导致过拟合？</h3><p><strong>核心原因</strong>：随机森林通过<strong>集成学习</strong>和<strong>多样性机制</strong>抑制了单棵决策树的过拟合风险。具体来说：</p>
-<ol>
-<li><p><strong>Bagging（自助聚合）机制</strong>：<br>每棵树的训练数据是通过有放回采样（Bootstrap）得到的子集，这意味着每棵树看到的数据略有不同，减少了对训练数据的“记忆”依赖。</p>
-</li>
-<li><p><strong>特征随机选择</strong>：<br>每次分裂节点时，仅从随机选择的特征子集中挑选最优特征，进一步降低了各树之间的相关性。</p>
-</li>
-<li><p><strong>投票/平均机制</strong>：<br>多棵树的预测结果通过投票（分类）或平均（回归）结合，高方差的个体树被平滑，整体模型的泛化能力增强。</p>
-</li>
-<li><p><strong>收敛性保证</strong>：<br>随着树的数量增加，模型性能逐渐收敛到一个稳定值。即使继续增加树的数量，也不会显著提升训练集性能，更不会过拟合。</p>
-</li>
-</ol>
-<h3 id="欧式距离的特性分析"><a href="#欧式距离的特性分析" class="headerlink" title="欧式距离的特性分析"></a>欧式距离的特性分析</h3><p><strong>欧式距离</strong>（Euclidean Distance）是衡量欧几里得空间中两点之间直线距离的常用方法，其公式为：</p>
-<script type="math/tex; mode=display">
-d(x, y) = \sqrt{\sum_{i=1}^n (x_i - y_i)^2}</script><p>以下是对其特性的详细分析：</p>
-<p><strong>A. 旋转不变性</strong>  </p>
-<p><strong>正确</strong>  </p>
-<ul>
-<li><strong>定义</strong>：若坐标系旋转，两点间的欧式距离保持不变。  </li>
-<li><strong>原因</strong>：旋转是刚性变换（rigid transformation），仅改变点的坐标表示，但不改变几何距离。  </li>
-<li><strong>示例</strong>：在二维平面中，将坐标系旋转θ角度，两点 $(x_1, y_1)$ 和 $(x_2, y_2)$ 的旋转后坐标分别为：<script type="math/tex; mode=display">
-(x_1', y_1') = (x_1\cos\theta - y_1\sin\theta, x_1\sin\theta + y_1\cos\theta)</script><script type="math/tex; mode=display">
-(x_2', y_2') = (x_2\cos\theta - y_2\sin\theta, x_2\sin\theta + y_2\cos\theta)</script>计算旋转后的距离仍等于原始距离。</li>
-</ul>
-<p><strong>B. 尺度缩放不变性</strong>  </p>
-<p><strong>错误</strong>  </p>
-<ul>
-<li><strong>定义</strong>：若对坐标轴进行非均匀或均匀缩放，欧式距离会发生变化。  </li>
-<li><strong>反例</strong>：假设对某维特征缩放 $k$ 倍（如将 $x_i$ 变为 $k x_i$），则距离变为原来的 $k$ 倍。  </li>
-<li><strong>结论</strong>：欧式距离<strong>依赖于特征的绝对尺度</strong>，不具备缩放不变性。</li>
-</ul>
-<p><strong>C. 不受量纲影响的特性</strong>  </p>
-<p><strong>错误</strong>  </p>
-<ul>
-<li><strong>定义</strong>：若不同特征的量纲不同（如身高[m]与体重[kg]），欧式距离的计算会因量纲差异而失真。  </li>
-<li><strong>反例</strong>：  <ul>
-<li>点A：(1.8m, 70kg)，点B：(1.7m, 65kg)  </li>
-<li>若不标准化，身高差（0.1m）与体重差（5kg）的贡献会被直接相加，但两者量纲不同，结果无实际意义。  </li>
-</ul>
-</li>
-<li><strong>解决方法</strong>：需通过标准化（如Z-score归一化）消除量纲影响。</li>
-</ul>
-<h3 id="下列哪个不属于特征提取"><a href="#下列哪个不属于特征提取" class="headerlink" title="下列哪个不属于特征提取"></a>下列哪个不属于特征提取</h3><p><strong>答案：D. 主成分分析</strong></p>
-<p><strong>解析：</strong></p>
-<p>在文本分类的特征选择中，常用的方法包括：</p>
-<ul>
-<li><strong>A. 卡方检验值</strong>：通过统计检验评估特征与类别的相关性，属于过滤式特征选择方法。</li>
-<li><strong>B. 互信息</strong>：基于信息论，衡量特征与类别的依赖关系，属于无监督或半监督的特征选择方法。</li>
-<li><strong>C. 信息增益</strong>：基于熵的指标，评估特征对分类的贡献，常用于决策树等算法中的特征选择。</li>
-</ul>
-<p>而 <strong>D. 主成分分析（PCA）</strong> 是一种 <strong>降维技术</strong>，通过线性变换将高维数据映射到低维空间，其核心目标是保留数据的主要方差，而非直接选择原始特征。它属于 <strong>特征提取</strong>（Feature Extraction）而非传统意义上的 <strong>特征选择</strong>（Feature Selection）。因此，主成分分析不属于常用的文本分类特征选择算法。</p>
-<h3 id="ridge回归和lasso回归"><a href="#ridge回归和lasso回归" class="headerlink" title="ridge回归和lasso回归"></a>ridge回归和lasso回归</h3><p>Ridge回归（岭回归）和Lasso回归（套索回归）是两种常用的<strong>正则化线性回归方法</strong>，主要用于解决线性回归中的<strong>过拟合问题</strong>和<strong>特征选择问题</strong>。它们的核心思想是在损失函数中添加正则化项（惩罚项），从而限制模型参数的大小，提升模型的泛化能力。</p>
-<p><strong>1. Ridge回归（岭回归）</strong></p>
-<p><strong>目标函数</strong></p>
-<script type="math/tex; mode=display">
-\min_{\mathbf{w}} \left\{ \sum_{i=1}^n (y_i - \mathbf{w}^T \mathbf{x}_i)^2 + \lambda \|\mathbf{w}\|_2^2 \right\}</script><ul>
-<li>第一项是普通线性回归的均方误差（MSE）。</li>
-<li>第二项是L2正则化项（权重平方的和），$\lambda \geq 0$ 是正则化系数，控制惩罚强度。</li>
-</ul>
-<p><strong>特点</strong></p>
-<ul>
-<li><strong>L2正则化</strong>：通过缩小权重系数（但不会完全置零）来减少模型复杂度。</li>
-<li><strong>解决多重共线性</strong>：当特征之间存在高度相关性时，Ridge回归能稳定回归系数。</li>
-<li><strong>唯一解</strong>：目标函数是凸函数，且严格凸，因此有唯一最优解。</li>
-<li><strong>计算效率高</strong>：可以通过解析解（闭式解）求解：<script type="math/tex; mode=display">
-\mathbf{w}_{\text{Ridge}} = (\mathbf{X}^T \mathbf{X} + \lambda \mathbf{I})^{-1} \mathbf{X}^T \mathbf{y}</script></li>
-</ul>
-<p><strong>应用场景</strong></p>
-<ul>
-<li>特征维度较低，但存在多重共线性。</li>
-<li>需要保留所有特征，但希望抑制其影响（如基因数据分析）。</li>
-</ul>
-<p><strong>2. Lasso回归（套索回归）</strong></p>
-<p><strong>目标函数</strong></p>
-<script type="math/tex; mode=display">
-\min_{\mathbf{w}} \left\{ \sum_{i=1}^n (y_i - \mathbf{w}^T \mathbf{x}_i)^2 + \lambda \|\mathbf{w}\|_1 \right\}</script><ul>
-<li>第一项是均方误差。</li>
-<li>第二项是L1正则化项（权重绝对值的和），$\lambda \geq 0$ 是正则化系数。</li>
-</ul>
-<p><strong>特点</strong></p>
-<ul>
-<li><strong>L1正则化</strong>：强制部分权重系数为零，实现特征选择。</li>
-<li><strong>稀疏模型</strong>：适用于高维数据（如文本分类、基因数据），自动筛选关键特征。</li>
-<li><strong>非唯一解</strong>：目标函数是凸函数，但可能有多个解（当特征高度相关时）。</li>
-<li><strong>计算复杂度较高</strong>：通常需要迭代优化算法（如坐标下降法、近端梯度下降）。</li>
-</ul>
-<p><strong>应用场景</strong></p>
-<ul>
-<li>特征维度极高（如万维以上），需降维。</li>
-<li>需要可解释性强的模型（如金融风控中的关键特征筛选）。</li>
-</ul>
-<p><strong>3. 总结</strong></p>
-<ul>
-<li><strong>Ridge回归</strong>：适合特征较少且需要稳定系数的场景。</li>
-<li><strong>Lasso回归</strong>：适合高维数据和特征选择场景。</li>
-<li><strong>实际选择</strong>：<ul>
-<li>如果特征数量远大于样本数量（$p \gg n$），优先使用Lasso。</li>
-<li>如果特征间存在强相关性，优先使用Ridge或弹性网络。</li>
-</ul>
-</li>
-</ul>
-<p>通过调整正则化系数 $\lambda$，可以控制模型的复杂度与泛化能力。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E8%AE%BA%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E8%AE%BA%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">概率论期末笔记汇总</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-06-09 00:00:00" itemprop="dateCreated datePublished" datetime="2025-06-09T00:00:00+08:00">2025-06-09</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-08-02 22:47:47" itemprop="dateModified" datetime="2025-08-02T22:47:47+08:00">2025-08-02</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/" itemprop="url" rel="index"><span itemprop="name">大二下</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%A6%82%E7%8E%87%E8%AE%BA/" itemprop="url" rel="index"><span itemprop="name">概率论</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="笔记"><a href="#笔记" class="headerlink" title="笔记"></a>笔记</h3><p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E8%AE%BA%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0/IMG_20250627_175733.jpg" alt="IMG_20250627_175733"></p>
-<p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E8%AE%BA%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0/IMG_20250627_175736.jpg" alt="IMG_20250627_175736"></p>
-<p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E8%AE%BA%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0/IMG_20250627_175740.jpg" alt="IMG_20250627_175740"></p>
-<p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E8%AE%BA%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0/IMG_20250627_175743.jpg" alt="IMG_20250627_175743"></p>
-<p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E8%AE%BA%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0/IMG_20250627_175748.jpg" alt="IMG_20250627_175748"></p>
-<p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E8%AE%BA%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0/IMG_20250627_175752.jpg" alt="IMG_20250627_175752"></p>
-<p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E8%AE%BA%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0/IMG_20250627_175755.jpg" alt="IMG_20250627_175755"></p>
-<p><img src="/2025/06/09/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%A6%82%E7%8E%87%E8%AE%BA/%E6%A6%82%E7%8E%87%E8%AE%BA%E6%9C%9F%E6%9C%AB%E7%AC%94%E8%AE%B0/IMG_20250627_175759.jpg" alt="IMG_20250627_175759"></p>
-
       
     </div>
 
