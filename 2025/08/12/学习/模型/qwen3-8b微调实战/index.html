@@ -30,8 +30,9 @@
 <meta property="og:description" content="前言在完成微调前备知识的学习后，正式开始使用unsloth对Qwen3-8B-unsloth-bnb-4bit模型的lora微调实战 模型加载12345678910111213from unsloth import FastLanguageModelimport torchmax_seq_length &#x3D; 8192dtype &#x3D; Noneload_in_4bit &#x3D; Truemodel, toke">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/qwen3-8b%E5%BE%AE%E8%B0%83%E5%AE%9E%E6%88%98/image-20250812153659843.png">
+<meta property="og:image" content="http://example.com/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/qwen3-8b%E5%BE%AE%E8%B0%83%E5%AE%9E%E6%88%98/image-20250813111238359.png">
 <meta property="article:published_time" content="2025-08-11T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-08-12T09:39:10.637Z">
+<meta property="article:modified_time" content="2025-08-13T07:10:05.210Z">
 <meta property="article:author" content="张熙浚">
 <meta property="article:tag" content="模型微调">
 <meta property="article:tag" content="LoRA">
@@ -146,7 +147,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E5%8A%A0%E8%BD%BD"><span class="nav-number">2.</span> <span class="nav-text">模型加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%A8%A1%E5%9E%8B%E4%B8%8E%E5%88%86%E8%AF%8D%E5%99%A8%E4%BF%A1%E6%81%AF"><span class="nav-number">3.</span> <span class="nav-text">查看模型与分词器信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E4%BF%A1%E6%81%AF"><span class="nav-number">3.1.</span> <span class="nav-text">模型信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E8%AF%8D%E5%99%A8%E4%BF%A1%E6%81%AF"><span class="nav-number">3.2.</span> <span class="nav-text">分词器信息</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E4%B8%80%E6%AC%A1%E6%A8%A1%E5%9E%8B%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">模拟一次模型处理流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">5.</span> <span class="nav-text">准备数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">5.1.</span> <span class="nav-text">下载数据集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">5.2.</span> <span class="nav-text">查看数据集</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E6%B8%85%E6%B4%97"><span class="nav-number">6.</span> <span class="nav-text">数据集清洗</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E8%AF%9D%E6%95%B0%E6%8D%AE%E9%9B%86%E7%9A%84%E6%B8%85%E6%B4%97"><span class="nav-number">6.1.</span> <span class="nav-text">对话数据集的清洗</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A8%E7%90%86%E6%95%B0%E6%8D%AE%E9%9B%86%E7%9A%84%E6%8E%A8%E7%90%86"><span class="nav-number">6.2.</span> <span class="nav-text">推理数据集的推理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E9%87%87%E6%A0%B7"><span class="nav-number">6.3.</span> <span class="nav-text">数据集采样</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E9%9B%86-1"><span class="nav-number">6.4.</span> <span class="nav-text">查看数据集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E4%BF%9D%E5%AD%98"><span class="nav-number">6.5.</span> <span class="nav-text">数据集保存</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Qwen3%E6%8E%A8%E7%90%86%E8%83%BD%E5%8A%9B%E9%AB%98%E6%95%88%E5%BE%AE%E8%B0%83%E6%B5%81%E7%A8%8B"><span class="nav-number">7.</span> <span class="nav-text">Qwen3推理能力高效微调流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Unsloth%E5%BE%AE%E8%B0%83%E6%B5%81%E7%A8%8B%E5%AE%9E%E8%B7%B5"><span class="nav-number">7.1.</span> <span class="nav-text">Unsloth微调流程实践</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%BF%9B%E8%A1%8CLoRA%E5%8F%82%E6%95%B0%E6%B3%A8%E5%85%A5"><span class="nav-number">7.1.1.</span> <span class="nav-text">进行LoRA参数注入</span></a></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E5%8A%A0%E8%BD%BD"><span class="nav-number">2.</span> <span class="nav-text">模型加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%A8%A1%E5%9E%8B%E4%B8%8E%E5%88%86%E8%AF%8D%E5%99%A8%E4%BF%A1%E6%81%AF"><span class="nav-number">3.</span> <span class="nav-text">查看模型与分词器信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E4%BF%A1%E6%81%AF"><span class="nav-number">3.1.</span> <span class="nav-text">模型信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E8%AF%8D%E5%99%A8%E4%BF%A1%E6%81%AF"><span class="nav-number">3.2.</span> <span class="nav-text">分词器信息</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E4%B8%80%E6%AC%A1%E6%A8%A1%E5%9E%8B%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">模拟一次模型处理流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">5.</span> <span class="nav-text">准备数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">5.1.</span> <span class="nav-text">下载数据集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">5.2.</span> <span class="nav-text">查看数据集</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E6%B8%85%E6%B4%97"><span class="nav-number">6.</span> <span class="nav-text">数据集清洗</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E8%AF%9D%E6%95%B0%E6%8D%AE%E9%9B%86%E7%9A%84%E6%B8%85%E6%B4%97"><span class="nav-number">6.1.</span> <span class="nav-text">对话数据集的清洗</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A8%E7%90%86%E6%95%B0%E6%8D%AE%E9%9B%86%E7%9A%84%E6%8E%A8%E7%90%86"><span class="nav-number">6.2.</span> <span class="nav-text">推理数据集的推理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E9%87%87%E6%A0%B7"><span class="nav-number">6.3.</span> <span class="nav-text">数据集采样</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E9%9B%86-1"><span class="nav-number">6.4.</span> <span class="nav-text">查看数据集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E4%BF%9D%E5%AD%98"><span class="nav-number">6.5.</span> <span class="nav-text">数据集保存</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Qwen3%E6%8E%A8%E7%90%86%E8%83%BD%E5%8A%9B%E9%AB%98%E6%95%88%E5%BE%AE%E8%B0%83%E6%B5%81%E7%A8%8B"><span class="nav-number">7.</span> <span class="nav-text">Qwen3推理能力高效微调流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9B%E8%A1%8CLoRA%E5%8F%82%E6%95%B0%E6%B3%A8%E5%85%A5"><span class="nav-number">7.1.</span> <span class="nav-text">进行LoRA参数注入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E5%BE%AE%E8%B0%83%E5%8F%82%E6%95%B0"><span class="nav-number">7.2.</span> <span class="nav-text">设置微调参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E8%AE%AD%E7%BB%83%E5%8F%AF%E8%A7%86%E5%8C%96swanlab"><span class="nav-number">7.3.</span> <span class="nav-text">设置训练可视化swanlab</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="nav-number">7.4.</span> <span class="nav-text">微调执行流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%9D%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="nav-number">7.5.</span> <span class="nav-text">保存模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83%E7%BB%93%E6%9E%9C"><span class="nav-number">8.</span> <span class="nav-text">微调结果</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E7%BB%93%E6%9E%9C"><span class="nav-number">8.1.</span> <span class="nav-text">可视化结果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E8%AF%9D%E6%B5%8B%E8%AF%95"><span class="nav-number">8.2.</span> <span class="nav-text">对话测试</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -250,9 +251,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2025-08-12 00:00:00 / 修改时间：17:39:10" itemprop="dateCreated datePublished" datetime="2025-08-12T00:00:00+08:00">2025-08-12</time>
+      <time title="创建时间：2025-08-12 00:00:00" itemprop="dateCreated datePublished" datetime="2025-08-12T00:00:00+08:00">2025-08-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-08-13 15:10:05" itemprop="dateModified" datetime="2025-08-13T15:10:05+08:00">2025-08-13</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -288,7 +295,7 @@
 <h3 id="模型加载"><a href="#模型加载" class="headerlink" title="模型加载"></a>模型加载</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">from unsloth import FastLanguageModel</span><br><span class="line">import torch</span><br><span class="line"></span><br><span class="line">max_seq_length = 8192</span><br><span class="line">dtype = None</span><br><span class="line">load_in_4bit = True</span><br><span class="line"></span><br><span class="line">model, tokenizer = FastLanguageModel.from_pretrained(</span><br><span class="line">    model_name = &quot;/workspace/qwen3-8b&quot;,</span><br><span class="line">    max_seq_length = max_seq_length,</span><br><span class="line">    dtype = dtype,</span><br><span class="line">    load_in_4bit = load_in_4bit,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p><code>FastLanguageModel</code> 是 <strong>Unsloth 框架的核心入口类</strong>，即<strong>“把 Hugging Face 的 transformers 模型‘加速’成支持 QLoRA 微调、显存占用减半、速度提升 2-5 倍的封装器。”</strong></p>
-<p><code>max_seq_length = 8192</code><strong>作用</strong>：告诉框架 <strong>“后续所有输入序列的最大长度”</strong>。</p>
+<p><code>max_seq_length = 8192</code><strong>作用</strong>：告诉框架 <strong>“后续所有输入序列的最大长度”</strong>。<strong>内部一次性为位置编码、注意力掩码、KV-Cache 等开辟的张量尺寸</strong>，因此显存随它 <strong>平方级增长</strong>。</p>
 <p><code>dtype = None</code><strong>作用</strong>：让 Unsloth <strong>自动选择最合适的浮点精度</strong>。</p>
 <p><code>load_in_4bit = True</code><strong>作用</strong>：把模型<strong>权重量化成 4-bit</strong>，显存降到 1/4，QLoRA 微调必备。</p>
 </blockquote>
@@ -436,7 +443,7 @@
 <p>后续使用时即可使用如下代码进行读取：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from datasets import load_from_disk</span><br><span class="line">combined_dataset = load_from_disk(&quot;cleaned_qwen3_dataset&quot;)</span><br></pre></td></tr></table></figure>
 <h3 id="Qwen3推理能力高效微调流程"><a href="#Qwen3推理能力高效微调流程" class="headerlink" title="Qwen3推理能力高效微调流程"></a>Qwen3推理能力高效微调流程</h3><p>准备完数据之后，即可开始进行微调。这里我们先进行少量数据微调测试，程序能够基本跑通后，我们再进行大规模数据集微调。</p>
-<h4 id="Unsloth微调流程实践"><a href="#Unsloth微调流程实践" class="headerlink" title="Unsloth微调流程实践"></a>Unsloth微调流程实践</h4><h5 id="进行LoRA参数注入"><a href="#进行LoRA参数注入" class="headerlink" title="进行LoRA参数注入"></a>进行LoRA参数注入</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">model = FastLanguageModel.get_peft_model(</span><br><span class="line">    model,</span><br><span class="line">    r = 32,           # 秩（LoRA 低秩矩阵的列数）。越大可学习参数越多，显存也越高。常用 8/16/32/64/128</span><br><span class="line">    target_modules = [&quot;q_proj&quot;, &quot;k_proj&quot;, &quot;v_proj&quot;, &quot;o_proj&quot;,</span><br><span class="line">                      &quot;gate_proj&quot;, &quot;up_proj&quot;, &quot;down_proj&quot;],  # 在哪些线性层插入 LoRA 适配器（Attention + MLP）</span><br><span class="line">    lora_alpha = 32,  # 缩放因子。经验值 = rank 或 2×rank，控制更新强度</span><br><span class="line">    lora_dropout = 0, # LoRA 本身的 dropout 比例；0 省显存且速度最快</span><br><span class="line">    bias = &quot;none&quot;,    # 是否训练原 Linear 的偏置。设为 &quot;none&quot; 不训练，进一步节省显存</span><br><span class="line">    use_gradient_checkpointing = &quot;unsloth&quot;,  # 梯度检查点：True 省显存，&quot;unsloth&quot; 再省 30 %，超长上下文必开</span><br><span class="line">    random_state = 3407,  # 随机种子，保证 LoRA 初始化可复现</span><br><span class="line">    use_rslora = False,   # 默认 False，True 则启用 Rank-Stabilized LoRA（训练更稳，但显存稍高）</span><br><span class="line">    loftq_config = None,  # LoftQ 量化初始化，None 表示不用；若配置可进一步压缩初始权重</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h4 id="进行LoRA参数注入"><a href="#进行LoRA参数注入" class="headerlink" title="进行LoRA参数注入"></a>进行LoRA参数注入</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">model = FastLanguageModel.get_peft_model(</span><br><span class="line">    model,</span><br><span class="line">    r = 32,           # 秩（LoRA 低秩矩阵的列数）。越大可学习参数越多，显存也越高。常用 8/16/32/64/128</span><br><span class="line">    target_modules = [&quot;q_proj&quot;, &quot;k_proj&quot;, &quot;v_proj&quot;, &quot;o_proj&quot;,</span><br><span class="line">                      &quot;gate_proj&quot;, &quot;up_proj&quot;, &quot;down_proj&quot;],  # 在哪些线性层插入 LoRA 适配器（Attention + MLP）</span><br><span class="line">    lora_alpha = 32,  # 缩放因子。经验值 = rank 或 2×rank，控制更新强度</span><br><span class="line">    lora_dropout = 0, # LoRA 本身的 dropout 比例；0 省显存且速度最快</span><br><span class="line">    bias = &quot;none&quot;,    # 是否训练原 Linear 的偏置。设为 &quot;none&quot; 不训练，进一步节省显存</span><br><span class="line">    use_gradient_checkpointing = &quot;unsloth&quot;,  # 梯度检查点：True 省显存，&quot;unsloth&quot; 再省 30 %，超长上下文必开</span><br><span class="line">    random_state = 3407,  # 随机种子，保证 LoRA 初始化可复现</span><br><span class="line">    use_rslora = False,   # 默认 False，True 则启用 Rank-Stabilized LoRA（训练更稳，但显存稍高）</span><br><span class="line">    loftq_config = None,  # LoftQ 量化初始化，None 表示不用；若配置可进一步压缩初始权重</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 <p>这一步<strong>“LoRA 参数注入”</strong>就是：<strong>在不改动原模型权重的前提下，给指定层插入少量</strong> <strong>可训练低秩矩阵</strong> <strong>（LoRA 适配器），从而只更新 &lt; 1 % 的参数，完成高效微调。</strong></p>
 <blockquote>
 <p>不是“在原有层之外再增加一层”，而是<strong>把 LoRA 的“小矩阵”插到</strong> <strong>原有线性层内部</strong>：</p>
@@ -446,6 +453,148 @@
 </ul>
 <p><code>A</code> 和 <code>B</code> 两个低秩矩阵被 <strong>注册为同一层的新参数</strong>，<strong>不新建网络层</strong>，参数在 <strong>前向时相加</strong>，<strong>反向只更新 A 和 B</strong>。</p>
 </blockquote>
+<h4 id="设置微调参数"><a href="#设置微调参数" class="headerlink" title="设置微调参数"></a>设置微调参数</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">from trl import SFTTrainer, SFTConfig</span><br><span class="line"></span><br><span class="line">trainer = SFTTrainer(</span><br><span class="line">    model=model,                       # 已插入 LoRA 的 4-bit 模型</span><br><span class="line">    tokenizer=tokenizer,               # 对应 tokenizer（含 chat 模板）</span><br><span class="line">    train_dataset=combined_dataset,    # 训练集：聊天+推理对话</span><br><span class="line">    eval_dataset=None,                 # 如需验证，把验证集放进来即可</span><br><span class="line"></span><br><span class="line">    args=SFTConfig(</span><br><span class="line">        dataset_text_field=&quot;text&quot;,      # 训练集中每条样本的字段名（对话列表）</span><br><span class="line">        per_device_train_batch_size=2,  # 每张显卡上的 batch_size（显存决定）</span><br><span class="line">        gradient_accumulation_steps=4,  # 4 次累积 → 全局有效 batch = 2×4 = 8</span><br><span class="line">        warmup_steps=5,                # 前 5 步线性预热学习率</span><br><span class="line">        max_steps=30,                  # 训练 30 步（调试阶段）；正式可用 num_train_epochs</span><br><span class="line">        learning_rate=2e-4,            # LoRA 常用 2e-4；长训降到 2e-5</span><br><span class="line">        logging_steps=1,               # 每 1 步打印一次日志</span><br><span class="line">        optim=&quot;adamw_8bit&quot;,            # 8-bit AdamW，省显存</span><br><span class="line">        weight_decay=0.01,             # L2 正则</span><br><span class="line">        lr_scheduler_type=&quot;linear&quot;,    # 线性衰减到 0</span><br><span class="line">        seed=3407,                     # 固定随机种子</span><br><span class="line">        report_to=&quot;swanlab&quot;,             # 把指标推送到 swanlab</span><br><span class="line">    ),</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://github.com/huggingface/trl">TRL</a> (Transformers Reinforcement Learning，用强化学习训练Transformers模型) 是一个领先的Python库，旨在通过监督微调（SFT）、近端策略优化（PPO）和直接偏好优化（DPO）等先进技术，对基础模型进行训练后优化。TRL 建立在 🤗 Transformers 生态系统之上，支持多种模型架构和模态，并且能够在各种硬件配置上进行扩展。</p>
+<p>其中<code>SFTTrainer</code>：一个专门为指令微调设计的训练器，封装了 Hugging Face 的 <code>Trainer</code>，而<code>SFTConfig</code>：配置训练参数的专用类，功能类似 <code>TrainingArguments</code>。而SFTConfig核心参数解释如下：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dataset_text_field=&quot;text&quot;</code></td>
+<td>数据集中用于训练的字段名称，如 <code>text</code> 或 <code>prompt</code></td>
+</tr>
+<tr>
+<td><code>per_device_train_batch_size=2</code></td>
+<td>每张 GPU 上的 batch size 是 2</td>
+</tr>
+<tr>
+<td><code>gradient_accumulation_steps=4</code></td>
+<td>梯度累计 4 次后才进行一次反向传播（等效于总 batch size = 2 × 4 = 8）</td>
+</tr>
+<tr>
+<td><code>warmup_steps=5</code></td>
+<td>前 5 步进行 warmup（缓慢提升学习率）</td>
+</tr>
+<tr>
+<td><code>max_steps=30</code></td>
+<td>最多训练 30 步（适合调试或快速实验）</td>
+</tr>
+<tr>
+<td><code>learning_rate=2e-4</code></td>
+<td>初始学习率（短训练可用较高值）</td>
+</tr>
+<tr>
+<td><code>logging_steps=1</code></td>
+<td>每训练 1 步就打印一次日志</td>
+</tr>
+<tr>
+<td><code>optim=&quot;adamw_8bit&quot;</code></td>
+<td>使用 8-bit AdamW 优化器（节省内存，Unsloth 支持）</td>
+</tr>
+<tr>
+<td><code>weight_decay=0.01</code></td>
+<td>权重衰减，用于防止过拟合</td>
+</tr>
+<tr>
+<td><code>lr_scheduler_type=&quot;linear&quot;</code></td>
+<td>线性学习率调度器（从高到低线性下降）</td>
+</tr>
+<tr>
+<td><code>seed=3407</code></td>
+<td>固定随机种子，确保结果可复现</td>
+</tr>
+<tr>
+<td><code>report_to=&quot;none&quot;</code></td>
+<td>不使用 WandB 或 TensorBoard 等日志平台（可改为 <code>&quot;wandb&quot;</code>）</td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<ol>
+<li><p><strong>per_device_train_batch_size=2</strong><br><strong>每次前向只用了 2 条样本</strong> → 显存占用小，单卡就能跑。</p>
+<p><strong>batch_size 决定「每一步真正喂给模型的样本数量」，越大训练越稳，但对显存要求越高。</strong></p>
+</li>
+<li><p><strong>gradient_accumulation_steps=4</strong><br><strong>把这 2 条样本算出的梯度先攒起来，攒够 4 次再一次性做反向传播</strong> → 等效于一次性看了 <strong>2 × 4 = 8 条样本</strong>，但显存仍按 2 条算。</p>
+</li>
+</ol>
+</blockquote>
+<p>此时基本训练过程为：</p>
+<ol>
+<li>从 <code>combined_dataset</code> 中取出一批样本（2 条）</li>
+<li>重复上面过程 4 次（<code>gradient_accumulation_steps=4</code>）</li>
+<li>将累计的梯度用于更新模型一次参数（等效于一次大 batch 更新）</li>
+<li>重复上述过程，直到 <code>max_steps=30</code> 停止</li>
+</ol>
+<h4 id="设置训练可视化swanlab"><a href="#设置训练可视化swanlab" class="headerlink" title="设置训练可视化swanlab"></a>设置训练可视化swanlab</h4><p><a target="_blank" rel="noopener" href="https://docs.swanlab.cn/guide_cloud/integration/integration-huggingface-trl.html">🤗HuggingFace Trl | SwanLab官方文档</a></p>
+<p>只需要在你的训练代码中，找到HF的<code>Config</code>部分（比如<code>SFTConfig</code>、<code>GRPOConfig</code>等），添加<code>report_to=&quot;swanlab&quot;</code>参数，即可完成集成。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">from trl import SFTConfig, SFTTrainer</span><br><span class="line"></span><br><span class="line">args = SFTConfig(</span><br><span class="line">    ...,</span><br><span class="line">    report_to=&quot;swanlab&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">trainer = Trainer(..., args=args)</span><br></pre></td></tr></table></figure>
+<p>默认下，项目名会使用你运行代码的<code>目录名</code>。</p>
+<p>如果你想自定义项目名，可以设置<code>SWANLAB_PROJECT</code>环境变量：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import os</span><br><span class="line">os.environ[&quot;SWANLAB_PROJECT&quot;]=&quot;qwen2-sft&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="微调执行流程"><a href="#微调执行流程" class="headerlink" title="微调执行流程"></a>微调执行流程</h4><p>一切准备就绪后，接下来即可开始进行微调。由于本次微调总共只运行30个step，整个过程并不会很长，实际执行过程如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">trainer_stats = trainer.train()</span><br></pre></td></tr></table></figure>
+<h4 id="保存模型"><a href="#保存模型" class="headerlink" title="保存模型"></a>保存模型</h4><p> <strong>1. 保存 LoRA Adapter</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 保存 LoRA adapter（仅几十 MB）</span><br><span class="line">save_path = &quot;./lora-adapter&quot;</span><br><span class="line">model.save_pretrained(save_path)          # LoRA 权重</span><br><span class="line">tokenizer.save_pretrained(save_path)      # 词表</span><br></pre></td></tr></table></figure>
+<p>以后加载：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> unsloth <span class="keyword">import</span> FastLanguageModel</span><br><span class="line">model, tokenizer = FastLanguageModel.from_pretrained(</span><br><span class="line">    model_name = <span class="string">&quot;base-model-name-or-path&quot;</span>,</span><br><span class="line">    max_seq_length = <span class="number">2048</span>,</span><br><span class="line">    load_in_4bit = <span class="literal">True</span>,</span><br><span class="line">)</span><br><span class="line">model = FastLanguageModel.get_peft_model(model, ...)  <span class="comment"># 同训练时参数</span></span><br><span class="line">model.load_adapter(save_path)   <span class="comment"># 把 LoRA 权重挂回去</span></span><br></pre></td></tr></table></figure>
+<p><strong>2.合并 LoRA → 完整模型</strong></p>
+<p>如果你想把 <strong>LoRA 权重合并到基座</strong> 得到一个独立的大模型（方便推理、上传 Hub）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 合并权重</span></span><br><span class="line">merged_model = model.merge_and_unload()   <span class="comment"># 返回普通 transformers 模型</span></span><br><span class="line">merged_model.save_pretrained(<span class="string">&quot;./merged-model&quot;</span>)</span><br><span class="line">tokenizer.save_pretrained(<span class="string">&quot;./merged-model&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>合并后就是完整的大模型（GB 级），可直接用 <code>AutoModelForCausalLM.from_pretrained(&quot;./merged-model&quot;)</code> 加载，不依赖 Unsloth。</p>
+<h3 id="微调结果"><a href="#微调结果" class="headerlink" title="微调结果"></a>微调结果</h3><h4 id="可视化结果"><a href="#可视化结果" class="headerlink" title="可视化结果"></a>可视化结果</h4><p><img src="/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/qwen3-8b%E5%BE%AE%E8%B0%83%E5%AE%9E%E6%88%98/image-20250813111238359.png" alt="image-20250813111238359"></p>
+<p><a target="_blank" rel="noopener" href="https://swanlab.cn/@zxj123/Fine-tune-Qwen-8B/runs/e2l6g6s3v7dlb7hmfircv/chart">图表 ｜ Fine-tune-Qwen-8B/rat-2</a></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>指标名称</th>
+<th>含义</th>
+<th>单位/范围提示</th>
+<th>常见关注点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>train/loss</td>
+<td>训练损失（Training Loss）</td>
+<td>标量，越小越好</td>
+<td>是否持续下降、是否震荡、是否过拟合</td>
+</tr>
+<tr>
+<td>train/grad_norm</td>
+<td>梯度范数（Gradient Norm）</td>
+<td>标量，通常 0.01–1.0 为合理区间</td>
+<td>是否爆炸（&gt;10）或消失（&lt;1e-4）</td>
+</tr>
+<tr>
+<td>train/learning_rate</td>
+<td>学习率（Learning Rate）</td>
+<td>标量，如 1e-4、5e-4 等</td>
+<td>是否过大导致震荡、过小导致收敛慢</td>
+</tr>
+<tr>
+<td>train/epoch</td>
+<td>已训练的轮次（Epoch）</td>
+<td>标量，1.0 表示完整遍历一次训练集</td>
+<td>当前已训练多少轮、是否还需继续训练</td>
+</tr>
+<tr>
+<td>train/global_step</td>
+<td>全局步数（Global Step）</td>
+<td>整数，每个 batch +1</td>
+<td>与 epoch 对应，计算已见样本量</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="对话测试"><a href="#对话测试" class="headerlink" title="对话测试"></a>对话测试</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">messages = [</span><br><span class="line">    &#123;&quot;role&quot; : &quot;user&quot;, &quot;content&quot; : &quot;解决(x + 2)^2 = 0.&quot;&#125;</span><br><span class="line">]</span><br><span class="line">text = tokenizer.apply_chat_template(</span><br><span class="line">    messages,</span><br><span class="line">    tokenize = False,</span><br><span class="line">    add_generation_prompt = True, # Must add for generation</span><br><span class="line">    enable_thinking = True, # Disable thinking</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">from transformers import TextStreamer</span><br><span class="line">_ = model.generate(</span><br><span class="line">    **tokenizer(text, return_tensors = &quot;pt&quot;).to(&quot;cuda&quot;),</span><br><span class="line">    max_new_tokens = 20488, # Increase for longer outputs!</span><br><span class="line">    temperature = 0.6, top_p = 0.95, top_k = 20, # For thinking</span><br><span class="line">    streamer = TextStreamer(tokenizer, skip_prompt = True),</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -481,8 +630,8 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/LoRA%E5%85%B6%E4%BB%96%E7%9A%84%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%96%B9%E6%B3%95/" rel="prev" title="LoRA其他的模型微调方法">
-                  <i class="fa fa-angle-left"></i> LoRA其他的模型微调方法
+                <a href="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/" rel="prev" title="模型微调——LoRA">
+                  <i class="fa fa-angle-left"></i> 模型微调——LoRA
                 </a>
             </div>
             <div class="post-nav-item">

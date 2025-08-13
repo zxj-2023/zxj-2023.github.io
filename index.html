@@ -243,9 +243,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2025-08-12 00:00:00 / 修改时间：17:39:10" itemprop="dateCreated datePublished" datetime="2025-08-12T00:00:00+08:00">2025-08-12</time>
+      <time title="创建时间：2025-08-12 00:00:00" itemprop="dateCreated datePublished" datetime="2025-08-12T00:00:00+08:00">2025-08-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-08-13 15:10:05" itemprop="dateModified" datetime="2025-08-13T15:10:05+08:00">2025-08-13</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -275,7 +281,7 @@
 <h3 id="模型加载"><a href="#模型加载" class="headerlink" title="模型加载"></a>模型加载</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">from unsloth import FastLanguageModel</span><br><span class="line">import torch</span><br><span class="line"></span><br><span class="line">max_seq_length = 8192</span><br><span class="line">dtype = None</span><br><span class="line">load_in_4bit = True</span><br><span class="line"></span><br><span class="line">model, tokenizer = FastLanguageModel.from_pretrained(</span><br><span class="line">    model_name = &quot;/workspace/qwen3-8b&quot;,</span><br><span class="line">    max_seq_length = max_seq_length,</span><br><span class="line">    dtype = dtype,</span><br><span class="line">    load_in_4bit = load_in_4bit,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p><code>FastLanguageModel</code> 是 <strong>Unsloth 框架的核心入口类</strong>，即<strong>“把 Hugging Face 的 transformers 模型‘加速’成支持 QLoRA 微调、显存占用减半、速度提升 2-5 倍的封装器。”</strong></p>
-<p><code>max_seq_length = 8192</code><strong>作用</strong>：告诉框架 <strong>“后续所有输入序列的最大长度”</strong>。</p>
+<p><code>max_seq_length = 8192</code><strong>作用</strong>：告诉框架 <strong>“后续所有输入序列的最大长度”</strong>。<strong>内部一次性为位置编码、注意力掩码、KV-Cache 等开辟的张量尺寸</strong>，因此显存随它 <strong>平方级增长</strong>。</p>
 <p><code>dtype = None</code><strong>作用</strong>：让 Unsloth <strong>自动选择最合适的浮点精度</strong>。</p>
 <p><code>load_in_4bit = True</code><strong>作用</strong>：把模型<strong>权重量化成 4-bit</strong>，显存降到 1/4，QLoRA 微调必备。</p>
 </blockquote>
@@ -423,7 +429,7 @@
 <p>后续使用时即可使用如下代码进行读取：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from datasets import load_from_disk</span><br><span class="line">combined_dataset = load_from_disk(&quot;cleaned_qwen3_dataset&quot;)</span><br></pre></td></tr></table></figure>
 <h3 id="Qwen3推理能力高效微调流程"><a href="#Qwen3推理能力高效微调流程" class="headerlink" title="Qwen3推理能力高效微调流程"></a>Qwen3推理能力高效微调流程</h3><p>准备完数据之后，即可开始进行微调。这里我们先进行少量数据微调测试，程序能够基本跑通后，我们再进行大规模数据集微调。</p>
-<h4 id="Unsloth微调流程实践"><a href="#Unsloth微调流程实践" class="headerlink" title="Unsloth微调流程实践"></a>Unsloth微调流程实践</h4><h5 id="进行LoRA参数注入"><a href="#进行LoRA参数注入" class="headerlink" title="进行LoRA参数注入"></a>进行LoRA参数注入</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">model = FastLanguageModel.get_peft_model(</span><br><span class="line">    model,</span><br><span class="line">    r = 32,           # 秩（LoRA 低秩矩阵的列数）。越大可学习参数越多，显存也越高。常用 8/16/32/64/128</span><br><span class="line">    target_modules = [&quot;q_proj&quot;, &quot;k_proj&quot;, &quot;v_proj&quot;, &quot;o_proj&quot;,</span><br><span class="line">                      &quot;gate_proj&quot;, &quot;up_proj&quot;, &quot;down_proj&quot;],  # 在哪些线性层插入 LoRA 适配器（Attention + MLP）</span><br><span class="line">    lora_alpha = 32,  # 缩放因子。经验值 = rank 或 2×rank，控制更新强度</span><br><span class="line">    lora_dropout = 0, # LoRA 本身的 dropout 比例；0 省显存且速度最快</span><br><span class="line">    bias = &quot;none&quot;,    # 是否训练原 Linear 的偏置。设为 &quot;none&quot; 不训练，进一步节省显存</span><br><span class="line">    use_gradient_checkpointing = &quot;unsloth&quot;,  # 梯度检查点：True 省显存，&quot;unsloth&quot; 再省 30 %，超长上下文必开</span><br><span class="line">    random_state = 3407,  # 随机种子，保证 LoRA 初始化可复现</span><br><span class="line">    use_rslora = False,   # 默认 False，True 则启用 Rank-Stabilized LoRA（训练更稳，但显存稍高）</span><br><span class="line">    loftq_config = None,  # LoftQ 量化初始化，None 表示不用；若配置可进一步压缩初始权重</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h4 id="进行LoRA参数注入"><a href="#进行LoRA参数注入" class="headerlink" title="进行LoRA参数注入"></a>进行LoRA参数注入</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">model = FastLanguageModel.get_peft_model(</span><br><span class="line">    model,</span><br><span class="line">    r = 32,           # 秩（LoRA 低秩矩阵的列数）。越大可学习参数越多，显存也越高。常用 8/16/32/64/128</span><br><span class="line">    target_modules = [&quot;q_proj&quot;, &quot;k_proj&quot;, &quot;v_proj&quot;, &quot;o_proj&quot;,</span><br><span class="line">                      &quot;gate_proj&quot;, &quot;up_proj&quot;, &quot;down_proj&quot;],  # 在哪些线性层插入 LoRA 适配器（Attention + MLP）</span><br><span class="line">    lora_alpha = 32,  # 缩放因子。经验值 = rank 或 2×rank，控制更新强度</span><br><span class="line">    lora_dropout = 0, # LoRA 本身的 dropout 比例；0 省显存且速度最快</span><br><span class="line">    bias = &quot;none&quot;,    # 是否训练原 Linear 的偏置。设为 &quot;none&quot; 不训练，进一步节省显存</span><br><span class="line">    use_gradient_checkpointing = &quot;unsloth&quot;,  # 梯度检查点：True 省显存，&quot;unsloth&quot; 再省 30 %，超长上下文必开</span><br><span class="line">    random_state = 3407,  # 随机种子，保证 LoRA 初始化可复现</span><br><span class="line">    use_rslora = False,   # 默认 False，True 则启用 Rank-Stabilized LoRA（训练更稳，但显存稍高）</span><br><span class="line">    loftq_config = None,  # LoftQ 量化初始化，None 表示不用；若配置可进一步压缩初始权重</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 <p>这一步<strong>“LoRA 参数注入”</strong>就是：<strong>在不改动原模型权重的前提下，给指定层插入少量</strong> <strong>可训练低秩矩阵</strong> <strong>（LoRA 适配器），从而只更新 &lt; 1 % 的参数，完成高效微调。</strong></p>
 <blockquote>
 <p>不是“在原有层之外再增加一层”，而是<strong>把 LoRA 的“小矩阵”插到</strong> <strong>原有线性层内部</strong>：</p>
@@ -433,260 +439,148 @@
 </ul>
 <p><code>A</code> 和 <code>B</code> 两个低秩矩阵被 <strong>注册为同一层的新参数</strong>，<strong>不新建网络层</strong>，参数在 <strong>前向时相加</strong>，<strong>反向只更新 A 和 B</strong>。</p>
 </blockquote>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/LoRA%E5%85%B6%E4%BB%96%E7%9A%84%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/LoRA%E5%85%B6%E4%BB%96%E7%9A%84%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%96%B9%E6%B3%95/" class="post-title-link" itemprop="url">LoRA其他的模型微调方法</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2025-08-11 00:00:00 / 修改时间：14:27:39" itemprop="dateCreated datePublished" datetime="2025-08-11T00:00:00+08:00">2025-08-11</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%A8%A1%E5%9E%8B/" itemprop="url" rel="index"><span itemprop="name">模型</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%A8%A1%E5%9E%8B/%E5%BE%AE%E8%B0%83/" itemprop="url" rel="index"><span itemprop="name">微调</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzkzODI1NzQyNA==&amp;mid=2247494667&amp;idx=1&amp;sn=c3af7d2472de61752ef8b8df28746f2e&amp;poc_token=HCyNmWijps0ViWD6wPgqFiDYUZVRSs7xUDRfowWE">大模型微调技巧：LoRA 与 QLoRA讲解</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/javatiange/article/details/149964743?fromshare=blogdetail&amp;sharetype=blogdetail&amp;sharerId=149964743&amp;sharerefer=PC&amp;sharesource=2501_91530961&amp;sharefrom=from_link">一文详解：8种常见的大模型微调方法，看这篇就够了！-CSDN博客</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E6%B5%81%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E6%B5%81%E7%A8%8B/" class="post-title-link" itemprop="url">大模型训练流程</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2025-08-11 00:00:00 / 修改时间：09:55:54" itemprop="dateCreated datePublished" datetime="2025-08-11T00:00:00+08:00">2025-08-11</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%A8%A1%E5%9E%8B/" itemprop="url" rel="index"><span itemprop="name">模型</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%A8%A1%E5%9E%8B/%E5%BE%AE%E8%B0%83/" itemprop="url" rel="index"><span itemprop="name">微调</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="什么是大模型"><a href="#什么是大模型" class="headerlink" title="什么是大模型"></a>什么是大模型</h3><p>随着2022年底 ChatGPT 再一次刷新 NLP 的能力上限，大<strong>语言模型（Large Language Model，LLM）开始接替传统的预训练语言模型（Pre-trained Language Model，PLM）</strong> 成为 NLP 的主流方向，基于 LLM 的全新研究范式也正在刷新被 BERT 发扬光大的<strong>预训练-微调范式</strong>，NLP 由此迎来又一次翻天覆地的变化。</p>
-<p>LLM，即 Large Language Model，中文名为大语言模型或大型语言模型，是一种相<strong>较传统语言模型参数量更多、在更大规模语料上进行预训练的语言模型</strong>。</p>
-<p>一般来说，LLM 指包含<strong>数百亿（或更多）参数的语言模型</strong>，它们往往在<strong>数 T token 语料上</strong>通过多卡分布式集群进行预训练，具备远超出传统预训练模型的文本理解与生成能力。不过，随着 LLM 研究的不断深入，多种参数尺寸的 LLM 逐渐丰富，广义的 LLM 一般覆盖了从<strong>十亿参数</strong>（如 Qwen-1.5B）到<strong>千亿参数</strong>（如 Grok-314B）的所有大型语言模型。只要模型展现出<strong>涌现能力</strong>，即在一系列复杂任务上表现出远超传统预训练模型（如 BERT、T5）的能力与潜力，都可以称之为 LLM。</p>
-<p>一般认为，GPT-3（1750亿参数）是 LLM 的开端，基于 GPT-3 通过 <strong>预训练（Pretraining）、监督微调（Supervised Fine-Tuning，SFT）、强化学习与人类反馈（Reinforcement Learning with Human Feedback，RLHF）</strong>三阶段训练得到的 ChatGPT 更是主导了 LLM 时代的到来。</p>
-<blockquote>
-<p>区分 LLM 与传统 PLM 最显著的特征即是 LLM 具备 <code>涌现能力</code> 。涌现能力是指同样的模型架构与预训练任务下，某些能力在小型模型中不明显，但在大型模型中特别突出。</p>
-</blockquote>
-<h3 id="训练流程"><a href="#训练流程" class="headerlink" title="训练流程"></a>训练流程</h3><p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E6%B5%81%E7%A8%8B/image-20250811092459843.png" alt="image-20250811092459843"></p>
-<p>一般而言，训练一个完整的 LLM 需要经过图1中的三个阶段——Pretrain、SFT 和 RLHF。</p>
-<h3 id="Pretrain"><a href="#Pretrain" class="headerlink" title="Pretrain"></a>Pretrain</h3><p>Pretrain，即预训练，是训练 LLM 最核心也是工程量最大的第一步。</p>
-<h4 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h4><div class="table-container">
+<h4 id="设置微调参数"><a href="#设置微调参数" class="headerlink" title="设置微调参数"></a>设置微调参数</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">from trl import SFTTrainer, SFTConfig</span><br><span class="line"></span><br><span class="line">trainer = SFTTrainer(</span><br><span class="line">    model=model,                       # 已插入 LoRA 的 4-bit 模型</span><br><span class="line">    tokenizer=tokenizer,               # 对应 tokenizer（含 chat 模板）</span><br><span class="line">    train_dataset=combined_dataset,    # 训练集：聊天+推理对话</span><br><span class="line">    eval_dataset=None,                 # 如需验证，把验证集放进来即可</span><br><span class="line"></span><br><span class="line">    args=SFTConfig(</span><br><span class="line">        dataset_text_field=&quot;text&quot;,      # 训练集中每条样本的字段名（对话列表）</span><br><span class="line">        per_device_train_batch_size=2,  # 每张显卡上的 batch_size（显存决定）</span><br><span class="line">        gradient_accumulation_steps=4,  # 4 次累积 → 全局有效 batch = 2×4 = 8</span><br><span class="line">        warmup_steps=5,                # 前 5 步线性预热学习率</span><br><span class="line">        max_steps=30,                  # 训练 30 步（调试阶段）；正式可用 num_train_epochs</span><br><span class="line">        learning_rate=2e-4,            # LoRA 常用 2e-4；长训降到 2e-5</span><br><span class="line">        logging_steps=1,               # 每 1 步打印一次日志</span><br><span class="line">        optim=&quot;adamw_8bit&quot;,            # 8-bit AdamW，省显存</span><br><span class="line">        weight_decay=0.01,             # L2 正则</span><br><span class="line">        lr_scheduler_type=&quot;linear&quot;,    # 线性衰减到 0</span><br><span class="line">        seed=3407,                     # 固定随机种子</span><br><span class="line">        report_to=&quot;swanlab&quot;,             # 把指标推送到 swanlab</span><br><span class="line">    ),</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://github.com/huggingface/trl">TRL</a> (Transformers Reinforcement Learning，用强化学习训练Transformers模型) 是一个领先的Python库，旨在通过监督微调（SFT）、近端策略优化（PPO）和直接偏好优化（DPO）等先进技术，对基础模型进行训练后优化。TRL 建立在 🤗 Transformers 生态系统之上，支持多种模型架构和模态，并且能够在各种硬件配置上进行扩展。</p>
+<p>其中<code>SFTTrainer</code>：一个专门为指令微调设计的训练器，封装了 Hugging Face 的 <code>Trainer</code>，而<code>SFTConfig</code>：配置训练参数的专用类，功能类似 <code>TrainingArguments</code>。而SFTConfig核心参数解释如下：</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
-<th>模型</th>
-<th>hidden_layers</th>
-<th>hidden_size</th>
-<th>heads</th>
-<th>整体参数量</th>
-<th>预训练数据量</th>
+<th>参数名</th>
+<th>含义</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>BERT-base</td>
-<td>12</td>
-<td>768</td>
-<td>12</td>
-<td>0.1B</td>
-<td>3B</td>
+<td><code>dataset_text_field=&quot;text&quot;</code></td>
+<td>数据集中用于训练的字段名称，如 <code>text</code> 或 <code>prompt</code></td>
 </tr>
 <tr>
-<td>BERT-large</td>
-<td>24</td>
-<td>1024</td>
-<td>16</td>
-<td>0.3B</td>
-<td>3B</td>
+<td><code>per_device_train_batch_size=2</code></td>
+<td>每张 GPU 上的 batch size 是 2</td>
 </tr>
 <tr>
-<td>Qwen-1.8B</td>
-<td>24</td>
-<td>2048</td>
-<td>16</td>
-<td>1.8B</td>
-<td>2.2T</td>
+<td><code>gradient_accumulation_steps=4</code></td>
+<td>梯度累计 4 次后才进行一次反向传播（等效于总 batch size = 2 × 4 = 8）</td>
 </tr>
 <tr>
-<td>LLaMA-7B</td>
-<td>32</td>
-<td>4096</td>
-<td>32</td>
-<td>7B</td>
-<td>1T</td>
+<td><code>warmup_steps=5</code></td>
+<td>前 5 步进行 warmup（缓慢提升学习率）</td>
 </tr>
 <tr>
-<td>GPT-3</td>
-<td>96</td>
-<td>12288</td>
-<td>96</td>
-<td>175B</td>
-<td>300B</td>
+<td><code>max_steps=30</code></td>
+<td>最多训练 30 步（适合调试或快速实验）</td>
+</tr>
+<tr>
+<td><code>learning_rate=2e-4</code></td>
+<td>初始学习率（短训练可用较高值）</td>
+</tr>
+<tr>
+<td><code>logging_steps=1</code></td>
+<td>每训练 1 步就打印一次日志</td>
+</tr>
+<tr>
+<td><code>optim=&quot;adamw_8bit&quot;</code></td>
+<td>使用 8-bit AdamW 优化器（节省内存，Unsloth 支持）</td>
+</tr>
+<tr>
+<td><code>weight_decay=0.01</code></td>
+<td>权重衰减，用于防止过拟合</td>
+</tr>
+<tr>
+<td><code>lr_scheduler_type=&quot;linear&quot;</code></td>
+<td>线性学习率调度器（从高到低线性下降）</td>
+</tr>
+<tr>
+<td><code>seed=3407</code></td>
+<td>固定随机种子，确保结果可复现</td>
+</tr>
+<tr>
+<td><code>report_to=&quot;none&quot;</code></td>
+<td>不使用 WandB 或 TensorBoard 等日志平台（可改为 <code>&quot;wandb&quot;</code>）</td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>根据定义，LLM 的核心特点即在于其具有<strong>远超传统预训练模型的参数量</strong>，<strong>同时在更海量的语料上进行预训练</strong>。传统预训练模型如 BERT，有 base 和 large 两个版本。BERT-base 模型由 12个 Encoder 层组成，其 hidden_size 为 768，使用 12个头作为多头注意力层，整体参数量为 1亿（110M）；而 BERT-large 模型由 24个 Encoder 层组成，hidden_size 为 1024，有 16个头，整体参数量为 3亿（340M）。同时，BERT 预训练使用了 33亿（3B）token 的语料，在 64块 TPU 上训练了 4天。事实上，相对于传统的深度学习模型，3亿参数量、33亿训练数据的 BERT 已经是一个能力超群、资源消耗巨大的庞然大物。</p>
-<p>但是，前面我们提到，<strong>一般而言的 LLM 通常具有数百亿甚至上千亿参数</strong>，即使是广义上最小的 LLM，一般也有十亿（1B）以上的参数量。例如以开山之作 GPT-3 为例，其有 96个 Decoder 层，12288 的 hidden_size 和 96个头，<strong>共有 1750亿（175B）参数，比 BERT 大出快 3个数量级</strong>。即使是目前流行的小型 LLM 如 Qwen-1.8B，其也有 24个 Decoder 层、2048的 hidden_size 和 16个注意力头，整体参数量达到 18亿（1.8B）。</p>
-<h4 id="分布式训练"><a href="#分布式训练" class="headerlink" title="分布式训练"></a>分布式训练</h4><p>也正因如此，<strong>分布式训练框架也成为 LLM 训练必不可少的组成部分</strong>。分布式训练框架的核心思路是<strong>数据并行和模型并行</strong>。所谓数据并行，是指训练模型的尺寸可以被单个 GPU 内存容纳，但是由于增大训练的 batch_size 会增大显存开销，无法使用较大的 batch_size 进行训练；同时，训练数据量非常大，使用单张 GPU 训练时长难以接受。</p>
-<h4 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h4><p><strong>训练数据本身也是预训练 LLM 的一个重大挑战</strong>。训练一个 LLM，至少需要数百 B 甚至上 T 的预训练语料。根据研究，LLM 所掌握的知识绝大部分都是在预训练过程中学会的，因此，为了使训练出的 LLM 能够覆盖尽可能广的知识面，预训练语料需要组织多种来源的数据，并以一定比例进行混合。目前，主要的开源预训练语料包括 CommonCrawl、C4、Github、Wikipedia 等。<strong>不同的 LLM 往往会在开源预训练语料基础上，加入部分私有高质量语料，再基于自己实验得到的最佳配比来构造预训练数据集</strong>。事实上，<strong>数据配比</strong>向来是预训练 LLM 的“核心秘籍”，不同的配比往往会相当大程度影响最终模型训练出来的性能。</p>
-<p>训练一个中文 LLM，训练数据的难度会更大。目前，高质量语料还是大部分集中在英文范畴，例如上表的 Wikipedia、Arxiv 等，均是英文数据集；而 C4 等多语言数据集中，英文语料也占据主要地位。目前开源的中文 LLM 如 ChatGLM、Baichuan 等模型均未开放其预训练数据集，开源的中文预训练数据集目前仅有昆仑天工开源的<a target="_blank" rel="noopener" href="https://huggingface.co/datasets/Skywork/SkyPile-150B">SkyPile</a>（150B）、中科闻歌开源的<a target="_blank" rel="noopener" href="https://huggingface.co/datasets/wenge-research/yayi2_pretrain_data">yayi2</a>（100B）等，相较于英文开源数据集有明显差距。</p>
-<h4 id="数据清洗"><a href="#数据清洗" class="headerlink" title="数据清洗"></a>数据清洗</h4><p><strong>预训练数据的处理与清洗</strong>也是 LLM 预训练的一个重要环节。诸多研究证明，预训练数据的质量往往比体量更加重要。预训练数据处理一般包括以下流程：</p>
+<blockquote>
 <ol>
-<li>文档准备。由于海量预训练语料往往是从互联网上获得，一般需要从爬取的网站来获得自然语言文档。文档准备主要包括 URL 过滤（根据网页 URL 过滤掉有害内容）、文档提取（从 HTML 中提取纯文本）、语言选择（确定提取的文本的语种）等。</li>
-<li>语料过滤。语料过滤的核心目的是去除低质量、无意义、有毒有害的内容，例如乱码、广告等。语料过滤一般有两种方法：基于模型的方法，即通过高质量语料库训练一个文本分类器进行过滤；基于启发式的方法，一般通过人工定义 web 内容的质量指标，计算语料的指标值来进行过滤。</li>
-<li>语料去重。实验表示，大量重复文本会显著影响模型的泛化能力，因此，语料去重即删除训练语料中相似度非常高的文档，也是必不可少的一个步骤。去重一般基于 hash 算法计算数据集内部或跨数据集的文档相似性，将相似性大于指定阈值的文档去除；也可以基于子串在序列级进行精确匹配去重。</li>
+<li><p><strong>per_device_train_batch_size=2</strong><br><strong>每次前向只用了 2 条样本</strong> → 显存占用小，单卡就能跑。</p>
+<p><strong>batch_size 决定「每一步真正喂给模型的样本数量」，越大训练越稳，但对显存要求越高。</strong></p>
+</li>
+<li><p><strong>gradient_accumulation_steps=4</strong><br><strong>把这 2 条样本算出的梯度先攒起来，攒够 4 次再一次性做反向传播</strong> → 等效于一次性看了 <strong>2 × 4 = 8 条样本</strong>，但显存仍按 2 条算。</p>
+</li>
 </ol>
-<h3 id="SFT-指令微调"><a href="#SFT-指令微调" class="headerlink" title="SFT 指令微调"></a>SFT 指令微调</h3><p>预训练赋予了 LLM 能力，却还需要第二步将其激发出来。经过预训练的 LLM 好像一个博览群书但又不求甚解的书生，对什么样的偏怪问题，都可以流畅地接出下文，但他偏偏又<strong>不知道问题本身的含义</strong>，只会“死板背书”。这一现象的本质是因为，LLM 的预训练任务就是经典的 <strong>CLM</strong>，也就是训<strong>练其预测下一个 token 的能力</strong>，在没有进一步微调之前，其无法与其他下游任务或是用户指令适配。</p>
-<p>因此，我们还需要第二步来教这个博览群书的学生如何去使用它的知识，也就是 <strong>SFT（Supervised Fine-Tuning，有监督微调）</strong>。</p>
-<p>面对能力强大的 LLM，我们往往不再是在指定下游任务上构造有监督数据进行微调，而是选择训练模型的“通用指令遵循能力”，也就是一般<strong>通过<code>指令微调</code>的方式来进行 SFT</strong>。</p>
-<p>所谓指令微调，即我们训练的输入是各种类型的用户指令，而需要模型拟合的输出则是我们希望模型在收到该指令后做出的回复。例如，我们的一条训练样本可以是：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">input:告诉我今天的天气预报？</span><br><span class="line">output:根据天气预报，今天天气是晴转多云，最高温度26摄氏度，最低温度9摄氏度，昼夜温差大，请注意保暖哦</span><br></pre></td></tr></table></figure>
-<p>也就是说，SFT 的主要目标是让模型从多种类型、多种风格的指令中获得泛化的指令遵循能力，也就是能够理解并回复用户的指令。</p>
-<h3 id="RLHF"><a href="#RLHF" class="headerlink" title="RLHF"></a>RLHF</h3><p>RLHF，全称是 <strong>Reinforcement Learning from Human Feedback，即人类反馈强化学习</strong>，是利用强化学习来训练 LLM 的关键步骤。相较于在 GPT-3 就已经初见雏形的 SFT，RLHF 往往被认为是 ChatGPT 相较于 GPT-3 的最核心突破。事实上，从功能上出发，我们可以将 LLM 的训练过程分成<strong>预训练与对齐（alignment）两个阶段</strong>。预训练的核心作用是赋予模型海量的知识，而所谓对齐，其实就是让模型与人类价值观一致，从而输出人类希望其输出的内容。在这个过程中，SFT 是让 LLM 和人类的指令对齐，从而具有指令遵循能力；而 RLHF 则是从更深层次令 LLM 和人类价值观对齐，令其达到安全、有用、无害的核心标准。</p>
-<p>RLHF 分为两个步骤：<strong>训练 RM 和 PPO 训练</strong>。</p>
-<p><strong>RM，Reward Model，即奖励模型</strong>。RM 是用于拟合人类偏好，来给 LLM 做出反馈的。在强化学习的训练中，对于 LLM 的每一个回复，RM 会进行打分，这个打分反映了生成回复符合人类偏好的程度。然后 LLM 会根据强化学习的原理，基于 RM 的打分来进行优化训练。</p>
-<p>在完成 RM 训练之后，就可以使用 PPO 算法来进行强化学习训练。<strong>PPO，Proximal Policy Optimization，近端策略优化算法</strong>，是一种经典的 RL 算法。事实上，强化学习训练时也可以使用其他的强化学习算法，但目前 PPO 算法因为成熟、成本较低，还是最适合 RLHF 的算法。</p>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://datawhalechina.github.io/happy-llm/#/./chapter4/第四章 大语言模型">第四章 大语言模型</a></p>
+</blockquote>
+<p>此时基本训练过程为：</p>
+<ol>
+<li>从 <code>combined_dataset</code> 中取出一批样本（2 条）</li>
+<li>重复上面过程 4 次（<code>gradient_accumulation_steps=4</code>）</li>
+<li>将累计的梯度用于更新模型一次参数（等效于一次大 batch 更新）</li>
+<li>重复上述过程，直到 <code>max_steps=30</code> 停止</li>
+</ol>
+<h4 id="设置训练可视化swanlab"><a href="#设置训练可视化swanlab" class="headerlink" title="设置训练可视化swanlab"></a>设置训练可视化swanlab</h4><p><a target="_blank" rel="noopener" href="https://docs.swanlab.cn/guide_cloud/integration/integration-huggingface-trl.html">🤗HuggingFace Trl | SwanLab官方文档</a></p>
+<p>只需要在你的训练代码中，找到HF的<code>Config</code>部分（比如<code>SFTConfig</code>、<code>GRPOConfig</code>等），添加<code>report_to=&quot;swanlab&quot;</code>参数，即可完成集成。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">from trl import SFTConfig, SFTTrainer</span><br><span class="line"></span><br><span class="line">args = SFTConfig(</span><br><span class="line">    ...,</span><br><span class="line">    report_to=&quot;swanlab&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">trainer = Trainer(..., args=args)</span><br></pre></td></tr></table></figure>
+<p>默认下，项目名会使用你运行代码的<code>目录名</code>。</p>
+<p>如果你想自定义项目名，可以设置<code>SWANLAB_PROJECT</code>环境变量：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import os</span><br><span class="line">os.environ[&quot;SWANLAB_PROJECT&quot;]=&quot;qwen2-sft&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="微调执行流程"><a href="#微调执行流程" class="headerlink" title="微调执行流程"></a>微调执行流程</h4><p>一切准备就绪后，接下来即可开始进行微调。由于本次微调总共只运行30个step，整个过程并不会很长，实际执行过程如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">trainer_stats = trainer.train()</span><br></pre></td></tr></table></figure>
+<h4 id="保存模型"><a href="#保存模型" class="headerlink" title="保存模型"></a>保存模型</h4><p> <strong>1. 保存 LoRA Adapter</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 保存 LoRA adapter（仅几十 MB）</span><br><span class="line">save_path = &quot;./lora-adapter&quot;</span><br><span class="line">model.save_pretrained(save_path)          # LoRA 权重</span><br><span class="line">tokenizer.save_pretrained(save_path)      # 词表</span><br></pre></td></tr></table></figure>
+<p>以后加载：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> unsloth <span class="keyword">import</span> FastLanguageModel</span><br><span class="line">model, tokenizer = FastLanguageModel.from_pretrained(</span><br><span class="line">    model_name = <span class="string">&quot;base-model-name-or-path&quot;</span>,</span><br><span class="line">    max_seq_length = <span class="number">2048</span>,</span><br><span class="line">    load_in_4bit = <span class="literal">True</span>,</span><br><span class="line">)</span><br><span class="line">model = FastLanguageModel.get_peft_model(model, ...)  <span class="comment"># 同训练时参数</span></span><br><span class="line">model.load_adapter(save_path)   <span class="comment"># 把 LoRA 权重挂回去</span></span><br></pre></td></tr></table></figure>
+<p><strong>2.合并 LoRA → 完整模型</strong></p>
+<p>如果你想把 <strong>LoRA 权重合并到基座</strong> 得到一个独立的大模型（方便推理、上传 Hub）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 合并权重</span></span><br><span class="line">merged_model = model.merge_and_unload()   <span class="comment"># 返回普通 transformers 模型</span></span><br><span class="line">merged_model.save_pretrained(<span class="string">&quot;./merged-model&quot;</span>)</span><br><span class="line">tokenizer.save_pretrained(<span class="string">&quot;./merged-model&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>合并后就是完整的大模型（GB 级），可直接用 <code>AutoModelForCausalLM.from_pretrained(&quot;./merged-model&quot;)</code> 加载，不依赖 Unsloth。</p>
+<h3 id="微调结果"><a href="#微调结果" class="headerlink" title="微调结果"></a>微调结果</h3><h4 id="可视化结果"><a href="#可视化结果" class="headerlink" title="可视化结果"></a>可视化结果</h4><p><img src="/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/qwen3-8b%E5%BE%AE%E8%B0%83%E5%AE%9E%E6%88%98/image-20250813111238359.png" alt="image-20250813111238359"></p>
+<p><a target="_blank" rel="noopener" href="https://swanlab.cn/@zxj123/Fine-tune-Qwen-8B/runs/e2l6g6s3v7dlb7hmfircv/chart">图表 ｜ Fine-tune-Qwen-8B/rat-2</a></p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>指标名称</th>
+<th>含义</th>
+<th>单位/范围提示</th>
+<th>常见关注点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>train/loss</td>
+<td>训练损失（Training Loss）</td>
+<td>标量，越小越好</td>
+<td>是否持续下降、是否震荡、是否过拟合</td>
+</tr>
+<tr>
+<td>train/grad_norm</td>
+<td>梯度范数（Gradient Norm）</td>
+<td>标量，通常 0.01–1.0 为合理区间</td>
+<td>是否爆炸（&gt;10）或消失（&lt;1e-4）</td>
+</tr>
+<tr>
+<td>train/learning_rate</td>
+<td>学习率（Learning Rate）</td>
+<td>标量，如 1e-4、5e-4 等</td>
+<td>是否过大导致震荡、过小导致收敛慢</td>
+</tr>
+<tr>
+<td>train/epoch</td>
+<td>已训练的轮次（Epoch）</td>
+<td>标量，1.0 表示完整遍历一次训练集</td>
+<td>当前已训练多少轮、是否还需继续训练</td>
+</tr>
+<tr>
+<td>train/global_step</td>
+<td>全局步数（Global Step）</td>
+<td>整数，每个 batch +1</td>
+<td>与 epoch 对应，计算已见样本量</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="对话测试"><a href="#对话测试" class="headerlink" title="对话测试"></a>对话测试</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">messages = [</span><br><span class="line">    &#123;&quot;role&quot; : &quot;user&quot;, &quot;content&quot; : &quot;解决(x + 2)^2 = 0.&quot;&#125;</span><br><span class="line">]</span><br><span class="line">text = tokenizer.apply_chat_template(</span><br><span class="line">    messages,</span><br><span class="line">    tokenize = False,</span><br><span class="line">    add_generation_prompt = True, # Must add for generation</span><br><span class="line">    enable_thinking = True, # Disable thinking</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">from transformers import TextStreamer</span><br><span class="line">_ = model.generate(</span><br><span class="line">    **tokenizer(text, return_tensors = &quot;pt&quot;).to(&quot;cuda&quot;),</span><br><span class="line">    max_new_tokens = 20488, # Increase for longer outputs!</span><br><span class="line">    temperature = 0.6, top_p = 0.95, top_k = 20, # For thinking</span><br><span class="line">    streamer = TextStreamer(tokenizer, skip_prompt = True),</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -923,6 +817,267 @@ Q = X_Q W_Q, \quad K = X_K W_K, \quad V = X_V W_V</script><p> $X_Q$, $X_K$, $X_V
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1YLE1zyEvX?spm_id_from=333.788.videopod.episodes&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11&amp;p=3">3.四大微调框架及微调硬件环境介绍_哔哩哔哩_bilibili</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1s2AUe2EBq/?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">如何把你的 DeePseek-R1 微调为某个领域的专家？（实战篇）_哔哩哔哩_bilibili</a></p>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/javatiange/article/details/149964743?fromshare=blogdetail&amp;sharetype=blogdetail&amp;sharerId=149964743&amp;sharerefer=PC&amp;sharesource=2501_91530961&amp;sharefrom=from_link">一文详解：8种常见的大模型微调方法，看这篇就够了！-CSDN博客</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/LoRA%E5%85%B6%E4%BB%96%E7%9A%84%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/LoRA%E5%85%B6%E4%BB%96%E7%9A%84%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%96%B9%E6%B3%95/" class="post-title-link" itemprop="url">LoRA其他的模型微调方法</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-08-11 00:00:00" itemprop="dateCreated datePublished" datetime="2025-08-11T00:00:00+08:00">2025-08-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-08-13 09:29:23" itemprop="dateModified" datetime="2025-08-13T09:29:23+08:00">2025-08-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%A8%A1%E5%9E%8B/" itemprop="url" rel="index"><span itemprop="name">模型</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%A8%A1%E5%9E%8B/%E5%BE%AE%E8%B0%83/" itemprop="url" rel="index"><span itemprop="name">微调</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzkzODI1NzQyNA==&amp;mid=2247494667&amp;idx=1&amp;sn=c3af7d2472de61752ef8b8df28746f2e&amp;poc_token=HCyNmWijps0ViWD6wPgqFiDYUZVRSs7xUDRfowWE">大模型微调技巧：LoRA 与 QLoRA讲解</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/javatiange/article/details/149964743?fromshare=blogdetail&amp;sharetype=blogdetail&amp;sharerId=149964743&amp;sharerefer=PC&amp;sharesource=2501_91530961&amp;sharefrom=from_link">一文详解：8种常见的大模型微调方法，看这篇就够了！-CSDN博客</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/682082440">大模型微调技术 - 知乎</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E6%B5%81%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E6%B5%81%E7%A8%8B/" class="post-title-link" itemprop="url">大模型训练流程</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-08-11 00:00:00 / 修改时间：09:55:54" itemprop="dateCreated datePublished" datetime="2025-08-11T00:00:00+08:00">2025-08-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%A8%A1%E5%9E%8B/" itemprop="url" rel="index"><span itemprop="name">模型</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%A8%A1%E5%9E%8B/%E5%BE%AE%E8%B0%83/" itemprop="url" rel="index"><span itemprop="name">微调</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="什么是大模型"><a href="#什么是大模型" class="headerlink" title="什么是大模型"></a>什么是大模型</h3><p>随着2022年底 ChatGPT 再一次刷新 NLP 的能力上限，大<strong>语言模型（Large Language Model，LLM）开始接替传统的预训练语言模型（Pre-trained Language Model，PLM）</strong> 成为 NLP 的主流方向，基于 LLM 的全新研究范式也正在刷新被 BERT 发扬光大的<strong>预训练-微调范式</strong>，NLP 由此迎来又一次翻天覆地的变化。</p>
+<p>LLM，即 Large Language Model，中文名为大语言模型或大型语言模型，是一种相<strong>较传统语言模型参数量更多、在更大规模语料上进行预训练的语言模型</strong>。</p>
+<p>一般来说，LLM 指包含<strong>数百亿（或更多）参数的语言模型</strong>，它们往往在<strong>数 T token 语料上</strong>通过多卡分布式集群进行预训练，具备远超出传统预训练模型的文本理解与生成能力。不过，随着 LLM 研究的不断深入，多种参数尺寸的 LLM 逐渐丰富，广义的 LLM 一般覆盖了从<strong>十亿参数</strong>（如 Qwen-1.5B）到<strong>千亿参数</strong>（如 Grok-314B）的所有大型语言模型。只要模型展现出<strong>涌现能力</strong>，即在一系列复杂任务上表现出远超传统预训练模型（如 BERT、T5）的能力与潜力，都可以称之为 LLM。</p>
+<p>一般认为，GPT-3（1750亿参数）是 LLM 的开端，基于 GPT-3 通过 <strong>预训练（Pretraining）、监督微调（Supervised Fine-Tuning，SFT）、强化学习与人类反馈（Reinforcement Learning with Human Feedback，RLHF）</strong>三阶段训练得到的 ChatGPT 更是主导了 LLM 时代的到来。</p>
+<blockquote>
+<p>区分 LLM 与传统 PLM 最显著的特征即是 LLM 具备 <code>涌现能力</code> 。涌现能力是指同样的模型架构与预训练任务下，某些能力在小型模型中不明显，但在大型模型中特别突出。</p>
+</blockquote>
+<h3 id="训练流程"><a href="#训练流程" class="headerlink" title="训练流程"></a>训练流程</h3><p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E6%B5%81%E7%A8%8B/image-20250811092459843.png" alt="image-20250811092459843"></p>
+<p>一般而言，训练一个完整的 LLM 需要经过图1中的三个阶段——Pretrain、SFT 和 RLHF。</p>
+<h3 id="Pretrain"><a href="#Pretrain" class="headerlink" title="Pretrain"></a>Pretrain</h3><p>Pretrain，即预训练，是训练 LLM 最核心也是工程量最大的第一步。</p>
+<h4 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h4><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>hidden_layers</th>
+<th>hidden_size</th>
+<th>heads</th>
+<th>整体参数量</th>
+<th>预训练数据量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BERT-base</td>
+<td>12</td>
+<td>768</td>
+<td>12</td>
+<td>0.1B</td>
+<td>3B</td>
+</tr>
+<tr>
+<td>BERT-large</td>
+<td>24</td>
+<td>1024</td>
+<td>16</td>
+<td>0.3B</td>
+<td>3B</td>
+</tr>
+<tr>
+<td>Qwen-1.8B</td>
+<td>24</td>
+<td>2048</td>
+<td>16</td>
+<td>1.8B</td>
+<td>2.2T</td>
+</tr>
+<tr>
+<td>LLaMA-7B</td>
+<td>32</td>
+<td>4096</td>
+<td>32</td>
+<td>7B</td>
+<td>1T</td>
+</tr>
+<tr>
+<td>GPT-3</td>
+<td>96</td>
+<td>12288</td>
+<td>96</td>
+<td>175B</td>
+<td>300B</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>根据定义，LLM 的核心特点即在于其具有<strong>远超传统预训练模型的参数量</strong>，<strong>同时在更海量的语料上进行预训练</strong>。传统预训练模型如 BERT，有 base 和 large 两个版本。BERT-base 模型由 12个 Encoder 层组成，其 hidden_size 为 768，使用 12个头作为多头注意力层，整体参数量为 1亿（110M）；而 BERT-large 模型由 24个 Encoder 层组成，hidden_size 为 1024，有 16个头，整体参数量为 3亿（340M）。同时，BERT 预训练使用了 33亿（3B）token 的语料，在 64块 TPU 上训练了 4天。事实上，相对于传统的深度学习模型，3亿参数量、33亿训练数据的 BERT 已经是一个能力超群、资源消耗巨大的庞然大物。</p>
+<p>但是，前面我们提到，<strong>一般而言的 LLM 通常具有数百亿甚至上千亿参数</strong>，即使是广义上最小的 LLM，一般也有十亿（1B）以上的参数量。例如以开山之作 GPT-3 为例，其有 96个 Decoder 层，12288 的 hidden_size 和 96个头，<strong>共有 1750亿（175B）参数，比 BERT 大出快 3个数量级</strong>。即使是目前流行的小型 LLM 如 Qwen-1.8B，其也有 24个 Decoder 层、2048的 hidden_size 和 16个注意力头，整体参数量达到 18亿（1.8B）。</p>
+<h4 id="分布式训练"><a href="#分布式训练" class="headerlink" title="分布式训练"></a>分布式训练</h4><p>也正因如此，<strong>分布式训练框架也成为 LLM 训练必不可少的组成部分</strong>。分布式训练框架的核心思路是<strong>数据并行和模型并行</strong>。所谓数据并行，是指训练模型的尺寸可以被单个 GPU 内存容纳，但是由于增大训练的 batch_size 会增大显存开销，无法使用较大的 batch_size 进行训练；同时，训练数据量非常大，使用单张 GPU 训练时长难以接受。</p>
+<h4 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h4><p><strong>训练数据本身也是预训练 LLM 的一个重大挑战</strong>。训练一个 LLM，至少需要数百 B 甚至上 T 的预训练语料。根据研究，LLM 所掌握的知识绝大部分都是在预训练过程中学会的，因此，为了使训练出的 LLM 能够覆盖尽可能广的知识面，预训练语料需要组织多种来源的数据，并以一定比例进行混合。目前，主要的开源预训练语料包括 CommonCrawl、C4、Github、Wikipedia 等。<strong>不同的 LLM 往往会在开源预训练语料基础上，加入部分私有高质量语料，再基于自己实验得到的最佳配比来构造预训练数据集</strong>。事实上，<strong>数据配比</strong>向来是预训练 LLM 的“核心秘籍”，不同的配比往往会相当大程度影响最终模型训练出来的性能。</p>
+<p>训练一个中文 LLM，训练数据的难度会更大。目前，高质量语料还是大部分集中在英文范畴，例如上表的 Wikipedia、Arxiv 等，均是英文数据集；而 C4 等多语言数据集中，英文语料也占据主要地位。目前开源的中文 LLM 如 ChatGLM、Baichuan 等模型均未开放其预训练数据集，开源的中文预训练数据集目前仅有昆仑天工开源的<a target="_blank" rel="noopener" href="https://huggingface.co/datasets/Skywork/SkyPile-150B">SkyPile</a>（150B）、中科闻歌开源的<a target="_blank" rel="noopener" href="https://huggingface.co/datasets/wenge-research/yayi2_pretrain_data">yayi2</a>（100B）等，相较于英文开源数据集有明显差距。</p>
+<h4 id="数据清洗"><a href="#数据清洗" class="headerlink" title="数据清洗"></a>数据清洗</h4><p><strong>预训练数据的处理与清洗</strong>也是 LLM 预训练的一个重要环节。诸多研究证明，预训练数据的质量往往比体量更加重要。预训练数据处理一般包括以下流程：</p>
+<ol>
+<li>文档准备。由于海量预训练语料往往是从互联网上获得，一般需要从爬取的网站来获得自然语言文档。文档准备主要包括 URL 过滤（根据网页 URL 过滤掉有害内容）、文档提取（从 HTML 中提取纯文本）、语言选择（确定提取的文本的语种）等。</li>
+<li>语料过滤。语料过滤的核心目的是去除低质量、无意义、有毒有害的内容，例如乱码、广告等。语料过滤一般有两种方法：基于模型的方法，即通过高质量语料库训练一个文本分类器进行过滤；基于启发式的方法，一般通过人工定义 web 内容的质量指标，计算语料的指标值来进行过滤。</li>
+<li>语料去重。实验表示，大量重复文本会显著影响模型的泛化能力，因此，语料去重即删除训练语料中相似度非常高的文档，也是必不可少的一个步骤。去重一般基于 hash 算法计算数据集内部或跨数据集的文档相似性，将相似性大于指定阈值的文档去除；也可以基于子串在序列级进行精确匹配去重。</li>
+</ol>
+<h3 id="SFT-指令微调"><a href="#SFT-指令微调" class="headerlink" title="SFT 指令微调"></a>SFT 指令微调</h3><p>预训练赋予了 LLM 能力，却还需要第二步将其激发出来。经过预训练的 LLM 好像一个博览群书但又不求甚解的书生，对什么样的偏怪问题，都可以流畅地接出下文，但他偏偏又<strong>不知道问题本身的含义</strong>，只会“死板背书”。这一现象的本质是因为，LLM 的预训练任务就是经典的 <strong>CLM</strong>，也就是训<strong>练其预测下一个 token 的能力</strong>，在没有进一步微调之前，其无法与其他下游任务或是用户指令适配。</p>
+<p>因此，我们还需要第二步来教这个博览群书的学生如何去使用它的知识，也就是 <strong>SFT（Supervised Fine-Tuning，有监督微调）</strong>。</p>
+<p>面对能力强大的 LLM，我们往往不再是在指定下游任务上构造有监督数据进行微调，而是选择训练模型的“通用指令遵循能力”，也就是一般<strong>通过<code>指令微调</code>的方式来进行 SFT</strong>。</p>
+<p>所谓指令微调，即我们训练的输入是各种类型的用户指令，而需要模型拟合的输出则是我们希望模型在收到该指令后做出的回复。例如，我们的一条训练样本可以是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">input:告诉我今天的天气预报？</span><br><span class="line">output:根据天气预报，今天天气是晴转多云，最高温度26摄氏度，最低温度9摄氏度，昼夜温差大，请注意保暖哦</span><br></pre></td></tr></table></figure>
+<p>也就是说，SFT 的主要目标是让模型从多种类型、多种风格的指令中获得泛化的指令遵循能力，也就是能够理解并回复用户的指令。</p>
+<h3 id="RLHF"><a href="#RLHF" class="headerlink" title="RLHF"></a>RLHF</h3><p>RLHF，全称是 <strong>Reinforcement Learning from Human Feedback，即人类反馈强化学习</strong>，是利用强化学习来训练 LLM 的关键步骤。相较于在 GPT-3 就已经初见雏形的 SFT，RLHF 往往被认为是 ChatGPT 相较于 GPT-3 的最核心突破。事实上，从功能上出发，我们可以将 LLM 的训练过程分成<strong>预训练与对齐（alignment）两个阶段</strong>。预训练的核心作用是赋予模型海量的知识，而所谓对齐，其实就是让模型与人类价值观一致，从而输出人类希望其输出的内容。在这个过程中，SFT 是让 LLM 和人类的指令对齐，从而具有指令遵循能力；而 RLHF 则是从更深层次令 LLM 和人类价值观对齐，令其达到安全、有用、无害的核心标准。</p>
+<p>RLHF 分为两个步骤：<strong>训练 RM 和 PPO 训练</strong>。</p>
+<p><strong>RM，Reward Model，即奖励模型</strong>。RM 是用于拟合人类偏好，来给 LLM 做出反馈的。在强化学习的训练中，对于 LLM 的每一个回复，RM 会进行打分，这个打分反映了生成回复符合人类偏好的程度。然后 LLM 会根据强化学习的原理，基于 RM 的打分来进行优化训练。</p>
+<p>在完成 RM 训练之后，就可以使用 PPO 算法来进行强化学习训练。<strong>PPO，Proximal Policy Optimization，近端策略优化算法</strong>，是一种经典的 RL 算法。事实上，强化学习训练时也可以使用其他的强化学习算法，但目前 PPO 算法因为成熟、成本较低，还是最适合 RLHF 的算法。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://datawhalechina.github.io/happy-llm/#/./chapter4/第四章 大语言模型">第四章 大语言模型</a></p>
 
       
     </div>
