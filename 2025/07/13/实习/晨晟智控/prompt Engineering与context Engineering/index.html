@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="prompt EngineeringPrompt Engineering是与大型语言模型（LLM）交互的基础，其核心在于精心设计输入内容，以引导模型生成期望的输出。 尽管 Prompt Engineering 至关重要，但对于构建稳健、可用于生产环境的系统而言，它存在固有的局限性：  脆弱性&amp;不可复现性： 提示中微小的措辞变化可能导致输出结果的巨大差异，使得这一过程更像是一种依赖反复试错的">
+    <meta name="description" content="prompt Engineering Prompt Engineering是与大型语言模型（LLM）交互的基础，其核心在于精心设计输入内容，以引导模型生成期望的输出。 尽管 Prompt Engineering 至关重要，但对于构建稳健、可用于生产环境的系统而言，它存在固有的局限性：  脆弱性&amp;不可复现性： 提示中微小的措辞变化可能导致输出结果的巨大差异，使得这一过程更像是一">
 <meta property="og:type" content="article">
 <meta property="og:title" content="prompt Engineering与context Engineering">
 <meta property="og:url" content="http://example.com/2025/07/13/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/prompt%20Engineering%E4%B8%8Econtext%20Engineering/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="prompt EngineeringPrompt Engineering是与大型语言模型（LLM）交互的基础，其核心在于精心设计输入内容，以引导模型生成期望的输出。 尽管 Prompt Engineering 至关重要，但对于构建稳健、可用于生产环境的系统而言，它存在固有的局限性：  脆弱性&amp;不可复现性： 提示中微小的措辞变化可能导致输出结果的巨大差异，使得这一过程更像是一种依赖反复试错的">
+<meta property="og:description" content="prompt Engineering Prompt Engineering是与大型语言模型（LLM）交互的基础，其核心在于精心设计输入内容，以引导模型生成期望的输出。 尽管 Prompt Engineering 至关重要，但对于构建稳健、可用于生产环境的系统而言，它存在固有的局限性：  脆弱性&amp;不可复现性： 提示中微小的措辞变化可能导致输出结果的巨大差异，使得这一过程更像是一">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-07-12T16:00:00.000Z">
 <meta property="article:modified_time" content="2025-07-13T05:36:33.941Z">
@@ -147,7 +147,10 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#prompt-Engineering"><span class="nav-number">1.</span> <span class="nav-text">prompt Engineering</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Context-Engineering"><span class="nav-number">2.</span> <span class="nav-text">Context Engineering</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Context-Engineering-%E7%9A%84%E5%9F%BA%E7%9F%B3%EF%BC%9ARAG%EF%BC%88Retrieval-Augmented-Generation%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">Context Engineering 的基石：RAG（Retrieval-Augmented Generation）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3LLM%E7%9A%84%E6%A0%B8%E5%BF%83%E5%BC%B1%E7%82%B9"><span class="nav-number">3.1.</span> <span class="nav-text">解决LLM的核心弱点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RAG%E5%B7%A5%E4%BD%9C%E6%B5%81"><span class="nav-number">3.2.</span> <span class="nav-text">RAG工作流</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Context-%E5%B7%A5%E7%A8%8B%E5%8C%96%EF%BC%9A%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E5%92%8C%E6%8F%90%E5%8F%96%E5%93%AA%E4%BA%9B%E5%86%85%E5%AE%B9%E5%BA%94%E8%AF%A5%E8%BF%9B%E5%85%A5%E4%B8%8A%E4%B8%8B%E6%96%87%EF%BC%9F"><span class="nav-number">4.</span> <span class="nav-text">Context 工程化：如何判断和提取哪些内容应该进入上下文？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-chunking"><span class="nav-number">4.1.</span> <span class="nav-text">1.chunking</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Reranking"><span class="nav-number">4.2.</span> <span class="nav-text">2.Reranking</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E4%BC%98%E5%8C%96%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AA%97%E5%8F%A3%EF%BC%9A%E5%8E%8B%E7%BC%A9%E4%B8%8E%E6%91%98%E8%A6%81"><span class="nav-number">4.3.</span> <span class="nav-text">3.优化上下文窗口：压缩与摘要</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%99%BA%E8%83%BD%E4%BD%93%E6%9E%B6%E6%9E%84%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E6%B5%81%E4%B8%8E%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%BC%96%E6%8E%92"><span class="nav-number">5.</span> <span class="nav-text">智能体架构中的数据流与工作流编排</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%B5%81%EF%BC%88Workflow%EF%BC%89-vs-%E6%99%BA%E8%83%BD%E4%BD%93%EF%BC%88Agent%EF%BC%89"><span class="nav-number">5.1.</span> <span class="nav-text">工作流（Workflow） vs. 智能体（Agent）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84%EF%BC%9A%E9%A2%84%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E6%B5%81%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.2.</span> <span class="nav-text">核心架构：预定义数据流的实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A1%86%E6%9E%B6%E4%B8%8E%E5%B7%A5%E5%85%B7"><span class="nav-number">5.3.</span> <span class="nav-text">框架与工具</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#prompt-engineering"><span class="nav-number">1.</span> <span class="nav-text">prompt Engineering</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#context-engineering"><span class="nav-number">2.</span> <span class="nav-text">Context Engineering</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#context-engineering-%E7%9A%84%E5%9F%BA%E7%9F%B3ragretrieval-augmented-generation"><span class="nav-number">3.</span> <span class="nav-text">Context
+Engineering 的基石：RAG（Retrieval-Augmented Generation）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3llm%E7%9A%84%E6%A0%B8%E5%BF%83%E5%BC%B1%E7%82%B9"><span class="nav-number">3.1.</span> <span class="nav-text">解决LLM的核心弱点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rag%E5%B7%A5%E4%BD%9C%E6%B5%81"><span class="nav-number">3.2.</span> <span class="nav-text">RAG工作流</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#context-%E5%B7%A5%E7%A8%8B%E5%8C%96%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E5%92%8C%E6%8F%90%E5%8F%96%E5%93%AA%E4%BA%9B%E5%86%85%E5%AE%B9%E5%BA%94%E8%AF%A5%E8%BF%9B%E5%85%A5%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="nav-number">4.</span> <span class="nav-text">Context
+工程化：如何判断和提取哪些内容应该进入上下文？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#chunking"><span class="nav-number">4.1.</span> <span class="nav-text">1.chunking</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#reranking"><span class="nav-number">4.2.</span> <span class="nav-text">2.Reranking</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AA%97%E5%8F%A3%E5%8E%8B%E7%BC%A9%E4%B8%8E%E6%91%98%E8%A6%81"><span class="nav-number">4.3.</span> <span class="nav-text">3.优化上下文窗口：压缩与摘要</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%99%BA%E8%83%BD%E4%BD%93%E6%9E%B6%E6%9E%84%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E6%B5%81%E4%B8%8E%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%BC%96%E6%8E%92"><span class="nav-number">5.</span> <span class="nav-text">智能体架构中的数据流与工作流编排</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%B5%81workflow-vs.-%E6%99%BA%E8%83%BD%E4%BD%93agent"><span class="nav-number">5.1.</span> <span class="nav-text">工作流（Workflow）
+vs. 智能体（Agent）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84%E9%A2%84%E5%AE%9A%E4%B9%89%E6%95%B0%E6%8D%AE%E6%B5%81%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.2.</span> <span class="nav-text">核心架构：预定义数据流的实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A1%86%E6%9E%B6%E4%B8%8E%E5%B7%A5%E5%85%B7"><span class="nav-number">5.3.</span> <span class="nav-text">框架与工具</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -162,18 +165,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">127</span>
+          <span class="site-state-item-count">128</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-count">49</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">55</span>
+        <span class="site-state-item-count">56</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -285,125 +288,180 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h3 id="prompt-Engineering"><a href="#prompt-Engineering" class="headerlink" title="prompt Engineering"></a>prompt Engineering</h3><p>Prompt Engineering是与大型语言模型（LLM）交互的基础，其核心在于精心设计输入内容，以引导模型生成期望的输出。</p>
-<p>尽管 Prompt Engineering 至关重要，但对于构建稳健、可用于生产环境的系统而言，它存在固有的局限性：</p>
+    <div class="post-body" itemprop="articleBody"><h3 id="prompt-engineering">prompt Engineering</h3>
+<p>Prompt
+Engineering是与大型语言模型（LLM）交互的基础，其核心在于精心设计输入内容，以引导模型生成期望的输出。</p>
+<p>尽管 Prompt Engineering
+至关重要，但对于构建稳健、可用于生产环境的系统而言，它存在固有的局限性：</p>
 <ul>
-<li><p><strong>脆弱性&amp;不可复现性：</strong> 提示中微小的措辞变化可能导致输出结果的巨大差异，使得这一过程更像是一种依赖反复试错的“艺术”，而非可复现的“科学” 。</p>
-</li>
-<li><p><strong>扩展性差：</strong> 手动、迭代地优化提示的过程，在面对大量用户、多样化用例和不断出现的边缘情况时，难以有效扩展 。</p>
-</li>
-<li><p><strong>用户负担：</strong> 这种方法将精心构建一套详尽指令的负担完全压在了用户身上，对于需要自主运行、或处理高并发请求的系统而言是不切实际的 。</p>
-</li>
-<li><p><strong>无状态性：</strong> Prompt Engineering 本质上是为单轮、“一次性”的交互而设计的，难以处理需要记忆和状态管理的长对话或多步骤任务 。</p>
-</li>
+<li><p><strong>脆弱性&amp;不可复现性：</strong>
+提示中微小的措辞变化可能导致输出结果的巨大差异，使得这一过程更像是一种依赖反复试错的“艺术”，而非可复现的“科学”
+。</p></li>
+<li><p><strong>扩展性差：</strong>
+手动、迭代地优化提示的过程，在面对大量用户、多样化用例和不断出现的边缘情况时，难以有效扩展
+。</p></li>
+<li><p><strong>用户负担：</strong>
+这种方法将精心构建一套详尽指令的负担完全压在了用户身上，对于需要自主运行、或处理高并发请求的系统而言是不切实际的
+。</p></li>
+<li><p><strong>无状态性：</strong> Prompt Engineering
+本质上是为单轮、“一次性”的交互而设计的，难以处理需要记忆和状态管理的长对话或多步骤任务
+。</p></li>
 </ul>
-<h3 id="Context-Engineering"><a href="#Context-Engineering" class="headerlink" title="Context Engineering"></a>Context Engineering</h3><p><strong>Context Engineering是一门设计、构建并优化动态自动化系统的学科，旨在为大型语言模型在正确的时间、以正确的格式，提供正确的信息和工具，从而可靠、可扩展地完成复杂任务</strong> 。</p>
-<p><strong>prompt 告诉模型如何思考，而 Context 则赋予模型完成工作所需的知识和工具。</strong></p>
+<h3 id="context-engineering">Context Engineering</h3>
+<p><strong>Context
+Engineering是一门设计、构建并优化动态自动化系统的学科，旨在为大型语言模型在正确的时间、以正确的格式，提供正确的信息和工具，从而可靠、可扩展地完成复杂任务</strong>
+。</p>
+<p><strong>prompt 告诉模型如何思考，而 Context
+则赋予模型完成工作所需的知识和工具。</strong></p>
 <ul>
-<li><p>Context Engineering 决定<strong>用什么内容填充 Context Window</strong> ，</p>
-</li>
-<li><p>Prompt Engineering 则负责优化<strong>窗口内的具体指令</strong> 。</p>
-</li>
+<li><p>Context Engineering 决定<strong>用什么内容填充 Context
+Window</strong> ，</p></li>
+<li><p>Prompt Engineering 则负责优化<strong>窗口内的具体指令</strong>
+。</p></li>
 </ul>
-<h3 id="Context-Engineering-的基石：RAG（Retrieval-Augmented-Generation）"><a href="#Context-Engineering-的基石：RAG（Retrieval-Augmented-Generation）" class="headerlink" title="Context Engineering 的基石：RAG（Retrieval-Augmented Generation）"></a>Context Engineering 的基石：RAG（Retrieval-Augmented Generation）</h3><p>本部分将阐述检索增强生成（RAG）作为实现 Context Engineering 的主要架构模式。</p>
-<h4 id="解决LLM的核心弱点"><a href="#解决LLM的核心弱点" class="headerlink" title="解决LLM的核心弱点"></a>解决LLM的核心弱点</h4><p>RAG直接解决了标准LLM在企业应用中存在的固有局限性：</p>
+<h3 id="context-engineering-的基石ragretrieval-augmented-generation">Context
+Engineering 的基石：RAG（Retrieval-Augmented Generation）</h3>
+<p>本部分将阐述检索增强生成（RAG）作为实现 Context Engineering
+的主要架构模式。</p>
+<h4 id="解决llm的核心弱点">解决LLM的核心弱点</h4>
+<p>RAG直接解决了标准LLM在企业应用中存在的固有局限性：</p>
 <ul>
-<li><p><strong>知识冻结：</strong> LLM的知识被冻结在<strong>其训练数据的时间点</strong>。RAG通过在推理时注入实时的、最新的信息来解决这个问题 。</p>
-</li>
-<li><p><strong>缺乏领域专有知识：</strong> 标准LLM无法访问组织的内部私有数据。RAG则能够将LLM连接到这些内部知识库，如技术手册、政策文件等 。</p>
-</li>
-<li><p><strong>幻觉（Hallucination）：</strong> LLM 会不同程度上地编造事实。RAG通过将模型的回答“锚定”在可验证的、检索到的证据上，提高事实的准确性和可信度 。</p>
-</li>
+<li><p><strong>知识冻结：</strong>
+LLM的知识被冻结在<strong>其训练数据的时间点</strong>。RAG通过在推理时注入实时的、最新的信息来解决这个问题
+。</p></li>
+<li><p><strong>缺乏领域专有知识：</strong>
+标准LLM无法访问组织的内部私有数据。RAG则能够将LLM连接到这些内部知识库，如技术手册、政策文件等
+。</p></li>
+<li><p><strong>幻觉（Hallucination）：</strong> LLM
+会不同程度上地编造事实。RAG通过将模型的回答“锚定”在可验证的、检索到的证据上，提高事实的准确性和可信度
+。</p></li>
 </ul>
-<h4 id="RAG工作流"><a href="#RAG工作流" class="headerlink" title="RAG工作流"></a>RAG工作流</h4><ol>
-<li><p><strong>索引（离线阶段）：</strong> 在这个阶段，系统会处理外部知识源。文档被加载、分割成更小的 chunks，然后通过Embedding Model 转换为向量表示，并最终存储在专门的向量数据库中以备检索 。</p>
-</li>
-<li><p><strong>推理（在线阶段）：</strong> 当用户提出请求时，系统执行以下步骤：</p>
-<ol>
-<li><strong>检索（Retrieve）：</strong> 将用户的查询同样转换为向量，然后在向量数据库中进行相似性搜索，找出与查询最相关的文档块。</li>
-<li><strong>增强（Augment）：</strong> 将检索到的这些文档块与原始的用户查询、系统指令等结合起来，构建一个内容丰富的、增强的最终提示。</li>
-<li><strong>生成（Generate）：</strong> 将这个增强后的提示输入给LLM，LLM会基于提供的上下文生成一个有理有据的回答 。</li>
+<h4 id="rag工作流">RAG工作流</h4>
+<ol type="1">
+<li><p><strong>索引（离线阶段）：</strong>
+在这个阶段，系统会处理外部知识源。文档被加载、分割成更小的
+chunks，然后通过Embedding Model
+转换为向量表示，并最终存储在专门的向量数据库中以备检索 。</p></li>
+<li><p><strong>推理（在线阶段）：</strong>
+当用户提出请求时，系统执行以下步骤：</p>
+<ol type="1">
+<li><strong>检索（Retrieve）：</strong>
+将用户的查询同样转换为向量，然后在向量数据库中进行相似性搜索，找出与查询最相关的文档块。</li>
+<li><strong>增强（Augment）：</strong>
+将检索到的这些文档块与原始的用户查询、系统指令等结合起来，构建一个内容丰富的、增强的最终提示。</li>
+<li><strong>生成（Generate）：</strong>
+将这个增强后的提示输入给LLM，LLM会基于提供的上下文生成一个有理有据的回答
+。</li>
+</ol></li>
 </ol>
-</li>
-</ol>
-<h3 id="Context-工程化：如何判断和提取哪些内容应该进入上下文？"><a href="#Context-工程化：如何判断和提取哪些内容应该进入上下文？" class="headerlink" title="Context 工程化：如何判断和提取哪些内容应该进入上下文？"></a>Context 工程化：如何判断和提取哪些内容应该进入上下文？</h3><h4 id="1-chunking"><a href="#1-chunking" class="headerlink" title="1.chunking"></a>1.chunking</h4><p>文本分块（Chunking）是RAG流程中最关键也最容易被忽视的一步。其目标是创建在语义上自成一体的文本块。</p>
-<h4 id="2-Reranking"><a href="#2-Reranking" class="headerlink" title="2.Reranking"></a>2.Reranking</h4><p>为了平衡检索的速度和准确性，业界普遍采用两阶段检索流程。</p>
+<h3 id="context-工程化如何判断和提取哪些内容应该进入上下文">Context
+工程化：如何判断和提取哪些内容应该进入上下文？</h3>
+<h4 id="chunking">1.chunking</h4>
+<p>文本分块（Chunking）是RAG流程中最关键也最容易被忽视的一步。其目标是创建在语义上自成一体的文本块。</p>
+<h4 id="reranking">2.Reranking</h4>
+<p>为了平衡检索的速度和准确性，业界普遍采用两阶段检索流程。</p>
 <ul>
 <li><p><strong>两阶段流程：</strong></p>
 <ul>
-<li><strong>第一阶段（召回）：</strong> 使用一个快速、高效的检索器（如基于 bi-encoder 的向量搜索或BM25等词法搜索）进行广泛撒网，召回一个较大的候选文档集（例如，前100个） 。</li>
-<li><strong>第二阶段（精排/重排序）：</strong> 使用一个更强大但计算成本更高的模型，对这个较小的候选集进行重新评估，以识别出最相关的少数几个文档（例如，前5个） 。</li>
+<li><strong>第一阶段（召回）：</strong>
+使用一个快速、高效的检索器（如基于 bi-encoder
+的向量搜索或BM25等词法搜索）进行广泛撒网，召回一个较大的候选文档集（例如，前100个）
+。</li>
+<li><strong>第二阶段（精排/重排序）：</strong>
+使用一个更强大但计算成本更高的模型，对这个较小的候选集进行重新评估，以识别出最相关的少数几个文档（例如，前5个）
+。</li>
+</ul></li>
+<li><p><strong>Cross-Encoder：</strong>
+交叉编码器之所以在重排序阶段表现优越，是因为它与双编码器的工作方式不同。双编码器独立地为查询和文档生成嵌入向量，然后计算它们的相似度。而交叉编码器则是将查询和文档<strong>同时</strong>作为输入，让模型在内部通过
+Attention Mechanism
+对二者进行深度交互。这使得模型能够捕捉到更细微的语义关系，从而给出更准确的相关性评分
+。</p></li>
+<li><p><strong>实际影响：</strong>
+重排序显著提高了最终送入LLM的上下文质量，从而产出更准确、幻觉更少的答案。在金融、法律等高风险领域，重排序被认为是必不可少而非可选的步骤
+。</p></li>
 </ul>
-</li>
-<li><p><strong>Cross-Encoder：</strong> 交叉编码器之所以在重排序阶段表现优越，是因为它与双编码器的工作方式不同。双编码器独立地为查询和文档生成嵌入向量，然后计算它们的相似度。而交叉编码器则是将查询和文档<strong>同时</strong>作为输入，让模型在内部通过 Attention Mechanism 对二者进行深度交互。这使得模型能够捕捉到更细微的语义关系，从而给出更准确的相关性评分 。</p>
-</li>
-<li><p><strong>实际影响：</strong> 重排序显著提高了最终送入LLM的上下文质量，从而产出更准确、幻觉更少的答案。在金融、法律等高风险领域，重排序被认为是必不可少而非可选的步骤 。</p>
-</li>
-</ul>
-<h4 id="3-优化上下文窗口：压缩与摘要"><a href="#3-优化上下文窗口：压缩与摘要" class="headerlink" title="3.优化上下文窗口：压缩与摘要"></a>3.优化上下文窗口：压缩与摘要</h4><p>本节详细介绍用于主动管理上下文的技术，确保最有价值的信息被优先呈现。</p>
+<h4 id="优化上下文窗口压缩与摘要">3.优化上下文窗口：压缩与摘要</h4>
+<p>本节详细介绍用于主动管理上下文的技术，确保最有价值的信息被优先呈现。</p>
 <ul>
-<li><p><strong>上下文压缩的目标：</strong> 缩短检索到的文档列表和/或精简单个文档的内容，只将<strong>最相关的信息传递给LLM</strong>。这能有效降低API调用成本、减少延迟，并缓解 Lost in the Middle 的问题 。</p>
-</li>
+<li><p><strong>上下文压缩的目标：</strong>
+缩短检索到的文档列表和/或精简单个文档的内容，只将<strong>最相关的信息传递给LLM</strong>。这能有效降低API调用成本、减少延迟，并缓解
+Lost in the Middle 的问题 。</p></li>
 <li><p><strong>压缩方法：</strong></p>
 <ul>
-<li><strong>过滤式压缩：</strong> 这类方法决定是保留还是丢弃整个检索到的文档。<ul>
-<li><strong>LLMChainFilter：</strong> 利用一个LLM对每个文档的相关性做出简单的“是/否”判断 。</li>
-<li><strong>EmbeddingsFilter：</strong> 更经济快速的方法，根据文档嵌入与查询嵌入的余弦相似度来过滤文档 。</li>
+<li><strong>过滤式压缩：</strong>
+这类方法决定是保留还是丢弃整个检索到的文档。
+<ul>
+<li><strong>LLMChainFilter：</strong>
+利用一个LLM对每个文档的相关性做出简单的“是/否”判断 。</li>
+<li><strong>EmbeddingsFilter：</strong>
+更经济快速的方法，根据文档嵌入与查询嵌入的余弦相似度来过滤文档 。</li>
+</ul></li>
+<li><strong>内容提取式压缩：</strong> 这类方法会直接修改文档内容。
+<ul>
+<li><strong>LLMChainExtractor：</strong>
+遍历每个文档，并使用LLM从中提取仅与查询相关的句子或陈述 。</li>
+</ul></li>
+<li><strong>用 top N 代替压缩：</strong>
+像LLMListwiseRerank这样的技术，使用LLM对检索到的文档进行重排序，并只返回排名最高的N个，从而起到高质量过滤器的作用
+。</li>
+</ul></li>
+<li><p><strong>作为压缩策略的摘要：</strong>
+对于非常长的文档或冗长的对话历史，可以利用LLM生成摘要。这些摘要随后被注入上下文，既保留了关键信息，又大幅减少了
+Token 数量。这是在长时程运行的智能体中管理上下文的关键技术 。</p></li>
 </ul>
-</li>
-<li><strong>内容提取式压缩：</strong> 这类方法会直接修改文档内容。<ul>
-<li><strong>LLMChainExtractor：</strong> 遍历每个文档，并使用LLM从中提取仅与查询相关的句子或陈述 。</li>
-</ul>
-</li>
-<li><strong>用 top N 代替压缩：</strong> 像LLMListwiseRerank这样的技术，使用LLM对检索到的文档进行重排序，并只返回排名最高的N个，从而起到高质量过滤器的作用 。</li>
-</ul>
-</li>
-<li><p><strong>作为压缩策略的摘要：</strong> 对于非常长的文档或冗长的对话历史，可以利用LLM生成摘要。这些摘要随后被注入上下文，既保留了关键信息，又大幅减少了 Token 数量。这是在长时程运行的智能体中管理上下文的关键技术 。</p>
-</li>
-</ul>
-<h3 id="智能体架构中的数据流与工作流编排"><a href="#智能体架构中的数据流与工作流编排" class="headerlink" title="智能体架构中的数据流与工作流编排"></a>智能体架构中的数据流与工作流编排</h3><h4 id="工作流（Workflow）-vs-智能体（Agent）"><a href="#工作流（Workflow）-vs-智能体（Agent）" class="headerlink" title="工作流（Workflow） vs. 智能体（Agent）"></a>工作流（Workflow） vs. 智能体（Agent）</h4><ul>
-<li><p><strong>工作流（Workflows）</strong></p>
+<h3 id="智能体架构中的数据流与工作流编排">智能体架构中的数据流与工作流编排</h3>
+<h4 id="工作流workflow-vs.-智能体agent">工作流（Workflow）
+vs. 智能体（Agent）</h4>
+<ul>
+<li><strong>工作流（Workflows）</strong>
 <ul>
 <li>指的是LLM和工具通过<strong>预定义的代码路径</strong>进行编排的系统。在这种模式下，数据流动的路径是固定的、由开发者明确设计的，类似于上世纪流行的“专家系统”。例如，“第一步：分析用户邮件；第二步：根据分析结果在日历中查找空闲时段；第三步：起草会议邀请邮件”。这种模式确定性高，易于调试和控制，非常适合有明确业务流程的场景（如风控需求高、数据敏感、安全等级要求）。</li>
-</ul>
-</li>
-<li><p><strong>智能体（Agents）</strong></p>
+</ul></li>
+<li><strong>智能体（Agents）</strong>
 <ul>
-<li>指的是LLM<strong>动态地指导</strong>自己的流程和工具使用，自主控制如何完成任务的系统。在这种模式下，数据流动的路径不是预先固定的，而是由LLM在每一步根据当前情况和目标动态决定的。这种模式灵活性高，能处理开放式问题，但可控性和可预测性较低 。</li>
+<li>指的是LLM<strong>动态地指导</strong>自己的流程和工具使用，自主控制如何完成任务的系统。在这种模式下，数据流动的路径不是预先固定的，而是由LLM在每一步根据当前情况和目标动态决定的。这种模式灵活性高，能处理开放式问题，但可控性和可预测性较低
+。</li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<p>复杂的智能体通常是这两种模式的混合体，在宏观层面遵循一个预定义的工作流，但在某些节点内部，又赋予LLM一定的自主决策权。管理这一切的核心，我们称之为<strong>编排层（Orchestration Layer）</strong> 。</p>
-<h4 id="核心架构：预定义数据流的实现"><a href="#核心架构：预定义数据流的实现" class="headerlink" title="核心架构：预定义数据流的实现"></a><strong>核心架构：预定义数据流的实现</strong></h4><ol>
-<li><p><strong>链式工作流（Prompt Chaining）</strong></p>
-</li>
-<li><p><strong>路由工作流（Routing)</strong></p>
-</li>
-<li><p><strong>编排器-工作者模式（Orchestrator-Workers）</strong></p>
-</li>
+<p>复杂的智能体通常是这两种模式的混合体，在宏观层面遵循一个预定义的工作流，但在某些节点内部，又赋予LLM一定的自主决策权。管理这一切的核心，我们称之为<strong>编排层（Orchestration
+Layer）</strong> 。</p>
+<h4 id="核心架构预定义数据流的实现"><strong>核心架构：预定义数据流的实现</strong></h4>
+<ol type="1">
+<li><p><strong>链式工作流（Prompt Chaining）</strong></p></li>
+<li><p><strong>路由工作流（Routing)</strong></p></li>
+<li><p><strong>编排器-工作者模式（Orchestrator-Workers）</strong></p></li>
 </ol>
-<h4 id="框架与工具"><a href="#框架与工具" class="headerlink" title="框架与工具"></a>框架与工具</h4><p>上述的架构和机制并非凭空存在，而是通过具体的开发框架实现的。其中，LangGraph作为LangChain的扩展，为构建具有显式数据流的智能体系统提供了强大的工具集。</p>
+<h4 id="框架与工具">框架与工具</h4>
+<p>上述的架构和机制并非凭空存在，而是通过具体的开发框架实现的。其中，LangGraph作为LangChain的扩展，为构建具有显式数据流的智能体系统提供了强大的工具集。</p>
 <p><strong>LangGraph：用图（Graph）定义工作流（Workflow）</strong></p>
-<p>LangGraph的核心思想是将智能体应用构建成一个<strong>状态图（State Graph）</strong> 。这个图由节点和边组成，清晰地定义了数据如何在不同模块间流动</p>
+<p>LangGraph的核心思想是将智能体应用构建成一个<strong>状态图（State
+Graph）</strong>
+。这个图由节点和边组成，清晰地定义了数据如何在不同模块间流动</p>
 <ul>
-<li><p><strong>状态（State）：</strong> 这是整个图的核心，一个所有节点共享的中央数据对象。</p>
+<li><strong>状态（State）：</strong>
+这是整个图的核心，一个所有节点共享的中央数据对象。
 <ul>
-<li>你可以把它想象成一个“数据总线”或共享内存。开发者需要预先定义State的结构，每个节点在执行时都可以读取和更新这个State对象 。</li>
-</ul>
-</li>
-<li><p><strong>节点（Nodes）：</strong> 代表工作流中的一个计算单元或一个步骤。</p>
+<li>你可以把它想象成一个“数据总线”或共享内存。开发者需要预先定义State的结构，每个节点在执行时都可以读取和更新这个State对象
+。</li>
+</ul></li>
+<li><strong>节点（Nodes）：</strong>
+代表工作流中的一个计算单元或一个步骤。
 <ul>
-<li>每个节点通常是一个Python函数，它接收当前的State作为输入，执行特定任务（如调用LLM、执行工具、处理数据），然后返回对State的更新 。</li>
-</ul>
-</li>
-<li><p><strong>边（Edges）</strong>： 连接节点，定义了工作流的路径，即数据在State更新后应该流向哪个节点。</p>
+<li>每个节点通常是一个Python函数，它接收当前的State作为输入，执行特定任务（如调用LLM、执行工具、处理数据），然后返回对State的更新
+。</li>
+</ul></li>
+<li><strong>边（Edges）</strong>：
+连接节点，定义了工作流的路径，即数据在State更新后应该流向哪个节点。
 <ul>
-<li><strong>简单边（Simple Edges）：</strong> 定义了固定的、无条件的流向，用于实现链式工作流 。</li>
-<li><strong>条件边（Conditional Edges）：</strong> 用于实现路由逻辑。它会根据一个函数的输出来决定接下来应该走向哪个节点，从而实现流程的分支 。</li>
-</ul>
-</li>
-<li><p><strong>检查点（Checkpointer）：</strong> LangGraph提供了持久化机制，可以在每一步执行后自动保存State的状态。这对于构建需要长期记忆、可中断和恢复、或需要 Human-in-the-Loop 的复杂业务流程至关重要 。</p>
-</li>
+<li><strong>简单边（Simple Edges）：</strong>
+定义了固定的、无条件的流向，用于实现链式工作流 。</li>
+<li><strong>条件边（Conditional Edges）：</strong>
+用于实现路由逻辑。它会根据一个函数的输出来决定接下来应该走向哪个节点，从而实现流程的分支
+。</li>
+</ul></li>
+<li><strong>检查点（Checkpointer）：</strong>
+LangGraph提供了持久化机制，可以在每一步执行后自动保存State的状态。这对于构建需要长期记忆、可中断和恢复、或需要
+Human-in-the-Loop 的复杂业务流程至关重要 。</li>
 </ul>
 <p>复杂业务流程的AI智能体，其核心挑战已从单纯优化信息检索（如RAG）或提示词，转向了对内部<strong>工作流和数据流的精心设计与编排</strong>。</p>
 
@@ -444,8 +502,8 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2025/07/11/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/rag%E8%AF%84%E4%BC%B0/" rel="prev" title="rag评估">
-                  <i class="fa fa-angle-left"></i> rag评估
+                <a href="/2025/07/11/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/rag%E8%AF%84%E4%BC%B0/" rel="prev" title="rag与检索评估">
+                  <i class="fa fa-angle-left"></i> rag与检索评估
                 </a>
             </div>
             <div class="post-nav-item">

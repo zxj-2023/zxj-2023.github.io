@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言 本文简单测试了一下langgraph官方提供的记忆管理工具，发现还是存在bug，我在a线程先让他记住我是张熙浚，然后又告诉他我不是张熙浚我是张俊细，在线程b询问他我是谁时，他还是认为我是张熙浚。记忆的管理部分确实是一个很大的问题，但中小开发者我认为还是直接使用人家造好的轮子方便些（我尝试去阅读了他的记忆管理工具的源码，以我目前的水平，想手搓花费的精力还是太多了） 我还有一个疑惑，我的理解">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Langmem快速入门">
+<meta property="og:url" content="http://example.com/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langmem/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="前言 本文简单测试了一下langgraph官方提供的记忆管理工具，发现还是存在bug，我在a线程先让他记住我是张熙浚，然后又告诉他我不是张熙浚我是张俊细，在线程b询问他我是谁时，他还是认为我是张熙浚。记忆的管理部分确实是一个很大的问题，但中小开发者我认为还是直接使用人家造好的轮子方便些（我尝试去阅读了他的记忆管理工具的源码，以我目前的水平，想手搓花费的精力还是太多了） 我还有一个疑惑，我的理解">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langmem/image-20250814152044798.png">
+<meta property="og:image" content="http://example.com/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langmem/image-20250814163150589.png">
+<meta property="article:published_time" content="2025-08-13T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-08-14T09:42:03.166Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="langmem">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langmem/image-20250814152044798.png">
+
+
+<link rel="canonical" href="http://example.com/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langmem/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langmem/","path":"2025/08/14/学习/ai框架/langmem/","title":"Langmem快速入门"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Langmem快速入门 | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%83%AD%E8%B7%AF%E5%BE%84%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97"><span class="nav-number">3.</span> <span class="nav-text">热路径快速入门指南</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#create_manage_memory_tool"><span class="nav-number">3.1.</span> <span class="nav-text">create_manage_memory_tool</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99agent%E4%BC%9A%E8%B0%83%E7%94%A8%E8%AE%B0%E5%BF%86%E5%B7%A5%E5%85%B7"><span class="nav-number">3.2.</span> <span class="nav-text">什么时候agent会调用记忆工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E6%88%98"><span class="nav-number">3.3.</span> <span class="nav-text">实战</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97"><span class="nav-number">4.</span> <span class="nav-text">后台快速入门指南</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E6%88%98-1"><span class="nav-number">4.1.</span> <span class="nav-text">实战</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">128</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langmem/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Langmem快速入门 | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Langmem快速入门
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-08-14 00:00:00 / 修改时间：17:42:03" itemprop="dateCreated datePublished" datetime="2025-08-14T00:00:00+08:00">2025-08-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ai%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index"><span itemprop="name">ai框架</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ai%E6%A1%86%E6%9E%B6/langmem/" itemprop="url" rel="index"><span itemprop="name">langmem</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="前言">前言</h3>
+<p>本文简单测试了一下langgraph官方提供的记忆管理工具，发现还是存在bug，我在a线程先让他记住我是张熙浚，然后又告诉他我不是张熙浚我是张俊细，在线程b询问他我是谁时，他还是认为我是张熙浚。记忆的管理部分确实是一个很大的问题，但中小开发者我认为还是直接使用人家造好的轮子方便些（我尝试去阅读了他的记忆管理工具的源码，以我目前的水平，想手搓花费的精力还是太多了）</p>
+<p>我还有一个疑惑，我的理解是，当前记忆的存储基本上依赖于agent的决定，所以并不稳定，我也搞不清楚他什么时候会把哪些信息存入记忆，可以设置
+schemas结构，控制存储的内容，但是长期记忆仅存储指定的这些信息，感觉还是有些鸡肋啊</p>
+<p>代码见<a target="_blank" rel="noopener" href="https://github.com/zxj-2023/learn-rag-langchain/tree/main/langmem">learn-rag-langchain/langmem
+at main · zxj-2023/learn-rag-langchain</a></p>
+<h3 id="介绍">介绍</h3>
+<p>LangMem 是 LangChain 推出的开源 SDK，通过一套存储-提取-优化机制，让
+Agent
+能够在多轮、多天甚至多用户之间持续学习、记住用户偏好并不断改进回答。</p>
+<p>LangMem 的记忆工具按两个层次的集成模式组织：</p>
+<ol type="1">
+<li>核心 API</li>
+</ol>
+<p>LangMem
+的核心是提供无副作用地转换记忆状态的函数。这些原语是记忆操作的构建块：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langmem/reference/memory/#langmem.create_memory_manager"><strong>记忆管理器</strong></a>：根据新的对话信息，提取新记忆、更新或删除过时记忆，并从现有记忆中进行整合和泛化。</li>
+<li><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langmem/reference/prompt_optimization/#langmem.create_prompt_optimizer"><strong>提示优化器</strong></a>：根据对话信息（可选反馈）更新提示规则和核心行为。</li>
+</ul>
+<p>这些核心函数不依赖于任何特定的数据库或存储系统。您可以在任何应用程序中使用它们。</p>
+<ol start="2" type="1">
+<li>有状态集成</li>
+</ol>
+<p>上一层依赖于 LangGraph 的长期记忆存储。这些组件使用上述核心 API
+来转换存储中存在的记忆，并在新对话信息传入时根据需要进行更新/插入或删除：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langmem/reference/memory/#langmem.create_memory_store_manager"><strong>存储管理器</strong></a>：自动持久化提取的记忆。</li>
+<li><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langmem/reference/tools/#langmem.create_manage_memory_tool"><strong>记忆管理工具</strong></a>：让智能体直接访问记忆操作。</li>
+</ul>
+<figure>
+<img src="/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langmem/image-20250814152044798.png" alt="image-20250814152044798">
+<figcaption aria-hidden="true">image-20250814152044798</figcaption>
+</figure>
+<p>langmem可以通过两种方式创建记忆</p>
+<ol type="1">
+<li><strong>在热路径中：</strong> Agent 使用工具主动保存笔记。</li>
+<li><strong>在后台：</strong>记忆从对话中自动“潜意识地”提取。</li>
+</ol>
+<h3 id="热路径快速入门指南">热路径快速入门指南</h3>
+<p>在本指南中，我们将创建一个 LangGraph Agent，它通过 LangMem 的
+<code>manage_memory</code> 工具来主动管理自己的长期记忆。</p>
+<h4 id="create_manage_memory_tool">create_manage_memory_tool</h4>
+<p>create_manage_memory_tool通过创建一个工具（Tool），这个工具可以被
+agent用来<strong>管理持久化记忆</strong>。这些记忆可以在不同的对话、会话甚至应用重启后依然存在。</p>
+<ol type="1">
+<li><p><strong>持久化存储 (Persistent Storage):</strong> 它利用了
+LangGraph 提供的 <code>BaseStore</code>
+接口。这使得数据可以存储在内存、数据库（如
+Postgres）等地方，而不是仅仅存在于程序的运行时内存中。</p></li>
+<li><p><strong>命名空间 (Namespace):</strong>
+为了组织和隔离不同用户或不同类型的记忆，数据被存储在层级化的命名空间中。例如，<code>("memories", "user-123")</code>
+可以确保用户 “user-123”
+的记忆与其他用户或系统记忆分开。命名空间可以包含占位符（如
+<code>&#123;langgraph_user_id&#125;</code>），在实际执行时会被具体的配置值替换。</p></li>
+<li><p><strong>记忆 (Memory):</strong>
+在这个上下文中，一个“记忆”就是存储在 <code>BaseStore</code>
+中的一个数据项（<code>Item</code>）。它有一个唯一的
+<code>key</code>（通常是 UUID），一个 <code>namespace</code>，一个
+<code>value</code>（存储实际内容），以及创建和更新时间戳。</p></li>
+<li><p><strong>工具 (Tool):</strong> 在 AI
+应用中，工具是代理（Agent）可以调用的函数或能力。这个函数创建的工具就是一个封装好的、可以被
+Agent 调用的函数，用于执行创建、更新、删除记忆的操作。</p></li>
+</ol>
+<h4 id="什么时候agent会调用记忆工具">什么时候agent会调用记忆工具</h4>
+<figure>
+<img src="/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langmem/image-20250814163150589.png" alt="image-20250814163150589">
+<figcaption aria-hidden="true">image-20250814163150589</figcaption>
+</figure>
+<p>ai是这样回答的，ReAct架构的agent是否调用工具由他自己决定</p>
+<h4 id="实战">实战</h4>
+<p><strong>导入库</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">from langgraph.checkpoint.memory import MemorySaver</span><br><span class="line">from langgraph.prebuilt import create_react_agent</span><br><span class="line">from langgraph.store.memory import InMemoryStore</span><br><span class="line">from langgraph.utils.config import get_store </span><br><span class="line">from langmem import (</span><br><span class="line">    # 让智能体创建、更新和删除记忆 </span><br><span class="line">    create_manage_memory_tool,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p><strong>返回记忆提示词</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">def prompt(state):</span><br><span class="line">    &quot;&quot;&quot;为LLM准备消息。&quot;&quot;&quot;</span><br><span class="line">    # 从配置的上下文变量中获取存储; </span><br><span class="line">    store = get_store() # 与提供给 `create_react_agent` 的相同</span><br><span class="line">    memories = store.search(</span><br><span class="line">        # 在与我们为智能体配置的相同命名空间内搜索</span><br><span class="line">        (&quot;memories&quot;,),</span><br><span class="line">        query=state[&quot;messages&quot;][-1].content,</span><br><span class="line">    )</span><br><span class="line">    system_msg = f&quot;&quot;&quot;You are a helpful assistant.</span><br><span class="line"></span><br><span class="line">## Memories</span><br><span class="line">&lt;memories&gt;</span><br><span class="line">&#123;memories&#125;</span><br><span class="line">&lt;/memories&gt;</span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line">    return [&#123;&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: system_msg&#125;, *state[&quot;messages&quot;]]</span><br></pre></td></tr></table></figure>
+<p><strong>定义store与checkpoint</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">from langchain import embeddings</span><br><span class="line">from langchain_openai import OpenAIEmbeddings</span><br><span class="line">embedding=OpenAIEmbeddings(</span><br><span class="line">    api_key=&quot;sk-&quot;, </span><br><span class="line">    base_url=&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot;,</span><br><span class="line">    model=&quot;text-embedding-v4&quot;,</span><br><span class="line">    check_embedding_ctx_length = False,</span><br><span class="line">    dimensions=1536 </span><br><span class="line">)</span><br><span class="line">store = InMemoryStore(</span><br><span class="line">    index=&#123; # 存储提取的记忆 </span><br><span class="line">        &quot;dims&quot;: 1536,</span><br><span class="line">        &quot;embed&quot;: embedding,</span><br><span class="line">    &#125;</span><br><span class="line">) </span><br><span class="line">checkpointer = MemorySaver() # 检查点图状态 </span><br></pre></td></tr></table></figure>
+<p><strong>定义agent</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">from langchain_openai import ChatOpenAI</span><br><span class="line">model_qwen=ChatOpenAI(</span><br><span class="line">    api_key=&quot;sk-&quot;, </span><br><span class="line">    base_url=&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot;,</span><br><span class="line">    model=&quot;qwen3-30b-a3b-instruct-2507&quot;,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">agent = create_react_agent( </span><br><span class="line">    model=model_qwen,</span><br><span class="line">    prompt=prompt,</span><br><span class="line">    tools=[ # 添加记忆工具 </span><br><span class="line">        # 智能体可以调用 &quot;manage_memory&quot; 来</span><br><span class="line">        # 通过ID创建、更新和删除记忆</span><br><span class="line">        # 命名空间为记忆添加作用域。要</span><br><span class="line">        # 为每个用户限定记忆范围，使用 (&quot;memories&quot;, &quot;&#123;user_id&#125;&quot;): </span><br><span class="line">        create_manage_memory_tool(namespace=(&quot;memories&quot;,)),</span><br><span class="line">    ],</span><br><span class="line">    # 我们的记忆将存储在这个提供的BaseStore实例中</span><br><span class="line">    store=store,</span><br><span class="line">    # 图的&quot;状态&quot;将在每个节点完成执行后进行检查点</span><br><span class="line">    # 用于跟踪聊天历史和持久执行</span><br><span class="line">    checkpointer=checkpointer, </span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p><strong>可视化图</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">agent.get_graph().draw_mermaid_png(output_file_path=&quot;agent.png&quot;)</span><br></pre></td></tr></table></figure>
+<p><strong>在线程a让agent记住我们的偏好</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">config = &#123;&quot;configurable&quot;: &#123;&quot;thread_id&quot;: &quot;thread-a&quot;&#125;&#125; </span><br><span class="line">agent.invoke( </span><br><span class="line">    &#123; </span><br><span class="line">        &quot;messages&quot;: [ </span><br><span class="line">            &#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;我喜欢黑色的显示模式&quot;&#125; </span><br><span class="line">        ] </span><br><span class="line">    &#125;, </span><br><span class="line">    # 我们将通过使用具有相同thread_id的config</span><br><span class="line">    # 来继续对话(thread-a)</span><br><span class="line">    config=config, </span><br><span class="line">) </span><br><span class="line">print(response[&quot;messages&quot;][-1].content) </span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">是的，我知道！你偏好黑色显示模式。我会在后续交互中保持这一设置。</span><br></pre></td></tr></table></figure>
+<p><strong>在线程b查看是否记住</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 新线程 = 新对话！</span><br><span class="line">new_config = &#123;&quot;configurable&quot;: &#123;&quot;thread_id&quot;: &quot;thread-b&quot;&#125;&#125; </span><br><span class="line"># 智能体只能回忆起</span><br><span class="line"># 它使用manage_memories工具明确保存的内容</span><br><span class="line">response = agent.invoke( </span><br><span class="line">    &#123;&quot;messages&quot;: [&#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;你好。你还记得我吗？你知道我有什么偏好吗？&quot;&#125;]&#125;,</span><br><span class="line">    config=new_config, </span><br><span class="line">) </span><br><span class="line">print(response[&quot;messages&quot;][-1].content) </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">你好！虽然我无法记住你作为个体的详细信息，但我可以访问一些关于你的偏好信息。根据之前的记录，我知道你偏好使用黑色显示模式。如果你还有其他偏好或希望我记住什么，请告诉我，我会帮你记录下来。</span><br></pre></td></tr></table></figure>
+<h3 id="后台快速入门指南">后台快速入门指南</h3>
+<p>本指南将向您展示如何使用 <a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langmem/background_quickstart/"><code>create_memory_store_manager</code></a>
+在后台提取和整合记忆。当记忆在后台处理时，智能体将正常继续运行。</p>
+<ol type="1">
+<li><p><strong>Runnable:</strong> LangChain/LangGraph
+中的核心抽象，代表一个可以被调用（<code>invoke</code>/<code>ainvoke</code>）来处理输入并产生输出的单元。<code>MemoryStoreManager</code>
+本身就是一个 Runnable。</p></li>
+<li><p><strong>BaseStore:</strong> LangGraph
+提供的持久化存储接口。Manager
+会使用它来读取（搜索）和写入（创建、更新、删除）记忆。</p></li>
+<li><p><strong>Memory (记忆):</strong> 在 Manager
+的上下文中，记忆通常是指从对话中提取的、值得保存的片段信息（如用户偏好、事实等）。它们存储在
+<code>BaseStore</code> 中，有自己的 <code>namespace</code> 和
+<code>key</code>。</p></li>
+<li><p><strong>Schema (模式):</strong> 一个 Pydantic
+模型，用于定义记忆的结构。这允许你强制记忆遵循特定的格式（例如，包含
+<code>category</code>, <code>preference</code>, <code>context</code>
+字段）。如果未提供
+<code>schemas</code>，则默认使用非结构化的字符串。</p></li>
+<li><p><strong>Namespace (命名空间):</strong> 用于组织存储在
+<code>BaseStore</code> 中的记忆。支持使用占位符（如
+<code>&#123;langgraph_user_id&#125;</code>）进行动态配置。</p></li>
+<li><p>自动化流程:</p>
+<p>Manager 会自动执行以下步骤：</p>
+<ul>
+<li><strong>搜索 (Search):</strong> 根据新对话内容，在
+<code>BaseStore</code> 中查找相关的现有记忆。</li>
+<li><strong>分析/提取 (Analyze/Extract):</strong> 使用 LLM
+分析新对话和检索到的记忆，决定是否需要创建新记忆、更新现有记忆或删除过时记忆。</li>
+<li><strong>应用更改 (Apply Changes):</strong>
+将分析结果（记忆的增删改）写回到 <code>BaseStore</code>。</li>
+</ul></li>
+</ol>
+<h4 id="实战-1">实战</h4>
+<p><strong>导入库</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from langchain.chat_models import init_chat_model </span><br><span class="line">from langgraph.func import entrypoint </span><br><span class="line">from langgraph.store.memory import InMemoryStore </span><br><span class="line"></span><br><span class="line">from langmem import ReflectionExecutor, create_memory_store_manager </span><br></pre></td></tr></table></figure>
+<p><strong>定义store</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">from langchain_openai import OpenAIEmbeddings</span><br><span class="line">embedding=OpenAIEmbeddings(</span><br><span class="line">    api_key=&quot;sk-&quot;, </span><br><span class="line">    base_url=&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot;,</span><br><span class="line">    model=&quot;text-embedding-v4&quot;,</span><br><span class="line">    check_embedding_ctx_length = False,</span><br><span class="line">    dimensions=1536 </span><br><span class="line">)</span><br><span class="line">store = InMemoryStore(</span><br><span class="line">    index=&#123; # 存储提取的记忆 </span><br><span class="line">        &quot;dims&quot;: 1536,</span><br><span class="line">        &quot;embed&quot;: embedding,</span><br><span class="line">    &#125;</span><br><span class="line">) </span><br></pre></td></tr></table></figure>
+<p><strong>创建记忆管理器</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 创建记忆管理器 Runnable 来从对话中提取记忆</span><br><span class="line">memory_manager = create_memory_store_manager( </span><br><span class="line">    model_qwen, </span><br><span class="line">    # 将记忆存储在 &quot;memories&quot; 命名空间（即目录）中</span><br><span class="line">    namespace=(&quot;memories&quot;,),  </span><br><span class="line">    instructions=&quot;用中文存储记忆。&quot;</span><br><span class="line">) </span><br><span class="line"></span><br><span class="line"># 包装 memory_manager 以处理延迟的后台处理</span><br><span class="line">executor = ReflectionExecutor(memory_manager) </span><br></pre></td></tr></table></figure>
+<p>对每条消息都进行记忆处理存在以下缺点： -
+当消息快速连续到达时，会产生冗余工作 -
+在对话中途进行处理时，上下文不完整 - 不必要的 token 消耗</p>
+<p><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langmem/reference/utils/#langmem.ReflectionExecutor"><code>ReflectionExecutor</code></a>
+可以延迟记忆处理并取消冗余工作。</p>
+<p><strong>创建工作流</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">from langchain_openai import ChatOpenAI</span><br><span class="line">model_qwen=ChatOpenAI(</span><br><span class="line">    api_key=&quot;sk-&quot;, </span><br><span class="line">    base_url=&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot;,</span><br><span class="line">    model=&quot;qwen3-30b-a3b-instruct-2507&quot;,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">@entrypoint(store=store)  # 创建一个 LangGraph 工作流</span><br><span class="line">async def chat(message: str): </span><br><span class="line">    response = model_qwen.invoke(message) </span><br><span class="line"></span><br><span class="line">    # memory_manager 从对话历史中提取记忆</span><br><span class="line">    # 我们将以 OpenAI 的消息格式提供它</span><br><span class="line">    to_process = &#123;&quot;messages&quot;: [&#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: message&#125;] + [response]&#125; </span><br><span class="line">    await memory_manager.ainvoke(to_process)  </span><br><span class="line">    return response.content </span><br><span class="line"></span><br><span class="line"># 正常运行对话</span><br><span class="line">response = await chat.ainvoke( </span><br><span class="line">    &quot;记住我是张熙浚&quot;, </span><br><span class="line">) </span><br><span class="line">print(response) </span><br></pre></td></tr></table></figure>
+<p><strong>查看记忆</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(store.search((&quot;memories&quot;,)))</span><br></pre></td></tr></table></figure>
+<h3 id="参考资料">参考资料</h3>
+<p><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langmem/">简介 - LangChain
+框架</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langmem/concepts/conceptual_guide/#semantic-memory-facts-and-knowledge">核心概念
+- LangChain 框架</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/langmem/" rel="tag"># langmem</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/qwen3-8b%E5%BE%AE%E8%B0%83%E5%AE%9E%E6%88%98/" rel="prev" title="qwen3-8b微调实战">
+                  <i class="fa fa-angle-left"></i> qwen3-8b微调实战
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/A2A%E5%8D%8F%E8%AE%AE/" rel="next" title="A2A协议">
+                  A2A协议 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

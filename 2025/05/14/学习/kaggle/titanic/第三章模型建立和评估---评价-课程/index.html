@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="第三章 模型搭建和评估-评估根据之前的模型的建模，我们知道如何运用sklearn这个库来完成建模，以及我们知道了的数据集的划分等等操作。那么一个模型我们怎么知道它好不好用呢？以至于我们能不能放心的使用模型给我的结果呢？那么今天的学习的评估，就会很有帮助。 加载下面的库 1234567import pandas as pdimport numpy as npimport seaborn as sns">
+    <meta name="description" content="第三章 模型搭建和评估-评估 根据之前的模型的建模，我们知道如何运用sklearn这个库来完成建模，以及我们知道了的数据集的划分等等操作。那么一个模型我们怎么知道它好不好用呢？以至于我们能不能放心的使用模型给我的结果呢？那么今天的学习的评估，就会很有帮助。 加载下面的库 1234567import pandas as pdimport numpy as npimport seaborn as">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据分析——第三章模型建立和评估---评价">
 <meta property="og:url" content="http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="第三章 模型搭建和评估-评估根据之前的模型的建模，我们知道如何运用sklearn这个库来完成建模，以及我们知道了的数据集的划分等等操作。那么一个模型我们怎么知道它好不好用呢？以至于我们能不能放心的使用模型给我的结果呢？那么今天的学习的评估，就会很有帮助。 加载下面的库 1234567import pandas as pdimport numpy as npimport seaborn as sns">
+<meta property="og:description" content="第三章 模型搭建和评估-评估 根据之前的模型的建模，我们知道如何运用sklearn这个库来完成建模，以及我们知道了的数据集的划分等等操作。那么一个模型我们怎么知道它好不好用呢？以至于我们能不能放心的使用模型给我的结果呢？那么今天的学习的评估，就会很有帮助。 加载下面的库 1234567import pandas as pdimport numpy as npimport seaborn as">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B_16_0.png">
 <meta property="og:image" content="http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B_27_0.png">
@@ -149,7 +149,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E6%90%AD%E5%BB%BA%E5%92%8C%E8%AF%84%E4%BC%B0-%E8%AF%84%E4%BC%B0"><span class="nav-number">1.</span> <span class="nav-text">第三章 模型搭建和评估-评估</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0"><span class="nav-number">1.1.</span> <span class="nav-text">模型评估</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%B8%80%EF%BC%9A%E4%BA%A4%E5%8F%89%E9%AA%8C%E8%AF%81"><span class="nav-number">1.1.1.</span> <span class="nav-text">任务一：交叉验证</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%A4%BA4"><span class="nav-number">1.1.2.</span> <span class="nav-text">提示4</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%9D%E8%80%834"><span class="nav-number">1.1.3.</span> <span class="nav-text">思考4</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%BA%8C%EF%BC%9A%E6%B7%B7%E6%B7%86%E7%9F%A9%E9%98%B5"><span class="nav-number">1.1.4.</span> <span class="nav-text">任务二：混淆矩阵</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%A4%BA5"><span class="nav-number">1.1.5.</span> <span class="nav-text">提示5</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%B8%89%EF%BC%9AROC%E6%9B%B2%E7%BA%BF"><span class="nav-number">1.1.6.</span> <span class="nav-text">任务三：ROC曲线</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%A4%BA6"><span class="nav-number">1.1.7.</span> <span class="nav-text">提示6</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%9D%E8%80%836"><span class="nav-number">1.1.8.</span> <span class="nav-text">思考6</span></a></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0-%E6%A8%A1%E5%9E%8B%E6%90%AD%E5%BB%BA%E5%92%8C%E8%AF%84%E4%BC%B0-%E8%AF%84%E4%BC%B0"><span class="nav-number">1.</span> <span class="nav-text">第三章 模型搭建和评估-评估</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0"><span class="nav-number">1.1.</span> <span class="nav-text">模型评估</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%B8%80%E4%BA%A4%E5%8F%89%E9%AA%8C%E8%AF%81"><span class="nav-number">1.1.1.</span> <span class="nav-text">任务一：交叉验证</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%A4%BA4"><span class="nav-number">1.1.2.</span> <span class="nav-text">提示4</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%9D%E8%80%834"><span class="nav-number">1.1.3.</span> <span class="nav-text">思考4</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%BA%8C%E6%B7%B7%E6%B7%86%E7%9F%A9%E9%98%B5"><span class="nav-number">1.1.4.</span> <span class="nav-text">任务二：混淆矩阵</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%A4%BA5"><span class="nav-number">1.1.5.</span> <span class="nav-text">提示5</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%B8%89roc%E6%9B%B2%E7%BA%BF"><span class="nav-number">1.1.6.</span> <span class="nav-text">任务三：ROC曲线</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E7%A4%BA6"><span class="nav-number">1.1.7.</span> <span class="nav-text">提示6</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%9D%E8%80%836"><span class="nav-number">1.1.8.</span> <span class="nav-text">思考6</span></a></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -164,18 +164,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">127</span>
+          <span class="site-state-item-count">128</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-count">49</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">55</span>
+        <span class="site-state-item-count">56</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -293,7 +293,8 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h2 id="第三章-模型搭建和评估-评估"><a href="#第三章-模型搭建和评估-评估" class="headerlink" title="第三章 模型搭建和评估-评估"></a>第三章 模型搭建和评估-评估</h2><p>根据之前的模型的建模，我们知道如何运用sklearn这个库来完成建模，以及我们知道了的数据集的划分等等操作。那么一个模型我们怎么知道它好不好用呢？以至于我们能不能放心的使用模型给我的结果呢？那么今天的学习的评估，就会很有帮助。</p>
+    <div class="post-body" itemprop="articleBody"><h2 id="第三章-模型搭建和评估-评估">第三章 模型搭建和评估-评估</h2>
+<p>根据之前的模型的建模，我们知道如何运用sklearn这个库来完成建模，以及我们知道了的数据集的划分等等操作。那么一个模型我们怎么知道它好不好用呢？以至于我们能不能放心的使用模型给我的结果呢？那么今天的学习的评估，就会很有帮助。</p>
 <p>加载下面的库</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> IPython.display <span class="keyword">import</span> Image</span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LogisticRegression</span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%matplotlib inline</span><br></pre></td></tr></table></figure>
@@ -310,46 +311,62 @@ Increase the number of iterations (max_iter) or scale the data as shown in:
     https://scikit-learn.org/stable/modules/preprocessing.html
 Please also refer to the documentation for alternative solver options:
     https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
-  n_iter_i = _check_optimize_result(
-</code></pre><h3 id="模型评估"><a href="#模型评估" class="headerlink" title="模型评估"></a>模型评估</h3><ul>
+  n_iter_i = _check_optimize_result(</code></pre>
+<h3 id="模型评估">模型评估</h3>
+<ul>
 <li>模型评估是为了知道模型的泛化能力。</li>
 <li>交叉验证（cross-validation）是一种评估泛化性能的统计学方法，它比单次划分训练集和测试集的方法更加稳定、全面。</li>
 <li>在交叉验证中，数据被多次划分，并且需要训练多个模型。</li>
-<li>最常用的交叉验证是 k 折交叉验证（k-fold cross-validation），其中 k 是由用户指定的数字，通常取 5 或 10。</li>
+<li>最常用的交叉验证是 k 折交叉验证（k-fold cross-validation），其中 k
+是由用户指定的数字，通常取 5 或 10。</li>
 <li>准确率（precision）度量的是被预测为正例的样本中有多少是真正的正例</li>
 <li>召回率（recall）度量的是正类样本中有多少被预测为正类</li>
 <li>f-分数是准确率与召回率的调和平均</li>
 </ul>
 <p>【思考】：将上面的概念进一步的理解，大家可以做一下总结</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考回答：</span></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h4 id="任务一：交叉验证"><a href="#任务一：交叉验证" class="headerlink" title="任务一：交叉验证"></a>任务一：交叉验证</h4><ul>
+<h4 id="任务一交叉验证">任务一：交叉验证</h4>
+<ul>
 <li>用10折交叉验证来评估之前的逻辑回归模型</li>
 <li>计算交叉验证精度的平均值</li>
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#提示：交叉验证</span></span><br><span class="line">Image(<span class="string">&#x27;Snipaste_2020-01-05_16-37-56.png&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p><img src="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B/第三章模型建立和评估---评价-课程_16_0.png" alt="第三章模型建立和评估---评价-课程_16_0"></p>
-<h4 id="提示4"><a href="#提示4" class="headerlink" title="提示4"></a>提示4</h4><ul>
+<figure>
+<img src="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B/第三章模型建立和评估---评价-课程_16_0.png" alt="第三章模型建立和评估—评价-课程_16_0">
+<figcaption aria-hidden="true">第三章模型建立和评估—评价-课程_16_0</figcaption>
+</figure>
+<h4 id="提示4">提示4</h4>
+<ul>
 <li>交叉验证在sklearn中的模块为<code>sklearn.model_selection</code></li>
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> cross_val_score</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">lr = LogisticRegression(C=<span class="number">100</span>)</span><br><span class="line">scores = cross_val_score(lr, X_train, y_train, cv=<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment"># 平均交叉验证分数</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Average cross-validation score: &#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(scores.mean()))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<pre><code>Average cross-validation score: 0.78
-</code></pre><h4 id="思考4"><a href="#思考4" class="headerlink" title="思考4"></a>思考4</h4><ul>
+<pre><code>Average cross-validation score: 0.78</code></pre>
+<h4 id="思考4">思考4</h4>
+<ul>
 <li>k折越多的情况下会带来什么样的影响？</li>
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考回答</span></span><br><span class="line"><span class="comment"># 当 k 越大时：</span></span><br><span class="line"><span class="comment"># 1. 每次训练使用的数据更多，评估偏差（bias）降低</span></span><br><span class="line"><span class="comment"># 2. 每次测试集样本更少，评估方差（variance）增大</span></span><br><span class="line"><span class="comment"># 3. 需要训练 k 个模型，计算开销显著增加</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h4 id="任务二：混淆矩阵"><a href="#任务二：混淆矩阵" class="headerlink" title="任务二：混淆矩阵"></a>任务二：混淆矩阵</h4><ul>
+<h4 id="任务二混淆矩阵">任务二：混淆矩阵</h4>
+<ul>
 <li>计算二分类问题的混淆矩阵</li>
 <li>计算精确率、召回率以及f-分数</li>
 </ul>
 <p>【思考】什么是二分类问题的混淆矩阵，理解这个概念，知道它主要是运算到什么任务中的</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考回答</span></span><br><span class="line"><span class="comment"># 混淆矩阵（confusion matrix）是一个 2×2 的表格，用于二分类任务中展示模型预测结果与真实标签的对应关系：</span></span><br><span class="line"><span class="comment">#    - True Positive (TP)：真实为正类，预测也为正类</span></span><br><span class="line"><span class="comment">#    - False Positive (FP)：真实为负类，却被误预测为正类</span></span><br><span class="line"><span class="comment">#    - False Negative (FN)：真实为正类，却被误预测为负类</span></span><br><span class="line"><span class="comment">#    - True Negative (TN)：真实为负类，预测也为负类</span></span><br><span class="line"><span class="comment"># 通过混淆矩阵，可以进一步计算精确率（Precision）、召回率（Recall）、F1 分数等指标，</span></span><br><span class="line"><span class="comment"># 帮助我们评估模型在不同类型错误上的表现，常用于分类模型的性能评估和错误分析。</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#提示：混淆矩阵</span></span><br><span class="line">Image(<span class="string">&#x27;Snipaste_2020-01-05_16-38-26.png&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<p><img src="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B/第三章模型建立和评估---评价-课程_27_0.png" alt="第三章模型建立和评估---评价-课程_27_0"></p>
+<figure>
+<img src="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B/第三章模型建立和评估---评价-课程_27_0.png" alt="第三章模型建立和评估—评价-课程_27_0">
+<figcaption aria-hidden="true">第三章模型建立和评估—评价-课程_27_0</figcaption>
+</figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#提示：准确率 (Accuracy),精确度（Precision）,Recall,f-分数计算方法</span></span><br><span class="line">Image(<span class="string">&#x27;Snipaste_2020-01-05_16-39-27.png&#x27;</span>)</span><br><span class="line">​    </span><br></pre></td></tr></table></figure>
-<p><img src="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B/第三章模型建立和评估---评价-课程_28_0.png" alt="第三章模型建立和评估---评价-课程_28_0"></p>
-<h4 id="提示5"><a href="#提示5" class="headerlink" title="提示5"></a>提示5</h4><ul>
+<figure>
+<img src="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B/第三章模型建立和评估---评价-课程_28_0.png" alt="第三章模型建立和评估—评价-课程_28_0">
+<figcaption aria-hidden="true">第三章模型建立和评估—评价-课程_28_0</figcaption>
+</figure>
+<h4 id="提示5">提示5</h4>
+<ul>
 <li>混淆矩阵的方法在sklearn中的<code>sklearn.metrics</code>模块</li>
 <li>混淆矩阵需要输入真实标签和预测标签</li>
 <li>精确率、召回率以及f-分数可使用<code>classification_report</code>模块</li>
@@ -363,12 +380,12 @@ Increase the number of iterations (max_iter) or scale the data as shown in:
     https://scikit-learn.org/stable/modules/preprocessing.html
 Please also refer to the documentation for alternative solver options:
     https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
-  n_iter_i = _check_optimize_result(
-</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment"># 模型预测结果</span></span><br><span class="line">pred = lr.predict(X_train)</span><br></pre></td></tr></table></figure>
+  n_iter_i = _check_optimize_result(</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment"># 模型预测结果</span></span><br><span class="line">pred = lr.predict(X_train)</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment"># 混淆矩阵</span></span><br><span class="line">confusion_matrix(y_train, pred)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <pre><code>array([[355,  57],
-       [ 82, 174]])
-</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> classification_report</span><br><span class="line"><span class="comment"># 精确率、召回率以及f1-score</span></span><br><span class="line"><span class="built_in">print</span>(classification_report(y_train, pred))</span><br></pre></td></tr></table></figure>
+       [ 82, 174]])</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> classification_report</span><br><span class="line"><span class="comment"># 精确率、召回率以及f1-score</span></span><br><span class="line"><span class="built_in">print</span>(classification_report(y_train, pred))</span><br></pre></td></tr></table></figure>
 <pre><code>              precision    recall  f1-score   support
 
            0       0.81      0.86      0.84       412
@@ -376,18 +393,17 @@ Please also refer to the documentation for alternative solver options:
 
     accuracy                           0.79       668
    macro avg       0.78      0.77      0.78       668
-weighted avg       0.79      0.79      0.79       668
-</code></pre><p>【思考】</p>
-<ul>
-<li>如果自己实现混淆矩阵的时候该注意什么问题</li>
-</ul>
+weighted avg       0.79      0.79      0.79       668</code></pre>
+<p>【思考】 * 如果自己实现混淆矩阵的时候该注意什么问题</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考回答</span></span><br><span class="line"><span class="comment"># 如果自己实现混淆矩阵，需要注意：</span></span><br><span class="line"><span class="comment"># 1. 明确行列含义：通常行是真实标签，列是预测标签，并保持一致。</span></span><br><span class="line"><span class="comment"># 2. 类别顺序要固定：最好指定 labels 列表，避免类别稀疏时错位。</span></span><br><span class="line"><span class="comment"># 3. 初始化大小为 n_classes×n_classes 的零矩阵。</span></span><br><span class="line"><span class="comment"># 4. 索引时使用整数或统一的类别映射，避免类型不一致。</span></span><br><span class="line"><span class="comment"># 5. 对每个样本累加到对应的 [真实, 预测] 单元格，最后矩阵元素之和应等于样本数。</span></span><br><span class="line"><span class="comment"># 6. 对于未出现的类别，矩阵对应行或列应保留 0。</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h4 id="任务三：ROC曲线"><a href="#任务三：ROC曲线" class="headerlink" title="任务三：ROC曲线"></a>任务三：ROC曲线</h4><ul>
+<h4 id="任务三roc曲线">任务三：ROC曲线</h4>
+<ul>
 <li>绘制ROC曲线</li>
 </ul>
 <p>【思考】什么是ROC曲线，OCR曲线的存在是为了解决什么问题？</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考</span></span><br><span class="line"><span class="comment"># ROC曲线（Receiver Operating Characteristic Curve）是一条以假正例率（FPR）为横坐标、</span></span><br><span class="line"><span class="comment"># 真正例率（TPR）为纵坐标绘制的曲线，展示模型在不同阈值下的分类性能变化。</span></span><br><span class="line"><span class="comment"># 它解决了单一阈值下评估不全面的问题，通过曲线下的面积（AUC）能够衡量模型整体区分正负样本的能力；</span></span><br><span class="line"><span class="comment"># 对类别不平衡更稳健，可在不同模型或参数设置间进行客观比较。</span></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h4 id="提示6"><a href="#提示6" class="headerlink" title="提示6"></a>提示6</h4><ul>
+<h4 id="提示6">提示6</h4>
+<ul>
 <li>ROC曲线在sklearn中的模块为<code>sklearn.metrics</code></li>
 <li>ROC曲线下面所包围的面积越大越好</li>
 </ul>
@@ -430,10 +446,14 @@ weighted avg       0.79      0.79      0.79       668
   0.22449105 -0.3214215   0.05735696  0.02061023 -3.01544378 -0.77973619
  -1.39798016 -3.10075724 -4.80621573 -3.01948006  3.44366918 -2.88193813
  -2.01992513 -0.09559774  0.91447527 -1.13270082 -2.45426968 -1.91415803
- -0.08403516]
-</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment"># 计算ROC曲线的假正例率(FPR)、真正例率(TPR)和阈值</span></span><br><span class="line">fpr, tpr, thresholds = roc_curve(y_test, lr.decision_function(X_test))</span><br><span class="line">plt.plot(fpr, tpr, label=<span class="string">&quot;ROC Curve&quot;</span>)</span><br><span class="line">plt.xlabel(<span class="string">&quot;FPR&quot;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&quot;TPR (recall)&quot;</span>)</span><br><span class="line"><span class="comment"># 找到最接近于0的阈值</span></span><br><span class="line">close_zero = np.argmin(np.<span class="built_in">abs</span>(thresholds))</span><br><span class="line">plt.plot(fpr[close_zero], tpr[close_zero], <span class="string">&#x27;o&#x27;</span>, markersize=<span class="number">10</span>, label=<span class="string">&quot;threshold zero&quot;</span>, fillstyle=<span class="string">&quot;none&quot;</span>, c=<span class="string">&#x27;k&#x27;</span>, mew=<span class="number">2</span>)</span><br><span class="line">plt.legend(loc=<span class="number">4</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p><img src="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B/第三章模型建立和评估---评价-课程_44_3.png" alt="第三章模型建立和评估---评价-课程_44_3"></p>
-<h4 id="思考6"><a href="#思考6" class="headerlink" title="思考6"></a>思考6</h4><ul>
+ -0.08403516]</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment"># 计算ROC曲线的假正例率(FPR)、真正例率(TPR)和阈值</span></span><br><span class="line">fpr, tpr, thresholds = roc_curve(y_test, lr.decision_function(X_test))</span><br><span class="line">plt.plot(fpr, tpr, label=<span class="string">&quot;ROC Curve&quot;</span>)</span><br><span class="line">plt.xlabel(<span class="string">&quot;FPR&quot;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&quot;TPR (recall)&quot;</span>)</span><br><span class="line"><span class="comment"># 找到最接近于0的阈值</span></span><br><span class="line">close_zero = np.argmin(np.<span class="built_in">abs</span>(thresholds))</span><br><span class="line">plt.plot(fpr[close_zero], tpr[close_zero], <span class="string">&#x27;o&#x27;</span>, markersize=<span class="number">10</span>, label=<span class="string">&quot;threshold zero&quot;</span>, fillstyle=<span class="string">&quot;none&quot;</span>, c=<span class="string">&#x27;k&#x27;</span>, mew=<span class="number">2</span>)</span><br><span class="line">plt.legend(loc=<span class="number">4</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure>
+<img src="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B/第三章模型建立和评估---评价-课程_44_3.png" alt="第三章模型建立和评估—评价-课程_44_3">
+<figcaption aria-hidden="true">第三章模型建立和评估—评价-课程_44_3</figcaption>
+</figure>
+<h4 id="思考6">思考6</h4>
+<ul>
 <li>对于多分类问题如何绘制ROC曲线</li>
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考回答</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
@@ -479,8 +499,8 @@ weighted avg       0.79      0.79      0.79       668
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E7%AC%AC%E4%B8%80%E8%8A%82%E6%95%B0%E6%8D%AE%E8%BD%BD%E5%85%A5%E5%8F%8A%E5%88%9D%E6%AD%A5%E8%A7%82%E5%AF%9F-%E8%AF%BE%E7%A8%8B-checkpoint/" rel="next" title="数据分析——第一章：第一节数据载入及初步观察">
-                  数据分析——第一章：第一节数据载入及初步观察 <i class="fa fa-angle-right"></i>
+                <a href="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%80%E7%AB%A0%EF%BC%9A%E7%AC%AC%E4%B8%89%E8%8A%82%E6%8E%A2%E7%B4%A2%E6%80%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90-%E8%AF%BE%E7%A8%8B/" rel="next" title="数据分析——第一章：第三节探索性数据分析">
+                  数据分析——第一章：第三节探索性数据分析 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
