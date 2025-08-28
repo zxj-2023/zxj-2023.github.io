@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="技术路线 方案 A：html → PDF → pptx（我尝试下来不大可行，无法再进行编辑了） 方案 B：html → PPTXGenJS 方案 C：html → python-pptx (主流) 方案 D：markdown → Slidev 我尝试了当前市面的ppt生成产品，在网页里面展示还会有良好的动画效果，但是一旦导出成pptx，都是会变成静态页面，没有动画 reveal.js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="aippt技术调研">
+<meta property="og:url" content="http://example.com/2025/08/25/%E5%AE%9E%E4%B9%A0/Tosea.ai/aippt%E6%8A%80%E6%9C%AF%E8%B0%83%E7%A0%94/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="技术路线 方案 A：html → PDF → pptx（我尝试下来不大可行，无法再进行编辑了） 方案 B：html → PPTXGenJS 方案 C：html → python-pptx (主流) 方案 D：markdown → Slidev 我尝试了当前市面的ppt生成产品，在网页里面展示还会有良好的动画效果，但是一旦导出成pptx，都是会变成静态页面，没有动画 reveal.js">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-08-24T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-08-28T09:16:27.085Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="实习">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2025/08/25/%E5%AE%9E%E4%B9%A0/Tosea.ai/aippt%E6%8A%80%E6%9C%AF%E8%B0%83%E7%A0%94/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/08/25/%E5%AE%9E%E4%B9%A0/Tosea.ai/aippt%E6%8A%80%E6%9C%AF%E8%B0%83%E7%A0%94/","path":"2025/08/25/实习/Tosea.ai/aippt技术调研/","title":"aippt技术调研"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>aippt技术调研 | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E8%B7%AF%E7%BA%BF"><span class="nav-number">1.</span> <span class="nav-text">技术路线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%B7%A5%E5%85%B7"><span class="nav-number">2.</span> <span class="nav-text">相关工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%82%E9%9D%A2%E5%90%8C%E7%B1%BB%E4%BA%A7%E5%93%81"><span class="nav-number">3.</span> <span class="nav-text">市面同类产品</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ppt-mcp"><span class="nav-number">4.</span> <span class="nav-text">ppt-mcp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84%E6%80%9D%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">架构思考</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A9%E7%94%A8apryse%E5%B0%86pdf%E8%BD%AC%E6%88%90pptx"><span class="nav-number">6.</span> <span class="nav-text">利用APRYSE将pdf转成pptx</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">7.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">132</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">50</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/08/25/%E5%AE%9E%E4%B9%A0/Tosea.ai/aippt%E6%8A%80%E6%9C%AF%E8%B0%83%E7%A0%94/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="aippt技术调研 | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          aippt技术调研
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-08-25 00:00:00" itemprop="dateCreated datePublished" datetime="2025-08-25T00:00:00+08:00">2025-08-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-08-28 17:16:27" itemprop="dateModified" datetime="2025-08-28T17:16:27+08:00">2025-08-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AE%9E%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">实习</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AE%9E%E4%B9%A0/Tosea-ai/" itemprop="url" rel="index"><span itemprop="name">Tosea.ai</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="技术路线">技术路线</h3>
+<p><strong>方案 A：html → PDF →
+pptx</strong>（我尝试下来不大可行，无法再进行编辑了）</p>
+<p><strong>方案 B：html → PPTXGenJS</strong></p>
+<p><strong>方案 C：html → python-pptx</strong> (主流)</p>
+<p><strong>方案 D：markdown → Slidev</strong></p>
+<p>我尝试了当前市面的ppt生成产品，在网页里面展示还会有良好的动画效果，但是一旦导出成pptx，都是会变成静态页面，没有动画</p>
+<p>reveal.js可以利用页面生成丰富的ppt动画效果；Slidev可以将markdown语法转化成ppt，可以导出为pdf或pptx，需要注意的是，PPTX
+文件中的所有幻灯片都会被导出为图片。</p>
+<p>PPTXGenJS和python-pptx的原理基本一致，区别一个是使用js一个是python，使用方法都是通过解析HTML标签内容，定义一个ppt实例，将html的内容一点点加入这个示例中，最后导出pptx。这样都仅能实现最基本的ppt演示，不会有复杂的结构，而且经常会出现一个问题——某个标签内文字太多往往会超出ppt演示范围</p>
+<p>直接让AI来生成非常自由的PPT，最终的效果一般来说都比较烂，大部分都是预定义一个html模板，然后让AI来自动的选择模板往里面填充内容</p>
+<h3 id="相关工具">相关工具</h3>
+<p><a target="_blank" rel="noopener" href="https://cn.sli.dev/guide/">Slidev</a>
+是一个为开发者设计的基于 Web 的幻灯片制作工具。它帮助您以 Markdown
+的形式专注于编写幻灯片的内容，并制作出具有交互式演示功能的、高度可自定义的幻灯片。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/hakimel/reveal.js">reveal.js</a>
+是一个开源的 <strong>HTML 演示框架</strong>，用 JavaScript
+写成。只要你会写 HTML/CSS/JS，就可以像做网页一样做出
+<strong>酷炫、响应式、支持键盘/鼠标/触控交互</strong> 的幻灯片。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/gitbrent/PptxGenJS">PptxGenJS</a>
+允许您使用 JavaScript 生成专业的 PowerPoint 演示文稿——直接从
+Node、React、Vite、Electron，甚至浏览器中生成。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/scanny/python-pptx">python-pptx</a>
+是一个用于创建、读取和更新 PowerPoint (.pptx)文件的 Python
+库。典型的使用场景是从动态内容（如数据库查询、分析输出或 JSON 负载）生成
+PowerPoint 演示文稿，可能是在响应 HTTP 请求时生成 PPTX 文件并下载。</p>
+<blockquote>
+<p>python-pptx使用方式：根据标签解析html文件，如h1，div等，然后一点点添加到定义的页中</p>
+</blockquote>
+<h3 id="市面同类产品">市面同类产品</h3>
+<ol type="1">
+<li><a target="_blank" rel="noopener" href="https://www.genspark.ai/agents?type=slides_agent">Genspark</a>
+<ul>
+<li>Genspark 是 <strong>MainFunc</strong> 公司（由前小度 CEO
+景鲲和前小度 CTO 朱凯华联合创立）推出的 <strong>AI Agent
+搜索引擎</strong>（或称“AI 原生搜索引擎”）。</li>
+</ul></li>
+<li><a target="_blank" rel="noopener" href="https://www.tiangong.cn/?from=ai-tab.cn">skywork</a>
+<ul>
+<li>Skywork 是昆仑万维（Kunlun Inc.）旗下 <strong>SkyWork AI</strong>
+推出的一系列 <strong>开源大模型</strong> 与 <strong>AI
+技术品牌</strong>。</li>
+</ul></li>
+<li><a target="_blank" rel="noopener" href="https://manus.im/app">manus</a></li>
+<li><a target="_blank" rel="noopener" href="https://gamma.app/">Gamma</a> 是一个 <strong>“AI
+驱动的在线内容工作站”</strong>：输入一句话、一段大纲或任何资料，它就能在
+<strong>1-3 分钟内</strong> 帮你生成
+<strong>高颜值、品牌化、可互动</strong> 的演示文稿、网站、社媒图文或
+PDF，并可一键导出为 <strong>PPT / Google Slides / PDF /
+网站链接</strong>。</li>
+</ol>
+<p>manus是每页ppt都是一个html文件，我猜测应该是使用像python-pptx的库生成</p>
+<h3 id="ppt-mcp">ppt-mcp</h3>
+<p>可以参考其中的工具实现，这两个我看下来都是使用python-pptx包</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/GongRzhe/Office-PowerPoint-MCP-Server">GongRzhe/Office-PowerPoint-MCP-Server:
+A MCP (Model Context Protocol) server for PowerPoint manipulation using
+python-pptx. This server provides tools for creating, editing, and
+manipulating PowerPoint presentations through the MCP protocol.</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/ltc6539/mcp-ppt">ltc6539/mcp-ppt: A mcp
+server supporting you to generate powerpoint using LLM and natural
+language automatically.</a></p>
+<h3 id="架构思考">架构思考</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line">    subgraph &quot;Plan-and-Execute阶段&quot;</span><br><span class="line">        A[&quot;用户输入&quot;] --&gt; B[&quot;Planner Agent&quot;]</span><br><span class="line">        B --&gt; C[&quot;Agent Executor&quot;]</span><br><span class="line">        C --&gt; D[&quot;Replanner&quot;]</span><br><span class="line">        D --&gt;|&quot;需要更多信息&quot;| C</span><br><span class="line">        D --&gt;|&quot;信息充足&quot;| E[&quot;输出结构化信息&quot;]</span><br><span class="line">    end</span><br><span class="line">    </span><br><span class="line">    subgraph &quot;内容生成阶段&quot;</span><br><span class="line">        E --&gt; F[&quot;大纲设计节点&quot;]</span><br><span class="line">        F --&gt; G[&quot;页面内容生成节点&quot;]</span><br><span class="line">        G --&gt; H[&quot;HTML代码生成节点&quot;]</span><br><span class="line">    end</span><br><span class="line">    </span><br><span class="line">    subgraph &quot;文件转换阶段&quot;</span><br><span class="line">        H --&gt; I[&quot;html演示生成&quot;]</span><br><span class="line">        I --&gt; J[&quot;转换pptx节点&quot;]</span><br><span class="line">        J --&gt; K[&quot;输出PPTX文件&quot;]</span><br><span class="line">    end</span><br></pre></td></tr></table></figure>
+<h3 id="利用apryse将pdf转成pptx">利用APRYSE将pdf转成pptx</h3>
+<p>Apryse（曾用名 PDFTron）是一家加拿大公司推出的商用 SDK 家族，专注
+“任何格式进、任何格式出” 的文档处理。</p>
+<p>获取apikey<a target="_blank" rel="noopener" href="https://docs.apryse.com/core/guides/get-started/trial-key">Free
+trial key for Apryse SDK | Apryse documentation</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.apryse.com/core/guides/get-started/python3">Python
+3.X PDF Library for Windows, Linux and Mac | Apryse
+documentation</a></p>
+<p><strong>安装 Apryse SDK 的“结构化输出模块”（Structured Output
+Module）</strong>。该模块是一个可选的扩展包，PDF → PPTX、PDF → Word
+等高级转换功能都依赖它。<a target="_blank" rel="noopener" href="https://docs.apryse.com/core/guides/info/modules">库插件：OCR、CAD
+转 PDF - 适用于服务器/桌面 SDK | Apryse 文档 — Library Add-ons: OCR, CAD
+to PDF - for Server/Desktop SDK | Apryse documentation</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">from apryse_sdk import PDFNet, PDFDoc, Convert, StructuredOutputModule</span><br><span class="line"></span><br><span class="line"># 1. 初始化（许可证）</span><br><span class="line">PDFNet.Initialize(&quot;demo:1756369085114:&quot;)</span><br><span class="line"></span><br><span class="line"># 2. 告诉 SDK 模块放在哪里</span><br><span class="line">PDFNet.AddResourceSearchPath(r&quot;F:\project python\test\StructuredOutputWindows\Lib\Windows&quot;)</span><br><span class="line"></span><br><span class="line"># 3. 可选：确认模块已就位</span><br><span class="line">if not StructuredOutputModule.IsModuleAvailable():</span><br><span class="line">    raise RuntimeError(&quot;StructuredOutput module not found!&quot;)</span><br><span class="line"></span><br><span class="line"># 4. 正常调用</span><br><span class="line">doc = PDFDoc(&quot;input.pdf&quot;)</span><br><span class="line">Convert.ToPowerPoint(doc, &quot;output.pptx&quot;)</span><br></pre></td></tr></table></figure>
+<h3 id="参考资料">参考资料</h3>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Zftnz6Ewx/?spm_id_from=333.788.recommend_more_video.0&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">动手实现一个做PPT的MCP服务器_哔哩哔哩_bilibili</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%AE%9E%E4%B9%A0/" rel="tag"># 实习</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/08/19/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/agentic-rag/" rel="prev" title="agentic-rag实战">
+                  <i class="fa fa-angle-left"></i> agentic-rag实战
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/08/28/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/deepresearch/" rel="next" title="deepresearch实战">
+                  deepresearch实战 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

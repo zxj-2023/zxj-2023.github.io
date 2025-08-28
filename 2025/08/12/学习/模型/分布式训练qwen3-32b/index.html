@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="训练框架-LLaMA-Factor 安装 - LLaMA Factory docker部署镜像，以便后续传入内网 123456789101112131415161718git clone --depth 1 https:&#x2F;&#x2F;github.com&#x2F;hiyouga&#x2F;LLaMA-Factory.gitcd LLaMA-Factorydocker build -f .&#x2F;docker&#x2F;docker-">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式训练qwen3-32b">
+<meta property="og:url" content="http://example.com/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83qwen3-32b/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="训练框架-LLaMA-Factor 安装 - LLaMA Factory docker部署镜像，以便后续传入内网 123456789101112131415161718git clone --depth 1 https:&#x2F;&#x2F;github.com&#x2F;hiyouga&#x2F;LLaMA-Factory.gitcd LLaMA-Factorydocker build -f .&#x2F;docker&#x2F;docker-">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83qwen3-32b/image-20250827091214108.png">
+<meta property="og:image" content="http://example.com/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83qwen3-32b/image-20250828144300339.png">
+<meta property="og:image" content="http://example.com/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83qwen3-32b/image-20250828145106050.png">
+<meta property="og:image" content="http://example.com/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83qwen3-32b/image-20250828145750115.png">
+<meta property="article:published_time" content="2025-08-11T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-08-28T06:58:37.773Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="模型微调">
+<meta property="article:tag" content="LoRA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83qwen3-32b/image-20250827091214108.png">
+
+
+<link rel="canonical" href="http://example.com/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83qwen3-32b/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83qwen3-32b/","path":"2025/08/12/学习/模型/分布式训练qwen3-32b/","title":"分布式训练qwen3-32b"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>分布式训练qwen3-32b | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E6%A1%86%E6%9E%B6-llama-factor"><span class="nav-number">1.</span> <span class="nav-text">训练框架-LLaMA-Factor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86-easy-dataset"><span class="nav-number">2.</span> <span class="nav-text">数据集-easy-dataset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E4%BC%A0%E5%86%85%E7%BD%91"><span class="nav-number">3.</span> <span class="nav-text">上传内网</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2%E4%B8%8E%E8%B0%83%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">模型部署与调用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%B6%E4%BD%9C%E6%A8%A1%E5%9E%8B%E8%BF%90%E8%A1%8C%E9%95%9C%E5%83%8F"><span class="nav-number">4.1.</span> <span class="nav-text">制作模型运行镜像</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%95%9C%E5%83%8F%E4%BF%A1%E6%81%AF"><span class="nav-number">4.2.</span> <span class="nav-text">镜像信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dockerfile"><span class="nav-number">4.3.</span> <span class="nav-text">dockerfile</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E5%AE%B9%E5%99%A8"><span class="nav-number">4.4.</span> <span class="nav-text">运行容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#vllm%E9%83%A8%E7%BD%B2qwen3"><span class="nav-number">4.5.</span> <span class="nav-text">vllm部署qwen3</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-number">4.6.</span> <span class="nav-text">测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B0%83%E7%94%A8"><span class="nav-number">4.7.</span> <span class="nav-text">调用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">5.</span> <span class="nav-text">微调数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#alpaca%E5%92%8Csharegpt%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">5.1.</span> <span class="nav-text">alpaca和sharegpt的区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%A6%E8%A7%A3"><span class="nav-number">5.2.</span> <span class="nav-text">详解</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83%E5%8F%82%E6%95%B0%E8%AE%BE%E7%BD%AE"><span class="nav-number">6.</span> <span class="nav-text">微调参数设置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#deepspeed-stagedeepspeed-%E9%98%B6%E6%AE%B5"><span class="nav-number">6.1.</span> <span class="nav-text">DeepSpeed
+stage（DeepSpeed 阶段）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-deepspeed-offload%E4%BD%BF%E7%94%A8-offload"><span class="nav-number">6.2.</span> <span class="nav-text">使用 DeepSpeed offload（使用
+offload）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E7%BB%93%E6%9E%9C"><span class="nav-number">7.</span> <span class="nav-text">训练结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%84%E4%BC%B0"><span class="nav-number">8.</span> <span class="nav-text">评估</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8%E5%86%85%E7%BD%91%E8%AE%A1%E7%AE%97%E8%8A%82%E7%82%B9%E8%AE%BF%E9%97%AEswanlab-cloud"><span class="nav-number">9.</span> <span class="nav-text">在内网计算节点访问SwanLab
+Cloud</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E8%AE%AD%E7%BB%83%E6%AD%A5%E6%95%B0"><span class="nav-number">10.</span> <span class="nav-text">如何计算训练步数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E9%9B%86%E6%A0%B7%E6%9C%AC%E9%87%8F"><span class="nav-number">10.1.</span> <span class="nav-text">1. 训练集样本量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AF%8F%E6%AC%A1%E5%8F%82%E6%95%B0%E6%9B%B4%E6%96%B0%E5%A4%84%E7%90%86%E7%9A%84%E6%A0%B7%E6%9C%AC%E6%95%B0effective-batch-size"><span class="nav-number">10.2.</span> <span class="nav-text">2.
+每次参数更新处理的样本数（effective batch size）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AF%8F%E8%BD%AEepoch%E7%9A%84%E8%AE%AD%E7%BB%83%E6%AD%A5%E6%95%B0"><span class="nav-number">10.3.</span> <span class="nav-text">3. 每轮（epoch）的训练步数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E8%AE%AD%E7%BB%83%E6%AD%A5%E6%95%B0"><span class="nav-number">10.4.</span> <span class="nav-text">4. 总训练步数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%AE%A1%E7%AE%97%E4%B8%80%E4%B8%AA%E6%A8%A1%E5%9E%8B%E5%8D%A0%E7%94%A8%E7%9A%84%E6%98%BE%E5%AD%98"><span class="nav-number">11.</span> <span class="nav-text">如何计算一个模型占用的显存</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%9D%83%E9%87%8D"><span class="nav-number">11.1.</span> <span class="nav-text">基础模型的权重</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%9E%8B%E7%B2%BE%E5%BA%A6%E4%B8%8B%E7%9A%84%E5%8D%95%E4%B8%AA%E5%8F%82%E6%95%B0%E6%98%BE%E5%AD%98%E5%8D%A0%E7%94%A8"><span class="nav-number">11.2.</span> <span class="nav-text">常见模型精度下的单个参数显存占用：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A1%86%E6%9E%B6%E5%BC%80%E9%94%80framework-overhead"><span class="nav-number">11.3.</span> <span class="nav-text">框架开销（Framework Overhead）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lora-%E9%80%82%E9%85%8D%E5%99%A8lora-adapters"><span class="nav-number">11.4.</span> <span class="nav-text">LoRA 适配器（LoRA Adapters）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BF%80%E6%B4%BB%E5%80%BCactivations"><span class="nav-number">11.5.</span> <span class="nav-text">激活值（Activations）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E9%80%9F%E6%96%B9%E5%BC%8F"><span class="nav-number">12.</span> <span class="nav-text">加速方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">13.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">132</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">50</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83qwen3-32b/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="分布式训练qwen3-32b | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          分布式训练qwen3-32b
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-08-12 00:00:00" itemprop="dateCreated datePublished" datetime="2025-08-12T00:00:00+08:00">2025-08-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-08-28 14:58:37" itemprop="dateModified" datetime="2025-08-28T14:58:37+08:00">2025-08-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%A8%A1%E5%9E%8B/" itemprop="url" rel="index"><span itemprop="name">模型</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%A8%A1%E5%9E%8B/%E5%BE%AE%E8%B0%83/" itemprop="url" rel="index"><span itemprop="name">微调</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="训练框架-llama-factor">训练框架-<a target="_blank" rel="noopener" href="https://github.com/hiyouga/LLaMA-Factory">LLaMA-Factor</a></h3>
+<p><a target="_blank" rel="noopener" href="https://llamafactory.readthedocs.io/zh-cn/latest/getting_started/installation.html">安装
+- LLaMA Factory</a></p>
+<p><strong>docker部署镜像</strong>，以便后续传入内网</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">git clone --depth 1 https://github.com/hiyouga/LLaMA-Factory.git</span><br><span class="line">cd LLaMA-Factory</span><br><span class="line"></span><br><span class="line">docker build -f ./docker/docker-cuda/Dockerfile \</span><br><span class="line">    --build-arg PIP_INDEX=https://pypi.org/simple \</span><br><span class="line">    --build-arg EXTRAS=metrics \</span><br><span class="line">    -t llamafactory:latest .</span><br><span class="line"></span><br><span class="line">docker run -dit --ipc=host --gpus=all \</span><br><span class="line">    -p 7860:7860 \</span><br><span class="line">    -p 8001:8000 \    # 主机 8001 → 容器 8000，主机8000端口被占用了</span><br><span class="line">    --name llamafactory \</span><br><span class="line">    -v /aisys/:/aisys/ \</span><br><span class="line">    docker.1ms.run/hiyouga/llamafactory</span><br><span class="line"></span><br><span class="line">docker run -dit --ipc=host --gpus=all -p 7860:7860 -p 8001:8000 -v /aisys/:/aisys/ --name llamafactory docker.1ms.run/hiyouga/llamafactory</span><br><span class="line"></span><br><span class="line">docker exec -it llamafactory bash</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker pull docker.1ms.run/hiyouga/llamafactory                                    </span><br><span class="line"></span><br><span class="line">docker save docker.1ms.run/hiyouga/llamafactory:latest -o llamafactory-image.tar</span><br><span class="line"></span><br><span class="line">docker load -i llamafactory-image.tar</span><br></pre></td></tr></table></figure>
+<p><strong>LLaMA Board 可视化微调（由 <a target="_blank" rel="noopener" href="https://github.com/gradio-app/gradio">Gradio</a>
+驱动）</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">llamafactory-cli webui</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Web UI 访问：<code>http://localhost:7860</code></li>
+<li>API 服务访问：<code>http://localhost:8001</code></li>
+</ul>
+<h3 id="数据集-easy-dataset">数据集-<a target="_blank" rel="noopener" href="https://github.com/ConardLi/easy-dataset">easy-dataset</a></h3>
+<p><strong>docker部署镜像</strong>，以便后续传入内网</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/ConardLi/easy-dataset.git</span><br><span class="line">cd easy-dataset</span><br><span class="line"></span><br><span class="line">docker build -t easy-dataset .</span><br><span class="line"></span><br><span class="line">docker load -i easy-dataset.tar</span><br><span class="line"></span><br><span class="line">docker run -d \</span><br><span class="line">  -p 1717:1717 \</span><br><span class="line">  -v /aisys/repo_dev/xizhang/lora_database:/app/local-db \</span><br><span class="line">  -v /aisys/repo_dev/xizhang/lora_databse_prisma:/app/prisma \</span><br><span class="line">  --name easy-dataset \</span><br><span class="line">  easy-dataset</span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">docker exec -it easy-dataset sh</span><br><span class="line"></span><br><span class="line">docker stop easy-dataset</span><br><span class="line">docker rm easy-dataset</span><br><span class="line"></span><br><span class="line">#实时跟踪</span><br><span class="line"> docker logs -f easy-dataset</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>注意：</strong> 请将
+<code>&#123;YOUR_LOCAL_DB_PATH&#125;</code>、<code>&#123;LOCAL_PRISMA_PATH&#125;</code>
+替换为你希望存储本地数据库的实际路径，建议直接使用当前代码仓库目录下的
+<code>local-db</code> 和 <code>prisma</code> 文件夹，这样可以和 NPM
+启动时的数据库路径保持一致。</p>
+</blockquote>
+<blockquote>
+<p><strong>注意：</strong>
+如果需要挂载数据库文件（PRISMA），需要提前执行
+<code>npm run db:push</code> 初始化数据库文件。</p>
+</blockquote>
+<p>使用开源项目制作数据集</p>
+<p>打开浏览器，访问 <code>http://localhost:1717</code></p>
+<h3 id="上传内网">上传内网</h3>
+<p>使用scp</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp -r &quot;F:\project python\实习\微调\universal-llm_latest.tar&quot; root@10.117.128.50:/aisys/repo_dev/xizhang/images</span><br></pre></td></tr></table></figure>
+<p><strong>SCP</strong> 全称是 <strong>Secure Copy
+Protocol</strong>（安全复制协议），是一种用于在计算机之间<strong>安全地复制文件</strong>的网络协议。</p>
+<p>它基于 <strong>SSH</strong>（Secure
+Shell）协议工作，因此所有传输的数据都是<strong>加密的</strong>，可以防止被窃听或篡改，非常适合在不安全的网络（如互联网）中使用。</p>
+<h3 id="模型部署与调用">模型部署与调用</h3>
+<h4 id="制作模型运行镜像">制作模型运行镜像</h4>
+<p>qwen3部署版本要求如下</p>
+<p>使用 Python 3.10 或以上版本， PyTorch 2.6 或以上版本</p>
+<p><code>transformers&gt;=4.51.0</code> 版本</p>
+<p>使用 <code>sglang&gt;=0.4.6.post1</code> 或
+<code>vllm&gt;=0.8.5</code> 来创建一个与 OpenAI 兼容的 API 端点</p>
+<h4 id="镜像信息">镜像信息</h4>
+<table>
+<colgroup>
+<col style="width: 15%">
+<col style="width: 18%">
+<col style="width: 21%">
+<col style="width: 45%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>类别</th>
+<th>组件</th>
+<th>版本 / 来源</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>OS</strong></td>
+<td>Ubuntu</td>
+<td>22.04 LTS (Jammy)</td>
+<td>上游镜像继承</td>
+</tr>
+<tr class="even">
+<td><strong>Python</strong></td>
+<td>CPython</td>
+<td>3.11</td>
+<td>镜像自带</td>
+</tr>
+<tr class="odd">
+<td><strong>PyTorch</strong></td>
+<td>PyTorch</td>
+<td>2.6.0+cu126</td>
+<td>官方 wheel，CUDA 12.6</td>
+</tr>
+<tr class="even">
+<td><strong>CUDA</strong></td>
+<td>Runtime</td>
+<td>12.6.3</td>
+<td>与宿主机 535 驱动兼容</td>
+</tr>
+<tr class="odd">
+<td><strong>cuDNN</strong></td>
+<td>cuDNN</td>
+<td>9</td>
+<td>包含在镜像</td>
+</tr>
+<tr class="even">
+<td><strong>核心库</strong></td>
+<td>transformers</td>
+<td>≥4.51.0</td>
+<td>官方最新</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>tokenizers</td>
+<td>≥0.21</td>
+<td>transformers 依赖</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>accelerate</td>
+<td>≥1.0.0</td>
+<td>训练 / 推理加速</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>sentencepiece</td>
+<td>≥0.2.0</td>
+<td>Qwen3 分词器必需</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>protobuf</td>
+<td>≥5.28.0</td>
+<td>序列化 / 模型加载</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>tiktoken</td>
+<td>≥0.8.0</td>
+<td>OpenAI 格式分词</td>
+</tr>
+<tr class="even">
+<td><strong>推理框架</strong></td>
+<td>vLLM</td>
+<td>≥0.8.5</td>
+<td>支持 tensor-parallel、PagedAttention</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>SGLang</td>
+<td>≥0.4.6.post1</td>
+<td>支持 outline 解码、MoE 优化</td>
+</tr>
+<tr class="even">
+<td><strong>可选加速</strong></td>
+<td>flash-attn</td>
+<td>≥2.7</td>
+<td>长上下文 / 大 batch 推理</td>
+</tr>
+<tr class="odd">
+<td><strong>权重下载</strong></td>
+<td>modelscope</td>
+<td>最新</td>
+<td>国内镜像加速</td>
+</tr>
+<tr class="even">
+<td><strong>工具链</strong></td>
+<td>git / git-lfs</td>
+<td>最新</td>
+<td>拉取 HuggingFace 权重</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>curl / jq / vim</td>
+<td>最新</td>
+<td>调试 &amp; 健康检查</td>
+</tr>
+</tbody>
+</table>
+<p><strong>基础镜像</strong><code>pytorch/pytorch:2.6.0-cuda12.6-cudnn9-devel</code>
+是 <strong>PyTorch 官方在 Docker Hub
+上提供的“全家桶”开发镜像</strong>，发布日期 2025-01-29，镜像大小约 13
+GB，定位是 <strong>“开箱即用”的 GPU 训练 / 推理 / 调试环境</strong></p>
+<h4 id="dockerfile">dockerfile</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"># ---------- 1. 基础镜像 ----------</span><br><span class="line">FROM pytorch/pytorch:2.6.0-cuda12.6-cudnn9-devel</span><br><span class="line"></span><br><span class="line"># ---------- 2. 国内镜像源 ----------</span><br><span class="line">RUN sed -i &#x27;s|http://archive.ubuntu.com|https://mirrors.tuna.tsinghua.edu.cn|g&#x27; /etc/apt/sources.list &amp;&amp; \</span><br><span class="line">    sed -i &#x27;s|http://security.ubuntu.com|https://mirrors.tuna.tsinghua.edu.cn|g&#x27; /etc/apt/sources.list &amp;&amp; \</span><br><span class="line">    pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple &amp;&amp; \</span><br><span class="line">    pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn</span><br><span class="line"></span><br><span class="line"># ---------- 3. 系统依赖 ----------</span><br><span class="line">RUN apt-get update &amp;&amp; \</span><br><span class="line">    DEBIAN_FRONTEND=noninteractive apt-get install -y \</span><br><span class="line">    git git-lfs build-essential ninja-build curl wget vim jq &amp;&amp; \</span><br><span class="line">    rm -rf /var/lib/apt/lists/*</span><br><span class="line"></span><br><span class="line"># ---------- 4. Python 依赖 ----------</span><br><span class="line">RUN pip install --no-cache-dir --upgrade pip setuptools wheel &amp;&amp; \</span><br><span class="line">    pip install --no-cache-dir \</span><br><span class="line">    &quot;torch==2.6.0+cu126&quot; \</span><br><span class="line">    &quot;transformers&gt;=4.51.0&quot; \</span><br><span class="line">    &quot;tokenizers&gt;=0.21&quot; \</span><br><span class="line">    &quot;accelerate&gt;=1.0.0&quot; \</span><br><span class="line">    &quot;sentencepiece&gt;=0.2.0&quot; \</span><br><span class="line">    &quot;protobuf&gt;=5.28.0&quot; \</span><br><span class="line">    &quot;tiktoken&gt;=0.8.0&quot; \</span><br><span class="line">    &quot;vllm&gt;=0.8.5&quot; \</span><br><span class="line">    &quot;sglang[all]&gt;=0.4.6.post1&quot; \</span><br><span class="line">    &quot;modelscope&quot; \</span><br><span class="line">    &quot;fastapi&quot; &quot;uvicorn[standard]&quot; &quot;pydantic&quot;</span><br><span class="line"></span><br><span class="line"># ---------- 5. 可选性能加速 ----------</span><br><span class="line">RUN pip install --no-cache-dir &quot;flash-attn&gt;=2.7&quot; --no-build-isolation || true</span><br><span class="line"></span><br><span class="line"># ---------- 6. 国内 HuggingFace 镜像 ----------</span><br><span class="line">ENV HF_ENDPOINT=https://hf-mirror.com</span><br><span class="line"></span><br><span class="line"># ---------- 7. 工作目录 ----------</span><br><span class="line">WORKDIR /app</span><br><span class="line">EXPOSE 4000 4001 4002</span><br><span class="line"></span><br><span class="line"># ---------- 8. 默认命令 ----------</span><br><span class="line">CMD [&quot;/bin/bash&quot;]</span><br></pre></td></tr></table></figure>
+<h4 id="运行容器">运行容器</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">docker run -it \</span><br><span class="line">  --name llm-service \</span><br><span class="line">  --gpus all \</span><br><span class="line">  -p 4000:4000 \</span><br><span class="line">  -p 4001:4001 \</span><br><span class="line">  -p 4002:4002 \</span><br><span class="line">  -v /aisys/repo_dev/xizhang/models:/app/models \</span><br><span class="line">  -v /aisys/repo_dev/xizhang/models/cache:/app/models/.cache \</span><br><span class="line">  --shm-size=8g \</span><br><span class="line">  universal-llm:latest bash</span><br></pre></td></tr></table></figure>
+<h4 id="vllm部署qwen3">vllm部署qwen3</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">vllm serve /app/models/qwen3-32b-lora-new \</span><br><span class="line">    --port 4001 \</span><br><span class="line">    --tensor-parallel-size 4 \</span><br><span class="line">    --max-model-len 1024 \</span><br><span class="line">    --reasoning-parser qwen3 \</span><br><span class="line">    --gpu-memory-utilization 0.8 \</span><br><span class="line">    --max-num-seqs 8 \</span><br><span class="line">    --host 0.0.0.0</span><br></pre></td></tr></table></figure>
+<table>
+<colgroup>
+<col style="width: 20%">
+<col style="width: 40%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>参数</th>
+<th>含义</th>
+<th>推荐/注意</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>--port 8000</code></td>
+<td>服务监听端口</td>
+<td>与 <code>-p 8000:8000</code> 保持一致；如需多实例，可改 8001/8002
+…</td>
+</tr>
+<tr class="even">
+<td><code>--tensor-parallel-size 4</code></td>
+<td>把模型权重切成 4 份，跨 4 张 GPU 并行计算</td>
+<td>必须 ≤ 实际 GPU 数量；Qwen3-32B 在 4×L20
+上显存刚好够，<strong>不可再大</strong></td>
+</tr>
+<tr class="odd">
+<td><code>--max-model-len 1024</code></td>
+<td>单次推理最大 token 数（含 prompt + 生成）</td>
+<td>若场景需要 4k/8k/32k，可调到 4096/8192；显存占用 ∝ 长度²</td>
+</tr>
+<tr class="even">
+<td><code>--reasoning-parser qwen3</code></td>
+<td>vLLM ≥0.8.5 新增开关，解析 Qwen3 的
+<code>&lt;think&gt;…&lt;/think&gt;</code> 标签，把推理过程单独返回</td>
+<td>仅在 <strong>Qwen3</strong> 系列模型有效，其他模型请去掉</td>
+</tr>
+<tr class="odd">
+<td><code>--gpu-memory-utilization 0.8</code></td>
+<td>显存使用上限 80 %；剩余 20 % 留给 CUDA kernel、KV cache 膨胀</td>
+<td>若出现 OOM，可降到 0.7；若想多并发，可尝试 0.85（风险 OOM）</td>
+</tr>
+<tr class="even">
+<td><code>--max-num-seqs 8</code></td>
+<td>同一时刻最多并发处理的 <strong>请求条数</strong></td>
+<td>与 <code>--max-model-len</code> 和显存同时决定；若长度 ↑，此值需
+↓</td>
+</tr>
+<tr class="odd">
+<td><code>--host 0.0.0.0</code></td>
+<td>监听所有网卡，使容器外可访问</td>
+<td>生产环境可改为内网 IP 或 127.0.0.1 提高安全性</td>
+</tr>
+</tbody>
+</table>
+<h4 id="测试">测试</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">curl http://localhost:4001/v1/chat/completions \</span><br><span class="line">   -H &quot;Content-Type: application/json&quot; \</span><br><span class="line">   -d &#x27;&#123;</span><br><span class="line">       &quot;model&quot;: &quot;/app/models/qwen3-32b-lora-new&quot;,</span><br><span class="line">       &quot;messages&quot;: [</span><br><span class="line">           &#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;请用中文介绍一下你自己&quot;&#125;</span><br><span class="line">       ],</span><br><span class="line">       &quot;temperature&quot;: 0.7,</span><br><span class="line">       &quot;max_tokens&quot;: 512</span><br><span class="line">   &#125;&#x27;</span><br></pre></td></tr></table></figure>
+<h4 id="调用">调用</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">import os</span><br><span class="line">from openai import OpenAI</span><br><span class="line"></span><br><span class="line"># 指向本地 vLLM</span><br><span class="line">client = OpenAI(</span><br><span class="line">    base_url=&quot;http://localhost:8000/v1&quot;,</span><br><span class="line">    api_key=&quot;dummy&quot;          # vLLM 不做鉴权，随便填</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">resp = client.chat.completions.create(</span><br><span class="line">    model=&quot;qwen3-32b&quot;,       # 必须和 vLLM 启动路径或 --served-model-name 保持一致</span><br><span class="line">    messages=[</span><br><span class="line">        &#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;9.9 和 9.11 哪个大？&quot;&#125;</span><br><span class="line">    ],</span><br><span class="line">    max_tokens=512,</span><br><span class="line">    temperature=0.7,</span><br><span class="line">    stream=False             # True 可开流式</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">print(resp.choices[0].message.content)</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://qwen.readthedocs.io/en/latest/getting_started/quickstart.html">快速入门
+- Qwen — Quickstart - Qwen</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.modelscope.cn/models/Qwen/Qwen3-32B">通义千问3-32B ·
+模型库</a></p>
+<h3 id="微调数据集">微调数据集</h3>
+<h4 id="alpaca和sharegpt的区别">alpaca和sharegpt的区别</h4>
+<p>▶ Alpaca 典型字段</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;instruction&quot;</span><span class="punctuation">:</span> <span class="string">&quot;把下面句子翻译成英文&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;input&quot;</span><span class="punctuation">:</span> <span class="string">&quot;今天天气真好&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;output&quot;</span><span class="punctuation">:</span> <span class="string">&quot;The weather is nice today.&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;system&quot;</span><span class="punctuation">:</span> <span class="string">&quot;你是一个翻译助手&quot;</span><span class="punctuation">,</span>   <span class="comment">// 可选</span></span><br><span class="line">  <span class="attr">&quot;history&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span>                 <span class="comment">// 可选，放前几轮</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>一条数据 = 一次独立任务</li>
+<li>字段固定：<code>instruction / input / output</code> 三板斧</li>
+</ul>
+<p>▶ ShareGPT 典型字段</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;conversations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span><span class="attr">&quot;from&quot;</span><span class="punctuation">:</span> <span class="string">&quot;human&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;我今天心情不好&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span><span class="attr">&quot;from&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gpt&quot;</span><span class="punctuation">,</span>   <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;怎么啦？想聊聊吗&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span><span class="attr">&quot;from&quot;</span><span class="punctuation">:</span> <span class="string">&quot;human&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;论文又被拒了&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span><span class="attr">&quot;from&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gpt&quot;</span><span class="punctuation">,</span>   <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;理解你的挫败感…&quot;</span><span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;system&quot;</span><span class="punctuation">:</span> <span class="string">&quot;你是贴心聊天机器人&quot;</span><span class="punctuation">,</span>   <span class="comment">// 可选</span></span><br><span class="line">  <span class="attr">&quot;tools&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span>...<span class="punctuation">]</span>                   <span class="comment">// 可选，放函数描述</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>一条数据 = 一段完整的多轮对话</li>
+<li>角色交替：<code>human / gpt / function / observation</code> 等</li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 9%">
+<col style="width: 47%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>维度</th>
+<th>Alpaca</th>
+<th>ShareGPT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>来源</strong></td>
+<td>斯坦福 Alpaca 项目，为了低成本做指令微调</td>
+<td>ShareGPT 网站爬取的真实 ChatGPT 对话</td>
+</tr>
+<tr class="even">
+<td><strong>目标</strong></td>
+<td>让模型学会“看到指令+输入→给出答案”</td>
+<td>让模型学会“像 ChatGPT 一样多轮对话”</td>
+</tr>
+</tbody>
+</table>
+<h4 id="详解">详解</h4>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;instruction&quot;: &quot;电阻率测定法的环境温湿度控制对检测结果的可信度有何影响？&quot;,</span><br><span class="line">    &quot;input&quot;: &quot;- \&quot;检测依据：DL<span class="operator">/</span>T <span class="number">421</span><span class="number">-2009</span> 电力用油体积电阻率测定法\&quot;\n- \&quot;检测地点及环境条件：油品检测室 温度：<span class="number">16</span>℃ 湿度：<span class="number">57</span><span class="operator">%</span>RH\&quot;\n- \&quot;电阻率（\&quot;&quot;,</span><br><span class="line">    &quot;output&quot;: &quot;&lt;think&gt;### \n首先，理解问题的核心：电阻率测定法中，环境温湿度控制如何影响检测结果的可信度，这涉及到测量过程的准确性和可靠性。\n\n然后，分析关键信息：检测依据是DL/T 421-2009标准，它规定了电阻率测定的方法；环境条件被记录为温度16℃和湿度57%RH；检测结果显示电阻率为1.04×10^10 Ω·cm，符合DL/T 571-2014标准的要求（≥6×10^9 Ω·cm）。\n\n接着，推理温湿度控制的影响：环境温湿度是测量过程中的关键变量，控制这些条件确保&quot;,</span><br><span class="line">    &quot;system&quot;: &quot;作为电力能源报告解读专家，我在生成答案时，将严格遵循以下格式：\n根据“信息来源”，“信息来源”是原文中可直接支撑结论的句子、数据或图表编号给出“结论与推理”——用上述逐条复现的信息为唯一依据，推导出最终答案。&quot;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>instruction为问题；input为上下文；output包含思维链与答案；system为系统提示词</p>
+<h3 id="微调参数设置">微调参数设置</h3>
+<h4 id="deepspeed-stagedeepspeed-阶段"><strong>DeepSpeed
+stage（DeepSpeed 阶段）</strong></h4>
+<p><strong>deepSpeed 的 ZeRO 分布式优化阶段</strong>，用于在多 GPU
+上高效训练大模型。</p>
+<table>
+<colgroup>
+<col style="width: 14%">
+<col style="width: 43%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Stage</th>
+<th>功能</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Stage 0</strong></td>
+<td>不做任何优化</td>
+<td>基础分布式训练（DDP），显存占用高</td>
+</tr>
+<tr class="even">
+<td><strong>Stage 1</strong></td>
+<td>梯度分片（Gradient Sharding）</td>
+<td>将梯度切分到不同 GPU，减少显存</td>
+</tr>
+<tr class="odd">
+<td><strong>Stage 2</strong></td>
+<td>参数 + 梯度分片</td>
+<td>进一步降低显存，但需通信同步</td>
+</tr>
+<tr class="even">
+<td><strong>Stage 3</strong></td>
+<td>✅ <strong>参数 + 梯度 + 优化器状态分片</strong></td>
+<td>最强显存优化，支持超大模型</td>
+</tr>
+</tbody>
+</table>
+<h4 id="使用-deepspeed-offload使用-offload">使用 DeepSpeed offload（使用
+offload）</h4>
+<p>将 <strong>部分或全部模型参数、优化器状态卸载到 CPU
+内存</strong>，进一步释放 GPU 显存。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">llamafactory-cli train \</span><br><span class="line">    --stage sft \</span><br><span class="line">    --do_train True \</span><br><span class="line">    --model_name_or_path /aisys/repo_dev/xizhang/models/qwen3-32b-lora-new \</span><br><span class="line">    --preprocessing_num_workers 16 \</span><br><span class="line">    --finetuning_type lora \</span><br><span class="line">    --template qwen3 \</span><br><span class="line">    --flash_attn auto \</span><br><span class="line">    --dataset_dir /aisys/repo_dev/xizhang/lora_database/P9er76jCWCFW \</span><br><span class="line">    --dataset [Easy Dataset] [P9er76jCWCFW] Alpaca \</span><br><span class="line">    --cutoff_len 4096 \</span><br><span class="line">    --learning_rate 5e-05 \</span><br><span class="line">    --num_train_epochs 3.0 \</span><br><span class="line">    --max_samples 100000 \</span><br><span class="line">    --per_device_train_batch_size 2 \</span><br><span class="line">    --gradient_accumulation_steps 1 \</span><br><span class="line">    --lr_scheduler_type cosine \</span><br><span class="line">    --max_grad_norm 1.0 \</span><br><span class="line">    --logging_steps 5 \</span><br><span class="line">    --save_steps 200 \</span><br><span class="line">    --warmup_steps 0 \</span><br><span class="line">    --packing False \</span><br><span class="line">    --enable_thinking True \</span><br><span class="line">    --report_to none \</span><br><span class="line">    --output_dir saves/Qwen3-32B-Thinking/lora/train_2025-08-28-03-04-52 \</span><br><span class="line">    --bf16 True \</span><br><span class="line">    --plot_loss True \</span><br><span class="line">    --trust_remote_code True \</span><br><span class="line">    --ddp_timeout 180000000 \</span><br><span class="line">    --include_num_input_tokens_seen True \</span><br><span class="line">    --optim adamw_torch \</span><br><span class="line">    --lora_rank 8 \</span><br><span class="line">    --lora_alpha 16 \</span><br><span class="line">    --lora_dropout 0 \</span><br><span class="line">    --lora_target all \</span><br><span class="line">    --val_size 0.15 \</span><br><span class="line">    --eval_strategy steps \</span><br><span class="line">    --eval_steps 200 \</span><br><span class="line">    --per_device_eval_batch_size 2 \</span><br><span class="line">    --deepspeed cache/ds_z3_config.json</span><br></pre></td></tr></table></figure>
+<h3 id="训练结果">训练结果</h3>
+<figure>
+<img src="/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83qwen3-32b/image-20250827091214108.png" alt="image-20250827091214108">
+<figcaption aria-hidden="true">image-20250827091214108</figcaption>
+</figure>
+<h3 id="评估">评估</h3>
+<p>不知道为什么使用llamafactory的评估会爆显存，我怀疑是因为那个webui评估可能不支持多卡，就进行一下人工评估吧</p>
+<p>输入</p>
+<figure>
+<img src="/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83qwen3-32b/image-20250828144300339.png" alt="image-20250828144300339">
+<figcaption aria-hidden="true">image-20250828144300339</figcaption>
+</figure>
+<p>微调模型</p>
+<figure>
+<img src="/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83qwen3-32b/image-20250828145106050.png" alt="image-20250828145106050">
+<figcaption aria-hidden="true">image-20250828145106050</figcaption>
+</figure>
+<p>初始模型</p>
+<figure>
+<img src="/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83qwen3-32b/image-20250828145750115.png" alt="image-20250828145750115">
+<figcaption aria-hidden="true">image-20250828145750115</figcaption>
+</figure>
+<h3 id="在内网计算节点访问swanlab-cloud">在内网计算节点访问SwanLab
+Cloud</h3>
+<p><a target="_blank" rel="noopener" href="https://docs.swanlab.cn/guide_cloud/experiment_track/ssh-portforwarding.html">在内网计算节点访问SwanLab
+Cloud | SwanLab官方文档</a></p>
+<h3 id="如何计算训练步数">如何计算训练步数</h3>
+<h4 id="训练集样本量">1. 训练集样本量</h4>
+<p><strong>公式</strong> 训练集样本量 = 总数据量 × (1 − 验证集比例)</p>
+<p><strong>示例</strong> 总数据 2876 条，验证集占 15% 2876 × (1 − 0.15)
+= 2876 × 0.85 = <strong>2446 条</strong></p>
+<h4 id="每次参数更新处理的样本数effective-batch-size">2.
+每次参数更新处理的样本数（effective batch size）</h4>
+<p><strong>公式</strong> 每次更新样本数 = 单设备批次大小 × GPU 数 ×
+梯度累积步数</p>
+<p><strong>示例</strong></p>
+<ul>
+<li>per_device_train_batch_size = 1</li>
+<li>GPU 数 = 2</li>
+<li>gradient_accumulation_steps = 8</li>
+</ul>
+<p>1 × 2 × 8 = <strong>16 条</strong></p>
+<blockquote>
+<p>通俗理解： GPU 一次只能看 1 条 → 2 卡并行就是 2 条 → 累积 8
+次才更新一次参数，所以一次更新真正看了 16 条数据。</p>
+</blockquote>
+<h4 id="每轮epoch的训练步数">3. 每轮（epoch）的训练步数</h4>
+<p><strong>公式</strong> 每轮步数 = ⌊ 训练集样本量 ÷ 每次更新样本数 ⌋
+（⌊ ⌋ 表示向下取整）</p>
+<p><strong>示例</strong> 2446 ÷ 16 = 152.875 → <strong>152
+步</strong></p>
+<h4 id="总训练步数">4. 总训练步数</h4>
+<p><strong>公式</strong> 总步数 = 每轮步数 × 训练轮数 (epochs)</p>
+<p><strong>示例</strong> 152 × 3 = <strong>456 步</strong></p>
+<h3 id="如何计算一个模型占用的显存">如何计算一个模型占用的显存</h3>
+<h4 id="基础模型的权重">基础模型的权重</h4>
+<ul>
+<li>定义：预训练模型的参数矩阵，即选择的预训练模型所占用显存的大小。</li>
+<li><strong>计算公式</strong>： <strong>显存占用 = 模型参数数量 ×
+单个参数的字节数</strong></li>
+</ul>
+<h4 id="常见模型精度下的单个参数显存占用">常见模型精度下的单个参数显存占用：</h4>
+<p>表格</p>
+<p>复制</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">精度类型</th>
+<th style="text-align: left;">二进制位数</th>
+<th style="text-align: left;">字节数</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">FP32</td>
+<td style="text-align: left;">32位</td>
+<td style="text-align: left;">4字节</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FP16</td>
+<td style="text-align: left;">16位</td>
+<td style="text-align: left;">2字节</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BF16</td>
+<td style="text-align: left;">16位</td>
+<td style="text-align: left;">2字节（指数位同FP32）</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">INT8</td>
+<td style="text-align: left;">8位</td>
+<td style="text-align: left;">1字节</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">INT4</td>
+<td style="text-align: left;">4位</td>
+<td style="text-align: left;">0.5字节</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">INT2</td>
+<td style="text-align: left;">2位</td>
+<td style="text-align: left;">0.25字节</td>
+</tr>
+</tbody>
+</table>
+<p>例如</p>
+<ul>
+<li><strong>模型选择</strong>：Qwen2.5-7B-Instruct</li>
+<li><strong>参数规模</strong>：70亿（7B）</li>
+<li><strong>计算精度</strong>：BF16（2字节/参数）</li>
+<li><strong>预估显存占用</strong>： <strong>70亿 × 2字节 = 140亿字节 =
+14GB</strong></li>
+</ul>
+<h4 id="框架开销framework-overhead">框架开销（Framework Overhead）</h4>
+<ul>
+<li><strong>定义</strong>：LLaMAFactory 底层使用的深度学习框架（如
+PyTorch）本身的显存占用。</li>
+<li><strong>包含内容</strong>：
+<ul>
+<li>张量缓存</li>
+<li>线程资源</li>
+<li>内核调度开销</li>
+<li>自动微分图结构等</li>
+</ul></li>
+<li><strong>计算方法</strong>：难以精确计算</li>
+<li><strong>估算方法</strong>：通常占用不大，默认估算为 <strong>1
+GB</strong></li>
+</ul>
+<h4 id="lora-适配器lora-adapters">LoRA 适配器（LoRA Adapters）</h4>
+<ul>
+<li><p><strong>定义</strong>：在 LoRA
+微调中，不直接修改原始模型的庞大权重，而是插入轻量级的“LoRA适配器模块”来学习微调所需的变化。</p></li>
+<li><p><strong>计算方法</strong>：</p>
+<p>显存占用=LoRA层数×秩（Rank）×(输入维度+输出维度)×2<em>B</em></p></li>
+<li><p><strong>估算方法</strong>：</p>
+<ul>
+<li>与 LoRA 的秩（Rank）大小相关</li>
+<li>一般占用不大，常规配置下通常不超过 <strong>0.5
+GB</strong>，保守估计为 <strong>0.5 GB</strong></li>
+</ul></li>
+</ul>
+<h4 id="激活值activations">激活值（Activations）</h4>
+<ul>
+<li><p><strong>定义</strong>：前向传播过程中各层的输出张量（如隐藏层状态、注意力矩阵等），即模型“处理数据时产生的所有中间结果”。</p></li>
+<li><p><strong>计算方法</strong>：</p>
+<p>显存占用=批量大小×序列长度×隐藏层维度×模型层数×单个元素字节数</p></li>
+<li><p><strong>估算方法</strong>：</p>
+<ul>
+<li>单次处理的 Token 量每增加 <strong>1K</strong>，显存约增加
+<strong>2.5 GB</strong></li>
+<li>与单 GPU 的批量大小和数据集的截断长度（序列长度）正相关</li>
+<li>在固定其他配置（基础模型权重、框架开销、LoRA适配器）后，剩余显存即为激活值占用</li>
+</ul></li>
+</ul>
+<h3 id="加速方式">加速方式</h3>
+<table>
+<colgroup>
+<col style="width: 10%">
+<col style="width: 14%">
+<col style="width: 37%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>加速方式</th>
+<th>全称 / 来源</th>
+<th>核心原理与特点</th>
+<th>适用场景与注意事项</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>auto</strong></td>
+<td>自动选择</td>
+<td>由框架（如 transformers、LLaMA-Factory、DeepSpeed
+等）根据当前硬件、驱动、CUDA 版本自动挑选最快的可用算子或路径。
+优点：零配置、开箱即用；缺点：不一定能启用最新、最快的内核。</td>
+<td>初次实验、不想手动调参时首选。</td>
+</tr>
+<tr class="even">
+<td><strong>flashattn2</strong></td>
+<td>FlashAttention-2</td>
+<td>通过 IO-Aware 的算法和 GPU Tensor Core 优化，将标准 Multi-Head
+Attention 的显存访问次数大幅降低，从而显著加快训练/推理速度（通常
+2-4×），并减少显存占用。 需要 A100、H100、RTX 30/40 系列等
+Ampere/Lovelace 架构；依赖 CUDA≥11.8、PyTorch≥2.0 且需安装
+<code>flash-attn</code> wheel。</td>
+<td>训练/微调 LLM 时首选；序列越长收益越大。若编译失败可退回 xformers
+或原生实现。</td>
+</tr>
+<tr class="odd">
+<td><strong>unsloth</strong></td>
+<td>Unsloth 开源库</td>
+<td>针对 Llama、Mistral、Qwen 等架构，使用动态量化、手工 fused-kernel
+和梯度检查点优化，使 LoRA 微调在消费级 GPU 上也能跑更大
+batch/更长序列。官方宣称速度提升 2-5×，显存节省 50-70%。
+安装简单：<code>pip install unsloth</code>（会自动替换部分 PyTorch
+层）。</td>
+<td>单卡 4090/3090 上 LoRA 微调 7B-13B
+模型效果最佳；目前仅支持有限模型。</td>
+</tr>
+<tr class="even">
+<td><strong>liger_kernel</strong></td>
+<td>Liger-Kernel（微软开源）</td>
+<td>以 Triton 编写的高性能 fused-kernel
+合集（SwiGLU、RMSNorm、CrossEntropy、RoPE 等），在保持数值精度的同时减少
+kernel launch 和显存写回，训练吞吐量可提升 10-20%。 纯 Python/Triton
+实现，无需额外 CUDA 编译。</td>
+<td>对训练框架侵入性小，可与 FlashAttention 并存；适合想“无痛”提速
+10-20% 的场景。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="参考资料">参考资料</h3>
+<p><a target="_blank" rel="noopener" href="https://llamafactory.readthedocs.io/zh-cn/latest/">LLaMA
+Factory</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83/" rel="tag"># 模型微调</a>
+              <a href="/tags/LoRA/" rel="tag"># LoRA</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/qwen3-8b%E5%BE%AE%E8%B0%83%E5%AE%9E%E6%88%98/" rel="prev" title="qwen3-8b微调实战">
+                  <i class="fa fa-angle-left"></i> qwen3-8b微调实战
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langmem/" rel="next" title="Langmem快速入门">
+                  Langmem快速入门 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

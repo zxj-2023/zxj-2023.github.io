@@ -30,7 +30,7 @@
 <meta property="og:description" content="Chroma是什么 Chroma（通常指 ChromaDB）是一款 开源、AI 原生的向量数据库，专为存储和检索 高维嵌入向量 而设计，目标是让开发者 5 分钟内在本地跑起一个语义搜索或 RAG 系统。 极简安装：pip install chromadb 双运行模式：  内存模式：调试&#x2F;原型随意重启； 持久化模式：指定 persist_directory 即可落盘，生产也不怕丢">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-07-30T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-07-31T07:54:10.335Z">
+<meta property="article:modified_time" content="2025-08-19T09:16:02.471Z">
 <meta property="article:author" content="张熙浚">
 <meta property="article:tag" content="agent">
 <meta property="article:tag" content="langgraph">
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#chroma%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.</span> <span class="nav-text">Chroma是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8chroma%E5%AD%98%E5%82%A8"><span class="nav-number">2.</span> <span class="nav-text">使用chroma存储</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E6%A1%A3%E5%88%86%E5%9D%97"><span class="nav-number">2.1.</span> <span class="nav-text">文档分块</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89embedding%E6%A8%A1%E5%9E%8B%E4%B8%8Echroma"><span class="nav-number">2.2.</span> <span class="nav-text">定义embedding模型与chroma</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A3%80%E7%B4%A2"><span class="nav-number">2.3.</span> <span class="nav-text">检索</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#chroma%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.</span> <span class="nav-text">Chroma是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8chroma%E5%AD%98%E5%82%A8"><span class="nav-number">2.</span> <span class="nav-text">使用chroma存储</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%87%E6%A1%A3%E5%88%86%E5%9D%97"><span class="nav-number">2.1.</span> <span class="nav-text">文档分块</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89embedding%E6%A8%A1%E5%9E%8B%E4%B8%8Echroma"><span class="nav-number">2.2.</span> <span class="nav-text">定义embedding模型与chroma</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A3%80%E7%B4%A2"><span class="nav-number">2.3.</span> <span class="nav-text">检索</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E6%96%B0%E5%8A%A0%E8%BD%BD"><span class="nav-number">3.</span> <span class="nav-text">重新加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -160,13 +160,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">128</span>
+          <span class="site-state-item-count">132</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">49</span>
+        <span class="site-state-item-count">50</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -249,9 +249,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2025-07-31 00:00:00 / 修改时间：15:54:10" itemprop="dateCreated datePublished" datetime="2025-07-31T00:00:00+08:00">2025-07-31</time>
+      <time title="创建时间：2025-07-31 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-31T00:00:00+08:00">2025-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-08-19 17:16:02" itemprop="dateModified" datetime="2025-08-19T17:16:02+08:00">2025-08-19</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -301,6 +307,8 @@
 <h4 id="检索">检索</h4>
 <p>这里采取直接检索进行测试</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">results = vectorstore.similarity_search(</span><br><span class="line">    &quot;张三九的基本信息是什么&quot;,</span><br><span class="line">    k=2,</span><br><span class="line">    collection_name=&quot;demo001&quot;  # 指定检索的集合</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="重新加载">重新加载</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 重新加载已存在的 Chroma 数据库</span><br><span class="line">vectorstore = Chroma(</span><br><span class="line">    persist_directory=&quot;./chroma_db&quot;,</span><br><span class="line">    embedding_function=embedding</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">retriever = vectorstore.as_retriever()</span><br></pre></td></tr></table></figure>
 <h3 id="参考资料">参考资料</h3>
 <p><a target="_blank" rel="noopener" href="https://python.langchain.com/docs/integrations/vectorstores/chroma/#add-items-to-vector-store">Chroma
 | 🦜️🔗 LangChain — Chroma | 🦜️🔗 LangChain</a></p>
@@ -340,13 +348,13 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2025/07/28/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/pgsql%E5%AE%9E%E7%8E%B0%E6%8C%81%E4%B9%85%E5%8C%96/" rel="prev" title="pgsql实现持久化">
-                  <i class="fa fa-angle-left"></i> pgsql实现持久化
+                <a href="/2025/07/28/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/Plan-and-Execute%E6%A8%A1%E5%BC%8F/" rel="prev" title="Plan-and-Execute模式">
+                  <i class="fa fa-angle-left"></i> Plan-and-Execute模式
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2025/08/01/%E5%AD%A6%E4%B9%A0/mcp%E5%AD%A6%E4%B9%A0/mcp%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AE%9E%E6%88%98/" rel="next" title="MCP 客户端实战">
-                  MCP 客户端实战 <i class="fa fa-angle-right"></i>
+                <a href="/2025/08/01/%E5%AD%A6%E4%B9%A0/mcp%E5%AD%A6%E4%B9%A0/mcp%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%AE%9E%E6%88%98/" rel="next" title="MCP 服务端实战">
+                  MCP 服务端实战 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
