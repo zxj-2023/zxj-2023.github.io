@@ -155,18 +155,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">132</span>
+          <span class="site-state-item-count">136</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">50</span>
+        <span class="site-state-item-count">52</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-count">57</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -215,6 +215,3987 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E7%AC%AC%E4%BA%8C%E8%8A%82%E6%95%B0%E6%8D%AE%E9%87%8D%E6%9E%841-%E8%AF%BE%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E7%AC%AC%E4%BA%8C%E8%8A%82%E6%95%B0%E6%8D%AE%E9%87%8D%E6%9E%841-%E8%AF%BE%E7%A8%8B/" class="post-title-link" itemprop="url">数据分析——第二章：第二节数据重构1</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-05-14 00:00:00 / 修改时间：17:06:06" itemprop="dateCreated datePublished" datetime="2025-05-14T00:00:00+08:00">2025-05-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/kaggle/" itemprop="url" rel="index"><span itemprop="name">kaggle</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/kaggle/titanic/" itemprop="url" rel="index"><span itemprop="name">titanic</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p><strong>复习：</strong>在前面我们已经学习了Pandas基础，第二章我们开始进入数据分析的业务部分，在第二章第一节的内容中，我们学习了<strong>数据的清洗</strong>，这一部分十分重要，只有数据变得相对干净，我们之后对数据的分析才可以更有力。而这一节，我们要做的是数据重构，数据重构依旧属于数据理解（准备）的范围。</p>
+<h4 id="开始之前导入numpypandas包和数据">开始之前，导入numpy、pandas包和数据</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入基本库</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 载入data文件中的:train-left-up.csv</span></span><br><span class="line">text=pd.read_csv(<span class="string">&#x27;../第二章项目集合/data/train-left-up.csv&#x27;</span>)</span><br><span class="line">text.head()</span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Braund, Mr. Owen Harris
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+Heikkinen, Miss. Laina
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+4
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Futrelle, Mrs. Jacques Heath (Lily May Peel)
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+5
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Allen, Mr. William Henry
+</td>
+</tr>
+</tbody>
+</table>
+<h1 id="第二章数据重构">2 第二章：数据重构</h1>
+<h3 id="数据的合并">2.4 数据的合并</h3>
+<h4 id="任务一将data文件夹里面的所有数据都载入观察数据的之间的关系">2.4.1
+任务一：将data文件夹里面的所有数据都载入，观察数据的之间的关系</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">text_left_up=pd.read_csv(<span class="string">&#x27;../第二章项目集合/data/train-left-up.csv&#x27;</span>)</span><br><span class="line">text_left_down=pd.read_csv(<span class="string">&#x27;../第二章项目集合/data/train-left-down.csv&#x27;</span>)</span><br><span class="line">text_right_up=pd.read_csv(<span class="string">&#x27;../第二章项目集合/data/train-right-up.csv&#x27;</span>)</span><br><span class="line">text_right_down=pd.read_csv(<span class="string">&#x27;../第二章项目集合/data/train-right-down.csv&#x27;</span>)</span><br><span class="line">text_left_up.head()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Braund, Mr. Owen Harris
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+Heikkinen, Miss. Laina
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+4
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Futrelle, Mrs. Jacques Heath (Lily May Peel)
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+5
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Allen, Mr. William Henry
+</td>
+</tr>
+</tbody>
+</table>
+<p>【提示】结合之前我们加载的train.csv数据，大致预测一下上面的数据是什么</p>
+<h4 id="任务二使用concat方法将数据train-left-up.csv和train-right-up.csv横向合并为一张表并保存这张表为result_up">2.4.2：任务二：使用concat方法：将数据train-left-up.csv和train-right-up.csv横向合并为一张表，并保存这张表为result_up</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment">#pandas.concat 是 Pandas 中用于连接 Series 或 DataFrame 对象的核心方法，支持横向（列方向）或纵向（行方向）拼接</span></span><br><span class="line">list_up = [text_left_up,text_right_up]</span><br><span class="line">result_up = pd.concat(list_up,axis=<span class="number">1</span>)</span><br><span class="line">result_up.head()</span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+<th>
+Sex
+</th>
+<th>
+Age
+</th>
+<th>
+SibSp
+</th>
+<th>
+Parch
+</th>
+<th>
+Ticket
+</th>
+<th>
+Fare
+</th>
+<th>
+Cabin
+</th>
+<th>
+Embarked
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Braund, Mr. Owen Harris
+</td>
+<td>
+male
+</td>
+<td>
+22.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+A/5 21171
+</td>
+<td>
+7.2500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+<td>
+female
+</td>
+<td>
+38.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+PC 17599
+</td>
+<td>
+71.2833
+</td>
+<td>
+C85
+</td>
+<td>
+C
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+Heikkinen, Miss. Laina
+</td>
+<td>
+female
+</td>
+<td>
+26.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+STON/O2. 3101282
+</td>
+<td>
+7.9250
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+4
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Futrelle, Mrs. Jacques Heath (Lily May Peel)
+</td>
+<td>
+female
+</td>
+<td>
+35.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+113803
+</td>
+<td>
+53.1000
+</td>
+<td>
+C123
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+5
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Allen, Mr. William Henry
+</td>
+<td>
+male
+</td>
+<td>
+35.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+373450
+</td>
+<td>
+8.0500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+</tbody>
+</table>
+<h4 id="任务三使用concat方法将train-left-down和train-right-down横向合并为一张表并保存这张表为result_down然后将上边的result_up和result_down纵向合并为result">2.4.3
+任务三：使用concat方法：将train-left-down和train-right-down横向合并为一张表，并保存这张表为result_down。然后将上边的result_up和result_down纵向合并为result。</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">list_down=[text_left_down,text_right_down]</span><br><span class="line">result_down = pd.concat(list_down,axis=<span class="number">1</span>)</span><br><span class="line">result = pd.concat([result_up,result_down])</span><br><span class="line">result.head()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+<th>
+Sex
+</th>
+<th>
+Age
+</th>
+<th>
+SibSp
+</th>
+<th>
+Parch
+</th>
+<th>
+Ticket
+</th>
+<th>
+Fare
+</th>
+<th>
+Cabin
+</th>
+<th>
+Embarked
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Braund, Mr. Owen Harris
+</td>
+<td>
+male
+</td>
+<td>
+22.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+A/5 21171
+</td>
+<td>
+7.2500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+<td>
+female
+</td>
+<td>
+38.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+PC 17599
+</td>
+<td>
+71.2833
+</td>
+<td>
+C85
+</td>
+<td>
+C
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+Heikkinen, Miss. Laina
+</td>
+<td>
+female
+</td>
+<td>
+26.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+STON/O2. 3101282
+</td>
+<td>
+7.9250
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+4
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Futrelle, Mrs. Jacques Heath (Lily May Peel)
+</td>
+<td>
+female
+</td>
+<td>
+35.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+113803
+</td>
+<td>
+53.1000
+</td>
+<td>
+C123
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+5
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Allen, Mr. William Henry
+</td>
+<td>
+male
+</td>
+<td>
+35.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+373450
+</td>
+<td>
+8.0500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="任务四使用dataframe自带的方法join方法和append完成任务二和任务三的任务">2.4.4
+任务四：使用DataFrame自带的方法join方法和append：完成任务二和任务三的任务</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">resul_up = text_left_up.join(text_right_up)</span><br><span class="line">result_down = text_left_down.join(text_right_down)</span><br><span class="line">result = result_up.append(result_down)</span><br><span class="line">result.head()</span><br></pre></td></tr></table></figure>
+<h4 id="任务五使用panads的merge方法和dataframe的append方法完成任务二和任务三的任务">2.4.5
+任务五：使用Panads的merge方法和DataFrame的append方法：完成任务二和任务三的任务</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">该代码使用 pandas.merge 方法，以索引（index）为键，将两个 DataFrame (text_left_up 和 text_right_up) 横向合并。</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">result_up = pd.merge(text_left_up,text_right_up,left_index=<span class="literal">True</span>,right_index=<span class="literal">True</span>)</span><br><span class="line">result_down = pd.merge(text_left_down,text_right_down,left_index=<span class="literal">True</span>,right_index=<span class="literal">True</span>)</span><br><span class="line">result = resul_up.append(result_down)</span><br><span class="line">result.head()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>【思考】对比merge、join以及concat的方法的不同以及相同。思考一下在任务四和任务五的情况下，为什么都要求使用DataFrame的append方法，如何只要求使用merge或者join可不可以完成任务四和任务五呢？</p>
+<h4 id="任务六完成的数据保存为result.csv">2.4.6
+任务六：完成的数据保存为result.csv</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"></span><br><span class="line">result.to_csv(<span class="string">&#x27;result.csv&#x27;</span>)</span><br><span class="line">result.head()</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+<th>
+Sex
+</th>
+<th>
+Age
+</th>
+<th>
+SibSp
+</th>
+<th>
+Parch
+</th>
+<th>
+Ticket
+</th>
+<th>
+Fare
+</th>
+<th>
+Cabin
+</th>
+<th>
+Embarked
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Braund, Mr. Owen Harris
+</td>
+<td>
+male
+</td>
+<td>
+22.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+A/5 21171
+</td>
+<td>
+7.2500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+<td>
+female
+</td>
+<td>
+38.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+PC 17599
+</td>
+<td>
+71.2833
+</td>
+<td>
+C85
+</td>
+<td>
+C
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+Heikkinen, Miss. Laina
+</td>
+<td>
+female
+</td>
+<td>
+26.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+STON/O2. 3101282
+</td>
+<td>
+7.9250
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+4
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Futrelle, Mrs. Jacques Heath (Lily May Peel)
+</td>
+<td>
+female
+</td>
+<td>
+35.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+113803
+</td>
+<td>
+53.1000
+</td>
+<td>
+C123
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+5
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Allen, Mr. William Henry
+</td>
+<td>
+male
+</td>
+<td>
+35.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+373450
+</td>
+<td>
+8.0500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="换一种角度看数据">2.5 换一种角度看数据</h3>
+<h4 id="任务一将我们的数据变为series类型的数据">2.5.1
+任务一：将我们的数据变为Series类型的数据</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment">#text.stack() 是 Pandas 中用于将 DataFrame 的列旋转为行的方法</span></span><br><span class="line">text = pd.read_csv(<span class="string">&#x27;result.csv&#x27;</span>)</span><br><span class="line">unit_result=text.stack().head(<span class="number">20</span>)</span><br><span class="line">unit_result.head()</span><br></pre></td></tr></table></figure>
+<pre><code>0  Unnamed: 0                           0
+   PassengerId                          1
+   Survived                             0
+   Pclass                               3
+   Name           Braund, Mr. Owen Harris
+dtype: object</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"></span><br><span class="line">unit_result.to_csv(<span class="string">&#x27;unit_result.csv&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E7%AC%AC%E4%B8%80%E8%8A%82%E6%95%B0%E6%8D%AE%E6%B8%85%E6%B4%97%E5%8F%8A%E7%89%B9%E5%BE%81%E5%A4%84%E7%90%86-%E8%AF%BE%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E7%AC%AC%E4%B8%80%E8%8A%82%E6%95%B0%E6%8D%AE%E6%B8%85%E6%B4%97%E5%8F%8A%E7%89%B9%E5%BE%81%E5%A4%84%E7%90%86-%E8%AF%BE%E7%A8%8B/" class="post-title-link" itemprop="url">数据分析——第二章：第一节数据清洗及特征处理</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-05-14 00:00:00 / 修改时间：17:00:22" itemprop="dateCreated datePublished" datetime="2025-05-14T00:00:00+08:00">2025-05-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/kaggle/" itemprop="url" rel="index"><span itemprop="name">kaggle</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/kaggle/titanic/" itemprop="url" rel="index"><span itemprop="name">titanic</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>【回顾&amp;引言】前面一章的内容大家可以感觉到我们主要是对基础知识做一个梳理，让大家了解数据分析的一些操作，主要做了数据的各个角度的观察。那么在这里，我们主要是做数据分析的流程性学习，主要是包括了数据清洗以及数据的特征处理，数据重构以及数据可视化。这些内容是为数据分析最后的建模和模型评价做一个铺垫。</p>
+<h4 id="开始之前导入numpypandas包和数据">开始之前，导入numpy、pandas包和数据</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#加载所需的库</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#加载数据train.csv</span></span><br><span class="line">df = pd.read_csv(<span class="string">&#x27;./titanic/train.csv&#x27;</span>)</span><br><span class="line">df.head(<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+<th>
+Sex
+</th>
+<th>
+Age
+</th>
+<th>
+SibSp
+</th>
+<th>
+Parch
+</th>
+<th>
+Ticket
+</th>
+<th>
+Fare
+</th>
+<th>
+Cabin
+</th>
+<th>
+Embarked
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Braund, Mr. Owen Harris
+</td>
+<td>
+male
+</td>
+<td>
+22.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+A/5 21171
+</td>
+<td>
+7.2500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+<td>
+female
+</td>
+<td>
+38.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+PC 17599
+</td>
+<td>
+71.2833
+</td>
+<td>
+C85
+</td>
+<td>
+C
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+Heikkinen, Miss. Laina
+</td>
+<td>
+female
+</td>
+<td>
+26.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+STON/O2. 3101282
+</td>
+<td>
+7.9250
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+</tbody>
+</table>
+<h2 id="第二章数据清洗及特征处理">2 第二章：数据清洗及特征处理</h2>
+<p>我们拿到的数据通常是不干净的，所谓的不干净，就是数据中有缺失值，有一些异常点等，需要经过一定的处理才能继续做后面的分析或建模，所以拿到数据的第一步是进行数据清洗，本章我们将学习缺失值、重复值、字符串和数据转换等操作，将数据清洗成可以分析或建模的亚子。</p>
+<h3 id="缺失值观察与处理">2.1 缺失值观察与处理</h3>
+<p>我们拿到的数据经常会有很多缺失值，比如我们可以看到Cabin列存在NaN，那其他列还有没有缺失值，这些缺失值要怎么处理呢</p>
+<h4 id="任务一缺失值观察">2.1.1 任务一：缺失值观察</h4>
+<ol type="1">
+<li>请查看每个特征缺失值个数<br>
+</li>
+<li>请查看Age， Cabin， Embarked列的数据
+以上方式都有多种方式，所以大家多多益善</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">df.info()</span><br></pre></td></tr></table></figure>
+<pre><code>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
+RangeIndex: 891 entries, 0 to 890
+Data columns (total 12 columns):
+ #   Column       Non-Null Count  Dtype  
+---  ------       --------------  -----  
+ 0   PassengerId  891 non-null    int64  
+ 1   Survived     891 non-null    int64  
+ 2   Pclass       891 non-null    int64  
+ 3   Name         891 non-null    object 
+ 4   Sex          891 non-null    object 
+ 5   Age          714 non-null    float64
+ 6   SibSp        891 non-null    int64  
+ 7   Parch        891 non-null    int64  
+ 8   Ticket       891 non-null    object 
+ 9   Fare         891 non-null    float64
+ 10  Cabin        204 non-null    object 
+ 11  Embarked     889 non-null    object 
+dtypes: float64(2), int64(5), object(5)
+memory usage: 83.7+ KB</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">df.isnull().<span class="built_in">sum</span>()</span><br></pre></td></tr></table></figure>
+<pre><code>PassengerId      0
+Survived         0
+Pclass           0
+Name             0
+Sex              0
+Age            177
+SibSp            0
+Parch            0
+Ticket           0
+Fare             0
+Cabin          687
+Embarked         2
+dtype: int64</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">df[[<span class="string">&#x27;Age&#x27;</span>,<span class="string">&#x27;Cabin&#x27;</span>,<span class="string">&#x27;Embarked&#x27;</span>]].head(<span class="number">3</span>)</span><br><span class="line"><span class="comment">#df[&#x27;Age&#x27;].head(3)</span></span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+Age
+</th>
+<th>
+Cabin
+</th>
+<th>
+Embarked
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+22.0
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+38.0
+</td>
+<td>
+C85
+</td>
+<td>
+C
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+26.0
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+</tbody>
+</table>
+<p>外层 [] 是 DataFrame 的索引操作符。 内层 [] 是 Python
+原生的列表语法，用于传递多个列名。</p>
+<h4 id="任务二对缺失值进行处理">2.1.2 任务二：对缺失值进行处理</h4>
+<p>(1)处理缺失值一般有几种思路</p>
+<ol start="2" type="1">
+<li><p>请尝试对Age列的数据的缺失值进行处理</p></li>
+<li><p>请尝试使用不同的方法直接对整张表的缺失值进行处理</p></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#处理缺失值的一般思路：</span></span><br><span class="line"><span class="comment">#提醒：可使用的函数有---&gt;dropna函数与fillna函数</span></span><br><span class="line"><span class="comment">#print(df.head(3))</span></span><br><span class="line">df[df[<span class="string">&#x27;Age&#x27;</span>]==<span class="literal">None</span>]=<span class="number">0</span></span><br><span class="line">df.head(<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+<th>
+Sex
+</th>
+<th>
+Age
+</th>
+<th>
+SibSp
+</th>
+<th>
+Parch
+</th>
+<th>
+Ticket
+</th>
+<th>
+Fare
+</th>
+<th>
+Cabin
+</th>
+<th>
+Embarked
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Braund, Mr. Owen Harris
+</td>
+<td>
+male
+</td>
+<td>
+22.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+A/5 21171
+</td>
+<td>
+7.2500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+<td>
+female
+</td>
+<td>
+38.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+PC 17599
+</td>
+<td>
+71.2833
+</td>
+<td>
+C85
+</td>
+<td>
+C
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+Heikkinen, Miss. Laina
+</td>
+<td>
+female
+</td>
+<td>
+26.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+STON/O2. 3101282
+</td>
+<td>
+7.9250
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">df[df[<span class="string">&#x27;Age&#x27;</span>].isnull()]</span><br><span class="line">df[df[<span class="string">&#x27;Age&#x27;</span>].isnull()] = <span class="number">0</span> </span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">df[df[<span class="string">&#x27;Age&#x27;</span>] == np.nan] = <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<p>【思考1】dropna和fillna有哪些参数，分别如何使用呢?</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#dropna() 是 Pandas 中用于删除包含缺失值（NaN 或 None）的行或列的函数。其核心作用是清理数据中的缺失值，适用于数据清洗阶段。</span></span><br><span class="line">df.dropna().head(<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+<th>
+Sex
+</th>
+<th>
+Age
+</th>
+<th>
+SibSp
+</th>
+<th>
+Parch
+</th>
+<th>
+Ticket
+</th>
+<th>
+Fare
+</th>
+<th>
+Cabin
+</th>
+<th>
+Embarked
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+1
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+<td>
+female
+</td>
+<td>
+38.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+PC 17599
+</td>
+<td>
+71.2833
+</td>
+<td>
+C85
+</td>
+<td>
+C
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+4
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Futrelle, Mrs. Jacques Heath (Lily May Peel)
+</td>
+<td>
+female
+</td>
+<td>
+35.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+113803
+</td>
+<td>
+53.1000
+</td>
+<td>
+C123
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+5
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0000
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#fillna() 是 Pandas 中用于填充缺失值（NaN 或 None）的核心函数，常用于数据清洗阶段。其核心作用是将缺失值替换为合理值，以便后续分析或建模。</span></span><br><span class="line">df.fillna(<span class="number">0</span>).head(<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+    
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+<th>
+Sex
+</th>
+<th>
+Age
+</th>
+<th>
+SibSp
+</th>
+<th>
+Parch
+</th>
+<th>
+Ticket
+</th>
+<th>
+Fare
+</th>
+<th>
+Cabin
+</th>
+<th>
+Embarked
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Braund, Mr. Owen Harris
+</td>
+<td>
+male
+</td>
+<td>
+22.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+A/5 21171
+</td>
+<td>
+7.2500
+</td>
+<td>
+0
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+<td>
+female
+</td>
+<td>
+38.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+PC 17599
+</td>
+<td>
+71.2833
+</td>
+<td>
+C85
+</td>
+<td>
+C
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+Heikkinen, Miss. Laina
+</td>
+<td>
+female
+</td>
+<td>
+26.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+STON/O2. 3101282
+</td>
+<td>
+7.9250
+</td>
+<td>
+0
+</td>
+<td>
+S
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>【思考】检索空缺值用<code>np.nan</code>,<code>None</code>以及<code>.isnull()</code>哪个更好，这是为什么？如果其中某个方式无法找到缺失值，原因又是为什么？</p>
+<p>【参考】https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.dropna.html</p>
+<p>【参考】https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.fillna.html</p>
+<h3 id="重复值观察与处理">2.2 重复值观察与处理</h3>
+<p>由于这样那样的原因，数据中会不会存在重复值呢，如果存在要怎样处理呢</p>
+<h4 id="任务一请查看数据中的重复值">2.2.1
+任务一：请查看数据中的重复值</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment">#df.duplicated()返回一个布尔序列 (Series)，标记每一行是否为重复行</span></span><br><span class="line">df[df.duplicated()]</span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+<th>
+Sex
+</th>
+<th>
+Age
+</th>
+<th>
+SibSp
+</th>
+<th>
+Parch
+</th>
+<th>
+Ticket
+</th>
+<th>
+Fare
+</th>
+<th>
+Cabin
+</th>
+<th>
+Embarked
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+17
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+19
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+26
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+28
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+29
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+…
+</th>
+<td>
+…
+</td>
+<td>
+…
+</td>
+<td>
+…
+</td>
+<td>
+…
+</td>
+<td>
+…
+</td>
+<td>
+…
+</td>
+<td>
+…
+</td>
+<td>
+…
+</td>
+<td>
+…
+</td>
+<td>
+…
+</td>
+<td>
+…
+</td>
+<td>
+…
+</td>
+</tr>
+<tr>
+<th>
+859
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+863
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+868
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+878
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th>
+888
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+</tbody>
+</table>
+<p>
+176 rows × 12 columns
+</p>
+<h4 id="任务二对重复值进行处理">2.2.2 任务二：对重复值进行处理</h4>
+<p>(1)重复值有哪些处理方式呢？</p>
+<p>(2)处理我们数据的重复值</p>
+<p>方法多多益善</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#重复值有哪些处理方式：</span></span><br><span class="line"><span class="comment">#删除 DataFrame 中的重复行（完全相同的行只保留一次）。</span></span><br><span class="line">df = df.drop_duplicates()</span><br><span class="line">df.head()</span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+<th>
+Sex
+</th>
+<th>
+Age
+</th>
+<th>
+SibSp
+</th>
+<th>
+Parch
+</th>
+<th>
+Ticket
+</th>
+<th>
+Fare
+</th>
+<th>
+Cabin
+</th>
+<th>
+Embarked
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Braund, Mr. Owen Harris
+</td>
+<td>
+male
+</td>
+<td>
+22.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+A/5 21171
+</td>
+<td>
+7.2500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+<td>
+female
+</td>
+<td>
+38.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+PC 17599
+</td>
+<td>
+71.2833
+</td>
+<td>
+C85
+</td>
+<td>
+C
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+Heikkinen, Miss. Laina
+</td>
+<td>
+female
+</td>
+<td>
+26.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+STON/O2. 3101282
+</td>
+<td>
+7.9250
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+4
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Futrelle, Mrs. Jacques Heath (Lily May Peel)
+</td>
+<td>
+female
+</td>
+<td>
+35.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+113803
+</td>
+<td>
+53.1000
+</td>
+<td>
+C123
+</td>
+<td>
+S
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+5
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Allen, Mr. William Henry
+</td>
+<td>
+male
+</td>
+<td>
+35.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+373450
+</td>
+<td>
+8.0500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+</tr>
+</tbody>
+</table>
+<h4 id="任务三将前面清洗的数据保存为csv格式">2.2.3
+任务三：将前面清洗的数据保存为csv格式</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"></span><br><span class="line">df.to_csv(<span class="string">&#x27;test_clear.csv&#x27;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="特征观察与处理">2.3 特征观察与处理</h3>
+<p>我们对特征进行一下观察，可以把特征大概分为两大类：<br>
+数值型特征：Survived ，Pclass， Age ，SibSp， Parch，
+Fare，其中Survived， Pclass为离散型数值特征，Age，SibSp， Parch，
+Fare为连续型数值特征<br>
+文本型特征：Name， Sex， Cabin，Embarked， Ticket，其中Sex， Cabin，
+Embarked，
+Ticket为类别型文本特征，数值型特征一般可以直接用于模型的训练，但有时候为了模型的稳定性及鲁棒性会对连续变量进行离散化。文本型特征往往需要转换成数值型特征才能用于建模分析。</p>
+<h4 id="任务一对年龄进行分箱离散化处理">2.3.1
+任务一：对年龄进行分箱（离散化）处理</h4>
+<ol type="1">
+<li><p>分箱操作是什么？</p></li>
+<li><p>将连续变量Age平均分箱成5个年龄段，并分别用类别变量12345表示</p></li>
+<li><p>将连续变量Age划分为[0,5) [5,15) [15,30) [30,50)
+[50,80)五个年龄段，并分别用类别变量12345表示</p></li>
+<li><p>将连续变量Age按10% 30% 50% 70%
+90%五个年龄段，并用分类变量12345表示</p></li>
+<li><p>将上面的获得的数据分别进行保存，保存为csv格式</p></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#分箱操作是什么：</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">分箱操作（Binning）是数据预处理中的一种常用技术，主要用于将连续型数值转换为离散的区间（即“箱子”或“分组”）</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment">#将连续变量Age平均分箱成5个年龄段，并分别用类别变量12345表示</span></span><br><span class="line">df[<span class="string">&#x27;AgeBand&#x27;</span>] = pd.cut(df[<span class="string">&#x27;Age&#x27;</span>], <span class="number">5</span>,labels = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>])</span><br><span class="line">df.head()</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+<th>
+Sex
+</th>
+<th>
+Age
+</th>
+<th>
+SibSp
+</th>
+<th>
+Parch
+</th>
+<th>
+Ticket
+</th>
+<th>
+Fare
+</th>
+<th>
+Cabin
+</th>
+<th>
+Embarked
+</th>
+<th>
+AgeBand
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Braund, Mr. Owen Harris
+</td>
+<td>
+male
+</td>
+<td>
+22.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+A/5 21171
+</td>
+<td>
+7.2500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+<td>
+2
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+<td>
+female
+</td>
+<td>
+38.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+PC 17599
+</td>
+<td>
+71.2833
+</td>
+<td>
+C85
+</td>
+<td>
+C
+</td>
+<td>
+3
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+Heikkinen, Miss. Laina
+</td>
+<td>
+female
+</td>
+<td>
+26.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+STON/O2. 3101282
+</td>
+<td>
+7.9250
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+<td>
+2
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+4
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Futrelle, Mrs. Jacques Heath (Lily May Peel)
+</td>
+<td>
+female
+</td>
+<td>
+35.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+113803
+</td>
+<td>
+53.1000
+</td>
+<td>
+C123
+</td>
+<td>
+S
+</td>
+<td>
+3
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+5
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Allen, Mr. William Henry
+</td>
+<td>
+male
+</td>
+<td>
+35.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+373450
+</td>
+<td>
+8.0500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+<td>
+3
+</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment">#将连续变量Age划分为(0,5] (5,15] (15,30] (30,50] (50,80]五个年龄段，并分别用类别变量12345表示</span></span><br><span class="line">df[<span class="string">&#x27;AgeBand&#x27;</span>] = pd.cut(df[<span class="string">&#x27;Age&#x27;</span>],[<span class="number">0</span>,<span class="number">5</span>,<span class="number">15</span>,<span class="number">30</span>,<span class="number">50</span>,<span class="number">80</span>],labels = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>])</span><br><span class="line">df.head(<span class="number">3</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+<th>
+Sex
+</th>
+<th>
+Age
+</th>
+<th>
+SibSp
+</th>
+<th>
+Parch
+</th>
+<th>
+Ticket
+</th>
+<th>
+Fare
+</th>
+<th>
+Cabin
+</th>
+<th>
+Embarked
+</th>
+<th>
+AgeBand
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Braund, Mr. Owen Harris
+</td>
+<td>
+male
+</td>
+<td>
+22.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+A/5 21171
+</td>
+<td>
+7.2500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+<td>
+3
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+<td>
+female
+</td>
+<td>
+38.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+PC 17599
+</td>
+<td>
+71.2833
+</td>
+<td>
+C85
+</td>
+<td>
+C
+</td>
+<td>
+4
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+Heikkinen, Miss. Laina
+</td>
+<td>
+female
+</td>
+<td>
+26.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+STON/O2. 3101282
+</td>
+<td>
+7.9250
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+<td>
+3
+</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment">#将连续变量Age按10% 30% 50 70% 90%五个年龄段，并用分类变量12345表示</span></span><br><span class="line">df[<span class="string">&#x27;AgeBand&#x27;</span>] = pd.qcut(df[<span class="string">&#x27;Age&#x27;</span>],[<span class="number">0</span>,<span class="number">0.1</span>,<span class="number">0.3</span>,<span class="number">0.5</span>,<span class="number">0.7</span>,<span class="number">0.9</span>],labels = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>])</span><br><span class="line">df.head()</span><br></pre></td></tr></table></figure>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+<th>
+Sex
+</th>
+<th>
+Age
+</th>
+<th>
+SibSp
+</th>
+<th>
+Parch
+</th>
+<th>
+Ticket
+</th>
+<th>
+Fare
+</th>
+<th>
+Cabin
+</th>
+<th>
+Embarked
+</th>
+<th>
+AgeBand
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Braund, Mr. Owen Harris
+</td>
+<td>
+male
+</td>
+<td>
+22.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+A/5 21171
+</td>
+<td>
+7.2500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+<td>
+2
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+<td>
+female
+</td>
+<td>
+38.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+PC 17599
+</td>
+<td>
+71.2833
+</td>
+<td>
+C85
+</td>
+<td>
+C
+</td>
+<td>
+5
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+Heikkinen, Miss. Laina
+</td>
+<td>
+female
+</td>
+<td>
+26.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+STON/O2. 3101282
+</td>
+<td>
+7.9250
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+<td>
+3
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+4
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Futrelle, Mrs. Jacques Heath (Lily May Peel)
+</td>
+<td>
+female
+</td>
+<td>
+35.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+113803
+</td>
+<td>
+53.1000
+</td>
+<td>
+C123
+</td>
+<td>
+S
+</td>
+<td>
+4
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+5
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Allen, Mr. William Henry
+</td>
+<td>
+male
+</td>
+<td>
+35.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+373450
+</td>
+<td>
+8.0500
+</td>
+<td>
+NaN
+</td>
+<td>
+S
+</td>
+<td>
+4
+</td>
+</tr>
+</tbody>
+</table>
+<p>【参考】https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.cut.html</p>
+<p>【参考】https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.qcut.html</p>
+<h4 id="任务二对文本变量进行转换">2.3.2 任务二：对文本变量进行转换</h4>
+<ol type="1">
+<li>查看文本变量名及种类<br>
+</li>
+<li>将文本变量Sex， Cabin ，Embarked用数值变量12345表示<br>
+</li>
+<li>将文本变量Sex， Cabin， Embarked用one-hot编码表示</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment">#方法一: value_counts</span></span><br><span class="line"><span class="built_in">print</span>(</span><br><span class="line">df[<span class="string">&#x27;Sex&#x27;</span>].value_counts(),</span><br><span class="line">df[<span class="string">&#x27;Cabin&#x27;</span>].value_counts(),</span><br><span class="line">df[<span class="string">&#x27;Embarked&#x27;</span>].value_counts())</span><br></pre></td></tr></table></figure>
+<pre><code>Sex
+male      453
+female    261
+0           1
+Name: count, dtype: int64 Cabin
+B96 B98        4
+G6             4
+C23 C25 C27    4
+F2             3
+C22 C26        3
+              ..
+E36            1
+D7             1
+C118           1
+C99            1
+D37            1
+Name: count, Length: 135, dtype: int64 Embarked
+S    554
+C    130
+Q     28
+0      1
+Name: count, dtype: int64</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">df[<span class="string">&#x27;Sex&#x27;</span>].unique()</span><br><span class="line">df[<span class="string">&#x27;Sex&#x27;</span>].nunique()</span><br></pre></td></tr></table></figure>
+<pre><code>3</code></pre>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment">#将类别文本转换为12345</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#方法一: replace</span></span><br><span class="line">df[<span class="string">&#x27;Sex_num&#x27;</span>] = df[<span class="string">&#x27;Sex&#x27;</span>].replace([<span class="string">&#x27;male&#x27;</span>,<span class="string">&#x27;female&#x27;</span>],[<span class="number">1</span>,<span class="number">2</span>])</span><br><span class="line">df.head()</span><br><span class="line"><span class="comment">#方法二: map</span></span><br><span class="line">df[<span class="string">&#x27;Sex_num&#x27;</span>] = df[<span class="string">&#x27;Sex&#x27;</span>].<span class="built_in">map</span>(&#123;<span class="string">&#x27;male&#x27;</span>: <span class="number">1</span>, <span class="string">&#x27;female&#x27;</span>: <span class="number">2</span>&#125;)</span><br><span class="line">df.head()</span><br><span class="line"><span class="comment">#方法三: 使用sklearn.preprocessing的LabelEncoder</span></span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> LabelEncoder</span><br><span class="line"><span class="keyword">for</span> feat <span class="keyword">in</span> [<span class="string">&#x27;Cabin&#x27;</span>, <span class="string">&#x27;Ticket&#x27;</span>]:</span><br><span class="line">    lbl = LabelEncoder()  </span><br><span class="line">    label_dict = <span class="built_in">dict</span>(<span class="built_in">zip</span>(df[feat].unique(), <span class="built_in">range</span>(df[feat].nunique())))</span><br><span class="line">    <span class="comment">#print(label_dict)</span></span><br><span class="line">    df[feat + <span class="string">&quot;_labelEncode&quot;</span>] = df[feat].<span class="built_in">map</span>(label_dict)</span><br><span class="line">    df[feat + <span class="string">&quot;_labelEncode&quot;</span>] = lbl.fit_transform(df[feat].astype(<span class="built_in">str</span>))</span><br><span class="line"></span><br><span class="line">df.head()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>/tmp/ipykernel_1400/2627332835.py:5: FutureWarning: Downcasting behavior in `replace` is deprecated and will be removed in a future version. To retain the old behavior, explicitly call `result.infer_objects(copy=False)`. To opt-in to the future behavior, set `pd.set_option(&#39;future.no_silent_downcasting&#39;, True)`
+  df[&#39;Sex_num&#39;] = df[&#39;Sex&#39;].replace([&#39;male&#39;,&#39;female&#39;],[1,2])</code></pre>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+</th>
+<th>
+PassengerId
+</th>
+<th>
+Survived
+</th>
+<th>
+Pclass
+</th>
+<th>
+Name
+</th>
+<th>
+Sex
+</th>
+<th>
+Age
+</th>
+<th>
+SibSp
+</th>
+<th>
+Parch
+</th>
+<th>
+Ticket
+</th>
+<th>
+Fare
+</th>
+<th>
+…
+</th>
+<th>
+Age_66.0
+</th>
+<th>
+Age_70.0
+</th>
+<th>
+Age_70.5
+</th>
+<th>
+Age_71.0
+</th>
+<th>
+Age_74.0
+</th>
+<th>
+Age_80.0
+</th>
+<th>
+Embarked_0
+</th>
+<th>
+Embarked_C
+</th>
+<th>
+Embarked_Q
+</th>
+<th>
+Embarked_S
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>
+0
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Braund, Mr. Owen Harris
+</td>
+<td>
+male
+</td>
+<td>
+22.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+A/5 21171
+</td>
+<td>
+7.2500
+</td>
+<td>
+…
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+True
+</td>
+</tr>
+<tr>
+<th>
+1
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Cumings, Mrs. John Bradley (Florence Briggs Th…
+</td>
+<td>
+female
+</td>
+<td>
+38.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+PC 17599
+</td>
+<td>
+71.2833
+</td>
+<td>
+…
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+True
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+</tr>
+<tr>
+<th>
+2
+</th>
+<td>
+3
+</td>
+<td>
+1
+</td>
+<td>
+3
+</td>
+<td>
+Heikkinen, Miss. Laina
+</td>
+<td>
+female
+</td>
+<td>
+26.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+STON/O2. 3101282
+</td>
+<td>
+7.9250
+</td>
+<td>
+…
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+True
+</td>
+</tr>
+<tr>
+<th>
+3
+</th>
+<td>
+4
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+Futrelle, Mrs. Jacques Heath (Lily May Peel)
+</td>
+<td>
+female
+</td>
+<td>
+35.0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+113803
+</td>
+<td>
+53.1000
+</td>
+<td>
+…
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+True
+</td>
+</tr>
+<tr>
+<th>
+4
+</th>
+<td>
+5
+</td>
+<td>
+0
+</td>
+<td>
+3
+</td>
+<td>
+Allen, Mr. William Henry
+</td>
+<td>
+male
+</td>
+<td>
+35.0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+373450
+</td>
+<td>
+8.0500
+</td>
+<td>
+…
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+False
+</td>
+<td>
+True
+</td>
+</tr>
+</tbody>
+</table>
+<p>
+5 rows × 109 columns
+</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#将类别文本转换为one-hot编码</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#方法一: OneHotEncoder</span></span><br><span class="line"><span class="keyword">for</span> feat <span class="keyword">in</span> [<span class="string">&quot;Age&quot;</span>, <span class="string">&quot;Embarked&quot;</span>]:</span><br><span class="line">    x = pd.get_dummies(df[<span class="string">&quot;Age&quot;</span>] // <span class="number">6</span>)</span><br><span class="line"><span class="comment">#     x = pd.get_dummies(pd.cut(df[&#x27;Age&#x27;],5))</span></span><br><span class="line">    x = pd.get_dummies(df[feat], prefix=feat)</span><br><span class="line">    df = pd.concat([df, x], axis=<span class="number">1</span>)</span><br><span class="line">    <span class="comment">#df[feat] = pd.get_dummies(df[feat], prefix=feat)</span></span><br><span class="line">    </span><br><span class="line">df.head()</span><br><span class="line">df.to_csv(<span class="string">&#x27;temp.csv&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="任务三从纯文本name特征里提取出titles的特征所谓的titles就是mrmissmrs等">2.3.3
+任务三：从纯文本Name特征里提取出Titles的特征(所谓的Titles就是Mr,Miss,Mrs等)</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#保存最终你完成的已经清理好的数据</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E7%AC%AC%E5%9B%9B%E8%8A%82%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96-%E8%AF%BE%E7%A8%8B%20(copy)/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -251,7 +4232,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-06-12 18:45:25" itemprop="dateModified" datetime="2025-06-12T18:45:25+08:00">2025-06-12</time>
+      <time title="修改时间：2025-06-12 18:45:26" itemprop="dateModified" datetime="2025-06-12T18:45:26+08:00">2025-06-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -679,471 +4660,6 @@ This will become an error in seaborn v0.14.0; please update your code.
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E7%AC%AC%E4%B8%89%E8%8A%82%E6%95%B0%E6%8D%AE%E9%87%8D%E6%9E%842-%E8%AF%BE%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E7%AC%AC%E4%B8%89%E8%8A%82%E6%95%B0%E6%8D%AE%E9%87%8D%E6%9E%842-%E8%AF%BE%E7%A8%8B/" class="post-title-link" itemprop="url">数据分析——第二章：第三节数据重构2</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2025-05-14 00:00:00 / 修改时间：17:06:45" itemprop="dateCreated datePublished" datetime="2025-05-14T00:00:00+08:00">2025-05-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/kaggle/" itemprop="url" rel="index"><span itemprop="name">kaggle</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/kaggle/titanic/" itemprop="url" rel="index"><span itemprop="name">titanic</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p><strong>复习：</strong>在前面我们已经学习了Pandas基础，第二章我们开始进入数据分析的业务部分，在第二章第一节的内容中，我们学习了<strong>数据的清洗</strong>，这一部分十分重要，只有数据变得相对干净，我们之后对数据的分析才可以更有力。而这一节，我们要做的是数据重构，数据重构依旧属于数据理解（准备）的范围。</p>
-<h4 id="开始之前导入numpypandas包和数据">开始之前，导入numpy、pandas包和数据</h4>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入基本库</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 载入上一个任务人保存的文件中:result.csv，并查看这个文件</span></span><br><span class="line">text = pd.read_csv(<span class="string">&#x27;result.csv&#x27;</span>)</span><br><span class="line">text.head()</span><br></pre></td></tr></table></figure>
-<table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th>
-</th>
-<th>
-Unnamed: 0
-</th>
-<th>
-PassengerId
-</th>
-<th>
-Survived
-</th>
-<th>
-Pclass
-</th>
-<th>
-Name
-</th>
-<th>
-Sex
-</th>
-<th>
-Age
-</th>
-<th>
-SibSp
-</th>
-<th>
-Parch
-</th>
-<th>
-Ticket
-</th>
-<th>
-Fare
-</th>
-<th>
-Cabin
-</th>
-<th>
-Embarked
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>
-0
-</th>
-<td>
-0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-3
-</td>
-<td>
-Braund, Mr. Owen Harris
-</td>
-<td>
-male
-</td>
-<td>
-22.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-A/5 21171
-</td>
-<td>
-7.2500
-</td>
-<td>
-NaN
-</td>
-<td>
-S
-</td>
-</tr>
-<tr>
-<th>
-1
-</th>
-<td>
-1
-</td>
-<td>
-2
-</td>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-Cumings, Mrs. John Bradley (Florence Briggs Th…
-</td>
-<td>
-female
-</td>
-<td>
-38.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-PC 17599
-</td>
-<td>
-71.2833
-</td>
-<td>
-C85
-</td>
-<td>
-C
-</td>
-</tr>
-<tr>
-<th>
-2
-</th>
-<td>
-2
-</td>
-<td>
-3
-</td>
-<td>
-1
-</td>
-<td>
-3
-</td>
-<td>
-Heikkinen, Miss. Laina
-</td>
-<td>
-female
-</td>
-<td>
-26.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-STON/O2. 3101282
-</td>
-<td>
-7.9250
-</td>
-<td>
-NaN
-</td>
-<td>
-S
-</td>
-</tr>
-<tr>
-<th>
-3
-</th>
-<td>
-3
-</td>
-<td>
-4
-</td>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-Futrelle, Mrs. Jacques Heath (Lily May Peel)
-</td>
-<td>
-female
-</td>
-<td>
-35.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-113803
-</td>
-<td>
-53.1000
-</td>
-<td>
-C123
-</td>
-<td>
-S
-</td>
-</tr>
-<tr>
-<th>
-4
-</th>
-<td>
-4
-</td>
-<td>
-5
-</td>
-<td>
-0
-</td>
-<td>
-3
-</td>
-<td>
-Allen, Mr. William Henry
-</td>
-<td>
-male
-</td>
-<td>
-35.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-373450
-</td>
-<td>
-8.0500
-</td>
-<td>
-NaN
-</td>
-<td>
-S
-</td>
-</tr>
-</tbody>
-</table>
-<h1 id="第二章数据重构">2 第二章：数据重构</h1>
-<h2 id="第一部分数据聚合与运算">第一部分：数据聚合与运算</h2>
-<h3 id="数据运用">2.6 数据运用</h3>
-<h4 id="任务一通过教材python-for-data-analysisp303google-or-anything来学习了解groupby机制">2.6.1
-任务一：通过教材《Python for Data Analysis》P303、Google or
-anything来学习了解GroupBy机制</h4>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入心得</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">GroupBy机制是Pandas中用于数据分组与聚合的核心操作，其本质是遵循&quot;Split-Apply-Combine&quot;模式：</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Split：按指定键（列、函数、数组等）将数据分割成多个子集</span></span><br><span class="line"><span class="string">Apply：对每个子集独立应用聚合函数（如mean/max）、转换函数（如标准化）或过滤操作</span></span><br><span class="line"><span class="string">Combine：将结果合并为新的数据结构</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
-<h4 id="任务二计算泰坦尼克号男性与女性的平均票价">2.4.2：任务二：计算泰坦尼克号男性与女性的平均票价</h4>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 写入代码</span></span><br><span class="line">df  = text[<span class="string">&#x27;Fare&#x27;</span>].groupby(text[<span class="string">&#x27;Sex&#x27;</span>])</span><br><span class="line"><span class="built_in">print</span>(df.groups)</span><br><span class="line">means = df.mean()</span><br><span class="line">means</span><br></pre></td></tr></table></figure>
-<pre><code>&#123;&#39;female&#39;: [1, 2, 3, 8, 9, 10, 11, 14, 15, 18, 19, 22, 24, 25, 28, 31, 32, 38, 39, 40, 41, 43, 44, 47, 49, 52, 53, 56, 58, 61, 66, 68, 71, 79, 82, 84, 85, 88, 98, 100, 106, 109, 111, 113, 114, 119, 123, 128, 132, 133, 136, 140, 141, 142, 147, 151, 156, 161, 166, 167, 172, 177, 180, 184, 186, 190, 192, 194, 195, 198, 199, 205, 208, 211, 215, 216, 218, 229, 230, 233, 235, 237, 240, 241, 246, 247, 251, 254, 255, 256, 257, 258, 259, 264, 268, 269, 272, 274, 275, 276, ...], &#39;male&#39;: [0, 4, 5, 6, 7, 12, 13, 16, 17, 20, 21, 23, 26, 27, 29, 30, 33, 34, 35, 36, 37, 42, 45, 46, 48, 50, 51, 54, 55, 57, 59, 60, 62, 63, 64, 65, 67, 69, 70, 72, 73, 74, 75, 76, 77, 78, 80, 81, 83, 86, 87, 89, 90, 91, 92, 93, 94, 95, 96, 97, 99, 101, 102, 103, 104, 105, 107, 108, 110, 112, 115, 116, 117, 118, 120, 121, 122, 124, 125, 126, 127, 129, 130, 131, 134, 135, 137, 138, 139, 143, 144, 145, 146, 148, 149, 150, 152, 153, 154, 155, ...]&#125;
-
-Sex
-female    44.479818
-male      25.523893
-Name: Fare, dtype: float64</code></pre>
-<p>在了解GroupBy机制之后，运用这个机制完成一系列的操作，来达到我们的目的。</p>
-<p>下面通过几个任务来熟悉GroupBy机制。</p>
-<h4 id="任务三统计泰坦尼克号中男女的存活人数">2.4.3：任务三：统计泰坦尼克号中男女的存活人数</h4>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 写入代码</span></span><br><span class="line">survived_sex = text[<span class="string">&#x27;Survived&#x27;</span>].groupby(text[<span class="string">&#x27;Sex&#x27;</span>]).<span class="built_in">sum</span>()</span><br><span class="line">survived_sex.head()</span><br></pre></td></tr></table></figure>
-<pre><code>Sex
-female    233
-male      109
-Name: Survived, dtype: int64</code></pre>
-<h4 id="任务四计算客舱不同等级的存活人数">2.4.4：任务四：计算客舱不同等级的存活人数</h4>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 写入代码</span></span><br><span class="line">survived_pclass = text[<span class="string">&#x27;Survived&#x27;</span>].groupby(text[<span class="string">&#x27;Pclass&#x27;</span>])</span><br><span class="line">survived_pclass.<span class="built_in">sum</span>()</span><br></pre></td></tr></table></figure>
-<pre><code>Pclass
-1    136
-2     87
-3    119
-Name: Survived, dtype: int64</code></pre>
-<p>【<strong>提示：</strong>】表中的存活那一栏，可以发现如果还活着记为1，死亡记为0</p>
-<p>【<strong>思考</strong>】从数据分析的角度，上面的统计结果可以得出那些结论</p>
-<p>【思考】从任务二到任务三中，这些运算可以通过agg()函数来同时计算。并且可以使用rename函数修改列名。你可以按照提示写出这个过程吗？</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#思考心得</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">agg() 函数是 Pandas 中用于对分组后的数据 同时执行多个聚合操作 的核心工具，其全称为 Aggregate（聚合）。它允许你对不同列应用不同的聚合函数，并支持自定义函数，极大提升数据分析效率。</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">text.groupby(<span class="string">&#x27;Sex&#x27;</span>).agg(&#123;<span class="string">&#x27;Fare&#x27;</span>: <span class="string">&#x27;mean&#x27;</span>, <span class="string">&#x27;Pclass&#x27;</span>: <span class="string">&#x27;count&#x27;</span>&#125;).rename(columns=</span><br><span class="line">                            &#123;<span class="string">&#x27;Fare&#x27;</span>: <span class="string">&#x27;mean_fare&#x27;</span>, <span class="string">&#x27;Pclass&#x27;</span>: <span class="string">&#x27;count_pclass&#x27;</span>&#125;)</span><br></pre></td></tr></table></figure>
-<table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th>
-</th>
-<th>
-mean_fare
-</th>
-<th>
-count_pclass
-</th>
-</tr>
-<tr>
-<th>
-Sex
-</th>
-<th>
-</th>
-<th>
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>
-female
-</th>
-<td>
-44.479818
-</td>
-<td>
-314
-</td>
-</tr>
-<tr>
-<th>
-male
-</th>
-<td>
-25.523893
-</td>
-<td>
-577
-</td>
-</tr>
-</tbody>
-</table>
-<h4 id="任务五统计在不同等级的票中的不同年龄的船票花费的平均值">2.4.5：任务五：统计在不同等级的票中的不同年龄的船票花费的平均值</h4>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 写入代码</span></span><br><span class="line">temp=text.groupby([<span class="string">&#x27;Pclass&#x27;</span>,<span class="string">&#x27;Age&#x27;</span>])[<span class="string">&#x27;Fare&#x27;</span>]</span><br><span class="line">temp.groups</span><br><span class="line">temp.mean().head()</span><br></pre></td></tr></table></figure>
-<pre><code>Pclass  Age  
-1       0.92     151.5500
-        2.00     151.5500
-        4.00      81.8583
-        11.00    120.0000
-        14.00    120.0000
-Name: Fare, dtype: float64</code></pre>
-<h4 id="任务六将任务二和任务三的数据合并并保存到sex_fare_survived.csv">2.4.6：任务六：将任务二和任务三的数据合并，并保存到sex_fare_survived.csv</h4>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 写入代码</span></span><br><span class="line">result = pd.merge(means,survived_sex,on=<span class="string">&#x27;Sex&#x27;</span>)</span><br><span class="line">result</span><br><span class="line">result.to_csv(<span class="string">&#x27;sex_fare_survived.csv&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<h4 id="任务七得出不同年龄的总的存活人数然后找出存活人数最多的年龄段最后计算存活人数最高的存活率存活人数总人数">2.4.7：任务七：得出不同年龄的总的存活人数，然后找出存活人数最多的年龄段，最后计算存活人数最高的存活率（存活人数/总人数）</h4>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 写入代码</span></span><br><span class="line">survived_age = text[<span class="string">&#x27;Survived&#x27;</span>].groupby(text[<span class="string">&#x27;Age&#x27;</span>]).<span class="built_in">sum</span>()</span><br><span class="line">survived_age.head()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<pre><code>Age
-0.42    1
-0.67    1
-0.75    2
-0.83    2
-0.92    1
-Name: Survived, dtype: int64</code></pre>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 写入代码</span></span><br><span class="line">survived_age[survived_age.values==survived_age.<span class="built_in">max</span>()]</span><br></pre></td></tr></table></figure>
-<pre><code>Age
-24.0    15
-Name: Survived, dtype: int64</code></pre>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">_<span class="built_in">sum</span> = text[<span class="string">&#x27;Survived&#x27;</span>].<span class="built_in">sum</span>()</span><br><span class="line"><span class="built_in">print</span>(_<span class="built_in">sum</span>)</span><br></pre></td></tr></table></figure>
-<pre><code>342</code></pre>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&quot;sum of person:&quot;</span>+<span class="built_in">str</span>(_<span class="built_in">sum</span>))</span><br><span class="line"></span><br><span class="line">precetn =survived_age.<span class="built_in">max</span>()/_<span class="built_in">sum</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;最大存活率：&quot;</span>+<span class="built_in">str</span>(precetn))</span><br></pre></td></tr></table></figure>
-<pre><code>sum of person:342
-最大存活率：0.043859649122807015</code></pre>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/python-web/fastapi/fastapi/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1180,7 +4696,7 @@ Name: Survived, dtype: int64</code></pre>
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-08-15 15:51:18" itemprop="dateModified" datetime="2025-08-15T15:51:18+08:00">2025-08-15</time>
+      <time title="修改时间：2025-08-15 15:51:20" itemprop="dateModified" datetime="2025-08-15T15:51:20+08:00">2025-08-15</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1331,7 +4847,7 @@ OK，以3位数字和原因组成。</p>
 JSON、表单数据），客户端可解析响应数据的类型（如 HTML、图片）</p>
 <p>例如：conn.send(b”HTTP/1.1 200 ok:zxj*content-type:text/html**hello
 world&lt;&gt;“)</p>
-<p>再例如：’HTTP/1.1 200 ok:zxj*content-type:application/json**’</p>
+<p>再例如：‘HTTP/1.1 200 ok:zxj*content-type:application/json**’</p>
 </blockquote>
 <h5 id="api接口">api接口</h5>
 <p>在开发web应用中，有两种应用模式：</p>
@@ -1360,34 +4876,34 @@ Fielding的博士论文中。</p>
 <p>而<strong>对于数据资源分别使用POST、DELETE、GET、UPDATE等请求动作来表达对数据的增删查改</strong>。</p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>请求方法</th>
 <th>请求地址</th>
 <th>后端操作</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>POST</td>
 <td>/student/</td>
 <td>增加学生</td>
 </tr>
-<tr class="even">
+<tr>
 <td>GET</td>
 <td>/student/</td>
 <td>获取所有学生</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>GET</td>
 <td>/student/1</td>
 <td>获取id为1的学生</td>
 </tr>
-<tr class="even">
+<tr>
 <td>PUT</td>
 <td>/student/1</td>
 <td>修改id为1的学生</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>DELETE</td>
 <td>/student/1</td>
 <td>删除id为1的学生</td>
@@ -1710,41 +5226,41 @@ model 在 NoSQL 数据库中具有很多可选属性，但是不想发送很长�
 里面的内置函数和字符串处理函数。常用的过滤器有：</p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>过滤器名称</th>
 <th>说明</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>capitalize</td>
 <td>把值的首字母转换成大写，其他字母转换为小写</td>
 </tr>
-<tr class="even">
+<tr>
 <td>lower</td>
 <td>把值转换成小写形式</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>title</td>
 <td>把值中每个单词的首字母都转换成大写</td>
 </tr>
-<tr class="even">
+<tr>
 <td>trim</td>
 <td>把值的首尾空格去掉</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>striptags</td>
 <td>渲染之前把值中所有的 HTML 标签都删掉</td>
 </tr>
-<tr class="even">
+<tr>
 <td>join</td>
 <td>拼接多个值为字符串</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>round</td>
 <td>默认对数字进行四舍五入，也可以用参数进行控制</td>
 </tr>
-<tr class="even">
+<tr>
 <td>safe</td>
 <td>渲染时值不转义</td>
 </tr>
@@ -2089,7 +5605,7 @@ yield)_哔哩哔哩_bilibili</a></p>
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-04-20 00:09:10" itemprop="dateModified" datetime="2025-04-20T00:09:10+08:00">2025-04-20</time>
+      <time title="修改时间：2025-04-20 00:09:12" itemprop="dateModified" datetime="2025-04-20T00:09:12+08:00">2025-04-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -2175,7 +5691,7 @@ yield)_哔哩哔哩_bilibili</a></p>
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-06-12 18:39:42" itemprop="dateModified" datetime="2025-06-12T18:39:42+08:00">2025-06-12</time>
+      <time title="修改时间：2025-06-12 18:39:44" itemprop="dateModified" datetime="2025-06-12T18:39:44+08:00">2025-06-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -2277,7 +5793,7 @@ yield)_哔哩哔哩_bilibili</a></p>
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-06-12 18:39:00" itemprop="dateModified" datetime="2025-06-12T18:39:00+08:00">2025-06-12</time>
+      <time title="修改时间：2025-06-12 18:39:02" itemprop="dateModified" datetime="2025-06-12T18:39:02+08:00">2025-06-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -2349,116 +5865,6 @@ yield)_哔哩哔哩_bilibili</a></p>
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/19/%E5%9B%9E%E5%BF%86/1912/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/04/19/%E5%9B%9E%E5%BF%86/1912/" class="post-title-link" itemprop="url">1912</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-04-19 00:00:00" itemprop="dateCreated datePublished" datetime="2025-04-19T00:00:00+08:00">2025-04-19</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-06-12 18:39:41" itemprop="dateModified" datetime="2025-06-12T18:39:41+08:00">2025-06-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%9B%9E%E5%BF%86/" itemprop="url" rel="index"><span itemprop="name">回忆</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="section">1912</h3>
-<p>2025年的生日，与李哥在百家湖1912聚餐，李哥请我吃的铁板烧，超级美味</p>
-<figure>
-<img src="/2025/04/19/%E5%9B%9E%E5%BF%86/1912/1745080784805-1745080945538-24.jpg" alt="1745080784805">
-<figcaption aria-hidden="true">1745080784805</figcaption>
-</figure>
-<figure>
-<img src="/2025/04/19/%E5%9B%9E%E5%BF%86/1912/1745080784820-1745080945538-25.jpg" alt="1745080784820">
-<figcaption aria-hidden="true">1745080784820</figcaption>
-</figure>
-<figure>
-<img src="/2025/04/19/%E5%9B%9E%E5%BF%86/1912/1745080784834-1745080945538-26.jpg" alt="1745080784834">
-<figcaption aria-hidden="true">1745080784834</figcaption>
-</figure>
-<figure>
-<img src="/2025/04/19/%E5%9B%9E%E5%BF%86/1912/1745080784848-1745080945538-27.jpg" alt="1745080784848">
-<figcaption aria-hidden="true">1745080784848</figcaption>
-</figure>
-<figure>
-<img src="/2025/04/19/%E5%9B%9E%E5%BF%86/1912/1745080784862-1745080945538-28.jpg" alt="1745080784862">
-<figcaption aria-hidden="true">1745080784862</figcaption>
-</figure>
-<figure>
-<img src="/2025/04/19/%E5%9B%9E%E5%BF%86/1912/1745080784789-1745080968451-38.jpg" alt="1745080784789">
-<figcaption aria-hidden="true">1745080784789</figcaption>
-</figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/19/%E5%9B%9E%E5%BF%86/%E6%A9%98%E5%AD%90%E6%B5%B7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2495,7 +5901,7 @@ yield)_哔哩哔哩_bilibili</a></p>
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-06-12 18:37:53" itemprop="dateModified" datetime="2025-06-12T18:37:53+08:00">2025-06-12</time>
+      <time title="修改时间：2025-06-12 18:37:54" itemprop="dateModified" datetime="2025-06-12T18:37:54+08:00">2025-06-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -2581,6 +5987,116 @@ yield)_哔哩哔哩_bilibili</a></p>
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/19/%E5%9B%9E%E5%BF%86/1912/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/04/19/%E5%9B%9E%E5%BF%86/1912/" class="post-title-link" itemprop="url">1912</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-04-19 00:00:00" itemprop="dateCreated datePublished" datetime="2025-04-19T00:00:00+08:00">2025-04-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-12 18:39:42" itemprop="dateModified" datetime="2025-06-12T18:39:42+08:00">2025-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%9B%9E%E5%BF%86/" itemprop="url" rel="index"><span itemprop="name">回忆</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="section">1912</h3>
+<p>2025年的生日，与李哥在百家湖1912聚餐，李哥请我吃的铁板烧，超级美味</p>
+<figure>
+<img src="/2025/04/19/%E5%9B%9E%E5%BF%86/1912/1745080784805-1745080945538-24.jpg" alt="1745080784805">
+<figcaption aria-hidden="true">1745080784805</figcaption>
+</figure>
+<figure>
+<img src="/2025/04/19/%E5%9B%9E%E5%BF%86/1912/1745080784820-1745080945538-25.jpg" alt="1745080784820">
+<figcaption aria-hidden="true">1745080784820</figcaption>
+</figure>
+<figure>
+<img src="/2025/04/19/%E5%9B%9E%E5%BF%86/1912/1745080784834-1745080945538-26.jpg" alt="1745080784834">
+<figcaption aria-hidden="true">1745080784834</figcaption>
+</figure>
+<figure>
+<img src="/2025/04/19/%E5%9B%9E%E5%BF%86/1912/1745080784848-1745080945538-27.jpg" alt="1745080784848">
+<figcaption aria-hidden="true">1745080784848</figcaption>
+</figure>
+<figure>
+<img src="/2025/04/19/%E5%9B%9E%E5%BF%86/1912/1745080784862-1745080945538-28.jpg" alt="1745080784862">
+<figcaption aria-hidden="true">1745080784862</figcaption>
+</figure>
+<figure>
+<img src="/2025/04/19/%E5%9B%9E%E5%BF%86/1912/1745080784789-1745080968451-38.jpg" alt="1745080784789">
+<figcaption aria-hidden="true">1745080784789</figcaption>
+</figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/19/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/%E5%8A%A8%E6%89%8B%E5%AD%A6%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2617,7 +6133,7 @@ yield)_哔哩哔哩_bilibili</a></p>
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-05-14 15:54:59" itemprop="dateModified" datetime="2025-05-14T15:54:59+08:00">2025-05-14</time>
+      <time title="修改时间：2025-05-14 15:55:00" itemprop="dateModified" datetime="2025-05-14T15:55:00+08:00">2025-05-14</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -2663,166 +6179,6 @@ templates Few shot. Example
 selector(提示模板：少镜头。示例选择器)_哔哩哔哩_bilibili</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.langchain.com.cn/docs/concepts/">概念指南 |
 LangChain中文网</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/16/%E5%AD%A6%E4%B9%A0/hexo/hexo%E7%9B%B8%E5%85%B3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/04/16/%E5%AD%A6%E4%B9%A0/hexo/hexo%E7%9B%B8%E5%85%B3/" class="post-title-link" itemprop="url">hexo常用指令</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-04-16 00:00:00" itemprop="dateCreated datePublished" datetime="2025-04-16T00:00:00+08:00">2025-04-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-07-29 15:28:19" itemprop="dateModified" datetime="2025-07-29T15:28:19+08:00">2025-07-29</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%AD%A6%E4%B9%A0/blog/" itemprop="url" rel="index"><span itemprop="name">blog</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>以下是 Hexo 常用的指令整理，方便快速查阅：</p>
-<hr>
-<h3 id="基础操作"><strong>基础操作</strong></h3>
-<ol type="1">
-<li><p><strong>初始化博客</strong><br>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo init [文件夹名]  <span class="comment"># 创建新博客（不指定文件夹则在当前目录生成）</span></span><br></pre></td></tr></table></figure></p></li>
-<li><p><strong>安装依赖</strong><br>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install           <span class="comment"># 安装 Hexo 核心依赖（初始化后可能需要执行）</span></span><br></pre></td></tr></table></figure></p></li>
-<li><p><strong>本地预览</strong><br>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo server           <span class="comment"># 启动本地服务器（默认端口 4000），缩写：hexo s</span></span><br></pre></td></tr></table></figure></p></li>
-<li><p><strong>生成静态文件</strong><br>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo generate         <span class="comment"># 生成 public 文件夹的静态文件，缩写：hexo g</span></span><br></pre></td></tr></table></figure></p></li>
-<li><p><strong>部署到服务器</strong><br>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo deploy           <span class="comment"># 部署到 GitHub Pages 或其他平台，缩写：hexo d</span></span><br></pre></td></tr></table></figure></p></li>
-</ol>
-<hr>
-<h3 id="文章与页面"><strong>文章与页面</strong></h3>
-<ol type="1">
-<li><p><strong>新建文章</strong><br>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new <span class="string">&quot;文章标题&quot;</span>    <span class="comment"># 生成新文章（Markdown 文件），缩写：hexo n</span></span><br></pre></td></tr></table></figure></p></li>
-<li><p><strong>新建页面</strong><br>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page <span class="string">&quot;页面名&quot;</span> <span class="comment"># 创建自定义页面（如 about、tags）</span></span><br></pre></td></tr></table></figure></p></li>
-</ol>
-<hr>
-<h3 id="清理与调试"><strong>清理与调试</strong></h3>
-<ol type="1">
-<li><p><strong>清理缓存</strong><br>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean            <span class="comment"># 删除生成的 public 和缓存文件（修改主题后建议执行）</span></span><br></pre></td></tr></table></figure></p></li>
-<li><p><strong>查看帮助</strong><br>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo <span class="built_in">help</span>             <span class="comment"># 查看所有指令说明</span></span><br></pre></td></tr></table></figure></p></li>
-</ol>
-<hr>
-<h3 id="组合指令高效操作"><strong>组合指令（高效操作）</strong></h3>
-<ul>
-<li><p><strong>生成并部署</strong><br>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo g -d          <span class="comment"># 先生成静态文件，再部署（等同 hexo generate &amp;&amp; hexo deploy）</span></span><br><span class="line">hexo d -g          <span class="comment"># 同上，顺序不影响结果</span></span><br></pre></td></tr></table></figure></p></li>
-<li><p><strong>生成并预览</strong><br>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo s -g          <span class="comment"># 先生成文件，再启动本地服务器</span></span><br></pre></td></tr></table></figure></p></li>
-</ul>
-<hr>
-<h3 id="注意事项"><strong>注意事项</strong></h3>
-<ul>
-<li><strong>部署前配置</strong>：需在 <code>_config.yml</code> 中设置
-<code>deploy</code> 参数（如 GitHub 仓库地址）。</li>
-<li><strong>安装部署插件</strong>：首次部署需运行
-<code>npm install hexo-deployer-git</code>。</li>
-<li><strong>主题安装</strong>：将主题克隆到 <code>themes/</code>
-文件夹后，在配置文件中指定主题名称。</li>
-</ul>
-<p>如果需要更详细的操作说明，可以补充具体场景（如更换主题、设置分类等）！</p>
-<h3 id="hexo-d上传失败网络连接问题解决方案">hexo
-d上传失败，网络连接问题解决方案</h3>
-<p>原因：<strong>Clash 虽然开启了代理，但 Git
-默认不会走这个代理</strong>，导致连接 GitHub 时失败</p>
-<figure>
-<img src="/2025/04/16/%E5%AD%A6%E4%B9%A0/hexo/hexo%E7%9B%B8%E5%85%B3/image-20250722204420664.png" alt="image-20250722204420664">
-<figcaption aria-hidden="true">image-20250722204420664</figcaption>
-</figure>
-<p>解决方案：</p>
-<p>查看端口号</p>
-<figure>
-<img src="/2025/04/16/%E5%AD%A6%E4%B9%A0/hexo/hexo%E7%9B%B8%E5%85%B3/image-20250722204512612.png" alt="image-20250722204512612">
-<figcaption aria-hidden="true">image-20250722204512612</figcaption>
-</figure>
-<p>查看git代理</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global --get http.proxy</span><br><span class="line">git config --global --get https.proxy</span><br></pre></td></tr></table></figure>
-<p>更改代理</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global http.proxy socks5://127.0.0.1:1080</span><br><span class="line">git config --global https.proxy socks5://127.0.0.1:1080</span><br></pre></td></tr></table></figure>
-<h3 id="参考教程">参考教程</h3>
-<p><a target="_blank" rel="noopener" href="https://tech.yemengstar.com/hexo-tutorial-deploy-githubpages-beginner/">HEXO系列教程
-| 使用GitHub部署静态博客HEXO | 小白向教程 – 夜梦星尘の折腾日记</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV12H4y1N7Q4/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">Github王炸功能Pages,免费免服务器上线网站,详细教程_哔哩哔哩_bilibili</a></p>
 
       
     </div>

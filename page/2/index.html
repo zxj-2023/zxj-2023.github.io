@@ -155,18 +155,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">132</span>
+          <span class="site-state-item-count">136</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">50</span>
+        <span class="site-state-item-count">52</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-count">57</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -215,6 +215,1005 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83qwen3-32b/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83qwen3-32b/" class="post-title-link" itemprop="url">分布式训练qwen3-32b</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-08-12 00:00:00" itemprop="dateCreated datePublished" datetime="2025-08-12T00:00:00+08:00">2025-08-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-08-28 14:58:38" itemprop="dateModified" datetime="2025-08-28T14:58:38+08:00">2025-08-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%A8%A1%E5%9E%8B/" itemprop="url" rel="index"><span itemprop="name">模型</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%A8%A1%E5%9E%8B/%E5%BE%AE%E8%B0%83/" itemprop="url" rel="index"><span itemprop="name">微调</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="训练框架-llama-factor">训练框架-<a target="_blank" rel="noopener" href="https://github.com/hiyouga/LLaMA-Factory">LLaMA-Factor</a></h3>
+<p><a target="_blank" rel="noopener" href="https://llamafactory.readthedocs.io/zh-cn/latest/getting_started/installation.html">安装
+- LLaMA Factory</a></p>
+<p><strong>docker部署镜像</strong>，以便后续传入内网</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">git clone --depth 1 https://github.com/hiyouga/LLaMA-Factory.git</span><br><span class="line">cd LLaMA-Factory</span><br><span class="line"></span><br><span class="line">docker build -f ./docker/docker-cuda/Dockerfile \</span><br><span class="line">    --build-arg PIP_INDEX=https://pypi.org/simple \</span><br><span class="line">    --build-arg EXTRAS=metrics \</span><br><span class="line">    -t llamafactory:latest .</span><br><span class="line"></span><br><span class="line">docker run -dit --ipc=host --gpus=all \</span><br><span class="line">    -p 7860:7860 \</span><br><span class="line">    -p 8001:8000 \    # 主机 8001 → 容器 8000，主机8000端口被占用了</span><br><span class="line">    --name llamafactory \</span><br><span class="line">    -v /aisys/:/aisys/ \</span><br><span class="line">    docker.1ms.run/hiyouga/llamafactory</span><br><span class="line"></span><br><span class="line">docker run -dit --ipc=host --gpus=all -p 7860:7860 -p 8001:8000 -v /aisys/:/aisys/ --name llamafactory docker.1ms.run/hiyouga/llamafactory</span><br><span class="line"></span><br><span class="line">docker exec -it llamafactory bash</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker pull docker.1ms.run/hiyouga/llamafactory                                    </span><br><span class="line"></span><br><span class="line">docker save docker.1ms.run/hiyouga/llamafactory:latest -o llamafactory-image.tar</span><br><span class="line"></span><br><span class="line">docker load -i llamafactory-image.tar</span><br></pre></td></tr></table></figure>
+<p><strong>LLaMA Board 可视化微调（由 <a target="_blank" rel="noopener" href="https://github.com/gradio-app/gradio">Gradio</a>
+驱动）</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">llamafactory-cli webui</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Web UI 访问：<code>http://localhost:7860</code></li>
+<li>API 服务访问：<code>http://localhost:8001</code></li>
+</ul>
+<h3 id="数据集-easy-dataset">数据集-<a target="_blank" rel="noopener" href="https://github.com/ConardLi/easy-dataset">easy-dataset</a></h3>
+<p><strong>docker部署镜像</strong>，以便后续传入内网</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/ConardLi/easy-dataset.git</span><br><span class="line">cd easy-dataset</span><br><span class="line"></span><br><span class="line">docker build -t easy-dataset .</span><br><span class="line"></span><br><span class="line">docker load -i easy-dataset.tar</span><br><span class="line"></span><br><span class="line">docker run -d \</span><br><span class="line">  -p 1717:1717 \</span><br><span class="line">  -v /aisys/repo_dev/xizhang/lora_database:/app/local-db \</span><br><span class="line">  -v /aisys/repo_dev/xizhang/lora_databse_prisma:/app/prisma \</span><br><span class="line">  --name easy-dataset \</span><br><span class="line">  easy-dataset</span><br><span class="line">  </span><br><span class="line"></span><br><span class="line">docker exec -it easy-dataset sh</span><br><span class="line"></span><br><span class="line">docker stop easy-dataset</span><br><span class="line">docker rm easy-dataset</span><br><span class="line"></span><br><span class="line">#实时跟踪</span><br><span class="line"> docker logs -f easy-dataset</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>注意：</strong> 请将
+<code>&#123;YOUR_LOCAL_DB_PATH&#125;</code>、<code>&#123;LOCAL_PRISMA_PATH&#125;</code>
+替换为你希望存储本地数据库的实际路径，建议直接使用当前代码仓库目录下的
+<code>local-db</code> 和 <code>prisma</code> 文件夹，这样可以和 NPM
+启动时的数据库路径保持一致。</p>
+</blockquote>
+<blockquote>
+<p><strong>注意：</strong>
+如果需要挂载数据库文件（PRISMA），需要提前执行
+<code>npm run db:push</code> 初始化数据库文件。</p>
+</blockquote>
+<p>使用开源项目制作数据集</p>
+<p>打开浏览器，访问 <code>http://localhost:1717</code></p>
+<h3 id="上传内网">上传内网</h3>
+<p>使用scp</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp -r &quot;F:\project python\实习\微调\universal-llm_latest.tar&quot; root@10.117.128.50:/aisys/repo_dev/xizhang/images</span><br></pre></td></tr></table></figure>
+<p><strong>SCP</strong> 全称是 <strong>Secure Copy
+Protocol</strong>（安全复制协议），是一种用于在计算机之间<strong>安全地复制文件</strong>的网络协议。</p>
+<p>它基于 <strong>SSH</strong>（Secure
+Shell）协议工作，因此所有传输的数据都是<strong>加密的</strong>，可以防止被窃听或篡改，非常适合在不安全的网络（如互联网）中使用。</p>
+<h3 id="模型部署与调用">模型部署与调用</h3>
+<h4 id="制作模型运行镜像">制作模型运行镜像</h4>
+<p>qwen3部署版本要求如下</p>
+<p>使用 Python 3.10 或以上版本， PyTorch 2.6 或以上版本</p>
+<p><code>transformers&gt;=4.51.0</code> 版本</p>
+<p>使用 <code>sglang&gt;=0.4.6.post1</code> 或
+<code>vllm&gt;=0.8.5</code> 来创建一个与 OpenAI 兼容的 API 端点</p>
+<h4 id="镜像信息">镜像信息</h4>
+<table>
+<colgroup>
+<col style="width: 15%">
+<col style="width: 18%">
+<col style="width: 21%">
+<col style="width: 45%">
+</colgroup>
+<thead>
+<tr>
+<th>类别</th>
+<th>组件</th>
+<th>版本 / 来源</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>OS</strong></td>
+<td>Ubuntu</td>
+<td>22.04 LTS (Jammy)</td>
+<td>上游镜像继承</td>
+</tr>
+<tr>
+<td><strong>Python</strong></td>
+<td>CPython</td>
+<td>3.11</td>
+<td>镜像自带</td>
+</tr>
+<tr>
+<td><strong>PyTorch</strong></td>
+<td>PyTorch</td>
+<td>2.6.0+cu126</td>
+<td>官方 wheel，CUDA 12.6</td>
+</tr>
+<tr>
+<td><strong>CUDA</strong></td>
+<td>Runtime</td>
+<td>12.6.3</td>
+<td>与宿主机 535 驱动兼容</td>
+</tr>
+<tr>
+<td><strong>cuDNN</strong></td>
+<td>cuDNN</td>
+<td>9</td>
+<td>包含在镜像</td>
+</tr>
+<tr>
+<td><strong>核心库</strong></td>
+<td>transformers</td>
+<td>≥4.51.0</td>
+<td>官方最新</td>
+</tr>
+<tr>
+<td></td>
+<td>tokenizers</td>
+<td>≥0.21</td>
+<td>transformers 依赖</td>
+</tr>
+<tr>
+<td></td>
+<td>accelerate</td>
+<td>≥1.0.0</td>
+<td>训练 / 推理加速</td>
+</tr>
+<tr>
+<td></td>
+<td>sentencepiece</td>
+<td>≥0.2.0</td>
+<td>Qwen3 分词器必需</td>
+</tr>
+<tr>
+<td></td>
+<td>protobuf</td>
+<td>≥5.28.0</td>
+<td>序列化 / 模型加载</td>
+</tr>
+<tr>
+<td></td>
+<td>tiktoken</td>
+<td>≥0.8.0</td>
+<td>OpenAI 格式分词</td>
+</tr>
+<tr>
+<td><strong>推理框架</strong></td>
+<td>vLLM</td>
+<td>≥0.8.5</td>
+<td>支持 tensor-parallel、PagedAttention</td>
+</tr>
+<tr>
+<td></td>
+<td>SGLang</td>
+<td>≥0.4.6.post1</td>
+<td>支持 outline 解码、MoE 优化</td>
+</tr>
+<tr>
+<td><strong>可选加速</strong></td>
+<td>flash-attn</td>
+<td>≥2.7</td>
+<td>长上下文 / 大 batch 推理</td>
+</tr>
+<tr>
+<td><strong>权重下载</strong></td>
+<td>modelscope</td>
+<td>最新</td>
+<td>国内镜像加速</td>
+</tr>
+<tr>
+<td><strong>工具链</strong></td>
+<td>git / git-lfs</td>
+<td>最新</td>
+<td>拉取 HuggingFace 权重</td>
+</tr>
+<tr>
+<td></td>
+<td>curl / jq / vim</td>
+<td>最新</td>
+<td>调试 &amp; 健康检查</td>
+</tr>
+</tbody>
+</table>
+<p><strong>基础镜像</strong><code>pytorch/pytorch:2.6.0-cuda12.6-cudnn9-devel</code>
+是 <strong>PyTorch 官方在 Docker Hub
+上提供的“全家桶”开发镜像</strong>，发布日期 2025-01-29，镜像大小约 13
+GB，定位是 <strong>“开箱即用”的 GPU 训练 / 推理 / 调试环境</strong></p>
+<h4 id="dockerfile">dockerfile</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"># ---------- 1. 基础镜像 ----------</span><br><span class="line">FROM pytorch/pytorch:2.6.0-cuda12.6-cudnn9-devel</span><br><span class="line"></span><br><span class="line"># ---------- 2. 国内镜像源 ----------</span><br><span class="line">RUN sed -i &#x27;s|http://archive.ubuntu.com|https://mirrors.tuna.tsinghua.edu.cn|g&#x27; /etc/apt/sources.list &amp;&amp; \</span><br><span class="line">    sed -i &#x27;s|http://security.ubuntu.com|https://mirrors.tuna.tsinghua.edu.cn|g&#x27; /etc/apt/sources.list &amp;&amp; \</span><br><span class="line">    pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple &amp;&amp; \</span><br><span class="line">    pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn</span><br><span class="line"></span><br><span class="line"># ---------- 3. 系统依赖 ----------</span><br><span class="line">RUN apt-get update &amp;&amp; \</span><br><span class="line">    DEBIAN_FRONTEND=noninteractive apt-get install -y \</span><br><span class="line">    git git-lfs build-essential ninja-build curl wget vim jq &amp;&amp; \</span><br><span class="line">    rm -rf /var/lib/apt/lists/*</span><br><span class="line"></span><br><span class="line"># ---------- 4. Python 依赖 ----------</span><br><span class="line">RUN pip install --no-cache-dir --upgrade pip setuptools wheel &amp;&amp; \</span><br><span class="line">    pip install --no-cache-dir \</span><br><span class="line">    &quot;torch==2.6.0+cu126&quot; \</span><br><span class="line">    &quot;transformers&gt;=4.51.0&quot; \</span><br><span class="line">    &quot;tokenizers&gt;=0.21&quot; \</span><br><span class="line">    &quot;accelerate&gt;=1.0.0&quot; \</span><br><span class="line">    &quot;sentencepiece&gt;=0.2.0&quot; \</span><br><span class="line">    &quot;protobuf&gt;=5.28.0&quot; \</span><br><span class="line">    &quot;tiktoken&gt;=0.8.0&quot; \</span><br><span class="line">    &quot;vllm&gt;=0.8.5&quot; \</span><br><span class="line">    &quot;sglang[all]&gt;=0.4.6.post1&quot; \</span><br><span class="line">    &quot;modelscope&quot; \</span><br><span class="line">    &quot;fastapi&quot; &quot;uvicorn[standard]&quot; &quot;pydantic&quot;</span><br><span class="line"></span><br><span class="line"># ---------- 5. 可选性能加速 ----------</span><br><span class="line">RUN pip install --no-cache-dir &quot;flash-attn&gt;=2.7&quot; --no-build-isolation || true</span><br><span class="line"></span><br><span class="line"># ---------- 6. 国内 HuggingFace 镜像 ----------</span><br><span class="line">ENV HF_ENDPOINT=https://hf-mirror.com</span><br><span class="line"></span><br><span class="line"># ---------- 7. 工作目录 ----------</span><br><span class="line">WORKDIR /app</span><br><span class="line">EXPOSE 4000 4001 4002</span><br><span class="line"></span><br><span class="line"># ---------- 8. 默认命令 ----------</span><br><span class="line">CMD [&quot;/bin/bash&quot;]</span><br></pre></td></tr></table></figure>
+<h4 id="运行容器">运行容器</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">docker run -it \</span><br><span class="line">  --name llm-service \</span><br><span class="line">  --gpus all \</span><br><span class="line">  -p 4000:4000 \</span><br><span class="line">  -p 4001:4001 \</span><br><span class="line">  -p 4002:4002 \</span><br><span class="line">  -v /aisys/repo_dev/xizhang/models:/app/models \</span><br><span class="line">  -v /aisys/repo_dev/xizhang/models/cache:/app/models/.cache \</span><br><span class="line">  --shm-size=8g \</span><br><span class="line">  universal-llm:latest bash</span><br></pre></td></tr></table></figure>
+<h4 id="vllm部署qwen3">vllm部署qwen3</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">vllm serve /app/models/qwen3-32b-lora-new \</span><br><span class="line">    --port 4001 \</span><br><span class="line">    --tensor-parallel-size 4 \</span><br><span class="line">    --max-model-len 1024 \</span><br><span class="line">    --reasoning-parser qwen3 \</span><br><span class="line">    --gpu-memory-utilization 0.8 \</span><br><span class="line">    --max-num-seqs 8 \</span><br><span class="line">    --host 0.0.0.0</span><br></pre></td></tr></table></figure>
+<table>
+<colgroup>
+<col style="width: 20%">
+<col style="width: 40%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr>
+<th>参数</th>
+<th>含义</th>
+<th>推荐/注意</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--port 8000</code></td>
+<td>服务监听端口</td>
+<td>与 <code>-p 8000:8000</code> 保持一致；如需多实例，可改 8001/8002
+…</td>
+</tr>
+<tr>
+<td><code>--tensor-parallel-size 4</code></td>
+<td>把模型权重切成 4 份，跨 4 张 GPU 并行计算</td>
+<td>必须 ≤ 实际 GPU 数量；Qwen3-32B 在 4×L20
+上显存刚好够，<strong>不可再大</strong></td>
+</tr>
+<tr>
+<td><code>--max-model-len 1024</code></td>
+<td>单次推理最大 token 数（含 prompt + 生成）</td>
+<td>若场景需要 4k/8k/32k，可调到 4096/8192；显存占用 ∝ 长度²</td>
+</tr>
+<tr>
+<td><code>--reasoning-parser qwen3</code></td>
+<td>vLLM ≥0.8.5 新增开关，解析 Qwen3 的
+<code>&lt;think&gt;…&lt;/think&gt;</code> 标签，把推理过程单独返回</td>
+<td>仅在 <strong>Qwen3</strong> 系列模型有效，其他模型请去掉</td>
+</tr>
+<tr>
+<td><code>--gpu-memory-utilization 0.8</code></td>
+<td>显存使用上限 80 %；剩余 20 % 留给 CUDA kernel、KV cache 膨胀</td>
+<td>若出现 OOM，可降到 0.7；若想多并发，可尝试 0.85（风险 OOM）</td>
+</tr>
+<tr>
+<td><code>--max-num-seqs 8</code></td>
+<td>同一时刻最多并发处理的 <strong>请求条数</strong></td>
+<td>与 <code>--max-model-len</code> 和显存同时决定；若长度 ↑，此值需
+↓</td>
+</tr>
+<tr>
+<td><code>--host 0.0.0.0</code></td>
+<td>监听所有网卡，使容器外可访问</td>
+<td>生产环境可改为内网 IP 或 127.0.0.1 提高安全性</td>
+</tr>
+</tbody>
+</table>
+<h4 id="测试">测试</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">curl http://localhost:4001/v1/chat/completions \</span><br><span class="line">   -H &quot;Content-Type: application/json&quot; \</span><br><span class="line">   -d &#x27;&#123;</span><br><span class="line">       &quot;model&quot;: &quot;/app/models/qwen3-32b-lora-new&quot;,</span><br><span class="line">       &quot;messages&quot;: [</span><br><span class="line">           &#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;请用中文介绍一下你自己&quot;&#125;</span><br><span class="line">       ],</span><br><span class="line">       &quot;temperature&quot;: 0.7,</span><br><span class="line">       &quot;max_tokens&quot;: 512</span><br><span class="line">   &#125;&#x27;</span><br></pre></td></tr></table></figure>
+<h4 id="调用">调用</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">import os</span><br><span class="line">from openai import OpenAI</span><br><span class="line"></span><br><span class="line"># 指向本地 vLLM</span><br><span class="line">client = OpenAI(</span><br><span class="line">    base_url=&quot;http://localhost:8000/v1&quot;,</span><br><span class="line">    api_key=&quot;dummy&quot;          # vLLM 不做鉴权，随便填</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">resp = client.chat.completions.create(</span><br><span class="line">    model=&quot;qwen3-32b&quot;,       # 必须和 vLLM 启动路径或 --served-model-name 保持一致</span><br><span class="line">    messages=[</span><br><span class="line">        &#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;9.9 和 9.11 哪个大？&quot;&#125;</span><br><span class="line">    ],</span><br><span class="line">    max_tokens=512,</span><br><span class="line">    temperature=0.7,</span><br><span class="line">    stream=False             # True 可开流式</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">print(resp.choices[0].message.content)</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://qwen.readthedocs.io/en/latest/getting_started/quickstart.html">快速入门
+- Qwen — Quickstart - Qwen</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.modelscope.cn/models/Qwen/Qwen3-32B">通义千问3-32B ·
+模型库</a></p>
+<h3 id="微调数据集">微调数据集</h3>
+<h4 id="alpaca和sharegpt的区别">alpaca和sharegpt的区别</h4>
+<p>▶ Alpaca 典型字段</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;instruction&quot;</span><span class="punctuation">:</span> <span class="string">&quot;把下面句子翻译成英文&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;input&quot;</span><span class="punctuation">:</span> <span class="string">&quot;今天天气真好&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;output&quot;</span><span class="punctuation">:</span> <span class="string">&quot;The weather is nice today.&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;system&quot;</span><span class="punctuation">:</span> <span class="string">&quot;你是一个翻译助手&quot;</span><span class="punctuation">,</span>   <span class="comment">// 可选</span></span><br><span class="line">  <span class="attr">&quot;history&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">]</span>                 <span class="comment">// 可选，放前几轮</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>一条数据 = 一次独立任务</li>
+<li>字段固定：<code>instruction / input / output</code> 三板斧</li>
+</ul>
+<p>▶ ShareGPT 典型字段</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;conversations&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span><span class="attr">&quot;from&quot;</span><span class="punctuation">:</span> <span class="string">&quot;human&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;我今天心情不好&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span><span class="attr">&quot;from&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gpt&quot;</span><span class="punctuation">,</span>   <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;怎么啦？想聊聊吗&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span><span class="attr">&quot;from&quot;</span><span class="punctuation">:</span> <span class="string">&quot;human&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;论文又被拒了&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span><span class="attr">&quot;from&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gpt&quot;</span><span class="punctuation">,</span>   <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;理解你的挫败感…&quot;</span><span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;system&quot;</span><span class="punctuation">:</span> <span class="string">&quot;你是贴心聊天机器人&quot;</span><span class="punctuation">,</span>   <span class="comment">// 可选</span></span><br><span class="line">  <span class="attr">&quot;tools&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span>...<span class="punctuation">]</span>                   <span class="comment">// 可选，放函数描述</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>一条数据 = 一段完整的多轮对话</li>
+<li>角色交替：<code>human / gpt / function / observation</code> 等</li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 9%">
+<col style="width: 47%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr>
+<th>维度</th>
+<th>Alpaca</th>
+<th>ShareGPT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>来源</strong></td>
+<td>斯坦福 Alpaca 项目，为了低成本做指令微调</td>
+<td>ShareGPT 网站爬取的真实 ChatGPT 对话</td>
+</tr>
+<tr>
+<td><strong>目标</strong></td>
+<td>让模型学会“看到指令+输入→给出答案”</td>
+<td>让模型学会“像 ChatGPT 一样多轮对话”</td>
+</tr>
+</tbody>
+</table>
+<h4 id="详解">详解</h4>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;instruction&quot;: &quot;电阻率测定法的环境温湿度控制对检测结果的可信度有何影响？&quot;,</span><br><span class="line">    &quot;input&quot;: &quot;- \&quot;检测依据：DL<span class="operator">/</span>T <span class="number">421</span><span class="number">-2009</span> 电力用油体积电阻率测定法\&quot;\n- \&quot;检测地点及环境条件：油品检测室 温度：<span class="number">16</span>℃ 湿度：<span class="number">57</span><span class="operator">%</span>RH\&quot;\n- \&quot;电阻率（\&quot;&quot;,</span><br><span class="line">    &quot;output&quot;: &quot;&lt;think&gt;### \n首先，理解问题的核心：电阻率测定法中，环境温湿度控制如何影响检测结果的可信度，这涉及到测量过程的准确性和可靠性。\n\n然后，分析关键信息：检测依据是DL/T 421-2009标准，它规定了电阻率测定的方法；环境条件被记录为温度16℃和湿度57%RH；检测结果显示电阻率为1.04×10^10 Ω·cm，符合DL/T 571-2014标准的要求（≥6×10^9 Ω·cm）。\n\n接着，推理温湿度控制的影响：环境温湿度是测量过程中的关键变量，控制这些条件确保&quot;,</span><br><span class="line">    &quot;system&quot;: &quot;作为电力能源报告解读专家，我在生成答案时，将严格遵循以下格式：\n根据“信息来源”，“信息来源”是原文中可直接支撑结论的句子、数据或图表编号给出“结论与推理”——用上述逐条复现的信息为唯一依据，推导出最终答案。&quot;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>instruction为问题；input为上下文；output包含思维链与答案；system为系统提示词</p>
+<h3 id="微调参数设置">微调参数设置</h3>
+<h4 id="deepspeed-stagedeepspeed-阶段"><strong>DeepSpeed
+stage（DeepSpeed 阶段）</strong></h4>
+<p><strong>deepSpeed 的 ZeRO 分布式优化阶段</strong>，用于在多 GPU
+上高效训练大模型。</p>
+<table>
+<colgroup>
+<col style="width: 14%">
+<col style="width: 43%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr>
+<th>Stage</th>
+<th>功能</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Stage 0</strong></td>
+<td>不做任何优化</td>
+<td>基础分布式训练（DDP），显存占用高</td>
+</tr>
+<tr>
+<td><strong>Stage 1</strong></td>
+<td>梯度分片（Gradient Sharding）</td>
+<td>将梯度切分到不同 GPU，减少显存</td>
+</tr>
+<tr>
+<td><strong>Stage 2</strong></td>
+<td>参数 + 梯度分片</td>
+<td>进一步降低显存，但需通信同步</td>
+</tr>
+<tr>
+<td><strong>Stage 3</strong></td>
+<td>✅ <strong>参数 + 梯度 + 优化器状态分片</strong></td>
+<td>最强显存优化，支持超大模型</td>
+</tr>
+</tbody>
+</table>
+<h4 id="使用-deepspeed-offload使用-offload">使用 DeepSpeed offload（使用
+offload）</h4>
+<p>将 <strong>部分或全部模型参数、优化器状态卸载到 CPU
+内存</strong>，进一步释放 GPU 显存。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">llamafactory-cli train \</span><br><span class="line">    --stage sft \</span><br><span class="line">    --do_train True \</span><br><span class="line">    --model_name_or_path /aisys/repo_dev/xizhang/models/qwen3-32b-lora-new \</span><br><span class="line">    --preprocessing_num_workers 16 \</span><br><span class="line">    --finetuning_type lora \</span><br><span class="line">    --template qwen3 \</span><br><span class="line">    --flash_attn auto \</span><br><span class="line">    --dataset_dir /aisys/repo_dev/xizhang/lora_database/P9er76jCWCFW \</span><br><span class="line">    --dataset [Easy Dataset] [P9er76jCWCFW] Alpaca \</span><br><span class="line">    --cutoff_len 4096 \</span><br><span class="line">    --learning_rate 5e-05 \</span><br><span class="line">    --num_train_epochs 3.0 \</span><br><span class="line">    --max_samples 100000 \</span><br><span class="line">    --per_device_train_batch_size 2 \</span><br><span class="line">    --gradient_accumulation_steps 1 \</span><br><span class="line">    --lr_scheduler_type cosine \</span><br><span class="line">    --max_grad_norm 1.0 \</span><br><span class="line">    --logging_steps 5 \</span><br><span class="line">    --save_steps 200 \</span><br><span class="line">    --warmup_steps 0 \</span><br><span class="line">    --packing False \</span><br><span class="line">    --enable_thinking True \</span><br><span class="line">    --report_to none \</span><br><span class="line">    --output_dir saves/Qwen3-32B-Thinking/lora/train_2025-08-28-03-04-52 \</span><br><span class="line">    --bf16 True \</span><br><span class="line">    --plot_loss True \</span><br><span class="line">    --trust_remote_code True \</span><br><span class="line">    --ddp_timeout 180000000 \</span><br><span class="line">    --include_num_input_tokens_seen True \</span><br><span class="line">    --optim adamw_torch \</span><br><span class="line">    --lora_rank 8 \</span><br><span class="line">    --lora_alpha 16 \</span><br><span class="line">    --lora_dropout 0 \</span><br><span class="line">    --lora_target all \</span><br><span class="line">    --val_size 0.15 \</span><br><span class="line">    --eval_strategy steps \</span><br><span class="line">    --eval_steps 200 \</span><br><span class="line">    --per_device_eval_batch_size 2 \</span><br><span class="line">    --deepspeed cache/ds_z3_config.json</span><br></pre></td></tr></table></figure>
+<h3 id="训练结果">训练结果</h3>
+<figure>
+<img src="/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83qwen3-32b/image-20250827091214108.png" alt="image-20250827091214108">
+<figcaption aria-hidden="true">image-20250827091214108</figcaption>
+</figure>
+<h3 id="评估">评估</h3>
+<p>不知道为什么使用llamafactory的评估会爆显存，我怀疑是因为那个webui评估可能不支持多卡，就进行一下人工评估吧</p>
+<p>输入</p>
+<figure>
+<img src="/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83qwen3-32b/image-20250828144300339.png" alt="image-20250828144300339">
+<figcaption aria-hidden="true">image-20250828144300339</figcaption>
+</figure>
+<p>微调模型</p>
+<figure>
+<img src="/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83qwen3-32b/image-20250828145106050.png" alt="image-20250828145106050">
+<figcaption aria-hidden="true">image-20250828145106050</figcaption>
+</figure>
+<p>初始模型</p>
+<figure>
+<img src="/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83qwen3-32b/image-20250828145750115.png" alt="image-20250828145750115">
+<figcaption aria-hidden="true">image-20250828145750115</figcaption>
+</figure>
+<h3 id="在内网计算节点访问swanlab-cloud">在内网计算节点访问SwanLab
+Cloud</h3>
+<p><a target="_blank" rel="noopener" href="https://docs.swanlab.cn/guide_cloud/experiment_track/ssh-portforwarding.html">在内网计算节点访问SwanLab
+Cloud | SwanLab官方文档</a></p>
+<h3 id="如何计算训练步数">如何计算训练步数</h3>
+<h4 id="训练集样本量">1. 训练集样本量</h4>
+<p><strong>公式</strong> 训练集样本量 = 总数据量 × (1 − 验证集比例)</p>
+<p><strong>示例</strong> 总数据 2876 条，验证集占 15% 2876 × (1 − 0.15)
+= 2876 × 0.85 = <strong>2446 条</strong></p>
+<h4 id="每次参数更新处理的样本数effective-batch-size">2.
+每次参数更新处理的样本数（effective batch size）</h4>
+<p><strong>公式</strong> 每次更新样本数 = 单设备批次大小 × GPU 数 ×
+梯度累积步数</p>
+<p><strong>示例</strong></p>
+<ul>
+<li>per_device_train_batch_size = 1</li>
+<li>GPU 数 = 2</li>
+<li>gradient_accumulation_steps = 8</li>
+</ul>
+<p>1 × 2 × 8 = <strong>16 条</strong></p>
+<blockquote>
+<p>通俗理解： GPU 一次只能看 1 条 → 2 卡并行就是 2 条 → 累积 8
+次才更新一次参数，所以一次更新真正看了 16 条数据。</p>
+</blockquote>
+<h4 id="每轮epoch的训练步数">3. 每轮（epoch）的训练步数</h4>
+<p><strong>公式</strong> 每轮步数 = ⌊ 训练集样本量 ÷ 每次更新样本数 ⌋
+（⌊ ⌋ 表示向下取整）</p>
+<p><strong>示例</strong> 2446 ÷ 16 = 152.875 → <strong>152
+步</strong></p>
+<h4 id="总训练步数">4. 总训练步数</h4>
+<p><strong>公式</strong> 总步数 = 每轮步数 × 训练轮数 (epochs)</p>
+<p><strong>示例</strong> 152 × 3 = <strong>456 步</strong></p>
+<h3 id="如何计算一个模型占用的显存">如何计算一个模型占用的显存</h3>
+<h4 id="基础模型的权重">基础模型的权重</h4>
+<ul>
+<li>定义：预训练模型的参数矩阵，即选择的预训练模型所占用显存的大小。</li>
+<li><strong>计算公式</strong>： <strong>显存占用 = 模型参数数量 ×
+单个参数的字节数</strong></li>
+</ul>
+<h4 id="常见模型精度下的单个参数显存占用">常见模型精度下的单个参数显存占用：</h4>
+<p>表格</p>
+<p>复制</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">精度类型</th>
+<th style="text-align: left;">二进制位数</th>
+<th style="text-align: left;">字节数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">FP32</td>
+<td style="text-align: left;">32位</td>
+<td style="text-align: left;">4字节</td>
+</tr>
+<tr>
+<td style="text-align: left;">FP16</td>
+<td style="text-align: left;">16位</td>
+<td style="text-align: left;">2字节</td>
+</tr>
+<tr>
+<td style="text-align: left;">BF16</td>
+<td style="text-align: left;">16位</td>
+<td style="text-align: left;">2字节（指数位同FP32）</td>
+</tr>
+<tr>
+<td style="text-align: left;">INT8</td>
+<td style="text-align: left;">8位</td>
+<td style="text-align: left;">1字节</td>
+</tr>
+<tr>
+<td style="text-align: left;">INT4</td>
+<td style="text-align: left;">4位</td>
+<td style="text-align: left;">0.5字节</td>
+</tr>
+<tr>
+<td style="text-align: left;">INT2</td>
+<td style="text-align: left;">2位</td>
+<td style="text-align: left;">0.25字节</td>
+</tr>
+</tbody>
+</table>
+<p>例如</p>
+<ul>
+<li><strong>模型选择</strong>：Qwen2.5-7B-Instruct</li>
+<li><strong>参数规模</strong>：70亿（7B）</li>
+<li><strong>计算精度</strong>：BF16（2字节/参数）</li>
+<li><strong>预估显存占用</strong>： <strong>70亿 × 2字节 = 140亿字节 =
+14GB</strong></li>
+</ul>
+<h4 id="框架开销framework-overhead">框架开销（Framework Overhead）</h4>
+<ul>
+<li><strong>定义</strong>：LLaMAFactory 底层使用的深度学习框架（如
+PyTorch）本身的显存占用。</li>
+<li><strong>包含内容</strong>：
+<ul>
+<li>张量缓存</li>
+<li>线程资源</li>
+<li>内核调度开销</li>
+<li>自动微分图结构等</li>
+</ul></li>
+<li><strong>计算方法</strong>：难以精确计算</li>
+<li><strong>估算方法</strong>：通常占用不大，默认估算为 <strong>1
+GB</strong></li>
+</ul>
+<h4 id="lora-适配器lora-adapters">LoRA 适配器（LoRA Adapters）</h4>
+<ul>
+<li><p><strong>定义</strong>：在 LoRA
+微调中，不直接修改原始模型的庞大权重，而是插入轻量级的“LoRA适配器模块”来学习微调所需的变化。</p></li>
+<li><p><strong>计算方法</strong>：</p>
+<p>显存占用=LoRA层数×秩（Rank）×(输入维度+输出维度)×2<em>B</em></p></li>
+<li><p><strong>估算方法</strong>：</p>
+<ul>
+<li>与 LoRA 的秩（Rank）大小相关</li>
+<li>一般占用不大，常规配置下通常不超过 <strong>0.5
+GB</strong>，保守估计为 <strong>0.5 GB</strong></li>
+</ul></li>
+</ul>
+<h4 id="激活值activations">激活值（Activations）</h4>
+<ul>
+<li><p><strong>定义</strong>：前向传播过程中各层的输出张量（如隐藏层状态、注意力矩阵等），即模型“处理数据时产生的所有中间结果”。</p></li>
+<li><p><strong>计算方法</strong>：</p>
+<p>显存占用=批量大小×序列长度×隐藏层维度×模型层数×单个元素字节数</p></li>
+<li><p><strong>估算方法</strong>：</p>
+<ul>
+<li>单次处理的 Token 量每增加 <strong>1K</strong>，显存约增加
+<strong>2.5 GB</strong></li>
+<li>与单 GPU 的批量大小和数据集的截断长度（序列长度）正相关</li>
+<li>在固定其他配置（基础模型权重、框架开销、LoRA适配器）后，剩余显存即为激活值占用</li>
+</ul></li>
+</ul>
+<h3 id="加速方式">加速方式</h3>
+<table>
+<colgroup>
+<col style="width: 10%">
+<col style="width: 14%">
+<col style="width: 37%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr>
+<th>加速方式</th>
+<th>全称 / 来源</th>
+<th>核心原理与特点</th>
+<th>适用场景与注意事项</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>auto</strong></td>
+<td>自动选择</td>
+<td>由框架（如 transformers、LLaMA-Factory、DeepSpeed
+等）根据当前硬件、驱动、CUDA 版本自动挑选最快的可用算子或路径。
+优点：零配置、开箱即用；缺点：不一定能启用最新、最快的内核。</td>
+<td>初次实验、不想手动调参时首选。</td>
+</tr>
+<tr>
+<td><strong>flashattn2</strong></td>
+<td>FlashAttention-2</td>
+<td>通过 IO-Aware 的算法和 GPU Tensor Core 优化，将标准 Multi-Head
+Attention 的显存访问次数大幅降低，从而显著加快训练/推理速度（通常
+2-4×），并减少显存占用。 需要 A100、H100、RTX 30/40 系列等
+Ampere/Lovelace 架构；依赖 CUDA≥11.8、PyTorch≥2.0 且需安装
+<code>flash-attn</code> wheel。</td>
+<td>训练/微调 LLM 时首选；序列越长收益越大。若编译失败可退回 xformers
+或原生实现。</td>
+</tr>
+<tr>
+<td><strong>unsloth</strong></td>
+<td>Unsloth 开源库</td>
+<td>针对 Llama、Mistral、Qwen 等架构，使用动态量化、手工 fused-kernel
+和梯度检查点优化，使 LoRA 微调在消费级 GPU 上也能跑更大
+batch/更长序列。官方宣称速度提升 2-5×，显存节省 50-70%。
+安装简单：<code>pip install unsloth</code>（会自动替换部分 PyTorch
+层）。</td>
+<td>单卡 4090/3090 上 LoRA 微调 7B-13B
+模型效果最佳；目前仅支持有限模型。</td>
+</tr>
+<tr>
+<td><strong>liger_kernel</strong></td>
+<td>Liger-Kernel（微软开源）</td>
+<td>以 Triton 编写的高性能 fused-kernel
+合集（SwiGLU、RMSNorm、CrossEntropy、RoPE 等），在保持数值精度的同时减少
+kernel launch 和显存写回，训练吞吐量可提升 10-20%。 纯 Python/Triton
+实现，无需额外 CUDA 编译。</td>
+<td>对训练框架侵入性小，可与 FlashAttention 并存；适合想“无痛”提速
+10-20% 的场景。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="参考资料">参考资料</h3>
+<p><a target="_blank" rel="noopener" href="https://llamafactory.readthedocs.io/zh-cn/latest/">LLaMA
+Factory</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/LoRA%E5%85%B6%E4%BB%96%E7%9A%84%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/LoRA%E5%85%B6%E4%BB%96%E7%9A%84%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%96%B9%E6%B3%95/" class="post-title-link" itemprop="url">LoRA其他的模型微调方法</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-08-11 00:00:00" itemprop="dateCreated datePublished" datetime="2025-08-11T00:00:00+08:00">2025-08-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-08-14 10:58:54" itemprop="dateModified" datetime="2025-08-14T10:58:54+08:00">2025-08-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%A8%A1%E5%9E%8B/" itemprop="url" rel="index"><span itemprop="name">模型</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%A8%A1%E5%9E%8B/%E5%BE%AE%E8%B0%83/" itemprop="url" rel="index"><span itemprop="name">微调</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <figure>
+<img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/LoRA%E5%85%B6%E4%BB%96%E7%9A%84%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E6%96%B9%E6%B3%95/image-20250814105851771.png" alt="image-20250814105851771">
+<figcaption aria-hidden="true">image-20250814105851771</figcaption>
+</figure>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzkzODI1NzQyNA==&amp;mid=2247494667&amp;idx=1&amp;sn=c3af7d2472de61752ef8b8df28746f2e&amp;poc_token=HCyNmWijps0ViWD6wPgqFiDYUZVRSs7xUDRfowWE">大模型微调技巧：LoRA
+与 QLoRA讲解</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/javatiange/article/details/149964743?fromshare=blogdetail&amp;sharetype=blogdetail&amp;sharerId=149964743&amp;sharerefer=PC&amp;sharesource=2501_91530961&amp;sharefrom=from_link">一文详解：8种常见的大模型微调方法，看这篇就够了！-CSDN博客</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/682082440">大模型微调技术 -
+知乎</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E6%B5%81%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E6%B5%81%E7%A8%8B/" class="post-title-link" itemprop="url">大模型训练流程</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-08-11 00:00:00 / 修改时间：09:55:56" itemprop="dateCreated datePublished" datetime="2025-08-11T00:00:00+08:00">2025-08-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%A8%A1%E5%9E%8B/" itemprop="url" rel="index"><span itemprop="name">模型</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%A8%A1%E5%9E%8B/%E5%BE%AE%E8%B0%83/" itemprop="url" rel="index"><span itemprop="name">微调</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="什么是大模型">什么是大模型</h3>
+<p>随着2022年底 ChatGPT 再一次刷新 NLP
+的能力上限，大<strong>语言模型（Large Language
+Model，LLM）开始接替传统的预训练语言模型（Pre-trained Language
+Model，PLM）</strong> 成为 NLP 的主流方向，基于 LLM
+的全新研究范式也正在刷新被 BERT
+发扬光大的<strong>预训练-微调范式</strong>，NLP
+由此迎来又一次翻天覆地的变化。</p>
+<p>LLM，即 Large Language
+Model，中文名为大语言模型或大型语言模型，是一种相<strong>较传统语言模型参数量更多、在更大规模语料上进行预训练的语言模型</strong>。</p>
+<p>一般来说，LLM
+指包含<strong>数百亿（或更多）参数的语言模型</strong>，它们往往在<strong>数
+T token
+语料上</strong>通过多卡分布式集群进行预训练，具备远超出传统预训练模型的文本理解与生成能力。不过，随着
+LLM 研究的不断深入，多种参数尺寸的 LLM 逐渐丰富，广义的 LLM
+一般覆盖了从<strong>十亿参数</strong>（如
+Qwen-1.5B）到<strong>千亿参数</strong>（如
+Grok-314B）的所有大型语言模型。只要模型展现出<strong>涌现能力</strong>，即在一系列复杂任务上表现出远超传统预训练模型（如
+BERT、T5）的能力与潜力，都可以称之为 LLM。</p>
+<p>一般认为，GPT-3（1750亿参数）是 LLM 的开端，基于 GPT-3 通过
+<strong>预训练（Pretraining）、监督微调（Supervised
+Fine-Tuning，SFT）、强化学习与人类反馈（Reinforcement Learning with
+Human Feedback，RLHF）</strong>三阶段训练得到的 ChatGPT 更是主导了 LLM
+时代的到来。</p>
+<blockquote>
+<p>区分 LLM 与传统 PLM 最显著的特征即是 LLM 具备 <code>涌现能力</code>
+。涌现能力是指同样的模型架构与预训练任务下，某些能力在小型模型中不明显，但在大型模型中特别突出。</p>
+</blockquote>
+<h3 id="训练流程">训练流程</h3>
+<figure>
+<img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E6%B5%81%E7%A8%8B/image-20250811092459843.png" alt="image-20250811092459843">
+<figcaption aria-hidden="true">image-20250811092459843</figcaption>
+</figure>
+<p>一般而言，训练一个完整的 LLM 需要经过图1中的三个阶段——Pretrain、SFT
+和 RLHF。</p>
+<h3 id="pretrain">Pretrain</h3>
+<p>Pretrain，即预训练，是训练 LLM 最核心也是工程量最大的第一步。</p>
+<h4 id="参数">参数</h4>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 21%">
+<col style="width: 18%">
+<col style="width: 8%">
+<col style="width: 16%">
+<col style="width: 19%">
+</colgroup>
+<thead>
+<tr>
+<th>模型</th>
+<th>hidden_layers</th>
+<th>hidden_size</th>
+<th>heads</th>
+<th>整体参数量</th>
+<th>预训练数据量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BERT-base</td>
+<td>12</td>
+<td>768</td>
+<td>12</td>
+<td>0.1B</td>
+<td>3B</td>
+</tr>
+<tr>
+<td>BERT-large</td>
+<td>24</td>
+<td>1024</td>
+<td>16</td>
+<td>0.3B</td>
+<td>3B</td>
+</tr>
+<tr>
+<td>Qwen-1.8B</td>
+<td>24</td>
+<td>2048</td>
+<td>16</td>
+<td>1.8B</td>
+<td>2.2T</td>
+</tr>
+<tr>
+<td>LLaMA-7B</td>
+<td>32</td>
+<td>4096</td>
+<td>32</td>
+<td>7B</td>
+<td>1T</td>
+</tr>
+<tr>
+<td>GPT-3</td>
+<td>96</td>
+<td>12288</td>
+<td>96</td>
+<td>175B</td>
+<td>300B</td>
+</tr>
+</tbody>
+</table>
+<p>根据定义，LLM
+的核心特点即在于其具有<strong>远超传统预训练模型的参数量</strong>，<strong>同时在更海量的语料上进行预训练</strong>。传统预训练模型如
+BERT，有 base 和 large 两个版本。BERT-base 模型由 12个 Encoder
+层组成，其 hidden_size 为 768，使用 12个头作为多头注意力层，整体参数量为
+1亿（110M）；而 BERT-large 模型由 24个 Encoder 层组成，hidden_size 为
+1024，有 16个头，整体参数量为 3亿（340M）。同时，BERT 预训练使用了
+33亿（3B）token 的语料，在 64块 TPU 上训练了
+4天。事实上，相对于传统的深度学习模型，3亿参数量、33亿训练数据的 BERT
+已经是一个能力超群、资源消耗巨大的庞然大物。</p>
+<p>但是，前面我们提到，<strong>一般而言的 LLM
+通常具有数百亿甚至上千亿参数</strong>，即使是广义上最小的
+LLM，一般也有十亿（1B）以上的参数量。例如以开山之作 GPT-3 为例，其有
+96个 Decoder 层，12288 的 hidden_size 和 96个头，<strong>共有
+1750亿（175B）参数，比 BERT 大出快
+3个数量级</strong>。即使是目前流行的小型 LLM 如 Qwen-1.8B，其也有 24个
+Decoder 层、2048的 hidden_size 和 16个注意力头，整体参数量达到
+18亿（1.8B）。</p>
+<h4 id="分布式训练">分布式训练</h4>
+<p>也正因如此，<strong>分布式训练框架也成为 LLM
+训练必不可少的组成部分</strong>。分布式训练框架的核心思路是<strong>数据并行和模型并行</strong>。所谓数据并行，是指训练模型的尺寸可以被单个
+GPU 内存容纳，但是由于增大训练的 batch_size
+会增大显存开销，无法使用较大的 batch_size
+进行训练；同时，训练数据量非常大，使用单张 GPU 训练时长难以接受。</p>
+<h4 id="数据集">数据集</h4>
+<p><strong>训练数据本身也是预训练 LLM 的一个重大挑战</strong>。训练一个
+LLM，至少需要数百 B 甚至上 T 的预训练语料。根据研究，LLM
+所掌握的知识绝大部分都是在预训练过程中学会的，因此，为了使训练出的 LLM
+能够覆盖尽可能广的知识面，预训练语料需要组织多种来源的数据，并以一定比例进行混合。目前，主要的开源预训练语料包括
+CommonCrawl、C4、Github、Wikipedia 等。<strong>不同的 LLM
+往往会在开源预训练语料基础上，加入部分私有高质量语料，再基于自己实验得到的最佳配比来构造预训练数据集</strong>。事实上，<strong>数据配比</strong>向来是预训练
+LLM
+的“核心秘籍”，不同的配比往往会相当大程度影响最终模型训练出来的性能。</p>
+<p>训练一个中文
+LLM，训练数据的难度会更大。目前，高质量语料还是大部分集中在英文范畴，例如上表的
+Wikipedia、Arxiv 等，均是英文数据集；而 C4
+等多语言数据集中，英文语料也占据主要地位。目前开源的中文 LLM 如
+ChatGLM、Baichuan
+等模型均未开放其预训练数据集，开源的中文预训练数据集目前仅有昆仑天工开源的<a target="_blank" rel="noopener" href="https://huggingface.co/datasets/Skywork/SkyPile-150B">SkyPile</a>（150B）、中科闻歌开源的<a target="_blank" rel="noopener" href="https://huggingface.co/datasets/wenge-research/yayi2_pretrain_data">yayi2</a>（100B）等，相较于英文开源数据集有明显差距。</p>
+<h4 id="数据清洗">数据清洗</h4>
+<p><strong>预训练数据的处理与清洗</strong>也是 LLM
+预训练的一个重要环节。诸多研究证明，预训练数据的质量往往比体量更加重要。预训练数据处理一般包括以下流程：</p>
+<ol type="1">
+<li>文档准备。由于海量预训练语料往往是从互联网上获得，一般需要从爬取的网站来获得自然语言文档。文档准备主要包括
+URL 过滤（根据网页 URL 过滤掉有害内容）、文档提取（从 HTML
+中提取纯文本）、语言选择（确定提取的文本的语种）等。</li>
+<li>语料过滤。语料过滤的核心目的是去除低质量、无意义、有毒有害的内容，例如乱码、广告等。语料过滤一般有两种方法：基于模型的方法，即通过高质量语料库训练一个文本分类器进行过滤；基于启发式的方法，一般通过人工定义
+web 内容的质量指标，计算语料的指标值来进行过滤。</li>
+<li>语料去重。实验表示，大量重复文本会显著影响模型的泛化能力，因此，语料去重即删除训练语料中相似度非常高的文档，也是必不可少的一个步骤。去重一般基于
+hash
+算法计算数据集内部或跨数据集的文档相似性，将相似性大于指定阈值的文档去除；也可以基于子串在序列级进行精确匹配去重。</li>
+</ol>
+<h3 id="sft-指令微调">SFT 指令微调</h3>
+<p>预训练赋予了 LLM 能力，却还需要第二步将其激发出来。经过预训练的 LLM
+好像一个博览群书但又不求甚解的书生，对什么样的偏怪问题，都可以流畅地接出下文，但他偏偏又<strong>不知道问题本身的含义</strong>，只会“死板背书”。这一现象的本质是因为，LLM
+的预训练任务就是经典的
+<strong>CLM</strong>，也就是训<strong>练其预测下一个 token
+的能力</strong>，在没有进一步微调之前，其无法与其他下游任务或是用户指令适配。</p>
+<p>因此，我们还需要第二步来教这个博览群书的学生如何去使用它的知识，也就是
+<strong>SFT（Supervised Fine-Tuning，有监督微调）</strong>。</p>
+<p>面对能力强大的
+LLM，我们往往不再是在指定下游任务上构造有监督数据进行微调，而是选择训练模型的“通用指令遵循能力”，也就是一般<strong>通过<code>指令微调</code>的方式来进行
+SFT</strong>。</p>
+<p>所谓指令微调，即我们训练的输入是各种类型的用户指令，而需要模型拟合的输出则是我们希望模型在收到该指令后做出的回复。例如，我们的一条训练样本可以是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">input:告诉我今天的天气预报？</span><br><span class="line">output:根据天气预报，今天天气是晴转多云，最高温度26摄氏度，最低温度9摄氏度，昼夜温差大，请注意保暖哦</span><br></pre></td></tr></table></figure>
+<p>也就是说，SFT
+的主要目标是让模型从多种类型、多种风格的指令中获得泛化的指令遵循能力，也就是能够理解并回复用户的指令。</p>
+<h3 id="rlhf">RLHF</h3>
+<p>RLHF，全称是 <strong>Reinforcement Learning from Human
+Feedback，即人类反馈强化学习</strong>，是利用强化学习来训练 LLM
+的关键步骤。相较于在 GPT-3 就已经初见雏形的 SFT，RLHF 往往被认为是
+ChatGPT 相较于 GPT-3 的最核心突破。事实上，从功能上出发，我们可以将 LLM
+的训练过程分成<strong>预训练与对齐（alignment）两个阶段</strong>。预训练的核心作用是赋予模型海量的知识，而所谓对齐，其实就是让模型与人类价值观一致，从而输出人类希望其输出的内容。在这个过程中，SFT
+是让 LLM 和人类的指令对齐，从而具有指令遵循能力；而 RLHF
+则是从更深层次令 LLM
+和人类价值观对齐，令其达到安全、有用、无害的核心标准。</p>
+<p>RLHF 分为两个步骤：<strong>训练 RM 和 PPO 训练</strong>。</p>
+<p><strong>RM，Reward Model，即奖励模型</strong>。RM
+是用于拟合人类偏好，来给 LLM 做出反馈的。在强化学习的训练中，对于 LLM
+的每一个回复，RM
+会进行打分，这个打分反映了生成回复符合人类偏好的程度。然后 LLM
+会根据强化学习的原理，基于 RM 的打分来进行优化训练。</p>
+<p>在完成 RM 训练之后，就可以使用 PPO
+算法来进行强化学习训练。<strong>PPO，Proximal Policy
+Optimization，近端策略优化算法</strong>，是一种经典的 RL
+算法。事实上，强化学习训练时也可以使用其他的强化学习算法，但目前 PPO
+算法因为成熟、成本较低，还是最适合 RLHF 的算法。</p>
+<h3 id="参考资料">参考资料</h3>
+<p><a target="_blank" rel="noopener" href="https://datawhalechina.github.io/happy-llm/#/./chapter4/第四章%20大语言模型">第四章
+大语言模型</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -251,7 +1250,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-08-12 19:15:14" itemprop="dateModified" datetime="2025-08-12T19:15:14+08:00">2025-08-12</time>
+      <time title="修改时间：2025-08-12 19:15:16" itemprop="dateModified" datetime="2025-08-12T19:15:16+08:00">2025-08-12</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -497,19 +1496,19 @@ LoRA（即 QLoRA）微调；官方预量化 4-bit
 <col style="width: 27%">
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: left;">场景</th>
 <th style="text-align: left;">代码片段</th>
 <th style="text-align: left;">备注</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: left;">A. 用官方已量化好的 4-bit 权重</td>
 <td style="text-align: left;"><code>model_name="unsloth/Qwen3-8B-bnb-4bit"</code></td>
 <td style="text-align: left;">显卡 6 GB 就能跑，省去自己量化</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: left;">B. 用原始 FP16 权重并现场 4-bit 量化</td>
 <td style="text-align: left;"><code>model_name="Qwen/Qwen3-8B"</code> +
 <code>load_in_4bit=True</code></td>
@@ -567,277 +1566,6 @@ DeePseek-R1 微调为某个领域的专家？（实战篇）_哔哩哔哩_bilibi
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E6%B5%81%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E6%B5%81%E7%A8%8B/" class="post-title-link" itemprop="url">大模型训练流程</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2025-08-11 00:00:00 / 修改时间：09:55:54" itemprop="dateCreated datePublished" datetime="2025-08-11T00:00:00+08:00">2025-08-11</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%A8%A1%E5%9E%8B/" itemprop="url" rel="index"><span itemprop="name">模型</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%A8%A1%E5%9E%8B/%E5%BE%AE%E8%B0%83/" itemprop="url" rel="index"><span itemprop="name">微调</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="什么是大模型">什么是大模型</h3>
-<p>随着2022年底 ChatGPT 再一次刷新 NLP
-的能力上限，大<strong>语言模型（Large Language
-Model，LLM）开始接替传统的预训练语言模型（Pre-trained Language
-Model，PLM）</strong> 成为 NLP 的主流方向，基于 LLM
-的全新研究范式也正在刷新被 BERT
-发扬光大的<strong>预训练-微调范式</strong>，NLP
-由此迎来又一次翻天覆地的变化。</p>
-<p>LLM，即 Large Language
-Model，中文名为大语言模型或大型语言模型，是一种相<strong>较传统语言模型参数量更多、在更大规模语料上进行预训练的语言模型</strong>。</p>
-<p>一般来说，LLM
-指包含<strong>数百亿（或更多）参数的语言模型</strong>，它们往往在<strong>数
-T token
-语料上</strong>通过多卡分布式集群进行预训练，具备远超出传统预训练模型的文本理解与生成能力。不过，随着
-LLM 研究的不断深入，多种参数尺寸的 LLM 逐渐丰富，广义的 LLM
-一般覆盖了从<strong>十亿参数</strong>（如
-Qwen-1.5B）到<strong>千亿参数</strong>（如
-Grok-314B）的所有大型语言模型。只要模型展现出<strong>涌现能力</strong>，即在一系列复杂任务上表现出远超传统预训练模型（如
-BERT、T5）的能力与潜力，都可以称之为 LLM。</p>
-<p>一般认为，GPT-3（1750亿参数）是 LLM 的开端，基于 GPT-3 通过
-<strong>预训练（Pretraining）、监督微调（Supervised
-Fine-Tuning，SFT）、强化学习与人类反馈（Reinforcement Learning with
-Human Feedback，RLHF）</strong>三阶段训练得到的 ChatGPT 更是主导了 LLM
-时代的到来。</p>
-<blockquote>
-<p>区分 LLM 与传统 PLM 最显著的特征即是 LLM 具备 <code>涌现能力</code>
-。涌现能力是指同样的模型架构与预训练任务下，某些能力在小型模型中不明显，但在大型模型中特别突出。</p>
-</blockquote>
-<h3 id="训练流程">训练流程</h3>
-<figure>
-<img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E6%B5%81%E7%A8%8B/image-20250811092459843.png" alt="image-20250811092459843">
-<figcaption aria-hidden="true">image-20250811092459843</figcaption>
-</figure>
-<p>一般而言，训练一个完整的 LLM 需要经过图1中的三个阶段——Pretrain、SFT
-和 RLHF。</p>
-<h3 id="pretrain">Pretrain</h3>
-<p>Pretrain，即预训练，是训练 LLM 最核心也是工程量最大的第一步。</p>
-<h4 id="参数">参数</h4>
-<table style="width:100%;">
-<colgroup>
-<col style="width: 16%">
-<col style="width: 21%">
-<col style="width: 18%">
-<col style="width: 8%">
-<col style="width: 16%">
-<col style="width: 19%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>模型</th>
-<th>hidden_layers</th>
-<th>hidden_size</th>
-<th>heads</th>
-<th>整体参数量</th>
-<th>预训练数据量</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>BERT-base</td>
-<td>12</td>
-<td>768</td>
-<td>12</td>
-<td>0.1B</td>
-<td>3B</td>
-</tr>
-<tr class="even">
-<td>BERT-large</td>
-<td>24</td>
-<td>1024</td>
-<td>16</td>
-<td>0.3B</td>
-<td>3B</td>
-</tr>
-<tr class="odd">
-<td>Qwen-1.8B</td>
-<td>24</td>
-<td>2048</td>
-<td>16</td>
-<td>1.8B</td>
-<td>2.2T</td>
-</tr>
-<tr class="even">
-<td>LLaMA-7B</td>
-<td>32</td>
-<td>4096</td>
-<td>32</td>
-<td>7B</td>
-<td>1T</td>
-</tr>
-<tr class="odd">
-<td>GPT-3</td>
-<td>96</td>
-<td>12288</td>
-<td>96</td>
-<td>175B</td>
-<td>300B</td>
-</tr>
-</tbody>
-</table>
-<p>根据定义，LLM
-的核心特点即在于其具有<strong>远超传统预训练模型的参数量</strong>，<strong>同时在更海量的语料上进行预训练</strong>。传统预训练模型如
-BERT，有 base 和 large 两个版本。BERT-base 模型由 12个 Encoder
-层组成，其 hidden_size 为 768，使用 12个头作为多头注意力层，整体参数量为
-1亿（110M）；而 BERT-large 模型由 24个 Encoder 层组成，hidden_size 为
-1024，有 16个头，整体参数量为 3亿（340M）。同时，BERT 预训练使用了
-33亿（3B）token 的语料，在 64块 TPU 上训练了
-4天。事实上，相对于传统的深度学习模型，3亿参数量、33亿训练数据的 BERT
-已经是一个能力超群、资源消耗巨大的庞然大物。</p>
-<p>但是，前面我们提到，<strong>一般而言的 LLM
-通常具有数百亿甚至上千亿参数</strong>，即使是广义上最小的
-LLM，一般也有十亿（1B）以上的参数量。例如以开山之作 GPT-3 为例，其有
-96个 Decoder 层，12288 的 hidden_size 和 96个头，<strong>共有
-1750亿（175B）参数，比 BERT 大出快
-3个数量级</strong>。即使是目前流行的小型 LLM 如 Qwen-1.8B，其也有 24个
-Decoder 层、2048的 hidden_size 和 16个注意力头，整体参数量达到
-18亿（1.8B）。</p>
-<h4 id="分布式训练">分布式训练</h4>
-<p>也正因如此，<strong>分布式训练框架也成为 LLM
-训练必不可少的组成部分</strong>。分布式训练框架的核心思路是<strong>数据并行和模型并行</strong>。所谓数据并行，是指训练模型的尺寸可以被单个
-GPU 内存容纳，但是由于增大训练的 batch_size
-会增大显存开销，无法使用较大的 batch_size
-进行训练；同时，训练数据量非常大，使用单张 GPU 训练时长难以接受。</p>
-<h4 id="数据集">数据集</h4>
-<p><strong>训练数据本身也是预训练 LLM 的一个重大挑战</strong>。训练一个
-LLM，至少需要数百 B 甚至上 T 的预训练语料。根据研究，LLM
-所掌握的知识绝大部分都是在预训练过程中学会的，因此，为了使训练出的 LLM
-能够覆盖尽可能广的知识面，预训练语料需要组织多种来源的数据，并以一定比例进行混合。目前，主要的开源预训练语料包括
-CommonCrawl、C4、Github、Wikipedia 等。<strong>不同的 LLM
-往往会在开源预训练语料基础上，加入部分私有高质量语料，再基于自己实验得到的最佳配比来构造预训练数据集</strong>。事实上，<strong>数据配比</strong>向来是预训练
-LLM
-的“核心秘籍”，不同的配比往往会相当大程度影响最终模型训练出来的性能。</p>
-<p>训练一个中文
-LLM，训练数据的难度会更大。目前，高质量语料还是大部分集中在英文范畴，例如上表的
-Wikipedia、Arxiv 等，均是英文数据集；而 C4
-等多语言数据集中，英文语料也占据主要地位。目前开源的中文 LLM 如
-ChatGLM、Baichuan
-等模型均未开放其预训练数据集，开源的中文预训练数据集目前仅有昆仑天工开源的<a target="_blank" rel="noopener" href="https://huggingface.co/datasets/Skywork/SkyPile-150B">SkyPile</a>（150B）、中科闻歌开源的<a target="_blank" rel="noopener" href="https://huggingface.co/datasets/wenge-research/yayi2_pretrain_data">yayi2</a>（100B）等，相较于英文开源数据集有明显差距。</p>
-<h4 id="数据清洗">数据清洗</h4>
-<p><strong>预训练数据的处理与清洗</strong>也是 LLM
-预训练的一个重要环节。诸多研究证明，预训练数据的质量往往比体量更加重要。预训练数据处理一般包括以下流程：</p>
-<ol type="1">
-<li>文档准备。由于海量预训练语料往往是从互联网上获得，一般需要从爬取的网站来获得自然语言文档。文档准备主要包括
-URL 过滤（根据网页 URL 过滤掉有害内容）、文档提取（从 HTML
-中提取纯文本）、语言选择（确定提取的文本的语种）等。</li>
-<li>语料过滤。语料过滤的核心目的是去除低质量、无意义、有毒有害的内容，例如乱码、广告等。语料过滤一般有两种方法：基于模型的方法，即通过高质量语料库训练一个文本分类器进行过滤；基于启发式的方法，一般通过人工定义
-web 内容的质量指标，计算语料的指标值来进行过滤。</li>
-<li>语料去重。实验表示，大量重复文本会显著影响模型的泛化能力，因此，语料去重即删除训练语料中相似度非常高的文档，也是必不可少的一个步骤。去重一般基于
-hash
-算法计算数据集内部或跨数据集的文档相似性，将相似性大于指定阈值的文档去除；也可以基于子串在序列级进行精确匹配去重。</li>
-</ol>
-<h3 id="sft-指令微调">SFT 指令微调</h3>
-<p>预训练赋予了 LLM 能力，却还需要第二步将其激发出来。经过预训练的 LLM
-好像一个博览群书但又不求甚解的书生，对什么样的偏怪问题，都可以流畅地接出下文，但他偏偏又<strong>不知道问题本身的含义</strong>，只会“死板背书”。这一现象的本质是因为，LLM
-的预训练任务就是经典的
-<strong>CLM</strong>，也就是训<strong>练其预测下一个 token
-的能力</strong>，在没有进一步微调之前，其无法与其他下游任务或是用户指令适配。</p>
-<p>因此，我们还需要第二步来教这个博览群书的学生如何去使用它的知识，也就是
-<strong>SFT（Supervised Fine-Tuning，有监督微调）</strong>。</p>
-<p>面对能力强大的
-LLM，我们往往不再是在指定下游任务上构造有监督数据进行微调，而是选择训练模型的“通用指令遵循能力”，也就是一般<strong>通过<code>指令微调</code>的方式来进行
-SFT</strong>。</p>
-<p>所谓指令微调，即我们训练的输入是各种类型的用户指令，而需要模型拟合的输出则是我们希望模型在收到该指令后做出的回复。例如，我们的一条训练样本可以是：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">input:告诉我今天的天气预报？</span><br><span class="line">output:根据天气预报，今天天气是晴转多云，最高温度26摄氏度，最低温度9摄氏度，昼夜温差大，请注意保暖哦</span><br></pre></td></tr></table></figure>
-<p>也就是说，SFT
-的主要目标是让模型从多种类型、多种风格的指令中获得泛化的指令遵循能力，也就是能够理解并回复用户的指令。</p>
-<h3 id="rlhf">RLHF</h3>
-<p>RLHF，全称是 <strong>Reinforcement Learning from Human
-Feedback，即人类反馈强化学习</strong>，是利用强化学习来训练 LLM
-的关键步骤。相较于在 GPT-3 就已经初见雏形的 SFT，RLHF 往往被认为是
-ChatGPT 相较于 GPT-3 的最核心突破。事实上，从功能上出发，我们可以将 LLM
-的训练过程分成<strong>预训练与对齐（alignment）两个阶段</strong>。预训练的核心作用是赋予模型海量的知识，而所谓对齐，其实就是让模型与人类价值观一致，从而输出人类希望其输出的内容。在这个过程中，SFT
-是让 LLM 和人类的指令对齐，从而具有指令遵循能力；而 RLHF
-则是从更深层次令 LLM
-和人类价值观对齐，令其达到安全、有用、无害的核心标准。</p>
-<p>RLHF 分为两个步骤：<strong>训练 RM 和 PPO 训练</strong>。</p>
-<p><strong>RM，Reward Model，即奖励模型</strong>。RM
-是用于拟合人类偏好，来给 LLM 做出反馈的。在强化学习的训练中，对于 LLM
-的每一个回复，RM
-会进行打分，这个打分反映了生成回复符合人类偏好的程度。然后 LLM
-会根据强化学习的原理，基于 RM 的打分来进行优化训练。</p>
-<p>在完成 RM 训练之后，就可以使用 PPO
-算法来进行强化学习训练。<strong>PPO，Proximal Policy
-Optimization，近端策略优化算法</strong>，是一种经典的 RL
-算法。事实上，强化学习训练时也可以使用其他的强化学习算法，但目前 PPO
-算法因为成熟、成本较低，还是最适合 RLHF 的算法。</p>
-<h3 id="参考资料">参考资料</h3>
-<p><a target="_blank" rel="noopener" href="https://datawhalechina.github.io/happy-llm/#/./chapter4/第四章%20大语言模型">第四章
-大语言模型</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="http://example.com/2025/08/08/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/tokenizer/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -868,7 +1596,7 @@ Optimization，近端策略优化算法</strong>，是一种经典的 RL
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2025-08-08 00:00:00 / 修改时间：16:21:18" itemprop="dateCreated datePublished" datetime="2025-08-08T00:00:00+08:00">2025-08-08</time>
+      <time title="创建时间：2025-08-08 00:00:00 / 修改时间：16:21:20" itemprop="dateCreated datePublished" datetime="2025-08-08T00:00:00+08:00">2025-08-08</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -953,7 +1681,7 @@ Tokens，再把Tokens 拼接为文本</p>
 </ul></li>
 <li><strong>找到频次（Score）最高的字符对并合并</strong>：
 <ul>
-<li>选择出现频率最高的字符对 <span class="math inline">(<em>x</em>,<em>y</em>)</span>，将其合并为新符号
+<li>选择出现频率最高的字符对 <span class="math inline">(<em>x</em>, <em>y</em>)</span>，将其合并为新符号
 <span class="math inline"><em>x</em><em>y</em></span>。</li>
 </ul></li>
 <li><strong>更新词汇表并重复步骤 2 到 4</strong>：
@@ -1010,12 +1738,12 @@ $$</span></p>
 </ul></li>
 <li><strong>统计字符对的频次及 Score</strong>：
 <ul>
-<li>对于每个可能的字符对 <span class="math inline">(<em>x</em>,<em>y</em>)</span>，计算 <span class="math inline">freq(<em>x</em>)</span>, <span class="math inline">freq(<em>y</em>)</span>, <span class="math inline">freq(<em>x</em><em>y</em>)</span>，并计算
+<li>对于每个可能的字符对 <span class="math inline">(<em>x</em>, <em>y</em>)</span>，计算 <span class="math inline">freq(<em>x</em>)</span>, <span class="math inline">freq(<em>y</em>)</span>, <span class="math inline">freq(<em>x</em><em>y</em>)</span>，并计算
 Score。</li>
 </ul></li>
 <li><strong>找到 Score 最高的字符对并合并</strong>：
 <ul>
-<li>选择 Score 最高的字符对 <span class="math inline">(<em>x</em>,<em>y</em>)</span>，将其合并为新符号
+<li>选择 Score 最高的字符对 <span class="math inline">(<em>x</em>, <em>y</em>)</span>，将其合并为新符号
 <span class="math inline"><em>x</em><em>y</em></span>，注意：
 <ul>
 <li>如果第二个符号以 <code>##</code> 开头，合并时去掉 <code>##</code>
@@ -1126,79 +1854,6 @@ Hoper-J/AI-Guide-and-Demos-zh_CN</a></p>
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/08/07/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/08/07/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="post-title-link" itemprop="url">未命名</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2025-08-07 10:55:13 / 修改时间：10:58:21" itemprop="dateCreated datePublished" datetime="2025-08-07T10:55:13+08:00">2025-08-07</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p><a target="_blank" rel="noopener" href="https://zh.d2l.ai/index.html">《动手学深度学习》 —
-动手学深度学习 2.0.0 documentation</a></p>
-<p><a target="_blank" rel="noopener" href="https://courses.d2l.ai/zh-v2/">课程安排 -
-动手学深度学习课程</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="http://example.com/2025/08/06/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/redis%E5%AD%98%E5%82%A8%E7%8A%B6%E6%80%81/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1235,7 +1890,7 @@ Hoper-J/AI-Guide-and-Demos-zh_CN</a></p>
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-08-10 00:00:41" itemprop="dateModified" datetime="2025-08-10T00:00:41+08:00">2025-08-10</time>
+      <time title="修改时间：2025-08-10 00:00:42" itemprop="dateModified" datetime="2025-08-10T00:00:42+08:00">2025-08-10</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1309,7 +1964,7 @@ Hoper-J/AI-Guide-and-Demos-zh_CN</a></p>
 <col style="width: 27%">
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>方法名</th>
 <th>作用</th>
 <th>输入参数</th>
@@ -1318,7 +1973,7 @@ Hoper-J/AI-Guide-and-Demos-zh_CN</a></p>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>__init__</code></td>
 <td>建立与 Redis 的异步连接并设置会话超时</td>
 <td><code>redis_host</code>, <code>redis_port</code>,
@@ -1326,14 +1981,14 @@ Hoper-J/AI-Guide-and-Demos-zh_CN</a></p>
 <td>-</td>
 <td><code>decode_responses=True</code> 使 Redis 返回字符串而非字节</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>close</code></td>
 <td>优雅关闭 Redis 连接</td>
 <td>-</td>
 <td>-</td>
 <td>异步方法，需 <code>await</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>create_session</code></td>
 <td>为指定用户新建（或覆盖）会话记录</td>
 <td><code>user_id</code>, 可选 <code>session_id</code>,
@@ -1343,7 +1998,7 @@ Hoper-J/AI-Guide-and-Demos-zh_CN</a></p>
 <td>会话键格式：<code>session:&#123;user_id&#125;</code>；过期时间为
 <code>session_timeout</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>get_session</code></td>
 <td>读取指定用户的完整会话字典</td>
 <td><code>user_id</code></td>
@@ -1351,7 +2006,7 @@ Hoper-J/AI-Guide-and-Demos-zh_CN</a></p>
 <td>自动将 JSON 里的 <code>last_response</code> 反序列化为
 <code>AgentResponse</code> 对象</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>update_session</code></td>
 <td>增量更新已有会话的字段</td>
 <td><code>user_id</code>, 可选 <code>status</code>,
@@ -1361,28 +2016,28 @@ Hoper-J/AI-Guide-and-Demos-zh_CN</a></p>
 用户不存在</td>
 <td>更新后刷新过期时间</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>delete_session</code></td>
 <td>删除单个用户的会话</td>
 <td><code>user_id</code></td>
 <td><code>bool</code>：<code>True</code> 删除成功</td>
 <td>直接删除 <code>session:&#123;user_id&#125;</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>get_session_count</code></td>
 <td>计算当前活跃会话总数</td>
 <td>-</td>
 <td><code>int</code></td>
 <td>使用异步扫描 <code>session:*</code> 键空间</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>get_all_user_ids</code></td>
 <td>取出所有已创建会话的 <code>user_id</code></td>
 <td>-</td>
 <td><code>List[str]</code></td>
 <td>同样基于 <code>session:*</code> 扫描</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>user_id_exists</code></td>
 <td>快速判断某用户是否已有会话</td>
 <td><code>user_id</code></td>
@@ -1452,7 +2107,7 @@ Hoper-J/AI-Guide-and-Demos-zh_CN</a></p>
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2025-08-05 00:00:00 / 修改时间：15:46:49" itemprop="dateCreated datePublished" datetime="2025-08-05T00:00:00+08:00">2025-08-05</time>
+      <time title="创建时间：2025-08-05 00:00:00 / 修改时间：15:46:50" itemprop="dateCreated datePublished" datetime="2025-08-05T00:00:00+08:00">2025-08-05</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1520,29 +2175,29 @@ Hoper-J/AI-Guide-and-Demos-zh_CN</a></p>
 <col style="width: 52%">
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>指标</th>
 <th>数值</th>
 <th>通俗解释</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><strong>平均响应时间</strong></td>
 <td><strong>241 秒</strong> ≈ <strong>4 分钟</strong></td>
 <td>上传一个 PDF → 拿到解析结果，平均要等 4 分钟。</td>
 </tr>
-<tr class="even">
+<tr>
 <td><strong>中位数</strong></td>
 <td><strong>215 秒</strong> ≈ <strong>3.6 分钟</strong></td>
 <td>一半请求在 3.6 分钟内完成。</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><strong>95% 用户</strong></td>
 <td><strong>361 秒</strong> ≈ <strong>6 分钟</strong></td>
 <td>最慢的 5% 要等 6 分钟以上。</td>
 </tr>
-<tr class="even">
+<tr>
 <td><strong>吞吐量</strong></td>
 <td><strong>0.18 req/s</strong></td>
 <td>这台 MinerU <strong>每分钟只能处理约11 个 PDF</strong>。</td>
@@ -1665,7 +2320,7 @@ rag这种，在存入数据库前再进行一步处理</li>
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-08-03 18:50:57" itemprop="dateModified" datetime="2025-08-03T18:50:57+08:00">2025-08-03</time>
+      <time title="修改时间：2025-08-03 18:50:58" itemprop="dateModified" datetime="2025-08-03T18:50:58+08:00">2025-08-03</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1694,34 +2349,34 @@ rag这种，在存入数据库前再进行一步处理</li>
           <h3 id="日志级别">日志级别</h3>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>级别</th>
 <th>方法</th>
 <th>用途</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>DEBUG</td>
 <td><code>logging.debug()</code></td>
 <td>调试信息</td>
 </tr>
-<tr class="even">
+<tr>
 <td>INFO</td>
 <td><code>logging.info()</code></td>
 <td>普通信息</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>WARNING</td>
 <td><code>logging.warning()</code></td>
 <td>警告信息</td>
 </tr>
-<tr class="even">
+<tr>
 <td>ERROR</td>
 <td><code>logging.error()</code></td>
 <td>错误信息</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>CRITICAL</td>
 <td><code>logging.critical()</code></td>
 <td>严重错误</td>
@@ -1810,7 +2465,7 @@ logging模块怎么用_哔哩哔哩_bilibili</a></p>
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-08-04 16:20:46" itemprop="dateModified" datetime="2025-08-04T16:20:46+08:00">2025-08-04</time>
+      <time title="修改时间：2025-08-04 16:20:48" itemprop="dateModified" datetime="2025-08-04T16:20:48+08:00">2025-08-04</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1920,7 +2575,7 @@ Python 包提供的命令行工具</strong>。</p>
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2025-08-01 00:00:00 / 修改时间：17:03:37" itemprop="dateCreated datePublished" datetime="2025-08-01T00:00:00+08:00">2025-08-01</time>
+      <time title="创建时间：2025-08-01 00:00:00 / 修改时间：17:03:38" itemprop="dateCreated datePublished" datetime="2025-08-01T00:00:00+08:00">2025-08-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -2033,180 +2688,6 @@ an MCP Client - Model Context Protocol</a></p>
 </ol>
 <p><strong>问题</strong>：MCP返回的schema可能缺少必要的根类型定义
 <strong>修复</strong>： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">schema = tool.inputSchema</span><br><span class="line"><span class="keyword">if</span> <span class="built_in">isinstance</span>(schema, <span class="built_in">str</span>):</span><br><span class="line">    schema = json.loads(schema)</span><br><span class="line"><span class="keyword">if</span> <span class="built_in">isinstance</span>(schema, <span class="built_in">dict</span>) <span class="keyword">and</span> <span class="string">&quot;properties&quot;</span> <span class="keyword">in</span> schema:</span><br><span class="line">    schema = &#123;<span class="string">&quot;type&quot;</span>: <span class="string">&quot;object&quot;</span>, **schema&#125;  <span class="comment"># 确保有根类型</span></span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/08/01/%E5%AD%A6%E4%B9%A0/mcp%E5%AD%A6%E4%B9%A0/langgraph%E5%AE%9E%E6%88%98mcp/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/08/01/%E5%AD%A6%E4%B9%A0/mcp%E5%AD%A6%E4%B9%A0/langgraph%E5%AE%9E%E6%88%98mcp/" class="post-title-link" itemprop="url">langgraph实战mcp</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-08-01 00:00:00" itemprop="dateCreated datePublished" datetime="2025-08-01T00:00:00+08:00">2025-08-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-08-02 11:47:14" itemprop="dateModified" datetime="2025-08-02T11:47:14+08:00">2025-08-02</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/mcp/" itemprop="url" rel="index"><span itemprop="name">mcp</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="环境配置">环境配置</h3>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install langchain-mcp-adapters</span><br></pre></td></tr></table></figure>
-<h3 id="使用langgraph调用mcp">使用langgraph调用mcp</h3>
-<p>要点主要是利用MultiServerMCPClient构建服务，获取tool</p>
-<p>利用预设的create_react_agent构建ReAct架构的智能体并调用工具</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line">import asyncio # 需要导入 asyncio 来运行异步函数</span><br><span class="line"># 从langchain_mcp_adapters.client模块导入MultiServerMCPClient类</span><br><span class="line"># 从langgraph.prebuilt模块导入create_react_agent函数</span><br><span class="line">from langchain_mcp_adapters.client import MultiServerMCPClient</span><br><span class="line">from langgraph.prebuilt import create_react_agent</span><br><span class="line"></span><br><span class="line"># 导入 LLM 相关库</span><br><span class="line">from langchain_openai import ChatOpenAI</span><br><span class="line"></span><br><span class="line"># 将主要逻辑封装在一个异步函数中</span><br><span class="line">async def main():</span><br><span class="line">    # 创建MultiServerMCPClient实例，配置两个不同的服务</span><br><span class="line">    client = MultiServerMCPClient(</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;math&quot;: &#123;  # 数学计算服务</span><br><span class="line">                &quot;command&quot;: &quot;python&quot;,  # 使用python命令启动</span><br><span class="line">                # 替换为你的math_server.py文件的绝对路径</span><br><span class="line">                &quot;args&quot;: [&quot;/workspace/langgraph-mcp/math_server.py&quot;],</span><br><span class="line">                &quot;transport&quot;: &quot;stdio&quot;,  # 使用标准输入输出传输</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;weather&quot;: &#123;  # 天气服务</span><br><span class="line">                # 确保你的天气服务器在8000端口运行</span><br><span class="line">                # *** 确保这个 URL 是正确的，并且服务器正在运行 ***</span><br><span class="line">                &quot;url&quot;: &quot;http://localhost:8000/mcp&quot;,</span><br><span class="line">                &quot;transport&quot;: &quot;streamable_http&quot;,  # 使用可流式HTTP传输</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    tools = []</span><br><span class="line">    try:</span><br><span class="line">        # 在异步函数内部正确使用 await</span><br><span class="line">        tools = await client.get_tools()</span><br><span class="line">        print(f&quot;成功获取到 &#123;len(tools)&#125; 个MCP工具。&quot;)</span><br><span class="line">        for tool_item in tools:</span><br><span class="line">            print(f&quot;  - &#123;tool_item.name&#125;: &#123;tool_item.description&#125;&quot;)</span><br><span class="line">    except Exception as e:</span><br><span class="line">        print(f&quot;获取MCP工具失败: &#123;e&#125;&quot;)</span><br><span class="line">        print(&quot;请确保MCP服务URL有效且可访问，或者您已正确配置了认证信息。&quot;)</span><br><span class="line">        # 在函数内部，如果出错可以选择返回或继续处理</span><br><span class="line">        # return # 这里可以 return，但会结束 main 函数</span><br><span class="line"></span><br><span class="line">    if not tools:</span><br><span class="line">        print(&quot;没有获取到工具，无法创建代理。&quot;)</span><br><span class="line">        return</span><br><span class="line"></span><br><span class="line">    # 创建ReAct代理</span><br><span class="line">    llm = ChatOpenAI(</span><br><span class="line">        model=&quot;qwen3-235b-a22b-thinking-2507&quot;,</span><br><span class="line">        api_key=&quot;sk-a8ef27c47ea84224ac6eed6d4bba1bab&quot;,</span><br><span class="line">        base_url=&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot; # 修正了末尾多余的空格</span><br><span class="line">    )</span><br><span class="line">    agent = create_react_agent(llm, tools)</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    # 异步调用代理来解决数学问题</span><br><span class="line">    # 确保在异步函数内部使用 await</span><br><span class="line">    math_response = await agent.ainvoke(</span><br><span class="line">        &#123;&quot;messages&quot;: [&#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;what&#x27;s (3 + 5) x 12?&quot;&#125;]&#125;</span><br><span class="line">    )</span><br><span class="line">    print(&quot;\n--- 数学问题回答 ---&quot;)</span><br><span class="line">    print(math_response[&quot;messages&quot;][-1].content) # 打印最后一条消息（LLM的回答）</span><br><span class="line"></span><br><span class="line">    # 异步调用代理来查询天气</span><br><span class="line">    weather_response = await agent.ainvoke(</span><br><span class="line">        &#123;&quot;messages&quot;: [&#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;what is the weather in nyc?&quot;&#125;]&#125;</span><br><span class="line">    )</span><br><span class="line">    print(&quot;\n--- 天气问题回答 ---&quot;)</span><br><span class="line">    print(weather_response[&quot;messages&quot;][-1].content) # 打印最后一条消息（LLM的回答）</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># --- 这是脚本的入口点 ---</span><br><span class="line"># 使用 asyncio.run() 来运行你的主异步函数</span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    asyncio.run(main())</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="参考资料">参考资料</h3>
-<p><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langgraph/agents/mcp/">使用
-MCP - LangChain 框架</a></p>
-<h3 id="框架流程">框架流程</h3>
-<figure>
-<img src="/2025/08/01/%E5%AD%A6%E4%B9%A0/mcp%E5%AD%A6%E4%B9%A0/langgraph%E5%AE%9E%E6%88%98mcp/image-20250801164905578.png" alt="image-20250801164905578">
-<figcaption aria-hidden="true">image-20250801164905578</figcaption>
-</figure>
-<p>✅ 三个角色（系统组件）</p>
-<table>
-<colgroup>
-<col style="width: 28%">
-<col style="width: 72%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>角色</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Client</strong></td>
-<td>前端或用户界面，发起请求</td>
-</tr>
-<tr class="even">
-<td><strong>Auth Provider</strong></td>
-<td>认证服务（如 OAuth、JWT 提供者），负责登录和签发 token</td>
-</tr>
-<tr class="odd">
-<td><strong>LangGraph Backend</strong></td>
-<td>应用的后端服务，处理业务逻辑</td>
-</tr>
-<tr class="even">
-<td><strong>Secret Store</strong></td>
-<td>存放用户敏感信息（如 token、密钥等）</td>
-</tr>
-<tr class="odd">
-<td><strong>MCP Server</strong></td>
-<td>后端工具服务，提供具体的工具或资源接口</td>
-</tr>
-</tbody>
-</table>
-<p>✅ 流程详解（12步）</p>
-<p>🔐 阶段一：用户登录 &amp; 获取 Token（1~6）</p>
-<ol type="1">
-<li><p><strong>用户登录</strong><br>
-Client 提交用户名和密码给 Auth Provider。</p></li>
-<li><p><strong>返回 Token</strong><br>
-Auth Provider 验证成功后，返回一个访问令牌（token）。</p></li>
-<li><p><strong>携带 Token 请求</strong><br>
-Client 将 token 附加在请求头中，发给 LangGraph Backend。</p></li>
-<li><p><strong>验证 Token</strong><br>
-LangGraph Backend 使用 <code>@auth.authenticate</code> 中间件验证 token
-是否有效。</p></li>
-<li><p><strong>获取用户信息</strong><br>
-验证通过后，LangGraph Backend 从 Auth Provider
-拉取用户详细信息。</p></li>
-<li><p><strong>确认有效性</strong><br>
-后端确认用户信息无误，流程继续。</p></li>
-</ol>
-<p>🔑 阶段二：获取用户权限 Token（6a~6b）</p>
-<p>6a. <strong>拉取用户权限 Token</strong><br>
-LangGraph Backend 从 Secret Store 获取该用户对应的权限 token（可能是 MCP
-所需的访问凭证）。</p>
-<p>6b. <strong>返回权限 Token</strong><br>
-Secret Store 返回该 token。</p>
-<p>🛠️ 阶段三：调用工具 &amp; 返回结果（7~12）</p>
-<ol start="7" type="1">
-<li><p><strong>权限控制检查</strong><br>
-LangGraph Backend 使用 <code>@auth.on.*</code>
-权限控制逻辑，确认用户是否有权调用该工具。</p></li>
-<li><p><strong>构建 MCP Client</strong><br>
-后端用用户的权限 token 构建一个 MCP 客户端。</p></li>
-<li><p><strong>调用 MCP 工具</strong><br>
-MCP Client 发起请求，调用某个具体工具，携带
-token（通常放在请求头中）。</p></li>
-<li><p><strong>MCP 验证并执行</strong><br>
-MCP Server 验证 token 是否有效，确认无误后执行工具逻辑。</p></li>
-<li><p><strong>工具返回结果</strong><br>
-MCP Server 返回工具执行结果或资源数据。</p></li>
-<li><p><strong>返回给前端</strong><br>
-LangGraph Backend 将结果返回给 Client，完成整个链路。</p></li>
-</ol>
 
       
     </div>

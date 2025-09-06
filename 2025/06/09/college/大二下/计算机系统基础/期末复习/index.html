@@ -30,7 +30,7 @@
 <meta property="og:description" content="第一章 时钟频率（f） ：单位时间内完成的时钟周期数，单位为赫兹（Hz）。 例如：800MHz 表示每秒完成 800×106 个周期。 时钟周期（T） ：完成一个时钟周期所需的时间，单位为秒（s）。 例如：800MHz 的时钟周期为 T&#x3D;800×1061​s&#x3D;1.25ns （纳秒）。 CPI（Cycles Per Instruction，每条指令所需的时钟周期数）是衡量计算机体系结">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-06-08T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-06-30T03:46:47.152Z">
+<meta property="article:modified_time" content="2025-06-30T03:46:48.000Z">
 <meta property="article:author" content="张熙浚">
 <meta property="article:tag" content="Linux">
 <meta property="article:tag" content="大学">
@@ -163,18 +163,18 @@ Binary）详解</span></a></li><li class="nav-item nav-level-4"><a class="nav-li
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">132</span>
+          <span class="site-state-item-count">136</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">50</span>
+        <span class="site-state-item-count">52</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-count">57</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -260,7 +260,7 @@ Binary）详解</span></a></li><li class="nav-item nav-level-4"><a class="nav-li
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-06-30 11:46:47" itemprop="dateModified" datetime="2025-06-30T11:46:47+08:00">2025-06-30</time>
+      <time title="修改时间：2025-06-30 11:46:48" itemprop="dateModified" datetime="2025-06-30T11:46:48+08:00">2025-06-30</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -355,13 +355,13 @@ Complement）是计算机中表示有符号整数的标准方法，其核心作�
 <p>补码的本质是基于 <strong>模（Modulo）运算</strong>。<br>
 - 对于 <strong>n位二进制数</strong>，其模为 <span class="math inline">2<sup><em>n</em></sup></span>。<br>
 - 负数的补码表示为：<br>
-<span class="math display"> − <em>x</em> ≡ 2<sup><em>n</em></sup> − <em>x</em> (mod 2<sup><em>n</em></sup>)</span>
+<span class="math display">−<em>x</em> ≡ 2<sup><em>n</em></sup> − <em>x</em> (mod 2<sup><em>n</em></sup>)</span>
 例如，8位二进制数的模是 <span class="math inline">2<sup>8</sup> = 256</span>，因此：<br>
-<span class="math inline"> − 5</span> 的补码 = <span class="math inline">256 − 5 = 251</span>，二进制表示为
+<span class="math inline">−5</span> 的补码 = <span class="math inline">256 − 5 = 251</span>，二进制表示为
 <code>11111011</code>。</p>
 <p><strong>4. 为什么“取反 + 1”有效？</strong></p>
 <ul>
-<li><strong>取反</strong>：相当于将数值部分取反（即 <span class="math inline"><em>x</em> → (2<sup><em>n</em> − 1</sup>−1−<em>x</em>)</span>）。</li>
+<li><strong>取反</strong>：相当于将数值部分取反（即 <span class="math inline"><em>x</em> → (2<sup><em>n</em> − 1</sup> − 1 − <em>x</em>)</span>）。</li>
 <li><strong>加1</strong>：最终得到 <span class="math inline">2<sup><em>n</em></sup> − <em>x</em></span>，即补码的数学定义。</li>
 </ul>
 <p>以 <code>-5</code> 为例（8位）： 1.
@@ -379,10 +379,10 @@ Complement）是计算机中表示有符号整数的标准方法，其核心作�
 </ul>
 <p><strong>6. 特殊情况：最小负数</strong></p>
 <p>对于 <strong>n位补码</strong>，能表示的范围是：<br>
-<span class="math display">[−2<sup><em>n</em> − 1</sup>, 2<sup><em>n</em> − 1</sup>−1]</span>
+<span class="math display">[−2<sup><em>n</em> − 1</sup>, 2<sup><em>n</em> − 1</sup> − 1]</span>
 - 例如，8位补码范围是：<code>-128</code>（<code>10000000</code>）到
 <code>+127</code>（<code>01111111</code>）。 -
-<strong>最小负数（-128）</strong> 没有对应的正数（因为 <span class="math inline"> + 128</span> 超出范围），其补码直接定义为
+<strong>最小负数（-128）</strong> 没有对应的正数（因为 <span class="math inline">+128</span> 超出范围），其补码直接定义为
 <code>10000000</code>，无法通过“取反 + 1”从原码推导（因为原码中不存在
 <code>+128</code>）。</p>
 <h4 id="移码offset-binary详解"><strong>移码（Offset
@@ -397,7 +397,7 @@ Binary）详解</strong></h4>
 移码将负数范围映射到正数范围，使得可以直接通过<strong>无符号整数比较</strong>来判断阶码的大小。
 <ul>
 <li>例如：<br>
-在浮点数中，阶码 <span class="math inline"> − 3</span> 和 <span class="math inline"> + 2</span> 的移码分别为 <span class="math inline">125</span> 和 <span class="math inline">130</span>（偏移量为127），直接比较 <span class="math inline">125 &lt; 130</span> 即可得出 <span class="math inline"> − 3 &lt;  + 2</span>。</li>
+在浮点数中，阶码 <span class="math inline">−3</span> 和 <span class="math inline">+2</span> 的移码分别为 <span class="math inline">125</span> 和 <span class="math inline">130</span>（偏移量为127），直接比较 <span class="math inline">125 &lt; 130</span> 即可得出 <span class="math inline">−3 &lt; +2</span>。</li>
 </ul></li>
 <li><strong>消除负数表示</strong>：<br>
 移码将负数转换为正数表示，避免了补码中负数符号位的影响。</li>
@@ -411,7 +411,7 @@ Binary）详解</strong></h4>
 <li><strong>符号位取反</strong>：<br>
 移码可以看作是<strong>补码的符号位取反</strong>。例如：
 <ul>
-<li>补码 <code>10000000</code>（<span class="math inline"> − 128</span>）的移码为 <code>00000000</code>（<span class="math inline"> − 128 + 128 = 0</span>）。<br>
+<li>补码 <code>10000000</code>（<span class="math inline">−128</span>）的移码为 <code>00000000</code>（<span class="math inline">−128 + 128 = 0</span>）。<br>
 </li>
 <li>补码 <code>00000000</code>（<span class="math inline">0</span>）的移码为 <code>10000000</code>（<span class="math inline">0 + 128 = 128</span>）。</li>
 </ul></li>
@@ -473,34 +473,34 @@ Binary）详解</strong></h4>
 <col style="width: 36%">
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>特性</th>
 <th>AT&amp;T格式语法</th>
 <th>对比Intel格式语法</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><strong>寄存器</strong></td>
 <td>前缀 <code>%</code>（如 <code>%eax</code>）</td>
 <td>无前缀（如 <code>eax</code>）</td>
 </tr>
-<tr class="even">
+<tr>
 <td><strong>立即数</strong></td>
 <td>前缀 <code>$</code>（如 <code>$0x10</code>）</td>
 <td>直接使用数值（如 <code>10</code>）</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><strong>操作数顺序</strong></td>
 <td>源操作数在前，目标在后</td>
 <td>目标在前，源在后</td>
 </tr>
-<tr class="even">
+<tr>
 <td><strong>内存寻址</strong></td>
 <td><code>offset(base, index, scale)</code></td>
 <td><code>[base + index*scale + offset]</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td><strong>指令后缀</strong></td>
 <td>通过后缀标明操作数大小（如 <code>l</code> 表示32位）</td>
 <td>无后缀，由操作数推断</td>
@@ -585,39 +585,39 @@ Addressing）</strong></p>
 <col style="width: 43%">
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>寻址模式</th>
 <th>AT&amp;T格式语法</th>
 <th>Intel格式语法</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>直接寻址</td>
 <td><code>var(%rip)</code></td>
 <td><code>[rip + var]</code>（64位）或 <code>var</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td>寄存器间接寻址</td>
 <td><code>(%eax)</code></td>
 <td><code>[eax]</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>基址寻址</td>
 <td><code>8(%ebp)</code></td>
 <td><code>[ebp + 8]</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td>变址寻址</td>
 <td><code>array(,%eax,4)</code></td>
 <td><code>[array + eax*4]</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>基址+比例变址</td>
 <td><code>(%ebx, %esi, 4)</code></td>
 <td><code>[ebx + esi*4]</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td>基址+比例变址+偏移</td>
 <td><code>12(%ebx, %esi, 8)</code></td>
 <td><code>[ebx + esi*8 + 12]</code></td>
@@ -630,32 +630,32 @@ Addressing）</strong></p>
 <p><strong>后缀与操作数大小的对应关系</strong></p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>后缀</th>
 <th>操作数大小</th>
 <th>示例寄存器/操作数</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>b</code></td>
 <td>byte（8位）</td>
 <td><code>%al</code>, <code>$0x10</code>,
 <code>12(%ebp)</code>（需显式指定）</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>w</code></td>
 <td>word（16位）</td>
 <td><code>%ax</code>, <code>%bx</code>,
 <code>12(%ebp)</code>（需显式指定）</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>l</code></td>
 <td>long（32位）</td>
 <td><code>%eax</code>, <code>%ebx</code>,
 <code>12(%ebp)</code>（需显式指定）</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>q</code></td>
 <td>quad（64位）</td>
 <td><code>%rax</code>, <code>%rbx</code>,
@@ -694,19 +694,19 @@ Addressing）</strong></p>
 <col style="width: 78%">
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>操作数</th>
 <th>类型</th>
 <th>判断依据</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>%edx</code></td>
 <td>临时变量</td>
 <td>直接从寄存器读取数据，无间接内存访问（无括号）。</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>(%ecx)</code></td>
 <td>指针</td>
 <td>使用括号 <code>(%ecx)</code> 表示解引用内存地址（类似C语言的
@@ -722,25 +722,25 @@ Addressing）</strong></p>
 <col style="width: 58%">
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>汇编指令</th>
 <th>C语言对应操作</th>
 <th>解释</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>movl %eax, (%ebx)</code></td>
 <td><code>*ptr = temp;</code></td>
 <td><code>%ebx</code> 是指针（存储地址），<code>%eax</code>
 是临时变量。</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>movl (%ebx), %eax</code></td>
 <td><code>temp = *ptr;</code></td>
 <td>从指针 <code>ptr</code> 读取值到临时变量 <code>temp</code>。</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>movl $0x1, %eax</code></td>
 <td><code>temp = 1;</code></td>
 <td><code>%eax</code> 是临时变量，直接赋值。</td>
@@ -770,24 +770,24 @@ Addressing）</strong></p>
 <p><strong>关键点总结</strong></p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th>符号</th>
 <th>含义</th>
 <th>示例</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>R</code></td>
 <td>寄存器（Register）</td>
 <td><code>R[eax]</code> → <code>EAX</code> 的值</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>M</code></td>
 <td>内存（Memory）</td>
 <td><code>M[地址]</code> → 从地址读取数据</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>()</code></td>
 <td>AT&amp;T 汇编中表示内存寻址</td>
 <td><code>(%eax)</code> → 等价于 <code>M[R[eax]]</code></td>
@@ -803,7 +803,7 @@ Addressing）</strong></p>
 <col style="width: 43%">
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>指令类型</th>
 <th>操作目的</th>
 <th>影响标志位</th>
@@ -811,43 +811,43 @@ Addressing）</strong></p>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>addl</code></td>
 <td>加法</td>
 <td>OF, SF, ZF, CF</td>
 <td>数值运算、地址偏移</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>subl</code></td>
 <td>减法</td>
 <td>OF, SF, ZF, CF</td>
 <td>数值运算、条件判断</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>orl</code></td>
 <td>按位或</td>
 <td>OF=0, SF, ZF, CF=0</td>
 <td>位掩码操作</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>testl</code></td>
 <td>按位与测试</td>
 <td>OF=0, SF, ZF, CF=0</td>
 <td>条件判断（如检查位是否设置）</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>imull</code></td>
 <td>有符号乘法</td>
 <td>OF, CF</td>
 <td>数值运算</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>leal</code></td>
 <td>地址计算</td>
 <td>无影响</td>
 <td>高效数组索引计算</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>decl</code></td>
 <td>递减</td>
 <td>OF, SF, ZF, CF</td>
@@ -890,29 +890,29 @@ Address）</strong> 的指令，其功能是
 <col style="width: 75%">
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>标志</th>
 <th>全称</th>
 <th>含义</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><strong>CF</strong></td>
 <td>Carry Flag</td>
 <td><strong>无符号溢出标志</strong>：表示无符号数运算是否产生进位或借位。</td>
 </tr>
-<tr class="even">
+<tr>
 <td><strong>ZF</strong></td>
 <td>Zero Flag</td>
 <td><strong>零标志</strong>：表示运算结果是否为零。</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><strong>SF</strong></td>
 <td>Sign Flag</td>
 <td><strong>符号标志</strong>：表示运算结果的最高位（符号位）是否为1（负数）。</td>
 </tr>
-<tr class="even">
+<tr>
 <td><strong>OF</strong></td>
 <td>Overflow Flag</td>
 <td><strong>溢出标志</strong>：表示有符号数运算是否溢出（结果超出数据类型表示范围）。</td>
@@ -1029,24 +1029,24 @@ Byte）存储在高地址处</strong>。</p>
 <col style="width: 42%">
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th><strong>特性</strong></th>
 <th><strong>小端（Little-Endian）</strong></th>
 <th><strong>大端（Big-Endian）</strong></th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><strong>存储顺序</strong></td>
 <td>低位字节在前（低地址），高位在后</td>
 <td>高位字节在前（低地址），低位在后</td>
 </tr>
-<tr class="even">
+<tr>
 <td><strong>示例</strong></td>
 <td><code>0x12345678</code> → 存储为 <code>78 56 34 12</code></td>
 <td><code>0x12345678</code> → 存储为 <code>12 34 56 78</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td><strong>常见平台</strong></td>
 <td>x86/x64 架构（Intel/AMD 处理器）</td>
 <td>ARM（部分模式）、网络协议（TCP/IP）</td>
@@ -1110,7 +1110,7 @@ Byte）存储在高地址处</strong>。</p>
 = <code>0x8048393 + 0x1E = 0x80483B1</code>。</li>
 </ul></li>
 </ol>
-<p><strong>3. 核心公式</strong> <span class="math display">目标地址 = (当前指令地址+指令长度) + 偏移量</span>
+<p><strong>3. 核心公式</strong> <span class="math display">目标地址 = (当前指令地址 + 指令长度) + 偏移量</span>
 - <strong>当前指令地址</strong>：指令的起始地址（如
 <code>0x804838e</code>）。 -
 <strong>指令长度</strong>：由操作码和操作数决定（如 <code>call</code> 占
