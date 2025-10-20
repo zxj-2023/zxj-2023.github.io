@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="正文 极大似然估计   image-20250320200047048    image-20250320200109835    image-20250320200139754  作业 1、何为正则化？其功能是什么？如何理解L1和L2正则化？   IMG_20250320_170100  2、什么是偏差与方差？简要说明偏差、方差与过拟合、欠拟合的关系。">
+    <meta name="description" content="正文极大似然估计   作业1、何为正则化？其功能是什么？如何理解L1和L2正则化？ 2、什么是偏差与方差？简要说明偏差、方差与过拟合、欠拟合的关系。    现象 偏差 方差 典型原因 解决方法     欠拟合 高 低 模型过于简单（如线性模型拟合非线性数据） 增加特征、使用更复杂模型、减少正则化   过拟合 低 高 模型过于复杂（如深度树模型拟合噪声） 增加数据、正则化、简化模型、早停法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="机器学习——线性模型">
 <meta property="og:url" content="http://example.com/2025/03/20/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="正文 极大似然估计   image-20250320200047048    image-20250320200109835    image-20250320200139754  作业 1、何为正则化？其功能是什么？如何理解L1和L2正则化？   IMG_20250320_170100  2、什么是偏差与方差？简要说明偏差、方差与过拟合、欠拟合的关系。">
+<meta property="og:description" content="正文极大似然估计   作业1、何为正则化？其功能是什么？如何理解L1和L2正则化？ 2、什么是偏差与方差？简要说明偏差、方差与过拟合、欠拟合的关系。    现象 偏差 方差 典型原因 解决方法     欠拟合 高 低 模型过于简单（如线性模型拟合非线性数据） 增加特征、使用更复杂模型、减少正则化   过拟合 低 高 模型过于复杂（如深度树模型拟合噪声） 增加数据、正则化、简化模型、早停法">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2025/03/20/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/image-20250320200047048.png">
 <meta property="og:image" content="http://example.com/2025/03/20/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/image-20250320200109835.png">
@@ -154,7 +154,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">1.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%81%E5%A4%A7%E4%BC%BC%E7%84%B6%E4%BC%B0%E8%AE%A1"><span class="nav-number">1.1.</span> <span class="nav-text">极大似然估计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%9C%E4%B8%9A"><span class="nav-number">2.</span> <span class="nav-text">作业</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%95%E4%B8%BA%E6%AD%A3%E5%88%99%E5%8C%96%E5%85%B6%E5%8A%9F%E8%83%BD%E6%98%AF%E4%BB%80%E4%B9%88%E5%A6%82%E4%BD%95%E7%90%86%E8%A7%A3l1%E5%92%8Cl2%E6%AD%A3%E5%88%99%E5%8C%96"><span class="nav-number">2.1.</span> <span class="nav-text">1、何为正则化？其功能是什么？如何理解L1和L2正则化？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%81%8F%E5%B7%AE%E4%B8%8E%E6%96%B9%E5%B7%AE%E7%AE%80%E8%A6%81%E8%AF%B4%E6%98%8E%E5%81%8F%E5%B7%AE%E6%96%B9%E5%B7%AE%E4%B8%8E%E8%BF%87%E6%8B%9F%E5%90%88%E6%AC%A0%E6%8B%9F%E5%90%88%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">2.2.</span> <span class="nav-text">2、什么是偏差与方差？简要说明偏差、方差与过拟合、欠拟合的关系。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AC%E5%BC%8F%E6%8E%A8%E5%AF%BC%E6%9C%80%E5%B0%8F%E4%BA%8C%E4%B9%98%E6%B3%95%E5%A4%9A%E5%85%83%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E4%B8%8E%E5%B2%AD%E5%9B%9E%E5%BD%92%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%E6%9E%81%E5%A4%A7%E4%BC%BC%E7%84%B6%E6%B3%95"><span class="nav-number">2.3.</span> <span class="nav-text">3、公式推导：最小二乘法、多元线性回归与岭回归、逻辑回归（极大似然法）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">3.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">1.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%81%E5%A4%A7%E4%BC%BC%E7%84%B6%E4%BC%B0%E8%AE%A1"><span class="nav-number">1.1.</span> <span class="nav-text">极大似然估计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%9C%E4%B8%9A"><span class="nav-number">2.</span> <span class="nav-text">作业</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E4%BD%95%E4%B8%BA%E6%AD%A3%E5%88%99%E5%8C%96%EF%BC%9F%E5%85%B6%E5%8A%9F%E8%83%BD%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E5%A6%82%E4%BD%95%E7%90%86%E8%A7%A3L1%E5%92%8CL2%E6%AD%A3%E5%88%99%E5%8C%96%EF%BC%9F"><span class="nav-number">2.1.</span> <span class="nav-text">1、何为正则化？其功能是什么？如何理解L1和L2正则化？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AF%E5%81%8F%E5%B7%AE%E4%B8%8E%E6%96%B9%E5%B7%AE%EF%BC%9F%E7%AE%80%E8%A6%81%E8%AF%B4%E6%98%8E%E5%81%8F%E5%B7%AE%E3%80%81%E6%96%B9%E5%B7%AE%E4%B8%8E%E8%BF%87%E6%8B%9F%E5%90%88%E3%80%81%E6%AC%A0%E6%8B%9F%E5%90%88%E7%9A%84%E5%85%B3%E7%B3%BB%E3%80%82"><span class="nav-number">2.2.</span> <span class="nav-text">2、什么是偏差与方差？简要说明偏差、方差与过拟合、欠拟合的关系。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3%E3%80%81%E5%85%AC%E5%BC%8F%E6%8E%A8%E5%AF%BC%EF%BC%9A%E6%9C%80%E5%B0%8F%E4%BA%8C%E4%B9%98%E6%B3%95%E3%80%81%E5%A4%9A%E5%85%83%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E4%B8%8E%E5%B2%AD%E5%9B%9E%E5%BD%92%E3%80%81%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92%EF%BC%88%E6%9E%81%E5%A4%A7%E4%BC%BC%E7%84%B6%E6%B3%95%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">3、公式推导：最小二乘法、多元线性回归与岭回归、逻辑回归（极大似然法）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">3.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -169,13 +169,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">156</span>
+          <span class="site-state-item-count">155</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">61</span>
+        <span class="site-state-item-count">60</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -298,35 +298,12 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h2 id="正文">正文</h2>
-<h3 id="极大似然估计">极大似然估计</h3>
-<figure>
-<img src="/2025/03/20/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/image-20250320200047048.png" alt="image-20250320200047048">
-<figcaption aria-hidden="true">image-20250320200047048</figcaption>
-</figure>
-<figure>
-<img src="/2025/03/20/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/image-20250320200109835.png" alt="image-20250320200109835">
-<figcaption aria-hidden="true">image-20250320200109835</figcaption>
-</figure>
-<figure>
-<img src="/2025/03/20/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/image-20250320200139754.png" alt="image-20250320200139754">
-<figcaption aria-hidden="true">image-20250320200139754</figcaption>
-</figure>
-<h2 id="作业">作业</h2>
-<h3 id="何为正则化其功能是什么如何理解l1和l2正则化">1、何为正则化？其功能是什么？如何理解L1和L2正则化？</h3>
-<figure>
-<img src="/2025/03/20/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/IMG_20250320_170100.jpg" alt="IMG_20250320_170100">
-<figcaption aria-hidden="true">IMG_20250320_170100</figcaption>
-</figure>
-<h3 id="什么是偏差与方差简要说明偏差方差与过拟合欠拟合的关系">2、什么是偏差与方差？简要说明偏差、方差与过拟合、欠拟合的关系。</h3>
+    <div class="post-body" itemprop="articleBody"><h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h3 id="极大似然估计"><a href="#极大似然估计" class="headerlink" title="极大似然估计"></a>极大似然估计</h3><p><img src="/2025/03/20/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/image-20250320200047048.png" alt="image-20250320200047048"></p>
+<p><img src="/2025/03/20/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/image-20250320200109835.png" alt="image-20250320200109835"></p>
+<p><img src="/2025/03/20/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/image-20250320200139754.png" alt="image-20250320200139754"></p>
+<h2 id="作业"><a href="#作业" class="headerlink" title="作业"></a>作业</h2><h3 id="1、何为正则化？其功能是什么？如何理解L1和L2正则化？"><a href="#1、何为正则化？其功能是什么？如何理解L1和L2正则化？" class="headerlink" title="1、何为正则化？其功能是什么？如何理解L1和L2正则化？"></a>1、何为正则化？其功能是什么？如何理解L1和L2正则化？</h3><p><img src="/2025/03/20/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/IMG_20250320_170100.jpg" alt="IMG_20250320_170100"></p>
+<h3 id="2、什么是偏差与方差？简要说明偏差、方差与过拟合、欠拟合的关系。"><a href="#2、什么是偏差与方差？简要说明偏差、方差与过拟合、欠拟合的关系。" class="headerlink" title="2、什么是偏差与方差？简要说明偏差、方差与过拟合、欠拟合的关系。"></a>2、什么是偏差与方差？简要说明偏差、方差与过拟合、欠拟合的关系。</h3><div class="table-container">
 <table>
-<colgroup>
-<col style="width: 6%">
-<col style="width: 4%">
-<col style="width: 4%">
-<col style="width: 44%">
-<col style="width: 40%">
-</colgroup>
 <thead>
 <tr>
 <th>现象</th>
@@ -353,31 +330,15 @@
 </tr>
 </tbody>
 </table>
-<figure>
-<img src="/2025/03/20/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/IMG_20250320_181442.jpg" alt="IMG_20250320_181442">
-<figcaption aria-hidden="true">IMG_20250320_181442</figcaption>
-</figure>
-<h3 id="公式推导最小二乘法多元线性回归与岭回归逻辑回归极大似然法">3、公式推导：最小二乘法、多元线性回归与岭回归、逻辑回归（极大似然法）</h3>
-<figure>
-<img src="/2025/03/20/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/IMG_20250321_163937.jpg" alt="IMG_20250321_163937">
-<figcaption aria-hidden="true">IMG_20250321_163937</figcaption>
-</figure>
-<figure>
-<img src="/2025/03/20/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/IMG_20250321_163941.jpg" alt="IMG_20250321_163941">
-<figcaption aria-hidden="true">IMG_20250321_163941</figcaption>
-</figure>
-<figure>
-<img src="/2025/03/20/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/IMG_20250321_163944.jpg" alt="IMG_20250321_163944">
-<figcaption aria-hidden="true">IMG_20250321_163944</figcaption>
-</figure>
-<figure>
-<img src="/2025/03/20/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/IMG_20250321_163948.jpg" alt="IMG_20250321_163948">
-<figcaption aria-hidden="true">IMG_20250321_163948</figcaption>
-</figure>
-<h2 id="参考文献">参考文献</h2>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Z44y147xA/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">“L1和L2正则化”直观理解(之一)，从拉格朗日乘数法角度进行理解_哔哩哔哩_bilibili</a></p>
+</div>
+<p><img src="/2025/03/20/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/IMG_20250320_181442.jpg" alt="IMG_20250320_181442"></p>
+<h3 id="3、公式推导：最小二乘法、多元线性回归与岭回归、逻辑回归（极大似然法）"><a href="#3、公式推导：最小二乘法、多元线性回归与岭回归、逻辑回归（极大似然法）" class="headerlink" title="3、公式推导：最小二乘法、多元线性回归与岭回归、逻辑回归（极大似然法）"></a>3、公式推导：最小二乘法、多元线性回归与岭回归、逻辑回归（极大似然法）</h3><p><img src="/2025/03/20/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/IMG_20250321_163937.jpg" alt="IMG_20250321_163937"></p>
+<p><img src="/2025/03/20/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/IMG_20250321_163941.jpg" alt="IMG_20250321_163941"></p>
+<p><img src="/2025/03/20/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/IMG_20250321_163944.jpg" alt="IMG_20250321_163944"></p>
+<p><img src="/2025/03/20/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/IMG_20250321_163948.jpg" alt="IMG_20250321_163948"></p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Z44y147xA/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">“L1和L2正则化”直观理解(之一)，从拉格朗日乘数法角度进行理解_哔哩哔哩_bilibili</a></p>
 <p>超级棒的公式证明，对我帮助很大</p>
-<p>https://www.bilibili.com/video/BV1Mh411e7VU?vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11&amp;p=3&amp;spm_id_from=333.788.videopod.episodes</p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Mh411e7VU?vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11&amp;p=3&amp;spm_id_from=333.788.videopod.episodes">https://www.bilibili.com/video/BV1Mh411e7VU?vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11&amp;p=3&amp;spm_id_from=333.788.videopod.episodes</a></p>
 
     </div>
 

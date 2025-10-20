@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="为什么用redis Redis通过 RedisSessionManager 类来管理用户会话，存储结构如下： 1234567session:&#123;user_id&#125; -&gt; &#123;  &quot;session_id&quot;: &quot;会话ID&quot;,  &quot;status&quot;: &quot;idle|running|interrupted|">
+    <meta name="description" content="为什么用redisRedis通过 RedisSessionManager 类来管理用户会话，存储结构如下： 1234567session:&#123;user_id&#125; -&gt; &#123;  &quot;session_id&quot;: &quot;会话ID&quot;,  &quot;status&quot;: &quot;idle|running|interrupted|com">
 <meta property="og:type" content="article">
 <meta property="og:title" content="redis存储状态">
 <meta property="og:url" content="http://example.com/2025/08/06/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/redis%E5%AD%98%E5%82%A8%E7%8A%B6%E6%80%81/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="为什么用redis Redis通过 RedisSessionManager 类来管理用户会话，存储结构如下： 1234567session:&#123;user_id&#125; -&gt; &#123;  &quot;session_id&quot;: &quot;会话ID&quot;,  &quot;status&quot;: &quot;idle|running|interrupted|">
+<meta property="og:description" content="为什么用redisRedis通过 RedisSessionManager 类来管理用户会话，存储结构如下： 1234567session:&#123;user_id&#125; -&gt; &#123;  &quot;session_id&quot;: &quot;会话ID&quot;,  &quot;status&quot;: &quot;idle|running|interrupted|com">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2025/08/06/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/redis%E5%AD%98%E5%82%A8%E7%8A%B6%E6%80%81/image-20250809232853613.png">
 <meta property="og:image" content="http://example.com/2025/08/06/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/redis%E5%AD%98%E5%82%A8%E7%8A%B6%E6%80%81/image-20250806164348663.png">
@@ -164,13 +164,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">156</span>
+          <span class="site-state-item-count">155</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">61</span>
+        <span class="site-state-item-count">60</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -289,57 +289,35 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h3 id="为什么用redis">为什么用redis</h3>
-<p>Redis通过 RedisSessionManager 类来管理用户会话，存储结构如下：</p>
+    <div class="post-body" itemprop="articleBody"><h3 id="为什么用redis"><a href="#为什么用redis" class="headerlink" title="为什么用redis"></a>为什么用redis</h3><p>Redis通过 RedisSessionManager 类来管理用户会话，存储结构如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">session:&#123;user_id&#125; -&gt; &#123;</span><br><span class="line">  &quot;session_id&quot;: &quot;会话ID&quot;,</span><br><span class="line">  &quot;status&quot;: &quot;idle|running|interrupted|completed|error&quot;,</span><br><span class="line">  &quot;last_response&quot;: &quot;上次智能体响应&quot;,</span><br><span class="line">  &quot;last_query&quot;: &quot;用户上次查询&quot;,</span><br><span class="line">  &quot;last_updated&quot;: &quot;最后更新时间戳&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure>
-<img src="/2025/08/06/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/redis%E5%AD%98%E5%82%A8%E7%8A%B6%E6%80%81/image-20250809232853613.png" alt="image-20250809232853613">
-<figcaption aria-hidden="true">image-20250809232853613</figcaption>
-</figure>
+<p><img src="/2025/08/06/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/redis%E5%AD%98%E5%82%A8%E7%8A%B6%E6%80%81/image-20250809232853613.png" alt="image-20250809232853613"></p>
 <p>主要功能</p>
 <ul>
 <li>会话创建与维护 ：为每个用户创建唯一会话，支持会话超时自动清理</li>
-<li>状态跟踪
-：实时跟踪智能体执行状态（空闲、运行中、中断、完成、错误）</li>
-<li>中断恢复支持
-：当智能体需要人工干预时，Redis保存中断状态，支持后续恢复执行</li>
+<li>状态跟踪 ：实时跟踪智能体执行状态（空闲、运行中、中断、完成、错误）</li>
+<li>中断恢复支持 ：当智能体需要人工干预时，Redis保存中断状态，支持后续恢复执行</li>
 <li>用户管理 ：统计活跃用户数量，管理多用户并发访问</li>
 </ul>
 <p>与PostgreSQL的分工</p>
 <ul>
 <li>Redis ：负责临时会话状态和实时数据（快速读写）</li>
-<li>PostgreSQL
-：负责智能体的长期记忆存储（通过LangGraph的checkpointer）</li>
+<li>PostgreSQL ：负责智能体的长期记忆存储（通过LangGraph的checkpointer）</li>
 </ul>
 <blockquote>
 <p>为什么不使用pgsql完成对状态的存储</p>
-<p>频繁读写
-：会话状态需要频繁更新（每次请求都要更新状态），PostgreSQL的磁盘I/O比Redis内存操作慢很多4</p>
+<p>频繁读写 ：会话状态需要频繁更新（每次请求都要更新状态），PostgreSQL的磁盘I/O比Redis内存操作慢很多4</p>
 <p>短期记忆（PostgreSQL + LangGraph Checkpointer）</p>
 <p>临时状态记忆（Redis）</p>
 </blockquote>
-<h3 id="redis实现状态存储业务逻辑总览图">redis实现状态存储业务逻辑总览图</h3>
-<figure>
-<img src="/2025/08/06/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/redis%E5%AD%98%E5%82%A8%E7%8A%B6%E6%80%81/image-20250806164348663.png" alt="image-20250806164348663">
-<figcaption aria-hidden="true">image-20250806164348663</figcaption>
-</figure>
+<h3 id="redis实现状态存储业务逻辑总览图"><a href="#redis实现状态存储业务逻辑总览图" class="headerlink" title="redis实现状态存储业务逻辑总览图"></a>redis实现状态存储业务逻辑总览图</h3><p><img src="/2025/08/06/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/redis%E5%AD%98%E5%82%A8%E7%8A%B6%E6%80%81/image-20250806164348663.png" alt="image-20250806164348663"></p>
 <p>使用redis的根本逻辑：存储对话的状态，当出现由工具调用或者客户端崩溃导致的中断时，可以存储状态在redis，在开始对话时，通过session_id获取redis的状态，并根据状态判断是要恢复中断还是正常对话</p>
-<p>存储的redis（调用invoke_agent接口）：开始（创建）对话时要根据会话user_id获取或创建redis；再调用agent后，根据响应是否存在<strong>status</strong>字段是否是”<strong>interrupt</strong>”，判断是否有终端，最后更新redis状态</p>
+<p>存储的redis（调用invoke<em>agent接口）：开始（创建）对话时要根据会话user<em>id获取或创建redis；再调用agent后，根据响应是否存在<strong>status</strong>字段是否是”__interrupt</em></em>“，判断是否有终端，最后更新redis状态</p>
 <p>恢复的redis（调用resume_agent接口）：获取redis状态，并根据请求的恢复内容，使用Command命令恢复agent，最后更新redis</p>
-<figure>
-<img src="/2025/08/06/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/redis%E5%AD%98%E5%82%A8%E7%8A%B6%E6%80%81/image-20250809233037563.png" alt="image-20250809233037563">
-<figcaption aria-hidden="true">image-20250809233037563</figcaption>
-</figure>
-<h3 id="redis类">redis类</h3>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># 初始化异步 Redis 连接和会话配置</span><br><span class="line">def __init__(self, redis_host, redis_port, redis_db, session_timeout):</span><br><span class="line">    self.redis_client = redis.Redis(</span><br><span class="line">        host=redis_host,</span><br><span class="line">        port=redis_port,</span><br><span class="line">        db=redis_db,</span><br><span class="line">        decode_responses=True</span><br><span class="line">    )</span><br><span class="line">    self.session_timeout = session_timeout  # 会话过期时间（秒）</span><br><span class="line"></span><br><span class="line"># 关闭 Redis 连接</span><br><span class="line">async def close(self):</span><br><span class="line">    await self.redis_client.close()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><img src="/2025/08/06/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/redis%E5%AD%98%E5%82%A8%E7%8A%B6%E6%80%81/image-20250809233037563.png" alt="image-20250809233037563"></p>
+<h3 id="redis类"><a href="#redis类" class="headerlink" title="redis类"></a>redis类</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># 初始化异步 Redis 连接和会话配置</span><br><span class="line">def __init__(self, redis_host, redis_port, redis_db, session_timeout):</span><br><span class="line">    self.redis_client = redis.Redis(</span><br><span class="line">        host=redis_host,</span><br><span class="line">        port=redis_port,</span><br><span class="line">        db=redis_db,</span><br><span class="line">        decode_responses=True</span><br><span class="line">    )</span><br><span class="line">    self.session_timeout = session_timeout  # 会话过期时间（秒）</span><br><span class="line"></span><br><span class="line"># 关闭 Redis 连接</span><br><span class="line">async def close(self):</span><br><span class="line">    await self.redis_client.close()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<div class="table-container">
 <table>
-<colgroup>
-<col style="width: 8%">
-<col style="width: 16%">
-<col style="width: 27%">
-<col style="width: 19%">
-<col style="width: 27%">
-</colgroup>
 <thead>
 <tr>
 <th>方法名</th>
@@ -353,8 +331,7 @@
 <tr>
 <td><code>__init__</code></td>
 <td>建立与 Redis 的异步连接并设置会话超时</td>
-<td><code>redis_host</code>, <code>redis_port</code>,
-<code>redis_db</code>, <code>session_timeout</code></td>
+<td><code>redis_host</code>, <code>redis_port</code>, <code>redis_db</code>, <code>session_timeout</code></td>
 <td>-</td>
 <td><code>decode_responses=True</code> 使 Redis 返回字符串而非字节</td>
 </tr>
@@ -368,29 +345,22 @@
 <tr>
 <td><code>create_session</code></td>
 <td>为指定用户新建（或覆盖）会话记录</td>
-<td><code>user_id</code>, 可选 <code>session_id</code>,
-<code>status</code>, <code>last_query</code>,
-<code>last_response</code>, <code>last_updated</code></td>
+<td><code>user_id</code>, 可选 <code>session_id</code>, <code>status</code>, <code>last_query</code>, <code>last_response</code>, <code>last_updated</code></td>
 <td><code>str</code>：生成的 <code>session_id</code></td>
-<td>会话键格式：<code>session:&#123;user_id&#125;</code>；过期时间为
-<code>session_timeout</code></td>
+<td>会话键格式：<code>session:&#123;user_id&#125;</code>；过期时间为 <code>session_timeout</code></td>
 </tr>
 <tr>
 <td><code>get_session</code></td>
 <td>读取指定用户的完整会话字典</td>
 <td><code>user_id</code></td>
 <td><code>dict</code> 或 <code>None</code></td>
-<td>自动将 JSON 里的 <code>last_response</code> 反序列化为
-<code>AgentResponse</code> 对象</td>
+<td>自动将 JSON 里的 <code>last_response</code> 反序列化为 <code>AgentResponse</code> 对象</td>
 </tr>
 <tr>
 <td><code>update_session</code></td>
 <td>增量更新已有会话的字段</td>
-<td><code>user_id</code>, 可选 <code>status</code>,
-<code>last_query</code>, <code>last_response</code>,
-<code>last_updated</code></td>
-<td><code>bool</code>：<code>True</code> 更新成功，<code>False</code>
-用户不存在</td>
+<td><code>user_id</code>, 可选 <code>status</code>, <code>last_query</code>, <code>last_response</code>, <code>last_updated</code></td>
+<td><code>bool</code>：<code>True</code> 更新成功，<code>False</code> 用户不存在</td>
 <td>更新后刷新过期时间</td>
 </tr>
 <tr>
@@ -423,11 +393,9 @@
 </tr>
 </tbody>
 </table>
-<h3 id="安装redis">安装redis</h3>
-<h4 id="linux系统">linux系统</h4>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install -y redis-server</span><br><span class="line"># 启动 Redis 服务</span><br><span class="line">sudo service redis-server start</span><br><span class="line"># 检查 Redis 服务状态</span><br><span class="line">sudo service redis-server status</span><br></pre></td></tr></table></figure>
-<h4 id="docker">docker</h4>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"># Docker Compose 配置文件，用于启动 Redis 服务</span><br><span class="line"># 该配置为 FastAPI 应用提供 Redis 后端，支持分布式会话管理</span><br><span class="line">version: &#x27;3.8&#x27;</span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">  redis:</span><br><span class="line">    # 使用官方 Redis 镜像</span><br><span class="line">    image: redis:latest</span><br><span class="line">    # 服务名称</span><br><span class="line">    container_name: redis</span><br><span class="line">    # 映射 Redis 默认端口到主机</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;6379:6379&quot;</span><br><span class="line">    # 持久化存储配置（可选）</span><br><span class="line">    volumes:</span><br><span class="line">      - redis-data:/data</span><br><span class="line">    # 确保容器在重启时自动启动</span><br><span class="line">    restart: unless-stopped</span><br><span class="line">    # 健康检查：验证 Redis 服务是否正常运行</span><br><span class="line">    healthcheck:</span><br><span class="line">      test: [&quot;CMD&quot;, &quot;redis-cli&quot;, &quot;ping&quot;]</span><br><span class="line">      interval: 30s</span><br><span class="line">      timeout: 10s</span><br><span class="line">      retries: 3</span><br><span class="line">      start_period: 10s</span><br><span class="line">    # 网络配置</span><br><span class="line">    networks:</span><br><span class="line">      - app-network</span><br><span class="line"></span><br><span class="line"># 定义持久化存储卷</span><br><span class="line">volumes:</span><br><span class="line">  redis-data:</span><br><span class="line">    name: redis-data</span><br><span class="line"></span><br><span class="line"># 定义网络</span><br><span class="line">networks:</span><br><span class="line">  app-network:</span><br><span class="line">    driver: bridge</span><br></pre></td></tr></table></figure>
+</div>
+<h3 id="安装redis"><a href="#安装redis" class="headerlink" title="安装redis"></a>安装redis</h3><h4 id="linux系统"><a href="#linux系统" class="headerlink" title="linux系统"></a>linux系统</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install -y redis-server</span><br><span class="line"># 启动 Redis 服务</span><br><span class="line">sudo service redis-server start</span><br><span class="line"># 检查 Redis 服务状态</span><br><span class="line">sudo service redis-server status</span><br></pre></td></tr></table></figure>
+<h4 id="docker"><a href="#docker" class="headerlink" title="docker"></a>docker</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"># Docker Compose 配置文件，用于启动 Redis 服务</span><br><span class="line"># 该配置为 FastAPI 应用提供 Redis 后端，支持分布式会话管理</span><br><span class="line">version: &#x27;3.8&#x27;</span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line">  redis:</span><br><span class="line">    # 使用官方 Redis 镜像</span><br><span class="line">    image: redis:latest</span><br><span class="line">    # 服务名称</span><br><span class="line">    container_name: redis</span><br><span class="line">    # 映射 Redis 默认端口到主机</span><br><span class="line">    ports:</span><br><span class="line">      - &quot;6379:6379&quot;</span><br><span class="line">    # 持久化存储配置（可选）</span><br><span class="line">    volumes:</span><br><span class="line">      - redis-data:/data</span><br><span class="line">    # 确保容器在重启时自动启动</span><br><span class="line">    restart: unless-stopped</span><br><span class="line">    # 健康检查：验证 Redis 服务是否正常运行</span><br><span class="line">    healthcheck:</span><br><span class="line">      test: [&quot;CMD&quot;, &quot;redis-cli&quot;, &quot;ping&quot;]</span><br><span class="line">      interval: 30s</span><br><span class="line">      timeout: 10s</span><br><span class="line">      retries: 3</span><br><span class="line">      start_period: 10s</span><br><span class="line">    # 网络配置</span><br><span class="line">    networks:</span><br><span class="line">      - app-network</span><br><span class="line"></span><br><span class="line"># 定义持久化存储卷</span><br><span class="line">volumes:</span><br><span class="line">  redis-data:</span><br><span class="line">    name: redis-data</span><br><span class="line"></span><br><span class="line"># 定义网络</span><br><span class="line">networks:</span><br><span class="line">  app-network:</span><br><span class="line">    driver: bridge</span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d  --name redis -p 6379:6379  -v redis-data:/data redis:latest</span><br></pre></td></tr></table></figure>
 
     </div>

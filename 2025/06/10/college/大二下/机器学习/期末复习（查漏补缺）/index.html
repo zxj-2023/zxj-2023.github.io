@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="高斯核（RBF核）中 σ² 的作用及其对模型的影响 高斯核（RBF核）的形式为： $$ K(x, x&#39;) &#x3D; \exp\left(-\frac{\|x - x&#39;\|^2}{2\sigma^2}\right) $$ 其中 $ |x - x’| $ 是两个样本点之间的欧氏距离，$ ^2 $ 是高斯核的方差参数，控制核函数的“宽度”或“局部性”。 1. σ² 的几何意义：核函数的“影响范围”">
+    <meta name="description" content="高斯核（RBF核）中 σ² 的作用及其对模型的影响高斯核（RBF核）的形式为：  K(x, x&#39;) &#x3D; \exp\left(-\frac{\|x - x&#39;\|^2}{2\sigma^2}\right)其中 $ |x - x’| $ 是两个样本点之间的欧氏距离，$ \sigma^2 $ 是高斯核的方差参数，控制核函数的“宽度”或“局部性”。 1. σ² 的几何意义：核函数的“影响范围”  σ² 较小">
 <meta property="og:type" content="article">
 <meta property="og:title" content="机器学习——期末复习（查漏补缺）">
 <meta property="og:url" content="http://example.com/2025/06/10/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0%EF%BC%88%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA%EF%BC%89/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="高斯核（RBF核）中 σ² 的作用及其对模型的影响 高斯核（RBF核）的形式为： $$ K(x, x&#39;) &#x3D; \exp\left(-\frac{\|x - x&#39;\|^2}{2\sigma^2}\right) $$ 其中 $ |x - x’| $ 是两个样本点之间的欧氏距离，$ ^2 $ 是高斯核的方差参数，控制核函数的“宽度”或“局部性”。 1. σ² 的几何意义：核函数的“影响范围”">
+<meta property="og:description" content="高斯核（RBF核）中 σ² 的作用及其对模型的影响高斯核（RBF核）的形式为：  K(x, x&#39;) &#x3D; \exp\left(-\frac{\|x - x&#39;\|^2}{2\sigma^2}\right)其中 $ |x - x’| $ 是两个样本点之间的欧氏距离，$ \sigma^2 $ 是高斯核的方差参数，控制核函数的“宽度”或“局部性”。 1. σ² 的几何意义：核函数的“影响范围”  σ² 较小">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-06-09T16:00:00.000Z">
 <meta property="article:modified_time" content="2025-06-15T23:35:42.000Z">
@@ -144,8 +144,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AB%98%E6%96%AF%E6%A0%B8rbf%E6%A0%B8%E4%B8%AD-%CF%83%C2%B2-%E7%9A%84%E4%BD%9C%E7%94%A8%E5%8F%8A%E5%85%B6%E5%AF%B9%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="nav-number">1.</span> <span class="nav-text">高斯核（RBF核）中 σ²
-的作用及其对模型的影响</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E9%AB%98%E6%96%AF%E6%A0%B8%E4%B9%8B%E5%89%8D%E8%A6%81%E5%BD%92%E4%B8%80%E5%8C%96"><span class="nav-number">2.</span> <span class="nav-text">为什么使用高斯核之前要归一化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#svm%E7%9A%84hinge%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">SVM的Hinge损失函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%A0%91%E7%9A%84%E6%95%B0%E9%87%8F%E5%A2%9E%E5%8A%A0%E4%B8%8D%E4%BC%9A%E5%AF%BC%E8%87%B4%E8%BF%87%E6%8B%9F%E5%90%88"><span class="nav-number">4.</span> <span class="nav-text">为什么树的数量增加不会导致过拟合？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AC%A7%E5%BC%8F%E8%B7%9D%E7%A6%BB%E7%9A%84%E7%89%B9%E6%80%A7%E5%88%86%E6%9E%90"><span class="nav-number">5.</span> <span class="nav-text">欧式距离的特性分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E5%88%97%E5%93%AA%E4%B8%AA%E4%B8%8D%E5%B1%9E%E4%BA%8E%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96"><span class="nav-number">6.</span> <span class="nav-text">下列哪个不属于特征提取</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%AB%98%E6%96%AF%E6%A0%B8%EF%BC%88RBF%E6%A0%B8%EF%BC%89%E4%B8%AD-%CF%83%C2%B2-%E7%9A%84%E4%BD%9C%E7%94%A8%E5%8F%8A%E5%85%B6%E5%AF%B9%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="nav-number">1.</span> <span class="nav-text">高斯核（RBF核）中 σ² 的作用及其对模型的影响</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E9%AB%98%E6%96%AF%E6%A0%B8%E4%B9%8B%E5%89%8D%E8%A6%81%E5%BD%92%E4%B8%80%E5%8C%96"><span class="nav-number">2.</span> <span class="nav-text">为什么使用高斯核之前要归一化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SVM%E7%9A%84Hinge%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">SVM的Hinge损失函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%A0%91%E7%9A%84%E6%95%B0%E9%87%8F%E5%A2%9E%E5%8A%A0%E4%B8%8D%E4%BC%9A%E5%AF%BC%E8%87%B4%E8%BF%87%E6%8B%9F%E5%90%88%EF%BC%9F"><span class="nav-number">4.</span> <span class="nav-text">为什么树的数量增加不会导致过拟合？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AC%A7%E5%BC%8F%E8%B7%9D%E7%A6%BB%E7%9A%84%E7%89%B9%E6%80%A7%E5%88%86%E6%9E%90"><span class="nav-number">5.</span> <span class="nav-text">欧式距离的特性分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E5%88%97%E5%93%AA%E4%B8%AA%E4%B8%8D%E5%B1%9E%E4%BA%8E%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96"><span class="nav-number">6.</span> <span class="nav-text">下列哪个不属于特征提取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ridge%E5%9B%9E%E5%BD%92%E5%92%8Classo%E5%9B%9E%E5%BD%92"><span class="nav-number">7.</span> <span class="nav-text">ridge回归和lasso回归</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -160,13 +159,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">156</span>
+          <span class="site-state-item-count">155</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">61</span>
+        <span class="site-state-item-count">60</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -289,57 +288,40 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h3 id="高斯核rbf核中-σ²-的作用及其对模型的影响">高斯核（RBF核）中 σ²
-的作用及其对模型的影响</h3>
-<p>高斯核（RBF核）的形式为： <span class="math display">$$
-K(x, x') = \exp\left(-\frac{\|x - x'\|^2}{2\sigma^2}\right)
-$$</span> 其中 $ |x - x’| $ 是两个样本点之间的欧氏距离，$ ^2 $
-是高斯核的方差参数，控制核函数的“宽度”或“局部性”。</p>
+    <div class="post-body" itemprop="articleBody"><h3 id="高斯核（RBF核）中-σ²-的作用及其对模型的影响"><a href="#高斯核（RBF核）中-σ²-的作用及其对模型的影响" class="headerlink" title="高斯核（RBF核）中 σ² 的作用及其对模型的影响"></a>高斯核（RBF核）中 σ² 的作用及其对模型的影响</h3><p>高斯核（RBF核）的形式为：</p>
+<script type="math/tex; mode=display">
+K(x, x') = \exp\left(-\frac{\|x - x'\|^2}{2\sigma^2}\right)</script><p>其中 $ |x - x’| $ 是两个样本点之间的欧氏距离，$ \sigma^2 $ 是高斯核的方差参数，控制核函数的“宽度”或“局部性”。</p>
 <p><strong>1. σ² 的几何意义：核函数的“影响范围”</strong></p>
 <ul>
-<li><p><strong>σ² 较小时</strong>：<br>
-分母较小，指数项中的 $ $ 会更大，导致指数函数值快速衰减。<br>
-<strong>结果</strong>：只有当 $ x $ 和 $ x’ $
-非常接近时，核函数值才接近1；稍远一点的距离会导致核函数值迅速趋近于0。<br>
-<strong>直观理解</strong>：模型只关注局部区域内的样本点，决策边界会围绕每个样本点“弯曲”，形成复杂的非线性形状。</p></li>
-<li><p><strong>σ² 较大时</strong>：<br>
-分母较大，指数项中的 $ $ 会更小，指数函数值衰减缓慢。<br>
-<strong>结果</strong>：即使 $ x $ 和 $ x’ $
-相距较远，核函数值仍可能较大。<br>
-<strong>直观理解</strong>：模型会考虑更大范围的样本点，决策边界更平滑，接近线性分隔。</p></li>
+<li><p><strong>σ² 较小时</strong>：<br>分母较小，指数项中的 $ \frac{|x - x’|^2}{2\sigma^2} $ 会更大，导致指数函数值快速衰减。<br><strong>结果</strong>：只有当 $ x $ 和 $ x’ $ 非常接近时，核函数值才接近1；稍远一点的距离会导致核函数值迅速趋近于0。<br><strong>直观理解</strong>：模型只关注局部区域内的样本点，决策边界会围绕每个样本点“弯曲”，形成复杂的非线性形状。</p>
+</li>
+<li><p><strong>σ² 较大时</strong>：<br>分母较大，指数项中的 $ \frac{|x - x’|^2}{2\sigma^2} $ 会更小，指数函数值衰减缓慢。<br><strong>结果</strong>：即使 $ x $ 和 $ x’ $ 相距较远，核函数值仍可能较大。<br><strong>直观理解</strong>：模型会考虑更大范围的样本点，决策边界更平滑，接近线性分隔。</p>
+</li>
 </ul>
 <p><strong>2. σ² 如何影响模型的复杂度</strong></p>
 <ul>
-<li><strong>σ² 小 → 局部敏感，高复杂度</strong>：
+<li><p><strong>σ² 小 → 局部敏感，高复杂度</strong>：  </p>
 <ul>
-<li>每个样本点的影响范围有限，模型需要“记住”每个局部区域的细节。<br>
-</li>
-<li>决策边界会围绕每个样本点剧烈弯曲，甚至形成孤立的环形区域（如图1）。<br>
-</li>
+<li>每个样本点的影响范围有限，模型需要“记住”每个局部区域的细节。  </li>
+<li>决策边界会围绕每个样本点剧烈弯曲，甚至形成孤立的环形区域（如图1）。  </li>
 <li>容易过拟合：模型过度适应训练数据的噪声和细节。</li>
-</ul></li>
-<li><strong>σ² 大 → 全局平滑，低复杂度</strong>：
+</ul>
+</li>
+<li><p><strong>σ² 大 → 全局平滑，低复杂度</strong>：  </p>
 <ul>
-<li>样本点的影响范围扩大，模型倾向于用简单的全局模式区分数据。<br>
-</li>
-<li>决策边界接近线性（如图2），可能无法捕捉数据中的非线性结构。<br>
-</li>
+<li>样本点的影响范围扩大，模型倾向于用简单的全局模式区分数据。  </li>
+<li>决策边界接近线性（如图2），可能无法捕捉数据中的非线性结构。  </li>
 <li>容易欠拟合：模型无法拟合数据中的局部特征。</li>
-</ul></li>
+</ul>
+</li>
 </ul>
 <p><strong>3. 数学与直观示例</strong></p>
-<p>假设两个样本点 $ x_1 $ 和 $ x_2 $ 距离为 $ d $，核函数值 $ K(x_1,
-x_2) $ 随 $ ^2 $ 的变化如下：</p>
+<p>假设两个样本点 $ x_1 $ 和 $ x_2 $ 距离为 $ d $，核函数值 $ K(x_1, x_2) $ 随 $ \sigma^2 $ 的变化如下：</p>
+<div class="table-container">
 <table>
-<colgroup>
-<col style="width: 13%">
-<col style="width: 22%">
-<col style="width: 31%">
-<col style="width: 32%">
-</colgroup>
 <thead>
 <tr>
-<th>$ ^2 $</th>
+<th>$ \sigma^2 $</th>
 <th>$ d = 1 $</th>
 <th>$ d = 2 $</th>
 <th>$ d = 3 $</th>
@@ -347,169 +329,153 @@ x_2) $ 随 $ ^2 $ 的变化如下：</p>
 </thead>
 <tbody>
 <tr>
-<td>$ ^2 = 0.1 $</td>
-<td>$ (-5) $</td>
-<td>$ (-20) ^{-9} $</td>
-<td>$ (-45) ^{-20} $</td>
+<td>$ \sigma^2 = 0.1 $</td>
+<td>$ \exp(-5) \approx 0.0067 $</td>
+<td>$ \exp(-20) \approx 2.06 \times 10^{-9} $</td>
+<td>$ \exp(-45) \approx 2.87 \times 10^{-20} $</td>
 </tr>
 <tr>
-<td>$ ^2 = 1 $</td>
-<td>$ (-0.5) $</td>
-<td>$ (-2) $</td>
-<td>$ (-4.5) $</td>
+<td>$ \sigma^2 = 1 $</td>
+<td>$ \exp(-0.5) \approx 0.6065 $</td>
+<td>$ \exp(-2) \approx 0.1353 $</td>
+<td>$ \exp(-4.5) \approx 0.0111 $</td>
 </tr>
 <tr>
-<td>$ ^2 = 10 $</td>
-<td>$ (-0.05) $</td>
-<td>$ (-0.2) $</td>
-<td>$ (-0.45) $</td>
+<td>$ \sigma^2 = 10 $</td>
+<td>$ \exp(-0.05) \approx 0.9512 $</td>
+<td>$ \exp(-0.2) \approx 0.8187 $</td>
+<td>$ \exp(-0.45) \approx 0.6376 $</td>
 </tr>
 </tbody>
 </table>
+</div>
 <ul>
-<li><strong>σ² 小（如
-0.1）</strong>：距离稍大的样本点之间几乎无关联，模型仅依赖极邻近的点做决策。<br>
-</li>
-<li><strong>σ² 大（如
-10）</strong>：即使距离较远的样本点仍有显著关联，模型决策边界更平滑。</li>
+<li><strong>σ² 小（如 0.1）</strong>：距离稍大的样本点之间几乎无关联，模型仅依赖极邻近的点做决策。  </li>
+<li><strong>σ² 大（如 10）</strong>：即使距离较远的样本点仍有显著关联，模型决策边界更平滑。</li>
 </ul>
-<h3 id="为什么使用高斯核之前要归一化">为什么使用高斯核之前要归一化</h3>
-<p>在使用高斯核（RBF核）之前对数据进行归一化，是机器学习中至关重要的预处理步骤。其核心原因是<strong>高斯核对特征的尺度（scale）极度敏感</strong>，而归一化能消除特征间尺度差异带来的负面影响。以下是详细解释：</p>
-<ol type="1">
+<h3 id="为什么使用高斯核之前要归一化"><a href="#为什么使用高斯核之前要归一化" class="headerlink" title="为什么使用高斯核之前要归一化"></a>为什么使用高斯核之前要归一化</h3><p>在使用高斯核（RBF核）之前对数据进行归一化，是机器学习中至关重要的预处理步骤。其核心原因是<strong>高斯核对特征的尺度（scale）极度敏感</strong>，而归一化能消除特征间尺度差异带来的负面影响。以下是详细解释：</p>
+<ol>
 <li><strong>高斯核的本质依赖距离计算</strong></li>
 </ol>
-<p>高斯核的公式为： <span class="math display">$$
-K(x, x') = \exp\left(-\frac{\|x - x'\|^2}{2\sigma^2}\right)
-$$</span> 其中 <span class="math inline">∥<em>x</em> − <em>x</em><sup>′</sup>∥</span>
-是两个样本点之间的欧氏距离。<br>
-<strong>问题</strong>：欧氏距离的计算受特征尺度影响极大。例如： -
-假设特征A的取值范围是 [0,1]，特征B的取值范围是 [0,1000]。 -
-此时特征B的差异会主导距离计算（如 $ (0.5)^2 + (500)^2
-$），特征A的贡献几乎被忽略。</p>
+<p>高斯核的公式为：</p>
+<script type="math/tex; mode=display">
+K(x, x') = \exp\left(-\frac{\|x - x'\|^2}{2\sigma^2}\right)</script><p>其中 $|x - x’|$ 是两个样本点之间的欧氏距离。<br><strong>问题</strong>：欧氏距离的计算受特征尺度影响极大。例如：</p>
+<ul>
+<li>假设特征A的取值范围是 [0,1]，特征B的取值范围是 [0,1000]。</li>
+<li>此时特征B的差异会主导距离计算（如 $ (0.5)^2 + (500)^2 \approx 250000 $），特征A的贡献几乎被忽略。</li>
+</ul>
 <p><strong>结果</strong>：模型决策边界会过度依赖尺度大的特征，导致性能下降。</p>
-<ol start="2" type="1">
+<ol>
 <li><strong>归一化消除特征尺度差异</strong></li>
 </ol>
-<p>归一化（如标准化或最小-最大缩放）将所有特征调整到相似的数值范围（如
-[0,1] 或均值为0、方差为1）。<br>
-<strong>效果</strong>： -
-<strong>公平比较特征</strong>：每个特征对距离的贡献权重均衡。 -
-<strong>防止“大尺度特征主导”</strong>：避免模型因某些特征数值过大而忽略其他重要特征。</p>
-<p><strong>示例</strong>：<br>
-假设两个样本：<br>
-- 未归一化：$ x_1 = [1, 100], x_2 = [2, 200] $，距离为 $ <span class="math inline">。 − <em>归</em><em>一</em><em>化</em><em>后</em>（<em>假</em><em>设</em><em>缩</em><em>放</em><em>到</em>[0, 1]）：</span>
-x_1 = [0.1, 0.1], x_2 = [0.2, 0.2] $，距离为 $ $。<br>
-此时两个特征的贡献比例从 1:100 变为 1:1。</p>
-<ol start="3" type="1">
+<p>归一化（如标准化或最小-最大缩放）将所有特征调整到相似的数值范围（如 [0,1] 或均值为0、方差为1）。<br><strong>效果</strong>：</p>
+<ul>
+<li><strong>公平比较特征</strong>：每个特征对距离的贡献权重均衡。</li>
+<li><strong>防止“大尺度特征主导”</strong>：避免模型因某些特征数值过大而忽略其他重要特征。</li>
+</ul>
+<p><strong>示例</strong>：<br>假设两个样本：  </p>
+<ul>
+<li>未归一化：$ x_1 = [1, 100], x_2 = [2, 200] $，距离为 $ \sqrt{(1)^2 + (100)^2} \approx 100.005 $。  </li>
+<li>归一化后（假设缩放到 [0,1]）：$ x_1 = [0.1, 0.1], x_2 = [0.2, 0.2] $，距离为 $ \sqrt{(0.1)^2 + (0.1)^2} \approx 0.141 $。<br>此时两个特征的贡献比例从 1:100 变为 1:1。</li>
+</ul>
+<ol>
 <li><strong>高斯核参数 σ² 的有效性依赖归一化</strong></li>
 </ol>
-<p>高斯核的参数 σ²（或 γ =
-1/σ²）决定了核函数的“局部性”（即模型关注局部还是全局模式）。<br>
-- <strong>未归一化时</strong>：σ²
-的选择必须同时适应不同尺度的特征，导致参数调优困难。 -
-例如：若某特征尺度极大，需要极小的 σ²
-才能捕捉其局部变化，但这可能使其他小尺度特征的核函数失效。 -
-<strong>归一化后</strong>：所有特征尺度一致，σ²
-的调参只需关注数据整体分布，而非单个特征的尺度。</p>
-<h3 id="svm的hinge损失函数">SVM的Hinge损失函数</h3>
-<p>Hinge损失函数是支持向量机（SVM）中用于分类任务的核心损失函数，其核心思想是<strong>最大化分类间隔</strong>，同时惩罚分类错误或置信度不足的样本。以下是详细解析：</p>
+<p>高斯核的参数 σ²（或 γ = 1/σ²）决定了核函数的“局部性”（即模型关注局部还是全局模式）。  </p>
+<ul>
+<li><strong>未归一化时</strong>：σ² 的选择必须同时适应不同尺度的特征，导致参数调优困难。<ul>
+<li>例如：若某特征尺度极大，需要极小的 σ² 才能捕捉其局部变化，但这可能使其他小尺度特征的核函数失效。</li>
+</ul>
+</li>
+<li><strong>归一化后</strong>：所有特征尺度一致，σ² 的调参只需关注数据整体分布，而非单个特征的尺度。</li>
+</ul>
+<h3 id="SVM的Hinge损失函数"><a href="#SVM的Hinge损失函数" class="headerlink" title="SVM的Hinge损失函数"></a>SVM的Hinge损失函数</h3><p>Hinge损失函数是支持向量机（SVM）中用于分类任务的核心损失函数，其核心思想是<strong>最大化分类间隔</strong>，同时惩罚分类错误或置信度不足的样本。以下是详细解析：</p>
 <p><strong>1. 数学定义</strong></p>
-<p>对于二分类问题，假设真实标签 $ y {+1, -1} $，模型输出 $ f(x) = w^T x
-+ b <span class="math inline">，<em>则</em> * *<em>H</em><em>i</em><em>n</em><em>g</em><em>e</em><em>损</em><em>失</em> * *<em>的</em><em>定</em><em>义</em><em>为</em>：</span>$
-(y, f(x)) = (0, 1 - y f(x)) $$ - <strong>关键含义</strong>： - 当 $ y
-f(x) $：样本被正确分类且置信度足够（位于间隔边界外），损失为0。 - 当 $ y
-f(x) &lt; 1 $：样本位于间隔内或被错误分类，损失随 $ y f(x) $
-线性增长。</p>
+<p>对于二分类问题，假设真实标签 $ y \in {+1, -1} $，模型输出 $ f(x) = w^T x + b $，则 <strong>Hinge损失</strong> 的定义为：</p>
+<script type="math/tex; mode=display">
+\mathcal{L}(y, f(x)) = \max(0, 1 - y \cdot f(x))</script><ul>
+<li><strong>关键含义</strong>：<ul>
+<li>当 $ y \cdot f(x) \geq 1 $：样本被正确分类且置信度足够（位于间隔边界外），损失为0。</li>
+<li>当 $ y \cdot f(x) &lt; 1 $：样本位于间隔内或被错误分类，损失随 $ y \cdot f(x) $ 线性增长。</li>
+</ul>
+</li>
+</ul>
 <p><strong>2. 几何意义：最大化间隔</strong></p>
-<p>Hinge损失的设计与SVM的<strong>硬间隔（Hard
-Margin）</strong>和<strong>软间隔（Soft Margin）</strong>目标直接相关：
-- <strong>硬间隔</strong>：要求所有样本严格满足 $ y_i (w^T x_i + b)
-$，即完全线性可分。 -
-<strong>软间隔</strong>：允许部分样本违反间隔约束，通过Hinge损失将约束转化为优化目标：
-<span class="math display">$$
-  \min_{w,b} \left( \frac{1}{2} \|w\|^2 + C \sum_{i=1}^n \max(0, 1 - y_i
-(w^T x_i + b)) \right)
-  $$</span> - <strong>第一项</strong> $ |w|^2 $：最大化间隔（间隔宽度与
-$ |w| $ 成反比）。 - <strong>第二项</strong>
-Hinge损失：惩罚违反间隔约束的样本，$ C $ 控制惩罚强度。</p>
-<h3 id="为什么树的数量增加不会导致过拟合">为什么树的数量增加不会导致过拟合？</h3>
-<p><strong>核心原因</strong>：随机森林通过<strong>集成学习</strong>和<strong>多样性机制</strong>抑制了单棵决策树的过拟合风险。具体来说：</p>
-<ol type="1">
-<li><p><strong>Bagging（自助聚合）机制</strong>：<br>
-每棵树的训练数据是通过有放回采样（Bootstrap）得到的子集，这意味着每棵树看到的数据略有不同，减少了对训练数据的“记忆”依赖。</p></li>
-<li><p><strong>特征随机选择</strong>：<br>
-每次分裂节点时，仅从随机选择的特征子集中挑选最优特征，进一步降低了各树之间的相关性。</p></li>
-<li><p><strong>投票/平均机制</strong>：<br>
-多棵树的预测结果通过投票（分类）或平均（回归）结合，高方差的个体树被平滑，整体模型的泛化能力增强。</p></li>
-<li><p><strong>收敛性保证</strong>：<br>
-随着树的数量增加，模型性能逐渐收敛到一个稳定值。即使继续增加树的数量，也不会显著提升训练集性能，更不会过拟合。</p></li>
+<p>Hinge损失的设计与SVM的<strong>硬间隔（Hard Margin）</strong>和<strong>软间隔（Soft Margin）</strong>目标直接相关：</p>
+<ul>
+<li><strong>硬间隔</strong>：要求所有样本严格满足 $ y_i (w^T x_i + b) \geq 1 $，即完全线性可分。</li>
+<li><strong>软间隔</strong>：允许部分样本违反间隔约束，通过Hinge损失将约束转化为优化目标：<script type="math/tex; mode=display">
+\min_{w,b} \left( \frac{1}{2} \|w\|^2 + C \sum_{i=1}^n \max(0, 1 - y_i (w^T x_i + b)) \right)</script><ul>
+<li><strong>第一项</strong> $ \frac{1}{2} |w|^2 $：最大化间隔（间隔宽度与 $ |w| $ 成反比）。</li>
+<li><strong>第二项</strong> Hinge损失：惩罚违反间隔约束的样本，$ C $ 控制惩罚强度。</li>
+</ul>
+</li>
+</ul>
+<h3 id="为什么树的数量增加不会导致过拟合？"><a href="#为什么树的数量增加不会导致过拟合？" class="headerlink" title="为什么树的数量增加不会导致过拟合？"></a>为什么树的数量增加不会导致过拟合？</h3><p><strong>核心原因</strong>：随机森林通过<strong>集成学习</strong>和<strong>多样性机制</strong>抑制了单棵决策树的过拟合风险。具体来说：</p>
+<ol>
+<li><p><strong>Bagging（自助聚合）机制</strong>：<br>每棵树的训练数据是通过有放回采样（Bootstrap）得到的子集，这意味着每棵树看到的数据略有不同，减少了对训练数据的“记忆”依赖。</p>
+</li>
+<li><p><strong>特征随机选择</strong>：<br>每次分裂节点时，仅从随机选择的特征子集中挑选最优特征，进一步降低了各树之间的相关性。</p>
+</li>
+<li><p><strong>投票/平均机制</strong>：<br>多棵树的预测结果通过投票（分类）或平均（回归）结合，高方差的个体树被平滑，整体模型的泛化能力增强。</p>
+</li>
+<li><p><strong>收敛性保证</strong>：<br>随着树的数量增加，模型性能逐渐收敛到一个稳定值。即使继续增加树的数量，也不会显著提升训练集性能，更不会过拟合。</p>
+</li>
 </ol>
-<h3 id="欧式距离的特性分析">欧式距离的特性分析</h3>
-<p><strong>欧式距离</strong>（Euclidean
-Distance）是衡量欧几里得空间中两点之间直线距离的常用方法，其公式为：
-<span class="math display">$$
-d(x, y) = \sqrt{\sum_{i=1}^n (x_i - y_i)^2}
-$$</span> 以下是对其特性的详细分析：</p>
-<p><strong>A. 旋转不变性</strong></p>
-<p><strong>正确</strong><br>
-- <strong>定义</strong>：若坐标系旋转，两点间的欧式距离保持不变。<br>
-- <strong>原因</strong>：旋转是刚性变换（rigid
-transformation），仅改变点的坐标表示，但不改变几何距离。<br>
-- <strong>示例</strong>：在二维平面中，将坐标系旋转θ角度，两点 <span class="math inline">(<em>x</em><sub>1</sub>, <em>y</em><sub>1</sub>)</span>
-和 <span class="math inline">(<em>x</em><sub>2</sub>, <em>y</em><sub>2</sub>)</span>
-的旋转后坐标分别为： <span class="math display">(<em>x</em><sub>1<sup>′</sup></sub>, <em>y</em><sub>1<sup>′</sup></sub>) = (<em>x</em><sub>1</sub>cos <em>θ</em> − <em>y</em><sub>1</sub>sin <em>θ</em>, <em>x</em><sub>1</sub>sin <em>θ</em> + <em>y</em><sub>1</sub>cos <em>θ</em>)</span>
-<span class="math display">(<em>x</em><sub>2<sup>′</sup></sub>, <em>y</em><sub>2<sup>′</sup></sub>) = (<em>x</em><sub>2</sub>cos <em>θ</em> − <em>y</em><sub>2</sub>sin <em>θ</em>, <em>x</em><sub>2</sub>sin <em>θ</em> + <em>y</em><sub>2</sub>cos <em>θ</em>)</span>
-计算旋转后的距离仍等于原始距离。</p>
-<p><strong>B. 尺度缩放不变性</strong></p>
-<p><strong>错误</strong><br>
--
-<strong>定义</strong>：若对坐标轴进行非均匀或均匀缩放，欧式距离会发生变化。<br>
-- <strong>反例</strong>：假设对某维特征缩放 <span class="math inline"><em>k</em></span> 倍（如将 <span class="math inline"><em>x</em><sub><em>i</em></sub></span> 变为 <span class="math inline"><em>k</em><em>x</em><sub><em>i</em></sub></span>），则距离变为原来的
-<span class="math inline"><em>k</em></span> 倍。<br>
--
-<strong>结论</strong>：欧式距离<strong>依赖于特征的绝对尺度</strong>，不具备缩放不变性。</p>
-<p><strong>C. 不受量纲影响的特性</strong></p>
-<p><strong>错误</strong><br>
--
-<strong>定义</strong>：若不同特征的量纲不同（如身高[m]与体重[kg]），欧式距离的计算会因量纲差异而失真。<br>
-- <strong>反例</strong>：<br>
-- 点A：(1.8m, 70kg)，点B：(1.7m, 65kg)<br>
--
-若不标准化，身高差（0.1m）与体重差（5kg）的贡献会被直接相加，但两者量纲不同，结果无实际意义。<br>
--
-<strong>解决方法</strong>：需通过标准化（如Z-score归一化）消除量纲影响。</p>
-<h3 id="下列哪个不属于特征提取">下列哪个不属于特征提取</h3>
-<p><strong>答案：D. 主成分分析</strong></p>
+<h3 id="欧式距离的特性分析"><a href="#欧式距离的特性分析" class="headerlink" title="欧式距离的特性分析"></a>欧式距离的特性分析</h3><p><strong>欧式距离</strong>（Euclidean Distance）是衡量欧几里得空间中两点之间直线距离的常用方法，其公式为：</p>
+<script type="math/tex; mode=display">
+d(x, y) = \sqrt{\sum_{i=1}^n (x_i - y_i)^2}</script><p>以下是对其特性的详细分析：</p>
+<p><strong>A. 旋转不变性</strong>  </p>
+<p><strong>正确</strong>  </p>
+<ul>
+<li><strong>定义</strong>：若坐标系旋转，两点间的欧式距离保持不变。  </li>
+<li><strong>原因</strong>：旋转是刚性变换（rigid transformation），仅改变点的坐标表示，但不改变几何距离。  </li>
+<li><strong>示例</strong>：在二维平面中，将坐标系旋转θ角度，两点 $(x_1, y_1)$ 和 $(x_2, y_2)$ 的旋转后坐标分别为：<script type="math/tex; mode=display">
+(x_1', y_1') = (x_1\cos\theta - y_1\sin\theta, x_1\sin\theta + y_1\cos\theta)</script><script type="math/tex; mode=display">
+(x_2', y_2') = (x_2\cos\theta - y_2\sin\theta, x_2\sin\theta + y_2\cos\theta)</script>计算旋转后的距离仍等于原始距离。</li>
+</ul>
+<p><strong>B. 尺度缩放不变性</strong>  </p>
+<p><strong>错误</strong>  </p>
+<ul>
+<li><strong>定义</strong>：若对坐标轴进行非均匀或均匀缩放，欧式距离会发生变化。  </li>
+<li><strong>反例</strong>：假设对某维特征缩放 $k$ 倍（如将 $x_i$ 变为 $k x_i$），则距离变为原来的 $k$ 倍。  </li>
+<li><strong>结论</strong>：欧式距离<strong>依赖于特征的绝对尺度</strong>，不具备缩放不变性。</li>
+</ul>
+<p><strong>C. 不受量纲影响的特性</strong>  </p>
+<p><strong>错误</strong>  </p>
+<ul>
+<li><strong>定义</strong>：若不同特征的量纲不同（如身高[m]与体重[kg]），欧式距离的计算会因量纲差异而失真。  </li>
+<li><strong>反例</strong>：  <ul>
+<li>点A：(1.8m, 70kg)，点B：(1.7m, 65kg)  </li>
+<li>若不标准化，身高差（0.1m）与体重差（5kg）的贡献会被直接相加，但两者量纲不同，结果无实际意义。  </li>
+</ul>
+</li>
+<li><strong>解决方法</strong>：需通过标准化（如Z-score归一化）消除量纲影响。</li>
+</ul>
+<h3 id="下列哪个不属于特征提取"><a href="#下列哪个不属于特征提取" class="headerlink" title="下列哪个不属于特征提取"></a>下列哪个不属于特征提取</h3><p><strong>答案：D. 主成分分析</strong></p>
 <p><strong>解析：</strong></p>
 <p>在文本分类的特征选择中，常用的方法包括：</p>
 <ul>
-<li><strong>A.
-卡方检验值</strong>：通过统计检验评估特征与类别的相关性，属于过滤式特征选择方法。</li>
-<li><strong>B.
-互信息</strong>：基于信息论，衡量特征与类别的依赖关系，属于无监督或半监督的特征选择方法。</li>
-<li><strong>C.
-信息增益</strong>：基于熵的指标，评估特征对分类的贡献，常用于决策树等算法中的特征选择。</li>
+<li><strong>A. 卡方检验值</strong>：通过统计检验评估特征与类别的相关性，属于过滤式特征选择方法。</li>
+<li><strong>B. 互信息</strong>：基于信息论，衡量特征与类别的依赖关系，属于无监督或半监督的特征选择方法。</li>
+<li><strong>C. 信息增益</strong>：基于熵的指标，评估特征对分类的贡献，常用于决策树等算法中的特征选择。</li>
 </ul>
-<p>而 <strong>D. 主成分分析（PCA）</strong> 是一种
-<strong>降维技术</strong>，通过线性变换将高维数据映射到低维空间，其核心目标是保留数据的主要方差，而非直接选择原始特征。它属于
-<strong>特征提取</strong>（Feature Extraction）而非传统意义上的
-<strong>特征选择</strong>（Feature
-Selection）。因此，主成分分析不属于常用的文本分类特征选择算法。</p>
-<p>### ridge回归和lasso回归</p>
-<p>Ridge回归（岭回归）和Lasso回归（套索回归）是两种常用的<strong>正则化线性回归方法</strong>，主要用于解决线性回归中的<strong>过拟合问题</strong>和<strong>特征选择问题</strong>。它们的核心思想是在损失函数中添加正则化项（惩罚项），从而限制模型参数的大小，提升模型的泛化能力。</p>
+<p>而 <strong>D. 主成分分析（PCA）</strong> 是一种 <strong>降维技术</strong>，通过线性变换将高维数据映射到低维空间，其核心目标是保留数据的主要方差，而非直接选择原始特征。它属于 <strong>特征提取</strong>（Feature Extraction）而非传统意义上的 <strong>特征选择</strong>（Feature Selection）。因此，主成分分析不属于常用的文本分类特征选择算法。</p>
+<h3 id="ridge回归和lasso回归"><a href="#ridge回归和lasso回归" class="headerlink" title="ridge回归和lasso回归"></a>ridge回归和lasso回归</h3><p>Ridge回归（岭回归）和Lasso回归（套索回归）是两种常用的<strong>正则化线性回归方法</strong>，主要用于解决线性回归中的<strong>过拟合问题</strong>和<strong>特征选择问题</strong>。它们的核心思想是在损失函数中添加正则化项（惩罚项），从而限制模型参数的大小，提升模型的泛化能力。</p>
 <p><strong>1. Ridge回归（岭回归）</strong></p>
-<p><strong>目标函数</strong> <span class="math display">$$
-\min_{\mathbf{w}} \left\{ \sum_{i=1}^n (y_i - \mathbf{w}^T
-\mathbf{x}_i)^2 + \lambda \|\mathbf{w}\|_2^2 \right\}
-$$</span> - 第一项是普通线性回归的均方误差（MSE）。 -
-第二项是L2正则化项（权重平方的和），<span class="math inline"><em>λ</em> ≥ 0</span>
-是正则化系数，控制惩罚强度。</p>
+<p><strong>目标函数</strong></p>
+<script type="math/tex; mode=display">
+\min_{\mathbf{w}} \left\{ \sum_{i=1}^n (y_i - \mathbf{w}^T \mathbf{x}_i)^2 + \lambda \|\mathbf{w}\|_2^2 \right\}</script><ul>
+<li>第一项是普通线性回归的均方误差（MSE）。</li>
+<li>第二项是L2正则化项（权重平方的和），$\lambda \geq 0$ 是正则化系数，控制惩罚强度。</li>
+</ul>
 <p><strong>特点</strong></p>
 <ul>
 <li><strong>L2正则化</strong>：通过缩小权重系数（但不会完全置零）来减少模型复杂度。</li>
 <li><strong>解决多重共线性</strong>：当特征之间存在高度相关性时，Ridge回归能稳定回归系数。</li>
 <li><strong>唯一解</strong>：目标函数是凸函数，且严格凸，因此有唯一最优解。</li>
-<li><strong>计算效率高</strong>：可以通过解析解（闭式解）求解： <span class="math display"><strong>w</strong><sub>Ridge</sub> = (<strong>X</strong><sup><em>T</em></sup><strong>X</strong> + <em>λ</em><strong>I</strong>)<sup>−1</sup><strong>X</strong><sup><em>T</em></sup><strong>y</strong></span></li>
+<li><strong>计算效率高</strong>：可以通过解析解（闭式解）求解：<script type="math/tex; mode=display">
+\mathbf{w}_{\text{Ridge}} = (\mathbf{X}^T \mathbf{X} + \lambda \mathbf{I})^{-1} \mathbf{X}^T \mathbf{y}</script></li>
 </ul>
 <p><strong>应用场景</strong></p>
 <ul>
@@ -517,11 +483,12 @@ $$</span> - 第一项是普通线性回归的均方误差（MSE）。 -
 <li>需要保留所有特征，但希望抑制其影响（如基因数据分析）。</li>
 </ul>
 <p><strong>2. Lasso回归（套索回归）</strong></p>
-<p><strong>目标函数</strong> <span class="math display">$$
-\min_{\mathbf{w}} \left\{ \sum_{i=1}^n (y_i - \mathbf{w}^T
-\mathbf{x}_i)^2 + \lambda \|\mathbf{w}\|_1 \right\}
-$$</span> - 第一项是均方误差。 -
-第二项是L1正则化项（权重绝对值的和），<span class="math inline"><em>λ</em> ≥ 0</span> 是正则化系数。</p>
+<p><strong>目标函数</strong></p>
+<script type="math/tex; mode=display">
+\min_{\mathbf{w}} \left\{ \sum_{i=1}^n (y_i - \mathbf{w}^T \mathbf{x}_i)^2 + \lambda \|\mathbf{w}\|_1 \right\}</script><ul>
+<li>第一项是均方误差。</li>
+<li>第二项是L1正则化项（权重绝对值的和），$\lambda \geq 0$ 是正则化系数。</li>
+</ul>
 <p><strong>特点</strong></p>
 <ul>
 <li><strong>L1正则化</strong>：强制部分权重系数为零，实现特征选择。</li>
@@ -538,13 +505,13 @@ $$</span> - 第一项是均方误差。 -
 <ul>
 <li><strong>Ridge回归</strong>：适合特征较少且需要稳定系数的场景。</li>
 <li><strong>Lasso回归</strong>：适合高维数据和特征选择场景。</li>
-<li><strong>实际选择</strong>：
-<ul>
-<li>如果特征数量远大于样本数量（<span class="math inline"><em>p</em> ≫ <em>n</em></span>），优先使用Lasso。</li>
+<li><strong>实际选择</strong>：<ul>
+<li>如果特征数量远大于样本数量（$p \gg n$），优先使用Lasso。</li>
 <li>如果特征间存在强相关性，优先使用Ridge或弹性网络。</li>
-</ul></li>
 </ul>
-<p>通过调整正则化系数 <span class="math inline"><em>λ</em></span>，可以控制模型的复杂度与泛化能力。</p>
+</li>
+</ul>
+<p>通过调整正则化系数 $\lambda$，可以控制模型的复杂度与泛化能力。</p>
 
     </div>
 
