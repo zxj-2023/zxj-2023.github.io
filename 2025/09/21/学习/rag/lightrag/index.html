@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="算法流程   image-20250924135355928   对文本进行分块后，分别存储在kvstorage与 VectorDB Storage 然后调用大模型进行实体与关系抽取（Extract Entities &amp; Relations） 然后进行实体与关系的存储（Entities Data &#x2F; Relations Data），去重后（Deduplication">
+<meta property="og:type" content="article">
+<meta property="og:title" content="lightrag">
+<meta property="og:url" content="http://example.com/2025/09/21/%E5%AD%A6%E4%B9%A0/rag/lightrag/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="算法流程   image-20250924135355928   对文本进行分块后，分别存储在kvstorage与 VectorDB Storage 然后调用大模型进行实体与关系抽取（Extract Entities &amp; Relations） 然后进行实体与关系的存储（Entities Data &#x2F; Relations Data），去重后（Deduplication">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2025/09/21/%E5%AD%A6%E4%B9%A0/rag/lightrag/image-20250924135355928.png">
+<meta property="og:image" content="http://example.com/2025/09/21/%E5%AD%A6%E4%B9%A0/rag/lightrag/image-20250924135740665.png">
+<meta property="og:image" content="http://example.com/2025/09/21/%E5%AD%A6%E4%B9%A0/rag/lightrag/image-20250924142554264.png">
+<meta property="og:image" content="http://example.com/2025/09/21/%E5%AD%A6%E4%B9%A0/rag/lightrag/image-20250924135917313.png">
+<meta property="og:image" content="http://example.com/2025/09/21/%E5%AD%A6%E4%B9%A0/rag/lightrag/image-20250926162648415.png">
+<meta property="og:image" content="http://example.com/2025/09/21/%E5%AD%A6%E4%B9%A0/rag/lightrag/image-20250926162703167.png">
+<meta property="og:image" content="http://example.com/2025/09/21/%E5%AD%A6%E4%B9%A0/rag/lightrag/image-20250926162714883.png">
+<meta property="article:published_time" content="2025-09-20T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-09-27T05:07:52.116Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="rag">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2025/09/21/%E5%AD%A6%E4%B9%A0/rag/lightrag/image-20250924135355928.png">
+
+
+<link rel="canonical" href="http://example.com/2025/09/21/%E5%AD%A6%E4%B9%A0/rag/lightrag/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/09/21/%E5%AD%A6%E4%B9%A0/rag/lightrag/","path":"2025/09/21/学习/rag/lightrag/","title":"lightrag"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>lightrag | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E6%B5%81%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">算法流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lightrag-%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%92%8C-webui"><span class="nav-number">3.</span> <span class="nav-text">LightRAG 服务器和 WebUI</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E6%9D%A5%E9%85%8D%E7%BD%AE-lightrag-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">3.1.</span> <span class="nav-text">使用环境变量来配置 LightRAG
+服务器。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8"><span class="nav-number">3.2.</span> <span class="nav-text">启动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E5%A4%9A%E4%B8%AAlightrag%E5%AE%9E%E4%BE%8B"><span class="nav-number">3.3.</span> <span class="nav-text">启动多个LightRAG实例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C"><span class="nav-number">3.4.</span> <span class="nav-text">运行</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lightrag%E7%9A%84%E6%95%B0%E6%8D%AE%E9%9A%94%E7%A6%BB"><span class="nav-number">4.</span> <span class="nav-text">LightRAG的数据隔离</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">156</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">61</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">61</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/09/21/%E5%AD%A6%E4%B9%A0/rag/lightrag/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="lightrag | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          lightrag
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-09-21 00:00:00" itemprop="dateCreated datePublished" datetime="2025-09-21T00:00:00+08:00">2025-09-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-09-27 13:07:52" itemprop="dateModified" datetime="2025-09-27T13:07:52+08:00">2025-09-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/rag/" itemprop="url" rel="index"><span itemprop="name">rag</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="算法流程">算法流程</h3>
+<figure>
+<img src="/2025/09/21/%E5%AD%A6%E4%B9%A0/rag/lightrag/image-20250924135355928.png" alt="image-20250924135355928">
+<figcaption aria-hidden="true">image-20250924135355928</figcaption>
+</figure>
+<ol type="1">
+<li><p>对文本进行分块后，分别存储在<strong>kvstorage</strong>与
+<strong>VectorDB Storage</strong></p></li>
+<li><p>然后调用大模型进行<strong>实体与关系抽取</strong>（<strong>Extract
+Entities &amp; Relations</strong>）</p></li>
+<li><p>然后进行<strong>实体与关系的存储</strong>（<strong>Entities Data
+/ Relations
+Data</strong>），<strong>去重后</strong>（<strong>Deduplication</strong>），再次调用embedding模型存储于<strong>VectorDB
+Storage</strong></p></li>
+<li><p>再次调用大模型，对关系与实体的描述进行精炼或合并（<strong>Update
+Description</strong>），并存储到<strong>Knowledge
+Graph</strong></p></li>
+</ol>
+<figure>
+<img src="/2025/09/21/%E5%AD%A6%E4%B9%A0/rag/lightrag/image-20250924135740665.png" alt="image">
+<figcaption aria-hidden="true">image</figcaption>
+</figure>
+<p>LightRAG 使用 4 种类型的存储用于不同目的：</p>
+<ul>
+<li>KV_STORAGE：llm 响应缓存、文本块、文档信息</li>
+<li>VECTOR_STORAGE：实体向量、关系向量、块向量</li>
+<li>GRAPH_STORAGE：实体关系图</li>
+<li>DOC_STATUS_STORAGE：文档索引状态</li>
+</ul>
+<figure>
+<img src="/2025/09/21/%E5%AD%A6%E4%B9%A0/rag/lightrag/image-20250924142554264.png" alt="image-20250924142554264">
+<figcaption aria-hidden="true">image-20250924142554264</figcaption>
+</figure>
+<p>值得注意的是，local检索模式仅使用low_level_keywords，而global检索模式仅支持high_level_keywords，从算法流程图可以看出来，前者更侧重于检索<strong>实体</strong>，后者则侧重于<strong>关系</strong></p>
+<p>高关键词（High-level
+Keywords）用于捕获查询的核心意图和主题概念；低关键词（Low-level
+Keywords）用于识别具体的实体和细节信息</p>
+<p>text_units的作用是：</p>
+<ul>
+<li>每条实体/关系记录在 KV 里都挂着 <code>chunk_ids</code> 列表。</li>
+<li>把 Top-K 结果里的 <code>chunk_ids</code> 做 <strong>合并 +
+去重</strong>，得到原始文本块序号。</li>
+<li>用序号去 <strong>Nano VectorDB</strong> 里把对应
+<strong>text_units（原始句子/段落）</strong> 拉回，作为
+<strong>上下文原始语料</strong>。</li>
+</ul>
+<figure>
+<img src="/2025/09/21/%E5%AD%A6%E4%B9%A0/rag/lightrag/image-20250924135917313.png" alt="image-20250924135917313">
+<figcaption aria-hidden="true">image-20250924135917313</figcaption>
+</figure>
+<h3 id="安装">安装</h3>
+<p>安装LightRAG服务器</p>
+<p>LightRAG服务器旨在提供Web UI和API支持。Web
+UI便于文档索引、知识图谱探索和简单的RAG查询界面。LightRAG服务器还提供兼容Ollama的接口，旨在将LightRAG模拟为Ollama聊天模型。这使得AI聊天机器人（如Open
+WebUI）可以轻松访问LightRAG。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pip install &quot;lightrag-hku[api]&quot;</span><br><span class="line">cp env.example .env</span><br><span class="line">lightrag-server</span><br></pre></td></tr></table></figure>
+<p>在此获取LightRAG docker镜像历史版本: <a target="_blank" rel="noopener" href="https://github.com/HKUDS/LightRAG/pkgs/container/lightrag">LightRAG
+Docker Images</a></p>
+<p>安装 LightRAG Core</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install lightrag-hku</span><br></pre></td></tr></table></figure>
+<h3 id="lightrag-服务器和-webui">LightRAG 服务器和 WebUI</h3>
+<p><a target="_blank" rel="noopener" href="https://github.com/HKUDS/LightRAG/blob/main/lightrag/api/README-zh.md">LightRAG/lightrag/api/README-zh.md
+at main · HKUDS/LightRAG</a></p>
+<p>LightRAG 服务器旨在提供 Web 界面和 API 支持。Web
+界面便于文档索引、知识图谱探索和简单的 RAG 查询界面。</p>
+<h4 id="使用环境变量来配置-lightrag-服务器">使用环境变量来配置 LightRAG
+服务器。</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">LLM_BINDING=openai</span><br><span class="line">LLM_MODEL=qwen3-max-preview</span><br><span class="line">LLM_BINDING_HOST=https://dashscope.aliyuncs.com/compatible-mode/v1</span><br><span class="line">LLM_BINDING_API_KEY=sk-</span><br><span class="line"></span><br><span class="line">EMBEDDING_BINDING=openai</span><br><span class="line">EMBEDDING_MODEL=text-embedding-v4</span><br><span class="line">EMBEDDING_DIM=1024</span><br><span class="line">EMBEDDING_BINDING_API_KEY=sk-</span><br><span class="line">EMBEDDING_BINDING_HOST=https://dashscope.aliyuncs.com/compatible-mode/v1</span><br><span class="line"></span><br><span class="line">############################</span><br><span class="line">### 数据存储选择</span><br><span class="line">############################</span><br><span class="line">### 默认存储（推荐用于小规模部署）</span><br><span class="line">LIGHTRAG_KV_STORAGE=JsonKVStorage</span><br><span class="line">LIGHTRAG_DOC_STATUS_STORAGE=JsonDocStatusStorage</span><br><span class="line">LIGHTRAG_GRAPH_STORAGE=NetworkXStorage</span><br><span class="line">LIGHTRAG_VECTOR_STORAGE=NanoVectorDBStorage</span><br><span class="line"></span><br><span class="line">### 图存储（推荐用于生产部署）</span><br><span class="line"># LIGHTRAG_GRAPH_STORAGE=Neo4JStorage</span><br><span class="line"># LIGHTRAG_GRAPH_STORAGE=MemgraphStorage</span><br><span class="line"></span><br><span class="line">### PostgreSQL</span><br><span class="line"># LIGHTRAG_KV_STORAGE=PGKVStorage</span><br><span class="line"># LIGHTRAG_DOC_STATUS_STORAGE=PGDocStatusStorage</span><br><span class="line"># LIGHTRAG_GRAPH_STORAGE=PGGraphStorage</span><br><span class="line"># LIGHTRAG_VECTOR_STORAGE=PGVectorStorage</span><br><span class="line"></span><br><span class="line">### PostgreSQL 配置</span><br><span class="line"># POSTGRES_HOST=localhost</span><br><span class="line"># POSTGRES_PORT=5432</span><br><span class="line"># POSTGRES_USER=您的用户名</span><br><span class="line"># POSTGRES_PASSWORD=&#x27;您的密码&#x27;</span><br><span class="line"># POSTGRES_DATABASE=您的数据库</span><br><span class="line"></span><br><span class="line">### Neo4j 配置</span><br><span class="line"># NEO4J_URI=neo4j+s://xxxxxxxx.databases.neo4j.io</span><br><span class="line"># NEO4J_USERNAME=neo4j</span><br><span class="line"># NEO4J_PASSWORD=&#x27;您的密码&#x27;</span><br><span class="line"># NEO4J_DATABASE=noe4j</span><br><span class="line"></span><br><span class="line">### Milvus 配置</span><br><span class="line"># MILVUS_URI=http://localhost:19530</span><br><span class="line"># MILVUS_DB_NAME=lightrag</span><br><span class="line"># MILVUS_USER=root</span><br><span class="line"># MILVUS_PASSWORD=您的密码</span><br></pre></td></tr></table></figure>
+<h4 id="启动">启动</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lightrag-server</span><br></pre></td></tr></table></figure>
+<p>这是因为每次启动时，LightRAG
+Server会将.env文件中的环境变量加载至系统环境变量，且系统环境变量的设置具有更高优先级。</p>
+<p>启动时可以通过命令行参数覆盖<code>.env</code>文件中的配置。常用的命令行参数包括：</p>
+<ul>
+<li><code>--host</code>：服务器监听地址（默认：0.0.0.0）</li>
+<li><code>--port</code>：服务器监听端口（默认：9621）</li>
+<li><code>--working-dir</code>：数据库持久化目录（默认：./rag_storage）</li>
+<li><code>--input-dir</code>：上传文件存放目录（默认：./inputs）</li>
+<li><code>--workspace</code>:
+工作空间名称，用于逻辑上隔离多个LightRAG实例之间的数据（默认：空）</li>
+</ul>
+<h4 id="启动多个lightrag实例">启动多个LightRAG实例</h4>
+<p>所有实例共享一套相同的<code>.env</code>配置文件，然后通过命令行参数来为每个实例指定不同的服务器监听端口和工作空间。你可以在同一个工作目录中通过不同的命令行参数启动多个LightRAG实例。例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 启动实例1</span><br><span class="line">lightrag-server --port 9621 --workspace space1</span><br><span class="line"></span><br><span class="line"># 启动实例2</span><br><span class="line">lightrag-server --port 9622 --workspace space2</span><br></pre></td></tr></table></figure>
+<h4 id="运行">运行</h4>
+<figure>
+<img src="/2025/09/21/%E5%AD%A6%E4%B9%A0/rag/lightrag/image-20250926162648415.png" alt="image-20250926162648415">
+<figcaption aria-hidden="true">image-20250926162648415</figcaption>
+</figure>
+<figure>
+<img src="/2025/09/21/%E5%AD%A6%E4%B9%A0/rag/lightrag/image-20250926162703167.png" alt="image-20250926162703167">
+<figcaption aria-hidden="true">image-20250926162703167</figcaption>
+</figure>
+<figure>
+<img src="/2025/09/21/%E5%AD%A6%E4%B9%A0/rag/lightrag/image-20250926162714883.png" alt="image-20250926162714883">
+<figcaption aria-hidden="true">image-20250926162714883</figcaption>
+</figure>
+<h3 id="lightrag的数据隔离">LightRAG的数据隔离</h3>
+<p>需要通过<strong>配置工作空间</strong>来实现数据隔离，否则不同实例的数据将会出现冲突并被破坏。</p>
+<p>LightRAG 使用 4 种类型的存储用于不同目的：</p>
+<ul>
+<li>KV_STORAGE：llm 响应缓存、文本块、文档信息</li>
+<li>VECTOR_STORAGE：实体向量、关系向量、块向量</li>
+<li>GRAPH_STORAGE：实体关系图</li>
+<li>DOC_STATUS_STORAGE：文档索引状态</li>
+</ul>
+<p>每种存储类型都有多种存储实现方式。LightRAG
+Server默认的存储实现为内存数据库，数据通过文件持久化<strong>保存到WORKING_DIR目录</strong>。LightRAG还支持PostgreSQL、MongoDB、FAISS、Milvus、Qdrant、Neo4j、Memgraph和Redis等存储实现方式。</p>
+<p>您可以通过环境变量选择存储实现。例如，在首次启动 API
+服务器之前，您可以将以下环境变量设置为特定的存储实现名称：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">LIGHTRAG_KV_STORAGE=PGKVStorage</span><br><span class="line">LIGHTRAG_VECTOR_STORAGE=PGVectorStorage</span><br><span class="line">LIGHTRAG_GRAPH_STORAGE=PGGraphStorage</span><br><span class="line">LIGHTRAG_DOC_STATUS_STORAGE=PGDocStatusStorage</span><br></pre></td></tr></table></figure>
+<h3 id="参考资料">参考资料</h3>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1bSaGzJEdv?buvid=XX7932A7E9DD8A1DA92D4974AB535749A9B44&amp;from_spmid=tm.recommend.0.0&amp;is_story_h5=false&amp;mid=25yhOI1fPeVYa5V16BFcAw%3D%3D&amp;plat_id=116&amp;share_from=ugc&amp;share_medium=android&amp;share_plat=android&amp;share_session_id=3e2dd1ec-b589-458b-849b-c2e7f8b4468a&amp;share_source=QQ&amp;share_tag=s_i&amp;spmid=united.player-video-detail.0.0&amp;timestamp=1758418948&amp;unique_k=6aEPhnm&amp;up_id=1606629306&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11&amp;spm_id_from=333.788.videopod.sections">通过实际案例拆解Light
+RAG，构建可视化知识图谱，解析Graph
+RAG的运行原理和关键概念（一）_哔哩哔哩_bilibili</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1zoKuzoENM/?spm_id_from=333.337.search-card.all.click">AI知识图谱
+GraphRAG 是怎么回事？_哔哩哔哩_bilibili</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/HKUDS/LightRAG/blob/main/README-zh.md">LightRAG/README-zh.md
+在主 ·香港科技大学/LightRAG — LightRAG/README-zh.md at main ·
+HKUDS/LightRAG</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/rag/" rel="tag"># rag</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/09/21/%E5%AE%9E%E4%B9%A0/Tosea.ai/%E9%82%80%E8%AF%B7%E5%A5%BD%E5%8F%8B%E6%9C%BA%E5%88%B6%E8%B0%83%E7%A0%94/" rel="prev" title="邀请好友机制调研">
+                  <i class="fa fa-angle-left"></i> 邀请好友机制调研
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/09/28/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%95%B0%E5%AD%97%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/%E6%95%B0%E5%AD%97%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/" rel="next" title="数字图像处理">
+                  数字图像处理 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
