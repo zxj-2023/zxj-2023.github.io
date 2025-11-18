@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="前言本文简单测试了一下langgraph官方提供的记忆管理工具，发现还是存在bug，我在a线程先让他记住我是张熙浚，然后又告诉他我不是张熙浚我是张俊细，在线程b询问他我是谁时，他还是认为我是张熙浚。记忆的管理部分确实是一个很大的问题，但中小开发者我认为还是直接使用人家造好的轮子方便些（我尝试去阅读了他的记忆管理工具的源码，以我目前的水平，想手搓花费的精力还是太多了） 我还有一个疑惑，我的理解是，当">
+    <meta name="description" content="前言 本文简单测试了一下langgraph官方提供的记忆管理工具，发现还是存在bug，我在a线程先让他记住我是张熙浚，然后又告诉他我不是张熙浚我是张俊细，在线程b询问他我是谁时，他还是认为我是张熙浚。记忆的管理部分确实是一个很大的问题，但中小开发者我认为还是直接使用人家造好的轮子方便些（我尝试去阅读了他的记忆管理工具的源码，以我目前的水平，想手搓花费的精力还是太多了） 我还有一个疑惑，我的理解">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Langmem快速入门">
 <meta property="og:url" content="http://example.com/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langmem/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="前言本文简单测试了一下langgraph官方提供的记忆管理工具，发现还是存在bug，我在a线程先让他记住我是张熙浚，然后又告诉他我不是张熙浚我是张俊细，在线程b询问他我是谁时，他还是认为我是张熙浚。记忆的管理部分确实是一个很大的问题，但中小开发者我认为还是直接使用人家造好的轮子方便些（我尝试去阅读了他的记忆管理工具的源码，以我目前的水平，想手搓花费的精力还是太多了） 我还有一个疑惑，我的理解是，当">
+<meta property="og:description" content="前言 本文简单测试了一下langgraph官方提供的记忆管理工具，发现还是存在bug，我在a线程先让他记住我是张熙浚，然后又告诉他我不是张熙浚我是张俊细，在线程b询问他我是谁时，他还是认为我是张熙浚。记忆的管理部分确实是一个很大的问题，但中小开发者我认为还是直接使用人家造好的轮子方便些（我尝试去阅读了他的记忆管理工具的源码，以我目前的水平，想手搓花费的精力还是太多了） 我还有一个疑惑，我的理解">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langmem/image-20250814152044798.png">
 <meta property="og:image" content="http://example.com/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langmem/image-20250814163150589.png">
@@ -146,7 +146,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%83%AD%E8%B7%AF%E5%BE%84%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97"><span class="nav-number">3.</span> <span class="nav-text">热路径快速入门指南</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#create-manage-memory-tool"><span class="nav-number">3.1.</span> <span class="nav-text">create_manage_memory_tool</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99agent%E4%BC%9A%E8%B0%83%E7%94%A8%E8%AE%B0%E5%BF%86%E5%B7%A5%E5%85%B7"><span class="nav-number">3.2.</span> <span class="nav-text">什么时候agent会调用记忆工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E6%88%98"><span class="nav-number">3.3.</span> <span class="nav-text">实战</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97"><span class="nav-number">4.</span> <span class="nav-text">后台快速入门指南</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E6%88%98-1"><span class="nav-number">4.1.</span> <span class="nav-text">实战</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%83%AD%E8%B7%AF%E5%BE%84%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97"><span class="nav-number">3.</span> <span class="nav-text">热路径快速入门指南</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#create_manage_memory_tool"><span class="nav-number">3.1.</span> <span class="nav-text">create_manage_memory_tool</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99agent%E4%BC%9A%E8%B0%83%E7%94%A8%E8%AE%B0%E5%BF%86%E5%B7%A5%E5%85%B7"><span class="nav-number">3.2.</span> <span class="nav-text">什么时候agent会调用记忆工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E6%88%98"><span class="nav-number">3.3.</span> <span class="nav-text">实战</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97"><span class="nav-number">4.</span> <span class="nav-text">后台快速入门指南</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E6%88%98-1"><span class="nav-number">4.1.</span> <span class="nav-text">实战</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -161,7 +161,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">155</span>
+          <span class="site-state-item-count">164</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -284,47 +284,78 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本文简单测试了一下langgraph官方提供的记忆管理工具，发现还是存在bug，我在a线程先让他记住我是张熙浚，然后又告诉他我不是张熙浚我是张俊细，在线程b询问他我是谁时，他还是认为我是张熙浚。记忆的管理部分确实是一个很大的问题，但中小开发者我认为还是直接使用人家造好的轮子方便些（我尝试去阅读了他的记忆管理工具的源码，以我目前的水平，想手搓花费的精力还是太多了）</p>
-<p>我还有一个疑惑，我的理解是，当前记忆的存储基本上依赖于agent的决定，所以并不稳定，我也搞不清楚他什么时候会把哪些信息存入记忆，可以设置 schemas结构，控制存储的内容，但是长期记忆仅存储指定的这些信息，感觉还是有些鸡肋啊</p>
-<p>代码见<a target="_blank" rel="noopener" href="https://github.com/zxj-2023/learn-rag-langchain/tree/main/langmem">learn-rag-langchain/langmem at main · zxj-2023/learn-rag-langchain</a></p>
-<h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p>LangMem 是 LangChain 推出的开源 SDK，通过一套存储-提取-优化机制，让 Agent 能够在多轮、多天甚至多用户之间持续学习、记住用户偏好并不断改进回答。</p>
+    <div class="post-body" itemprop="articleBody"><h3 id="前言">前言</h3>
+<p>本文简单测试了一下langgraph官方提供的记忆管理工具，发现还是存在bug，我在a线程先让他记住我是张熙浚，然后又告诉他我不是张熙浚我是张俊细，在线程b询问他我是谁时，他还是认为我是张熙浚。记忆的管理部分确实是一个很大的问题，但中小开发者我认为还是直接使用人家造好的轮子方便些（我尝试去阅读了他的记忆管理工具的源码，以我目前的水平，想手搓花费的精力还是太多了）</p>
+<p>我还有一个疑惑，我的理解是，当前记忆的存储基本上依赖于agent的决定，所以并不稳定，我也搞不清楚他什么时候会把哪些信息存入记忆，可以设置
+schemas结构，控制存储的内容，但是长期记忆仅存储指定的这些信息，感觉还是有些鸡肋啊</p>
+<p>代码见<a target="_blank" rel="noopener" href="https://github.com/zxj-2023/learn-rag-langchain/tree/main/langmem">learn-rag-langchain/langmem
+at main · zxj-2023/learn-rag-langchain</a></p>
+<h3 id="介绍">介绍</h3>
+<p>LangMem 是 LangChain 推出的开源 SDK，通过一套存储-提取-优化机制，让
+Agent
+能够在多轮、多天甚至多用户之间持续学习、记住用户偏好并不断改进回答。</p>
 <p>LangMem 的记忆工具按两个层次的集成模式组织：</p>
-<ol>
+<ol type="1">
 <li>核心 API</li>
 </ol>
-<p>LangMem 的核心是提供无副作用地转换记忆状态的函数。这些原语是记忆操作的构建块：</p>
+<p>LangMem
+的核心是提供无副作用地转换记忆状态的函数。这些原语是记忆操作的构建块：</p>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langmem/reference/memory/#langmem.create_memory_manager"><strong>记忆管理器</strong></a>：根据新的对话信息，提取新记忆、更新或删除过时记忆，并从现有记忆中进行整合和泛化。</li>
 <li><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langmem/reference/prompt_optimization/#langmem.create_prompt_optimizer"><strong>提示优化器</strong></a>：根据对话信息（可选反馈）更新提示规则和核心行为。</li>
 </ul>
 <p>这些核心函数不依赖于任何特定的数据库或存储系统。您可以在任何应用程序中使用它们。</p>
-<ol>
+<ol start="2" type="1">
 <li>有状态集成</li>
 </ol>
-<p>上一层依赖于 LangGraph 的长期记忆存储。这些组件使用上述核心 API 来转换存储中存在的记忆，并在新对话信息传入时根据需要进行更新/插入或删除：</p>
+<p>上一层依赖于 LangGraph 的长期记忆存储。这些组件使用上述核心 API
+来转换存储中存在的记忆，并在新对话信息传入时根据需要进行更新/插入或删除：</p>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langmem/reference/memory/#langmem.create_memory_store_manager"><strong>存储管理器</strong></a>：自动持久化提取的记忆。</li>
 <li><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langmem/reference/tools/#langmem.create_manage_memory_tool"><strong>记忆管理工具</strong></a>：让智能体直接访问记忆操作。</li>
 </ul>
-<p><img src="/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langmem/image-20250814152044798.png" alt="image-20250814152044798"></p>
+<figure>
+<img src="/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langmem/image-20250814152044798.png" alt="image-20250814152044798">
+<figcaption aria-hidden="true">image-20250814152044798</figcaption>
+</figure>
 <p>langmem可以通过两种方式创建记忆</p>
-<ol>
+<ol type="1">
 <li><strong>在热路径中：</strong> Agent 使用工具主动保存笔记。</li>
 <li><strong>在后台：</strong>记忆从对话中自动“潜意识地”提取。</li>
 </ol>
-<h3 id="热路径快速入门指南"><a href="#热路径快速入门指南" class="headerlink" title="热路径快速入门指南"></a>热路径快速入门指南</h3><p>在本指南中，我们将创建一个 LangGraph Agent，它通过 LangMem 的 <code>manage_memory</code> 工具来主动管理自己的长期记忆。</p>
-<h4 id="create-manage-memory-tool"><a href="#create-manage-memory-tool" class="headerlink" title="create_manage_memory_tool"></a>create_manage_memory_tool</h4><p>create_manage_memory_tool通过创建一个工具（Tool），这个工具可以被 agent用来<strong>管理持久化记忆</strong>。这些记忆可以在不同的对话、会话甚至应用重启后依然存在。</p>
-<ol>
-<li><strong>持久化存储 (Persistent Storage):</strong> 它利用了 LangGraph 提供的 <code>BaseStore</code> 接口。这使得数据可以存储在内存、数据库（如 Postgres）等地方，而不是仅仅存在于程序的运行时内存中。</li>
-<li><p><strong>命名空间 (Namespace):</strong> 为了组织和隔离不同用户或不同类型的记忆，数据被存储在层级化的命名空间中。例如，<code>(&quot;memories&quot;, &quot;user-123&quot;)</code> 可以确保用户 “user-123” 的记忆与其他用户或系统记忆分开。命名空间可以包含占位符（如 <code>&#123;langgraph_user_id&#125;</code>），在实际执行时会被具体的配置值替换。 </p>
-</li>
-<li><p><strong>记忆 (Memory):</strong> 在这个上下文中，一个“记忆”就是存储在 <code>BaseStore</code> 中的一个数据项（<code>Item</code>）。它有一个唯一的 <code>key</code>（通常是 UUID），一个 <code>namespace</code>，一个 <code>value</code>（存储实际内容），以及创建和更新时间戳。 </p>
-</li>
-<li><strong>工具 (Tool):</strong> 在 AI 应用中，工具是代理（Agent）可以调用的函数或能力。这个函数创建的工具就是一个封装好的、可以被 Agent 调用的函数，用于执行创建、更新、删除记忆的操作。</li>
+<h3 id="热路径快速入门指南">热路径快速入门指南</h3>
+<p>在本指南中，我们将创建一个 LangGraph Agent，它通过 LangMem 的
+<code>manage_memory</code> 工具来主动管理自己的长期记忆。</p>
+<h4 id="create_manage_memory_tool">create_manage_memory_tool</h4>
+<p>create_manage_memory_tool通过创建一个工具（Tool），这个工具可以被
+agent用来<strong>管理持久化记忆</strong>。这些记忆可以在不同的对话、会话甚至应用重启后依然存在。</p>
+<ol type="1">
+<li><p><strong>持久化存储 (Persistent Storage):</strong> 它利用了
+LangGraph 提供的 <code>BaseStore</code>
+接口。这使得数据可以存储在内存、数据库（如
+Postgres）等地方，而不是仅仅存在于程序的运行时内存中。</p></li>
+<li><p><strong>命名空间 (Namespace):</strong>
+为了组织和隔离不同用户或不同类型的记忆，数据被存储在层级化的命名空间中。例如，<code>("memories", "user-123")</code>
+可以确保用户 “user-123”
+的记忆与其他用户或系统记忆分开。命名空间可以包含占位符（如
+<code>&#123;langgraph_user_id&#125;</code>），在实际执行时会被具体的配置值替换。</p></li>
+<li><p><strong>记忆 (Memory):</strong>
+在这个上下文中，一个“记忆”就是存储在 <code>BaseStore</code>
+中的一个数据项（<code>Item</code>）。它有一个唯一的
+<code>key</code>（通常是 UUID），一个 <code>namespace</code>，一个
+<code>value</code>（存储实际内容），以及创建和更新时间戳。</p></li>
+<li><p><strong>工具 (Tool):</strong> 在 AI
+应用中，工具是代理（Agent）可以调用的函数或能力。这个函数创建的工具就是一个封装好的、可以被
+Agent 调用的函数，用于执行创建、更新、删除记忆的操作。</p></li>
 </ol>
-<h4 id="什么时候agent会调用记忆工具"><a href="#什么时候agent会调用记忆工具" class="headerlink" title="什么时候agent会调用记忆工具"></a>什么时候agent会调用记忆工具</h4><p><img src="/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langmem/image-20250814163150589.png" alt="image-20250814163150589"></p>
+<h4 id="什么时候agent会调用记忆工具">什么时候agent会调用记忆工具</h4>
+<figure>
+<img src="/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langmem/image-20250814163150589.png" alt="image-20250814163150589">
+<figcaption aria-hidden="true">image-20250814163150589</figcaption>
+</figure>
 <p>ai是这样回答的，ReAct架构的agent是否调用工具由他自己决定</p>
-<h4 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h4><p><strong>导入库</strong></p>
+<h4 id="实战">实战</h4>
+<p><strong>导入库</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">from langgraph.checkpoint.memory import MemorySaver</span><br><span class="line">from langgraph.prebuilt import create_react_agent</span><br><span class="line">from langgraph.store.memory import InMemoryStore</span><br><span class="line">from langgraph.utils.config import get_store </span><br><span class="line">from langmem import (</span><br><span class="line">    # 让智能体创建、更新和删除记忆 </span><br><span class="line">    create_manage_memory_tool,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 <p><strong>返回记忆提示词</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">def prompt(state):</span><br><span class="line">    &quot;&quot;&quot;为LLM准备消息。&quot;&quot;&quot;</span><br><span class="line">    # 从配置的上下文变量中获取存储; </span><br><span class="line">    store = get_store() # 与提供给 `create_react_agent` 的相同</span><br><span class="line">    memories = store.search(</span><br><span class="line">        # 在与我们为智能体配置的相同命名空间内搜索</span><br><span class="line">        (&quot;memories&quot;,),</span><br><span class="line">        query=state[&quot;messages&quot;][-1].content,</span><br><span class="line">    )</span><br><span class="line">    system_msg = f&quot;&quot;&quot;You are a helpful assistant.</span><br><span class="line"></span><br><span class="line">## Memories</span><br><span class="line">&lt;memories&gt;</span><br><span class="line">&#123;memories&#125;</span><br><span class="line">&lt;/memories&gt;</span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line">    return [&#123;&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: system_msg&#125;, *state[&quot;messages&quot;]]</span><br></pre></td></tr></table></figure>
@@ -340,41 +371,60 @@
 <p><strong>在线程b查看是否记住</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 新线程 = 新对话！</span><br><span class="line">new_config = &#123;&quot;configurable&quot;: &#123;&quot;thread_id&quot;: &quot;thread-b&quot;&#125;&#125; </span><br><span class="line"># 智能体只能回忆起</span><br><span class="line"># 它使用manage_memories工具明确保存的内容</span><br><span class="line">response = agent.invoke( </span><br><span class="line">    &#123;&quot;messages&quot;: [&#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;你好。你还记得我吗？你知道我有什么偏好吗？&quot;&#125;]&#125;,</span><br><span class="line">    config=new_config, </span><br><span class="line">) </span><br><span class="line">print(response[&quot;messages&quot;][-1].content) </span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">你好！虽然我无法记住你作为个体的详细信息，但我可以访问一些关于你的偏好信息。根据之前的记录，我知道你偏好使用黑色显示模式。如果你还有其他偏好或希望我记住什么，请告诉我，我会帮你记录下来。</span><br></pre></td></tr></table></figure>
-<h3 id="后台快速入门指南"><a href="#后台快速入门指南" class="headerlink" title="后台快速入门指南"></a>后台快速入门指南</h3><p>本指南将向您展示如何使用 <a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langmem/background_quickstart/"><code>create_memory_store_manager</code></a> 在后台提取和整合记忆。当记忆在后台处理时，智能体将正常继续运行。</p>
-<ol>
-<li><p><strong>Runnable:</strong> LangChain/LangGraph 中的核心抽象，代表一个可以被调用（<code>invoke</code>/<code>ainvoke</code>）来处理输入并产生输出的单元。<code>MemoryStoreManager</code> 本身就是一个 Runnable。</p>
-</li>
-<li><p><strong>BaseStore:</strong> LangGraph 提供的持久化存储接口。Manager 会使用它来读取（搜索）和写入（创建、更新、删除）记忆。</p>
-</li>
-<li><p><strong>Memory (记忆):</strong> 在 Manager 的上下文中，记忆通常是指从对话中提取的、值得保存的片段信息（如用户偏好、事实等）。它们存储在 <code>BaseStore</code> 中，有自己的 <code>namespace</code> 和 <code>key</code>。</p>
-</li>
-<li><p><strong>Schema (模式):</strong> 一个 Pydantic 模型，用于定义记忆的结构。这允许你强制记忆遵循特定的格式（例如，包含 <code>category</code>, <code>preference</code>, <code>context</code> 字段）。如果未提供 <code>schemas</code>，则默认使用非结构化的字符串。</p>
-</li>
-<li><p><strong>Namespace (命名空间):</strong> 用于组织存储在 <code>BaseStore</code> 中的记忆。支持使用占位符（如 <code>&#123;langgraph_user_id&#125;</code>）进行动态配置。</p>
-</li>
+<h3 id="后台快速入门指南">后台快速入门指南</h3>
+<p>本指南将向您展示如何使用 <a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langmem/background_quickstart/"><code>create_memory_store_manager</code></a>
+在后台提取和整合记忆。当记忆在后台处理时，智能体将正常继续运行。</p>
+<ol type="1">
+<li><p><strong>Runnable:</strong> LangChain/LangGraph
+中的核心抽象，代表一个可以被调用（<code>invoke</code>/<code>ainvoke</code>）来处理输入并产生输出的单元。<code>MemoryStoreManager</code>
+本身就是一个 Runnable。</p></li>
+<li><p><strong>BaseStore:</strong> LangGraph
+提供的持久化存储接口。Manager
+会使用它来读取（搜索）和写入（创建、更新、删除）记忆。</p></li>
+<li><p><strong>Memory (记忆):</strong> 在 Manager
+的上下文中，记忆通常是指从对话中提取的、值得保存的片段信息（如用户偏好、事实等）。它们存储在
+<code>BaseStore</code> 中，有自己的 <code>namespace</code> 和
+<code>key</code>。</p></li>
+<li><p><strong>Schema (模式):</strong> 一个 Pydantic
+模型，用于定义记忆的结构。这允许你强制记忆遵循特定的格式（例如，包含
+<code>category</code>, <code>preference</code>, <code>context</code>
+字段）。如果未提供
+<code>schemas</code>，则默认使用非结构化的字符串。</p></li>
+<li><p><strong>Namespace (命名空间):</strong> 用于组织存储在
+<code>BaseStore</code> 中的记忆。支持使用占位符（如
+<code>&#123;langgraph_user_id&#125;</code>）进行动态配置。</p></li>
 <li><p>自动化流程:</p>
-<p> Manager 会自动执行以下步骤：</p>
+<p>Manager 会自动执行以下步骤：</p>
 <ul>
-<li><strong>搜索 (Search):</strong> 根据新对话内容，在 <code>BaseStore</code> 中查找相关的现有记忆。</li>
-<li><strong>分析/提取 (Analyze/Extract):</strong> 使用 LLM 分析新对话和检索到的记忆，决定是否需要创建新记忆、更新现有记忆或删除过时记忆。</li>
-<li><strong>应用更改 (Apply Changes):</strong> 将分析结果（记忆的增删改）写回到 <code>BaseStore</code>。</li>
-</ul>
-</li>
+<li><strong>搜索 (Search):</strong> 根据新对话内容，在
+<code>BaseStore</code> 中查找相关的现有记忆。</li>
+<li><strong>分析/提取 (Analyze/Extract):</strong> 使用 LLM
+分析新对话和检索到的记忆，决定是否需要创建新记忆、更新现有记忆或删除过时记忆。</li>
+<li><strong>应用更改 (Apply Changes):</strong>
+将分析结果（记忆的增删改）写回到 <code>BaseStore</code>。</li>
+</ul></li>
 </ol>
-<h4 id="实战-1"><a href="#实战-1" class="headerlink" title="实战"></a>实战</h4><p><strong>导入库</strong></p>
+<h4 id="实战-1">实战</h4>
+<p><strong>导入库</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from langchain.chat_models import init_chat_model </span><br><span class="line">from langgraph.func import entrypoint </span><br><span class="line">from langgraph.store.memory import InMemoryStore </span><br><span class="line"></span><br><span class="line">from langmem import ReflectionExecutor, create_memory_store_manager </span><br></pre></td></tr></table></figure>
 <p><strong>定义store</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">from langchain_openai import OpenAIEmbeddings</span><br><span class="line">embedding=OpenAIEmbeddings(</span><br><span class="line">    api_key=&quot;sk-&quot;, </span><br><span class="line">    base_url=&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot;,</span><br><span class="line">    model=&quot;text-embedding-v4&quot;,</span><br><span class="line">    check_embedding_ctx_length = False,</span><br><span class="line">    dimensions=1536 </span><br><span class="line">)</span><br><span class="line">store = InMemoryStore(</span><br><span class="line">    index=&#123; # 存储提取的记忆 </span><br><span class="line">        &quot;dims&quot;: 1536,</span><br><span class="line">        &quot;embed&quot;: embedding,</span><br><span class="line">    &#125;</span><br><span class="line">) </span><br></pre></td></tr></table></figure>
 <p><strong>创建记忆管理器</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 创建记忆管理器 Runnable 来从对话中提取记忆</span><br><span class="line">memory_manager = create_memory_store_manager( </span><br><span class="line">    model_qwen, </span><br><span class="line">    # 将记忆存储在 &quot;memories&quot; 命名空间（即目录）中</span><br><span class="line">    namespace=(&quot;memories&quot;,),  </span><br><span class="line">    instructions=&quot;用中文存储记忆。&quot;</span><br><span class="line">) </span><br><span class="line"></span><br><span class="line"># 包装 memory_manager 以处理延迟的后台处理</span><br><span class="line">executor = ReflectionExecutor(memory_manager) </span><br></pre></td></tr></table></figure>
-<p>对每条消息都进行记忆处理存在以下缺点： - 当消息快速连续到达时，会产生冗余工作 - 在对话中途进行处理时，上下文不完整 - 不必要的 token 消耗</p>
-<p><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langmem/reference/utils/#langmem.ReflectionExecutor"><code>ReflectionExecutor</code></a> 可以延迟记忆处理并取消冗余工作。</p>
+<p>对每条消息都进行记忆处理存在以下缺点： -
+当消息快速连续到达时，会产生冗余工作 -
+在对话中途进行处理时，上下文不完整 - 不必要的 token 消耗</p>
+<p><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langmem/reference/utils/#langmem.ReflectionExecutor"><code>ReflectionExecutor</code></a>
+可以延迟记忆处理并取消冗余工作。</p>
 <p><strong>创建工作流</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">from langchain_openai import ChatOpenAI</span><br><span class="line">model_qwen=ChatOpenAI(</span><br><span class="line">    api_key=&quot;sk-&quot;, </span><br><span class="line">    base_url=&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot;,</span><br><span class="line">    model=&quot;qwen3-30b-a3b-instruct-2507&quot;,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">@entrypoint(store=store)  # 创建一个 LangGraph 工作流</span><br><span class="line">async def chat(message: str): </span><br><span class="line">    response = model_qwen.invoke(message) </span><br><span class="line"></span><br><span class="line">    # memory_manager 从对话历史中提取记忆</span><br><span class="line">    # 我们将以 OpenAI 的消息格式提供它</span><br><span class="line">    to_process = &#123;&quot;messages&quot;: [&#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: message&#125;] + [response]&#125; </span><br><span class="line">    await memory_manager.ainvoke(to_process)  </span><br><span class="line">    return response.content </span><br><span class="line"></span><br><span class="line"># 正常运行对话</span><br><span class="line">response = await chat.ainvoke( </span><br><span class="line">    &quot;记住我是张熙浚&quot;, </span><br><span class="line">) </span><br><span class="line">print(response) </span><br></pre></td></tr></table></figure>
 <p><strong>查看记忆</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(store.search((&quot;memories&quot;,)))</span><br></pre></td></tr></table></figure>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langmem/">简介 - LangChain 框架</a></p>
-<p><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langmem/concepts/conceptual_guide/#semantic-memory-facts-and-knowledge">核心概念 - LangChain 框架</a></p>
+<h3 id="参考资料">参考资料</h3>
+<p><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langmem/">简介 - LangChain
+框架</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langmem/concepts/conceptual_guide/#semantic-memory-facts-and-knowledge">核心概念
+- LangChain 框架</a></p>
 
     </div>
 

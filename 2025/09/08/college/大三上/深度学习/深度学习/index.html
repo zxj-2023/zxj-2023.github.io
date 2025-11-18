@@ -22,15 +22,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="交叉熵交叉熵（Cross-Entropy）主要用于衡量两个概率分布之间的差异。在分类任务中，它被广泛用作损失函数，来评估模型预测结果与真实标签之间的“不匹配程度”。  信息量（Information Content）  一个事件 ( x ) 发生的概率为 ( p(x) )，其信息量定义为：[I(x) &#x3D; -\log p(x)]  概率越小的事件，发生时带来的信息量越大（比如“太阳从西边升起”）。">
+    <meta name="description" content="交叉熵 交叉熵（Cross-Entropy）主要用于衡量两个概率分布之间的差异。在分类任务中，它被广泛用作损失函数，来评估模型预测结果与真实标签之间的“不匹配程度”。  信息量（Information Content）  一个事件 ( x ) 发生的概率为 ( p(x) )，其信息量定义为： [ I(x) &#x3D; -p(x) ] - 概率越小的事件，发生时带来的信息量越大（比如“太阳从西">
 <meta property="og:type" content="article">
 <meta property="og:title" content="深度学习">
 <meta property="og:url" content="http://example.com/2025/09/08/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="交叉熵交叉熵（Cross-Entropy）主要用于衡量两个概率分布之间的差异。在分类任务中，它被广泛用作损失函数，来评估模型预测结果与真实标签之间的“不匹配程度”。  信息量（Information Content）  一个事件 ( x ) 发生的概率为 ( p(x) )，其信息量定义为：[I(x) &#x3D; -\log p(x)]  概率越小的事件，发生时带来的信息量越大（比如“太阳从西边升起”）。">
+<meta property="og:description" content="交叉熵 交叉熵（Cross-Entropy）主要用于衡量两个概率分布之间的差异。在分类任务中，它被广泛用作损失函数，来评估模型预测结果与真实标签之间的“不匹配程度”。  信息量（Information Content）  一个事件 ( x ) 发生的概率为 ( p(x) )，其信息量定义为： [ I(x) &#x3D; -p(x) ] - 概率越小的事件，发生时带来的信息量越大（比如“太阳从西">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-09-07T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-09-29T06:03:43.785Z">
+<meta property="article:modified_time" content="2025-10-24T08:16:42.276Z">
 <meta property="article:author" content="张熙浚">
 <meta property="article:tag" content="大学">
 <meta property="article:tag" content="深度学习">
@@ -144,7 +144,10 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A4%E5%8F%89%E7%86%B5"><span class="nav-number">1.</span> <span class="nav-text">交叉熵</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Sigmoid%E7%9A%84%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">1.1.</span> <span class="nav-text">Sigmoid的交叉熵损失函数</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BA%8C%E5%85%83%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%EF%BC%88Binary-Cross-Entropy-BCE%EF%BC%89"><span class="nav-number">1.1.1.</span> <span class="nav-text">二元交叉熵损失（Binary Cross-Entropy, BCE）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Softmax-%E7%9A%84%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">Softmax 的交叉熵损失函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Sigmoid%E5%92%8CSoftmax%E5%8C%BA%E5%88%AB"><span class="nav-number">1.3.</span> <span class="nav-text">Sigmoid和Softmax区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%A4%9A%E5%88%86%E7%B1%BB%E8%A6%81%E7%94%A8-Softmax%EF%BC%8C%E8%80%8C%E4%B8%8D%E6%98%AF%E5%AF%B9%E6%AF%8F%E4%B8%AA%E7%B1%BB%E5%88%AB%E7%94%A8-Sigmoid-%E5%86%8D%E5%8F%96%E6%9C%80%E5%A4%A7%E5%80%BC%EF%BC%9F"><span class="nav-number">1.4.</span> <span class="nav-text">为什么多分类要用 Softmax，而不是对每个类别用 Sigmoid 再取最大值？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">2.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A4%E5%8F%89%E7%86%B5"><span class="nav-number">1.</span> <span class="nav-text">交叉熵</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#sigmoid%E7%9A%84%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">1.1.</span> <span class="nav-text">Sigmoid的交叉熵损失函数</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BA%8C%E5%85%83%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1binary-cross-entropy-bce"><span class="nav-number">1.1.1.</span> <span class="nav-text">二元交叉熵损失（Binary
+Cross-Entropy, BCE）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#softmax-%E7%9A%84%E4%BA%A4%E5%8F%89%E7%86%B5%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">Softmax
+的交叉熵损失函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sigmoid%E5%92%8Csoftmax%E5%8C%BA%E5%88%AB"><span class="nav-number">1.3.</span> <span class="nav-text">Sigmoid和Softmax区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%A4%9A%E5%88%86%E7%B1%BB%E8%A6%81%E7%94%A8-softmax%E8%80%8C%E4%B8%8D%E6%98%AF%E5%AF%B9%E6%AF%8F%E4%B8%AA%E7%B1%BB%E5%88%AB%E7%94%A8-sigmoid-%E5%86%8D%E5%8F%96%E6%9C%80%E5%A4%A7%E5%80%BC"><span class="nav-number">1.4.</span> <span class="nav-text">为什么多分类要用
+Softmax，而不是对每个类别用 Sigmoid 再取最大值？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">2.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -159,7 +162,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">155</span>
+          <span class="site-state-item-count">164</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -256,7 +259,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-09-29 14:03:43" itemprop="dateModified" datetime="2025-09-29T14:03:43+08:00">2025-09-29</time>
+      <time title="修改时间：2025-10-24 16:16:42" itemprop="dateModified" datetime="2025-10-24T16:16:42+08:00">2025-10-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -288,74 +291,77 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h3 id="交叉熵"><a href="#交叉熵" class="headerlink" title="交叉熵"></a>交叉熵</h3><p>交叉熵（Cross-Entropy）主要用于衡量两个概率分布之间的差异。在分类任务中，它被广泛用作<strong>损失函数</strong>，来评估模型预测结果与真实标签之间的“不匹配程度”。</p>
-<ol>
+    <div class="post-body" itemprop="articleBody"><h3 id="交叉熵">交叉熵</h3>
+<p>交叉熵（Cross-Entropy）主要用于衡量两个概率分布之间的差异。在分类任务中，它被广泛用作<strong>损失函数</strong>，来评估模型预测结果与真实标签之间的“不匹配程度”。</p>
+<ol type="1">
 <li><strong>信息量（Information Content）</strong></li>
 </ol>
-<p>一个事件 ( x ) 发生的概率为 ( p(x) )，其<strong>信息量</strong>定义为：<br>[<br>I(x) = -\log p(x)<br>]</p>
-<ul>
-<li>概率越小的事件，发生时带来的信息量越大（比如“太阳从西边升起”）。</li>
-<li>单位通常是 <strong>比特（bit）</strong>（以 2 为底）或 <strong>纳特（nat）</strong>（以自然对数 ( e ) 为底）。</li>
-</ul>
-<ol>
+<p>一个事件 ( x ) 发生的概率为 ( p(x)
+)，其<strong>信息量</strong>定义为： [ I(x) = -p(x) ] -
+概率越小的事件，发生时带来的信息量越大（比如“太阳从西边升起”）。 -
+单位通常是 <strong>比特（bit）</strong>（以 2 为底）或
+<strong>纳特（nat）</strong>（以自然对数 ( e ) 为底）。</p>
+<ol start="2" type="1">
 <li><strong>熵（Entropy）</strong></li>
 </ol>
-<p>熵是<strong>一个概率分布的平均信息量</strong>，表示该分布的不确定性：<br>[<br>H(p) = -\sum_{x} p(x) \log p(x)<br>]</p>
-<ul>
-<li>熵越大，不确定性越高（比如公平硬币的熵比偏硬币大）。</li>
-</ul>
-<ol>
+<p>熵是<strong>一个概率分布的平均信息量</strong>，表示该分布的不确定性：
+[ H(p) = -_{x} p(x) p(x) ] -
+熵越大，不确定性越高（比如公平硬币的熵比偏硬币大）。</p>
+<ol start="3" type="1">
 <li><strong>交叉熵（Cross-Entropy）</strong></li>
 </ol>
-<p>现在有两个分布：</p>
-<ul>
-<li><strong>真实分布</strong> ( p(x) )（比如真实标签）</li>
-<li><strong>模型预测分布</strong> ( q(x) )（比如神经网络输出的概率）</li>
-</ul>
-<p>交叉熵衡量的是：<strong>当我们用分布 ( q ) 来编码来自分布 ( p ) 的事件时，平均需要多少比特</strong>。</p>
-<p>数学定义为：<br>[<br>H(p, q) = -\sum_{x} p(x) \log q(x)<br>]</p>
+<p>现在有两个分布： - <strong>真实分布</strong> ( p(x) )（比如真实标签）
+- <strong>模型预测分布</strong> ( q(x) )（比如神经网络输出的概率）</p>
+<p>交叉熵衡量的是：<strong>当我们用分布 ( q ) 来编码来自分布 ( p )
+的事件时，平均需要多少比特</strong>。</p>
+<p>数学定义为： [ H(p, q) = -_{x} p(x) q(x) ]</p>
 <blockquote>
-<p>🔍 注意：交叉熵 ≠ 熵。  </p>
-<ul>
-<li>熵：( H(p) = -\sum p \log p )  </li>
-<li>交叉熵：( H(p, q) = -\sum p \log q )</li>
-</ul>
+<p>🔍 注意：交叉熵 ≠ 熵。<br>
+- 熵：( H(p) = -p p )<br>
+- 交叉熵：( H(p, q) = -p q )</p>
 </blockquote>
-<h4 id="Sigmoid的交叉熵损失函数"><a href="#Sigmoid的交叉熵损失函数" class="headerlink" title="Sigmoid的交叉熵损失函数"></a>Sigmoid的交叉熵损失函数</h4><p>Sigmoid 的交叉熵损失函数（通常称为 <strong>二元交叉熵损失</strong>，Binary Cross-Entropy Loss）是用于二分类问题中，结合 Sigmoid 激活函数使用的损失函数。</p>
+<h4 id="sigmoid的交叉熵损失函数">Sigmoid的交叉熵损失函数</h4>
+<p>Sigmoid 的交叉熵损失函数（通常称为
+<strong>二元交叉熵损失</strong>，Binary Cross-Entropy
+Loss）是用于二分类问题中，结合 Sigmoid 激活函数使用的损失函数。</p>
 <ul>
-<li>在二分类任务中，模型输出一个实数值 ( z )（logit）。</li>
-<li><p>通过 Sigmoid 函数将其映射到概率区间 ([0, 1])：<br>[<br>\hat{y} = \sigma(z) = \frac{1}{1 + e^{-z}}<br>]<br>其中 (\hat{y}) 表示预测为正类（标签为 1）的概率。</p>
-</li>
-<li><p>真实标签 ( y \in {0, 1} )。</p>
-</li>
+<li><p>在二分类任务中，模型输出一个实数值 ( z )（logit）。</p></li>
+<li><p>通过 Sigmoid 函数将其映射到概率区间 ([0, 1])： [ = (z) = ] 其中
+() 表示预测为正类（标签为 1）的概率。</p></li>
+<li><p>真实标签 ( y {0, 1} )。</p></li>
 </ul>
-<h5 id="二元交叉熵损失（Binary-Cross-Entropy-BCE）"><a href="#二元交叉熵损失（Binary-Cross-Entropy-BCE）" class="headerlink" title="二元交叉熵损失（Binary Cross-Entropy, BCE）"></a>二元交叉熵损失（Binary Cross-Entropy, BCE）</h5><p>对于单个样本，损失函数定义为：</p>
-<p>[<br>\mathcal{L}(y, \hat{y}) = -\left[ y \log(\hat{y}) + (1 - y) \log(1 - \hat{y}) \right]<br>]</p>
-<p>其中：</p>
-<ul>
-<li>若 ( y = 1 )，损失为 ( -\log(\hat{y}) )</li>
-<li>若 ( y = 0 )，损失为 ( -\log(1 - \hat{y}) )</li>
-</ul>
-<h4 id="Softmax-的交叉熵损失函数"><a href="#Softmax-的交叉熵损失函数" class="headerlink" title="Softmax 的交叉熵损失函数"></a><strong>Softmax 的交叉熵损失函数</strong></h4><p><strong>Softmax 函数</strong></p>
-<p>给定 logits 向量 ( \mathbf{z} = [z_1, z_2, …, z_C] )（C 为类别数），Softmax 输出预测概率：</p>
-<p>[<br>\hat{y}<em>i = \text{softmax}(z_i) = \frac{e^{z_i}}{\sum</em>{j=1}^{C} e^{z_j}}<br>]</p>
+<h5 id="二元交叉熵损失binary-cross-entropy-bce">二元交叉熵损失（Binary
+Cross-Entropy, BCE）</h5>
+<p>对于单个样本，损失函数定义为：</p>
+<p>[ (y, ) = -]</p>
+<p>其中： - 若 ( y = 1 )，损失为 ( -() ) - 若 ( y = 0 )，损失为 ( -(1 -
+) )</p>
+<h4 id="softmax-的交叉熵损失函数"><strong>Softmax
+的交叉熵损失函数</strong></h4>
+<p><strong>Softmax 函数</strong></p>
+<p>给定 logits 向量 ( = [z_1, z_2, …, z_C] )（C 为类别数），Softmax
+输出预测概率：</p>
+<p>[ _i = (z_i) = ]</p>
 <p><strong>交叉熵损失（单个样本）</strong></p>
-<p>真实标签为 one-hot 向量 ( \mathbf{y} = [y_1, y_2, …, y_C] )，其中只有真实类别位置为 1，其余为 0。</p>
+<p>真实标签为 one-hot 向量 ( = [y_1, y_2, …, y_C]
+)，其中只有真实类别位置为 1，其余为 0。</p>
 <p>损失函数为：</p>
-<p>[<br>\mathcal{L} = -\sum_{i=1}^{C} y_i \log(\hat{y}_i)<br>]</p>
+<p>[ = -_{i=1}^{C} y_i (_i) ]</p>
 <p>由于 ( y_i ) 只有一个为 1（设真实类别为 ( c )），上式简化为：</p>
-<p>[<br>\mathcal{L} = -\log(\hat{y}<em>c) = -\log\left( \frac{e^{z_c}}{\sum</em>{j=1}^{C} e^{z_j}} \right)<br>]</p>
+<p>[ = -(_c) = -( ) ]</p>
 <p>进一步化简：</p>
-<p>[<br>\mathcal{L} = -z<em>c + \log\left( \sum</em>{j=1}^{C} e^{z_j} \right)<br>]</p>
-<h4 id="Sigmoid和Softmax区别"><a href="#Sigmoid和Softmax区别" class="headerlink" title="Sigmoid和Softmax区别"></a>Sigmoid和Softmax区别</h4><p><strong>1.Sigmoid（逐元素</strong>）</p>
-<p>对输入 ( x )（标量或向量中的每个元素）：<br>[<br>\sigma(x) = \frac{1}{1 + e^{-x}} \in (0, 1)<br>]</p>
+<p>[ = -z_c + ( _{j=1}^{C} e^{z_j} ) ]</p>
+<h4 id="sigmoid和softmax区别">Sigmoid和Softmax区别</h4>
+<p><strong>1.Sigmoid（逐元素</strong>）</p>
+<p>对输入 ( x )（标量或向量中的每个元素）： [ (x) = (0, 1) ]</p>
 <blockquote>
-<p>📌 如果输入是向量 ( \mathbf{x} = [x_1, x_2, …, x_n] )，则输出：<br>[<br>[\sigma(x_1), \sigma(x_2), …, \sigma(x_n)]<br>]<br><strong>每个元素独立计算，彼此无关</strong>。</p>
+<p>📌 如果输入是向量 ( = [x_1, x_2, …, x_n] )，则输出： [ [(x_1), (x_2),
+…, (x_n)] ] <strong>每个元素独立计算，彼此无关</strong>。</p>
 </blockquote>
 <p><strong>2. Softmax（整体归一化）</strong></p>
-<p>对输入向量 ( \mathbf{z} = [z<em>1, z_2, …, z_C] )：<br>[<br>\text{softmax}(z_i) = \frac{e^{z_i}}{\sum</em>{j=1}^{C} e^{z_j}} \in (0, 1)<br>]</p>
+<p>对输入向量 ( = [z_1, z_2, …, z_C] )： [ (z_i) = (0, 1) ]</p>
 <blockquote>
-<p>✅ 满足：( \sum_{i=1}^{C} \text{softmax}(z_i) = 1 )</p>
+<p>✅ 满足：( _{i=1}^{C} (z_i) = 1 )</p>
 </blockquote>
 <p><strong>应用场景对比</strong></p>
 <p><strong>Sigmoid 适用场景：</strong></p>
@@ -368,7 +374,8 @@
 <p><strong>Softmax 适用场景：</strong></p>
 <p><strong>多分类问题（Multi-class, 互斥）</strong></p>
 <ul>
-<li>每个样本<strong>只属于一个类别</strong>（如 MNIST 手写数字 0~9）</li>
+<li>每个样本<strong>只属于一个类别</strong>（如 MNIST 手写数字
+0~9）</li>
 <li>输出 C 个概率，<strong>和为 1</strong>，最大值对应预测类别</li>
 <li>例如：输出 <code>[0.1, 0.7, 0.2]</code> 表示最可能是类别 1</li>
 </ul>
@@ -379,21 +386,31 @@
 <li><strong>“可多选” 或 “是/否” → Sigmoid</strong></li>
 </ul>
 </blockquote>
-<h4 id="为什么多分类要用-Softmax，而不是对每个类别用-Sigmoid-再取最大值？"><a href="#为什么多分类要用-Softmax，而不是对每个类别用-Sigmoid-再取最大值？" class="headerlink" title="为什么多分类要用 Softmax，而不是对每个类别用 Sigmoid 再取最大值？"></a><strong>为什么多分类要用 Softmax，而不是对每个类别用 Sigmoid 再取最大值？</strong></h4><p>问题在于 <strong>损失函数</strong>：</p>
-<p>如果你用 <strong>Binary Cross-Entropy (BCE)</strong>（Sigmoid 的配套损失）：</p>
+<h4 id="为什么多分类要用-softmax而不是对每个类别用-sigmoid-再取最大值"><strong>为什么多分类要用
+Softmax，而不是对每个类别用 Sigmoid 再取最大值？</strong></h4>
+<p>问题在于 <strong>损失函数</strong>：</p>
+<p>如果你用 <strong>Binary Cross-Entropy (BCE)</strong>（Sigmoid
+的配套损失）：</p>
 <ul>
 <li>损失 = <code>- [y₁·log(p₁) + y₂·log(p₂) + y₃·log(p₃)]</code></li>
-<li>对于标签 <code>[0, 1, 0]</code>，损失只惩罚“狗”的预测（希望 p₂→1），但<strong>不惩罚“猫”和“鸟”是否太高</strong>！</li>
-<li>结果：模型可能输出 <code>[0.9, 0.95, 0.8]</code>，虽然选对了“狗”，但对其他类也过于自信，泛化差。</li>
+<li>对于标签 <code>[0, 1, 0]</code>，损失只惩罚“狗”的预测（希望
+p₂→1），但<strong>不惩罚“猫”和“鸟”是否太高</strong>！</li>
+<li>结果：模型可能输出
+<code>[0.9, 0.95, 0.8]</code>，虽然选对了“狗”，但对其他类也过于自信，泛化差。</li>
 </ul>
 <p>而 <strong>Softmax + Cross-Entropy</strong>：</p>
 <ul>
 <li>损失 = <code>-log(p₂)</code></li>
-<li>但因为 <code>p₂ = e^&#123;z₂&#125;/(e^&#123;z₁&#125;+e^&#123;z₂&#125;+e^&#123;z₃&#125;)</code>，<strong>要让 p₂ 变大，必须让 z₂ 相对于 z₁、z₃ 更大</strong>。</li>
-<li>所以模型会<strong>主动压制错误类别的 logit</strong>，学习更清晰的决策边界。</li>
+<li>但因为 <code>p₂ = e^&#123;z₂&#125;/(e^&#123;z₁&#125;+e^&#123;z₂&#125;+e^&#123;z₃&#125;)</code>，<strong>要让
+p₂ 变大，必须让 z₂ 相对于 z₁、z₃ 更大</strong>。</li>
+<li>所以模型会<strong>主动压制错误类别的
+logit</strong>，学习更清晰的决策边界。</li>
 </ul>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://zh.d2l.ai/index.html">《动手学深度学习》 — 动手学深度学习 2.0.0 documentation</a></p>
-<p><a target="_blank" rel="noopener" href="https://courses.d2l.ai/zh-v2/">课程安排 - 动手学深度学习课程</a></p>
+<h3 id="参考资料">参考资料</h3>
+<p><a target="_blank" rel="noopener" href="https://zh.d2l.ai/index.html">《动手学深度学习》 —
+动手学深度学习 2.0.0 documentation</a></p>
+<p><a target="_blank" rel="noopener" href="https://courses.d2l.ai/zh-v2/">课程安排 -
+动手学深度学习课程</a></p>
 
     </div>
 

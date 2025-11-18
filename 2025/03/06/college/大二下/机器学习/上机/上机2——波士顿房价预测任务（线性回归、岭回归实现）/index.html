@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="波士顿房价预测任务（线性回归、岭回归实现）包括数据准备、模型训练、模型评估与选择、性能度量、参数选择 问题背景与数据集介绍波士顿房价预测是一个经典的机器学习任务，类似于程序员世界的“Hello World”。和大家对房价的普遍认知相同，波士顿地区的房价受诸多因素影响。美国某经济杂志登出波士顿房价数据集，该数据集包含506条观测信息，统计了13种可能影响房价的因素（输入变量）和该类型房屋的均价（输出">
+    <meta name="description" content="波士顿房价预测任务（线性回归、岭回归实现） 包括数据准备、模型训练、模型评估与选择、性能度量、参数选择 问题背景与数据集介绍 波士顿房价预测是一个经典的机器学习任务，类似于程序员世界的“Hello World”。和大家对房价的普遍认知相同，波士顿地区的房价受诸多因素影响。美国某经济杂志登出波士顿房价数据集，该数据集包含506条观测信息，统计了13种可能影响房价的因素（输入变量）和该类型房屋">
 <meta property="og:type" content="article">
 <meta property="og:title" content="机器学习——第二次上机——波士顿房价预测任务（线性回归、岭回归实现）">
 <meta property="og:url" content="http://example.com/2025/03/06/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%B8%8A%E6%9C%BA/%E4%B8%8A%E6%9C%BA2%E2%80%94%E2%80%94%E6%B3%A2%E5%A3%AB%E9%A1%BF%E6%88%BF%E4%BB%B7%E9%A2%84%E6%B5%8B%E4%BB%BB%E5%8A%A1%EF%BC%88%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E3%80%81%E5%B2%AD%E5%9B%9E%E5%BD%92%E5%AE%9E%E7%8E%B0%EF%BC%89/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="波士顿房价预测任务（线性回归、岭回归实现）包括数据准备、模型训练、模型评估与选择、性能度量、参数选择 问题背景与数据集介绍波士顿房价预测是一个经典的机器学习任务，类似于程序员世界的“Hello World”。和大家对房价的普遍认知相同，波士顿地区的房价受诸多因素影响。美国某经济杂志登出波士顿房价数据集，该数据集包含506条观测信息，统计了13种可能影响房价的因素（输入变量）和该类型房屋的均价（输出">
+<meta property="og:description" content="波士顿房价预测任务（线性回归、岭回归实现） 包括数据准备、模型训练、模型评估与选择、性能度量、参数选择 问题背景与数据集介绍 波士顿房价预测是一个经典的机器学习任务，类似于程序员世界的“Hello World”。和大家对房价的普遍认知相同，波士顿地区的房价受诸多因素影响。美国某经济杂志登出波士顿房价数据集，该数据集包含506条观测信息，统计了13种可能影响房价的因素（输入变量）和该类型房屋">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://ai-studio-static-online.cdn.bcebos.com/be005522b4c441ba89ee7a2ad8277f7c8706457a7a8e4b5f84f92591a32b701d">
 <meta property="og:image" content="https://ai-studio-static-online.cdn.bcebos.com/46fb2e80de2047ff8af2c16819a9e3f5114533f01e3c44c697cfdd66be7bf22f">
@@ -148,7 +148,11 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B3%A2%E5%A3%AB%E9%A1%BF%E6%88%BF%E4%BB%B7%E9%A2%84%E6%B5%8B%E4%BB%BB%E5%8A%A1%EF%BC%88%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E3%80%81%E5%B2%AD%E5%9B%9E%E5%BD%92%E5%AE%9E%E7%8E%B0%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">波士顿房价预测任务（线性回归、岭回归实现）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E8%83%8C%E6%99%AF%E4%B8%8E%E6%95%B0%E6%8D%AE%E9%9B%86%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">问题背景与数据集介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="nav-number">1.1.1.</span> <span class="nav-text">实现过程：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87"><span class="nav-number">1.2.</span> <span class="nav-text">数据准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="nav-number">1.2.1.</span> <span class="nav-text">导入数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">1.2.2.</span> <span class="nav-text">数据可视化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">1.3.</span> <span class="nav-text">数据预处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A11%EF%BC%9A%E6%95%B0%E6%8D%AE%E9%9B%86%E5%88%92%E5%88%86"><span class="nav-number">1.3.1.</span> <span class="nav-text">任务1：数据集划分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C%EF%BC%9A"><span class="nav-number">1.3.2.</span> <span class="nav-text">结果：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="nav-number">1.3.3.</span> <span class="nav-text">总结：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A12%EF%BC%9A%E6%95%B0%E6%8D%AE%E6%A0%87%E5%87%86%E5%8C%96%E5%A4%84%E7%90%86%EF%BC%9A"><span class="nav-number">1.3.4.</span> <span class="nav-text">任务2：数据标准化处理：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Z-score%E6%A0%87%E5%87%86%E5%8C%96"><span class="nav-number">1.3.4.1.</span> <span class="nav-text">1. Z-score标准化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%A7%A3%E9%87%8A%EF%BC%9A"><span class="nav-number">1.3.4.2.</span> <span class="nav-text">代码解释：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-MinMax%E6%A0%87%E5%87%86%E5%8C%96"><span class="nav-number">1.3.4.3.</span> <span class="nav-text">2. MinMax标准化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%A7%A3%E9%87%8A%EF%BC%9A-1"><span class="nav-number">1.3.5.</span> <span class="nav-text">代码解释：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E4%B8%8E%E8%AF%84%E4%BC%B0"><span class="nav-number">1.4.</span> <span class="nav-text">模型训练与评估</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A13-1%EF%BC%9A%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83"><span class="nav-number">1.4.1.</span> <span class="nav-text">任务3.1：线性回归模型训练</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%A7%A3%E9%87%8A%EF%BC%9A-2"><span class="nav-number">1.4.2.</span> <span class="nav-text">代码解释：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A13-2%EF%BC%9A%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0"><span class="nav-number">1.4.3.</span> <span class="nav-text">任务3.2：线性回归模型评估</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-R%C2%B2%EF%BC%88%E5%86%B3%E5%AE%9A%E7%B3%BB%E6%95%B0%EF%BC%89-%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F%EF%BC%9A"><span class="nav-number">1.4.4.</span> <span class="nav-text">1. R²（决定系数） 计算公式：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E9%87%8A%EF%BC%9A"><span class="nav-number">1.4.4.1.</span> <span class="nav-text">解释：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-MSE%EF%BC%88%E5%9D%87%E6%96%B9%E8%AF%AF%E5%B7%AE%EF%BC%89-%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F%EF%BC%9A"><span class="nav-number">1.4.5.</span> <span class="nav-text">2. MSE（均方误差） 计算公式：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E9%87%8A%EF%BC%9A-1"><span class="nav-number">1.4.5.1.</span> <span class="nav-text">解释：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-MAE%EF%BC%88%E5%B9%B3%E5%9D%87%E7%BB%9D%E5%AF%B9%E8%AF%AF%E5%B7%AE%EF%BC%89-%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F%EF%BC%9A"><span class="nav-number">1.4.6.</span> <span class="nav-text">3. MAE（平均绝对误差） 计算公式：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E9%87%8A%EF%BC%9A-2"><span class="nav-number">1.4.6.1.</span> <span class="nav-text">解释：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A-1"><span class="nav-number">1.4.7.</span> <span class="nav-text">总结：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A13-3%EF%BC%9A%E5%B2%AD%E5%9B%9E%E5%BD%92%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83"><span class="nav-number">1.4.8.</span> <span class="nav-text">任务3.3：岭回归模型训练</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B2%AD%E5%9B%9E%E5%BD%92%EF%BC%88Ridge-Regression%EF%BC%89"><span class="nav-number">1.4.9.</span> <span class="nav-text">岭回归（Ridge Regression）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B2%AD%E5%9B%9E%E5%BD%92%E7%9A%84%E5%85%AC%E5%BC%8F"><span class="nav-number">1.4.10.</span> <span class="nav-text">岭回归的公式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E7%82%B9%EF%BC%9A"><span class="nav-number">1.4.11.</span> <span class="nav-text">关键点：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B2%AD%E5%9B%9E%E5%BD%92%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">1.4.12.</span> <span class="nav-text">岭回归的作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B2%AD%E5%9B%9E%E5%BD%92%E4%B8%8E%E6%99%AE%E9%80%9A%E6%9C%80%E5%B0%8F%E4%BA%8C%E4%B9%98%E5%9B%9E%E5%BD%92%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.4.13.</span> <span class="nav-text">岭回归与普通最小二乘回归的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B2%AD%E5%9B%9E%E5%BD%92%E7%9A%84%E8%B6%85%E5%8F%82%E6%95%B0-alpha"><span class="nav-number">1.4.14.</span> <span class="nav-text">岭回归的超参数 ( $\alpha$ )</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A13-4%EF%BC%9A%E5%B2%AD%E5%9B%9E%E5%BD%92%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0"><span class="nav-number">1.4.15.</span> <span class="nav-text">任务3.4：岭回归模型评估</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E9%80%89%E6%8B%A9"><span class="nav-number">1.5.</span> <span class="nav-text">参数选择</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A14%EF%BC%9A%E8%BF%90%E7%94%A8%E4%BA%A4%E5%8F%89%E9%AA%8C%E8%AF%81%E9%80%89%E6%8B%A9%E6%A8%A1%E5%9E%8B%E5%8F%82%E6%95%B0"><span class="nav-number">1.5.1.</span> <span class="nav-text">任务4：运用交叉验证选择模型参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%88%86%E7%B1%BB%E9%97%AE%E9%A2%98"><span class="nav-number">1.6.</span> <span class="nav-text">二分类问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A15%EF%BC%9A%E6%B3%A2%E5%A3%AB%E9%A1%BF%E6%88%BF%E4%BB%B7%E4%BA%8C%E5%88%86%E7%B1%BB%E9%97%AE%E9%A2%98"><span class="nav-number">1.6.1.</span> <span class="nav-text">任务5：波士顿房价二分类问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%87%86%E7%A1%AE%E7%8E%87-Accuracy-%EF%BC%9A"><span class="nav-number">1.6.2.</span> <span class="nav-text">1. 准确率 (Accuracy)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-F1-%E5%88%86%E6%95%B0-F1-Score-%EF%BC%9A"><span class="nav-number">1.6.3.</span> <span class="nav-text">2. F1 分数 (F1 Score)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-AUC-Area-Under-the-Curve-%EF%BC%9A"><span class="nav-number">1.6.4.</span> <span class="nav-text">3. AUC (Area Under the Curve)：</span></a></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B3%A2%E5%A3%AB%E9%A1%BF%E6%88%BF%E4%BB%B7%E9%A2%84%E6%B5%8B%E4%BB%BB%E5%8A%A1%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E5%B2%AD%E5%9B%9E%E5%BD%92%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.</span> <span class="nav-text">波士顿房价预测任务（线性回归、岭回归实现）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E8%83%8C%E6%99%AF%E4%B8%8E%E6%95%B0%E6%8D%AE%E9%9B%86%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">问题背景与数据集介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B"><span class="nav-number">1.1.1.</span> <span class="nav-text">实现过程：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%87%86%E5%A4%87"><span class="nav-number">1.2.</span> <span class="nav-text">数据准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="nav-number">1.2.1.</span> <span class="nav-text">导入数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96"><span class="nav-number">1.2.2.</span> <span class="nav-text">数据可视化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">1.3.</span> <span class="nav-text">数据预处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A11%E6%95%B0%E6%8D%AE%E9%9B%86%E5%88%92%E5%88%86"><span class="nav-number">1.3.1.</span> <span class="nav-text">任务1：数据集划分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C"><span class="nav-number">1.3.2.</span> <span class="nav-text">结果：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.3.3.</span> <span class="nav-text">总结：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A12%E6%95%B0%E6%8D%AE%E6%A0%87%E5%87%86%E5%8C%96%E5%A4%84%E7%90%86"><span class="nav-number">1.3.4.</span> <span class="nav-text">任务2：数据标准化处理：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#z-score%E6%A0%87%E5%87%86%E5%8C%96"><span class="nav-number">1.3.4.1.</span> <span class="nav-text">1. Z-score标准化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%A7%A3%E9%87%8A"><span class="nav-number">1.3.4.2.</span> <span class="nav-text">代码解释：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#minmax%E6%A0%87%E5%87%86%E5%8C%96"><span class="nav-number">1.3.4.3.</span> <span class="nav-text">2. MinMax标准化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%A7%A3%E9%87%8A-1"><span class="nav-number">1.3.5.</span> <span class="nav-text">代码解释：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E4%B8%8E%E8%AF%84%E4%BC%B0"><span class="nav-number">1.4.</span> <span class="nav-text">模型训练与评估</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A13.1%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83"><span class="nav-number">1.4.1.</span> <span class="nav-text">任务3.1：线性回归模型训练</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E8%A7%A3%E9%87%8A-2"><span class="nav-number">1.4.2.</span> <span class="nav-text">代码解释：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A13.2%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0"><span class="nav-number">1.4.3.</span> <span class="nav-text">任务3.2：线性回归模型评估</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#r%C2%B2%E5%86%B3%E5%AE%9A%E7%B3%BB%E6%95%B0-%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F"><span class="nav-number">1.4.4.</span> <span class="nav-text">1. R²（决定系数）
+计算公式：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E9%87%8A"><span class="nav-number">1.4.4.1.</span> <span class="nav-text">解释：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mse%E5%9D%87%E6%96%B9%E8%AF%AF%E5%B7%AE-%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F"><span class="nav-number">1.4.5.</span> <span class="nav-text">2. MSE（均方误差）
+计算公式：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E9%87%8A-1"><span class="nav-number">1.4.5.1.</span> <span class="nav-text">解释：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mae%E5%B9%B3%E5%9D%87%E7%BB%9D%E5%AF%B9%E8%AF%AF%E5%B7%AE-%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F"><span class="nav-number">1.4.6.</span> <span class="nav-text">3.
+MAE（平均绝对误差） 计算公式：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E9%87%8A-2"><span class="nav-number">1.4.6.1.</span> <span class="nav-text">解释：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93-1"><span class="nav-number">1.4.7.</span> <span class="nav-text">总结：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A13.3%E5%B2%AD%E5%9B%9E%E5%BD%92%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83"><span class="nav-number">1.4.8.</span> <span class="nav-text">任务3.3：岭回归模型训练</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B2%AD%E5%9B%9E%E5%BD%92ridge-regression"><span class="nav-number">1.4.9.</span> <span class="nav-text">岭回归（Ridge Regression）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B2%AD%E5%9B%9E%E5%BD%92%E7%9A%84%E5%85%AC%E5%BC%8F"><span class="nav-number">1.4.10.</span> <span class="nav-text">岭回归的公式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E7%82%B9"><span class="nav-number">1.4.11.</span> <span class="nav-text">关键点：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B2%AD%E5%9B%9E%E5%BD%92%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">1.4.12.</span> <span class="nav-text">岭回归的作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B2%AD%E5%9B%9E%E5%BD%92%E4%B8%8E%E6%99%AE%E9%80%9A%E6%9C%80%E5%B0%8F%E4%BA%8C%E4%B9%98%E5%9B%9E%E5%BD%92%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.4.13.</span> <span class="nav-text">岭回归与普通最小二乘回归的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B2%AD%E5%9B%9E%E5%BD%92%E7%9A%84%E8%B6%85%E5%8F%82%E6%95%B0-alpha"><span class="nav-number">1.4.14.</span> <span class="nav-text">岭回归的超参数 ( α )</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A13.4%E5%B2%AD%E5%9B%9E%E5%BD%92%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0"><span class="nav-number">1.4.15.</span> <span class="nav-text">任务3.4：岭回归模型评估</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E9%80%89%E6%8B%A9"><span class="nav-number">1.5.</span> <span class="nav-text">参数选择</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A14%E8%BF%90%E7%94%A8%E4%BA%A4%E5%8F%89%E9%AA%8C%E8%AF%81%E9%80%89%E6%8B%A9%E6%A8%A1%E5%9E%8B%E5%8F%82%E6%95%B0"><span class="nav-number">1.5.1.</span> <span class="nav-text">任务4：运用交叉验证选择模型参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%88%86%E7%B1%BB%E9%97%AE%E9%A2%98"><span class="nav-number">1.6.</span> <span class="nav-text">二分类问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A15%E6%B3%A2%E5%A3%AB%E9%A1%BF%E6%88%BF%E4%BB%B7%E4%BA%8C%E5%88%86%E7%B1%BB%E9%97%AE%E9%A2%98"><span class="nav-number">1.6.1.</span> <span class="nav-text">任务5：波士顿房价二分类问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%86%E7%A1%AE%E7%8E%87-accuracy"><span class="nav-number">1.6.2.</span> <span class="nav-text">1. 准确率 (Accuracy)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#f1-%E5%88%86%E6%95%B0-f1-score"><span class="nav-number">1.6.3.</span> <span class="nav-text">2. F1 分数 (F1 Score)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#auc-area-under-the-curve"><span class="nav-number">1.6.4.</span> <span class="nav-text">3. AUC (Area Under the
+Curve)：</span></a></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -163,7 +167,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">155</span>
+          <span class="site-state-item-count">164</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -292,207 +296,306 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="波士顿房价预测任务（线性回归、岭回归实现）"><a href="#波士顿房价预测任务（线性回归、岭回归实现）" class="headerlink" title="波士顿房价预测任务（线性回归、岭回归实现）"></a>波士顿房价预测任务（线性回归、岭回归实现）</h1><p>包括数据准备、模型训练、模型评估与选择、性能度量、参数选择</p>
-<h2 id="问题背景与数据集介绍"><a href="#问题背景与数据集介绍" class="headerlink" title="问题背景与数据集介绍"></a>问题背景与数据集介绍</h2><p>波士顿房价预测是一个经典的机器学习任务，类似于程序员世界的“Hello World”。和大家对房价的普遍认知相同，波士顿地区的房价受诸多因素影响。美国某经济杂志登出波士顿房价数据集，该数据集包含506条观测信息，统计了13种可能影响房价的因素（输入变量）和该类型房屋的均价（输出变量），其中每条观测信息包含城镇犯罪率、一氧化氮浓度、住宅平均房间数、到中心区域的加权距离以及自住房平均房价等关于波士顿周边或者城镇房价的描述，期望通过分析影响波士顿房价的因素来构建房价预测模型。相关属性描述如下图所示，其中最后一项就是想要预测的房屋均价。</p>
-<p><img src="https://ai-studio-static-online.cdn.bcebos.com/be005522b4c441ba89ee7a2ad8277f7c8706457a7a8e4b5f84f92591a32b701d" alt></p>
+    <div class="post-body" itemprop="articleBody"><h1 id="波士顿房价预测任务线性回归岭回归实现">波士顿房价预测任务（线性回归、岭回归实现）</h1>
+<p>包括数据准备、模型训练、模型评估与选择、性能度量、参数选择</p>
+<h2 id="问题背景与数据集介绍">问题背景与数据集介绍</h2>
+<p>波士顿房价预测是一个经典的机器学习任务，类似于程序员世界的“Hello
+World”。和大家对房价的普遍认知相同，波士顿地区的房价受诸多因素影响。美国某经济杂志登出波士顿房价数据集，该数据集包含506条观测信息，统计了13种可能影响房价的因素（输入变量）和该类型房屋的均价（输出变量），其中每条观测信息包含城镇犯罪率、一氧化氮浓度、住宅平均房间数、到中心区域的加权距离以及自住房平均房价等关于波士顿周边或者城镇房价的描述，期望通过分析影响波士顿房价的因素来构建房价预测模型。相关属性描述如下图所示，其中最后一项就是想要预测的房屋均价。</p>
+<p><img src="https://ai-studio-static-online.cdn.bcebos.com/be005522b4c441ba89ee7a2ad8277f7c8706457a7a8e4b5f84f92591a32b701d"></p>
 <p>观测数据的示例如下图所示。</p>
-<p><img src="https://ai-studio-static-online.cdn.bcebos.com/46fb2e80de2047ff8af2c16819a9e3f5114533f01e3c44c697cfdd66be7bf22f" alt></p>
-<p>对于预测问题，可以根据预测输出的类型是连续的实数值，还是离散的标签，区分为回归任务和分类任务。因为房价是一个连续值，所以房价预测显然是一个回归任务。本次实验要求大家调用sklearn 的线性回归、岭回归模型来实现。</p>
-<h3 id="实现过程："><a href="#实现过程：" class="headerlink" title="实现过程："></a>实现过程：</h3><ol>
+<p><img src="https://ai-studio-static-online.cdn.bcebos.com/46fb2e80de2047ff8af2c16819a9e3f5114533f01e3c44c697cfdd66be7bf22f"></p>
+<p>对于预测问题，可以根据预测输出的类型是连续的实数值，还是离散的标签，区分为回归任务和分类任务。因为房价是一个连续值，所以房价预测显然是一个回归任务。本次实验要求大家调用sklearn
+的线性回归、岭回归模型来实现。</p>
+<h3 id="实现过程">实现过程：</h3>
+<ol type="1">
 <li>数据准备：导入数据、特征可视化</li>
 <li>数据预处理：数据集划分、数据标准化处理</li>
 <li>模型训练：线性回归、岭回归</li>
 <li>模型评估与选择、参数选择</li>
 </ol>
-<h2 id="数据准备"><a href="#数据准备" class="headerlink" title="数据准备"></a>数据准备</h2><h3 id="导入数据"><a href="#导入数据" class="headerlink" title="导入数据"></a>导入数据</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_boston</span><br><span class="line">boston = load_boston()</span><br><span class="line"><span class="built_in">print</span>(boston.DESCR)</span><br></pre></td></tr></table></figure>
-<h3 id="数据可视化"><a href="#数据可视化" class="headerlink" title="数据可视化"></a>数据可视化</h3><p>通过观察不同属性与房价之间的关系，分析影响房价的主要因素。</p>
-<p>boston.data 存储的是所有样本的属性值，boston.target 存储的是所有样本的房价。下段程序所展示的13幅图中，横坐标是该属性的取值，纵坐标是房价值。</p>
+<h2 id="数据准备">数据准备</h2>
+<h3 id="导入数据">导入数据</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_boston</span><br><span class="line">boston = load_boston()</span><br><span class="line"><span class="built_in">print</span>(boston.DESCR)</span><br></pre></td></tr></table></figure>
+<h3 id="数据可视化">数据可视化</h3>
+<p>通过观察不同属性与房价之间的关系，分析影响房价的主要因素。</p>
+<p>boston.data 存储的是所有样本的属性值，boston.target
+存储的是所有样本的房价。下段程序所展示的13幅图中，横坐标是该属性的取值，纵坐标是房价值。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入matplotlib库中的pyplot模块，用于绘制图表</span></span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置图表的大小，figsize指定了图表的宽度和高度，单位是英寸</span></span><br><span class="line">plt.figure(figsize=(<span class="number">20</span>, <span class="number">10</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 遍历波士顿数据集的13个特征</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">13</span>):</span><br><span class="line">    <span class="comment"># 创建一个2行7列的子图，并在当前子图中绘制散点图</span></span><br><span class="line">    plt.subplot(<span class="number">2</span>, <span class="number">7</span>, i + <span class="number">1</span>)  <span class="comment"># 2行7列的第i+1个子图</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 绘制散点图：x轴是第i个特征，y轴是目标值（房价中位数），s指定点的大小</span></span><br><span class="line">    plt.scatter(boston.data[:, i], boston.target, s=<span class="number">20</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 设置当前子图的标题，显示当前特征的名称</span></span><br><span class="line">    plt.title(boston.feature_names[i])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 保存当前图表为PNG格式的图片，文件名为img.png</span></span><br><span class="line">plt.savefig(<span class="string">&#x27;img.png&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示绘制的所有子图</span></span><br><span class="line">plt.show()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p> <img src="/2025/03/06/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%B8%8A%E6%9C%BA/%E4%B8%8A%E6%9C%BA2%E2%80%94%E2%80%94%E6%B3%A2%E5%A3%AB%E9%A1%BF%E6%88%BF%E4%BB%B7%E9%A2%84%E6%B5%8B%E4%BB%BB%E5%8A%A1%EF%BC%88%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E3%80%81%E5%B2%AD%E5%9B%9E%E5%BD%92%E5%AE%9E%E7%8E%B0%EF%BC%89/img.png" alt="img"></p>
-<h2 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h2><h3 id="任务1：数据集划分"><a href="#任务1：数据集划分" class="headerlink" title="任务1：数据集划分"></a>任务1：数据集划分</h3><p>调用sklearn.model_selection中的train_test_split()函数，把boston数据集分为训练集和测试集，划分比例是4:1。</p>
+<figure>
+<img src="/2025/03/06/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%B8%8A%E6%9C%BA/%E4%B8%8A%E6%9C%BA2%E2%80%94%E2%80%94%E6%B3%A2%E5%A3%AB%E9%A1%BF%E6%88%BF%E4%BB%B7%E9%A2%84%E6%B5%8B%E4%BB%BB%E5%8A%A1%EF%BC%88%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%E3%80%81%E5%B2%AD%E5%9B%9E%E5%BD%92%E5%AE%9E%E7%8E%B0%EF%BC%89/img.png" alt="img">
+<figcaption aria-hidden="true">img</figcaption>
+</figure>
+<h2 id="数据预处理">数据预处理</h2>
+<h3 id="任务1数据集划分">任务1：数据集划分</h3>
+<p>调用sklearn.model_selection中的train_test_split()函数，把boston数据集分为训练集和测试集，划分比例是4:1。</p>
 <blockquote>
 <p>补全代码：</p>
 </blockquote>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="comment"># 加载波士顿房价数据集</span></span><br><span class="line">boston = load_boston()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将数据集划分为训练集和测试集，test_size=0.2 表示测试集占20%，即训练集占80%</span></span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(boston.data, boston.target, test_size=<span class="number">0.2</span>)</span><br></pre></td></tr></table></figure>
-<h3 id="结果："><a href="#结果：" class="headerlink" title="结果："></a>结果：</h3><ul>
-<li><strong><code>X_train</code></strong>：训练集的特征数据，形状为 <code>(404, 13)</code>，即 80% 的数据（506 * 0.8 = 404 个样本），每个样本有 13 个特征。</li>
-<li><strong><code>X_test</code></strong>：测试集的特征数据，形状为 <code>(102, 13)</code>，即 20% 的数据（506 * 0.2 = 102 个样本）。</li>
-<li><strong><code>y_train</code></strong>：训练集的目标值，形状为 <code>(404,)</code>，即对应训练集的 404 个房价中位数。</li>
-<li><strong><code>y_test</code></strong>：测试集的目标值，形状为 <code>(102,)</code>，即对应测试集的 102 个房价中位数。</li>
+<h3 id="结果">结果：</h3>
+<ul>
+<li><strong><code>X_train</code></strong>：训练集的特征数据，形状为
+<code>(404, 13)</code>，即 80% 的数据（506 * 0.8 = 404
+个样本），每个样本有 13 个特征。</li>
+<li><strong><code>X_test</code></strong>：测试集的特征数据，形状为
+<code>(102, 13)</code>，即 20% 的数据（506 * 0.2 = 102 个样本）。</li>
+<li><strong><code>y_train</code></strong>：训练集的目标值，形状为
+<code>(404,)</code>，即对应训练集的 404 个房价中位数。</li>
+<li><strong><code>y_test</code></strong>：测试集的目标值，形状为
+<code>(102,)</code>，即对应测试集的 102 个房价中位数。</li>
 </ul>
-<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><ul>
-<li><code>train_test_split()</code> 将数据集（包括特征和目标值）按照指定的比例随机划分为训练集和测试集。划分后的数据将用于模型的训练和评估，确保模型评估时使用的数据不会在训练过程中被“看见”。</li>
-<li><code>test_size=0.2</code> 表示将 20% 的数据作为测试集，80% 的数据作为训练集。</li>
-<li><code>random_state=42</code> 确保每次划分数据集时能得到一致的结果，保证实验的可复现性。</li>
+<h3 id="总结">总结：</h3>
+<ul>
+<li><code>train_test_split()</code>
+将数据集（包括特征和目标值）按照指定的比例随机划分为训练集和测试集。划分后的数据将用于模型的训练和评估，确保模型评估时使用的数据不会在训练过程中被“看见”。</li>
+<li><code>test_size=0.2</code> 表示将 20% 的数据作为测试集，80%
+的数据作为训练集。</li>
+<li><code>random_state=42</code>
+确保每次划分数据集时能得到一致的结果，保证实验的可复现性。</li>
 </ul>
-<h3 id="任务2：数据标准化处理："><a href="#任务2：数据标准化处理：" class="headerlink" title="任务2：数据标准化处理："></a>任务2：数据标准化处理：</h3><h4 id="1-Z-score标准化"><a href="#1-Z-score标准化" class="headerlink" title="1. Z-score标准化"></a>1. Z-score标准化</h4><p>首先使用StandardScaler()函数初始化对属性值的标准化器，然后调用fit_transform()方法对训练数据进行Z-score标准化，再将这个标准化器调用transform()方法用于测试数据的标准化。</p>
+<h3 id="任务2数据标准化处理">任务2：数据标准化处理：</h3>
+<h4 id="z-score标准化">1. Z-score标准化</h4>
+<p>首先使用StandardScaler()函数初始化对属性值的标准化器，然后调用fit_transform()方法对训练数据进行Z-score标准化，再将这个标准化器调用transform()方法用于测试数据的标准化。</p>
 <blockquote>
 <p>补全代码：</p>
 </blockquote>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br><span class="line"><span class="comment"># 初始化对属性值的标准化器</span></span><br><span class="line">ss_X = StandardScaler()</span><br><span class="line"><span class="comment"># ss_X调用fit_transform()和transform()方法对训练数据和测试数据进行标准化</span></span><br><span class="line"><span class="comment"># 对训练数据进行标准化，fit_transform() 方法会计算训练数据的均值和标准差，并应用到训练数据</span></span><br><span class="line"><span class="comment"># 训练数据X_train会被标准化为均值0，标准差1</span></span><br><span class="line">X_train = ss_X.fit_transform(X_train)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 对测试数据进行标准化，使用transform()方法来使用训练数据的均值和标准差来标准化测试数据</span></span><br><span class="line"><span class="comment"># 注意：测试数据不能再用fit_transform()，否则会使用测试数据的统计量，导致数据泄露</span></span><br><span class="line">X_test = ss_X.transform(X_test)</span><br></pre></td></tr></table></figure>
-<p><strong>Z-score 标准化</strong>的过程是将数据转换为均值为0，标准差为1的分布。<code>StandardScaler()</code> 是 <code>scikit-learn</code> 提供的标准化工具，它通过去掉均值并除以标准差来实现这一标准化。</p>
-<h4 id="代码解释："><a href="#代码解释：" class="headerlink" title="代码解释："></a>代码解释：</h4><p><strong>对训练数据进行标准化</strong>：<br>   <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X_train = ss_X.fit_transform(X_train)</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li><code>fit()</code>：计算训练数据的均值和标准差。</li>
-<li><code>transform()</code>：使用训练数据的均值和标准差将数据标准化。</li>
-<li><code>fit_transform()</code>：这两个操作结合在一起，计算并转换训练数据，使其均值为0，标准差为1。</li>
-</ul>
-<p><strong>对测试数据进行标准化</strong>：<br>   <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X_test = ss_X.transform(X_test)</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>对测试数据应用 <code>transform()</code> 方法时，不会重新计算均值和标准差，而是使用在训练数据上计算得到的均值和标准差对测试数据进行转换。</li>
-<li>这确保了测试数据的标准化是基于训练数据的统计信息，而不是测试数据本身的统计信息。</li>
-</ul>
-<h4 id="2-MinMax标准化"><a href="#2-MinMax标准化" class="headerlink" title="2. MinMax标准化"></a>2. MinMax标准化</h4><p>首先使用StandardScaler()函数初始化对属性值的标准化器，然后调用fit_transform()方法对训练数据进行Z-score标准化，再将这个标准化器调用transform()方法用于测试数据的标准化。</p>
+<p><strong>Z-score
+标准化</strong>的过程是将数据转换为均值为0，标准差为1的分布。<code>StandardScaler()</code>
+是 <code>scikit-learn</code>
+提供的标准化工具，它通过去掉均值并除以标准差来实现这一标准化。</p>
+<h4 id="代码解释">代码解释：</h4>
+<p><strong>对训练数据进行标准化</strong>： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X_train = ss_X.fit_transform(X_train)</span><br></pre></td></tr></table></figure> -
+<code>fit()</code>：计算训练数据的均值和标准差。 -
+<code>transform()</code>：使用训练数据的均值和标准差将数据标准化。 -
+<code>fit_transform()</code>：这两个操作结合在一起，计算并转换训练数据，使其均值为0，标准差为1。</p>
+<p><strong>对测试数据进行标准化</strong>： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X_test = ss_X.transform(X_test)</span><br></pre></td></tr></table></figure> -
+对测试数据应用 <code>transform()</code>
+方法时，不会重新计算均值和标准差，而是使用在训练数据上计算得到的均值和标准差对测试数据进行转换。
+-
+这确保了测试数据的标准化是基于训练数据的统计信息，而不是测试数据本身的统计信息。</p>
+<h4 id="minmax标准化">2. MinMax标准化</h4>
+<p>首先使用StandardScaler()函数初始化对属性值的标准化器，然后调用fit_transform()方法对训练数据进行Z-score标准化，再将这个标准化器调用transform()方法用于测试数据的标准化。</p>
 <blockquote>
 <p>补全代码：</p>
 </blockquote>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> MinMaxScaler</span><br><span class="line"><span class="comment"># 初始化对属性值的标准化器</span></span><br><span class="line">mm_X = MinMaxScaler()</span><br><span class="line"><span class="comment"># mm_X调用fit_transform()和transform()方法对训练数据和测试数据进行MinMax标准化</span></span><br><span class="line">X_train1 = mm_X.fit_transform(X_train)</span><br><span class="line">X_test1 = mm_X.transform(X_test)</span><br></pre></td></tr></table></figure>
-<p>在 <strong>MinMax 标准化</strong>（也称为 <strong>归一化</strong>）中，数据将被缩放到指定的最小值和最大值之间，通常是将数据缩放到 <code>[0, 1]</code> 范围内。这对于那些对特征的绝对范围敏感的算法非常有效。</p>
-<p><code>MinMaxScaler</code> 是 <code>scikit-learn</code> 提供的一个标准化工具，它会将每个特征缩放到一个指定的范围内，默认情况下是 <code>[0, 1]</code>。</p>
-<h3 id="代码解释：-1"><a href="#代码解释：-1" class="headerlink" title="代码解释："></a>代码解释：</h3><p><strong>对训练数据进行 MinMax 标准化</strong>：<br>   <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X_train1 = mm_X.fit_transform(X_train)</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li><code>fit_transform()</code> 方法会计算训练数据的最小值和最大值，并将数据缩放到 <code>[0, 1]</code> 范围内。<ul>
-<li><strong><code>fit()</code></strong>：计算训练数据的最小值和最大值。</li>
-<li><strong><code>transform()</code></strong>：根据计算出的最小值和最大值，进行数据的转换。</li>
-<li><code>fit_transform()</code> 是这两个操作的组合，直接返回标准化后的训练数据。</li>
-</ul>
-</li>
-</ul>
-<p><strong>对测试数据进行 MinMax 标准化</strong>：<br>   <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X_test1 = mm_X.transform(X_test)</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li><code>transform()</code> 方法会使用训练数据上的最小值和最大值来转换测试数据。</li>
-<li><strong>注意</strong>：<code>transform()</code> 仅仅使用训练数据的统计量（即最小值和最大值）来对测试数据进行标准化，避免了数据泄露问题。如果对测试数据使用 <code>fit_transform()</code>，就会导致模型从测试数据中学习统计量，破坏了训练和测试数据的独立性。</li>
-</ul>
-<p><strong>MinMax 标准化</strong>是一种常用的数据预处理方法，尤其适用于特征的取值范围差异较大时。它将每个特征的最小值映射到 0，最大值映射到 1，其他值则在该区间内按比例进行缩放。这样做的好处是避免了某些特征因数值范围较大而在训练模型时占据主导地位，尤其是对于需要计算距离或内积的模型，如 KNN、SVM 等，使用 MinMax 标准化后的数据会使模型训练更加稳定。</p>
-<h2 id="模型训练与评估"><a href="#模型训练与评估" class="headerlink" title="模型训练与评估"></a>模型训练与评估</h2><h3 id="任务3-1：线性回归模型训练"><a href="#任务3-1：线性回归模型训练" class="headerlink" title="任务3.1：线性回归模型训练"></a>任务3.1：线性回归模型训练</h3><p>调用sklearn.linear_model中的LinearRegression()函数，对训练集(X_train,y_train)进行模型训练，并预测测试集X_test的房价lr_y_predict。</p>
+<p>在 <strong>MinMax 标准化</strong>（也称为
+<strong>归一化</strong>）中，数据将被缩放到指定的最小值和最大值之间，通常是将数据缩放到
+<code>[0, 1]</code>
+范围内。这对于那些对特征的绝对范围敏感的算法非常有效。</p>
+<p><code>MinMaxScaler</code> 是 <code>scikit-learn</code>
+提供的一个标准化工具，它会将每个特征缩放到一个指定的范围内，默认情况下是
+<code>[0, 1]</code>。</p>
+<h3 id="代码解释-1">代码解释：</h3>
+<p><strong>对训练数据进行 MinMax 标准化</strong>： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X_train1 = mm_X.fit_transform(X_train)</span><br></pre></td></tr></table></figure> -
+<code>fit_transform()</code>
+方法会计算训练数据的最小值和最大值，并将数据缩放到 <code>[0, 1]</code>
+范围内。 -
+<strong><code>fit()</code></strong>：计算训练数据的最小值和最大值。 -
+<strong><code>transform()</code></strong>：根据计算出的最小值和最大值，进行数据的转换。
+- <code>fit_transform()</code>
+是这两个操作的组合，直接返回标准化后的训练数据。</p>
+<p><strong>对测试数据进行 MinMax 标准化</strong>： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">X_test1 = mm_X.transform(X_test)</span><br></pre></td></tr></table></figure> -
+<code>transform()</code>
+方法会使用训练数据上的最小值和最大值来转换测试数据。 -
+<strong>注意</strong>：<code>transform()</code>
+仅仅使用训练数据的统计量（即最小值和最大值）来对测试数据进行标准化，避免了数据泄露问题。如果对测试数据使用
+<code>fit_transform()</code>，就会导致模型从测试数据中学习统计量，破坏了训练和测试数据的独立性。</p>
+<p><strong>MinMax
+标准化</strong>是一种常用的数据预处理方法，尤其适用于特征的取值范围差异较大时。它将每个特征的最小值映射到
+0，最大值映射到
+1，其他值则在该区间内按比例进行缩放。这样做的好处是避免了某些特征因数值范围较大而在训练模型时占据主导地位，尤其是对于需要计算距离或内积的模型，如
+KNN、SVM 等，使用 MinMax 标准化后的数据会使模型训练更加稳定。</p>
+<h2 id="模型训练与评估">模型训练与评估</h2>
+<h3 id="任务3.1线性回归模型训练">任务3.1：线性回归模型训练</h3>
+<p>调用sklearn.linear_model中的LinearRegression()函数，对训练集(X_train,y_train)进行模型训练，并预测测试集X_test的房价lr_y_predict。</p>
 <blockquote>
 <p>补全代码：</p>
 </blockquote>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LinearRegression</span><br><span class="line"><span class="comment"># 初始化线性回归模型</span></span><br><span class="line">lr = LinearRegression()</span><br><span class="line"><span class="comment"># 线性回归模型训练</span></span><br><span class="line">lr.fit(X_train, y_train)  <span class="comment"># 使用训练集数据训练模型</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 模型预测</span></span><br><span class="line">lr_y_predict = lr.predict(X_test)  <span class="comment"># 使用训练好的模型对测试集数据进行预测</span></span><br></pre></td></tr></table></figure>
-<h3 id="代码解释：-2"><a href="#代码解释：-2" class="headerlink" title="代码解释："></a>代码解释：</h3><p><strong>训练模型</strong>：<br>   <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lr.fit(X_train, y_train)</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li><code>fit()</code> 方法会使用训练集数据 <code>(X_train, y_train)</code> 来训练线性回归模型。训练过程就是计算线性回归模型的系数（权重）和截距，以使预测值最接近真实目标值。</li>
-</ul>
-<p><strong>预测房价</strong>：<br>   <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lr_y_predict = lr.predict(X_test)</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li><code>predict()</code> 方法会使用已经训练好的模型来对测试集 <code>X_test</code> 进行预测，返回预测的房价（即预测值 <code>lr_y_predict</code>）。模型根据训练时学到的关系来预测测试集中的每个样本的房价。</li>
-</ul>
-<h3 id="任务3-2：线性回归模型评估"><a href="#任务3-2：线性回归模型评估" class="headerlink" title="任务3.2：线性回归模型评估"></a>任务3.2：线性回归模型评估</h3><p>回归模型常用的三种评价指标：（1）R方分数（决定系数）、（2）MSE均方误差、以及（3）MAE平均绝对误差。</p>
+<h3 id="代码解释-2">代码解释：</h3>
+<p><strong>训练模型</strong>： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lr.fit(X_train, y_train)</span><br></pre></td></tr></table></figure> - <code>fit()</code>
+方法会使用训练集数据 <code>(X_train, y_train)</code>
+来训练线性回归模型。训练过程就是计算线性回归模型的系数（权重）和截距，以使预测值最接近真实目标值。</p>
+<p><strong>预测房价</strong>： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lr_y_predict = lr.predict(X_test)</span><br></pre></td></tr></table></figure> - <code>predict()</code>
+方法会使用已经训练好的模型来对测试集 <code>X_test</code>
+进行预测，返回预测的房价（即预测值
+<code>lr_y_predict</code>）。模型根据训练时学到的关系来预测测试集中的每个样本的房价。</p>
+<h3 id="任务3.2线性回归模型评估">任务3.2：线性回归模型评估</h3>
+<p>回归模型常用的三种评价指标：（1）R方分数（决定系数）、（2）MSE均方误差、以及（3）MAE平均绝对误差。</p>
 <p>方法一：调用sklearn.metrics中的相关函数，计算测试结果lr_y_predict与真实结果y_test之间的误差或精度。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> r2_score,mean_squared_error,mean_absolute_error</span><br><span class="line"><span class="built_in">print</span> (<span class="string">&#x27;the value of R-squared of LR is&#x27;</span>,r2_score(y_test,lr_y_predict))</span><br><span class="line"><span class="built_in">print</span> (<span class="string">&#x27;the MSE of LR is&#x27;</span>,mean_squared_error(y_test,lr_y_predict))</span><br><span class="line"><span class="built_in">print</span> (<span class="string">&#x27;the MAE of LR is&#x27;</span>,mean_absolute_error(y_test,lr_y_predict))</span><br></pre></td></tr></table></figure>
 <pre><code>the value of R-squared of LR is 0.7250808093832966
 the MSE of LR is 23.56944609104811
-the MAE of LR is 3.302381007591344
-</code></pre><p>方法二：自己编写函数，计算上述指标。本实验要求学生至少完成MSE均方误差的计算，并打印输出结果。</p>
+the MAE of LR is 3.302381007591344</code></pre>
+<p>方法二：自己编写函数，计算上述指标。本实验要求学生至少完成MSE均方误差的计算，并打印输出结果。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 请在下方作答</span></span><br><span class="line"><span class="comment"># 计算R²（决定系数）</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calculate_r2</span>(<span class="params">y_true, y_pred</span>):</span><br><span class="line">    <span class="comment"># R² = 1 - (SS_res / SS_tot)</span></span><br><span class="line">    ss_res = ((y_true - y_pred) ** <span class="number">2</span>).<span class="built_in">sum</span>()  <span class="comment"># 残差平方和</span></span><br><span class="line">    ss_tot = ((y_true - y_true.mean()) ** <span class="number">2</span>).<span class="built_in">sum</span>()  <span class="comment"># 总平方和</span></span><br><span class="line">    r2_score = <span class="number">1</span> - (ss_res / ss_tot)  <span class="comment"># 决定系数</span></span><br><span class="line">    <span class="keyword">return</span> r2_score</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算MSE（均方误差）</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calculate_mse</span>(<span class="params">y_true, y_pred</span>):</span><br><span class="line">    mse = mean_squared_error(y_true, y_pred)</span><br><span class="line">    <span class="keyword">return</span> mse</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算MAE（平均绝对误差）</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calculate_mae</span>(<span class="params">y_true, y_pred</span>):</span><br><span class="line">    mae = mean_absolute_error(y_true, y_pred)</span><br><span class="line">    <span class="keyword">return</span> mae</span><br><span class="line"></span><br><span class="line"><span class="comment"># 评估模型</span></span><br><span class="line">r2 = calculate_r2(y_test, lr_y_predict)  <span class="comment"># R²</span></span><br><span class="line">mse = calculate_mse(y_test, lr_y_predict)  <span class="comment"># MSE</span></span><br><span class="line">mae = calculate_mae(y_test, lr_y_predict)  <span class="comment"># MAE</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出结果</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;R² (决定系数): <span class="subst">&#123;r2&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;MSE (均方误差): <span class="subst">&#123;mse&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;MAE (平均绝对误差): <span class="subst">&#123;mae&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
 <pre><code>R² (决定系数): 0.7250808093832966
 MSE (均方误差): 23.56944609104811
-MAE (平均绝对误差): 3.302381007591344
-</code></pre><p>下面是 <strong>R²（决定系数）</strong>、<strong>MSE（均方误差）</strong> 和 <strong>MAE（平均绝对误差）</strong> 的计算公式：</p>
-<h3 id="1-R²（决定系数）-计算公式："><a href="#1-R²（决定系数）-计算公式：" class="headerlink" title="1. R²（决定系数） 计算公式："></a>1. <strong>R²（决定系数）</strong> 计算公式：</h3><p>R² 衡量模型对目标变量变化的解释程度。它的取值范围为 0 到 1，越接近 1，表示模型越能解释数据的变异性。</p>
-<p>公式:</p>
-<script type="math/tex; mode=display">
-R^2=1-\frac{\sum_{i=1}^{n}(y_i-\hat{y}_i)^2}{\sum_{i=1}^{n}(y_i-\bar{y})^2}</script><ul>
+MAE (平均绝对误差): 3.302381007591344</code></pre>
+<p>下面是
+<strong>R²（决定系数）</strong>、<strong>MSE（均方误差）</strong> 和
+<strong>MAE（平均绝对误差）</strong> 的计算公式：</p>
+<h3 id="r²决定系数-计算公式">1. <strong>R²（决定系数）</strong>
+计算公式：</h3>
+<p>R² 衡量模型对目标变量变化的解释程度。它的取值范围为 0 到 1，越接近
+1，表示模型越能解释数据的变异性。</p>
+<p>公式: <span class="math display">$$
+R^2=1-\frac{\sum_{i=1}^{n}(y_i-\hat{y}_i)^2}{\sum_{i=1}^{n}(y_i-\bar{y})^2}
+$$</span></p>
+<ul>
 <li>( $y_i $)：实际值（真实的目标值）。</li>
-<li>( $\hat{y}_i$ )：预测值（模型预测的目标值）。</li>
-<li>( $\bar{y}$ )：实际值的均值（ $\bar{y} = \frac{1}{n} \sum_{i=1}^{n} y_i$ ）。</li>
-<li>( $n$ )：样本数。</li>
+<li>( <span class="math inline"><em>ŷ</em><sub><em>i</em></sub></span>
+)：预测值（模型预测的目标值）。</li>
+<li>( <span class="math inline"><em>ȳ</em></span> )：实际值的均值（
+<span class="math inline">$\bar{y} = \frac{1}{n} \sum_{i=1}^{n}
+y_i$</span> ）。</li>
+<li>( <span class="math inline"><em>n</em></span> )：样本数。</li>
 </ul>
-<h4 id="解释："><a href="#解释：" class="headerlink" title="解释："></a>解释：</h4><ul>
-<li>分子部分是 <strong>残差平方和（RSS）</strong>，衡量预测值与真实值之间的差异。</li>
-<li>分母部分是 <strong>总平方和（TSS）</strong>，衡量真实值与均值之间的差异。</li>
+<h4 id="解释">解释：</h4>
+<ul>
+<li>分子部分是
+<strong>残差平方和（RSS）</strong>，衡量预测值与真实值之间的差异。</li>
+<li>分母部分是
+<strong>总平方和（TSS）</strong>，衡量真实值与均值之间的差异。</li>
 <li>R² 越接近 1，表示模型的拟合度越好。</li>
 </ul>
-<h3 id="2-MSE（均方误差）-计算公式："><a href="#2-MSE（均方误差）-计算公式：" class="headerlink" title="2. MSE（均方误差） 计算公式："></a>2. <strong>MSE（均方误差）</strong> 计算公式：</h3><p>MSE 衡量预测值与真实值之间差异的平方和的平均值，是一种常用的回归模型评估指标。</p>
-<p>公式：</p>
-<script type="math/tex; mode=display">
-MSE = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2</script><ul>
-<li>( $y_i$ )：实际值。</li>
-<li>( $\hat{y}_i$)：预测值。</li>
-<li>( $n$ )：样本数。</li>
+<h3 id="mse均方误差-计算公式">2. <strong>MSE（均方误差）</strong>
+计算公式：</h3>
+<p>MSE
+衡量预测值与真实值之间差异的平方和的平均值，是一种常用的回归模型评估指标。</p>
+<p>公式： <span class="math display">$$
+MSE = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2
+$$</span></p>
+<ul>
+<li>( <span class="math inline"><em>y</em><sub><em>i</em></sub></span>
+)：实际值。</li>
+<li>( <span class="math inline"><em>ŷ</em><sub><em>i</em></sub></span>)：预测值。</li>
+<li>( <span class="math inline"><em>n</em></span> )：样本数。</li>
 </ul>
-<h4 id="解释：-1"><a href="#解释：-1" class="headerlink" title="解释："></a>解释：</h4><ul>
-<li>MSE 是实际值与预测值之间差异的平方和的平均值，越小表示模型的预测误差越小。</li>
+<h4 id="解释-1">解释：</h4>
+<ul>
+<li>MSE
+是实际值与预测值之间差异的平方和的平均值，越小表示模型的预测误差越小。</li>
 </ul>
-<h3 id="3-MAE（平均绝对误差）-计算公式："><a href="#3-MAE（平均绝对误差）-计算公式：" class="headerlink" title="3. MAE（平均绝对误差） 计算公式："></a>3. <strong>MAE（平均绝对误差）</strong> 计算公式：</h3><p>MAE 衡量预测值与真实值之间差异的绝对值的平均值，也是一种常用的回归模型评估指标。</p>
-<p>公式：</p>
-<script type="math/tex; mode=display">
-MAE = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i|</script><ul>
-<li>( $y_i$ )：实际值。</li>
-<li>( $\hat{y}_i$ )：预测值。</li>
-<li>( $n$ )：样本数。</li>
+<h3 id="mae平均绝对误差-计算公式">3.
+<strong>MAE（平均绝对误差）</strong> 计算公式：</h3>
+<p>MAE
+衡量预测值与真实值之间差异的绝对值的平均值，也是一种常用的回归模型评估指标。</p>
+<p>公式： <span class="math display">$$
+MAE = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i|
+$$</span></p>
+<ul>
+<li>( <span class="math inline"><em>y</em><sub><em>i</em></sub></span>
+)：实际值。</li>
+<li>( <span class="math inline"><em>ŷ</em><sub><em>i</em></sub></span>
+)：预测值。</li>
+<li>( <span class="math inline"><em>n</em></span> )：样本数。</li>
 </ul>
-<h4 id="解释：-2"><a href="#解释：-2" class="headerlink" title="解释："></a>解释：</h4><ul>
-<li>MAE 是实际值与预测值之间差异的绝对值的平均值，越小表示模型的预测性能越好。</li>
+<h4 id="解释-2">解释：</h4>
+<ul>
+<li>MAE
+是实际值与预测值之间差异的绝对值的平均值，越小表示模型的预测性能越好。</li>
 </ul>
-<h3 id="总结：-1"><a href="#总结：-1" class="headerlink" title="总结："></a>总结：</h3><ul>
-<li><strong>R²（决定系数）</strong>：度量模型拟合优度，越接近 1 表示模型越好。</li>
+<h3 id="总结-1">总结：</h3>
+<ul>
+<li><strong>R²（决定系数）</strong>：度量模型拟合优度，越接近 1
+表示模型越好。</li>
 <li><strong>MSE（均方误差）</strong>：越小，表示模型的预测误差越小。</li>
 <li><strong>MAE（平均绝对误差）</strong>：越小，表示模型在预测时的绝对误差越小。</li>
 </ul>
-<h3 id="任务3-3：岭回归模型训练"><a href="#任务3-3：岭回归模型训练" class="headerlink" title="任务3.3：岭回归模型训练"></a>任务3.3：岭回归模型训练</h3><p>调用sklearn.linear_model中的Ridge()函数(参数设置为5)，对训练集(X_train,y_train)进行模型训练，并预测测试集X_test的房价rd_y_predict。</p>
+<h3 id="任务3.3岭回归模型训练">任务3.3：岭回归模型训练</h3>
+<p>调用sklearn.linear_model中的Ridge()函数(参数设置为5)，对训练集(X_train,y_train)进行模型训练，并预测测试集X_test的房价rd_y_predict。</p>
 <blockquote>
 <p>补全代码：</p>
 </blockquote>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> Ridge</span><br><span class="line">rd = Ridge(alpha=<span class="number">5</span>)</span><br><span class="line"><span class="comment">#岭回归模型训练</span></span><br><span class="line">rd.fit(X_train, y_train)</span><br><span class="line"><span class="comment"># 输出训练后的模型系数（回归系数）</span></span><br><span class="line"><span class="built_in">print</span>(rd.coef_)</span><br><span class="line"><span class="comment">#模型测试</span></span><br><span class="line">rd_y_predict = rd.predict(X_test)</span><br></pre></td></tr></table></figure>
 <pre><code>[-0.89921997  1.17687007  0.06847273  0.58380163 -2.09273127  2.39227753
   0.15081088 -3.06269707  2.53630955 -1.8549535  -2.24256957  0.89722135
- -3.79040179]
-</code></pre><h3 id="岭回归（Ridge-Regression）"><a href="#岭回归（Ridge-Regression）" class="headerlink" title="岭回归（Ridge Regression）"></a>岭回归（Ridge Regression）</h3><p><strong>岭回归</strong>（Ridge Regression），又称 <strong>L2 正则化回归</strong>，是一种扩展了普通最小二乘回归（OLS）的回归模型。其核心思想是在最小化 <strong>残差平方和</strong>（即普通最小二乘回归的目标函数）的同时，加入一个 <strong>正则化项</strong>，用于惩罚模型的复杂性，避免过拟合。</p>
-<h3 id="岭回归的公式"><a href="#岭回归的公式" class="headerlink" title="岭回归的公式"></a>岭回归的公式</h3><p>岭回归的目标函数为：</p>
-<script type="math/tex; mode=display">
-\text{minimize} \quad \left( \sum_{i=1}^{n} (y_i - \hat{y}_i)^2 + \alpha \sum_{j=1}^{p} \beta_j^2 \right)</script><p>其中：</p>
+ -3.79040179]</code></pre>
+<h3 id="岭回归ridge-regression">岭回归（Ridge Regression）</h3>
+<p><strong>岭回归</strong>（Ridge Regression），又称 <strong>L2
+正则化回归</strong>，是一种扩展了普通最小二乘回归（OLS）的回归模型。其核心思想是在最小化
+<strong>残差平方和</strong>（即普通最小二乘回归的目标函数）的同时，加入一个
+<strong>正则化项</strong>，用于惩罚模型的复杂性，避免过拟合。</p>
+<h3 id="岭回归的公式">岭回归的公式</h3>
+<p>岭回归的目标函数为： <span class="math display">$$
+\text{minimize} \quad \left( \sum_{i=1}^{n} (y_i - \hat{y}_i)^2 + \alpha
+\sum_{j=1}^{p} \beta_j^2 \right)
+$$</span> 其中：</p>
 <ul>
-<li>( $y_i$ )：实际观测值。</li>
-<li>( $\hat{y}_i$ )：模型预测值。</li>
-<li>( $\beta_j$ )：模型的回归系数。</li>
-<li>( $\alpha$ )：正则化强度（超参数），控制正则化项的权重。</li>
+<li>( <span class="math inline"><em>y</em><sub><em>i</em></sub></span>
+)：实际观测值。</li>
+<li>( <span class="math inline"><em>ŷ</em><sub><em>i</em></sub></span>
+)：模型预测值。</li>
+<li>( <span class="math inline"><em>β</em><sub><em>j</em></sub></span>
+)：模型的回归系数。</li>
+<li>( <span class="math inline"><em>α</em></span>
+)：正则化强度（超参数），控制正则化项的权重。</li>
 </ul>
-<h3 id="关键点："><a href="#关键点：" class="headerlink" title="关键点："></a>关键点：</h3><ol>
-<li><strong>残差平方和</strong>：普通最小二乘回归的目标函数是最小化预测值和真实值之间的差异平方和：$\sum_{i=1}^{n} (y_i - \hat{y}_i)^2$</li>
-<li><strong>L2 正则化</strong>：岭回归在最小化残差平方和的同时，加上一个正则化项$\ \alpha \sum_{j=1}^{p} \beta_j^2 $，用来限制回归系数的大小。这个正则化项惩罚过大的系数，使得系数趋向于 0，但不会完全为 0（与 Lasso 回归不同，Lasso 是 L1 正则化，会使部分系数变为 0）。<ul>
-<li>$\alpha $：是岭回归的正则化参数，控制惩罚项的强度。较大的 ( \alpha ) 值会增加正则化的惩罚，使模型的系数变得较小，从而减少过拟合。</li>
-</ul>
-</li>
+<h3 id="关键点">关键点：</h3>
+<ol type="1">
+<li><strong>残差平方和</strong>：普通最小二乘回归的目标函数是最小化预测值和真实值之间的差异平方和：<span class="math inline">$\sum_{i=1}^{n} (y_i - \hat{y}_i)^2$</span></li>
+<li><strong>L2
+正则化</strong>：岭回归在最小化残差平方和的同时，加上一个正则化项$ _{j=1}^{p}
+_j^2
+$，用来限制回归系数的大小。这个正则化项惩罚过大的系数，使得系数趋向于
+0，但不会完全为 0（与 Lasso 回归不同，Lasso 是 L1
+正则化，会使部分系数变为 0）。
+<ul>
+<li>$$：是岭回归的正则化参数，控制惩罚项的强度。较大的 ( )
+值会增加正则化的惩罚，使模型的系数变得较小，从而减少过拟合。</li>
+</ul></li>
 </ol>
-<h3 id="岭回归的作用"><a href="#岭回归的作用" class="headerlink" title="岭回归的作用"></a>岭回归的作用</h3><ul>
+<h3 id="岭回归的作用">岭回归的作用</h3>
+<ul>
 <li><strong>防止过拟合</strong>：在普通的最小二乘回归中，若特征非常多，模型可能会在训练数据上表现得非常好，但却在测试数据上表现得较差（过拟合）。通过在回归系数上施加惩罚，岭回归减少了模型的复杂度，从而帮助防止过拟合。</li>
 <li><strong>适应多重共线性</strong>：当特征之间存在强烈的相关性时（即多重共线性），普通的最小二乘回归可能无法得出稳定的回归系数。岭回归通过正则化项使得模型更稳定，避免共线性问题带来的不稳定性。</li>
 </ul>
-<h3 id="岭回归与普通最小二乘回归的区别"><a href="#岭回归与普通最小二乘回归的区别" class="headerlink" title="岭回归与普通最小二乘回归的区别"></a>岭回归与普通最小二乘回归的区别</h3><ul>
+<h3 id="岭回归与普通最小二乘回归的区别">岭回归与普通最小二乘回归的区别</h3>
+<ul>
 <li><strong>普通最小二乘回归</strong>：最小化残差平方和，没有对回归系数施加任何惩罚。因此，模型会根据训练数据的噪声来拟合训练数据，可能导致过拟合。</li>
 <li><strong>岭回归</strong>：最小化残差平方和，并加上正则化项，控制回归系数的大小，防止模型复杂度过高，减少过拟合。</li>
 </ul>
-<h3 id="岭回归的超参数-alpha"><a href="#岭回归的超参数-alpha" class="headerlink" title="岭回归的超参数 ( $\alpha$ )"></a>岭回归的超参数 ( $\alpha$ )</h3><ul>
-<li><strong>( $\alpha$ )</strong>：是岭回归中的超参数，控制正则化项的强度。<ul>
-<li>当 ( \alpha = 0 ) 时，岭回归退化为普通的最小二乘回归。</li>
-<li>当 ( \alpha ) 较大时，模型的回归系数被更多地惩罚，减少了过拟合的风险，但也可能导致欠拟合（即模型对数据的拟合能力不足）。</li>
+<h3 id="岭回归的超参数-alpha">岭回归的超参数 ( <span class="math inline"><em>α</em></span> )</h3>
+<ul>
+<li><strong>( <span class="math inline"><em>α</em></span>
+)</strong>：是岭回归中的超参数，控制正则化项的强度。
+<ul>
+<li>当 ( = 0 ) 时，岭回归退化为普通的最小二乘回归。</li>
+<li>当 ( )
+较大时，模型的回归系数被更多地惩罚，减少了过拟合的风险，但也可能导致欠拟合（即模型对数据的拟合能力不足）。</li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<h3 id="任务3-4：岭回归模型评估"><a href="#任务3-4：岭回归模型评估" class="headerlink" title="任务3.4：岭回归模型评估"></a>任务3.4：岭回归模型评估</h3><p>与线性回归一样，岭回归模型有两种方法计算评价指标，这里调用sklearn.metrics来实现。</p>
+<h3 id="任务3.4岭回归模型评估">任务3.4：岭回归模型评估</h3>
+<p>与线性回归一样，岭回归模型有两种方法计算评价指标，这里调用sklearn.metrics来实现。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> r2_score,mean_squared_error,mean_absolute_error</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;the value of R-squared of Ridge is&#x27;</span>,r2_score(y_test,rd_y_predict ))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;the MSE of Ridge is&#x27;</span>,mean_squared_error(y_test,rd_y_predict))</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;the MAE of Ridge is&#x27;</span>,mean_absolute_error(y_test,rd_y_predict))</span><br></pre></td></tr></table></figure>
 <pre><code>the value of R-squared of Ridge is 0.7279447933421523
 the MSE of Ridge is 23.323910246960786
-the MAE of Ridge is 3.2535718613670053
-</code></pre><h2 id="参数选择"><a href="#参数选择" class="headerlink" title="参数选择"></a>参数选择</h2><h3 id="任务4：运用交叉验证选择模型参数"><a href="#任务4：运用交叉验证选择模型参数" class="headerlink" title="任务4：运用交叉验证选择模型参数"></a>任务4：运用交叉验证选择模型参数</h3><p>岭回归模型参数是正则化参数alpha，前面把它设置为5。为了选择最优参数，对训练集进行10次10折交叉验证。具体地，参数选择在[0,10]范围内，以1为步长，进行选择。</p>
-<ol>
-<li>总共进行11次实验（不同alpha值），每次实验将训练数据随机分成10份，重复10次；</li>
-<li>每一次划分，任意9份做训练，剩余1份测试，共执行10次，测试结果取平均；</li>
-<li>再将所有划分的结果再取平均，作为这一次alpha取值的分数；</li>
-<li>比较不同alpha取值的交叉验证模型分数，来选择其中表现最好的（分数最高的）模型的alpha值；</li>
-<li>用上述选择的alpha值对训练数据重新训练模型，再测试评估。</li>
-</ol>
+the MAE of Ridge is 3.2535718613670053</code></pre>
+<h2 id="参数选择">参数选择</h2>
+<h3 id="任务4运用交叉验证选择模型参数">任务4：运用交叉验证选择模型参数</h3>
+<p>岭回归模型参数是正则化参数alpha，前面把它设置为5。为了选择最优参数，对训练集进行10次10折交叉验证。具体地，参数选择在[0,10]范围内，以1为步长，进行选择。
+1.
+总共进行11次实验（不同alpha值），每次实验将训练数据随机分成10份，重复10次；
+2. 每一次划分，任意9份做训练，剩余1份测试，共执行10次，测试结果取平均；
+3. 再将所有划分的结果再取平均，作为这一次alpha取值的分数； 4.
+比较不同alpha取值的交叉验证模型分数，来选择其中表现最好的（分数最高的）模型的alpha值；
+5. 用上述选择的alpha值对训练数据重新训练模型，再测试评估。</p>
 <blockquote>
 <p>补全代码：</p>
 </blockquote>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> cross_val_score </span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> KFold</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">cv_score_list = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">11</span>):</span><br><span class="line">    <span class="comment"># alpha 取不同值</span></span><br><span class="line">    rd = Ridge(alpha=i)</span><br><span class="line">    avg_score_cross = []</span><br><span class="line">    <span class="comment"># 进行10次随机划分</span></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">        <span class="comment">#调用KFold()实现10折划分</span></span><br><span class="line">        kf = KFold(n_splits=<span class="number">10</span>, shuffle=<span class="literal">True</span>, random_state=j)</span><br><span class="line">        <span class="comment">#调用cross_val_score()计算训练集本次10折划分的分数</span></span><br><span class="line">        score_cross = cross_val_score(rd, X_train, y_train, cv=kf, scoring=<span class="string">&#x27;neg_mean_squared_error&#x27;</span>)</span><br><span class="line">        avg_score_cross.append(np.mean(score_cross))</span><br><span class="line">    cv_score_list.append(np.mean(avg_score_cross))</span><br><span class="line"></span><br><span class="line">plt.plot(<span class="built_in">range</span>(<span class="number">11</span>), cv_score_list)</span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line"><span class="comment"># cv_score_list中找到分数最大的模型所对应的alpha取值</span></span><br><span class="line">index = np.argmax(cv_score_list)</span><br><span class="line">rd = Ridge(alpha=index)</span><br><span class="line"><span class="comment">#岭回归模型训练</span></span><br><span class="line">rd.fit(X_train, y_train)</span><br><span class="line"><span class="comment">#模型测试</span></span><br><span class="line">rd_y_predict = rd.predict(X_test)</span><br><span class="line"><span class="comment"># 打印模型评估结果</span></span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> mean_squared_error, mean_absolute_error</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Best Alpha: <span class="subst">&#123;index&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Mean Squared Error: <span class="subst">&#123;mean_squared_error(y_test, rd_y_predict)&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Mean Absolute Error: <span class="subst">&#123;mean_absolute_error(y_test, rd_y_predict)&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
 <pre><code>Best Alpha: 4
 Mean Squared Error: 23.35986469628359
-Mean Absolute Error: 3.260923268350155
-</code></pre><h2 id="二分类问题"><a href="#二分类问题" class="headerlink" title="二分类问题"></a>二分类问题</h2><h3 id="任务5：波士顿房价二分类问题"><a href="#任务5：波士顿房价二分类问题" class="headerlink" title="任务5：波士顿房价二分类问题"></a>任务5：波士顿房价二分类问题</h3><p>为了了解分类问题的建模与评估，本任务将连续值的波士顿房价数值使用阈值进行二值化（0,1，例如：廉价房、品质房），可以将房价预测的回归问题，改为简单的二分类问题。</p>
+Mean Absolute Error: 3.260923268350155</code></pre>
+<h2 id="二分类问题">二分类问题</h2>
+<h3 id="任务5波士顿房价二分类问题">任务5：波士顿房价二分类问题</h3>
+<p>为了了解分类问题的建模与评估，本任务将连续值的波士顿房价数值使用阈值进行二值化（0,1，例如：廉价房、品质房），可以将房价预测的回归问题，改为简单的二分类问题。</p>
 <p>同样是包括四个步骤：数据准备、数据预处理、模型训练、模型评估与选择。</p>
-<p>下面的程序使用方法一调用sklearn.metrics中的相应函数计算预测结果的准确率accuracy、f1 score、auc值。</p>
+<p>下面的程序使用方法一调用sklearn.metrics中的相应函数计算预测结果的准确率accuracy、f1
+score、auc值。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_boston</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LogisticRegression</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> accuracy_score, f1_score, roc_auc_score</span><br><span class="line"></span><br><span class="line">boston = load_boston()</span><br><span class="line"><span class="comment"># 房价数值二值化</span></span><br><span class="line">threshold = np.mean(boston.target)</span><br><span class="line">labels = (boston.target&gt;threshold).astype(np.int_)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 数据集划分</span></span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(boston.data, labels, test_size=<span class="number">0.2</span>, random_state=<span class="number">42</span>)</span><br><span class="line"><span class="comment"># 省略数据预处理步骤</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 模型训练</span></span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LinearRegression</span><br><span class="line">lr = LinearRegression()</span><br><span class="line"><span class="comment"># 模型训练：我们使用 LogisticRegression（线性回归常用于回归问题，但 Logistic Regression 更适合于二分类问题）</span></span><br><span class="line">lr = LogisticRegression(max_iter=<span class="number">10000</span>)  <span class="comment"># 设置最大迭代次数为10000以确保收敛</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 训练模型</span></span><br><span class="line">lr.fit(X_train, y_train)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 模型预测：对测试集进行预测</span></span><br><span class="line">lr_y_predict = lr.predict(X_test)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 模型评估</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;The accuracy score of LR is&#x27;</span>, accuracy_score(y_test, lr_y_predict))  <span class="comment"># 准确率</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;The f1 score of LR is&#x27;</span>, f1_score(y_test, lr_y_predict))  <span class="comment"># F1 分数</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;The auc of LR is&#x27;</span>, roc_auc_score(y_test, lr_y_predict))  <span class="comment"># AUC（曲线下面积）</span></span><br></pre></td></tr></table></figure>
 <pre><code>The accuracy score of LR is 0.9117647058823529
 The f1 score of LR is 0.8695652173913043
@@ -532,22 +635,35 @@ f:\project python\.conda\lib\site-packages\sklearn\utils\deprecation.py:87: Futu
         housing = fetch_openml(name=&quot;house_prices&quot;, as_frame=True)
 
     for the Ames housing dataset.
-  warnings.warn(msg, category=FutureWarning)
-</code></pre><p>方法二：自己编写函数，计算上述指标。</p>
+  warnings.warn(msg, category=FutureWarning)</code></pre>
+<p>方法二：自己编写函数，计算上述指标。</p>
 <p>本实验要求学生至少完成accuracy与f1 score的计算，并打印输出结果。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 请在下方作答</span></span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> confusion_matrix</span><br><span class="line"><span class="comment"># 计算准确率（Accuracy）</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calculate_accuracy</span>(<span class="params">y_true, y_pred</span>):</span><br><span class="line">    correct = np.<span class="built_in">sum</span>(y_true == y_pred)  <span class="comment"># 计算正确预测的数量</span></span><br><span class="line">    total = <span class="built_in">len</span>(y_true)  <span class="comment"># 总样本数</span></span><br><span class="line">    accuracy = correct / total  <span class="comment"># 准确率</span></span><br><span class="line">    <span class="keyword">return</span> accuracy</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算F1分数（F1 Score）</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calculate_f1_score</span>(<span class="params">y_true, y_pred</span>):</span><br><span class="line">    cm = confusion_matrix(y_true, y_pred)</span><br><span class="line">    <span class="comment"># 提取混淆矩阵中的 TP, FP, FN</span></span><br><span class="line">    tp = cm[<span class="number">1</span>, <span class="number">1</span>]  <span class="comment"># True Positives</span></span><br><span class="line">    fp = cm[<span class="number">0</span>, <span class="number">1</span>]  <span class="comment"># False Positives</span></span><br><span class="line">    fn = cm[<span class="number">1</span>, <span class="number">0</span>]  <span class="comment"># False Negatives</span></span><br><span class="line">    precision = tp / (tp + fp) <span class="keyword">if</span> (tp + fp) != <span class="number">0</span> <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line">    recall = tp / (tp + fn) <span class="keyword">if</span> (tp + fn) != <span class="number">0</span> <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line">    <span class="comment"># 计算 F1 分数</span></span><br><span class="line">    f1 = <span class="number">2</span> * (precision * recall) / (precision + recall) <span class="keyword">if</span> (precision + recall) != <span class="number">0</span> <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">return</span> f1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">accuracy = calculate_accuracy(y_test, lr_y_predict)</span><br><span class="line">f1_score = calculate_f1_score(y_test, lr_y_predict)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出结果</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Accuracy: <span class="subst">&#123;accuracy&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;F1 Score: <span class="subst">&#123;f1_score&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
 <pre><code>Accuracy: 0.9117647058823529
-F1 Score: 0.8695652173913043
-</code></pre><h3 id="1-准确率-Accuracy-："><a href="#1-准确率-Accuracy-：" class="headerlink" title="1. 准确率 (Accuracy)："></a>1. <strong>准确率 (Accuracy)</strong>：</h3><p>准确率是正确分类的样本数与总样本数之比。</p>
-<p>公式：</p>
-<script type="math/tex; mode=display">
-\text{Accuracy} = \frac{\text{正确预测的数量}}{\text{总样本数}}</script><h3 id="2-F1-分数-F1-Score-："><a href="#2-F1-分数-F1-Score-：" class="headerlink" title="2. F1 分数 (F1 Score)："></a>2. <strong>F1 分数 (F1 Score)</strong>：</h3><p>F1 分数是准确率 (Precision) 和召回率 (Recall) 的调和平均数。</p>
-<p>公式：</p>
-<script type="math/tex; mode=display">
-F1 = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}</script><p>其中：</p>
-<script type="math/tex; mode=display">
-\text{Precision} = \frac{\text{True Positive}}{\text{True Positive} + \text{False Positive}}</script><script type="math/tex; mode=display">
-\text{Recall} = \frac{\text{True Positive}}{\text{True Positive} + \text{False Negative}}</script><h3 id="3-AUC-Area-Under-the-Curve-："><a href="#3-AUC-Area-Under-the-Curve-：" class="headerlink" title="3. AUC (Area Under the Curve)："></a>3. <strong>AUC (Area Under the Curve)</strong>：</h3><p>AUC 是 ROC 曲线下面积，用于衡量分类模型的性能，范围在 0 到 1 之间，越接近 1，模型表现越好。AUC 是一个广泛使用的评估二分类问题模型的性能的指标。</p>
+F1 Score: 0.8695652173913043</code></pre>
+<h3 id="准确率-accuracy">1. <strong>准确率 (Accuracy)</strong>：</h3>
+<p>准确率是正确分类的样本数与总样本数之比。</p>
+<p>公式： <span class="math display">$$
+\text{Accuracy} = \frac{\text{正确预测的数量}}{\text{总样本数}}
+$$</span></p>
+<h3 id="f1-分数-f1-score">2. <strong>F1 分数 (F1 Score)</strong>：</h3>
+<p>F1 分数是准确率 (Precision) 和召回率 (Recall) 的调和平均数。</p>
+<p>公式： <span class="math display">$$
+F1 = 2 \times \frac{\text{Precision} \times
+\text{Recall}}{\text{Precision} + \text{Recall}}
+$$</span> 其中： <span class="math display">$$
+\text{Precision} = \frac{\text{True Positive}}{\text{True Positive} +
+\text{False Positive}}
+$$</span></p>
+<p><span class="math display">$$
+\text{Recall} = \frac{\text{True Positive}}{\text{True Positive} +
+\text{False Negative}}
+$$</span></p>
+<h3 id="auc-area-under-the-curve">3. <strong>AUC (Area Under the
+Curve)</strong>：</h3>
+<p>AUC 是 ROC 曲线下面积，用于衡量分类模型的性能，范围在 0 到 1
+之间，越接近 1，模型表现越好。AUC
+是一个广泛使用的评估二分类问题模型的性能的指标。</p>
 
     </div>
 

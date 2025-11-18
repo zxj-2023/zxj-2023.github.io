@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="GIL是什么 GIL（Global Interpreter Lock，全局解释器锁） 是 CPython 解释器（Python 的官方实现）中的一个互斥锁（mutex），它确保同一时刻只有一个线程执行 Python 字节码。 🔒 互斥锁的定义：  互斥锁是一种同步原语，用于防止多个线程同时访问共享资源。  GIL 正是这样一把锁：  共享资源 &#x3D; CPython 解释器的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python内存管理-GIL">
+<meta property="og:url" content="http://example.com/2025/10/19/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/python%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="GIL是什么 GIL（Global Interpreter Lock，全局解释器锁） 是 CPython 解释器（Python 的官方实现）中的一个互斥锁（mutex），它确保同一时刻只有一个线程执行 Python 字节码。 🔒 互斥锁的定义：  互斥锁是一种同步原语，用于防止多个线程同时访问共享资源。  GIL 正是这样一把锁：  共享资源 &#x3D; CPython 解释器的">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-10-18T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-10-25T06:42:36.014Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="学习">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2025/10/19/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/python%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/10/19/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/python%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/","path":"2025/10/19/学习/python相关/python内存管理/","title":"python内存管理-GIL"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>python内存管理-GIL | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#gil%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.</span> <span class="nav-text">GIL是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E8%AE%BE%E8%AE%A1gil"><span class="nav-number">2.</span> <span class="nav-text">为什么要设计GIL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0reference-counting"><span class="nav-number">2.1.</span> <span class="nav-text">什么是引用计数（Reference
+Counting）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E6%9E%9C%E6%B2%A1%E6%9C%89gil"><span class="nav-number">2.2.</span> <span class="nav-text">如果没有GIL</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88-javago-%E4%B8%8D%E9%9C%80%E8%A6%81gil"><span class="nav-number">3.</span> <span class="nav-text">为什么 Java&#x2F;Go 不需要GIL？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFgc"><span class="nav-number">4.</span> <span class="nav-text">什么是GC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#gc%E6%98%AF%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C%E7%9A%84"><span class="nav-number">4.1.</span> <span class="nav-text">GC是如何工作的</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python%E7%9A%84%E7%A8%8B%E5%BA%8F%E5%B9%B6%E8%A1%8C"><span class="nav-number">5.</span> <span class="nav-text">python的程序并行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">164</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">61</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/10/19/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/python%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="python内存管理-GIL | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          python内存管理-GIL
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-10-19 00:00:00" itemprop="dateCreated datePublished" datetime="2025-10-19T00:00:00+08:00">2025-10-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-10-25 14:42:36" itemprop="dateModified" datetime="2025-10-25T14:42:36+08:00">2025-10-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/" itemprop="url" rel="index"><span itemprop="name">python相关</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="gil是什么">GIL是什么</h3>
+<p><strong>GIL（Global Interpreter Lock，全局解释器锁）</strong> 是
+<strong>CPython 解释器</strong>（Python
+的官方实现）中的一个<strong>互斥锁（mutex）</strong>，它确保<strong>同一时刻只有一个线程执行
+Python 字节码</strong>。</p>
+<p>🔒 互斥锁的定义：</p>
+<blockquote>
+<p>互斥锁是一种同步原语，用于<strong>防止多个线程同时访问共享资源</strong>。</p>
+</blockquote>
+<p>GIL 正是这样一把锁：</p>
+<ul>
+<li><strong>共享资源</strong> = CPython
+解释器的内部状态（如对象引用计数、内存管理器）</li>
+<li><strong>保护方式</strong> = 任何线程要执行 Python 代码，必须先获取
+GIL</li>
+</ul>
+<h3 id="为什么要设计gil">为什么要设计GIL</h3>
+<p>GIL 的核心原因：<strong>CPython 的内存管理模型</strong></p>
+<p>🔑 关键点：</p>
+<blockquote>
+<p><strong>CPython 使用“引用计数（Reference
+Counting）”作为主要的内存管理机制</strong>，而引用计数的<strong>增减操作必须是原子的</strong>。</p>
+</blockquote>
+<p>🔑 核心逻辑链：</p>
+<blockquote>
+<p><strong>Python（CPython）使用引用计数（Reference
+Counting）管理内存</strong> ↓
+<strong>引用计数的增减必须是原子操作（否则会出错）</strong> ↓
+<strong>为了保证原子性，CPython 引入了 GIL（全局互斥锁）</strong> ↓
+<strong>GIL 确保同一时刻只有一个线程能修改引用计数</strong></p>
+</blockquote>
+<h4 id="什么是引用计数reference-counting">什么是<strong>引用计数（Reference
+Counting）</strong></h4>
+<p>在 CPython 中，<strong>每个 Python 对象</strong>（如
+<code>list</code>, <code>str</code>, 自定义类实例）都有一个字段叫
+<code>ob_refcnt</code>，记录“有多少变量/容器引用了它”。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a = [1, 2, 3]      # ob_refcnt = 1</span><br><span class="line">b = a              # ob_refcnt = 2</span><br><span class="line">c = [a, &quot;hello&quot;]   # ob_refcnt = 3（因为 c[0] 也引用了它）</span><br><span class="line">del b              # ob_refcnt = 2</span><br></pre></td></tr></table></figure>
+<p>当 <code>ob_refcnt</code> <strong>降到 0</strong>
+时，对象立即被销毁（内存回收）。</p>
+<h4 id="如果没有gil">如果没有GIL</h4>
+<p>假设两个线程同时执行 <code>b = a</code>：</p>
+<table>
+<colgroup>
+<col style="width: 28%">
+<col style="width: 28%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr>
+<th>线程 A</th>
+<th>线程 B</th>
+<th>实际 <code>ob_refcnt</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>读取 <code>ob_refcnt = 1</code></td>
+<td>读取 <code>ob_refcnt = 1</code></td>
+<td>1</td>
+</tr>
+<tr>
+<td>计算 <code>1 + 1 = 2</code></td>
+<td>计算 <code>1 + 1 = 2</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>写回 <code>ob_refcnt = 2</code></td>
+<td>写回 <code>ob_refcnt = 2</code></td>
+<td><strong>2</strong>（但正确值应为 <strong>3</strong>！）</td>
+</tr>
+</tbody>
+</table>
+<p>👉 <strong>结果</strong>：引用计数错误 →
+对象可能被<strong>提前释放</strong>（程序崩溃）或<strong>内存泄漏</strong>。</p>
+<blockquote>
+<p>💥 这就是<strong>竞态条件</strong>（Race
+Condition）：<strong>多个线程/进程并发访问共享资源时，最终结果依赖于它们的执行顺序或
+timing（时序），导致程序行为不可预测、错误或崩溃。</strong></p>
+</blockquote>
+<h3 id="为什么-javago-不需要gil">为什么 Java/Go 不需要GIL？</h3>
+<table>
+<thead>
+<tr>
+<th>语言</th>
+<th>内存管理</th>
+<th>是否需要全局锁</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Python </strong>(CPython)</td>
+<td>引用计数（运行时增减）</td>
+<td>✅ 需要（GIL）</td>
+</tr>
+<tr>
+<td><strong>Java / Go / C#</strong></td>
+<td>垃圾回收（GC）</td>
+<td>❌ 不需要</td>
+</tr>
+<tr>
+<td><strong>Rust</strong></td>
+<td>编译期所有权检查</td>
+<td>❌ 不需要</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>GC 语言</strong>：对象分配/回收由<strong>专用 GC
+线程</strong>处理，用户线程不直接操作引用计数</li>
+<li><strong>Rust</strong>：内存安全在<strong>编译期</strong>保证，运行时无引用计数开销</li>
+</ul>
+<h3 id="什么是gc">什么是GC</h3>
+<p><strong>GC（Garbage Collection，垃圾回收）</strong>
+是现代编程语言中<strong>自动管理内存</strong>的核心机制。其核心思想为，
+<strong>自动找出“不再使用的对象”，并回收其内存，无需程序员手动释放。</strong></p>
+<p>🆚 对比：手动管理 vs 自动管理</p>
+<table>
+<colgroup>
+<col style="width: 13%">
+<col style="width: 21%">
+<col style="width: 65%">
+</colgroup>
+<thead>
+<tr>
+<th>方式</th>
+<th>代表语言</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>手动管理</strong></td>
+<td>C, C++</td>
+<td>程序员用<code>malloc/free</code>或<code>new/delete</code>管理内存 →
+容易出错（内存泄漏、野指针）</td>
+</tr>
+<tr>
+<td><strong>自动管理</strong></td>
+<td>Java, Go, C#, Python</td>
+<td>语言运行时自动回收内存 → 安全，但有性能开销</td>
+</tr>
+</tbody>
+</table>
+<h4 id="gc是如何工作的">GC是如何工作的</h4>
+<p>主流 GC（如 Java、Go）使用
+<strong>“可达性分析”</strong>（Reachability
+Analysis）判断对象是否存活：</p>
+<p>🌳 核心概念：<strong>根对象</strong>（Roots）</p>
+<ul>
+<li>全局变量</li>
+<li>当前函数的局部变量</li>
+<li>CPU 寄存器中的引用</li>
+</ul>
+<p>📌 判断规则：</p>
+<blockquote>
+<p><strong>从根对象出发，能通过引用链到达的对象 = 存活对象</strong>
+<strong>无法到达的对象 = 垃圾（可回收）</strong></p>
+</blockquote>
+<h3 id="python的程序并行">python的程序并行</h3>
+<p><strong>由于 CPython 的 GIL（全局解释器锁）存在：</strong></p>
+<ul>
+<li><strong>多线程无法在多核 CPU 上并行执行 Python 字节码（尤其是 CPU
+密集型任务）</strong>；</li>
+<li><strong>但多进程可以绕过
+GIL，每个进程拥有独立的解释器和内存空间，因此能真正并行，充分利用多核
+CPU。</strong></li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 21%">
+<col style="width: 16%">
+<col style="width: 30%">
+<col style="width: 31%">
+</colgroup>
+<thead>
+<tr>
+<th>类型</th>
+<th>是否受 GIL 限制</th>
+<th>能否利用多核</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>多线程（Threading）</strong></td>
+<td>✅ 受限（CPU 任务串行）</td>
+<td>❌ CPU 任务不能✅ I/O 任务可以（因释放 GIL）</td>
+<td>网络请求、文件读写、数据库查询等 I/O 密集型</td>
+</tr>
+<tr>
+<td><strong>多进程（Multiprocessing）</strong></td>
+<td>❌ 不受限</td>
+<td>✅ 能（真并行）</td>
+<td>图像处理、模型推理、加密计算等 CPU 密集型</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>📌 注意：<strong>“并行”（parallelism）≠
+“并发”（concurrency）</strong><br>
+- 多线程在 Python 中实现的是 <strong>并发（交替执行）</strong>，不是
+<strong>并行（同时执行）</strong>（对 CPU 任务而言）。</p>
+</blockquote>
+<h3 id="参考资料">参考资料</h3>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1im411R7UB/?spm_id_from=333.788.recommend_more_video.-1&amp;trackid=web_related_0.router-related-2206146-52fdn.1761309673091.512&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">带大家感受一下没有GIL的CPython_哔哩哔哩_bilibili</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1za411t7dR?spm_id_from=333.788.recommend_more_video.-1&amp;trackid=web_related_0.router-related-2206146-pkt2c.1761372920438.898&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">【python】天使还是魔鬼？GIL的前世今生。一期视频全面了解GIL！_哔哩哔哩_bilibili</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/%E5%AD%A6%E4%B9%A0/" rel="tag"># 学习</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/10/18/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/Python%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84%E5%92%8C%E6%89%93%E5%8C%85/" rel="prev" title="Python项目结构和打包">
+                  <i class="fa fa-angle-left"></i> Python项目结构和打包
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/10/19/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/python%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="next" title="python设计模式">
+                  python设计模式 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
