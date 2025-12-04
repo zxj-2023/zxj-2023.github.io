@@ -389,118 +389,6 @@ LangGraph Backend 将结果返回给 Client，完成整个链路。</p></li>
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/08/01/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/mcp%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%AE%9E%E6%88%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/08/01/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/mcp%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%AE%9E%E6%88%98/" class="post-title-link" itemprop="url">MCP 服务端实战</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-08-01 00:00:00" itemprop="dateCreated datePublished" datetime="2025-08-01T00:00:00+08:00">2025-08-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-08-02 12:01:56" itemprop="dateModified" datetime="2025-08-02T12:01:56+08:00">2025-08-02</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/mcp/" itemprop="url" rel="index"><span itemprop="name">mcp</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="配置环境">配置环境</h3>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># Create a new directory for our project</span><br><span class="line">uv init weather</span><br><span class="line">cd weather</span><br><span class="line"></span><br><span class="line"># Create virtual environment and activate it</span><br><span class="line">uv venv</span><br><span class="line">source .venv/bin/activate</span><br><span class="line"></span><br><span class="line"># Install dependencies</span><br><span class="line">uv add &quot;mcp[cli]&quot; httpx</span><br><span class="line"></span><br><span class="line"># Create our server file</span><br><span class="line">touch weather.py</span><br></pre></td></tr></table></figure>
-<h3 id="mcp-studio样例">mcp studio样例</h3>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">from mcp.server.fastmcp import FastMCP</span><br><span class="line"></span><br><span class="line">mcp = FastMCP(&quot;Math&quot;)</span><br><span class="line"></span><br><span class="line">@mcp.tool()</span><br><span class="line">def add(a: int, b: int) -&gt; int:</span><br><span class="line">    &quot;&quot;&quot;Add two numbers&quot;&quot;&quot;</span><br><span class="line">    return a + b</span><br><span class="line"></span><br><span class="line">@mcp.tool()</span><br><span class="line">def multiply(a: int, b: int) -&gt; int:</span><br><span class="line">    &quot;&quot;&quot;Multiply two numbers&quot;&quot;&quot;</span><br><span class="line">    return a * b</span><br><span class="line"></span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    mcp.run(transport=&quot;stdio&quot;)</span><br></pre></td></tr></table></figure>
-<h3 id="mcp-streamable-http-样例">mcp streamable-http 样例</h3>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">from mcp.server.fastmcp import FastMCP</span><br><span class="line"></span><br><span class="line">mcp = FastMCP(&quot;Weather&quot;)</span><br><span class="line"></span><br><span class="line">@mcp.tool()</span><br><span class="line">async def get_weather(location: str) -&gt; str:</span><br><span class="line">    &quot;&quot;&quot;Get weather for location.&quot;&quot;&quot;</span><br><span class="line">    return &quot;It&#x27;s always sunny in New York&quot;</span><br><span class="line"></span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    mcp.run(transport=&quot;streamable-http&quot;)</span><br></pre></td></tr></table></figure>
-<h3 id="使用">使用</h3>
-<p>mcp市场<a target="_blank" rel="noopener" href="https://www.modelscope.cn/mcp">MCP 广场 ·
-魔搭社区</a></p>
-<p><strong>使用 uv（推荐）</strong></p>
-<p>当使用 <a target="_blank" rel="noopener" href="https://docs.astral.sh/uv/"><code>uv</code></a>
-时不需要特定的安装步骤。我们将使用 <a target="_blank" rel="noopener" href="https://docs.astral.sh/uv/guides/tools/"><code>uvx</code></a>
-直接运行 <em>mcp-server-fetch</em>。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&quot;mcpServers&quot;: &#123;</span><br><span class="line">  &quot;fetch&quot;: &#123;</span><br><span class="line">    &quot;command&quot;: &quot;uvx&quot;,</span><br><span class="line">    &quot;args&quot;: [&quot;mcp-server-fetch&quot;]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>使用 PIP</strong></p>
-<p>或者，您可以通过 pip 安装 <code>mcp-server-fetch</code>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install mcp-server-fetch</span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&quot;mcpServers&quot;: &#123;</span><br><span class="line">  &quot;fetch&quot;: &#123;</span><br><span class="line">    &quot;command&quot;: &quot;python&quot;,</span><br><span class="line">    &quot;args&quot;: [&quot;-m&quot;, &quot;mcp_server_fetch&quot;]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>远程托管</strong></p>
-<figure>
-<img src="/2025/08/01/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/mcp%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%AE%9E%E6%88%98/image-20250802120145192.png" alt="image-20250802120145192">
-<figcaption aria-hidden="true">image-20250802120145192</figcaption>
-</figure>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;mcpServers&quot;: &#123;</span><br><span class="line">    &quot;fetch&quot;: &#123;</span><br><span class="line">      &quot;type&quot;: &quot;sse&quot;,</span><br><span class="line">      &quot;url&quot;: &quot;https://mcp.api-inference.modelscope.net/991cf46/sse&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="参考资料">参考资料</h3>
-<p><a target="_blank" rel="noopener" href="https://modelcontextprotocol.io/quickstart/server#core-mcp-concepts">构建
-MCP 服务器 - 模型上下文协议 — Build an MCP Server - Model Context
-Protocol</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="http://example.com/2025/08/01/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/mcp%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AE%9E%E6%88%98/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -670,6 +558,118 @@ an MCP Client - Model Context Protocol</a></p>
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/08/01/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/mcp%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%AE%9E%E6%88%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/08/01/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/mcp%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%AE%9E%E6%88%98/" class="post-title-link" itemprop="url">MCP 服务端实战</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-08-01 00:00:00" itemprop="dateCreated datePublished" datetime="2025-08-01T00:00:00+08:00">2025-08-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-08-02 12:01:56" itemprop="dateModified" datetime="2025-08-02T12:01:56+08:00">2025-08-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/mcp/" itemprop="url" rel="index"><span itemprop="name">mcp</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="配置环境">配置环境</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># Create a new directory for our project</span><br><span class="line">uv init weather</span><br><span class="line">cd weather</span><br><span class="line"></span><br><span class="line"># Create virtual environment and activate it</span><br><span class="line">uv venv</span><br><span class="line">source .venv/bin/activate</span><br><span class="line"></span><br><span class="line"># Install dependencies</span><br><span class="line">uv add &quot;mcp[cli]&quot; httpx</span><br><span class="line"></span><br><span class="line"># Create our server file</span><br><span class="line">touch weather.py</span><br></pre></td></tr></table></figure>
+<h3 id="mcp-studio样例">mcp studio样例</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">from mcp.server.fastmcp import FastMCP</span><br><span class="line"></span><br><span class="line">mcp = FastMCP(&quot;Math&quot;)</span><br><span class="line"></span><br><span class="line">@mcp.tool()</span><br><span class="line">def add(a: int, b: int) -&gt; int:</span><br><span class="line">    &quot;&quot;&quot;Add two numbers&quot;&quot;&quot;</span><br><span class="line">    return a + b</span><br><span class="line"></span><br><span class="line">@mcp.tool()</span><br><span class="line">def multiply(a: int, b: int) -&gt; int:</span><br><span class="line">    &quot;&quot;&quot;Multiply two numbers&quot;&quot;&quot;</span><br><span class="line">    return a * b</span><br><span class="line"></span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    mcp.run(transport=&quot;stdio&quot;)</span><br></pre></td></tr></table></figure>
+<h3 id="mcp-streamable-http-样例">mcp streamable-http 样例</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">from mcp.server.fastmcp import FastMCP</span><br><span class="line"></span><br><span class="line">mcp = FastMCP(&quot;Weather&quot;)</span><br><span class="line"></span><br><span class="line">@mcp.tool()</span><br><span class="line">async def get_weather(location: str) -&gt; str:</span><br><span class="line">    &quot;&quot;&quot;Get weather for location.&quot;&quot;&quot;</span><br><span class="line">    return &quot;It&#x27;s always sunny in New York&quot;</span><br><span class="line"></span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    mcp.run(transport=&quot;streamable-http&quot;)</span><br></pre></td></tr></table></figure>
+<h3 id="使用">使用</h3>
+<p>mcp市场<a target="_blank" rel="noopener" href="https://www.modelscope.cn/mcp">MCP 广场 ·
+魔搭社区</a></p>
+<p><strong>使用 uv（推荐）</strong></p>
+<p>当使用 <a target="_blank" rel="noopener" href="https://docs.astral.sh/uv/"><code>uv</code></a>
+时不需要特定的安装步骤。我们将使用 <a target="_blank" rel="noopener" href="https://docs.astral.sh/uv/guides/tools/"><code>uvx</code></a>
+直接运行 <em>mcp-server-fetch</em>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&quot;mcpServers&quot;: &#123;</span><br><span class="line">  &quot;fetch&quot;: &#123;</span><br><span class="line">    &quot;command&quot;: &quot;uvx&quot;,</span><br><span class="line">    &quot;args&quot;: [&quot;mcp-server-fetch&quot;]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>使用 PIP</strong></p>
+<p>或者，您可以通过 pip 安装 <code>mcp-server-fetch</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install mcp-server-fetch</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&quot;mcpServers&quot;: &#123;</span><br><span class="line">  &quot;fetch&quot;: &#123;</span><br><span class="line">    &quot;command&quot;: &quot;python&quot;,</span><br><span class="line">    &quot;args&quot;: [&quot;-m&quot;, &quot;mcp_server_fetch&quot;]</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>远程托管</strong></p>
+<figure>
+<img src="/2025/08/01/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/mcp%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%AE%9E%E6%88%98/image-20250802120145192.png" alt="image-20250802120145192">
+<figcaption aria-hidden="true">image-20250802120145192</figcaption>
+</figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;mcpServers&quot;: &#123;</span><br><span class="line">    &quot;fetch&quot;: &#123;</span><br><span class="line">      &quot;type&quot;: &quot;sse&quot;,</span><br><span class="line">      &quot;url&quot;: &quot;https://mcp.api-inference.modelscope.net/991cf46/sse&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="参考资料">参考资料</h3>
+<p><a target="_blank" rel="noopener" href="https://modelcontextprotocol.io/quickstart/server#core-mcp-concepts">构建
+MCP 服务器 - 模型上下文协议 — Build an MCP Server - Model Context
+Protocol</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/31/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/%E5%82%A8%E5%AD%98%E5%90%91%E9%87%8F%E6%95%B0%E6%8D%AE%E5%BA%93Chroma/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -755,148 +755,6 @@ an MCP Client - Model Context Protocol</a></p>
 <h3 id="参考资料">参考资料</h3>
 <p><a target="_blank" rel="noopener" href="https://python.langchain.com/docs/integrations/vectorstores/chroma/#add-items-to-vector-store">Chroma
 | 🦜️🔗 LangChain — Chroma | 🦜️🔗 LangChain</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/28/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/Plan-and-Execute%E6%A8%A1%E5%BC%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/07/28/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/Plan-and-Execute%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">Plan-and-Execute模式</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-07-28 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-28T00:00:00+08:00">2025-07-28</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-08-27 10:01:58" itemprop="dateModified" datetime="2025-08-27T10:01:58+08:00">2025-08-27</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/agent%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">agent实战</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="什么是plan-and-execute模式">什么是Plan-and-Execute模式</h3>
-<p>Plan-and-Execute架构流程：先指定计划，后交给执行agent，执行后交给replan节点，判断是否需要更新计划，若要更新计划返回返回更新后的机会，否则返回response，然后路由判断是执行agent还是response</p>
-<p>与ReAct模式不同的是，ReAct只做一次规划，而Plan-and-Execute模式核心思想是首先制定一个多步骤计划，然后逐项执行该计划。完成特定任务后，可以重新审视计划并进行适当修改。</p>
-<p>举个例子，用户在问一个问题后，agent产生一份任务清单，选取第一份任务开始执行，执行后的结果结合任务清单，执行replan，结合新的信息，更改任务清单的内容，让后续大模型更好地执行，并去除已经完成的任务</p>
-<p>实际生产中，应该在planner之前再进行一次判断，如果问题过于简单，不需要进行Plan-and-Execute模式</p>
-<h3 id="实战">实战</h3>
-<h4 id="安装包">安装包</h4>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install --quiet -U langgraph langchain-community langchain-openai tavily-python</span><br></pre></td></tr></table></figure>
-<h4 id="定义网络搜索工具与执行agent">定义网络搜索工具与执行agent</h4>
-<p>在产生plan后，要有一个agent对任务清单进行执行，这里以一个ReAct的网络搜索agent为例</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#定义工具</span><br><span class="line">from langchain_tavily import TavilySearch</span><br><span class="line">tools = [TavilySearch(max_results=3)]</span><br><span class="line"></span><br><span class="line">from langchain_openai import ChatOpenAI</span><br><span class="line"></span><br><span class="line">from langgraph.prebuilt import create_react_agent</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">llm = ChatOpenAI(</span><br><span class="line">    model=&quot;qwen3-235b-a22b-thinking-2507&quot;,</span><br><span class="line">    api_key=&quot;sk-&quot;,</span><br><span class="line">    base_url=&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot;</span><br><span class="line">)</span><br><span class="line">prompt = &quot;You are a helpful assistant.&quot;</span><br><span class="line">agent_executor = create_react_agent(llm, tools, prompt=prompt)</span><br></pre></td></tr></table></figure>
-<p>测试功能</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">agent_executor.invoke(&#123;&quot;messages&quot;: [(&quot;user&quot;, &quot;今天是几月几日&quot;)]&#125;)</span><br></pre></td></tr></table></figure>
-<p>定义执行节点</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">from typing import Literal</span><br><span class="line">from langgraph.graph import END</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">async def execute_step(state: PlanExecute):</span><br><span class="line">    &quot;&quot;&quot;执行计划中的步骤&quot;&quot;&quot;</span><br><span class="line">    plan = state[&quot;plan&quot;]</span><br><span class="line">    # 将计划格式化为带编号的字符串</span><br><span class="line">    plan_str = &quot;\n&quot;.join(f&quot;&#123;i + 1&#125;. &#123;step&#125;&quot; for i, step in enumerate(plan))</span><br><span class="line">    task = plan[0]  # 获取第一个待执行的任务</span><br><span class="line">    task_formatted = f&quot;&quot;&quot;对于以下计划:</span><br><span class="line">&#123;plan_str&#125;\n\n你被分配执行第 &#123;1&#125; 步, &#123;task&#125;。&quot;&quot;&quot;</span><br><span class="line">    # 调用代理执行器来执行任务</span><br><span class="line">    agent_response = await agent_executor.ainvoke(</span><br><span class="line">        &#123;&quot;messages&quot;: [(&quot;user&quot;, task_formatted)]&#125;</span><br><span class="line">    )</span><br><span class="line">    # 返回执行结果，添加到历史步骤中</span><br><span class="line">    return &#123;</span><br><span class="line">        &quot;past_steps&quot;: [(task, agent_response[&quot;messages&quot;][-1].content)],</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>create_react_agent 是 LangGraph 提供的一个预构建函数，位于
-langgraph.prebuilt 模块中，用于快速创建一个基于 ReAct（Reasoning +
-Acting）架构的智能代理。</p>
-</blockquote>
-<blockquote>
-<p>langgraph预设的其他常用组件如下</p>
-<p><strong>ToolNode</strong></p>
-<p>功能：把 LangChain 工具（BaseTool）封装成一个图节点，负责：</p>
-<ul>
-<li><p>接收 LLM 生成的工具调用请求</p></li>
-<li><p>真正执行工具</p></li>
-<li><p>把结果返回给图</p></li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from langgraph.prebuilt import ToolNode</span><br><span class="line"></span><br><span class="line">tool_node = ToolNode(tools=[search, calculator])</span><br></pre></td></tr></table></figure>
-<p><strong>tools_condition</strong></p>
-<p>功能：判断 LLM 是否要继续调用工具的“路由函数”。</p>
-<p>在 ReAct 图里通常放在节点之间的 条件边：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">from langgraph.prebuilt import tools_condition</span><br><span class="line"></span><br><span class="line">graph.add_conditional_edges(&quot;agent&quot;, tools_condition, &#123;</span><br><span class="line"></span><br><span class="line">  &quot;tools&quot;: &quot;tool_node&quot;,    # 需要工具 → 去 ToolNode</span><br><span class="line"></span><br><span class="line">  &quot;**__end__**&quot;: END       # 不需要 → 结束</span><br><span class="line"></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-</blockquote>
-<h4 id="定义状态">定义状态</h4>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import operator</span><br><span class="line">from typing import Annotated, List, Tuple</span><br><span class="line">from typing_extensions import TypedDict</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class PlanExecute(TypedDict):</span><br><span class="line">    input: str</span><br><span class="line">    plan: List[str]</span><br><span class="line">    past_steps: Annotated[List[Tuple], operator.add]</span><br><span class="line">    response: str</span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">from pydantic import BaseModel, Field</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class Plan(BaseModel):</span><br><span class="line">    &quot;&quot;&quot;未来要遵循的计划&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    steps: List[str] = Field(</span><br><span class="line">        description=&quot;需要遵循的不同步骤，应该按排序顺序排列&quot;</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
-<h4 id="定义模型">定义模型</h4>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from langchain_community.chat_models import ChatTongyi</span><br><span class="line">model=ChatTongyi(</span><br><span class="line"> model=&quot;qwen-plus-2025-07-14&quot;,</span><br><span class="line"> api_key=&quot;sk-&quot;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<h4 id="定义初始计划节点">定义初始计划节点</h4>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">from langchain_core.prompts import ChatPromptTemplate</span><br><span class="line"></span><br><span class="line">planner_prompt = ChatPromptTemplate.from_messages(</span><br><span class="line">    [</span><br><span class="line">        (</span><br><span class="line">            &quot;system&quot;,</span><br><span class="line">            &quot;&quot;&quot;对于给定的目标，制定一个简单的逐步计划。\</span><br><span class="line">这个计划应该包含独立的任务，如果正确执行这些任务将得到正确的答案。不要添加任何多余的步骤。\</span><br><span class="line">最后一步的结果应该是最终答案。确保每个步骤都包含所需的所有信息——不要跳过任何步骤。&quot;&quot;&quot;,</span><br><span class="line">        ),</span><br><span class="line">        (&quot;placeholder&quot;, &quot;&#123;messages&#125;&quot;),</span><br><span class="line">    ]</span><br><span class="line">)</span><br><span class="line">planner = planner_prompt | model.with_structured_output(Plan)</span><br><span class="line"></span><br><span class="line">async def plan_step(state: PlanExecute):</span><br><span class="line">    &quot;&quot;&quot;制定初始计划步骤&quot;&quot;&quot;</span><br><span class="line">    # 使用规划器为用户输入制定计划</span><br><span class="line">    plan = await planner.ainvoke(&#123;&quot;messages&quot;: [(&quot;user&quot;, state[&quot;input&quot;])]&#125;)</span><br><span class="line">    </span><br><span class="line">    return &#123;&quot;plan&quot;: plan.steps&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="定义再计划节点">定义再计划节点</h4>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">from typing import Union</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class Response(BaseModel):</span><br><span class="line">    &quot;&quot;&quot;对用户的响应&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    response: str</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class Act(BaseModel):</span><br><span class="line">    &quot;&quot;&quot;要执行的动作&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    action: Union[Response, Plan] = Field(</span><br><span class="line">        description=&quot;要执行的动作。如果你想响应用户，使用 Response。&quot;</span><br><span class="line">        &quot;如果你需要进一步使用工具来获取答案，使用 Plan。&quot;</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">replanner_prompt = ChatPromptTemplate.from_template(</span><br><span class="line">    &quot;&quot;&quot;对于给定的目标，制定一个简单的逐步计划。\</span><br><span class="line">这个    计划应该包含独立的任务，如果正确执行这些任务将得到正确的答案。不要添加任何多余的步骤。\</span><br><span class="line">最后一步的结果应该是最终答案。确保每个步骤都包含所需的所有信息——不要跳过任何步骤。</span><br><span class="line"></span><br><span class="line">你的目标是：</span><br><span class="line">&#123;input&#125;</span><br><span class="line"></span><br><span class="line">你的原始计划是：</span><br><span class="line">&#123;plan&#125;</span><br><span class="line"></span><br><span class="line">你目前已经完成了以下步骤：</span><br><span class="line">&#123;past_steps&#125;</span><br><span class="line"></span><br><span class="line">相应地更新你的计划。如果不需要更多步骤并且可以返回给用户，则直接响应。否则，填写计划。只添加仍需要完成的步骤到计划中。不要将已经完成的步骤作为计划的一部分返回。&quot;&quot;&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">replanner = replanner_prompt | model.with_structured_output(Act)</span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">async def replan_step(state: PlanExecute):</span><br><span class="line">    &quot;&quot;&quot;重新规划步骤&quot;&quot;&quot;</span><br><span class="line">    # 使用重新规划器根据当前状态更新计划</span><br><span class="line">    output = await replanner.ainvoke(state)</span><br><span class="line">    if isinstance(output.action, Response):</span><br><span class="line">        # 如果动作是响应，返回最终响应</span><br><span class="line">        return &#123;&quot;response&quot;: output.action.response&#125;</span><br><span class="line">    else:</span><br><span class="line">        # 如果动作是计划，返回新的计划步骤</span><br><span class="line">        return &#123;&quot;plan&quot;: output.action.steps&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="定义路由">定义路由</h4>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">def should_end(state: PlanExecute):</span><br><span class="line">    &quot;&quot;&quot;判断是否结束执行流程&quot;&quot;&quot;</span><br><span class="line">    if &quot;response&quot; in state and state[&quot;response&quot;]:</span><br><span class="line">        # 如果存在响应内容，结束流程</span><br><span class="line">        return END</span><br><span class="line">    else:</span><br><span class="line">        # 否则继续执行代理步骤</span><br><span class="line">        return &quot;agent&quot;</span><br></pre></td></tr></table></figure>
-<h4 id="编译图">编译图</h4>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">from langgraph.graph import StateGraph, START</span><br><span class="line">from langgraph.checkpoint.memory import MemorySaver</span><br><span class="line"></span><br><span class="line"># 创建内存检查点保存器</span><br><span class="line">memory = MemorySaver()</span><br><span class="line"></span><br><span class="line"># 创建工作流图，使用 PlanExecute 状态类型</span><br><span class="line">workflow = StateGraph(PlanExecute)</span><br><span class="line"></span><br><span class="line"># 添加计划节点</span><br><span class="line">workflow.add_node(&quot;planner&quot;, plan_step)</span><br><span class="line"></span><br><span class="line"># 添加执行步骤节点</span><br><span class="line">workflow.add_node(&quot;agent&quot;, execute_step)</span><br><span class="line"></span><br><span class="line"># 添加重新规划节点</span><br><span class="line">workflow.add_node(&quot;replan&quot;, replan_step)</span><br><span class="line"></span><br><span class="line"># 从开始节点连接到计划节点</span><br><span class="line">workflow.add_edge(START, &quot;planner&quot;)</span><br><span class="line"></span><br><span class="line"># 从计划节点连接到代理执行节点</span><br><span class="line">workflow.add_edge(&quot;planner&quot;, &quot;agent&quot;)</span><br><span class="line"></span><br><span class="line"># 从代理执行节点连接到重新规划节点</span><br><span class="line">workflow.add_edge(&quot;agent&quot;, &quot;replan&quot;)</span><br><span class="line"></span><br><span class="line"># 添加条件边 - 从重新规划节点根据条件决定下一步</span><br><span class="line">workflow.add_conditional_edges(</span><br><span class="line">    &quot;replan&quot;,</span><br><span class="line">    # 传入决定下一个调用节点的函数</span><br><span class="line">    should_end,</span><br><span class="line">    [&quot;agent&quot;, END],  # 可能的下一个节点：代理节点或结束</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"># 最后，编译工作流并添加检查点功能！</span><br><span class="line"># 这将其编译为 LangChain Runnable，</span><br><span class="line"># 意味着你可以像使用其他任何 runnable 一样使用它</span><br><span class="line">app = workflow.compile(checkpointer=memory)</span><br></pre></td></tr></table></figure>
-<figure>
-<img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/Plan-and-Execute%E6%A8%A1%E5%BC%8F/image-20250729092408872.png" alt="image-20250729092408872">
-<figcaption aria-hidden="true">image-20250729092408872</figcaption>
-</figure>
-<h4 id="调用">调用</h4>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># 配置递归限制，防止无限循环</span><br><span class="line">config = &#123;&quot;configurable&quot;: &#123;</span><br><span class="line">        &quot;thread_id&quot;: &quot;1&quot;,  # 必需：线程ID</span><br><span class="line">    &#125;,&quot;recursion_limit&quot;: 50&#125;</span><br><span class="line"></span><br><span class="line"># 输入问题：2024年澳大利亚网球公开赛男单冠军的家乡是哪里？</span><br><span class="line">inputs = &#123;&quot;input&quot;: &quot;2024年澳大利亚网球公开赛男单冠军的家乡是哪里？&quot;&#125;</span><br><span class="line"></span><br><span class="line"># 异步流式执行应用</span><br><span class="line">async for event in app.astream(inputs, config=config):</span><br><span class="line">    # 遍历每个事件</span><br><span class="line">    for k, v in event.items():</span><br><span class="line">        # 排除结束标记，打印其他所有事件内容</span><br><span class="line">        if k != &quot;__end__&quot;:</span><br><span class="line">            print(v)</span><br></pre></td></tr></table></figure>
-<h3 id="资源">资源</h3>
-<p><a target="_blank" rel="noopener" href="https://langchain-ai.github.io/langgraph/tutorials/plan-and-execute/plan-and-execute/">计划与执行
-— Plan-and-Execute</a></p>
 
       
     </div>
@@ -1260,6 +1118,148 @@ JSONB）</td>
 rag 的架构，引申出向量数据库的作用，介绍了 - 掘金</a></p>
 <p>langchain支持向量存储<a target="_blank" rel="noopener" href="https://python.langchain.com/docs/integrations/vectorstores/">向量存储
 | 🦜️🔗 LangChain — Vector stores | 🦜️🔗 LangChain</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/28/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/Plan-and-Execute%E6%A8%A1%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/07/28/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/Plan-and-Execute%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">Plan-and-Execute模式</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-07-28 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-28T00:00:00+08:00">2025-07-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-08-27 10:01:58" itemprop="dateModified" datetime="2025-08-27T10:01:58+08:00">2025-08-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/agent%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">agent实战</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="什么是plan-and-execute模式">什么是Plan-and-Execute模式</h3>
+<p>Plan-and-Execute架构流程：先指定计划，后交给执行agent，执行后交给replan节点，判断是否需要更新计划，若要更新计划返回返回更新后的机会，否则返回response，然后路由判断是执行agent还是response</p>
+<p>与ReAct模式不同的是，ReAct只做一次规划，而Plan-and-Execute模式核心思想是首先制定一个多步骤计划，然后逐项执行该计划。完成特定任务后，可以重新审视计划并进行适当修改。</p>
+<p>举个例子，用户在问一个问题后，agent产生一份任务清单，选取第一份任务开始执行，执行后的结果结合任务清单，执行replan，结合新的信息，更改任务清单的内容，让后续大模型更好地执行，并去除已经完成的任务</p>
+<p>实际生产中，应该在planner之前再进行一次判断，如果问题过于简单，不需要进行Plan-and-Execute模式</p>
+<h3 id="实战">实战</h3>
+<h4 id="安装包">安装包</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install --quiet -U langgraph langchain-community langchain-openai tavily-python</span><br></pre></td></tr></table></figure>
+<h4 id="定义网络搜索工具与执行agent">定义网络搜索工具与执行agent</h4>
+<p>在产生plan后，要有一个agent对任务清单进行执行，这里以一个ReAct的网络搜索agent为例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#定义工具</span><br><span class="line">from langchain_tavily import TavilySearch</span><br><span class="line">tools = [TavilySearch(max_results=3)]</span><br><span class="line"></span><br><span class="line">from langchain_openai import ChatOpenAI</span><br><span class="line"></span><br><span class="line">from langgraph.prebuilt import create_react_agent</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">llm = ChatOpenAI(</span><br><span class="line">    model=&quot;qwen3-235b-a22b-thinking-2507&quot;,</span><br><span class="line">    api_key=&quot;sk-&quot;,</span><br><span class="line">    base_url=&quot;https://dashscope.aliyuncs.com/compatible-mode/v1&quot;</span><br><span class="line">)</span><br><span class="line">prompt = &quot;You are a helpful assistant.&quot;</span><br><span class="line">agent_executor = create_react_agent(llm, tools, prompt=prompt)</span><br></pre></td></tr></table></figure>
+<p>测试功能</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">agent_executor.invoke(&#123;&quot;messages&quot;: [(&quot;user&quot;, &quot;今天是几月几日&quot;)]&#125;)</span><br></pre></td></tr></table></figure>
+<p>定义执行节点</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">from typing import Literal</span><br><span class="line">from langgraph.graph import END</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">async def execute_step(state: PlanExecute):</span><br><span class="line">    &quot;&quot;&quot;执行计划中的步骤&quot;&quot;&quot;</span><br><span class="line">    plan = state[&quot;plan&quot;]</span><br><span class="line">    # 将计划格式化为带编号的字符串</span><br><span class="line">    plan_str = &quot;\n&quot;.join(f&quot;&#123;i + 1&#125;. &#123;step&#125;&quot; for i, step in enumerate(plan))</span><br><span class="line">    task = plan[0]  # 获取第一个待执行的任务</span><br><span class="line">    task_formatted = f&quot;&quot;&quot;对于以下计划:</span><br><span class="line">&#123;plan_str&#125;\n\n你被分配执行第 &#123;1&#125; 步, &#123;task&#125;。&quot;&quot;&quot;</span><br><span class="line">    # 调用代理执行器来执行任务</span><br><span class="line">    agent_response = await agent_executor.ainvoke(</span><br><span class="line">        &#123;&quot;messages&quot;: [(&quot;user&quot;, task_formatted)]&#125;</span><br><span class="line">    )</span><br><span class="line">    # 返回执行结果，添加到历史步骤中</span><br><span class="line">    return &#123;</span><br><span class="line">        &quot;past_steps&quot;: [(task, agent_response[&quot;messages&quot;][-1].content)],</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>create_react_agent 是 LangGraph 提供的一个预构建函数，位于
+langgraph.prebuilt 模块中，用于快速创建一个基于 ReAct（Reasoning +
+Acting）架构的智能代理。</p>
+</blockquote>
+<blockquote>
+<p>langgraph预设的其他常用组件如下</p>
+<p><strong>ToolNode</strong></p>
+<p>功能：把 LangChain 工具（BaseTool）封装成一个图节点，负责：</p>
+<ul>
+<li><p>接收 LLM 生成的工具调用请求</p></li>
+<li><p>真正执行工具</p></li>
+<li><p>把结果返回给图</p></li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from langgraph.prebuilt import ToolNode</span><br><span class="line"></span><br><span class="line">tool_node = ToolNode(tools=[search, calculator])</span><br></pre></td></tr></table></figure>
+<p><strong>tools_condition</strong></p>
+<p>功能：判断 LLM 是否要继续调用工具的“路由函数”。</p>
+<p>在 ReAct 图里通常放在节点之间的 条件边：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">from langgraph.prebuilt import tools_condition</span><br><span class="line"></span><br><span class="line">graph.add_conditional_edges(&quot;agent&quot;, tools_condition, &#123;</span><br><span class="line"></span><br><span class="line">  &quot;tools&quot;: &quot;tool_node&quot;,    # 需要工具 → 去 ToolNode</span><br><span class="line"></span><br><span class="line">  &quot;**__end__**&quot;: END       # 不需要 → 结束</span><br><span class="line"></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h4 id="定义状态">定义状态</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import operator</span><br><span class="line">from typing import Annotated, List, Tuple</span><br><span class="line">from typing_extensions import TypedDict</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class PlanExecute(TypedDict):</span><br><span class="line">    input: str</span><br><span class="line">    plan: List[str]</span><br><span class="line">    past_steps: Annotated[List[Tuple], operator.add]</span><br><span class="line">    response: str</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">from pydantic import BaseModel, Field</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class Plan(BaseModel):</span><br><span class="line">    &quot;&quot;&quot;未来要遵循的计划&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    steps: List[str] = Field(</span><br><span class="line">        description=&quot;需要遵循的不同步骤，应该按排序顺序排列&quot;</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+<h4 id="定义模型">定义模型</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from langchain_community.chat_models import ChatTongyi</span><br><span class="line">model=ChatTongyi(</span><br><span class="line"> model=&quot;qwen-plus-2025-07-14&quot;,</span><br><span class="line"> api_key=&quot;sk-&quot;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h4 id="定义初始计划节点">定义初始计划节点</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">from langchain_core.prompts import ChatPromptTemplate</span><br><span class="line"></span><br><span class="line">planner_prompt = ChatPromptTemplate.from_messages(</span><br><span class="line">    [</span><br><span class="line">        (</span><br><span class="line">            &quot;system&quot;,</span><br><span class="line">            &quot;&quot;&quot;对于给定的目标，制定一个简单的逐步计划。\</span><br><span class="line">这个计划应该包含独立的任务，如果正确执行这些任务将得到正确的答案。不要添加任何多余的步骤。\</span><br><span class="line">最后一步的结果应该是最终答案。确保每个步骤都包含所需的所有信息——不要跳过任何步骤。&quot;&quot;&quot;,</span><br><span class="line">        ),</span><br><span class="line">        (&quot;placeholder&quot;, &quot;&#123;messages&#125;&quot;),</span><br><span class="line">    ]</span><br><span class="line">)</span><br><span class="line">planner = planner_prompt | model.with_structured_output(Plan)</span><br><span class="line"></span><br><span class="line">async def plan_step(state: PlanExecute):</span><br><span class="line">    &quot;&quot;&quot;制定初始计划步骤&quot;&quot;&quot;</span><br><span class="line">    # 使用规划器为用户输入制定计划</span><br><span class="line">    plan = await planner.ainvoke(&#123;&quot;messages&quot;: [(&quot;user&quot;, state[&quot;input&quot;])]&#125;)</span><br><span class="line">    </span><br><span class="line">    return &#123;&quot;plan&quot;: plan.steps&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="定义再计划节点">定义再计划节点</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">from typing import Union</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class Response(BaseModel):</span><br><span class="line">    &quot;&quot;&quot;对用户的响应&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    response: str</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class Act(BaseModel):</span><br><span class="line">    &quot;&quot;&quot;要执行的动作&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    action: Union[Response, Plan] = Field(</span><br><span class="line">        description=&quot;要执行的动作。如果你想响应用户，使用 Response。&quot;</span><br><span class="line">        &quot;如果你需要进一步使用工具来获取答案，使用 Plan。&quot;</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">replanner_prompt = ChatPromptTemplate.from_template(</span><br><span class="line">    &quot;&quot;&quot;对于给定的目标，制定一个简单的逐步计划。\</span><br><span class="line">这个    计划应该包含独立的任务，如果正确执行这些任务将得到正确的答案。不要添加任何多余的步骤。\</span><br><span class="line">最后一步的结果应该是最终答案。确保每个步骤都包含所需的所有信息——不要跳过任何步骤。</span><br><span class="line"></span><br><span class="line">你的目标是：</span><br><span class="line">&#123;input&#125;</span><br><span class="line"></span><br><span class="line">你的原始计划是：</span><br><span class="line">&#123;plan&#125;</span><br><span class="line"></span><br><span class="line">你目前已经完成了以下步骤：</span><br><span class="line">&#123;past_steps&#125;</span><br><span class="line"></span><br><span class="line">相应地更新你的计划。如果不需要更多步骤并且可以返回给用户，则直接响应。否则，填写计划。只添加仍需要完成的步骤到计划中。不要将已经完成的步骤作为计划的一部分返回。&quot;&quot;&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">replanner = replanner_prompt | model.with_structured_output(Act)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">async def replan_step(state: PlanExecute):</span><br><span class="line">    &quot;&quot;&quot;重新规划步骤&quot;&quot;&quot;</span><br><span class="line">    # 使用重新规划器根据当前状态更新计划</span><br><span class="line">    output = await replanner.ainvoke(state)</span><br><span class="line">    if isinstance(output.action, Response):</span><br><span class="line">        # 如果动作是响应，返回最终响应</span><br><span class="line">        return &#123;&quot;response&quot;: output.action.response&#125;</span><br><span class="line">    else:</span><br><span class="line">        # 如果动作是计划，返回新的计划步骤</span><br><span class="line">        return &#123;&quot;plan&quot;: output.action.steps&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="定义路由">定义路由</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">def should_end(state: PlanExecute):</span><br><span class="line">    &quot;&quot;&quot;判断是否结束执行流程&quot;&quot;&quot;</span><br><span class="line">    if &quot;response&quot; in state and state[&quot;response&quot;]:</span><br><span class="line">        # 如果存在响应内容，结束流程</span><br><span class="line">        return END</span><br><span class="line">    else:</span><br><span class="line">        # 否则继续执行代理步骤</span><br><span class="line">        return &quot;agent&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="编译图">编译图</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">from langgraph.graph import StateGraph, START</span><br><span class="line">from langgraph.checkpoint.memory import MemorySaver</span><br><span class="line"></span><br><span class="line"># 创建内存检查点保存器</span><br><span class="line">memory = MemorySaver()</span><br><span class="line"></span><br><span class="line"># 创建工作流图，使用 PlanExecute 状态类型</span><br><span class="line">workflow = StateGraph(PlanExecute)</span><br><span class="line"></span><br><span class="line"># 添加计划节点</span><br><span class="line">workflow.add_node(&quot;planner&quot;, plan_step)</span><br><span class="line"></span><br><span class="line"># 添加执行步骤节点</span><br><span class="line">workflow.add_node(&quot;agent&quot;, execute_step)</span><br><span class="line"></span><br><span class="line"># 添加重新规划节点</span><br><span class="line">workflow.add_node(&quot;replan&quot;, replan_step)</span><br><span class="line"></span><br><span class="line"># 从开始节点连接到计划节点</span><br><span class="line">workflow.add_edge(START, &quot;planner&quot;)</span><br><span class="line"></span><br><span class="line"># 从计划节点连接到代理执行节点</span><br><span class="line">workflow.add_edge(&quot;planner&quot;, &quot;agent&quot;)</span><br><span class="line"></span><br><span class="line"># 从代理执行节点连接到重新规划节点</span><br><span class="line">workflow.add_edge(&quot;agent&quot;, &quot;replan&quot;)</span><br><span class="line"></span><br><span class="line"># 添加条件边 - 从重新规划节点根据条件决定下一步</span><br><span class="line">workflow.add_conditional_edges(</span><br><span class="line">    &quot;replan&quot;,</span><br><span class="line">    # 传入决定下一个调用节点的函数</span><br><span class="line">    should_end,</span><br><span class="line">    [&quot;agent&quot;, END],  # 可能的下一个节点：代理节点或结束</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"># 最后，编译工作流并添加检查点功能！</span><br><span class="line"># 这将其编译为 LangChain Runnable，</span><br><span class="line"># 意味着你可以像使用其他任何 runnable 一样使用它</span><br><span class="line">app = workflow.compile(checkpointer=memory)</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/Plan-and-Execute%E6%A8%A1%E5%BC%8F/image-20250729092408872.png" alt="image-20250729092408872">
+<figcaption aria-hidden="true">image-20250729092408872</figcaption>
+</figure>
+<h4 id="调用">调用</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># 配置递归限制，防止无限循环</span><br><span class="line">config = &#123;&quot;configurable&quot;: &#123;</span><br><span class="line">        &quot;thread_id&quot;: &quot;1&quot;,  # 必需：线程ID</span><br><span class="line">    &#125;,&quot;recursion_limit&quot;: 50&#125;</span><br><span class="line"></span><br><span class="line"># 输入问题：2024年澳大利亚网球公开赛男单冠军的家乡是哪里？</span><br><span class="line">inputs = &#123;&quot;input&quot;: &quot;2024年澳大利亚网球公开赛男单冠军的家乡是哪里？&quot;&#125;</span><br><span class="line"></span><br><span class="line"># 异步流式执行应用</span><br><span class="line">async for event in app.astream(inputs, config=config):</span><br><span class="line">    # 遍历每个事件</span><br><span class="line">    for k, v in event.items():</span><br><span class="line">        # 排除结束标记，打印其他所有事件内容</span><br><span class="line">        if k != &quot;__end__&quot;:</span><br><span class="line">            print(v)</span><br></pre></td></tr></table></figure>
+<h3 id="资源">资源</h3>
+<p><a target="_blank" rel="noopener" href="https://langchain-ai.github.io/langgraph/tutorials/plan-and-execute/plan-and-execute/">计划与执行
+— Plan-and-Execute</a></p>
 
       
     </div>

@@ -1159,6 +1159,256 @@ entities from different modalities.</p>
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/10/25/%E5%AD%A6%E4%B9%A0/python-web/Websockets/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/10/25/%E5%AD%A6%E4%B9%A0/python-web/Websockets/" class="post-title-link" itemprop="url">Websockets</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-10-25 00:00:00" itemprop="dateCreated datePublished" datetime="2025-10-25T00:00:00+08:00">2025-10-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-10-26 17:50:18" itemprop="dateModified" datetime="2025-10-26T17:50:18+08:00">2025-10-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/python-web/" itemprop="url" rel="index"><span itemprop="name">python-web</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="什么是长轮询long-polling">🕰️ 什么是长轮询（Long Polling）？</h2>
+<p><strong>长轮询</strong> 是一种在 <strong>没有 WebSocket 或
+Server-Sent Events（SSE）</strong>
+的环境下，<strong>模拟“服务器推送”</strong> 的技术。</p>
+<p>客户端发起 HTTP
+请求后，<strong>服务器不会立即响应</strong>，而是<strong>挂起连接</strong>，直到<strong>有新数据可返回</strong>或<strong>超时</strong>才发送响应；客户端收到响应后立即<strong>重新发起请求</strong>，从而实现<strong>准实时的双向通信</strong>。</p>
+<p>❌ 但最坏情况是：</p>
+<ul>
+<li>前端在 <strong>t=0s</strong> 发起请求</li>
+<li><strong>新数据在 t=0.1s 产生</strong></li>
+<li>但<strong>后端没检测到</strong>（比如检查间隔是 1 秒）</li>
+<li>后端一直等到 <strong>t=10s 超时</strong>，才返回“无数据”</li>
+<li>前端在 <strong>t=10s</strong> 收到响应，显示“没更新”</li>
+<li>然后<strong>立刻</strong>发起下一轮请求（t=10s）</li>
+<li>后端这次检测到数据（t=10.1s）→ 返回</li>
+<li>前端在 <strong>t=10.2s</strong> 才显示！</li>
+</ul>
+<p>→ <strong>延迟 = 10.1 秒！</strong></p>
+<p>🧠 核心问题：<strong>检测粒度 + 请求对齐</strong></p>
+<p>长轮询的延迟主要来自两个地方：</p>
+<table>
+<colgroup>
+<col style="width: 24%">
+<col style="width: 75%">
+</colgroup>
+<thead>
+<tr>
+<th>延迟来源</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. 后端检查间隔</strong></td>
+<td>如果后端每 1 秒检查一次数据，那么数据产生后最多要等 1
+秒才被发现</td>
+</tr>
+<tr>
+<td><strong>2. 请求发起时机</strong></td>
+<td>如果数据在“上一轮请求刚结束、下一轮还没发”时产生，就要等下一轮超时结束</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>💡
+即使后端“一有数据就返回”，<strong>前提是它在“当前这个请求还在挂起时”检测到了数据</strong>。</p>
+</blockquote>
+<h2 id="什么是-websocket">🌐 什么是 WebSocket？</h2>
+<p><strong>WebSocket</strong>
+是一种<strong>全双工通信协议</strong>，建立在 TCP
+之上，允许客户端和服务器之间<strong>实时、双向</strong>地传输数据。</p>
+<p>对比传统的 HTTP：</p>
+<ul>
+<li>HTTP
+是<strong>请求-响应</strong>模式：客户端发请求，服务器响应，然后连接关闭。</li>
+<li>WebSocket
+是<strong>持久连接</strong>：连接建立后，双方可以随时主动发消息，适合聊天、实时通知、在线游戏等场景。</li>
+</ul>
+<h2 id="websocket-vs-http-轮询举例说明">🔁 WebSocket vs HTTP
+轮询（举例说明）</h2>
+<p>假设你要做一个<strong>实时股票价格更新</strong>页面：</p>
+<ul>
+<li><strong>HTTP 轮询</strong>：前端每 1
+秒发一次请求问“价格变了吗？”，服务器回答。浪费带宽，延迟高。</li>
+<li><strong>WebSocket</strong>：连接一次，服务器价格一变就主动推给前端，高效实时。</li>
+</ul>
+<h2 id="websocket-通信流程简化版">🧱 WebSocket 通信流程（简化版）</h2>
+<ol type="1">
+<li>客户端发起 HTTP 请求，带 <code>Upgrade: websocket</code> 头。</li>
+<li>服务器同意升级协议，返回 <code>101 Switching Protocols</code>。</li>
+<li>连接升级为 WebSocket，之后双方通过这个连接发消息（不是 HTTP
+了！）。</li>
+<li>任意一方可主动关闭连接。</li>
+</ol>
+<h2 id="websocket通信图解">websocket通信图解</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant Client as 客户端 (React)</span><br><span class="line">    participant Server as 服务器 (FastAPI)</span><br><span class="line"></span><br><span class="line">    Note over Client,Server: 1. 建立 WebSocket 连接</span><br><span class="line">    Client-&gt;&gt;Server: GET /ws + Upgrade: websocket</span><br><span class="line">    Server--&gt;&gt;Client: 101 Switching Protocols</span><br><span class="line"></span><br><span class="line">    Note over Client,Server: 2. 双向通信阶段</span><br><span class="line">    Client-&gt;&gt;Server: send(&quot;Hello&quot;)</span><br><span class="line">    Server--&gt;&gt;Client: send(&quot;服务器回声: Hello&quot;)</span><br><span class="line">    Server-&gt;&gt;Client: send(&quot;主动推送: 2秒过去了！&quot;)</span><br><span class="line">    Client--&gt;&gt;Server: send(&quot;收到推送，谢谢！&quot;)</span><br><span class="line"></span><br><span class="line">    Note over Client,Server: 3. 任意一方可关闭连接</span><br><span class="line">    Client-&gt;&gt;Server: close()</span><br><span class="line">    Server--&gt;&gt;Client: 连接关闭</span><br></pre></td></tr></table></figure>
+<h2 id="与长轮询对比">与长轮询对比</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant C as 客户端</span><br><span class="line">    participant S as 服务器</span><br><span class="line"></span><br><span class="line">    Note over C,S: WebSocket（高效）</span><br><span class="line">    C-&gt;&gt;S: 握手 (HTTP Upgrade)</span><br><span class="line">    S--&gt;&gt;C: 101 Switching</span><br><span class="line">    loop 实时通信</span><br><span class="line">        S-&gt;&gt;C: 数据 (任意时刻)</span><br><span class="line">        C-&gt;&gt;S: 数据 (任意时刻)</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    Note over C,S: 长轮询（低效）</span><br><span class="line">    loop 每次都要新建请求</span><br><span class="line">        C-&gt;&gt;S: GET /poll</span><br><span class="line">        S--&gt;&gt;C: 等待...（最多30秒）</span><br><span class="line">        S-&gt;&gt;C: 响应（有/无数据）</span><br><span class="line">        C-&gt;&gt;S: GET /poll （立刻重发）</span><br><span class="line">    end</span><br></pre></td></tr></table></figure>
+<h2 id="参考资料">参考资料</h2>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1n3411u7uf?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">WebSockets原理，握手和代码实现！用Socket.io制作实时聊天室_哔哩哔哩_bilibili</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Rh4y167Uh?spm_id_from=333.788.recommend_more_video.0&amp;trackid=web_related_0.router-related-2206146-q9d4h.1761464810537.403&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">为什么有http还要有websocket（上）_哔哩哔哩_bilibili</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/10/25/%E5%AD%A6%E4%B9%A0/python-web/REST%20%20GraphQL%20%20gRPC%20%20tRPC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/10/25/%E5%AD%A6%E4%B9%A0/python-web/REST%20%20GraphQL%20%20gRPC%20%20tRPC/" class="post-title-link" itemprop="url">REST | GraphQL | gRPC | tRPC</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-10-25 00:00:00" itemprop="dateCreated datePublished" datetime="2025-10-25T00:00:00+08:00">2025-10-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-11-01 21:25:23" itemprop="dateModified" datetime="2025-11-01T21:25:23+08:00">2025-11-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/python-web/" itemprop="url" rel="index"><span itemprop="name">python-web</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="http://example.com/2025/10/25/%E5%AD%A6%E4%B9%A0/python-web/Cookie%E3%80%81Session%E3%80%81Token/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1605,256 +1855,6 @@ Token，增加带宽开销（相比 Session ID）。</li>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV13t5PzDEzh/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">JWT身份认证算法、落地方案及优缺点_哔哩哔哩_bilibili</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1ob4y1Y7Ep/?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">Cookie、Session、Token究竟区别在哪？如何进行身份认证，保持用户登录状态？_哔哩哔哩_bilibili</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV13t5PzDEzh/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">JWT身份认证算法、落地方案及优缺点_哔哩哔哩_bilibili</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/10/25/%E5%AD%A6%E4%B9%A0/python-web/REST%20%20GraphQL%20%20gRPC%20%20tRPC/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/10/25/%E5%AD%A6%E4%B9%A0/python-web/REST%20%20GraphQL%20%20gRPC%20%20tRPC/" class="post-title-link" itemprop="url">REST | GraphQL | gRPC | tRPC</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-10-25 00:00:00" itemprop="dateCreated datePublished" datetime="2025-10-25T00:00:00+08:00">2025-10-25</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-11-01 21:25:23" itemprop="dateModified" datetime="2025-11-01T21:25:23+08:00">2025-11-01</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/python-web/" itemprop="url" rel="index"><span itemprop="name">python-web</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/10/25/%E5%AD%A6%E4%B9%A0/python-web/Websockets/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/10/25/%E5%AD%A6%E4%B9%A0/python-web/Websockets/" class="post-title-link" itemprop="url">Websockets</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-10-25 00:00:00" itemprop="dateCreated datePublished" datetime="2025-10-25T00:00:00+08:00">2025-10-25</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-10-26 17:50:18" itemprop="dateModified" datetime="2025-10-26T17:50:18+08:00">2025-10-26</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/python-web/" itemprop="url" rel="index"><span itemprop="name">python-web</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="什么是长轮询long-polling">🕰️ 什么是长轮询（Long Polling）？</h2>
-<p><strong>长轮询</strong> 是一种在 <strong>没有 WebSocket 或
-Server-Sent Events（SSE）</strong>
-的环境下，<strong>模拟“服务器推送”</strong> 的技术。</p>
-<p>客户端发起 HTTP
-请求后，<strong>服务器不会立即响应</strong>，而是<strong>挂起连接</strong>，直到<strong>有新数据可返回</strong>或<strong>超时</strong>才发送响应；客户端收到响应后立即<strong>重新发起请求</strong>，从而实现<strong>准实时的双向通信</strong>。</p>
-<p>❌ 但最坏情况是：</p>
-<ul>
-<li>前端在 <strong>t=0s</strong> 发起请求</li>
-<li><strong>新数据在 t=0.1s 产生</strong></li>
-<li>但<strong>后端没检测到</strong>（比如检查间隔是 1 秒）</li>
-<li>后端一直等到 <strong>t=10s 超时</strong>，才返回“无数据”</li>
-<li>前端在 <strong>t=10s</strong> 收到响应，显示“没更新”</li>
-<li>然后<strong>立刻</strong>发起下一轮请求（t=10s）</li>
-<li>后端这次检测到数据（t=10.1s）→ 返回</li>
-<li>前端在 <strong>t=10.2s</strong> 才显示！</li>
-</ul>
-<p>→ <strong>延迟 = 10.1 秒！</strong></p>
-<p>🧠 核心问题：<strong>检测粒度 + 请求对齐</strong></p>
-<p>长轮询的延迟主要来自两个地方：</p>
-<table>
-<colgroup>
-<col style="width: 24%">
-<col style="width: 75%">
-</colgroup>
-<thead>
-<tr>
-<th>延迟来源</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>1. 后端检查间隔</strong></td>
-<td>如果后端每 1 秒检查一次数据，那么数据产生后最多要等 1
-秒才被发现</td>
-</tr>
-<tr>
-<td><strong>2. 请求发起时机</strong></td>
-<td>如果数据在“上一轮请求刚结束、下一轮还没发”时产生，就要等下一轮超时结束</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>💡
-即使后端“一有数据就返回”，<strong>前提是它在“当前这个请求还在挂起时”检测到了数据</strong>。</p>
-</blockquote>
-<h2 id="什么是-websocket">🌐 什么是 WebSocket？</h2>
-<p><strong>WebSocket</strong>
-是一种<strong>全双工通信协议</strong>，建立在 TCP
-之上，允许客户端和服务器之间<strong>实时、双向</strong>地传输数据。</p>
-<p>对比传统的 HTTP：</p>
-<ul>
-<li>HTTP
-是<strong>请求-响应</strong>模式：客户端发请求，服务器响应，然后连接关闭。</li>
-<li>WebSocket
-是<strong>持久连接</strong>：连接建立后，双方可以随时主动发消息，适合聊天、实时通知、在线游戏等场景。</li>
-</ul>
-<h2 id="websocket-vs-http-轮询举例说明">🔁 WebSocket vs HTTP
-轮询（举例说明）</h2>
-<p>假设你要做一个<strong>实时股票价格更新</strong>页面：</p>
-<ul>
-<li><strong>HTTP 轮询</strong>：前端每 1
-秒发一次请求问“价格变了吗？”，服务器回答。浪费带宽，延迟高。</li>
-<li><strong>WebSocket</strong>：连接一次，服务器价格一变就主动推给前端，高效实时。</li>
-</ul>
-<h2 id="websocket-通信流程简化版">🧱 WebSocket 通信流程（简化版）</h2>
-<ol type="1">
-<li>客户端发起 HTTP 请求，带 <code>Upgrade: websocket</code> 头。</li>
-<li>服务器同意升级协议，返回 <code>101 Switching Protocols</code>。</li>
-<li>连接升级为 WebSocket，之后双方通过这个连接发消息（不是 HTTP
-了！）。</li>
-<li>任意一方可主动关闭连接。</li>
-</ol>
-<h2 id="websocket通信图解">websocket通信图解</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant Client as 客户端 (React)</span><br><span class="line">    participant Server as 服务器 (FastAPI)</span><br><span class="line"></span><br><span class="line">    Note over Client,Server: 1. 建立 WebSocket 连接</span><br><span class="line">    Client-&gt;&gt;Server: GET /ws + Upgrade: websocket</span><br><span class="line">    Server--&gt;&gt;Client: 101 Switching Protocols</span><br><span class="line"></span><br><span class="line">    Note over Client,Server: 2. 双向通信阶段</span><br><span class="line">    Client-&gt;&gt;Server: send(&quot;Hello&quot;)</span><br><span class="line">    Server--&gt;&gt;Client: send(&quot;服务器回声: Hello&quot;)</span><br><span class="line">    Server-&gt;&gt;Client: send(&quot;主动推送: 2秒过去了！&quot;)</span><br><span class="line">    Client--&gt;&gt;Server: send(&quot;收到推送，谢谢！&quot;)</span><br><span class="line"></span><br><span class="line">    Note over Client,Server: 3. 任意一方可关闭连接</span><br><span class="line">    Client-&gt;&gt;Server: close()</span><br><span class="line">    Server--&gt;&gt;Client: 连接关闭</span><br></pre></td></tr></table></figure>
-<h2 id="与长轮询对比">与长轮询对比</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant C as 客户端</span><br><span class="line">    participant S as 服务器</span><br><span class="line"></span><br><span class="line">    Note over C,S: WebSocket（高效）</span><br><span class="line">    C-&gt;&gt;S: 握手 (HTTP Upgrade)</span><br><span class="line">    S--&gt;&gt;C: 101 Switching</span><br><span class="line">    loop 实时通信</span><br><span class="line">        S-&gt;&gt;C: 数据 (任意时刻)</span><br><span class="line">        C-&gt;&gt;S: 数据 (任意时刻)</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    Note over C,S: 长轮询（低效）</span><br><span class="line">    loop 每次都要新建请求</span><br><span class="line">        C-&gt;&gt;S: GET /poll</span><br><span class="line">        S--&gt;&gt;C: 等待...（最多30秒）</span><br><span class="line">        S-&gt;&gt;C: 响应（有/无数据）</span><br><span class="line">        C-&gt;&gt;S: GET /poll （立刻重发）</span><br><span class="line">    end</span><br></pre></td></tr></table></figure>
-<h2 id="参考资料">参考资料</h2>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1n3411u7uf?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">WebSockets原理，握手和代码实现！用Socket.io制作实时聊天室_哔哩哔哩_bilibili</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Rh4y167Uh?spm_id_from=333.788.recommend_more_video.0&amp;trackid=web_related_0.router-related-2206146-q9d4h.1761464810537.403&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">为什么有http还要有websocket（上）_哔哩哔哩_bilibili</a></p>
 
       
     </div>
