@@ -155,7 +155,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">164</span>
+          <span class="site-state-item-count">166</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -206,6 +206,798 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/" class="post-title-link" itemprop="url">大创——初读论文与初步学习</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-11-15 00:00:00" itemprop="dateCreated datePublished" datetime="2024-11-15T00:00:00+08:00">2024-11-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-12 18:40:38" itemprop="dateModified" datetime="2025-06-12T18:40:38+08:00">2025-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%A1%B9%E7%9B%AE%E7%BB%8F%E5%8E%86/" itemprop="url" rel="index"><span itemprop="name">项目经历</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%A1%B9%E7%9B%AE%E7%BB%8F%E5%8E%86/%E5%A4%A7%E5%88%9B/" itemprop="url" rel="index"><span itemprop="name">大创</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="视频异常检测初步了解">视频异常检测初步了解</h1>
+<h2 id="传统方法检测异常样本">传统方法检测异常样本：</h2>
+<ul>
+<li>高斯分布 Gaussian Distribute</li>
+<li>高斯混合模型 Gaussian Mixture Model</li>
+</ul>
+<h2 id="深度学习方法下的异常检测">深度学习方法下的异常检测：</h2>
+<ul>
+<li>两种主流的异常检测任务：
+<ul>
+<li>重构任务
+Reconstruction：图像通过深度神经网络DNN输出一张重构图像，通过损失函数，先训练调整DNN，测试结果由AUC评判（AUC（Area
+Under the Curve）是用于评估分类模型性能的一个重要指标）</li>
+<li>预测任务
+Prediction：连续输入图像，预测新图像，用预测与非预测比较</li>
+</ul></li>
+<li>自动编码器 Auto-Encoder：U-Net
+是一种用于图像分割的深度学习模型，主要特点是采用了编码器-解码器结构（也叫对称结构），并在编码器和解码器之间引入了跳跃连接（skip
+connections）</li>
+</ul>
+<blockquote>
+<p><strong>编码器（Contracting
+Path）</strong>：这一部分类似于卷积神经网络（CNN），用于提取输入图像的特征。</p>
+<p><strong>瓶颈层（Bottleneck）</strong>：编码器和解码器之间的连接层，负责处理最深层次的特征。</p>
+<p><strong>解码器（Expansive
+Path）</strong>：这一部分用于将编码器提取的特征还原回原始图像的大小。</p>
+<p><strong>跳跃连接（Skip
+Connections）</strong>：解码器部分会与编码器的对应层进行直接连接，从而帮助模型在恢复空间分辨率的过程中更好地保留细节信息。</p>
+<figure>
+<img src="./../../images/大创/v2-39073bacc426f0e464b53336c83e19da_1440w.jpg" alt="v2-39073bacc426f0e464b53336c83e19da_1440w">
+<figcaption aria-hidden="true">v2-39073bacc426f0e464b53336c83e19da_1440w</figcaption>
+</figure>
+</blockquote>
+<h2 id="根据学习方法分类">根据学习方法分类：</h2>
+<ul>
+<li>无监督学习 unsupervised learning 只有正常样本训练</li>
+<li>半监督学习 weakly spervised learning 以不平衡的样本比例训练</li>
+<li>监督学习 spervised learning 都训练</li>
+</ul>
+<h2 id="视频异常检测领域未来挑战">视频异常检测领域未来挑战：</h2>
+<ul>
+<li>异常检测视频大部分采用mini-batch训练方法，非常消耗时间和资源，无法实时进行视频检测</li>
+<li>现实的数据集，模型难以训练</li>
+<li>异常的情况定义模糊</li>
+<li>模型的迁移性差，shanghaiTech的数据集是多摄像头融合的数据集，大部分数据集表现一般</li>
+</ul>
+<h2 id="了解yolo">了解yolo</h2>
+<p>YOLO（You Only Look Once）系列算法是计算机视觉领域中重要的<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=目标检测技术&amp;spm=1001.2101.3001.7020">目标检测技术</a>。凭借其高效的实时处理能力，YOLO被广泛应用于视频监控、自动驾驶等多个领域。</p>
+<h1 id="论文一human-action-recognition-from-various-data-modalities-a-review">论文一：Human
+Action Recognition from Various Data Modalities: A Review</h1>
+<h2 id="概述">概述</h2>
+<p><strong>人类动作识别（Human Action Recognition,
+HAR）</strong>旨在理解人类的行为，并为每个行为分配一个标签。</p>
+<p>多种不同的数据形态都可以用来表示人类的动作和行为。这些模态可以分为2类：<strong>视觉模态和非视觉模态</strong></p>
+<p>视觉模态和非视觉模态的主要区别在于：视觉模态的数据对人类行为的表示相对直观，但是非视觉模态的数据则不是。视觉模态主要包括：如RGB，骨架，深度，红外，点云，事件流（event
+stream）等数据模态，而非视觉模态则主要包括音频，加速度，雷达，wifi信号等数据模态</p>
+<p>然而，由于不同的模态对 HAR
+具有不同的优势和局限性，因此多种数据模态的融合和跨模态的知识传递以提高
+HAR 的准确性和稳健性，近年来也受到了极大的关注
+[23]，[24]。更具体地说，融合是指将两种或多种模态的信息组合起来，以识别动作</p>
+<p>该综述对基于不同数据模态的深度学习HAR方法的最新进展做了一个综合调研。介绍调研的主要内容分为三部分</p>
+<ul>
+<li>当前主流的单模态深度学习方法</li>
+<li>当前主流的多模态深度学习方法，包括基于融合（fusion）和协同学习（co-learning）的学习框架</li>
+<li>当前HAR任务的主流数据集</li>
+</ul>
+<h2 id="单一模态-single-modality">单一模态 SINGLE MODALITY</h2>
+<h3 id="rgb模态-rgb-modality">RGB模态 RGB MODALITY</h3>
+<p>RGB 模态通常是指由 RGB
+相机捕获的图像或视频（图像序列），旨在重现人眼所见。</p>
+<p>RGB模态优点主要有：（1）RGB数据容易收集，通常是最常用的数据模态。（2）RGB模态包含所捕获的场景上下文的信息。（3）基于RGB的HAR方法也可以用来做pretrained
+model。</p>
+<p>缺点主要有：（1）由于RGB数据中存在背景、视点、尺度和光照条件的变化，所以在RGB模态中进行识别通常具有挑战性。（2）RGB
+视频通常具有较大的数据量，导致在为 HAR
+的时空环境建模时会产生高计算成本。</p>
+<p>下面介绍面向基于 RGB 的 HAR 的高级深度学习，主要可分为四大类，即双流
+2D 卷积神经网络 （CNN）、递归神经网络 （RNN）、3D CNN 和基于 Transformer
+的方法</p>
+<figure>
+<img src="/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/v2-4ec2f54d013bb5ab6996585c53f7755d_1440w.png" alt="v2-4ec2f54d013bb5ab6996585c53f7755d_1440w">
+<figcaption aria-hidden="true">v2-4ec2f54d013bb5ab6996585c53f7755d_1440w</figcaption>
+</figure>
+<figure>
+<img src="/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/sadasd.png" alt="sadasd">
+<figcaption aria-hidden="true">sadasd</figcaption>
+</figure>
+<h3 id="骨骼模态-skeleton-modality">骨骼模态 SKELETON MODALITY</h3>
+<p>骨骼序列编码人体关节的轨迹，这些轨迹表征了信息丰富的人体运动。因此，骨架数据也是
+HAR 的合适模式。</p>
+<p>骨架数据提供的是身体结构与姿态信息，其具有两个明显的优点：（1）具有比例不变性。（2）对服装纹理和背景是鲁棒的。</p>
+<p>但同时也有两个缺点：（1）骨架信息的表示比较稀疏，存在噪声。（2）骨架数据缺少人-物交互时可能存在的形状信息。</p>
+<figure>
+<img src="/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/v2-f3f49680590c848b02f3e7911c5d7d3c_1440w.png" alt="v2-f3f49680590c848b02f3e7911c5d7d3c_1440w">
+<figcaption aria-hidden="true">v2-f3f49680590c848b02f3e7911c5d7d3c_1440w</figcaption>
+</figure>
+<h3 id="深度模态-depth-modality">深度模态 DEPTH MODALITY</h3>
+<p>深度图其中像素值表示从给定视点到场景中的点的距离信息。深度模态通常对颜色和纹理的变化具有鲁棒性，提供了可靠的人体三维结构和几何形状信息，因此可用于
+HAR。随着技术的发展，现在已经有多种设备可以捕获场景中的深度图。现有的对深度数据学习的方法大多数还是利用CNN提取深度图中的feature。深度数据可以提供几何形状信息，但是对外观数据的提供是缺失的，所以深度数据通常不单独使用，而是与其他模态的数据融合使用。</p>
+<h3 id="红外模态-infrared-modality">红外模态 INFRARED MODALITY</h3>
+<p>通常，红外传感器不需要依赖外部环境光，因此特别适用于夜间
+HARat。红外传感技术可分为有源和无源两种。一些红外传感器（如
+Kinect）依赖于主动红外技术，该技术发射红外线并利用目标反射光线来感知场景中的物体。在目前基于深度学习的方法中，比较多的做法是把红外图像作为其中一个stream输入双流或多流网络中。红外数据以其不需要依赖外部环境的可见光的特点，特别适合于夜间的HAR，但是，红外图像也有着对比度低和信噪比低的固有缺点。</p>
+<h3 id="点云模态-point-cloudmodality">点云模态 POINT CLOUDMODALITY</h3>
+<p>点云数据由许多点集合组成，这些点表示空间参考系统下目标的空间分布和表面特征。获取
+3D 点云数据有两种主要方法，即 （1） 使用 3D 传感器，例如 LiDAR 和
+Kinect，或 （2） 使用基于图像的 3D 重建。点云作为一种 3D
+数据模态，具有强大的能力来表示主体的空间轮廓和 3D 几何形状，因此可以用于
+HAR。但是点云中通常存在噪声和高度不均匀的点分布。</p>
+<h3 id="事件流模态-event-stream-modality">事件流模态 EVENT STREAM
+MODALITY</h3>
+<p>事件照相机（event
+camera）可以捕捉照明条件的变化并为每个像素独立产生异步事件。传统的摄像机通常会捕捉整个图像阵列，而事件摄像机仅响应视觉场景的变化。事件照相机能够有效地滤除背景信息，而只保留前景运动信息，这样可以避免视觉信息中的大量冗余，但是其捕捉到的信息通常在时间和空间维度上是稀疏的，而且是异步的。因此一些现有的方法主要聚焦于设计事件聚合策略，将事件摄像机的异步输出转换为同步的视觉帧。</p>
+<h3 id="音频模态-audio-modality">音频模态 AUDIO MODALITY</h3>
+<p>音频信号通常与视频信号一起提供，由于音频和视频是同步的，所以音频数据可以用定位动作。因为音频信号中的信息量是不足的，所以单独使用音频数据执行HAR任务相对比较少见。更常见的情况是音频信号作为HAR的补充信息，与其他模态（如rgb图像）一起使用。</p>
+<h3 id="后续">后续</h3>
+<p>还有加速度模态，雷达模态，wifi模态，我先不了解，后续若有需要再完善知识</p>
+<h2 id="多模态-multi-modality">多模态 MULTI-MODALITY</h2>
+<p>在现实生活中，人类经常以多模态认知方式感知环境。同样，多模态机器学习是一种建模方法，旨在处理和关联来自多种模态的感觉信息[358]。通过聚合各种数据模态的优势和功能，多模态机器学习通常可以提供更强大、更准确的
+HAR。</p>
+<p>多模态学习方法主要有两种，融合（fusion）和协同学习（co-learning）。其中融合指的是对来自两个或更多模态的信息进行集成，并将其用于训练或推理，而协同学习指的则是对不同模态之间的知识进行迁移。图4展示了多模态学习方法的分类</p>
+<figure>
+<img src="/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/v2-04335982349266acffdb93355ce2686c_1440w.png" alt="v2-04335982349266acffdb93355ce2686c_1440w">
+<figcaption aria-hidden="true">v2-04335982349266acffdb93355ce2686c_1440w</figcaption>
+</figure>
+<h3 id="har任务中的多模态融合">HAR任务中的多模态融合</h3>
+<p>模态融合的目的是利用不同数据模态的互补优势，以达到更好的识别性能。现有的多模态融合方案主要有两种：（1）评分融合（score
+fusion），即对不同模态输出的score做融合，例如使用加权平均或学习一个分数融合模型。（2）特征融合，即对来自不同模态的特征进行组合。数据融合（在特征提取之前就融合不同模态的输入数据）可以看成是特征融合，因为某一模态的数据数据可以被视为该模态的原始特征。</p>
+<p>依据输入模态的不同，现有的多模态融合方法大概可以分为视觉模态之间的融合，与视觉+非视觉模态之间的融合两种</p>
+<h4 id="视觉模态之间的融合"><strong>视觉模态之间的融合</strong></h4>
+<ol type="1">
+<li>RGB+深度模态：RGB和深度模态分别能够捕捉外观信息和3D形状信息，因此它们具有比较强的互补性。</li>
+<li>RGB+骨架模态：骨架模态可以提供身体位置和关节运动信息，同样和RGB模态是互补的。[28]提出了一个双流深度网络，两个stream分别是CNN和RNN，用以分别处理RGB和骨架数据，融合方式同时尝试了特征融合和分数融合，并发现应用特征融合策略可以取得更好的效果。</li>
+<li>深度图+骨架模态：[31]将身体的每个部分与其他部分之间的相对几何关系作为骨架特征，将不同身体部分周围的深度图像块作为外观特征，以编码身体-对象和身体部分-身体部分之间的关系，进而实现可靠的HAR。</li>
+<li>RGB+深度图+骨架模态：这类方法大多是前文提到了三类多模态融合方法的扩展。</li>
+</ol>
+<h4 id="视觉模态非视觉模态的融合"><strong>视觉模态+非视觉模态的融合</strong></h4>
+<ol type="1">
+<li>视频与音频的融合：前文中已经提到，音频可以为视频的外观和运动信息提供补充信息。所以目前已经有一些基于深度学习的方法来融合这种模态的数据</li>
+<li>视频与加速度模态的融合</li>
+<li>其他类型的模态融合：[43]的核心思想是将非RGB模态的数据，包括骨架、加速度和wifi数据都转换成彩色图像，然后送入CNN中。</li>
+</ol>
+<h3 id="har任务中的多模态协同学习">HAR任务中的多模态协同学习</h3>
+<p>多模态协同学习旨在探索如何利用辅助模态学习到的知识帮助另一个模态的学习，希望通过跨模态的知识传递和迁移可以克服单一模态的缺点，提高性能。多模态协同学习与多模态融合的一个关键区别在于，在多模态协同学习中，辅助模态的数据仅仅在训练阶段需要，测试阶段并不需要。所以多模态协同学习尤其适用于模态缺失的场景。此外对于模态样本数较小的场景，多模态协同学习也可以起到一定的帮助作用。</p>
+<h4 id="视觉模态的协同学习"><strong>视觉模态的协同学习</strong></h4>
+<ol type="1">
+<li>RGB和深度模态的协同学习</li>
+<li>RGB和骨架模态的协同学习。如[48]利用CNN+LSTM执行基于RGB视频的分类，并利用在骨架数据上训练的LSTM模型充当调节器，强制两个模型的输出特征相似。</li>
+</ol>
+<h4 id="视觉和非视觉模态的协同学习"><strong>视觉和非视觉模态的协同学习</strong></h4>
+<p>第一种类型是在不同模态之间进行知识的迁移，如[50]中的teacher
+network使用非视觉模态训练，而student
+network使用RGB模态作为输入，通过强制teacher和student的attention
+map相似以弥补模态间的形态差距，并实现知识的提炼。</p>
+<p>第二种类型是利用不同模态之间的相关性进行自监督学习，比如[51]分别利用音频/视频模态中的无监督聚类结果作为视频/音频模态的监督信号。[52]使用视频和音频的时间同步信息作为自监督信号。</p>
+<h1 id="论文二rwf-2000-an-open-large-scale-video-database-for-violence-detection">论文二：RWF-2000:
+An Open Large Scale Video Database for Violence Detection</h1>
+<p><a target="_blank" rel="noopener" href="https://github.com/mchengny/RWF2000-Video-Database-for-Violence-Detection">mchengny/RWF2000-Video-Database-for-Violence-Detection：一个用于暴力检测的大型视频数据库，其中包含
+2,000 个包含暴力或非暴力行为的视频剪辑。</a></p>
+<h2 id="摘要">摘要</h2>
+<p>近年来，监控摄像头在公共场所广泛部署，由于这些无处不在的设备，总体犯罪率已显著降低。通常，这些摄像头会在犯罪发生后提供线索和证据，而很少用于及时预防或制止犯罪活动。手动监控来自监控摄像头的大量视频数据既费时又费力。因此，从视频信号中自动识别暴力行为变得至关重要。</p>
+<p>本文总结了几个现有的用于暴力检测的视频数据集，并提出了 RWF-2000
+数据库，其中包含监控摄像头在真实场景中捕获的 2,000
+个视频。此外，我们还提出了一种同时利用 3D-CNN
+和光流优点的新方法，即流门控网络。所提出的方法在我们提出的数据库的测试集上获得了
+87.25% 的准确率。数据库和源代码目前对 Access 1 开放。</p>
+<h2 id="概述-1">概述</h2>
+<p>通常，基于视频的暴力检测的定义是检测视频数据中的暴力行为。它是人类动作识别的一个子集，旨在识别常见的人类动作。与静止图像相比，视频数据具有额外的时间序列。一组连续的帧表示连续的运动，而相邻的帧由于帧间相关性高而包含冗余信息。</p>
+<p>一些早期的方法依赖于检测高度相关物体（例如，枪击、火焰、血腥、爆炸）的存在，而不是直接识别暴力事件</p>
+<p>此前数据的劣势：尽管存在一些用于暴力检测的视频数据集，但它们仍然存在规模小、多样性少和图像分辨率低的缺点。此外，一些具有高图像质量的相关数据集来自电影，这些电影与真实场景不够接近。为解决真实暴力活动中高质量数据不足的问题</p>
+<p>本文工作：</p>
+<ol type="1">
+<li>为了解决真实暴力活动中高质量数据不足的问题，我们收集了一个新的视频数据集
+（RWF-2000）
+并将其免费发布给研究界。该数据集规模较大，包含从监控视频中提取的 2,000
+个剪辑</li>
+<li>我们提出了一种新的具有自学习池机制的模型，该模型可以很好地兼顾外观特征和时间特征。</li>
+</ol>
+<h2 id="先前数据集">先前数据集</h2>
+<p>根据注释方法，仍然存在两种用于暴力检测的视频数据集：修剪和未修剪。裁剪后的数据集中的视频都是几秒长的短片，每个视频都有一个视频级标注。而视频未修剪的数据集通常具有更长的持续时间。此外，暴力活动的开始时间和结束时间都有帧级注释。</p>
+<p>总结这些提议的数据集，每个数据集都至少具有以下一个或多个限制：</p>
+<ul>
+<li>图像质量低;缺乏足够的数据量</li>
+<li>视频时长但注释粗糙</li>
+<li>与现实暴力不够接近的视频混合来源</li>
+</ul>
+<p>为了解决上述问题，我们从 YouTube 网站收集了一个新的 RWF
+2000（真实世界格斗）数据集，其中包括 2,000
+个由监控枪式摄像机从真实场景中拍摄的修剪视频剪辑。</p>
+<h2 id="先前方法">先前方法</h2>
+<p>传统方法通常会尝试找到一个 powfer
+特征提取算法，并实现一个基于机器学习的分类器来完成暴力检测任务。</p>
+<p>总之，基于深度学习的方法通常优于传统的基于特征提取的模型。此外，大多数最先进的结果都使用多通道输入（例如，原始
+RGB 图像、光流、加速度图）。同时，复杂模型对过拟合不是很鲁棒。</p>
+<p>在本文中，我们只采用 RGB
+图像和光流来构建神经网络，它可以处理空间和时间信息。此外，我们提出的
+Flow-Gated
+架构可以通过自学习来减少输入视频的时间通道，而不是传统的池化策略。</p>
+<h2 id="rwf-2000-数据库和建议的方法">RWF-2000 数据库和建议的方法</h2>
+<h3 id="数据采集">数据采集</h3>
+<p>为了使暴力检测在现实应用中更加实用，我们从 YouTube
+平台收集了一个新的真实世界格斗 （RWF）
+数据集，其中包含监控摄像头在真实场景中拍摄的 2,000 个视频剪辑。</p>
+<p>拟议的数据集有 2,000 个视频剪辑，分为两部分：训练集 （80%） 和测试集
+（20%）。一半的视频包含暴力行为，而其他视频属于非暴力活动。</p>
+<h3 id="flow-gated-network">Flow Gated Network</h3>
+<p>以前的大多数方法都探索从单个帧中提取外观特征，然后将它们融合以对时间信息进行建模。由于粗略的池化机制，运动信息可能毫无用处，我们的目标是设计一种通过网络自学习实现的时间池化机制</p>
+<figure>
+<img src="/2024/11/15/%E7%A7%91%E7%A0%94/%E5%A4%A7%E5%88%9B/%E5%A4%A7%E5%88%9B/asdasf.png" alt="asdasf">
+<figcaption aria-hidden="true">asdasf</figcaption>
+</figure>
+<p>由四个部分组成：RGB 通道、光流通道、合并块和全连接层。RGB
+通道和光流通道由级联的 3D CNN
+组成，它们具有一致的结构，因此它们的输出可以融合。Merging Block
+也由基本的 3D CNN 组成，这些 CNN
+在自学时间池化后处理信息。最后，全连接层生成输出。</p>
+<p>该模型的亮点是利用光流通道的一个分支来帮助构建池化机制。</p>
+<h1 id="后续学习">后续学习</h1>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_32892383/article/details/136413119">基于YOLOv8/YOLOv7/YOLOv6/YOLOv5的暴力行为检测系统（深度学习模型+UI界面+Python代码+训练数据集）-CSDN博客</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_42681787/article/details/134423818">YOLO8实战：暴力行为检测系统_yolov8
+打架检测-CSDN博客</a></p>
+<h1 id="参考文献">参考文献</h1>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1aR4y1J7uv/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">科研分享|视频异常检测_哔哩哔哩_bilibili</a></p>
+<p>[<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/553262457">领域综述] TPAMI
+2022 | Human Action Recognition from Various Data Modalities: A Review -
+知乎</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/105360879">RWF-2000
+暴力行为检测视频数据集 - 知乎</a></p>
+<p>另一个暴力行为数据集<a target="_blank" rel="noopener" href="https://roc-ng.github.io/XD-Violence/">XD-暴力</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/" class="post-title-link" itemprop="url">数字逻辑电路——数电实验1</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-11-02 00:00:00" itemprop="dateCreated datePublished" datetime="2024-11-02T00:00:00+08:00">2024-11-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-12 18:50:08" itemprop="dateModified" datetime="2025-06-12T18:50:08+08:00">2025-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8A/" itemprop="url" rel="index"><span itemprop="name">大二上</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E9%80%BB%E8%BE%91%E7%94%B5%E8%B7%AF/" itemprop="url" rel="index"><span itemprop="name">数字逻辑电路</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="实验1-门电路逻辑功能测试">实验1 门电路逻辑功能测试</h1>
+<h2 id="内容一与非门和异或门逻辑功能的测试">内容一：与非门和异或门逻辑功能的测试</h2>
+<h3 id="ls20双4输入与非门逻辑功能测试">74LS20双4输入与非门逻辑功能测试</h3>
+<p>74LS20功能：<strong>四输入双与非门</strong>，其内部结构及真值表如图</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/1ac35b0a8f06411f05cc80a49ec9c700.png" alt="1ac35b0a8f06411f05cc80a49ec9c700">
+<figcaption aria-hidden="true">1ac35b0a8f06411f05cc80a49ec9c700</figcaption>
+</figure>
+<p>电路图如下</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/1.png" alt="1">
+<figcaption aria-hidden="true">1</figcaption>
+</figure>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">A</th>
+<th style="text-align: center;">B</th>
+<th style="text-align: center;">C</th>
+<th style="text-align: center;">D</th>
+<th style="text-align: center;">Y</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+<p>全1出0，有0出1</p>
+<h3 id="ls86四2输入异或门逻辑功能测试">74LS86四2输入异或门逻辑功能测试</h3>
+<p>74LS86功能：<strong>二输入端四异或门</strong>，其内部结构及真值表如图</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/a74b68814db1d802db338a7b636a523e.png" alt="a74b68814db1d802db338a7b636a523e">
+<figcaption aria-hidden="true">a74b68814db1d802db338a7b636a523e</figcaption>
+</figure>
+<p>电路图如下</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/6-1730557274344-12.png" alt="6">
+<figcaption aria-hidden="true">6</figcaption>
+</figure>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">1</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">A</th>
+<th style="text-align: center;">B</th>
+<th style="text-align: center;">Y</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<h2 id="内容二根据电路图写出逻辑关系表达式">内容二：根据电路图写出逻辑关系表达式</h2>
+<h3 id="用74ls00按图接线将输入输出逻辑关系分别填入表中">用74LS00按图接线，将输入输出逻辑关系分别填入表中。</h3>
+<p>74LS00功能：<strong>二输入端四与非门</strong>，其内部结构及真值表如图</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/4.png" alt="4">
+<figcaption aria-hidden="true">4</figcaption>
+</figure>
+<p>题目如下</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/564.png" alt="564">
+<figcaption aria-hidden="true">564</figcaption>
+</figure>
+<p>电路图如下</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/44.png" alt="44">
+<figcaption aria-hidden="true">44</figcaption>
+</figure>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">A</th>
+<th style="text-align: center;">B</th>
+<th style="text-align: center;">Y</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<p>电路图如下</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/546.png" alt="546">
+<figcaption aria-hidden="true">546</figcaption>
+</figure>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">A</th>
+<th style="text-align: center;">B</th>
+<th style="text-align: center;">Y</th>
+<th style="text-align: center;">Z</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+<h3 id="写出两个电路逻辑表达式">写出两个电路逻辑表达式</h3>
+<p>电路逻辑表达式为<span class="math inline"> <em>Ā</em><em>B</em> + <em>B̄</em><em>A</em></span></p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/DSFDSG.png" alt="DSFDSG">
+<figcaption aria-hidden="true">DSFDSG</figcaption>
+</figure>
+<p>电路逻辑表达式为<span class="math inline"> <em>Y</em> = <em>Ā</em><em>B</em> + <em>B̄</em><em>A</em></span>
+<span class="math inline"> <em>Z</em> = <em>A</em><em>B</em></span></p>
+<h2 id="内容三利用与非门控制输出">内容三：利用与非门控制输出</h2>
+<h3 id="用一片74ls00按图接线s接任一电平开关用示波器观察s对输出脉冲的控制作用">用一片74LS00按图接线，S接任一电平开关，用示波器观察S对输出脉冲的控制作用</h3>
+<h3 id="第一题">第一题</h3>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/4552.png" alt="4552">
+<figcaption aria-hidden="true">4552</figcaption>
+</figure>
+<p>电路图如下</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/456.png" alt="456">
+<figcaption aria-hidden="true">456</figcaption>
+</figure>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/284.png" alt="284">
+<figcaption aria-hidden="true">284</figcaption>
+</figure>
+<h3 id="第二题">第二题</h3>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/SAD.png" alt="SAD">
+<figcaption aria-hidden="true">SAD</figcaption>
+</figure>
+<p>电路图如下</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/VX.png" alt="VX">
+<figcaption aria-hidden="true">VX</figcaption>
+</figure>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/GS.png" alt="GS">
+<figcaption aria-hidden="true">GS</figcaption>
+</figure>
+<h2 id="内容四用与非门组成其它门电路并测试验证">内容四：用与非门组成其它门电路并测试验证</h2>
+<h3 id="第一题组成或非门">第一题：组成或非门</h3>
+<p>用一片2输入端四与非门组成或非门</p>
+<p>电路图如下</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/dsaf.png" alt="dsaf">
+<figcaption aria-hidden="true">dsaf</figcaption>
+</figure>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">A</th>
+<th style="text-align: center;">B</th>
+<th style="text-align: center;">Y</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+<h3 id="第二题组成异或门">第二题：组成异或门</h3>
+<p>同内容二</p>
+<h2 id="内容五逻辑门传输延迟时间的测量">内容五：逻辑门传输延迟时间的测量</h2>
+<p>用六反相器（非门）按图接线，输入200KHz连续脉冲，用双踪示波器测量输入、输出相位差，计算每个门的平均传输延迟时间的值。</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/asdfa.png" alt="asdfa">
+<figcaption aria-hidden="true">asdfa</figcaption>
+</figure>
+<p>74LS04功能：<strong>六反相器</strong>，其内部结构及真值表如图</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/sad-1730613828885-37.png" alt="sad">
+<figcaption aria-hidden="true">sad</figcaption>
+</figure>
+<p>电路图如下</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/sads.png" alt="sads">
+<figcaption aria-hidden="true">sads</figcaption>
+</figure>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/afdga.png" alt="afdga">
+<figcaption aria-hidden="true">afdga</figcaption>
+</figure>
+<h2 id="内容六用基本门电路组装一个译码电路将bcd8421码转换成格雷码">内容六：用基本门电路组装一个译码电路：将BCD8421码转换成格雷码</h2>
+<p>BCD8421码：二进制编码的十进制数，简称BCD码</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/t0131751fc49c1edcb4.png" alt="t0131751fc49c1edcb4">
+<figcaption aria-hidden="true">t0131751fc49c1edcb4</figcaption>
+</figure>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/63d335349be6acd1189581d69870bd56.png" alt="63d335349be6acd1189581d69870bd56">
+<figcaption aria-hidden="true">63d335349be6acd1189581d69870bd56</figcaption>
+</figure>
+<p>一位不产生进位的加法电路用<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=异或门&amp;spm=1001.2101.3001.7020">异或门</a>就可以实现，下图左边为一个二进制-格雷码转换器器，右边为一个格雷码-二进制码转换器。</p>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/353484a62261823731307a1969c8278e.png" alt="353484a62261823731307a1969c8278e">
+<figcaption aria-hidden="true">353484a62261823731307a1969c8278e</figcaption>
+</figure>
+<figure>
+<img src="/2024/11/02/college/%E5%A4%A7%E4%BA%8C%E4%B8%8A/%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF/%E6%95%B0%E7%94%B5%E5%AE%9E%E9%AA%8C1/sadsfdf.png" alt="sadsfdf">
+<figcaption aria-hidden="true">sadsfdf</figcaption>
+</figure>
+<h2 id="参考文献">参考文献</h2>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41628475/article/details/136149964">数字电路逻辑与设计实验一
+门电路逻辑功能及测试_数电实验-CSDN博客</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1274,271 +2066,6 @@ sort）是建立在归并操作上的一种有效、稳定的排序算法，该�
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/15/%E6%96%87%E6%A1%88/%E5%90%8D%E8%A8%80/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/10/15/%E6%96%87%E6%A1%88/%E5%90%8D%E8%A8%80/" class="post-title-link" itemprop="url">名言警句</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2024-10-15 00:00:00" itemprop="dateCreated datePublished" datetime="2024-10-15T00:00:00+08:00">2024-10-15</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-10-16 00:58:12" itemprop="dateModified" datetime="2024-10-16T00:58:12+08:00">2024-10-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%96%87%E6%A1%88/" itemprop="url" rel="index"><span itemprop="name">文案</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="前言">前言</h2>
-<p>我语文不好，始终羡慕那些说话出口成章，底蕴深厚，时不时冒出几句金句的人，所以，为了让我这么一个没有什么文化底蕴的人，说话不至于太俗气，既然我不会说，那我便学名人说，便有了记录名言警句的习惯，此外，这些名言警句背后的哲理，也经常能让我醍醐灌顶。之前在网上看到一些名言警句，就会顺手记录在手机的备忘录上，现在整理下来，希望再看到时能有所收获。我说的名人警句，不光是真正意义上的名人说的，其中也有部分是我看到网友写的，我觉得，学习一切可以学习的，任何人都可以是我的老师，他们很多的文字也能给我很大感触。</p>
-<hr>
-<h3 id="励志与挑战">1. <strong>励志与挑战</strong></h3>
-<ul>
-<li><strong>十年运到龙困井，一朝得势入青云</strong></li>
-<li><strong>命定的局限尽可永在，不屈的挑战却不可须臾或缺</strong>
-——《霍乱时期的爱情》</li>
-<li><strong>受任于败军之际,奉命于危难之间</strong>
-——诸葛亮《出师表》</li>
-<li><strong>他时若遂凌云志，敢笑黄巢不丈夫</strong> ——唐代罗隐</li>
-<li><strong>燕雀安知鸿鹄之志</strong> ——《史记·陈涉世家》</li>
-<li><strong>攻心为上,攻城为下</strong> ——《孙子兵法》</li>
-<li><strong>技不外漏，海不露底，千两黄金不卖道，十字街头送故交</strong></li>
-<li><strong>将军不下马，各自奔前程</strong></li>
-<li><strong>胜败兵家事不期，包羞忍耻是男儿</strong>
-——宋代陆游《秋夜将晓出篱门迎凉有感二首》</li>
-<li><strong>大丈夫生于天地之间，岂能郁郁久居人下</strong>
-——《三国志·蜀书》</li>
-<li><strong>江东子弟多才俊，卷土重来未可知</strong>
-——唐代杜牧《题乌江亭》</li>
-<li><strong>一位大师曾经说过要像水一样，那我应该就是海啸吧！</strong></li>
-<li><strong>命数如织，当为磐石</strong></li>
-</ul>
-<h3 id="爱情与亲密关系">2. <strong>爱情与亲密关系</strong></h3>
-<ul>
-<li><strong>我想要爱、激情、真诚和亲密的关系、性，这些使我鲜活，然唯有灵魂的交流使我平静</strong></li>
-<li><strong>一顾倾人城，
-再顾倾人国。宁不知倾城与倾国？佳人难再得</strong>
-——《汉书·李延年传》</li>
-<li><strong>不见鹿，不见鲸，亦不见你</strong></li>
-</ul>
-<h3 id="人生与哲理">3. <strong>人生与哲理</strong></h3>
-<ul>
-<li><strong>你不妨大胆去冒险，只因生命终将逝去</strong> ——尼采</li>
-<li><strong>人生不需要意义，意义需要人生</strong></li>
-<li><strong>我曾踏足山巅，也曾进入谷底，二者都让我受益良多</strong></li>
-<li><strong>旧游无处不堪寻。无寻处、惟有少年心</strong>
-——宋代辛弃疾《南乡子·登京口北固亭有怀》</li>
-<li><strong>天下万般兵刃 唯有过往伤人最深</strong></li>
-<li><strong>我见青山多妩媚,料青山见我应如是</strong>
-——宋代辛弃疾《贺新郎·别茂嘉十二弟》</li>
-<li><strong>如果真相带来痛苦，谎言只会雪上加霜</strong></li>
-<li><strong>花团锦簇的节日用来铭记逝者，而我，宁愿被人遗忘</strong></li>
-<li><strong>坟墓里寂静无比,埋葬你的是所有你没说出口的话</strong></li>
-<li><strong>世界既不黑也不白，而是一道极致的灰</strong></li>
-<li><strong>梦醒时夜续，惊慌失措</strong></li>
-</ul>
-<h3 id="自由与个性">4. <strong>自由与个性</strong></h3>
-<ul>
-<li><strong>因为生活过于教条，所以格外欣赏自由野性的东西</strong></li>
-<li><strong>是俗是雅，我已经分不清了，我只知道月亮正圆，我若不看一眼，倒显得我不解风情了</strong></li>
-<li><strong>国王们以世袭的权柄和虚名逼你下跪，诺克萨斯要你站起来，要你在荣耀中重获新生</strong></li>
-</ul>
-<h3 id="孤独与感伤">5. <strong>孤独与感伤</strong></h3>
-<ul>
-<li><strong>忽有清风化剑气,直斩少年二十意</strong></li>
-<li><strong>生活的底片从来都不是遥远的白日梦，而是热爱生活的自己</strong></li>
-<li><strong>黄昏见证虔诚的信徒，巅峰诞生虚伪的拥护</strong></li>
-<li><strong>假作真时真亦假，无为有处有还无</strong> ——《红楼梦》</li>
-<li><strong>林深时雾起，不见归处</strong></li>
-<li><strong>海蓝时浪涌，望而却步</strong></li>
-</ul>
-<h3 id="经典与历史">6. <strong>经典与历史</strong></h3>
-<ul>
-<li><strong>朕非亡国之君，臣乃亡国之臣</strong>
-——明代崇祯帝与大臣对话</li>
-<li><strong>满腹经纶书香气,腹有诗书气自华</strong></li>
-<li><strong>天下熙熙，皆为利往</strong> ——《史记·货殖列传》</li>
-<li><strong>竹杖芒鞋轻胜马，谁怕？一蓑烟雨任平生</strong>
-——宋代苏轼《定风波》</li>
-<li><strong>回首向来萧瑟处，归去，也无风雨也无晴</strong>
-——宋代苏轼《定风波》</li>
-<li><strong>既生瑜何生亮</strong> ——《三国演义》</li>
-<li><strong>欲买桂花同载酒，终不似，少年游</strong>
-——宋代刘过《唐多令》</li>
-<li><strong>愿以深心奉尘刹，不予自身求利益</strong> ——明代张居正</li>
-</ul>
-<h3 id="长文">7.长文</h3>
-<p>最绝望的人有三种，第一种是始出初之人，他没有同类，而身边全是未知，他无时无刻都在害怕着，你无法想象他是如何作为第一个人活下去的，因为他活着这件事本身，就已经违背了他被创造出来的本能。第二种是终焉之人，他也曾拥有同类，而现在，他便是最后之人，在迎接终焉时，他并不会感到孤单，因为同类早已用别的方式存在于他身上。他只能在可以活动的范围内活动，这使他对环境非常了解，了解到令自己感到绝望。第三种是活着之人，活着本身就是一种折磨，当你足够冷静时，你会发现，你做的一切都对自己没有任何意义，你本是一粒尘埃，最后也终回归尘埃，你认为的有意义只是你本能对你的奴役</p>
-<hr>
-<p>我不喜欢读书，但却无比向往哲思的海洋，所以游戏常常成为引导我思考的老师，与其是娱乐消遣的工具，我更愿意把他当做一部艺术品，其背后可以是一次次引人深思的哲理，其背后也可以是作者对某种人，对某件事，对某个价值观的思考，其背后还可以是一部引人入胜的恢宏世界观与史诗，无论是哪一种都令我着迷，引领我思考</p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/10/15/%E6%96%87%E6%A1%88/%E5%88%98%E9%82%A6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/10/15/%E6%96%87%E6%A1%88/%E5%88%98%E9%82%A6/" class="post-title-link" itemprop="url">大风起兮云飞扬</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2024-10-15 00:00:00" itemprop="dateCreated datePublished" datetime="2024-10-15T00:00:00+08:00">2024-10-15</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-10-16 00:38:58" itemprop="dateModified" datetime="2024-10-16T00:38:58+08:00">2024-10-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E6%96%87%E6%A1%88/" itemprop="url" rel="index"><span itemprop="name">文案</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="前言">前言</h2>
-<p>史书上轻轻翻过的一页，便是他们波澜壮阔的一生。鉴史可以明志，知古方能鉴今，以史为镜，可以知兴替。我虽然是一位理科生，但我心里一直深知历史的重要，历史不是冰冷的文字，而是充满温度的生命轨迹。那些沉浮于历史长河中的伟大人物，用他们的智慧与勇气改写了时代的篇章，也为后人留下了宝贵的思想财富。迷茫时读史，退缩时读史，困惑时读史，或许都会有不一样的收获。</p>
-<hr>
-<p>刘邦，</p>
-<p>38岁，一事无成，骗吃骗喝，娶了老婆。 48岁，被逼无奈，起兵反秦。
-50岁，被项羽吓得跪地求饶。 51岁，被项羽打得丢盔弃甲，老婆、父亲都被抓。
-54岁，建立汉朝，君临天下。 55岁，干翻曾经对他豪横的人。</p>
-<p>七年时间，纵横四海，天下归一。 60岁，出征匈奴。
-62岁，衣锦还乡时，写下大气磅礴的《大风歌》：</p>
-<blockquote>
-<p>大风起兮云飞扬， 威加海内兮归故乡， 安得猛士兮守四方。</p>
-</blockquote>
-<p>有人少年得志，有人大器晚成。人生从来没有太晚的开始，尽自己最大的努力，你也只是在等待一个时机。</p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <a class="extend prev" rel="prev" title="上一页" aria-label="上一页" href="/page/15/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><span class="page-number current">16</span><a class="page-number" href="/page/17/">17</a><a class="extend next" rel="next" title="下一页" aria-label="下一页" href="/page/17/"><i class="fa fa-angle-right"></i></a>
   </nav>
@@ -1612,6 +2139,8 @@ sort）是建立在归并操作上的一种有效、稳定的排序算法，该�
 <script src="/js/third-party/search/local-search.js"></script>
 
 
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js","integrity":"sha256-stuqcu2FrjYCXDOytWFA5SoUE/r3nkp6gTglzNSlavU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
 
 
 
