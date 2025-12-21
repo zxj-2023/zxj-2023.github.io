@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="什么是负载均衡 负载均衡本质上是一个反向代理（Reverse Proxy）*或*数据包转发器。它位于客户端（Client）和后端服务集群（Upstream Servers）之间，通过向外暴露一个虚拟IP（VIP），屏蔽了后端具体的网络拓扑结构。 为什么我们需要负载均衡？ 在计算机系统中，使用负载均衡主要有三个巨大的好处：  高可用性（High Availability &#x2F; Relia">
+<meta property="og:type" content="article">
+<meta property="og:title" content="负载均衡（Load Balancing）">
+<meta property="og:url" content="http://example.com/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="什么是负载均衡 负载均衡本质上是一个反向代理（Reverse Proxy）*或*数据包转发器。它位于客户端（Client）和后端服务集群（Upstream Servers）之间，通过向外暴露一个虚拟IP（VIP），屏蔽了后端具体的网络拓扑结构。 为什么我们需要负载均衡？ 在计算机系统中，使用负载均衡主要有三个巨大的好处：  高可用性（High Availability &#x2F; Relia">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/image-20251217201102150.png">
+<meta property="article:published_time" content="2025-12-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-17T12:49:55.955Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="后端">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/image-20251217201102150.png">
+
+
+<link rel="canonical" href="http://example.com/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/","path":"2025/12/17/学习/后端相关/负载均衡/","title":"负载均衡（Load Balancing）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>负载均衡（Load Balancing） | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="nav-number">1.</span> <span class="nav-text">什么是负载均衡</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="nav-number">2.</span> <span class="nav-text">为什么我们需要负载均衡？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%83%E6%98%AF%E6%80%8E%E4%B9%88%E5%88%86%E9%85%8D%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%B8%B8%E8%A7%81%E7%AE%97%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">它是怎么分配任务的？（常见算法）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#osi-%E6%A8%A1%E5%9E%8Bopen-systems-interconnection-model"><span class="nav-number">4.</span> <span class="nav-text">OSI 模型（Open
+Systems Interconnection Model）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82-application-layer"><span class="nav-number">4.0.1.</span> <span class="nav-text">7. 应用层 (Application
+Layer)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%A8%E7%A4%BA%E5%B1%82-presentation-layer"><span class="nav-number">4.0.2.</span> <span class="nav-text">6. 表示层 (Presentation
+Layer)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%9A%E8%AF%9D%E5%B1%82-session-layer"><span class="nav-number">4.0.3.</span> <span class="nav-text">5. 会话层 (Session
+Layer)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82-transport-layer-%E5%85%B3%E9%94%AE%E5%B1%82%E7%BA%A7"><span class="nav-number">4.0.4.</span> <span class="nav-text">4. 传输层 (Transport
+Layer) —— （关键层级）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82-network-layer-%E5%85%B3%E9%94%AE%E5%B1%82%E7%BA%A7"><span class="nav-number">4.0.5.</span> <span class="nav-text">3. 网络层 (Network
+Layer) —— （关键层级）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82-data-link-layer"><span class="nav-number">4.0.6.</span> <span class="nav-text">2. 数据链路层 (Data Link
+Layer)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%B1%82-physical-layer"><span class="nav-number">4.0.7.</span> <span class="nav-text">1. 物理层 (Physical
+Layer)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tcpip-%E5%8D%8F%E8%AE%AE%E6%A0%88"><span class="nav-number">5.</span> <span class="nav-text">TCP&#x2F;IP 协议栈</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%8F%AB-tcpip"><span class="nav-number">5.1.</span> <span class="nav-text">1. 为什么叫 TCP&#x2F;IP？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tcpip-%E7%9A%84%E5%9B%9B%E5%B1%82%E6%A8%A1%E5%9E%8B%E4%B8%8E-osi-%E7%9A%84%E6%98%A0%E5%B0%84"><span class="nav-number">5.2.</span> <span class="nav-text">2. TCP&#x2F;IP 的四层模型（与 OSI
+的映射）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E5%B1%82%E5%BA%94%E7%94%A8%E5%B1%82-application-layer"><span class="nav-number">5.2.1.</span> <span class="nav-text">第一层：应用层
+(Application Layer)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E5%B1%82%E4%BC%A0%E8%BE%93%E5%B1%82-transport-layer"><span class="nav-number">5.2.2.</span> <span class="nav-text">第二层：传输层 (Transport
+Layer)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E5%B1%82%E7%BD%91%E7%BB%9C%E5%B1%82-internet-layer"><span class="nav-number">5.2.3.</span> <span class="nav-text">第三层：网络层 (Internet
+Layer)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E5%B1%82%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E5%B1%82-network-interface-layer"><span class="nav-number">5.2.4.</span> <span class="nav-text">第四层：网络接口层
+(Network Interface Layer)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%88%86%E7%B1%BB"><span class="nav-number">6.</span> <span class="nav-text">常见的负载均衡分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86%E5%92%8C%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86"><span class="nav-number">7.</span> <span class="nav-text">正向代理和反向代理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%A3%E5%90%91%E4%BB%A3%E7%90%86-forward-proxy-%E4%BB%A3%E8%A1%A8%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">7.0.1.</span> <span class="nav-text">正向代理 (Forward
+Proxy) —— 代表客户端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86-reverse-proxy-%E4%BB%A3%E8%A1%A8%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="nav-number">7.0.2.</span> <span class="nav-text">反向代理 (Reverse
+Proxy) —— 代表服务端</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="nav-number">8.</span> <span class="nav-text">常见问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%A4%9A%E4%B8%AA%E6%9C%8D%E5%8A%A1%E5%99%A8session%E4%B8%80%E8%87%B4%E6%80%A7%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">8.1.</span> <span class="nav-text">如何解决多个服务器session一致性的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%80%E4%BC%9A%E8%AF%9D%E4%BF%9D%E6%8C%81-sticky-sessions-session-affinity"><span class="nav-number">8.1.1.</span> <span class="nav-text">1.
+方案一：会话保持 (Sticky Sessions &#x2F; Session Affinity)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%BA%8Csession-%E5%A4%8D%E5%88%B6-session-replication"><span class="nav-number">8.1.2.</span> <span class="nav-text">2. 方案二：Session 复制
+(Session Replication)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%89%E9%9B%86%E4%B8%AD%E5%BC%8F-session-%E5%AD%98%E5%82%A8-centralized-session-storage-%E6%9C%80%E6%8E%A8%E8%8D%90"><span class="nav-number">8.1.3.</span> <span class="nav-text">3.
+方案三：集中式 Session 存储 (Centralized Session Storage) ——
+【最推荐】</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E5%9B%9B%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%AD%98%E5%82%A8-token-jwt-%E7%8E%B0%E4%BB%A3%E6%9E%B6%E6%9E%84%E4%B8%BB%E6%B5%81"><span class="nav-number">8.1.4.</span> <span class="nav-text">4. 方案四：客户端存储
+(Token &#x2F; JWT) —— 【现代架构主流】</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E5%99%A8%E7%9A%84%E9%AB%98%E5%8F%AF%E7%94%A8%E6%80%A7"><span class="nav-number">8.2.</span> <span class="nav-text">如何保证负载均衡器的高可用性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BB%E5%A4%87%E6%A8%A1%E5%BC%8F-active-passive-%E6%9C%80%E7%BB%8F%E5%85%B8%E6%96%B9%E6%A1%88"><span class="nav-number">8.2.1.</span> <span class="nav-text">1. 主备模式 (Active-Passive)
+—— 最经典方案</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1"><span class="nav-number">8.2.2.</span> <span class="nav-text">架构设计：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">8.2.3.</span> <span class="nav-text">工作流程：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8C%E4%B8%BB%E6%A8%A1%E5%BC%8F-active-active-%E9%AB%98%E6%80%A7%E8%83%BD%E6%96%B9%E6%A1%88"><span class="nav-number">8.2.4.</span> <span class="nav-text">2. 双主模式 (Active-Active)
+—— 高性能方案</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1-1"><span class="nav-number">8.2.5.</span> <span class="nav-text">架构设计：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B-1"><span class="nav-number">8.2.6.</span> <span class="nav-text">工作流程：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1-gslb-%E5%BC%82%E5%9C%B0%E5%A4%9A%E6%B4%BB"><span class="nav-number">8.2.7.</span> <span class="nav-text">3. 全局负载均衡 (GSLB) ——
+异地多活</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nginx"><span class="nav-number">9.</span> <span class="nav-text">Nginx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#caddy"><span class="nav-number">10.</span> <span class="nav-text">Caddy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">11.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">177</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="负载均衡（Load Balancing） | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          负载均衡（Load Balancing）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-12-17 00:00:00 / 修改时间：20:49:55" itemprop="dateCreated datePublished" datetime="2025-12-17T00:00:00+08:00">2025-12-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/" itemprop="url" rel="index"><span itemprop="name">后端相关</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="什么是负载均衡">什么是负载均衡</h2>
+<p>负载均衡本质上是一个<strong>反向代理（Reverse
+Proxy）*<em>或*</em>数据包转发器</strong>。它位于客户端（Client）和后端服务集群（Upstream
+Servers）之间，通过向外暴露一个<strong>虚拟IP（VIP）</strong>，屏蔽了后端具体的网络拓扑结构。</p>
+<h2 id="为什么我们需要负载均衡">为什么我们需要负载均衡？</h2>
+<p>在计算机系统中，使用负载均衡主要有三个巨大的好处：</p>
+<ol type="1">
+<li><strong>高可用性（High Availability / Reliability）：</strong>
+如果有服务器坏了（宕机），负载均衡器会立刻发现，并停止向它发送请求，转而分发给其他健康的服务器。这样用户就感觉不到服务中断。</li>
+<li><strong>高性能（Performance）：</strong>
+通过将流量分摊，避免单一服务器过载，从而保证网页打开的速度和响应时间。</li>
+<li><strong>可扩展性（Scalability）：</strong>
+如果业务突然增长（比如双11大促），你可以随时增加几台新服务器进来，负载均衡器会自动开始给它们分配任务，非常灵活。</li>
+</ol>
+<figure>
+<img src="/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/image-20251217201102150.png" alt="image-20251217201102150">
+<figcaption aria-hidden="true">image-20251217201102150</figcaption>
+</figure>
+<h2 id="它是怎么分配任务的常见算法">它是怎么分配任务的？（常见算法）</h2>
+<p>负载均衡器并不是“瞎”分配的，它有一套策略（算法）来决定把请求给谁。最常见的有这几种：</p>
+<ul>
+<li><strong>轮询（Round Robin）：</strong>
+最简单的策略。按顺序一个一个来：请求1给服务器A，请求2给服务器B，请求3给服务器C，请求4又回到服务器A。</li>
+<li><strong>最小连接数（Least Connections）：</strong>
+比较智能。它会看谁现在手头的活儿最少（连接数最少），就把新任务给谁。适合某些任务处理时间长短不一的场景。</li>
+<li><strong>源地址哈希（IP Hash）：</strong>
+为了保证“从一而终”。它保证来自同一个 IP
+地址的用户，总是被分配到同一台服务器上。这在需要保持登录状态（Session）的场景中很有用。</li>
+</ul>
+<h2 id="osi-模型open-systems-interconnection-model">OSI 模型（Open
+Systems Interconnection Model）</h2>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1EU4y1v7ju/?spm_id_from=333.1387.0.0&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">互联网数据传输原理
+｜OSI七层网络参考模型_哔哩哔哩_bilibili</a></p>
+<h4 id="应用层-application-layer"><strong>7. 应用层 (Application
+Layer)</strong></h4>
+<ul>
+<li><strong>作用：</strong>
+直接与用户打交道，为应用程序提供网络服务接口。</li>
+<li><strong>关键点：</strong> 这是用户“看得到”的一层。</li>
+<li><strong>常见协议：</strong> HTTP (网页), FTP (文件), SMTP (邮件),
+DNS (域名)。</li>
+<li><strong>数据单元：</strong> Data (数据)</li>
+</ul>
+<h4 id="表示层-presentation-layer"><strong>6. 表示层 (Presentation
+Layer)</strong></h4>
+<ul>
+<li><strong>作用：</strong>
+数据的“翻译官”。负责数据的格式化、加密/解密、压缩/解压缩。</li>
+<li><strong>关键点：</strong>
+确保一个系统的应用层发送的数据能被另一个系统的应用层读取。比如把 JSON
+对象转成二进制，或者处理 SSL/TLS 加密。</li>
+<li><strong>常见格式：</strong> JPEG, ASCII, EBCDIC, SSL/TLS。</li>
+</ul>
+<h4 id="会话层-session-layer"><strong>5. 会话层 (Session
+Layer)</strong></h4>
+<ul>
+<li><strong>作用：</strong>
+建立、管理和终止应用程序之间的“会话”（Session）。</li>
+<li><strong>关键点：</strong>
+它负责断点续传、同步点。比如你从网盘下载文件，断网了，下次能接着下，就是会话层的功劳。</li>
+<li><strong>常见协议：</strong> RPC, SQL。</li>
+</ul>
+<h4 id="传输层-transport-layer-关键层级"><strong>4. 传输层 (Transport
+Layer)</strong> —— <em>（关键层级）</em></h4>
+<ul>
+<li><strong>作用：</strong>
+负责端到端（End-to-End）的数据传输，区分具体的应用程序（通过端口号）。</li>
+<li><strong>关键点：</strong>
+<strong>负载均衡中的“四层负载”就在这里</strong>。它决定了数据是“可靠传输”（TCP）还是“快速传输”（UDP）。</li>
+<li><strong>核心设备/概念：</strong> 端口 (Port), 负载均衡器 (L4)。</li>
+<li><strong>常见协议：</strong> <strong>TCP</strong> (可靠, 三次握手),
+<strong>UDP</strong> (快速, 直播/游戏)。</li>
+<li><strong>数据单元：</strong> Segment (段)</li>
+</ul>
+<h4 id="网络层-network-layer-关键层级"><strong>3. 网络层 (Network
+Layer)</strong> —— <em>（关键层级）</em></h4>
+<ul>
+<li><strong>作用：</strong>
+负责地址寻址和路由选择（Routing）。决定数据包如何从从源地址到达目的地址（跨网络）。</li>
+<li><strong>关键点：</strong> <strong>IP
+地址</strong>在这里起作用。路由器（Router）工作在这一层。</li>
+<li><strong>常见协议：</strong> <strong>IP</strong>, ICMP (Ping), OSPF,
+BGP。</li>
+<li><strong>数据单元：</strong> Packet (包)</li>
+</ul>
+<h4 id="数据链路层-data-link-layer"><strong>2. 数据链路层 (Data Link
+Layer)</strong></h4>
+<ul>
+<li><strong>作用：</strong>
+负责节点到节点（Node-to-Node）的传输，处理物理寻址。</li>
+<li><strong>关键点：</strong> <strong>MAC
+地址</strong>在这里起作用。交换机（Switch）通常工作在这一层。它负责在同一局域网内把数据帧发给对的人。</li>
+<li><strong>常见协议：</strong> Ethernet (以太网), VLAN, Wi-Fi
+(802.11)。</li>
+<li><strong>数据单元：</strong> Frame (帧)</li>
+</ul>
+<h4 id="物理层-physical-layer"><strong>1. 物理层 (Physical
+Layer)</strong></h4>
+<ul>
+<li><strong>作用：</strong> 传输比特流（0 和 1）。</li>
+<li><strong>关键点：</strong>
+真正的物理介质。把数字信号转换成电信号、光信号或无线电波。</li>
+<li><strong>核心设备：</strong> 网线, 光纤, 集线器 (Hub), 中继器。</li>
+<li><strong>数据单元：</strong> Bit (比特)</li>
+</ul>
+<h2 id="tcpip-协议栈">TCP/IP 协议栈</h2>
+<h3 id="为什么叫-tcpip">1. 为什么叫 TCP/IP？</h3>
+<p>虽然名字里只有 TCP 和 IP，但它其实是一个<strong>协议族（Protocol
+Suite）</strong>，包含了几十个协议。
+之所以用这两个命名，是因为它们最重要：</p>
+<ul>
+<li><strong>IP (Internet Protocol)：</strong>
+负责把数据包送到目的地（解决“路怎么走”）。</li>
+<li><strong>TCP (Transmission Control Protocol)：</strong>
+负责把数据可靠地传输（解决“东西别丢了”）。</li>
+</ul>
+<hr>
+<h3 id="tcpip-的四层模型与-osi-的映射">2. TCP/IP 的四层模型（与 OSI
+的映射）</h3>
+<p>TCP/IP 更加务实，它将 OSI 的 7 层模型压缩为了 <strong>4
+层</strong>。</p>
+<p>我们由上至下来看：</p>
+<h4 id="第一层应用层-application-layer"><strong>第一层：应用层
+(Application Layer)</strong></h4>
+<ul>
+<li><strong>对应 OSI：</strong> 应用层 + 表示层 + 会话层</li>
+<li><strong>功能：</strong> 处理特定的应用程序细节。</li>
+<li><strong>常见协议：</strong>
+<ul>
+<li><strong>HTTP/HTTPS:</strong> 浏览网页。</li>
+<li><strong>SSH:</strong> 远程登录服务器。</li>
+<li><strong>DNS:</strong> 域名解析（把 <code>google.com</code> 变成 IP
+地址）。</li>
+<li><strong>FTP:</strong> 文件传输。</li>
+</ul></li>
+</ul>
+<h4 id="第二层传输层-transport-layer"><strong>第二层：传输层 (Transport
+Layer)</strong></h4>
+<ul>
+<li><strong>对应 OSI：</strong> 传输层</li>
+<li><strong>功能：</strong>
+提供端到端（Host-to-Host）的通信服务。它只关心两台主机上的<strong>进程</strong>（通过端口号区分），而不关心中间经过了多少路由器。</li>
+<li><strong>两大主角：</strong>
+<ul>
+<li><strong>TCP:</strong> 可靠、面向连接（打电话）。</li>
+<li><strong>UDP:</strong> 不可靠、无连接（大喇叭广播）。</li>
+</ul></li>
+</ul>
+<h4 id="第三层网络层-internet-layer"><strong>第三层：网络层 (Internet
+Layer)</strong></h4>
+<ul>
+<li><strong>对应 OSI：</strong> 网络层</li>
+<li><strong>功能：</strong>
+处理数据包在网络中的路由选择。这是互联网的<strong>核心</strong>。</li>
+<li><strong>核心协议：</strong>
+<ul>
+<li><strong>IP (IPv4/IPv6):</strong> 核心载体。</li>
+<li><strong>ICMP:</strong> 比如 <code>ping</code>
+命令就在这里工作，用来报错或探测。</li>
+<li><strong>ARP:</strong> 地址解析协议（知道 IP 找 MAC 地址）。</li>
+</ul></li>
+</ul>
+<h4 id="第四层网络接口层-network-interface-layer"><strong>第四层：网络接口层
+(Network Interface Layer)</strong></h4>
+<ul>
+<li><strong>对应 OSI：</strong> 数据链路层 + 物理层</li>
+<li><strong>功能：</strong> 处理与物理硬件的交互。TCP/IP
+标准对这一层并没有严格定义，只要能传 IP 数据包就行。</li>
+<li><strong>常见技术：</strong> 以太网 (Ethernet)、Wi-Fi。</li>
+</ul>
+<h2 id="常见的负载均衡分类">常见的负载均衡分类</h2>
+<p>你可能会听到“四层负载”和“七层负载”这样的术语，它们的区别在于“指挥”的层级不同：</p>
+<table>
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 46%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr>
+<th><strong>类型</strong></th>
+<th><strong>对应层级 (OSI模型)</strong></th>
+<th><strong>特点</strong></th>
+<th><strong>典型代表</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>四层负载均衡 (L4)</strong></td>
+<td>传输层 (TCP/UDP)</td>
+<td><strong>速度快</strong>。只看 IP
+和端口号，不看内容，直接转发数据包。</td>
+<td>LVS, F5 (硬件)</td>
+</tr>
+<tr>
+<td><strong>七层负载均衡 (L7)</strong></td>
+<td>应用层 (HTTP/HTTPS)</td>
+<td><strong>更智能</strong>。它能看懂 URL、Cookie、头部信息。比如把
+<code>/image</code> 的请求分给图片服务器，把 <code>/api</code>
+的请求分给应用服务器。</td>
+<td><strong>Nginx</strong>, HAProxy, AWS ALB</td>
+</tr>
+</tbody>
+</table>
+<h2 id="正向代理和反向代理">正向代理和反向代理</h2>
+<h4 id="正向代理-forward-proxy-代表客户端"><strong>正向代理 (Forward
+Proxy)</strong> —— 代表<strong>客户端</strong></h4>
+<p>这是大家通常说的“挂代理”或“梯子”。</p>
+<ul>
+<li><strong>场景：</strong> 你（客户端）想访问
+Google，但直接访问不了。</li>
+<li><strong>做法：</strong> 你连上一个代理服务器，对它说：“帮我访问
+Google”。代理服务器去访问 Google，把结果拿回来给你。</li>
+<li><strong>特点：</strong> Google
+<strong>不知道</strong>是你访问的，它只看到了代理服务器。</li>
+<li><strong>作用：</strong>
+<strong>隐藏客户端身份</strong>，突破访问限制。</li>
+</ul>
+<h4 id="反向代理-reverse-proxy-代表服务端"><strong>反向代理 (Reverse
+Proxy)</strong> —— 代表<strong>服务端</strong></h4>
+<p>这是互联网公司部署在自家门口的“门卫”。</p>
+<ul>
+<li><strong>场景：</strong> 你（客户端）访问
+<code>www.baidu.com</code>。</li>
+<li><strong>做法：</strong>
+你的请求其实并没有直接到达百度的核心数据库或应用服务器，而是先到达了百度的<strong>反向代理服务器</strong>。这个代理服务器决定把你的请求转给内部的哪台机器处理，处理完后再把结果给你。</li>
+<li><strong>特点：</strong>
+你（客户端）<strong>不知道</strong>具体是哪台内部服务器为你服务的，你只看到了反向代理。</li>
+<li><strong>作用：</strong>
+<strong>隐藏服务端身份</strong>，保护内部网络。</li>
+</ul>
+<h2 id="常见问题">常见问题</h2>
+<h3 id="如何解决多个服务器session一致性的问题">如何解决多个服务器session一致性的问题</h3>
+<p>这是一个非常经典的分布式系统架构问题。</p>
+<p>在单体架构（一台服务器）中，Session
+保存在服务器的<strong>内存</strong>里，这没问题。
+但在集群环境（多台服务器）下，默认情况是这样的：</p>
+<ol type="1">
+<li>用户在 <strong>服务器 A</strong> 登录，Session 存在 A
+的内存里。</li>
+<li>下一次请求，负载均衡器把用户分发到了 <strong>服务器
+B</strong>。</li>
+<li><strong>服务器 B</strong> 的内存里没有这个
+Session，于是判断用户“未登录”，强制踢下线。</li>
+</ol>
+<p>为了解决这个问题，业界主要有四种成熟的方案，我会按<strong>推荐程度从低到高</strong>为您介绍：</p>
+<h4 id="方案一会话保持-sticky-sessions-session-affinity">1.
+方案一：会话保持 (Sticky Sessions / Session Affinity)</h4>
+<p><strong>原理：</strong> 让负载均衡器“记住”用户。
+如果不改变代码，这是最简单的改法。我们在负载均衡器（如
+Nginx）上配置策略，保证<strong>同一个 IP
+的请求永远只发给同一台服务器</strong>。</p>
+<ul>
+<li><strong>实现方式：</strong> Nginx 的 <code>ip_hash</code>
+策略。</li>
+<li><strong>优点：</strong>
+<ul>
+<li>简单，不需要修改任何应用程序代码。</li>
+<li>不需要引入额外的存储组件。</li>
+</ul></li>
+<li><strong>缺点：</strong>
+<ul>
+<li><strong>故障丢失：</strong> 如果这台服务器宕机，上面所有用户的
+Session 全部丢失。</li>
+<li><strong>负载不均：</strong> 如果某个公司几千人都用同一个公网 IP
+出口，这些请求会全部压在同一台服务器上，导致负载均衡失效。</li>
+</ul></li>
+</ul>
+<h4 id="方案二session-复制-session-replication">2. 方案二：Session 复制
+(Session Replication)</h4>
+<p><strong>原理：</strong> 让服务器之间“互通有无”。 当服务器 A
+产生了一个 Session，它通过网络广播把这个 Session 同步给服务器
+B、C、D。</p>
+<ul>
+<li><strong>实现方式：</strong> Tomcat 集群自带的 Session
+复制功能。</li>
+<li><strong>优点：</strong>
+<ul>
+<li>服务器宕机不会丢失 Session（因为其他机器也有）。</li>
+</ul></li>
+<li><strong>缺点（致命）：</strong>
+<ul>
+<li><strong>性能极差：</strong> 每次存取 Session
+都要广播，网络风暴严重。</li>
+<li><strong>扩展性差：</strong>
+随着服务器数量增加，同步数据的成本呈指数级上升。<strong>通常不建议在生产环境使用。</strong></li>
+</ul></li>
+</ul>
+<h4 id="方案三集中式-session-存储-centralized-session-storage-最推荐">3.
+方案三：集中式 Session 存储 (Centralized Session Storage) ——
+<strong>【最推荐】</strong></h4>
+<p><strong>原理：</strong> Session 也不存 A，也不存
+B，而是存到一个公共的“保险柜”里。
+所有的服务器在处理请求时，都去这个公共的地方读写 Session。</p>
+<ul>
+<li><strong>实现方式：</strong> 使用 <strong>Redis</strong> 或 Memcached
+作为 Session 仓库。
+<ul>
+<li>Spring Boot 项目中只需引入 <code>spring-session-data-redis</code>
+依赖，几行配置就能搞定。</li>
+</ul></li>
+<li><strong>优点：</strong>
+<ul>
+<li><strong>无状态化：</strong>
+应用服务器变得“无状态”（Stateless），可以随意增加或减少服务器，不影响用户体验。</li>
+<li><strong>高可用：</strong>
+某台应用服务器挂了，用户被切到另一台，Session 依然在 Redis
+里，用户无感知。</li>
+<li><strong>速度快：</strong> Redis 是基于内存的，读写速度极快。</li>
+</ul></li>
+<li><strong>缺点：</strong>
+<ul>
+<li>引入了新的组件（Redis），需要保证 Redis 的高可用（如使用 Redis
+Cluster）。</li>
+</ul></li>
+</ul>
+<h4 id="方案四客户端存储-token-jwt-现代架构主流">4. 方案四：客户端存储
+(Token / JWT) —— <strong>【现代架构主流】</strong></h4>
+<p><strong>原理：</strong> 服务器根本不存 Session。
+服务器生成一个加密的令牌（Token），交给客户端（浏览器/App）自己保存。客户端每次请求都带着这个令牌，服务器解密验证身份。</p>
+<ul>
+<li><strong>实现方式：</strong> <strong>JWT (JSON Web
+Token)</strong>。</li>
+<li><strong>优点：</strong>
+<ul>
+<li><strong>极致的服务器无状态：</strong>
+服务器不需要查数据库，也不需要查 Redis，只要通过 CPU 计算验签即可。</li>
+<li><strong>适合微服务：</strong> 一个 Token
+可以在多个不同的微服务之间通用。</li>
+</ul></li>
+<li><strong>缺点：</strong>
+<ul>
+<li><strong>不可撤销：</strong> 一旦 Token
+发出去，在过期前都有效。如果用户想改密码或被封号，服务器很难强制让 Token
+立刻失效（除非引入黑名单机制，但这又变回了方案三）。</li>
+<li><strong>带宽占用：</strong> Token 通常比 Session ID
+长，每次请求都要带，稍微增加一点流量。</li>
+</ul></li>
+</ul>
+<h3 id="如何保证负载均衡器的高可用性">如何保证负载均衡器的高可用性</h3>
+<p>如果我们只部署了一个负载均衡器（比如一台
+Nginx），虽然它帮后端服务器分担了压力，但它自己就成了整个系统的<strong>单点故障（SPOF
+- Single Point of Failure）</strong>。一旦这台 Nginx
+宕机，整个网站就彻底瘫痪了，后端有再多服务器也没用。</p>
+<p>为了解决这个问题，业界通用的标准方案是：<strong>高可用架构（High
+Availability
+Architecture）</strong>，核心思想是<strong>“冗余”</strong>和<strong>“自动故障转移（Failover）”</strong>。</p>
+<p>最主流的实现方式有以下几种：</p>
+<h4 id="主备模式-active-passive-最经典方案">1. 主备模式 (Active-Passive)
+—— 最经典方案</h4>
+<p>这是最简单、最常用，也是中小企业首选的方案。通常使用
+<strong>Keepalived</strong> 软件配合 <strong>VRRP 协议</strong>
+来实现。</p>
+<h4 id="架构设计"><strong>架构设计：</strong></h4>
+<ul>
+<li><strong>准备两台 LB：</strong>
+一台作为<strong>主节点（Master）</strong>，一台作为<strong>备节点（Backup）</strong>。</li>
+<li><strong>VIP（虚拟 IP）：</strong> 两台机器对外只暴露一个<strong>虚拟
+IP (Virtual IP)</strong>。正常情况下，这个 VIP
+绑定在主节点上。用户只访问这个 VIP。</li>
+<li><strong>心跳检测：</strong>
+备节点会每隔几秒向主节点发送“心跳包”确认它还活着。</li>
+</ul>
+<h4 id="工作流程"><strong>工作流程：</strong></h4>
+<ol type="1">
+<li><strong>正常状态：</strong> 所有的流量都流向拥有 VIP
+的主节点，备节点闲置待命。</li>
+<li><strong>故障发生：</strong>
+主节点挂了（比如断电、进程崩溃），备节点收不到心跳包。</li>
+<li><strong>IP 漂移 (IP Failover)：</strong> 备节点立刻通过 VRRP 协议把
+VIP“抢”过来，绑定到自己身上。</li>
+<li><strong>恢复：</strong>
+对用户来说，只是网络卡顿了一瞬间，请求马上就能被备节点处理，服务未中断。</li>
+</ol>
+<ul>
+<li><strong>优点：</strong> 简单稳定，配置方便。</li>
+<li><strong>缺点：</strong>
+资源有一半是浪费的（备节点平时不干活）。</li>
+</ul>
+<h4 id="双主模式-active-active-高性能方案">2. 双主模式 (Active-Active)
+—— 高性能方案</h4>
+<p>如果你觉得有一台机器闲置太浪费，可以使用双主模式。</p>
+<h4 id="架构设计-1"><strong>架构设计：</strong></h4>
+<ul>
+<li><strong>准备两台 LB：</strong> 这里的两台都是 Master。</li>
+<li><strong>两个 VIP：</strong> 配置两个不同的虚拟 IP（VIP_A 和
+VIP_B）。</li>
+<li><strong>DNS 轮询：</strong>
+在域名解析（DNS）层面，将域名同时解析到这两个 VIP 上。</li>
+</ul>
+<h4 id="工作流程-1"><strong>工作流程：</strong></h4>
+<ul>
+<li>用户 A 解析到了 VIP_A，流量走了 LB 1。</li>
+<li>用户 B 解析到了 VIP_B，流量走了 LB 2。</li>
+<li><strong>互为备份：</strong> LB 1 是 LB 2 的备用，LB 2 也是 LB 1
+的备用。</li>
+<li><strong>故障发生：</strong> 如果 LB 1 挂了，Keepalived 会把 VIP_A
+漂移到 LB 2 上。此时 LB 2 身上同时挂着 VIP_A 和
+VIP_B，独自承担所有流量。</li>
+<li><strong>优点：</strong> 资源利用率最大化，两台机器都在工作。</li>
+<li><strong>缺点：</strong>
+架构稍复杂，需要设计好容量，确保一台机器能扛住两倍的流量（万一另一台挂了）。</li>
+</ul>
+<h4 id="全局负载均衡-gslb-异地多活">3. 全局负载均衡 (GSLB) ——
+异地多活</h4>
+<p>如果整个机房（数据中心）都停电了或者光缆被挖断了，上面的方法都得死。这时候需要更高层级的<strong>DNS
+负载均衡</strong>。</p>
+<ul>
+<li><strong>原理：</strong> 在 DNS 服务器上配置策略。</li>
+<li><strong>实现：</strong>
+<ul>
+<li>北京的用户解析到北京机房的负载均衡器 IP。</li>
+<li>上海的用户解析到上海机房的负载均衡器 IP。</li>
+</ul></li>
+<li><strong>高可用：</strong> 如果北京机房挂了，DNS
+服务器检测到后，会自动把北京用户的流量引导到上海机房。</li>
+</ul>
+<h2 id="nginx">Nginx</h2>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1TZ421b7SD?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">Nginx入门必须懂3大功能配置
+- Web服务器/反向代理/负载均衡_哔哩哔哩_bilibili</a></p>
+<h2 id="caddy">Caddy</h2>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1z5w6ekE1L/?spm_id_from=333.788.recommend_more_video.2&amp;trackid=web_related_0.router-related-2206146-n6d7k.1765975473930.921&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">全自动HTTPS加密，开箱即用，Caddy基础入门，反向代理，负载均衡，网站托管全流程_哔哩哔哩_bilibili</a></p>
+<h2 id="参考资料">参考资料</h2>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1e92eBTEkL/?spm_id_from=333.1387.homepage.video_card.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">什么是负载均衡？不就是加台服务器么？_哔哩哔哩_bilibili</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag"># 后端</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" rel="prev" title="消息队列Message Queue">
+                  <i class="fa fa-angle-left"></i> 消息队列Message Queue
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/12/18/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%A4%A7%E4%BD%9C%E4%B8%9A/" rel="next" title="数据库大作业——工厂管理系统复盘">
+                  数据库大作业——工厂管理系统复盘 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js","integrity":"sha256-stuqcu2FrjYCXDOytWFA5SoUE/r3nkp6gTglzNSlavU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

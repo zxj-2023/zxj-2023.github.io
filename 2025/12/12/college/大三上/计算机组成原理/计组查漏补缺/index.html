@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="三种指令类型 (R, I, J) MIPS 指令集的设计非常整齐，所有的指令都是 32位（bits） 长。但是，这 32 个格子怎么分配，取决于指令的类型。 (1) R-type (Register type, 寄存器型)  用途：纯粹的数学运算。 特点：所有的操作数都在寄存器里。 例子：add $t0, $t1, $t2 (把 t1 和 t2 里的数拿出来相加，结果存到 t0">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机组成原理">
+<meta property="og:url" content="http://example.com/2025/12/12/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E8%AE%A1%E7%BB%84%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="三种指令类型 (R, I, J) MIPS 指令集的设计非常整齐，所有的指令都是 32位（bits） 长。但是，这 32 个格子怎么分配，取决于指令的类型。 (1) R-type (Register type, 寄存器型)  用途：纯粹的数学运算。 特点：所有的操作数都在寄存器里。 例子：add $t0, $t1, $t2 (把 t1 和 t2 里的数拿出来相加，结果存到 t0">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2025/12/12/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E8%AE%A1%E7%BB%84%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA/image-20251212164727970.png">
+<meta property="article:published_time" content="2025-12-11T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-13T07:18:43.681Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="大学">
+<meta property="article:tag" content="计算机组成原理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2025/12/12/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E8%AE%A1%E7%BB%84%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA/image-20251212164727970.png">
+
+
+<link rel="canonical" href="http://example.com/2025/12/12/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E8%AE%A1%E7%BB%84%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/12/12/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E8%AE%A1%E7%BB%84%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA/","path":"2025/12/12/college/大三上/计算机组成原理/计组查漏补缺/","title":"计算机组成原理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>计算机组成原理 | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E7%A7%8D%E6%8C%87%E4%BB%A4%E7%B1%BB%E5%9E%8B-r-i-j"><span class="nav-number">1.</span> <span class="nav-text">三种指令类型 (R, I, J)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#r-type-register-type-%E5%AF%84%E5%AD%98%E5%99%A8%E5%9E%8B"><span class="nav-number">1.0.1.</span> <span class="nav-text">(1) R-type (Register type,
+寄存器型)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#i-type-immediate-type-%E7%AB%8B%E5%8D%B3%E6%95%B0%E5%9E%8B"><span class="nav-number">1.0.2.</span> <span class="nav-text">(2) I-type (Immediate type,
+立即数型)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#j-type-jump-type-%E8%B7%B3%E8%BD%AC%E5%9E%8B"><span class="nav-number">1.0.3.</span> <span class="nav-text">(3) J-type (Jump type, 跳转型)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#op-%E5%92%8C-func-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">2.</span> <span class="nav-text">op 和 func
+是什么？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%AF%B9%E4%BA%8E%E6%89%80%E6%9C%89%E7%9A%84-r-type-%E6%8C%87%E4%BB%A4%E5%AE%83%E4%BB%AC%E7%9A%84-op-%E9%83%BD%E6%98%AF-000000"><span class="nav-number">2.1.</span> <span class="nav-text">为什么对于所有的
+R-type 指令，它们的 op 都是 000000</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E4%BF%A1%E5%8F%B7%E7%9A%84%E5%90%AB%E4%B9%89%E9%83%BD%E6%9C%89%E5%93%AA%E4%BA%9B"><span class="nav-number">3.</span> <span class="nav-text">控制信号的含义都有哪些</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%B1%BB%E9%80%89%E8%B7%AF%E4%BF%A1%E5%8F%B7mux-selectors"><span class="nav-number">3.0.1.</span> <span class="nav-text">第一类：选路信号（Mux
+Selectors）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%B1%BB%E5%BC%80%E5%85%B3%E4%BF%A1%E5%8F%B7enables"><span class="nav-number">3.0.2.</span> <span class="nav-text">第二类：开关信号（Enables）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E7%B1%BB%E5%8A%9F%E8%83%BD%E6%8E%A7%E5%88%B6%E4%BF%A1%E5%8F%B7"><span class="nav-number">3.0.3.</span> <span class="nav-text">第三类：功能控制信号</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%8E%A7%E5%88%B6%E5%99%A8-controller"><span class="nav-number">4.</span> <span class="nav-text">什么是控制器 (Controller)？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%95%B0%E6%8D%AE%E9%80%9A%E8%B7%AF-datapath"><span class="nav-number">5.</span> <span class="nav-text">什么是数据通路 (Datapath)？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%95%E5%91%A8%E6%9C%9F%E5%A4%84%E7%90%86%E5%99%A8-single-cycle-processor"><span class="nav-number">6.</span> <span class="nav-text">什么是单周期处理器
+(Single-Cycle Processor)？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E5%91%A8%E6%9C%9F%E5%A4%84%E7%90%86%E5%99%A8%E5%8C%85%E5%90%AB%E5%93%AA%E4%BA%9B%E5%8A%9F%E8%83%BD"><span class="nav-number">7.</span> <span class="nav-text">单周期处理器包含哪些功能？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a.-%E7%AE%97%E6%9C%AF%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97-r-type"><span class="nav-number">7.0.1.</span> <span class="nav-text">A. 算术逻辑运算 (R-Type)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b.-%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93%E8%AE%BF%E5%AD%98-i-type"><span class="nav-number">7.0.2.</span> <span class="nav-text">B. 数据传输&#x2F;访存 (I-Type)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#c.-%E6%9D%A1%E4%BB%B6%E5%88%86%E6%94%AF%E4%B8%8E%E8%B7%B3%E8%BD%AC-branch-jump"><span class="nav-number">7.0.3.</span> <span class="nav-text">C. 条件分支与跳转 (Branch &amp;
+Jump)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E5%91%A8%E6%9C%9F%E5%A4%84%E7%90%86%E5%99%A8%E5%8C%85%E5%90%AB%E5%93%AA%E4%BA%9B%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86"><span class="nav-number">8.</span> <span class="nav-text">单周期处理器包含哪些组成部分？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%E6%95%B0%E6%8D%AE%E9%80%9A%E8%B7%AF-datapath-%E5%B9%B2%E6%B4%BB%E7%9A%84"><span class="nav-number">8.0.1.</span> <span class="nav-text">第一部分：数据通路 (Datapath)
+—— “干活的”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86%E6%8E%A7%E5%88%B6%E5%8D%95%E5%85%83-control-unit-%E5%8F%91%E5%8F%B7%E6%96%BD%E4%BB%A4%E7%9A%84"><span class="nav-number">8.0.2.</span> <span class="nav-text">第二部分：控制单元
+(Control Unit) —— “发号施令的”</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">177</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/12/12/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E8%AE%A1%E7%BB%84%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="计算机组成原理 | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          计算机组成原理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-12-12 00:00:00" itemprop="dateCreated datePublished" datetime="2025-12-12T00:00:00+08:00">2025-12-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-12-13 15:18:43" itemprop="dateModified" datetime="2025-12-13T15:18:43+08:00">2025-12-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%B8%89%E4%B8%8A/" itemprop="url" rel="index"><span itemprop="name">大三上</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">计算机组成原理</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="三种指令类型-r-i-j">三种指令类型 (R, I, J)</h2>
+<p>MIPS 指令集的设计非常整齐，所有的指令都是
+<strong>32位（bits）</strong> 长。但是，这 32
+个格子怎么分配，取决于指令的类型。</p>
+<h4 id="r-type-register-type-寄存器型">(1) R-type (Register type,
+寄存器型)</h4>
+<ul>
+<li><strong>用途</strong>：纯粹的数学运算。</li>
+<li><strong>特点</strong>：所有的操作数都在寄存器里。</li>
+<li><strong>例子</strong>：<code>add $t0, $t1, $t2</code> (把 t1 和 t2
+里的数拿出来相加，结果存到 t0)。</li>
+<li><strong>格局</strong>：因为它需要 3
+个寄存器（2个源，1个目标），所以它的空间被切得很细，最后剩下了 6 位给
+<code>func</code>。</li>
+</ul>
+<h4 id="i-type-immediate-type-立即数型">(2) I-type (Immediate type,
+立即数型)</h4>
+<ul>
+<li><strong>用途</strong>：涉及常数运算，或者读写内存。</li>
+<li><strong>特点</strong>：操作数里包含一个具体的数字（立即数）。</li>
+<li><strong>例子</strong>：
+<ul>
+<li><code>ori $t0, $t1, 100</code> (把 t1 和数字 100 做或运算)。</li>
+<li><code>lw $t0, 4($t1)</code> (去内存取数，地址是 t1 + 4)。</li>
+</ul></li>
+<li><strong>格局</strong>：为了放那个数字（比如 100），它牺牲了
+<code>rd</code> 和 <code>func</code> 的位置，腾出了
+<strong>16位</strong> 的空间来存这个数。</li>
+</ul>
+<h4 id="j-type-jump-type-跳转型">(3) J-type (Jump type, 跳转型)</h4>
+<ul>
+<li><strong>用途</strong>：程序跳转（就像代码里的
+<code>goto</code>）。</li>
+<li><strong>特点</strong>：跳得很远。</li>
+<li><strong>例子</strong>：<code>j 1000</code> (直接跳到地址 1000
+去执行)。</li>
+<li><strong>格局</strong>：除了开头的 op，剩下的 <strong>26位</strong>
+全用来存目标地址，保证能跳得足够远。</li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 5%">
+<col style="width: 11%">
+<col style="width: 27%">
+<col style="width: 27%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr>
+<th><strong>指令类型</strong></th>
+<th><strong>全称 (中文名)</strong></th>
+<th><strong>包含的常见指令 (加粗为你课件中的)</strong></th>
+<th><strong>核心特征</strong></th>
+<th><strong>指令格式结构 (32位)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>R-Type</strong></td>
+<td>Register Type (寄存器型)</td>
+<td><strong>add</strong> (加法) <strong>sub</strong> (减法) and, or,
+slt, nor</td>
+<td><strong>纯运算</strong>。
+操作数全在寄存器里，不做数据传输，不涉及立即数。</td>
+<td><code>op(6)</code> <code>rs(5)</code> <code>rt(5)</code>
+<code>rd(5)</code> <code>shamt(5)</code> <code>func(6)</code>
+<em>(特点：op全为0，靠 func 区分)</em></td>
+</tr>
+<tr>
+<td><strong>I-Type</strong></td>
+<td>Immediate Type (立即数型)</td>
+<td><strong>ori</strong> (或立即数) <strong>lw</strong> (加载字)
+<strong>sw</strong> (存储字) <strong>beq</strong> (相等分支) addi, andi,
+bne</td>
+<td><strong>带常数/地址偏移</strong>。
+计算或访存时，需要用到一个具体的数字（16位）。</td>
+<td><code>op(6)</code> <code>rs(5)</code> <code>rt(5)</code>
+<code>immediate(16)</code> <em>(特点：最后16位是常数/地址)</em></td>
+</tr>
+<tr>
+<td><strong>J-Type</strong></td>
+<td>Jump Type (跳转型)</td>
+<td><strong>jump</strong> (无条件跳转) jal (跳转并链接)</td>
+<td><strong>长距离跑路</strong>。
+不需要计算，直接跳到程序代码的另一个位置。</td>
+<td><code>op(6)</code> <code>address(26)</code>
+<em>(特点：后面26位全是目标地址)</em></td>
+</tr>
+</tbody>
+</table>
+<h2 id="op-和-func-是什么"><code>op</code> 和 <code>func</code>
+是什么？</h2>
+<p>这两个是指令的<strong>身份证</strong>。</p>
+<ul>
+<li><strong><code>op</code> (Opcode, 操作码)</strong>：指令的<strong>高
+6 位</strong> (31-26 bit)。
+<ul>
+<li><strong>作用</strong>：它决定了这到底是一条什么指令（大类）。</li>
+<li><strong>比喻</strong>：就像身份证上的“省份”。控制器一看
+<code>op</code>，就知道你是 <code>lw</code> 还是 <code>sw</code> 还是
+<code>beq</code>。</li>
+<li><strong>特殊情况</strong>：对于所有的 <strong>R-type</strong>
+指令，它们的 <code>op</code> 都是
+<code>000000</code>。这就尴尬了，控制器光看 <code>op</code>
+分不清你是加法还是减法。</li>
+</ul></li>
+<li><strong><code>func</code> (Function code,
+功能码)</strong>：指令的<strong>低 6 位</strong> (5-0 bit)。
+<ul>
+<li><strong>作用</strong>：专门用来区分 R-type 指令的具体操作。</li>
+<li><strong>比喻</strong>：就像身份证上的“名字”。</li>
+<li><strong>逻辑</strong>：当 <code>op</code> 是 <code>000000</code>
+时，控制器就会去查 <code>func</code>。
+<ul>
+<li><code>func = 100000</code> -&gt; 做加法 (add)</li>
+<li><code>func = 100010</code> -&gt; 做减法 (sub)</li>
+</ul></li>
+<li><strong>注意</strong>：只有 R-type 有 <code>func</code>。I-type 和
+J-type 的这最后 6
+位已经被那个常数或者地址占用了，所以它们<strong>没有</strong> func
+字段。</li>
+</ul></li>
+</ul>
+<figure>
+<img src="/2025/12/12/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E8%AE%A1%E7%BB%84%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA/image-20251212164727970.png" alt="image-20251212164727970">
+<figcaption aria-hidden="true">image-20251212164727970</figcaption>
+</figure>
+<h3 id="为什么对于所有的-r-type-指令它们的-op-都是-000000">为什么对于所有的
+R-type 指令，它们的 op 都是 000000</h3>
+<p>设计者回头看了一眼 <strong>R-type</strong>
+指令的格式。他们发现了一个惊喜：</p>
+<p>R-type 指令只需要存 3 个寄存器编号（<code>rs</code>, <code>rt</code>,
+<code>rd</code>）和 1 个移位量（<code>shamt</code>）。</p>
+<ul>
+<li><code>op</code>: 6位</li>
+<li><code>rs</code>: 5位</li>
+<li><code>rt</code>: 5位</li>
+<li><code>rd</code>: 5位</li>
+<li><code>shamt</code>: 5位</li>
+<li><strong>总共使用</strong>：<span class="math inline">6 + 5 + 5 + 5 + 5 = 26</span> 位。</li>
+</ul>
+<p>32 - 26 = 6 位！</p>
+<p>R-type 指令的末尾，正好空出了 6位 没地方用。</p>
+<p>天才的设计思路来了：</p>
+<p>既然 R-type 指令末尾空着 6 位，那为什么不把 Opcode 统一设为
+000000（意思是：这是一条运算指令），然后利用末尾这空闲的 6 位（也就是
+func 字段）来具体区分是加法还是减法呢？</p>
+<ul>
+<li>这样一来，<code>add</code>, <code>sub</code>, <code>and</code>,
+<code>or</code>, <code>slt</code> 等几十条运算指令，在 Opcode
+表里<strong>只占用 1 个位置</strong>（就是 000000）。</li>
+<li>这就把剩下的 63 个 Opcode 宝贵名额，留给了那些没有空闲位置的 I-type
+和 J-type 指令（因为它们后面被立即数填满了，没有 <code>func</code>
+字段可用）。</li>
+</ul>
+<h2 id="控制信号的含义都有哪些">控制信号的含义都有哪些</h2>
+<p>这些信号就是控制器发出的“命令”，控制数据通路里的<strong>多路选择器
+(Mux)</strong> 和 <strong>使能开关 (Enable)</strong>。</p>
+<p>我们把它们分为三类来记：</p>
+<h4 id="第一类选路信号mux-selectors">第一类：选路信号（Mux
+Selectors）</h4>
+<p>这些信号决定数据走哪条路。你可以理解为火车轨道的<strong>道岔</strong>。如果是
+<code>0</code> 走左边，<code>1</code> 走右边。</p>
+<ol type="1">
+<li><strong><code>RegDst</code> (Register Destination)</strong>
+<ul>
+<li><strong>含义</strong>：<strong>运算结果存到哪个寄存器编号里？</strong></li>
+<li><strong>背景</strong>：
+<ul>
+<li>R-type 的目标寄存器编号在指令的第 15-11 位 (<code>rd</code>
+字段)。</li>
+<li>I-type (如 lw) 的目标寄存器编号在指令的第 20-16 位 (<code>rt</code>
+字段)。</li>
+</ul></li>
+<li><strong>值</strong>：
+<ul>
+<li><code>1</code>: 选 <code>rd</code> (R-type)。</li>
+<li><code>0</code>: 选 <code>rt</code> (I-type)。</li>
+</ul></li>
+</ul></li>
+<li><strong><code>ALUSrc</code> (ALU Source)</strong>
+<ul>
+<li><strong>含义</strong>：<strong>ALU
+的第二个操作数来自哪里？</strong></li>
+<li><strong>值</strong>：
+<ul>
+<li><code>0</code>: 来自寄存器堆的读出数据（两个寄存器做运算，如
+R-type）。</li>
+<li><code>1</code>: 来自指令里的立即数（寄存器和数字做运算，如
+<code>ori</code>, <code>lw</code>, <code>sw</code>）。</li>
+</ul></li>
+</ul></li>
+<li><strong><code>MemtoReg</code> (Memory to Register)</strong>
+<ul>
+<li><strong>含义</strong>：<strong>写回寄存器的数据来源是谁？</strong></li>
+<li><strong>值</strong>：
+<ul>
+<li><code>1</code>: 来自内存的数据（只有 <code>lw</code>
+指令是这样，把数据从仓库搬回寄存器）。</li>
+<li><code>0</code>: 来自 ALU 的计算结果（绝大多数指令，如
+<code>add</code>, <code>ori</code>）。</li>
+</ul></li>
+</ul></li>
+</ol>
+<h4 id="第二类开关信号enables">第二类：开关信号（Enables）</h4>
+<p>这些信号是<strong>安全锁</strong>。只有设为
+<code>1</code>，才允许动作。</p>
+<ol type="1">
+<li><strong><code>RegWr</code> (Register Write)</strong>
+<ul>
+<li><strong>含义</strong>：<strong>允不允许修改寄存器的值？</strong></li>
+<li><strong>值</strong>：
+<ul>
+<li><code>1</code>: 允许写。像 <code>add</code>, <code>lw</code>,
+<code>ori</code> 这种需要保存结果的指令。</li>
+<li><code>0</code>: 禁止写。像 <code>sw</code>
+(只是往内存存数)，<code>beq</code> (只是比较)，<code>j</code>
+(只是跳转)，绝对不能改写寄存器里的数据。</li>
+</ul></li>
+</ul></li>
+<li><strong><code>MemWr</code> (Memory Write)</strong>
+<ul>
+<li><strong>含义</strong>：<strong>允不允许修改内存的值？</strong></li>
+<li><strong>值</strong>：
+<ul>
+<li><code>1</code>: 允许写。<strong>只有 <code>sw</code> (Store Word)
+指令是 1</strong>。</li>
+<li><code>0</code>: 禁止写。其他所有指令。</li>
+</ul></li>
+</ul></li>
+</ol>
+<h4 id="第三类功能控制信号">第三类：功能控制信号</h4>
+<ol type="1">
+<li><strong><code>ExtOp</code> (Extension Operation)</strong>
+<ul>
+<li><strong>含义</strong>：<strong>16位的立即数怎么变成32位？</strong></li>
+<li><strong>背景</strong>：指令里的数字只有16位，但计算器是32位的。</li>
+<li><strong>值</strong>：
+<ul>
+<li><code>1</code> (Signed):
+<strong>符号扩展</strong>。保持正负号不变（比如 -2 扩展后还是 -2）。用于
+<code>lw</code>, <code>sw</code>,
+<code>beq</code>（算地址偏移量）。</li>
+<li><code>0</code> (Unsigned):
+<strong>零扩展</strong>。高位直接补0。用于逻辑运算如
+<code>ori</code>。</li>
+</ul></li>
+</ul></li>
+<li><strong><code>Branch</code></strong>
+<ul>
+<li><strong>含义</strong>：<strong>这是一个条件分支指令吗？</strong></li>
+<li><strong>值</strong>：如果是 <code>beq</code> 指令，这个信号是
+<code>1</code>。它会结合 ALU 的“零标志位”来决定要不要跳。</li>
+</ul></li>
+<li><strong><code>Jump</code></strong>
+<ul>
+<li><strong>含义</strong>：<strong>这是一个无条件跳转指令吗？</strong></li>
+<li><strong>值</strong>：如果是 <code>j</code> 指令，这个信号是
+<code>1</code>。直接强行修改 PC 指针。</li>
+</ul></li>
+<li><strong><code>ALUctr</code> (ALU Control)</strong>
+<ul>
+<li><strong>含义</strong>：<strong>ALU 到底做什么数学题？</strong></li>
+<li><strong>值</strong>：这是个多位信号（通常3位或4位）。
+<ul>
+<li><code>Add</code>: 加法 (用于 <code>add</code>, <code>lw</code>,
+<code>sw</code>)</li>
+<li><code>Sub</code>: 减法 (用于 <code>sub</code>, <code>beq</code>
+比较是否相等)</li>
+<li><code>Or</code>: 逻辑或 (用于 <code>ori</code>)</li>
+</ul></li>
+</ul></li>
+</ol>
+<h2 id="什么是控制器-controller">什么是控制器 (Controller)？</h2>
+<p>在 CPU 这个“大工厂”里，主要分两部分：</p>
+<ol type="1">
+<li><strong>数据通路
+(Datapath)</strong>：这是<strong>干活的工人</strong>和<strong>机器</strong>。包括寄存器（用来记账的小本子）、ALU（算盘/计算器）、内存（大仓库）。它们负责搬运数据、做加减法。</li>
+<li><strong>控制器
+(Controller)</strong>：这是<strong>工厂的指挥官</strong>。</li>
+</ol>
+<p><strong>控制器的作用：</strong>
+它不直接干活（不存数、不算数），它的任务是<strong>看懂指令</strong>，然后对着数据通路里的各种开关“发号施令”。</p>
+<ul>
+<li><strong>输入</strong>：它看的是指令（Instruction）。比如指令说“把 A
+和 B 加起来”，这串 0101 的机器码传给控制器。</li>
+<li><strong>输出</strong>：控制器根据指令，把相应的控制信号线拉高（置1）或拉低（置0）。</li>
+</ul>
+<blockquote>
+<p><strong>一句话总结</strong>：控制器就是 CPU
+的大脑，它通过查表（真值表）来告诉身体的各个部位（ALU、寄存器、内存）在当前这一刻该干什么。</p>
+</blockquote>
+<h2 id="什么是数据通路-datapath">什么是数据通路 (Datapath)？</h2>
+<p><strong>它的任务</strong>：根据指挥官（控制器）的命令，把数据从仓库（寄存器/内存）里搬出来，送到加工车间（ALU）算一下，再搬回去。</p>
+<p><strong>核心组成</strong>：</p>
+<ol type="1">
+<li><strong>仓库</strong>：寄存器堆 (Registers)、数据存储器 (Data
+Memory)。</li>
+<li><strong>车间</strong>：算术逻辑单元 (ALU)、加法器 (Adder)。</li>
+<li><strong>交通枢纽</strong>：多路选择器 (Mux)、扩展器 (Ext)。</li>
+</ol>
+<h2 id="什么是单周期处理器-single-cycle-processor">什么是单周期处理器
+(Single-Cycle Processor)？</h2>
+<p><strong>核心定义</strong>：CPI (Cycles Per Instruction) = 1。</p>
+<p><strong>通俗解释</strong>：</p>
+<ul>
+<li>时钟信号<strong>“哒”</strong>（上升沿）一下，CPU 开始取指令。</li>
+<li>在时钟<strong>“哒”</strong>下一响之前，CPU
+必须把这条指令的所有工作（取指、翻译、运算、读写内存、写回结果）全部做完。</li>
+</ul>
+<h2 id="单周期处理器包含哪些功能">单周期处理器包含哪些功能？</h2>
+<p>为了让程序能跑起来，处理器通常需要支持三大类功能（指令）：</p>
+<h4 id="a.-算术逻辑运算-r-type">A. 算术逻辑运算 (R-Type)</h4>
+<ul>
+<li><strong>功能</strong>：做数学题。</li>
+<li><strong>指令例子</strong>：<code>add</code> (加), <code>sub</code>
+(减), <code>and</code> (与), <code>or</code> (或), <code>slt</code>
+(比较大小)。</li>
+<li><strong>流程</strong>：读寄存器 -&gt; ALU 算 -&gt; 写回寄存器。</li>
+</ul>
+<h4 id="b.-数据传输访存-i-type">B. 数据传输/访存 (I-Type)</h4>
+<ul>
+<li><strong>功能</strong>：搬运数据。CPU
+的寄存器太小，数据多了要放内存里。</li>
+<li><strong>指令例子</strong>：
+<ul>
+<li><code>lw</code> (Load Word)：从内存搬到寄存器。</li>
+<li><code>sw</code> (Store Word)：从寄存器搬到内存。</li>
+</ul></li>
+<li><strong>流程</strong>：算地址 -&gt; 读/写内存 -&gt;
+(如果是读)写回寄存器。</li>
+</ul>
+<h4 id="c.-条件分支与跳转-branch-jump">C. 条件分支与跳转 (Branch &amp;
+Jump)</h4>
+<ul>
+<li><strong>功能</strong>：改变程序执行顺序（也就是改变 PC 的值）。</li>
+<li><strong>指令例子</strong>：
+<ul>
+<li><code>beq</code> (Branch if
+Equal)：如果两个数相等，就跳到某处去。</li>
+<li><code>j</code> (Jump)：无条件直接飞到某处。</li>
+</ul></li>
+<li><strong>流程</strong>：比较 -&gt; 计算新地址 -&gt; 修改 PC。</li>
+</ul>
+<h2 id="单周期处理器包含哪些组成部分">单周期处理器包含哪些组成部分？</h2>
+<p>我们可以把它分为<strong>“肉体”</strong>（数据通路）和<strong>“灵魂”</strong>（控制单元）两大部分。</p>
+<h4 id="第一部分数据通路-datapath-干活的">第一部分：数据通路 (Datapath)
+—— “干活的”</h4>
+<p>这部分你之前的实验已经做了一大半了，现在需要补全：</p>
+<ol type="1">
+<li><strong>取指单元 (Instruction Fetch)</strong> ——
+<strong>这是新面孔</strong>
+<ul>
+<li><strong>PC (Program Counter)</strong>：一个 32
+位的寄存器，存着“现在执行到哪一行代码了”。</li>
+<li><strong>指令存储器 (Instruction
+Memory)</strong>：存放你写的机器码的大仓库。</li>
+<li><strong>加法器 (+4)</strong>：让 PC 自动加 4，指向下一条指令。</li>
+</ul></li>
+<li><strong>寄存器堆 (Register File)</strong>
+<ul>
+<li>CPU 的“口袋”，这里有 32 个格子 ($0 - $31)，用来存放临时数据。</li>
+</ul></li>
+<li><strong>算术逻辑单元 (ALU)</strong>
+<ul>
+<li>CPU 的“计算器”，负责算加减法、逻辑运算。</li>
+</ul></li>
+<li><strong>数据存储器 (Data Memory)</strong>
+<ul>
+<li>CPU 的“大仓库”，用来做 <code>lw</code> 和 <code>sw</code>。</li>
+</ul></li>
+<li><strong>扩展单元 (Extender)</strong>
+<ul>
+<li>把 16 位的立即数变成 32 位。</li>
+</ul></li>
+<li><strong>多路选择器 (Mux)</strong> —— <strong>交通警察</strong>
+<ul>
+<li>关键组件！比如 <code>ALUSrc</code> 这个 Mux，决定了 ALU
+的输入是来自寄存器还是立即数。</li>
+</ul></li>
+</ol>
+<h4 id="第二部分控制单元-control-unit-发号施令的">第二部分：控制单元
+(Control Unit) —— “发号施令的”</h4>
+<p>在你上一个实验里，<strong>“你”</strong>就是控制器（手动在波形里设 0
+或 1）。现在要写一个模块来替代你。</p>
+<ol type="1">
+<li><strong>主控制器 (Main Control)</strong>
+<ul>
+<li><strong>输入</strong>：指令的高 6 位 (Opcode)。</li>
+<li><strong>输出</strong>：所有的控制信号 (<code>RegDst</code>,
+<code>ALUSrc</code>, <code>MemWr</code> 等)。</li>
+<li><strong>作用</strong>：看到 <code>lw</code> 指令，它就自动把
+<code>MemtoReg</code> 拉高，把 <code>RegWr</code> 拉高。</li>
+</ul></li>
+<li><strong>ALU 控制器 (ALU Control)</strong>
+<ul>
+<li><strong>输入</strong>：主控制器的信号 + 指令的低 6 位 (Funct)。</li>
+<li><strong>输出</strong>：给 ALU 的 <code>ALUctr</code>
+(3位或4位)。</li>
+<li><strong>作用</strong>：专门告诉 ALU 该做加法还是减法。</li>
+</ul></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%A4%A7%E5%AD%A6/" rel="tag"># 大学</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" rel="tag"># 计算机组成原理</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/12/11/%E6%8A%80%E6%9C%AF%E6%9D%82%E8%AE%B0/%E8%AE%B0%E5%BD%95%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" rel="prev" title="记录开发过程中遇到的问题">
+                  <i class="fa fa-angle-left"></i> 记录开发过程中遇到的问题
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/12/16/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/claudeskills/" rel="next" title="Claudeskills">
+                  Claudeskills <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js","integrity":"sha256-stuqcu2FrjYCXDOytWFA5SoUE/r3nkp6gTglzNSlavU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
