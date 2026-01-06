@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="正变换，逆变换与逆向映射法 正变换（Forward Mapping）：  思路：遍历原图每个像素 (x, y) → 计算它在新图中的位置 (u, v) 问题：  (u, v) 很可能是非整数坐标（如 (123.7, 45.2)） 无法直接赋值给新图的整数像素位置 即使四舍五入，也会导致：  空洞：某些新图像素从未被赋值 → 黑色或空白 重叠：多个原图像素映射到同一新图像素">
+    <meta name="description" content="正变换，逆变换与逆向映射法正变换（Forward Mapping）： 思路：遍历原图每个像素 (x, y) → 计算它在新图中的位置 (u, v) 问题： (u, v) 很可能是非整数坐标（如 (123.7, 45.2)） 无法直接赋值给新图的整数像素位置 即使四舍五入，也会导致： 空洞：某些新图像素从未被赋值 → 黑色或空白 重叠：多个原图像素映射到同一新图像素 → 颜色混合或丢失      图">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数字图像处理">
 <meta property="og:url" content="http://example.com/2025/09/28/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%95%B0%E5%AD%97%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/%E6%95%B0%E5%AD%97%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="正变换，逆变换与逆向映射法 正变换（Forward Mapping）：  思路：遍历原图每个像素 (x, y) → 计算它在新图中的位置 (u, v) 问题：  (u, v) 很可能是非整数坐标（如 (123.7, 45.2)） 无法直接赋值给新图的整数像素位置 即使四舍五入，也会导致：  空洞：某些新图像素从未被赋值 → 黑色或空白 重叠：多个原图像素映射到同一新图像素">
+<meta property="og:description" content="正变换，逆变换与逆向映射法正变换（Forward Mapping）： 思路：遍历原图每个像素 (x, y) → 计算它在新图中的位置 (u, v) 问题： (u, v) 很可能是非整数坐标（如 (123.7, 45.2)） 无法直接赋值给新图的整数像素位置 即使四舍五入，也会导致： 空洞：某些新图像素从未被赋值 → 黑色或空白 重叠：多个原图像素映射到同一新图像素 → 颜色混合或丢失      图">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-09-27T16:00:00.000Z">
 <meta property="article:modified_time" content="2025-11-24T07:36:16.733Z">
@@ -144,10 +144,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%8F%98%E6%8D%A2%E9%80%86%E5%8F%98%E6%8D%A2%E4%B8%8E%E9%80%86%E5%90%91%E6%98%A0%E5%B0%84%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">正变换，逆变换与逆向映射法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%A3%E5%8F%98%E6%8D%A2forward-mapping"><span class="nav-number">1.1.</span> <span class="nav-text">正变换（Forward Mapping）：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E5%83%8F%E6%8F%92%E5%80%BC%E6%96%B9%E6%B3%95interpolation-methods"><span class="nav-number">2.</span> <span class="nav-text">图像插值方法（Interpolation
-Methods）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%80%E8%BF%91%E9%82%BB%E6%8F%92%E5%80%BCnearest-neighbor"><span class="nav-number">2.1.</span> <span class="nav-text">最近邻插值（Nearest Neighbor）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8C%E7%BA%BF%E6%80%A7%E6%8F%92%E5%80%BCbilinear-interpolation"><span class="nav-number">2.2.</span> <span class="nav-text">双线性插值（Bilinear
-Interpolation）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8C%E4%B8%89%E6%AC%A1%E6%8F%92%E5%80%BCbicubic-interpolation"><span class="nav-number">2.3.</span> <span class="nav-text">双三次插值（Bicubic
-Interpolation）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E5%83%8F%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97"><span class="nav-number">3.</span> <span class="nav-text">图像逻辑运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%B0%BA%E5%BA%A6%E5%92%8C%E5%A4%9A%E5%B0%BA%E5%BA%A6retinex%E5%A2%9E%E5%BC%BA%E6%96%B9%E6%B3%95%E5%AE%9E%E7%8E%B0%E5%9B%BE%E5%83%8F%E5%A2%9E%E5%BC%BA"><span class="nav-number">4.</span> <span class="nav-text">单尺度和多尺度Retinex增强方法实现图像增强</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%8F%98%E6%8D%A2%EF%BC%8C%E9%80%86%E5%8F%98%E6%8D%A2%E4%B8%8E%E9%80%86%E5%90%91%E6%98%A0%E5%B0%84%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">正变换，逆变换与逆向映射法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%A3%E5%8F%98%E6%8D%A2%EF%BC%88Forward-Mapping%EF%BC%89%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">正变换（Forward Mapping）：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E5%83%8F%E6%8F%92%E5%80%BC%E6%96%B9%E6%B3%95%EF%BC%88Interpolation-Methods%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">图像插值方法（Interpolation Methods）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%80%E8%BF%91%E9%82%BB%E6%8F%92%E5%80%BC%EF%BC%88Nearest-Neighbor%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">最近邻插值（Nearest Neighbor）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8C%E7%BA%BF%E6%80%A7%E6%8F%92%E5%80%BC%EF%BC%88Bilinear-Interpolation%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">双线性插值（Bilinear Interpolation）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8C%E4%B8%89%E6%AC%A1%E6%8F%92%E5%80%BC%EF%BC%88Bicubic-Interpolation%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">双三次插值（Bicubic Interpolation）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E5%83%8F%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97"><span class="nav-number">3.</span> <span class="nav-text">图像逻辑运算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%B0%BA%E5%BA%A6%E5%92%8C%E5%A4%9A%E5%B0%BA%E5%BA%A6Retinex%E5%A2%9E%E5%BC%BA%E6%96%B9%E6%B3%95%E5%AE%9E%E7%8E%B0%E5%9B%BE%E5%83%8F%E5%A2%9E%E5%BC%BA"><span class="nav-number">4.</span> <span class="nav-text">单尺度和多尺度Retinex增强方法实现图像增强</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -162,7 +159,7 @@ Interpolation）</span></a></li></ol></li><li class="nav-item nav-level-3"><a cl
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">177</span>
+          <span class="site-state-item-count">178</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -291,80 +288,60 @@ Interpolation）</span></a></li></ol></li><li class="nav-item nav-level-3"><a cl
     
     
     
-    <div class="post-body" itemprop="articleBody"><h3 id="正变换逆变换与逆向映射法">正变换，逆变换与逆向映射法</h3>
-<h4 id="正变换forward-mapping">正变换（Forward Mapping）：</h4>
-<ul>
-<li>思路：遍历原图每个像素 <code>(x, y)</code> → 计算它在新图中的位置
-<code>(u, v)</code></li>
-<li>问题：
-<ul>
-<li><code>(u, v)</code> 很可能是非整数坐标（如
-<code>(123.7, 45.2)</code>）</li>
+    <div class="post-body" itemprop="articleBody"><h3 id="正变换，逆变换与逆向映射法"><a href="#正变换，逆变换与逆向映射法" class="headerlink" title="正变换，逆变换与逆向映射法"></a>正变换，逆变换与逆向映射法</h3><h4 id="正变换（Forward-Mapping）："><a href="#正变换（Forward-Mapping）：" class="headerlink" title="正变换（Forward Mapping）："></a>正变换（Forward Mapping）：</h4><ul>
+<li>思路：遍历原图每个像素 <code>(x, y)</code> → 计算它在新图中的位置 <code>(u, v)</code></li>
+<li>问题：<ul>
+<li><code>(u, v)</code> 很可能是非整数坐标（如 <code>(123.7, 45.2)</code>）</li>
 <li>无法直接赋值给新图的整数像素位置</li>
-<li>即使四舍五入，也会导致：
-<ul>
+<li>即使四舍五入，也会导致：<ul>
 <li><strong>空洞</strong>：某些新图像素从未被赋值 → 黑色或空白</li>
-<li><strong>重叠</strong>：多个原图像素映射到同一新图像素 →
-颜色混合或丢失</li>
-</ul></li>
-</ul></li>
+<li><strong>重叠</strong>：多个原图像素映射到同一新图像素 → 颜色混合或丢失</li>
 </ul>
-<h3 id="图像插值方法interpolation-methods"><strong>图像插值方法</strong>（Interpolation
-Methods）</h3>
-<p>当你对图像做以下操作时，就需要插值：</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="图像插值方法（Interpolation-Methods）"><a href="#图像插值方法（Interpolation-Methods）" class="headerlink" title="图像插值方法（Interpolation Methods）"></a><strong>图像插值方法</strong>（Interpolation Methods）</h3><p>当你对图像做以下操作时，就需要插值：</p>
 <ul>
 <li><strong>放大（zoom in）</strong>：像素变多，新像素值从哪来？</li>
 <li><strong>缩小（zoom out）</strong>：像素变少，如何保留信息？</li>
 <li><strong>旋转、仿射变换、透视变换</strong>：目标像素位置可能落在原图两个像素之间，需要“估算”颜色。</li>
 </ul>
 <p>插值就是<strong>估算非整数坐标处像素值的方法</strong>。</p>
-<h4 id="最近邻插值nearest-neighbor">最近邻插值（Nearest Neighbor）</h4>
-<ul>
-<li><strong>原理</strong>：新像素的值 =
-<strong>离它最近的原图像素值</strong></li>
+<h4 id="最近邻插值（Nearest-Neighbor）"><a href="#最近邻插值（Nearest-Neighbor）" class="headerlink" title="最近邻插值（Nearest Neighbor）"></a>最近邻插值（Nearest Neighbor）</h4><ul>
+<li><strong>原理</strong>：新像素的值 = <strong>离它最近的原图像素值</strong></li>
 <li><strong>计算</strong>：不计算！直接“抄最近的”</li>
-<li><strong>特点</strong>：
-<ul>
+<li><strong>特点</strong>：<ul>
 <li>⚡ 速度最快</li>
 <li>🧱 放大后有明显“马赛克”或“锯齿”（blocky / jagged）</li>
 <li>❌ 不适合高质量图像处理</li>
-</ul></li>
 </ul>
-<h4 id="双线性插值bilinear-interpolation">双线性插值（Bilinear
-Interpolation）</h4>
-<ul>
-<li><strong>原理</strong>：在 <strong>2×2
-邻域</strong>（4个像素）内，<strong>先水平插值，再垂直插值</strong></li>
+</li>
+</ul>
+<h4 id="双线性插值（Bilinear-Interpolation）"><a href="#双线性插值（Bilinear-Interpolation）" class="headerlink" title="双线性插值（Bilinear Interpolation）"></a>双线性插值（Bilinear Interpolation）</h4><ul>
+<li><strong>原理</strong>：在 <strong>2×2 邻域</strong>（4个像素）内，<strong>先水平插值，再垂直插值</strong></li>
 <li><strong>计算</strong>：加权平均（距离越近，权重越大）</li>
-<li><strong>特点</strong>：
-<ul>
+<li><strong>特点</strong>：<ul>
 <li>⏱ 速度较快</li>
 <li>🌫 图像变“柔和”，边缘轻微模糊</li>
 <li>✅ 是<strong>默认的 resize 插值方法</strong>（OpenCV 默认值）</li>
-</ul></li>
+</ul>
+</li>
 </ul>
 <blockquote>
-<p>🖼 举例（1D 简化）： 原值：A=100（位置0），B=200（位置1） 在 0.3
-处插值 → <code>100×(1−0.3) + 200×0.3 = 130</code> 2D
-就是两次这样的操作（x方向 + y方向）</p>
+<p>🖼 举例（1D 简化）：<br>原值：A=100（位置0），B=200（位置1）<br>在 0.3 处插值 → <code>100×(1−0.3) + 200×0.3 = 130</code><br>2D 就是两次这样的操作（x方向 + y方向） </p>
 </blockquote>
-<h4 id="双三次插值bicubic-interpolation">双三次插值（Bicubic
-Interpolation）</h4>
-<ul>
-<li><strong>原理</strong>：在 <strong>4×4
-邻域</strong>（16个像素）内，用<strong>三次多项式</strong>拟合曲面</li>
-<li><strong>计算</strong>：复杂，涉及更多像素和权重函数（常用
-Catmull-Rom 样条）</li>
-<li><strong>特点</strong>：
-<ul>
+<h4 id="双三次插值（Bicubic-Interpolation）"><a href="#双三次插值（Bicubic-Interpolation）" class="headerlink" title="双三次插值（Bicubic Interpolation）"></a>双三次插值（Bicubic Interpolation）</h4><ul>
+<li><strong>原理</strong>：在 <strong>4×4 邻域</strong>（16个像素）内，用<strong>三次多项式</strong>拟合曲面</li>
+<li><strong>计算</strong>：复杂，涉及更多像素和权重函数（常用 Catmull-Rom 样条）</li>
+<li><strong>特点</strong>：<ul>
 <li>🐢 速度较慢（约是 bilinear 的 4~8 倍）</li>
 <li>🔍 边缘更锐利，细节保留更好</li>
 <li>⚠️ 可能产生“过冲”（overshoot）：边缘出现亮/暗 halo（光晕）</li>
-</ul></li>
 </ul>
-<h3 id="图像逻辑运算">图像逻辑运算</h3>
-<h3 id="单尺度和多尺度retinex增强方法实现图像增强">单尺度和多尺度Retinex增强方法实现图像增强</h3>
-<p>图像模板运算</p>
+</li>
+</ul>
+<h3 id="图像逻辑运算"><a href="#图像逻辑运算" class="headerlink" title="图像逻辑运算"></a>图像逻辑运算</h3><h3 id="单尺度和多尺度Retinex增强方法实现图像增强"><a href="#单尺度和多尺度Retinex增强方法实现图像增强" class="headerlink" title="单尺度和多尺度Retinex增强方法实现图像增强"></a>单尺度和多尺度Retinex增强方法实现图像增强</h3><p>图像模板运算</p>
 
     </div>
 
@@ -400,13 +377,13 @@ Catmull-Rom 样条）</li>
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2025/09/21/%E5%AE%9E%E4%B9%A0/Tosea.ai/%E9%82%80%E8%AF%B7%E5%A5%BD%E5%8F%8B%E6%9C%BA%E5%88%B6%E8%B0%83%E7%A0%94/" rel="prev" title="邀请好友机制调研">
-                  <i class="fa fa-angle-left"></i> 邀请好友机制调研
+                <a href="/2025/09/21/%E5%AD%A6%E4%B9%A0/rag/lightrag/" rel="prev" title="lightrag">
+                  <i class="fa fa-angle-left"></i> lightrag
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2025/10/17/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/pytest/" rel="next" title="pytest">
-                  pytest <i class="fa fa-angle-right"></i>
+                <a href="/2025/10/17/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/pydantic/" rel="next" title="pydantic">
+                  pydantic <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
@@ -427,7 +404,7 @@ Catmull-Rom 样条）</li>
 
   <div class="copyright">
     &copy; 
-    <span itemprop="copyrightYear">2025</span>
+    <span itemprop="copyrightYear">2026</span>
     <span class="with-love">
       <i class="fa fa-heart"></i>
     </span>

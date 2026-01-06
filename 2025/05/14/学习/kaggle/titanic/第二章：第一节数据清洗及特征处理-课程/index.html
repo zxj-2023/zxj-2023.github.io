@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="【回顾&amp;引言】前面一章的内容大家可以感觉到我们主要是对基础知识做一个梳理，让大家了解数据分析的一些操作，主要做了数据的各个角度的观察。那么在这里，我们主要是做数据分析的流程性学习，主要是包括了数据清洗以及数据的特征处理，数据重构以及数据可视化。这些内容是为数据分析最后的建模和模型评价做一个铺垫。 开始之前，导入numpy、pandas包和数据 123#加载所需的库import nump">
+    <meta name="description" content="【回顾&amp;引言】前面一章的内容大家可以感觉到我们主要是对基础知识做一个梳理，让大家了解数据分析的一些操作，主要做了数据的各个角度的观察。那么在这里，我们主要是做数据分析的流程性学习，主要是包括了数据清洗以及数据的特征处理，数据重构以及数据可视化。这些内容是为数据分析最后的建模和模型评价做一个铺垫。 开始之前，导入numpy、pandas包和数据123#加载所需的库import numpy a">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据分析——第二章：第一节数据清洗及特征处理">
 <meta property="og:url" content="http://example.com/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E7%AC%AC%E4%B8%80%E8%8A%82%E6%95%B0%E6%8D%AE%E6%B8%85%E6%B4%97%E5%8F%8A%E7%89%B9%E5%BE%81%E5%A4%84%E7%90%86-%E8%AF%BE%E7%A8%8B/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="【回顾&amp;引言】前面一章的内容大家可以感觉到我们主要是对基础知识做一个梳理，让大家了解数据分析的一些操作，主要做了数据的各个角度的观察。那么在这里，我们主要是做数据分析的流程性学习，主要是包括了数据清洗以及数据的特征处理，数据重构以及数据可视化。这些内容是为数据分析最后的建模和模型评价做一个铺垫。 开始之前，导入numpy、pandas包和数据 123#加载所需的库import nump">
+<meta property="og:description" content="【回顾&amp;引言】前面一章的内容大家可以感觉到我们主要是对基础知识做一个梳理，让大家了解数据分析的一些操作，主要做了数据的各个角度的观察。那么在这里，我们主要是做数据分析的流程性学习，主要是包括了数据清洗以及数据的特征处理，数据重构以及数据可视化。这些内容是为数据分析最后的建模和模型评价做一个铺垫。 开始之前，导入numpy、pandas包和数据123#加载所需的库import numpy a">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-05-13T16:00:00.000Z">
 <meta property="article:modified_time" content="2025-05-14T09:00:22.000Z">
@@ -144,11 +144,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E4%B9%8B%E5%89%8D%E5%AF%BC%E5%85%A5numpypandas%E5%8C%85%E5%92%8C%E6%95%B0%E6%8D%AE"><span class="nav-number">1.</span> <span class="nav-text">开始之前，导入numpy、pandas包和数据</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0%E6%95%B0%E6%8D%AE%E6%B8%85%E6%B4%97%E5%8F%8A%E7%89%B9%E5%BE%81%E5%A4%84%E7%90%86"><span class="nav-number"></span> <span class="nav-text">2 第二章：数据清洗及特征处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%BA%E5%A4%B1%E5%80%BC%E8%A7%82%E5%AF%9F%E4%B8%8E%E5%A4%84%E7%90%86"><span class="nav-number"></span> <span class="nav-text">2.1 缺失值观察与处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%B8%80%E7%BC%BA%E5%A4%B1%E5%80%BC%E8%A7%82%E5%AF%9F"><span class="nav-number">1.</span> <span class="nav-text">2.1.1 任务一：缺失值观察</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%BA%8C%E5%AF%B9%E7%BC%BA%E5%A4%B1%E5%80%BC%E8%BF%9B%E8%A1%8C%E5%A4%84%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">2.1.2 任务二：对缺失值进行处理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%A4%8D%E5%80%BC%E8%A7%82%E5%AF%9F%E4%B8%8E%E5%A4%84%E7%90%86"><span class="nav-number"></span> <span class="nav-text">2.2 重复值观察与处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%B8%80%E8%AF%B7%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E5%80%BC"><span class="nav-number">1.</span> <span class="nav-text">2.2.1
-任务一：请查看数据中的重复值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%BA%8C%E5%AF%B9%E9%87%8D%E5%A4%8D%E5%80%BC%E8%BF%9B%E8%A1%8C%E5%A4%84%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">2.2.2 任务二：对重复值进行处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%B8%89%E5%B0%86%E5%89%8D%E9%9D%A2%E6%B8%85%E6%B4%97%E7%9A%84%E6%95%B0%E6%8D%AE%E4%BF%9D%E5%AD%98%E4%B8%BAcsv%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">2.2.3
-任务三：将前面清洗的数据保存为csv格式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E8%A7%82%E5%AF%9F%E4%B8%8E%E5%A4%84%E7%90%86"><span class="nav-number"></span> <span class="nav-text">2.3 特征观察与处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%B8%80%E5%AF%B9%E5%B9%B4%E9%BE%84%E8%BF%9B%E8%A1%8C%E5%88%86%E7%AE%B1%E7%A6%BB%E6%95%A3%E5%8C%96%E5%A4%84%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">2.3.1
-任务一：对年龄进行分箱（离散化）处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%BA%8C%E5%AF%B9%E6%96%87%E6%9C%AC%E5%8F%98%E9%87%8F%E8%BF%9B%E8%A1%8C%E8%BD%AC%E6%8D%A2"><span class="nav-number">2.</span> <span class="nav-text">2.3.2 任务二：对文本变量进行转换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%B8%89%E4%BB%8E%E7%BA%AF%E6%96%87%E6%9C%ACname%E7%89%B9%E5%BE%81%E9%87%8C%E6%8F%90%E5%8F%96%E5%87%BAtitles%E7%9A%84%E7%89%B9%E5%BE%81%E6%89%80%E8%B0%93%E7%9A%84titles%E5%B0%B1%E6%98%AFmrmissmrs%E7%AD%89"><span class="nav-number">3.</span> <span class="nav-text">2.3.3
-任务三：从纯文本Name特征里提取出Titles的特征(所谓的Titles就是Mr,Miss,Mrs等)</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E4%B9%8B%E5%89%8D%EF%BC%8C%E5%AF%BC%E5%85%A5numpy%E3%80%81pandas%E5%8C%85%E5%92%8C%E6%95%B0%E6%8D%AE"><span class="nav-number">1.</span> <span class="nav-text">开始之前，导入numpy、pandas包和数据</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E9%87%8D%E5%A4%8D%E5%80%BC%E8%A7%82%E5%AF%9F%E4%B8%8E%E5%A4%84%E7%90%86"><span class="nav-number"></span> <span class="nav-text">2.2 重复值观察与处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-1-%E4%BB%BB%E5%8A%A1%E4%B8%80%EF%BC%9A%E8%AF%B7%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E5%80%BC"><span class="nav-number">1.</span> <span class="nav-text">2.2.1 任务一：请查看数据中的重复值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-3-%E4%BB%BB%E5%8A%A1%E4%B8%89%EF%BC%9A%E5%B0%86%E5%89%8D%E9%9D%A2%E6%B8%85%E6%B4%97%E7%9A%84%E6%95%B0%E6%8D%AE%E4%BF%9D%E5%AD%98%E4%B8%BAcsv%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">2.2.3 任务三：将前面清洗的数据保存为csv格式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E7%89%B9%E5%BE%81%E8%A7%82%E5%AF%9F%E4%B8%8E%E5%A4%84%E7%90%86"><span class="nav-number"></span> <span class="nav-text">2.3 特征观察与处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-1-%E4%BB%BB%E5%8A%A1%E4%B8%80%EF%BC%9A%E5%AF%B9%E5%B9%B4%E9%BE%84%E8%BF%9B%E8%A1%8C%E5%88%86%E7%AE%B1%EF%BC%88%E7%A6%BB%E6%95%A3%E5%8C%96%EF%BC%89%E5%A4%84%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">2.3.1 任务一：对年龄进行分箱（离散化）处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-2-%E4%BB%BB%E5%8A%A1%E4%BA%8C%EF%BC%9A%E5%AF%B9%E6%96%87%E6%9C%AC%E5%8F%98%E9%87%8F%E8%BF%9B%E8%A1%8C%E8%BD%AC%E6%8D%A2"><span class="nav-number">2.</span> <span class="nav-text">2.3.2 任务二：对文本变量进行转换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-3-%E4%BB%BB%E5%8A%A1%E4%B8%89%EF%BC%9A%E4%BB%8E%E7%BA%AF%E6%96%87%E6%9C%ACName%E7%89%B9%E5%BE%81%E9%87%8C%E6%8F%90%E5%8F%96%E5%87%BATitles%E7%9A%84%E7%89%B9%E5%BE%81-%E6%89%80%E8%B0%93%E7%9A%84Titles%E5%B0%B1%E6%98%AFMr-Miss-Mrs%E7%AD%89"><span class="nav-number">3.</span> <span class="nav-text">2.3.3 任务三：从纯文本Name特征里提取出Titles的特征(所谓的Titles就是Mr,Miss,Mrs等)</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -163,7 +159,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">177</span>
+          <span class="site-state-item-count">178</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -287,636 +283,312 @@
     
     
     <div class="post-body" itemprop="articleBody"><p>【回顾&amp;引言】前面一章的内容大家可以感觉到我们主要是对基础知识做一个梳理，让大家了解数据分析的一些操作，主要做了数据的各个角度的观察。那么在这里，我们主要是做数据分析的流程性学习，主要是包括了数据清洗以及数据的特征处理，数据重构以及数据可视化。这些内容是为数据分析最后的建模和模型评价做一个铺垫。</p>
-<h4 id="开始之前导入numpypandas包和数据">开始之前，导入numpy、pandas包和数据</h4>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#加载所需的库</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br></pre></td></tr></table></figure>
+<h4 id="开始之前，导入numpy、pandas包和数据"><a href="#开始之前，导入numpy、pandas包和数据" class="headerlink" title="开始之前，导入numpy、pandas包和数据"></a>开始之前，导入numpy、pandas包和数据</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#加载所需的库</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#加载数据train.csv</span></span><br><span class="line">df = pd.read_csv(<span class="string">&#x27;./titanic/train.csv&#x27;</span>)</span><br><span class="line">df.head(<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
 <table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th>
-</th>
-<th>
-PassengerId
-</th>
-<th>
-Survived
-</th>
-<th>
-Pclass
-</th>
-<th>
-Name
-</th>
-<th>
-Sex
-</th>
-<th>
-Age
-</th>
-<th>
-SibSp
-</th>
-<th>
-Parch
-</th>
-<th>
-Ticket
-</th>
-<th>
-Fare
-</th>
-<th>
-Cabin
-</th>
-<th>
-Embarked
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>
-0
-</th>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-3
-</td>
-<td>
-Braund, Mr. Owen Harris
-</td>
-<td>
-male
-</td>
-<td>
-22.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-A/5 21171
-</td>
-<td>
-7.2500
-</td>
-<td>
-NaN
-</td>
-<td>
-S
-</td>
-</tr>
-<tr>
-<th>
-1
-</th>
-<td>
-2
-</td>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-Cumings, Mrs. John Bradley (Florence Briggs Th…
-</td>
-<td>
-female
-</td>
-<td>
-38.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-PC 17599
-</td>
-<td>
-71.2833
-</td>
-<td>
-C85
-</td>
-<td>
-C
-</td>
-</tr>
-<tr>
-<th>
-2
-</th>
-<td>
-3
-</td>
-<td>
-1
-</td>
-<td>
-3
-</td>
-<td>
-Heikkinen, Miss. Laina
-</td>
-<td>
-female
-</td>
-<td>
-26.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-STON/O2. 3101282
-</td>
-<td>
-7.9250
-</td>
-<td>
-NaN
-</td>
-<td>
-S
-</td>
-</tr>
-</tbody>
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PassengerId</th>
+      <th>Survived</th>
+      <th>Pclass</th>
+      <th>Name</th>
+      <th>Sex</th>
+      <th>Age</th>
+      <th>SibSp</th>
+      <th>Parch</th>
+      <th>Ticket</th>
+      <th>Fare</th>
+      <th>Cabin</th>
+      <th>Embarked</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Braund, Mr. Owen Harris</td>
+      <td>male</td>
+      <td>22.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>A/5 21171</td>
+      <td>7.2500</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Cumings, Mrs. John Bradley (Florence Briggs Th...</td>
+      <td>female</td>
+      <td>38.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>PC 17599</td>
+      <td>71.2833</td>
+      <td>C85</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>1</td>
+      <td>3</td>
+      <td>Heikkinen, Miss. Laina</td>
+      <td>female</td>
+      <td>26.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>STON/O2. 3101282</td>
+      <td>7.9250</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+  </tbody>
 </table>
-<h2 id="第二章数据清洗及特征处理">2 第二章：数据清洗及特征处理</h2>
-<p>我们拿到的数据通常是不干净的，所谓的不干净，就是数据中有缺失值，有一些异常点等，需要经过一定的处理才能继续做后面的分析或建模，所以拿到数据的第一步是进行数据清洗，本章我们将学习缺失值、重复值、字符串和数据转换等操作，将数据清洗成可以分析或建模的亚子。</p>
-<h3 id="缺失值观察与处理">2.1 缺失值观察与处理</h3>
-<p>我们拿到的数据经常会有很多缺失值，比如我们可以看到Cabin列存在NaN，那其他列还有没有缺失值，这些缺失值要怎么处理呢</p>
-<h4 id="任务一缺失值观察">2.1.1 任务一：缺失值观察</h4>
-<ol type="1">
-<li>请查看每个特征缺失值个数<br>
-</li>
-<li>请查看Age， Cabin， Embarked列的数据
-以上方式都有多种方式，所以大家多多益善</li>
-</ol>
+## 2 第二章：数据清洗及特征处理
+我们拿到的数据通常是不干净的，所谓的不干净，就是数据中有缺失值，有一些异常点等，需要经过一定的处理才能继续做后面的分析或建模，所以拿到数据的第一步是进行数据清洗，本章我们将学习缺失值、重复值、字符串和数据转换等操作，将数据清洗成可以分析或建模的亚子。
+
+### 2.1 缺失值观察与处理
+我们拿到的数据经常会有很多缺失值，比如我们可以看到Cabin列存在NaN，那其他列还有没有缺失值，这些缺失值要怎么处理呢
+
+#### 2.1.1 任务一：缺失值观察
+(1) 请查看每个特征缺失值个数  
+(2) 请查看Age， Cabin， Embarked列的数据
+以上方式都有多种方式，所以大家多多益善
+
+
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">df.info()</span><br></pre></td></tr></table></figure>
-<pre><code>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
-RangeIndex: 891 entries, 0 to 890
-Data columns (total 12 columns):
- #   Column       Non-Null Count  Dtype  
----  ------       --------------  -----  
- 0   PassengerId  891 non-null    int64  
- 1   Survived     891 non-null    int64  
- 2   Pclass       891 non-null    int64  
- 3   Name         891 non-null    object 
- 4   Sex          891 non-null    object 
- 5   Age          714 non-null    float64
- 6   SibSp        891 non-null    int64  
- 7   Parch        891 non-null    int64  
- 8   Ticket       891 non-null    object 
- 9   Fare         891 non-null    float64
- 10  Cabin        204 non-null    object 
- 11  Embarked     889 non-null    object 
-dtypes: float64(2), int64(5), object(5)
-memory usage: 83.7+ KB</code></pre>
+
+    <class 'pandas.core.frame.dataframe'>
+    RangeIndex: 891 entries, 0 to 890
+    Data columns (total 12 columns):
+     #   Column       Non-Null Count  Dtype  
+    ---  ------       --------------  -----  
+     0   PassengerId  891 non-null    int64  
+     1   Survived     891 non-null    int64  
+     2   Pclass       891 non-null    int64  
+     3   Name         891 non-null    object 
+     4   Sex          891 non-null    object 
+     5   Age          714 non-null    float64
+     6   SibSp        891 non-null    int64  
+     7   Parch        891 non-null    int64  
+     8   Ticket       891 non-null    object 
+     9   Fare         891 non-null    float64
+     10  Cabin        204 non-null    object 
+     11  Embarked     889 non-null    object 
+    dtypes: float64(2), int64(5), object(5)
+    memory usage: 83.7+ KB
+
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">df.isnull().<span class="built_in">sum</span>()</span><br></pre></td></tr></table></figure>
-<pre><code>PassengerId      0
-Survived         0
-Pclass           0
-Name             0
-Sex              0
-Age            177
-SibSp            0
-Parch            0
-Ticket           0
-Fare             0
-Cabin          687
-Embarked         2
-dtype: int64</code></pre>
+
+
+
+
+    PassengerId      0
+    Survived         0
+    Pclass           0
+    Name             0
+    Sex              0
+    Age            177
+    SibSp            0
+    Parch            0
+    Ticket           0
+    Fare             0
+    Cabin          687
+    Embarked         2
+    dtype: int64
+
+
+
+
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">df[[<span class="string">&#x27;Age&#x27;</span>,<span class="string">&#x27;Cabin&#x27;</span>,<span class="string">&#x27;Embarked&#x27;</span>]].head(<span class="number">3</span>)</span><br><span class="line"><span class="comment">#df[&#x27;Age&#x27;].head(3)</span></span><br></pre></td></tr></table></figure>
+
 <table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th>
-</th>
-<th>
-Age
-</th>
-<th>
-Cabin
-</th>
-<th>
-Embarked
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>
-0
-</th>
-<td>
-22.0
-</td>
-<td>
-NaN
-</td>
-<td>
-S
-</td>
-</tr>
-<tr>
-<th>
-1
-</th>
-<td>
-38.0
-</td>
-<td>
-C85
-</td>
-<td>
-C
-</td>
-</tr>
-<tr>
-<th>
-2
-</th>
-<td>
-26.0
-</td>
-<td>
-NaN
-</td>
-<td>
-S
-</td>
-</tr>
-</tbody>
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Age</th>
+      <th>Cabin</th>
+      <th>Embarked</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>22.0</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>38.0</td>
+      <td>C85</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>26.0</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+  </tbody>
 </table>
-<p>外层 [] 是 DataFrame 的索引操作符。 内层 [] 是 Python
-原生的列表语法，用于传递多个列名。</p>
-<h4 id="任务二对缺失值进行处理">2.1.2 任务二：对缺失值进行处理</h4>
-<p>(1)处理缺失值一般有几种思路</p>
-<ol start="2" type="1">
-<li><p>请尝试对Age列的数据的缺失值进行处理</p></li>
-<li><p>请尝试使用不同的方法直接对整张表的缺失值进行处理</p></li>
-</ol>
+外层 [] 是 DataFrame 的索引操作符。
+内层 [] 是 Python 原生的列表语法，用于传递多个列名。
+
+#### 2.1.2 任务二：对缺失值进行处理
+(1)处理缺失值一般有几种思路
+
+(2) 请尝试对Age列的数据的缺失值进行处理
+
+(3) 请尝试使用不同的方法直接对整张表的缺失值进行处理  
+
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#处理缺失值的一般思路：</span></span><br><span class="line"><span class="comment">#提醒：可使用的函数有---&gt;dropna函数与fillna函数</span></span><br><span class="line"><span class="comment">#print(df.head(3))</span></span><br><span class="line">df[df[<span class="string">&#x27;Age&#x27;</span>]==<span class="literal">None</span>]=<span class="number">0</span></span><br><span class="line">df.head(<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+
 <table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th>
-</th>
-<th>
-PassengerId
-</th>
-<th>
-Survived
-</th>
-<th>
-Pclass
-</th>
-<th>
-Name
-</th>
-<th>
-Sex
-</th>
-<th>
-Age
-</th>
-<th>
-SibSp
-</th>
-<th>
-Parch
-</th>
-<th>
-Ticket
-</th>
-<th>
-Fare
-</th>
-<th>
-Cabin
-</th>
-<th>
-Embarked
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>
-0
-</th>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-3
-</td>
-<td>
-Braund, Mr. Owen Harris
-</td>
-<td>
-male
-</td>
-<td>
-22.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-A/5 21171
-</td>
-<td>
-7.2500
-</td>
-<td>
-NaN
-</td>
-<td>
-S
-</td>
-</tr>
-<tr>
-<th>
-1
-</th>
-<td>
-2
-</td>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-Cumings, Mrs. John Bradley (Florence Briggs Th…
-</td>
-<td>
-female
-</td>
-<td>
-38.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-PC 17599
-</td>
-<td>
-71.2833
-</td>
-<td>
-C85
-</td>
-<td>
-C
-</td>
-</tr>
-<tr>
-<th>
-2
-</th>
-<td>
-3
-</td>
-<td>
-1
-</td>
-<td>
-3
-</td>
-<td>
-Heikkinen, Miss. Laina
-</td>
-<td>
-female
-</td>
-<td>
-26.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-STON/O2. 3101282
-</td>
-<td>
-7.9250
-</td>
-<td>
-NaN
-</td>
-<td>
-S
-</td>
-</tr>
-</tbody>
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PassengerId</th>
+      <th>Survived</th>
+      <th>Pclass</th>
+      <th>Name</th>
+      <th>Sex</th>
+      <th>Age</th>
+      <th>SibSp</th>
+      <th>Parch</th>
+      <th>Ticket</th>
+      <th>Fare</th>
+      <th>Cabin</th>
+      <th>Embarked</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Braund, Mr. Owen Harris</td>
+      <td>male</td>
+      <td>22.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>A/5 21171</td>
+      <td>7.2500</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Cumings, Mrs. John Bradley (Florence Briggs Th...</td>
+      <td>female</td>
+      <td>38.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>PC 17599</td>
+      <td>71.2833</td>
+      <td>C85</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>1</td>
+      <td>3</td>
+      <td>Heikkinen, Miss. Laina</td>
+      <td>female</td>
+      <td>26.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>STON/O2. 3101282</td>
+      <td>7.9250</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+  </tbody>
 </table>
+
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">df[df[<span class="string">&#x27;Age&#x27;</span>].isnull()]</span><br><span class="line">df[df[<span class="string">&#x27;Age&#x27;</span>].isnull()] = <span class="number">0</span> </span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">df[df[<span class="string">&#x27;Age&#x27;</span>] == np.nan] = <span class="number">0</span></span><br></pre></td></tr></table></figure>
-<p>【思考1】dropna和fillna有哪些参数，分别如何使用呢?</p>
+<p>【思考1】dropna和fillna有哪些参数，分别如何使用呢?  </p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#dropna() 是 Pandas 中用于删除包含缺失值（NaN 或 None）的行或列的函数。其核心作用是清理数据中的缺失值，适用于数据清洗阶段。</span></span><br><span class="line">df.dropna().head(<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
 <table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th>
-</th>
-<th>
-PassengerId
-</th>
-<th>
-Survived
-</th>
-<th>
-Pclass
-</th>
-<th>
-Name
-</th>
-<th>
-Sex
-</th>
-<th>
-Age
-</th>
-<th>
-SibSp
-</th>
-<th>
-Parch
-</th>
-<th>
-Ticket
-</th>
-<th>
-Fare
-</th>
-<th>
-Cabin
-</th>
-<th>
-Embarked
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>
-1
-</th>
-<td>
-2
-</td>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-Cumings, Mrs. John Bradley (Florence Briggs Th…
-</td>
-<td>
-female
-</td>
-<td>
-38.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-PC 17599
-</td>
-<td>
-71.2833
-</td>
-<td>
-C85
-</td>
-<td>
-C
-</td>
-</tr>
-<tr>
-<th>
-3
-</th>
-<td>
-4
-</td>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-Futrelle, Mrs. Jacques Heath (Lily May Peel)
-</td>
-<td>
-female
-</td>
-<td>
-35.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-113803
-</td>
-<td>
-53.1000
-</td>
-<td>
-C123
-</td>
-<td>
-S
-</td>
-</tr>
-<tr>
-<th>
-5
-</th>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0000
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-</tr>
-</tbody>
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PassengerId</th>
+      <th>Survived</th>
+      <th>Pclass</th>
+      <th>Name</th>
+      <th>Sex</th>
+      <th>Age</th>
+      <th>SibSp</th>
+      <th>Parch</th>
+      <th>Ticket</th>
+      <th>Fare</th>
+      <th>Cabin</th>
+      <th>Embarked</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Cumings, Mrs. John Bradley (Florence Briggs Th...</td>
+      <td>female</td>
+      <td>38.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>PC 17599</td>
+      <td>71.2833</td>
+      <td>C85</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Futrelle, Mrs. Jacques Heath (Lily May Peel)</td>
+      <td>female</td>
+      <td>35.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>113803</td>
+      <td>53.1000</td>
+      <td>C123</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0000</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
 </table>
+
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#fillna() 是 Pandas 中用于填充缺失值（NaN 或 None）的核心函数，常用于数据清洗阶段。其核心作用是将缺失值替换为合理值，以便后续分析或建模。</span></span><br><span class="line">df.fillna(<span class="number">0</span>).head(<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
 <div>
 <style scoped>
@@ -927,1700 +599,678 @@ S
     .dataframe tbody tr th {
         vertical-align: top;
     }
-    
+
     .dataframe thead th {
         text-align: right;
     }
 </style>
 <table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th>
-</th>
-<th>
-PassengerId
-</th>
-<th>
-Survived
-</th>
-<th>
-Pclass
-</th>
-<th>
-Name
-</th>
-<th>
-Sex
-</th>
-<th>
-Age
-</th>
-<th>
-SibSp
-</th>
-<th>
-Parch
-</th>
-<th>
-Ticket
-</th>
-<th>
-Fare
-</th>
-<th>
-Cabin
-</th>
-<th>
-Embarked
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>
-0
-</th>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-3
-</td>
-<td>
-Braund, Mr. Owen Harris
-</td>
-<td>
-male
-</td>
-<td>
-22.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-A/5 21171
-</td>
-<td>
-7.2500
-</td>
-<td>
-0
-</td>
-<td>
-S
-</td>
-</tr>
-<tr>
-<th>
-1
-</th>
-<td>
-2
-</td>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-Cumings, Mrs. John Bradley (Florence Briggs Th…
-</td>
-<td>
-female
-</td>
-<td>
-38.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-PC 17599
-</td>
-<td>
-71.2833
-</td>
-<td>
-C85
-</td>
-<td>
-C
-</td>
-</tr>
-<tr>
-<th>
-2
-</th>
-<td>
-3
-</td>
-<td>
-1
-</td>
-<td>
-3
-</td>
-<td>
-Heikkinen, Miss. Laina
-</td>
-<td>
-female
-</td>
-<td>
-26.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-STON/O2. 3101282
-</td>
-<td>
-7.9250
-</td>
-<td>
-0
-</td>
-<td>
-S
-</td>
-</tr>
-</tbody>
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PassengerId</th>
+      <th>Survived</th>
+      <th>Pclass</th>
+      <th>Name</th>
+      <th>Sex</th>
+      <th>Age</th>
+      <th>SibSp</th>
+      <th>Parch</th>
+      <th>Ticket</th>
+      <th>Fare</th>
+      <th>Cabin</th>
+      <th>Embarked</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Braund, Mr. Owen Harris</td>
+      <td>male</td>
+      <td>22.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>A/5 21171</td>
+      <td>7.2500</td>
+      <td>0</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Cumings, Mrs. John Bradley (Florence Briggs Th...</td>
+      <td>female</td>
+      <td>38.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>PC 17599</td>
+      <td>71.2833</td>
+      <td>C85</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>1</td>
+      <td>3</td>
+      <td>Heikkinen, Miss. Laina</td>
+      <td>female</td>
+      <td>26.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>STON/O2. 3101282</td>
+      <td>7.9250</td>
+      <td>0</td>
+      <td>S</td>
+    </tr>
+  </tbody>
 </table>
 </div>
+
+
+
 <p>【思考】检索空缺值用<code>np.nan</code>,<code>None</code>以及<code>.isnull()</code>哪个更好，这是为什么？如果其中某个方式无法找到缺失值，原因又是为什么？</p>
-<p>【参考】https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.dropna.html</p>
-<p>【参考】https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.fillna.html</p>
-<h3 id="重复值观察与处理">2.2 重复值观察与处理</h3>
-<p>由于这样那样的原因，数据中会不会存在重复值呢，如果存在要怎样处理呢</p>
-<h4 id="任务一请查看数据中的重复值">2.2.1
-任务一：请查看数据中的重复值</h4>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment">#df.duplicated()返回一个布尔序列 (Series)，标记每一行是否为重复行</span></span><br><span class="line">df[df.duplicated()]</span><br></pre></td></tr></table></figure>
+<p>【参考】<a target="_blank" rel="noopener" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.dropna.html">https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.dropna.html</a></p>
+<p>【参考】<a target="_blank" rel="noopener" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.fillna.html">https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.fillna.html</a></p>
+<h3 id="2-2-重复值观察与处理"><a href="#2-2-重复值观察与处理" class="headerlink" title="2.2 重复值观察与处理"></a>2.2 重复值观察与处理</h3><p>由于这样那样的原因，数据中会不会存在重复值呢，如果存在要怎样处理呢</p>
+<h4 id="2-2-1-任务一：请查看数据中的重复值"><a href="#2-2-1-任务一：请查看数据中的重复值" class="headerlink" title="2.2.1 任务一：请查看数据中的重复值"></a>2.2.1 任务一：请查看数据中的重复值</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment">#df.duplicated()返回一个布尔序列 (Series)，标记每一行是否为重复行</span></span><br><span class="line">df[df.duplicated()]</span><br></pre></td></tr></table></figure>
 <table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th>
-</th>
-<th>
-PassengerId
-</th>
-<th>
-Survived
-</th>
-<th>
-Pclass
-</th>
-<th>
-Name
-</th>
-<th>
-Sex
-</th>
-<th>
-Age
-</th>
-<th>
-SibSp
-</th>
-<th>
-Parch
-</th>
-<th>
-Ticket
-</th>
-<th>
-Fare
-</th>
-<th>
-Cabin
-</th>
-<th>
-Embarked
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>
-17
-</th>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-</tr>
-<tr>
-<th>
-19
-</th>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-</tr>
-<tr>
-<th>
-26
-</th>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-</tr>
-<tr>
-<th>
-28
-</th>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-</tr>
-<tr>
-<th>
-29
-</th>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-</tr>
-<tr>
-<th>
-…
-</th>
-<td>
-…
-</td>
-<td>
-…
-</td>
-<td>
-…
-</td>
-<td>
-…
-</td>
-<td>
-…
-</td>
-<td>
-…
-</td>
-<td>
-…
-</td>
-<td>
-…
-</td>
-<td>
-…
-</td>
-<td>
-…
-</td>
-<td>
-…
-</td>
-<td>
-…
-</td>
-</tr>
-<tr>
-<th>
-859
-</th>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-</tr>
-<tr>
-<th>
-863
-</th>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-</tr>
-<tr>
-<th>
-868
-</th>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-</tr>
-<tr>
-<th>
-878
-</th>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-</tr>
-<tr>
-<th>
-888
-</th>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-0.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-</tr>
-</tbody>
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PassengerId</th>
+      <th>Survived</th>
+      <th>Pclass</th>
+      <th>Name</th>
+      <th>Sex</th>
+      <th>Age</th>
+      <th>SibSp</th>
+      <th>Parch</th>
+      <th>Ticket</th>
+      <th>Fare</th>
+      <th>Cabin</th>
+      <th>Embarked</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>17</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>859</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>863</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>868</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>878</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>888</th>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
 </table>
-<p>
-176 rows × 12 columns
-</p>
-<h4 id="任务二对重复值进行处理">2.2.2 任务二：对重复值进行处理</h4>
-<p>(1)重复值有哪些处理方式呢？</p>
-<p>(2)处理我们数据的重复值</p>
-<p>方法多多益善</p>
+<p>176 rows × 12 columns</p>
+
+
+#### 2.2.2 任务二：对重复值进行处理
+(1)重复值有哪些处理方式呢？
+
+(2)处理我们数据的重复值
+
+方法多多益善
+
+
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#重复值有哪些处理方式：</span></span><br><span class="line"><span class="comment">#删除 DataFrame 中的重复行（完全相同的行只保留一次）。</span></span><br><span class="line">df = df.drop_duplicates()</span><br><span class="line">df.head()</span><br></pre></td></tr></table></figure>
+
 <table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th>
-</th>
-<th>
-PassengerId
-</th>
-<th>
-Survived
-</th>
-<th>
-Pclass
-</th>
-<th>
-Name
-</th>
-<th>
-Sex
-</th>
-<th>
-Age
-</th>
-<th>
-SibSp
-</th>
-<th>
-Parch
-</th>
-<th>
-Ticket
-</th>
-<th>
-Fare
-</th>
-<th>
-Cabin
-</th>
-<th>
-Embarked
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>
-0
-</th>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-3
-</td>
-<td>
-Braund, Mr. Owen Harris
-</td>
-<td>
-male
-</td>
-<td>
-22.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-A/5 21171
-</td>
-<td>
-7.2500
-</td>
-<td>
-NaN
-</td>
-<td>
-S
-</td>
-</tr>
-<tr>
-<th>
-1
-</th>
-<td>
-2
-</td>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-Cumings, Mrs. John Bradley (Florence Briggs Th…
-</td>
-<td>
-female
-</td>
-<td>
-38.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-PC 17599
-</td>
-<td>
-71.2833
-</td>
-<td>
-C85
-</td>
-<td>
-C
-</td>
-</tr>
-<tr>
-<th>
-2
-</th>
-<td>
-3
-</td>
-<td>
-1
-</td>
-<td>
-3
-</td>
-<td>
-Heikkinen, Miss. Laina
-</td>
-<td>
-female
-</td>
-<td>
-26.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-STON/O2. 3101282
-</td>
-<td>
-7.9250
-</td>
-<td>
-NaN
-</td>
-<td>
-S
-</td>
-</tr>
-<tr>
-<th>
-3
-</th>
-<td>
-4
-</td>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-Futrelle, Mrs. Jacques Heath (Lily May Peel)
-</td>
-<td>
-female
-</td>
-<td>
-35.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-113803
-</td>
-<td>
-53.1000
-</td>
-<td>
-C123
-</td>
-<td>
-S
-</td>
-</tr>
-<tr>
-<th>
-4
-</th>
-<td>
-5
-</td>
-<td>
-0
-</td>
-<td>
-3
-</td>
-<td>
-Allen, Mr. William Henry
-</td>
-<td>
-male
-</td>
-<td>
-35.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-373450
-</td>
-<td>
-8.0500
-</td>
-<td>
-NaN
-</td>
-<td>
-S
-</td>
-</tr>
-</tbody>
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PassengerId</th>
+      <th>Survived</th>
+      <th>Pclass</th>
+      <th>Name</th>
+      <th>Sex</th>
+      <th>Age</th>
+      <th>SibSp</th>
+      <th>Parch</th>
+      <th>Ticket</th>
+      <th>Fare</th>
+      <th>Cabin</th>
+      <th>Embarked</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Braund, Mr. Owen Harris</td>
+      <td>male</td>
+      <td>22.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>A/5 21171</td>
+      <td>7.2500</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Cumings, Mrs. John Bradley (Florence Briggs Th...</td>
+      <td>female</td>
+      <td>38.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>PC 17599</td>
+      <td>71.2833</td>
+      <td>C85</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>1</td>
+      <td>3</td>
+      <td>Heikkinen, Miss. Laina</td>
+      <td>female</td>
+      <td>26.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>STON/O2. 3101282</td>
+      <td>7.9250</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Futrelle, Mrs. Jacques Heath (Lily May Peel)</td>
+      <td>female</td>
+      <td>35.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>113803</td>
+      <td>53.1000</td>
+      <td>C123</td>
+      <td>S</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Allen, Mr. William Henry</td>
+      <td>male</td>
+      <td>35.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>373450</td>
+      <td>8.0500</td>
+      <td>NaN</td>
+      <td>S</td>
+    </tr>
+  </tbody>
 </table>
-<h4 id="任务三将前面清洗的数据保存为csv格式">2.2.3
-任务三：将前面清洗的数据保存为csv格式</h4>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"></span><br><span class="line">df.to_csv(<span class="string">&#x27;test_clear.csv&#x27;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<h3 id="特征观察与处理">2.3 特征观察与处理</h3>
-<p>我们对特征进行一下观察，可以把特征大概分为两大类：<br>
-数值型特征：Survived ，Pclass， Age ，SibSp， Parch，
-Fare，其中Survived， Pclass为离散型数值特征，Age，SibSp， Parch，
-Fare为连续型数值特征<br>
-文本型特征：Name， Sex， Cabin，Embarked， Ticket，其中Sex， Cabin，
-Embarked，
-Ticket为类别型文本特征，数值型特征一般可以直接用于模型的训练，但有时候为了模型的稳定性及鲁棒性会对连续变量进行离散化。文本型特征往往需要转换成数值型特征才能用于建模分析。</p>
-<h4 id="任务一对年龄进行分箱离散化处理">2.3.1
-任务一：对年龄进行分箱（离散化）处理</h4>
-<ol type="1">
-<li><p>分箱操作是什么？</p></li>
-<li><p>将连续变量Age平均分箱成5个年龄段，并分别用类别变量12345表示</p></li>
-<li><p>将连续变量Age划分为[0,5) [5,15) [15,30) [30,50)
-[50,80)五个年龄段，并分别用类别变量12345表示</p></li>
-<li><p>将连续变量Age按10% 30% 50% 70%
-90%五个年龄段，并用分类变量12345表示</p></li>
-<li><p>将上面的获得的数据分别进行保存，保存为csv格式</p></li>
-</ol>
+
+
+<h4 id="2-2-3-任务三：将前面清洗的数据保存为csv格式"><a href="#2-2-3-任务三：将前面清洗的数据保存为csv格式" class="headerlink" title="2.2.3 任务三：将前面清洗的数据保存为csv格式"></a>2.2.3 任务三：将前面清洗的数据保存为csv格式</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"></span><br><span class="line">df.to_csv(<span class="string">&#x27;test_clear.csv&#x27;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="2-3-特征观察与处理"><a href="#2-3-特征观察与处理" class="headerlink" title="2.3 特征观察与处理"></a>2.3 特征观察与处理</h3><p>我们对特征进行一下观察，可以把特征大概分为两大类：<br>数值型特征：Survived ，Pclass， Age ，SibSp， Parch， Fare，其中Survived， Pclass为离散型数值特征，Age，SibSp， Parch， Fare为连续型数值特征<br>文本型特征：Name， Sex， Cabin，Embarked， Ticket，其中Sex， Cabin， Embarked， Ticket为类别型文本特征，数值型特征一般可以直接用于模型的训练，但有时候为了模型的稳定性及鲁棒性会对连续变量进行离散化。文本型特征往往需要转换成数值型特征才能用于建模分析。</p>
+<h4 id="2-3-1-任务一：对年龄进行分箱（离散化）处理"><a href="#2-3-1-任务一：对年龄进行分箱（离散化）处理" class="headerlink" title="2.3.1 任务一：对年龄进行分箱（离散化）处理"></a>2.3.1 任务一：对年龄进行分箱（离散化）处理</h4><p>(1) 分箱操作是什么？</p>
+<p>(2) 将连续变量Age平均分箱成5个年龄段，并分别用类别变量12345表示  </p>
+<p>(3) 将连续变量Age划分为[0,5) [5,15) [15,30) [30,50) [50,80)五个年龄段，并分别用类别变量12345表示  </p>
+<p>(4) 将连续变量Age按10% 30% 50% 70% 90%五个年龄段，并用分类变量12345表示</p>
+<p>(5) 将上面的获得的数据分别进行保存，保存为csv格式</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#分箱操作是什么：</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">分箱操作（Binning）是数据预处理中的一种常用技术，主要用于将连续型数值转换为离散的区间（即“箱子”或“分组”）</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment">#将连续变量Age平均分箱成5个年龄段，并分别用类别变量12345表示</span></span><br><span class="line">df[<span class="string">&#x27;AgeBand&#x27;</span>] = pd.cut(df[<span class="string">&#x27;Age&#x27;</span>], <span class="number">5</span>,labels = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>])</span><br><span class="line">df.head()</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th>
-</th>
-<th>
-PassengerId
-</th>
-<th>
-Survived
-</th>
-<th>
-Pclass
-</th>
-<th>
-Name
-</th>
-<th>
-Sex
-</th>
-<th>
-Age
-</th>
-<th>
-SibSp
-</th>
-<th>
-Parch
-</th>
-<th>
-Ticket
-</th>
-<th>
-Fare
-</th>
-<th>
-Cabin
-</th>
-<th>
-Embarked
-</th>
-<th>
-AgeBand
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>
-0
-</th>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-3
-</td>
-<td>
-Braund, Mr. Owen Harris
-</td>
-<td>
-male
-</td>
-<td>
-22.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-A/5 21171
-</td>
-<td>
-7.2500
-</td>
-<td>
-NaN
-</td>
-<td>
-S
-</td>
-<td>
-2
-</td>
-</tr>
-<tr>
-<th>
-1
-</th>
-<td>
-2
-</td>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-Cumings, Mrs. John Bradley (Florence Briggs Th…
-</td>
-<td>
-female
-</td>
-<td>
-38.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-PC 17599
-</td>
-<td>
-71.2833
-</td>
-<td>
-C85
-</td>
-<td>
-C
-</td>
-<td>
-3
-</td>
-</tr>
-<tr>
-<th>
-2
-</th>
-<td>
-3
-</td>
-<td>
-1
-</td>
-<td>
-3
-</td>
-<td>
-Heikkinen, Miss. Laina
-</td>
-<td>
-female
-</td>
-<td>
-26.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-STON/O2. 3101282
-</td>
-<td>
-7.9250
-</td>
-<td>
-NaN
-</td>
-<td>
-S
-</td>
-<td>
-2
-</td>
-</tr>
-<tr>
-<th>
-3
-</th>
-<td>
-4
-</td>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-Futrelle, Mrs. Jacques Heath (Lily May Peel)
-</td>
-<td>
-female
-</td>
-<td>
-35.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-113803
-</td>
-<td>
-53.1000
-</td>
-<td>
-C123
-</td>
-<td>
-S
-</td>
-<td>
-3
-</td>
-</tr>
-<tr>
-<th>
-4
-</th>
-<td>
-5
-</td>
-<td>
-0
-</td>
-<td>
-3
-</td>
-<td>
-Allen, Mr. William Henry
-</td>
-<td>
-male
-</td>
-<td>
-35.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-373450
-</td>
-<td>
-8.0500
-</td>
-<td>
-NaN
-</td>
-<td>
-S
-</td>
-<td>
-3
-</td>
-</tr>
-</tbody>
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PassengerId</th>
+      <th>Survived</th>
+      <th>Pclass</th>
+      <th>Name</th>
+      <th>Sex</th>
+      <th>Age</th>
+      <th>SibSp</th>
+      <th>Parch</th>
+      <th>Ticket</th>
+      <th>Fare</th>
+      <th>Cabin</th>
+      <th>Embarked</th>
+      <th>AgeBand</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Braund, Mr. Owen Harris</td>
+      <td>male</td>
+      <td>22.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>A/5 21171</td>
+      <td>7.2500</td>
+      <td>NaN</td>
+      <td>S</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Cumings, Mrs. John Bradley (Florence Briggs Th...</td>
+      <td>female</td>
+      <td>38.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>PC 17599</td>
+      <td>71.2833</td>
+      <td>C85</td>
+      <td>C</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>1</td>
+      <td>3</td>
+      <td>Heikkinen, Miss. Laina</td>
+      <td>female</td>
+      <td>26.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>STON/O2. 3101282</td>
+      <td>7.9250</td>
+      <td>NaN</td>
+      <td>S</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Futrelle, Mrs. Jacques Heath (Lily May Peel)</td>
+      <td>female</td>
+      <td>35.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>113803</td>
+      <td>53.1000</td>
+      <td>C123</td>
+      <td>S</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Allen, Mr. William Henry</td>
+      <td>male</td>
+      <td>35.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>373450</td>
+      <td>8.0500</td>
+      <td>NaN</td>
+      <td>S</td>
+      <td>3</td>
+    </tr>
+  </tbody>
 </table>
+
+
+
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment">#将连续变量Age划分为(0,5] (5,15] (15,30] (30,50] (50,80]五个年龄段，并分别用类别变量12345表示</span></span><br><span class="line">df[<span class="string">&#x27;AgeBand&#x27;</span>] = pd.cut(df[<span class="string">&#x27;Age&#x27;</span>],[<span class="number">0</span>,<span class="number">5</span>,<span class="number">15</span>,<span class="number">30</span>,<span class="number">50</span>,<span class="number">80</span>],labels = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>])</span><br><span class="line">df.head(<span class="number">3</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th>
-</th>
-<th>
-PassengerId
-</th>
-<th>
-Survived
-</th>
-<th>
-Pclass
-</th>
-<th>
-Name
-</th>
-<th>
-Sex
-</th>
-<th>
-Age
-</th>
-<th>
-SibSp
-</th>
-<th>
-Parch
-</th>
-<th>
-Ticket
-</th>
-<th>
-Fare
-</th>
-<th>
-Cabin
-</th>
-<th>
-Embarked
-</th>
-<th>
-AgeBand
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>
-0
-</th>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-3
-</td>
-<td>
-Braund, Mr. Owen Harris
-</td>
-<td>
-male
-</td>
-<td>
-22.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-A/5 21171
-</td>
-<td>
-7.2500
-</td>
-<td>
-NaN
-</td>
-<td>
-S
-</td>
-<td>
-3
-</td>
-</tr>
-<tr>
-<th>
-1
-</th>
-<td>
-2
-</td>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-Cumings, Mrs. John Bradley (Florence Briggs Th…
-</td>
-<td>
-female
-</td>
-<td>
-38.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-PC 17599
-</td>
-<td>
-71.2833
-</td>
-<td>
-C85
-</td>
-<td>
-C
-</td>
-<td>
-4
-</td>
-</tr>
-<tr>
-<th>
-2
-</th>
-<td>
-3
-</td>
-<td>
-1
-</td>
-<td>
-3
-</td>
-<td>
-Heikkinen, Miss. Laina
-</td>
-<td>
-female
-</td>
-<td>
-26.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-STON/O2. 3101282
-</td>
-<td>
-7.9250
-</td>
-<td>
-NaN
-</td>
-<td>
-S
-</td>
-<td>
-3
-</td>
-</tr>
-</tbody>
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PassengerId</th>
+      <th>Survived</th>
+      <th>Pclass</th>
+      <th>Name</th>
+      <th>Sex</th>
+      <th>Age</th>
+      <th>SibSp</th>
+      <th>Parch</th>
+      <th>Ticket</th>
+      <th>Fare</th>
+      <th>Cabin</th>
+      <th>Embarked</th>
+      <th>AgeBand</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Braund, Mr. Owen Harris</td>
+      <td>male</td>
+      <td>22.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>A/5 21171</td>
+      <td>7.2500</td>
+      <td>NaN</td>
+      <td>S</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Cumings, Mrs. John Bradley (Florence Briggs Th...</td>
+      <td>female</td>
+      <td>38.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>PC 17599</td>
+      <td>71.2833</td>
+      <td>C85</td>
+      <td>C</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>1</td>
+      <td>3</td>
+      <td>Heikkinen, Miss. Laina</td>
+      <td>female</td>
+      <td>26.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>STON/O2. 3101282</td>
+      <td>7.9250</td>
+      <td>NaN</td>
+      <td>S</td>
+      <td>3</td>
+    </tr>
+  </tbody>
 </table>
+
+
+
+
+
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment">#将连续变量Age按10% 30% 50 70% 90%五个年龄段，并用分类变量12345表示</span></span><br><span class="line">df[<span class="string">&#x27;AgeBand&#x27;</span>] = pd.qcut(df[<span class="string">&#x27;Age&#x27;</span>],[<span class="number">0</span>,<span class="number">0.1</span>,<span class="number">0.3</span>,<span class="number">0.5</span>,<span class="number">0.7</span>,<span class="number">0.9</span>],labels = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>])</span><br><span class="line">df.head()</span><br></pre></td></tr></table></figure>
-<table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th>
-</th>
-<th>
-PassengerId
-</th>
-<th>
-Survived
-</th>
-<th>
-Pclass
-</th>
-<th>
-Name
-</th>
-<th>
-Sex
-</th>
-<th>
-Age
-</th>
-<th>
-SibSp
-</th>
-<th>
-Parch
-</th>
-<th>
-Ticket
-</th>
-<th>
-Fare
-</th>
-<th>
-Cabin
-</th>
-<th>
-Embarked
-</th>
-<th>
-AgeBand
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>
-0
-</th>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-3
-</td>
-<td>
-Braund, Mr. Owen Harris
-</td>
-<td>
-male
-</td>
-<td>
-22.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-A/5 21171
-</td>
-<td>
-7.2500
-</td>
-<td>
-NaN
-</td>
-<td>
-S
-</td>
-<td>
-2
-</td>
-</tr>
-<tr>
-<th>
-1
-</th>
-<td>
-2
-</td>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-Cumings, Mrs. John Bradley (Florence Briggs Th…
-</td>
-<td>
-female
-</td>
-<td>
-38.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-PC 17599
-</td>
-<td>
-71.2833
-</td>
-<td>
-C85
-</td>
-<td>
-C
-</td>
-<td>
-5
-</td>
-</tr>
-<tr>
-<th>
-2
-</th>
-<td>
-3
-</td>
-<td>
-1
-</td>
-<td>
-3
-</td>
-<td>
-Heikkinen, Miss. Laina
-</td>
-<td>
-female
-</td>
-<td>
-26.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-STON/O2. 3101282
-</td>
-<td>
-7.9250
-</td>
-<td>
-NaN
-</td>
-<td>
-S
-</td>
-<td>
-3
-</td>
-</tr>
-<tr>
-<th>
-3
-</th>
-<td>
-4
-</td>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-Futrelle, Mrs. Jacques Heath (Lily May Peel)
-</td>
-<td>
-female
-</td>
-<td>
-35.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-113803
-</td>
-<td>
-53.1000
-</td>
-<td>
-C123
-</td>
-<td>
-S
-</td>
-<td>
-4
-</td>
-</tr>
-<tr>
-<th>
-4
-</th>
-<td>
-5
-</td>
-<td>
-0
-</td>
-<td>
-3
-</td>
-<td>
-Allen, Mr. William Henry
-</td>
-<td>
-male
-</td>
-<td>
-35.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-373450
-</td>
-<td>
-8.0500
-</td>
-<td>
-NaN
-</td>
-<td>
-S
-</td>
-<td>
-4
-</td>
-</tr>
-</tbody>
-</table>
-<p>【参考】https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.cut.html</p>
-<p>【参考】https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.qcut.html</p>
-<h4 id="任务二对文本变量进行转换">2.3.2 任务二：对文本变量进行转换</h4>
-<ol type="1">
-<li>查看文本变量名及种类<br>
-</li>
-<li>将文本变量Sex， Cabin ，Embarked用数值变量12345表示<br>
-</li>
-<li>将文本变量Sex， Cabin， Embarked用one-hot编码表示</li>
-</ol>
+<p><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PassengerId</th>
+      <th>Survived</th>
+      <th>Pclass</th>
+      <th>Name</th>
+      <th>Sex</th>
+      <th>Age</th>
+      <th>SibSp</th>
+      <th>Parch</th>
+      <th>Ticket</th>
+      <th>Fare</th>
+      <th>Cabin</th>
+      <th>Embarked</th>
+      <th>AgeBand</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Braund, Mr. Owen Harris</td>
+      <td>male</td>
+      <td>22.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>A/5 21171</td>
+      <td>7.2500</td>
+      <td>NaN</td>
+      <td>S</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Cumings, Mrs. John Bradley (Florence Briggs Th...</td>
+      <td>female</td>
+      <td>38.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>PC 17599</td>
+      <td>71.2833</td>
+      <td>C85</td>
+      <td>C</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>1</td>
+      <td>3</td>
+      <td>Heikkinen, Miss. Laina</td>
+      <td>female</td>
+      <td>26.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>STON/O2. 3101282</td>
+      <td>7.9250</td>
+      <td>NaN</td>
+      <td>S</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Futrelle, Mrs. Jacques Heath (Lily May Peel)</td>
+      <td>female</td>
+      <td>35.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>113803</td>
+      <td>53.1000</td>
+      <td>C123</td>
+      <td>S</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Allen, Mr. William Henry</td>
+      <td>male</td>
+      <td>35.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>373450</td>
+      <td>8.0500</td>
+      <td>NaN</td>
+      <td>S</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table><br>【参考】<a target="_blank" rel="noopener" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.cut.html">https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.cut.html</a></p>
+<p>【参考】<a target="_blank" rel="noopener" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.qcut.html">https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.qcut.html</a></p>
+<h4 id="2-3-2-任务二：对文本变量进行转换"><a href="#2-3-2-任务二：对文本变量进行转换" class="headerlink" title="2.3.2 任务二：对文本变量进行转换"></a>2.3.2 任务二：对文本变量进行转换</h4><p>(1) 查看文本变量名及种类<br>(2) 将文本变量Sex， Cabin ，Embarked用数值变量12345表示<br>(3) 将文本变量Sex， Cabin， Embarked用one-hot编码表示</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment">#方法一: value_counts</span></span><br><span class="line"><span class="built_in">print</span>(</span><br><span class="line">df[<span class="string">&#x27;Sex&#x27;</span>].value_counts(),</span><br><span class="line">df[<span class="string">&#x27;Cabin&#x27;</span>].value_counts(),</span><br><span class="line">df[<span class="string">&#x27;Embarked&#x27;</span>].value_counts())</span><br></pre></td></tr></table></figure>
 <pre><code>Sex
 male      453
@@ -2643,434 +1293,170 @@ S    554
 C    130
 Q     28
 0      1
-Name: count, dtype: int64</code></pre>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">df[<span class="string">&#x27;Sex&#x27;</span>].unique()</span><br><span class="line">df[<span class="string">&#x27;Sex&#x27;</span>].nunique()</span><br></pre></td></tr></table></figure>
-<pre><code>3</code></pre>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment">#将类别文本转换为12345</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#方法一: replace</span></span><br><span class="line">df[<span class="string">&#x27;Sex_num&#x27;</span>] = df[<span class="string">&#x27;Sex&#x27;</span>].replace([<span class="string">&#x27;male&#x27;</span>,<span class="string">&#x27;female&#x27;</span>],[<span class="number">1</span>,<span class="number">2</span>])</span><br><span class="line">df.head()</span><br><span class="line"><span class="comment">#方法二: map</span></span><br><span class="line">df[<span class="string">&#x27;Sex_num&#x27;</span>] = df[<span class="string">&#x27;Sex&#x27;</span>].<span class="built_in">map</span>(&#123;<span class="string">&#x27;male&#x27;</span>: <span class="number">1</span>, <span class="string">&#x27;female&#x27;</span>: <span class="number">2</span>&#125;)</span><br><span class="line">df.head()</span><br><span class="line"><span class="comment">#方法三: 使用sklearn.preprocessing的LabelEncoder</span></span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> LabelEncoder</span><br><span class="line"><span class="keyword">for</span> feat <span class="keyword">in</span> [<span class="string">&#x27;Cabin&#x27;</span>, <span class="string">&#x27;Ticket&#x27;</span>]:</span><br><span class="line">    lbl = LabelEncoder()  </span><br><span class="line">    label_dict = <span class="built_in">dict</span>(<span class="built_in">zip</span>(df[feat].unique(), <span class="built_in">range</span>(df[feat].nunique())))</span><br><span class="line">    <span class="comment">#print(label_dict)</span></span><br><span class="line">    df[feat + <span class="string">&quot;_labelEncode&quot;</span>] = df[feat].<span class="built_in">map</span>(label_dict)</span><br><span class="line">    df[feat + <span class="string">&quot;_labelEncode&quot;</span>] = lbl.fit_transform(df[feat].astype(<span class="built_in">str</span>))</span><br><span class="line"></span><br><span class="line">df.head()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+Name: count, dtype: int64
+</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line">df[<span class="string">&#x27;Sex&#x27;</span>].unique()</span><br><span class="line">df[<span class="string">&#x27;Sex&#x27;</span>].nunique()</span><br></pre></td></tr></table></figure>
+<pre><code>3
+</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"><span class="comment">#将类别文本转换为12345</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#方法一: replace</span></span><br><span class="line">df[<span class="string">&#x27;Sex_num&#x27;</span>] = df[<span class="string">&#x27;Sex&#x27;</span>].replace([<span class="string">&#x27;male&#x27;</span>,<span class="string">&#x27;female&#x27;</span>],[<span class="number">1</span>,<span class="number">2</span>])</span><br><span class="line">df.head()</span><br><span class="line"><span class="comment">#方法二: map</span></span><br><span class="line">df[<span class="string">&#x27;Sex_num&#x27;</span>] = df[<span class="string">&#x27;Sex&#x27;</span>].<span class="built_in">map</span>(&#123;<span class="string">&#x27;male&#x27;</span>: <span class="number">1</span>, <span class="string">&#x27;female&#x27;</span>: <span class="number">2</span>&#125;)</span><br><span class="line">df.head()</span><br><span class="line"><span class="comment">#方法三: 使用sklearn.preprocessing的LabelEncoder</span></span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> LabelEncoder</span><br><span class="line"><span class="keyword">for</span> feat <span class="keyword">in</span> [<span class="string">&#x27;Cabin&#x27;</span>, <span class="string">&#x27;Ticket&#x27;</span>]:</span><br><span class="line">    lbl = LabelEncoder()  </span><br><span class="line">    label_dict = <span class="built_in">dict</span>(<span class="built_in">zip</span>(df[feat].unique(), <span class="built_in">range</span>(df[feat].nunique())))</span><br><span class="line">    <span class="comment">#print(label_dict)</span></span><br><span class="line">    df[feat + <span class="string">&quot;_labelEncode&quot;</span>] = df[feat].<span class="built_in">map</span>(label_dict)</span><br><span class="line">    df[feat + <span class="string">&quot;_labelEncode&quot;</span>] = lbl.fit_transform(df[feat].astype(<span class="built_in">str</span>))</span><br><span class="line"></span><br><span class="line">df.head()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <pre><code>/tmp/ipykernel_1400/2627332835.py:5: FutureWarning: Downcasting behavior in `replace` is deprecated and will be removed in a future version. To retain the old behavior, explicitly call `result.infer_objects(copy=False)`. To opt-in to the future behavior, set `pd.set_option(&#39;future.no_silent_downcasting&#39;, True)`
-  df[&#39;Sex_num&#39;] = df[&#39;Sex&#39;].replace([&#39;male&#39;,&#39;female&#39;],[1,2])</code></pre>
-<table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th>
-</th>
-<th>
-PassengerId
-</th>
-<th>
-Survived
-</th>
-<th>
-Pclass
-</th>
-<th>
-Name
-</th>
-<th>
-Sex
-</th>
-<th>
-Age
-</th>
-<th>
-SibSp
-</th>
-<th>
-Parch
-</th>
-<th>
-Ticket
-</th>
-<th>
-Fare
-</th>
-<th>
-…
-</th>
-<th>
-Age_66.0
-</th>
-<th>
-Age_70.0
-</th>
-<th>
-Age_70.5
-</th>
-<th>
-Age_71.0
-</th>
-<th>
-Age_74.0
-</th>
-<th>
-Age_80.0
-</th>
-<th>
-Embarked_0
-</th>
-<th>
-Embarked_C
-</th>
-<th>
-Embarked_Q
-</th>
-<th>
-Embarked_S
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>
-0
-</th>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-3
-</td>
-<td>
-Braund, Mr. Owen Harris
-</td>
-<td>
-male
-</td>
-<td>
-22.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-A/5 21171
-</td>
-<td>
-7.2500
-</td>
-<td>
-…
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-True
-</td>
-</tr>
-<tr>
-<th>
-1
-</th>
-<td>
-2
-</td>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-Cumings, Mrs. John Bradley (Florence Briggs Th…
-</td>
-<td>
-female
-</td>
-<td>
-38.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-PC 17599
-</td>
-<td>
-71.2833
-</td>
-<td>
-…
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-True
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-</tr>
-<tr>
-<th>
-2
-</th>
-<td>
-3
-</td>
-<td>
-1
-</td>
-<td>
-3
-</td>
-<td>
-Heikkinen, Miss. Laina
-</td>
-<td>
-female
-</td>
-<td>
-26.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-STON/O2. 3101282
-</td>
-<td>
-7.9250
-</td>
-<td>
-…
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-True
-</td>
-</tr>
-<tr>
-<th>
-3
-</th>
-<td>
-4
-</td>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-Futrelle, Mrs. Jacques Heath (Lily May Peel)
-</td>
-<td>
-female
-</td>
-<td>
-35.0
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-113803
-</td>
-<td>
-53.1000
-</td>
-<td>
-…
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-True
-</td>
-</tr>
-<tr>
-<th>
-4
-</th>
-<td>
-5
-</td>
-<td>
-0
-</td>
-<td>
-3
-</td>
-<td>
-Allen, Mr. William Henry
-</td>
-<td>
-male
-</td>
-<td>
-35.0
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-373450
-</td>
-<td>
-8.0500
-</td>
-<td>
-…
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-False
-</td>
-<td>
-True
-</td>
-</tr>
-</tbody>
-</table>
-<p>
-5 rows × 109 columns
-</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#将类别文本转换为one-hot编码</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#方法一: OneHotEncoder</span></span><br><span class="line"><span class="keyword">for</span> feat <span class="keyword">in</span> [<span class="string">&quot;Age&quot;</span>, <span class="string">&quot;Embarked&quot;</span>]:</span><br><span class="line">    x = pd.get_dummies(df[<span class="string">&quot;Age&quot;</span>] // <span class="number">6</span>)</span><br><span class="line"><span class="comment">#     x = pd.get_dummies(pd.cut(df[&#x27;Age&#x27;],5))</span></span><br><span class="line">    x = pd.get_dummies(df[feat], prefix=feat)</span><br><span class="line">    df = pd.concat([df, x], axis=<span class="number">1</span>)</span><br><span class="line">    <span class="comment">#df[feat] = pd.get_dummies(df[feat], prefix=feat)</span></span><br><span class="line">    </span><br><span class="line">df.head()</span><br><span class="line">df.to_csv(<span class="string">&#x27;temp.csv&#x27;</span>)</span><br></pre></td></tr></table></figure>
-<h4 id="任务三从纯文本name特征里提取出titles的特征所谓的titles就是mrmissmrs等">2.3.3
-任务三：从纯文本Name特征里提取出Titles的特征(所谓的Titles就是Mr,Miss,Mrs等)</h4>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#保存最终你完成的已经清理好的数据</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+  df[&#39;Sex_num&#39;] = df[&#39;Sex&#39;].replace([&#39;male&#39;,&#39;female&#39;],[1,2])
+</code></pre><p><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PassengerId</th>
+      <th>Survived</th>
+      <th>Pclass</th>
+      <th>Name</th>
+      <th>Sex</th>
+      <th>Age</th>
+      <th>SibSp</th>
+      <th>Parch</th>
+      <th>Ticket</th>
+      <th>Fare</th>
+      <th>...</th>
+      <th>Age_66.0</th>
+      <th>Age_70.0</th>
+      <th>Age_70.5</th>
+      <th>Age_71.0</th>
+      <th>Age_74.0</th>
+      <th>Age_80.0</th>
+      <th>Embarked_0</th>
+      <th>Embarked_C</th>
+      <th>Embarked_Q</th>
+      <th>Embarked_S</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Braund, Mr. Owen Harris</td>
+      <td>male</td>
+      <td>22.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>A/5 21171</td>
+      <td>7.2500</td>
+      <td>...</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Cumings, Mrs. John Bradley (Florence Briggs Th...</td>
+      <td>female</td>
+      <td>38.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>PC 17599</td>
+      <td>71.2833</td>
+      <td>...</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>1</td>
+      <td>3</td>
+      <td>Heikkinen, Miss. Laina</td>
+      <td>female</td>
+      <td>26.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>STON/O2. 3101282</td>
+      <td>7.9250</td>
+      <td>...</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>1</td>
+      <td>1</td>
+      <td>Futrelle, Mrs. Jacques Heath (Lily May Peel)</td>
+      <td>female</td>
+      <td>35.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>113803</td>
+      <td>53.1000</td>
+      <td>...</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>0</td>
+      <td>3</td>
+      <td>Allen, Mr. William Henry</td>
+      <td>male</td>
+      <td>35.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>373450</td>
+      <td>8.0500</td>
+      <td>...</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+    </tr>
+  </tbody>
+</table></p>
+<p>5 rows × 109 columns</p>
 
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#将类别文本转换为one-hot编码</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#方法一: OneHotEncoder</span></span><br><span class="line"><span class="keyword">for</span> feat <span class="keyword">in</span> [<span class="string">&quot;Age&quot;</span>, <span class="string">&quot;Embarked&quot;</span>]:</span><br><span class="line">    x = pd.get_dummies(df[<span class="string">&quot;Age&quot;</span>] // <span class="number">6</span>)</span><br><span class="line"><span class="comment">#     x = pd.get_dummies(pd.cut(df[&#x27;Age&#x27;],5))</span></span><br><span class="line">    x = pd.get_dummies(df[feat], prefix=feat)</span><br><span class="line">    df = pd.concat([df, x], axis=<span class="number">1</span>)</span><br><span class="line">    <span class="comment">#df[feat] = pd.get_dummies(df[feat], prefix=feat)</span></span><br><span class="line">    </span><br><span class="line">df.head()</span><br><span class="line">df.to_csv(<span class="string">&#x27;temp.csv&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="2-3-3-任务三：从纯文本Name特征里提取出Titles的特征-所谓的Titles就是Mr-Miss-Mrs等"><a href="#2-3-3-任务三：从纯文本Name特征里提取出Titles的特征-所谓的Titles就是Mr-Miss-Mrs等" class="headerlink" title="2.3.3 任务三：从纯文本Name特征里提取出Titles的特征(所谓的Titles就是Mr,Miss,Mrs等)"></a>2.3.3 任务三：从纯文本Name特征里提取出Titles的特征(所谓的Titles就是Mr,Miss,Mrs等)</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#写入代码</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#保存最终你完成的已经清理好的数据</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</class>
     </div>
 
     
@@ -3110,8 +1496,8 @@ True
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B%E5%92%8C%E8%AF%84%E4%BC%B0---%E8%AF%84%E4%BB%B7-%E8%AF%BE%E7%A8%8B/" rel="next" title="数据分析——第三章模型建立和评估---评价">
-                  数据分析——第三章模型建立和评估---评价 <i class="fa fa-angle-right"></i>
+                <a href="/2025/05/14/%E5%AD%A6%E4%B9%A0/kaggle/titanic/%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E7%AC%AC%E5%9B%9B%E8%8A%82%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96-%E8%AF%BE%E7%A8%8B%20(copy)/" rel="next" title="数据分析——第二章：第四节数据可视化">
+                  数据分析——第二章：第四节数据可视化 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
@@ -3132,7 +1518,7 @@ True
 
   <div class="copyright">
     &copy; 
-    <span itemprop="copyrightYear">2025</span>
+    <span itemprop="copyrightYear">2026</span>
     <span class="with-love">
       <i class="fa fa-heart"></i>
     </span>

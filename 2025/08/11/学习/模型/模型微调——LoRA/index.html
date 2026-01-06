@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="为什么要微调 预训练大模型在海量通用语料上学到的知识，在垂直场景（医疗、法律、零售客服等）里往往“泛而浅”。 从零训练一个同等规模的大模型成本极高（千卡周级别），而微调只需在已有权重上做小步调整，算力&#x2F;数据量都指数级下降。 什么是全量微调   image-20250811104846104  全量微调（full fine-tuning）通俗来说，对于参数的每一个权重，都要学习一个">
+    <meta name="description" content="为什么要微调预训练大模型在海量通用语料上学到的知识，在垂直场景（医疗、法律、零售客服等）里往往“泛而浅”。 从零训练一个同等规模的大模型成本极高（千卡周级别），而微调只需在已有权重上做小步调整，算力&#x2F;数据量都指数级下降。 什么是全量微调 全量微调（full fine-tuning）通俗来说，对于参数的每一个权重，都要学习一个新的值（或者偏移量），更新所有 Transformer 层里的权重矩阵（包">
 <meta property="og:type" content="article">
 <meta property="og:title" content="模型微调——LoRA">
 <meta property="og:url" content="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="为什么要微调 预训练大模型在海量通用语料上学到的知识，在垂直场景（医疗、法律、零售客服等）里往往“泛而浅”。 从零训练一个同等规模的大模型成本极高（千卡周级别），而微调只需在已有权重上做小步调整，算力&#x2F;数据量都指数级下降。 什么是全量微调   image-20250811104846104  全量微调（full fine-tuning）通俗来说，对于参数的每一个权重，都要学习一个">
+<meta property="og:description" content="为什么要微调预训练大模型在海量通用语料上学到的知识，在垂直场景（医疗、法律、零售客服等）里往往“泛而浅”。 从零训练一个同等规模的大模型成本极高（千卡周级别），而微调只需在已有权重上做小步调整，算力&#x2F;数据量都指数级下降。 什么是全量微调 全量微调（full fine-tuning）通俗来说，对于参数的每一个权重，都要学习一个新的值（或者偏移量），更新所有 Transformer 层里的权重矩阵（包">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811104846104.png">
 <meta property="og:image" content="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811105145633.png">
@@ -154,8 +154,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%BE%AE%E8%B0%83"><span class="nav-number">1.</span> <span class="nav-text">为什么要微调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%85%A8%E9%87%8F%E5%BE%AE%E8%B0%83"><span class="nav-number">2.</span> <span class="nav-text">什么是全量微调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFlora"><span class="nav-number">3.</span> <span class="nav-text">什么是LoRA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8lora"><span class="nav-number">4.</span> <span class="nav-text">为什么要用lora</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFqlora"><span class="nav-number">5.</span> <span class="nav-text">什么是QLoRA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83%E5%B7%A5%E5%85%B7%E7%9A%84%E4%BB%8B%E7%BB%8D"><span class="nav-number">6.</span> <span class="nav-text">微调工具的介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#unsloth"><span class="nav-number">6.1.</span> <span class="nav-text">unsloth</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#llama-factory"><span class="nav-number">6.2.</span> <span class="nav-text">LLaMA Factory</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">6.3.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%80%A7%E8%83%BD%E8%AF%84%E4%BC%B0%E6%A1%86%E6%9E%B6"><span class="nav-number">7.</span> <span class="nav-text">模型性能评估框架</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#evalscope"><span class="nav-number">7.1.</span> <span class="nav-text">EvalScope</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E6%A1%86%E6%9E%B6"><span class="nav-number">8.</span> <span class="nav-text">可视化框架</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#wandb"><span class="nav-number">8.1.</span> <span class="nav-text">wandb</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#swanlab"><span class="nav-number">8.2.</span> <span class="nav-text">swanlab</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">9.</span> <span class="nav-text">构造微调数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%9E%84%E9%80%A0%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">9.1.</span> <span class="nav-text">为什么要构造微调数据集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%A6%E6%9C%89%E7%B3%BB%E7%BB%9F%E6%8F%90%E7%A4%BA%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86%E6%A0%BC%E5%BC%8F"><span class="nav-number">9.2.</span> <span class="nav-text">带有系统提示微调数据集格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%A6function-calling%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86%E6%A0%BC%E5%BC%8F"><span class="nav-number">9.3.</span> <span class="nav-text">带Function
-calling微调数据集格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%A6%E6%9C%89%E6%80%9D%E8%80%83%E8%BF%87%E7%A8%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86%E7%BB%93%E6%9E%84"><span class="nav-number">9.4.</span> <span class="nav-text">带有思考过程的微调数据集结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%B7%E5%90%88%E6%8E%A8%E7%90%86%E6%A8%A1%E5%9E%8B%E6%9E%84%E9%80%A0%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95"><span class="nav-number">9.5.</span> <span class="nav-text">混合推理模型构造微调数据集基本方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="nav-number">10.</span> <span class="nav-text">微调的基本流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-number">11.</span> <span class="nav-text">环境配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">12.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%BE%AE%E8%B0%83"><span class="nav-number">1.</span> <span class="nav-text">为什么要微调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%85%A8%E9%87%8F%E5%BE%AE%E8%B0%83"><span class="nav-number">2.</span> <span class="nav-text">什么是全量微调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFLoRA"><span class="nav-number">3.</span> <span class="nav-text">什么是LoRA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8lora"><span class="nav-number">4.</span> <span class="nav-text">为什么要用lora</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFQLoRA"><span class="nav-number">5.</span> <span class="nav-text">什么是QLoRA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83%E5%B7%A5%E5%85%B7%E7%9A%84%E4%BB%8B%E7%BB%8D"><span class="nav-number">6.</span> <span class="nav-text">微调工具的介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#unsloth"><span class="nav-number">6.1.</span> <span class="nav-text">unsloth</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LLaMA-Factory"><span class="nav-number">6.2.</span> <span class="nav-text">LLaMA Factory</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">6.3.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%80%A7%E8%83%BD%E8%AF%84%E4%BC%B0%E6%A1%86%E6%9E%B6"><span class="nav-number">7.</span> <span class="nav-text">模型性能评估框架</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#EvalScope"><span class="nav-number">7.1.</span> <span class="nav-text">EvalScope</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E6%A1%86%E6%9E%B6"><span class="nav-number">8.</span> <span class="nav-text">可视化框架</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#wandb"><span class="nav-number">8.1.</span> <span class="nav-text">wandb</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#swanlab"><span class="nav-number">8.2.</span> <span class="nav-text">swanlab</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">9.</span> <span class="nav-text">构造微调数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%9E%84%E9%80%A0%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">9.1.</span> <span class="nav-text">为什么要构造微调数据集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%A6%E6%9C%89%E7%B3%BB%E7%BB%9F%E6%8F%90%E7%A4%BA%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86%E6%A0%BC%E5%BC%8F"><span class="nav-number">9.2.</span> <span class="nav-text">带有系统提示微调数据集格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%A6Function-calling%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86%E6%A0%BC%E5%BC%8F"><span class="nav-number">9.3.</span> <span class="nav-text">带Function calling微调数据集格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%A6%E6%9C%89%E6%80%9D%E8%80%83%E8%BF%87%E7%A8%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86%E7%BB%93%E6%9E%84"><span class="nav-number">9.4.</span> <span class="nav-text">带有思考过程的微调数据集结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%B7%E5%90%88%E6%8E%A8%E7%90%86%E6%A8%A1%E5%9E%8B%E6%9E%84%E9%80%A0%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95"><span class="nav-number">9.5.</span> <span class="nav-text">混合推理模型构造微调数据集基本方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="nav-number">10.</span> <span class="nav-text">微调的基本流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-number">11.</span> <span class="nav-text">环境配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">12.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -170,7 +169,7 @@ calling微调数据集格式</span></a></li><li class="nav-item nav-level-4"><a 
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">177</span>
+          <span class="site-state-item-count">178</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -299,160 +298,76 @@ calling微调数据集格式</span></a></li><li class="nav-item nav-level-4"><a 
     
     
     
-    <div class="post-body" itemprop="articleBody"><h3 id="为什么要微调">为什么要微调</h3>
-<p>预训练大模型在海量通用语料上学到的知识，在垂直场景（医疗、法律、零售客服等）里往往“泛而浅”。</p>
+    <div class="post-body" itemprop="articleBody"><h3 id="为什么要微调"><a href="#为什么要微调" class="headerlink" title="为什么要微调"></a>为什么要微调</h3><p>预训练大模型在海量通用语料上学到的知识，在垂直场景（医疗、法律、零售客服等）里往往“泛而浅”。</p>
 <p>从零训练一个同等规模的大模型成本极高（千卡周级别），而微调只需在已有权重上做小步调整，算力/数据量都指数级下降。</p>
-<h3 id="什么是全量微调">什么是全量微调</h3>
-<figure>
-<img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811104846104.png" alt="image-20250811104846104">
-<figcaption aria-hidden="true">image-20250811104846104</figcaption>
-</figure>
-<p>全量微调（full
-fine-tuning）通俗来说，对于参数的每一个权重，都要学习一个新的值（或者偏移量），更新所有
-Transformer 层里的权重矩阵（包括
-embedding、attention、FFN），这样的开销是很大的。</p>
-<h3 id="什么是lora">什么是LoRA</h3>
-<p>LoRA（Low-Rank
-Adaptation，低秩适配）是一种<strong>参数高效微调（PEFT）</strong>技术，核心目的：
-<strong>“冻结大模型 99 %
-以上原始权重，只额外训练极少量低秩矩阵，就能让模型在下游任务上达到近似全量微调的效果。”</strong></p>
-<figure>
-<img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811105145633.png" alt="image-20250811105145633">
-<figcaption aria-hidden="true">image-20250811105145633</figcaption>
-</figure>
+<h3 id="什么是全量微调"><a href="#什么是全量微调" class="headerlink" title="什么是全量微调"></a>什么是全量微调</h3><p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811104846104.png" alt="image-20250811104846104"></p>
+<p>全量微调（full fine-tuning）通俗来说，对于参数的每一个权重，都要学习一个新的值（或者偏移量），更新所有 Transformer 层里的权重矩阵（包括 embedding、attention、FFN），这样的开销是很大的。</p>
+<h3 id="什么是LoRA"><a href="#什么是LoRA" class="headerlink" title="什么是LoRA"></a>什么是LoRA</h3><p>LoRA（Low-Rank Adaptation，低秩适配）是一种<strong>参数高效微调（PEFT）</strong>技术，核心目的：<br><strong>“冻结大模型 99 % 以上原始权重，只额外训练极少量低秩矩阵，就能让模型在下游任务上达到近似全量微调的效果。”</strong></p>
+<p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811105145633.png" alt="image-20250811105145633"></p>
 <p>通俗来说，通过学习两个低秩的矩阵，来近似于完整的矩阵，如图，W=A*B，矩阵相乘</p>
 <p>在实际应用中，<strong>LoRA可以直接和transformer的FFN层（线性层）对齐</strong></p>
-<p>Transformer 模型的核心是注意力机制，其中涉及到 Query, Key, Value
-的计算，这些都是线性变换。</p>
+<p>Transformer 模型的核心是注意力机制，其中涉及到 Query, Key, Value 的计算，这些都是线性变换。</p>
 <p>在标准的注意力机制中，计算公式为：</p>
-<p><span class="math display">$$
-\text{Attention}(Q, K, V) =
-\text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
-$$</span></p>
-<p>其中 <span class="math inline"><em>Q</em></span>, <span class="math inline"><em>K</em></span>, <span class="math inline"><em>V</em></span> 的计算为：</p>
-<p><span class="math display"><em>Q</em> = <em>X</em><sub><em>Q</em></sub><em>W</em><sub><em>Q</em></sub>,  <em>K</em> = <em>X</em><sub><em>K</em></sub><em>W</em><sub><em>K</em></sub>,  <em>V</em> = <em>X</em><sub><em>V</em></sub><em>W</em><sub><em>V</em></sub></span></p>
-<p><span class="math inline"><em>X</em><sub><em>Q</em></sub></span>,
-<span class="math inline"><em>X</em><sub><em>K</em></sub></span>, <span class="math inline"><em>X</em><sub><em>V</em></sub></span>
-的输入可以相同，也可以不同。例如，在 Cross-Attention
-中，解码器的隐藏状态作为 <span class="math inline"><em>X</em><sub><em>Q</em></sub></span>，编码器的输出作为
-<span class="math inline"><em>X</em><sub><em>K</em></sub></span> 和
-<span class="math inline"><em>X</em><sub><em>V</em></sub></span>。</p>
-<p><strong>LoRA 可以应用到 <span class="math inline"><em>W</em><sub><em>Q</em></sub></span>, <span class="math inline"><em>W</em><sub><em>K</em></sub></span>, <span class="math inline"><em>W</em><sub><em>V</em></sub></span>
-上，采用与线性层类似的方式</strong>。</p>
-<h3 id="为什么要用lora">为什么要用lora</h3>
-<p>首先要理解低秩：秩可以理解成一个矩阵所代表的信息，低秩矩阵，便是带有少量信息的矩阵，当然这样的矩阵计算效率是更高的，</p>
+<script type="math/tex; mode=display">
+\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V</script><p>其中 $Q$, $K$, $V$ 的计算为：</p>
+<script type="math/tex; mode=display">
+Q = X_Q W_Q, \quad K = X_K W_K, \quad V = X_V W_V</script><p> $X_Q$, $X_K$, $X_V$ 的输入可以相同，也可以不同。例如，在 Cross-Attention 中，解码器的隐藏状态作为 $X_Q$，编码器的输出作为 $X_K$ 和 $X_V$。</p>
+<p><strong>LoRA 可以应用到 $W_Q$, $W_K$, $W_V$ 上，采用与线性层类似的方式</strong>。</p>
+<h3 id="为什么要用lora"><a href="#为什么要用lora" class="headerlink" title="为什么要用lora"></a>为什么要用lora</h3><p>首先要理解低秩：秩可以理解成一个矩阵所代表的信息，低秩矩阵，便是带有少量信息的矩阵，当然这样的矩阵计算效率是更高的，</p>
 <p>在全量微调中，由于训练一个完整的矩阵开销是非常大的；在lora中就通过训练低秩矩阵，来近似<strong>模型权重更新</strong>的效果</p>
 <blockquote>
 <p>若模型参数比较小，使用冻结部分参数或全量微调的方式，往往更好</p>
 </blockquote>
 <p>初学者不禁会思考，这样难道不会损失信息导致大模型的性能变差吗？但是，实验下来效果还是不错的，通过牺牲一点性能，来换取开销的大幅度减少</p>
 <blockquote>
-<p>LoRA 原文实验 在 GPT-3 175 B 上，仅用 rank 4 的 LoRA 就能在全量微调
-99 % 参数量的情况下，保持 97 % 的下游指标。</p>
+<p> LoRA 原文实验<br>在 GPT-3 175 B 上，仅用 rank 4 的 LoRA 就能在全量微调 99 % 参数量的情况下，保持 97 % 的下游指标。</p>
 </blockquote>
-<h3 id="什么是qlora">什么是QLoRA</h3>
-<p>QLoRA（Quantized Low-Rank Adaptation，量化低秩适应）是 <strong>LoRA
-的“极致省内存”版本</strong>。它把 LoRA
-的“低秩增量”思路再往前推一步：<strong>先把整个底座模型权重压到
-4-bit，再在上面做 LoRA 微调</strong>。</p>
-<p>QLoRA 是另一个热门术语，它与 LoRA
-之间的唯一区别在于首字母“Q”，代表“量化（quantized）”。“量化”一词指的是用来减少存储神经元权重的比特数。</p>
-<p>例如，神经网络的权重通常以浮点数表示，每个权重需要 32
-位。量化的思想是将神经网络的权重压缩为更低的精度，而不会显著损失模型性能或产生重大影响。因此，不再使用
-32 位，而是可以舍弃部分比特，例如只用 16 位。</p>
-<figure>
-<img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811142432782.png" alt="image-20250811142432782">
-<figcaption aria-hidden="true">image-20250811142432782</figcaption>
-</figure>
-<h3 id="微调工具的介绍">微调工具的介绍</h3>
-<h4 id="unsloth">unsloth</h4>
-<p><a target="_blank" rel="noopener" href="https://github.com/unslothai/unsloth?tab=readme-ov-file">unslothai/unsloth:
-Fine-tuning &amp; Reinforcement Learning for LLMs. 🦥 Train OpenAI
-gpt-oss, Qwen3, Llama 4, DeepSeek-R1, Gemma 3, TTS 2x faster with 70%
-less VRAM.</a></p>
+<h3 id="什么是QLoRA"><a href="#什么是QLoRA" class="headerlink" title="什么是QLoRA"></a>什么是QLoRA</h3><p>QLoRA（Quantized Low-Rank Adaptation，量化低秩适应）是 <strong>LoRA 的“极致省内存”版本</strong>。它把 LoRA 的“低秩增量”思路再往前推一步：<strong>先把整个底座模型权重压到 4-bit，再在上面做 LoRA 微调</strong>。</p>
+<p>QLoRA 是另一个热门术语，它与 LoRA 之间的唯一区别在于首字母“Q”，代表“量化（quantized）”。“量化”一词指的是用来减少存储神经元权重的比特数。</p>
+<p>例如，神经网络的权重通常以浮点数表示，每个权重需要 32 位。量化的思想是将神经网络的权重压缩为更低的精度，而不会显著损失模型性能或产生重大影响。因此，不再使用 32 位，而是可以舍弃部分比特，例如只用 16 位。</p>
+<p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811142432782.png" alt="image-20250811142432782"></p>
+<h3 id="微调工具的介绍"><a href="#微调工具的介绍" class="headerlink" title="微调工具的介绍"></a>微调工具的介绍</h3><h4 id="unsloth"><a href="#unsloth" class="headerlink" title="unsloth"></a>unsloth</h4><p><a target="_blank" rel="noopener" href="https://github.com/unslothai/unsloth?tab=readme-ov-file">unslothai/unsloth: Fine-tuning &amp; Reinforcement Learning for LLMs. 🦥 Train OpenAI gpt-oss, Qwen3, Llama 4, DeepSeek-R1, Gemma 3, TTS 2x faster with 70% less VRAM.</a></p>
 <p>unsloth是一个专为大型语言模型（LLM）设计的动态量化与微调框架，旨在提高微调效率并减少显存占用，因此主要用于单机单卡的模型微调。</p>
-<p>值得一提的是，Unsloth动态量化模型：https://unsloth.ai/blog/dynamic-v2</p>
-<p>Unsloth的动态量化方法，特别是其最新的Dynamic
-2.0版本，旨在在尽量减少性能损失的同时显著压缩大型语言模型（LLMs）的体积。对于Qwen3模型，尤其是4-bit动态量化版本，现有的评测显示其性能下降非常有限，甚至在某些任务上与原始模型相当。</p>
+<p>值得一提的是，Unsloth动态量化模型：<a target="_blank" rel="noopener" href="https://unsloth.ai/blog/dynamic-v2">https://unsloth.ai/blog/dynamic-v2</a></p>
+<p>Unsloth的动态量化方法，特别是其最新的Dynamic 2.0版本，旨在在尽量减少性能损失的同时显著压缩大型语言模型（LLMs）的体积。对于Qwen3模型，尤其是4-bit动态量化版本，现有的评测显示其性能下降非常有限，甚至在某些任务上与原始模型相当。</p>
 <blockquote>
-<p>Unsloth 的「动态量化」可以一句话概括为：
-<strong>“按层、按敏感度自动决定每块权重到底用 2.5 / 3.5 / 4 / 6 / 8 / 32
-bit 的精细化量化策略，而不是一股脑全量化到 4 bit。”</strong></p>
+<p>Unsloth 的「动态量化」可以一句话概括为：<br><strong>“按层、按敏感度自动决定每块权重到底用 2.5 / 3.5 / 4 / 6 / 8 / 32 bit 的精细化量化策略，而不是一股脑全量化到 4 bit。”</strong></p>
 </blockquote>
 <p>这也使得Unsloth的动态量化模型成为<strong>个人配置</strong>下的最佳微调工具。</p>
 <p>不过需要注意的是，动态量化由利也有弊，其<strong>好处在于可以极大程度压缩模型运行所需占用的显存大小，同时几乎不损失性能</strong>，但问题在于动态量化的模型，无论是推理还是微调，<strong>只能单卡运行</strong>，这就使得其吞吐量有限，无法在一台物理机上实现多GPU并行从而扩大吞吐量。</p>
-<h4 id="llama-factory"><strong>LLaMA Factory</strong></h4>
-<p><a target="_blank" rel="noopener" href="https://github.com/hiyouga/LLaMA-Factory/tree/main">hiyouga/LLaMA-Factory:
-Unified Efficient Fine-Tuning of 100+ LLMs &amp; VLMs (ACL 2024)</a></p>
-<p>LLaMA Factory
-是一个简单易用且高效的大型语言模型训练与微调平台。通过它，用户可以在无需编写任何代码的前提下，在本地完成上百种预训练模型的微调。</p>
-<p>LLaMA Factory 提供了API Server 和一站式 WebUI
-Board，方便企业进行模型的管理和部署。适合不会写代码或代码基础比较弱的同学快速上手进行微调。</p>
-<h4 id="其他">其他</h4>
-<p>ms-SWIFT GitHub项目主页：https://github.com/modelscope/swift</p>
-<p>ColossalAI
-GitHub项目主页：https://github.com/hpcaitech/ColossalAI</p>
+<h4 id="LLaMA-Factory"><a href="#LLaMA-Factory" class="headerlink" title="LLaMA Factory"></a><strong>LLaMA Factory</strong></h4><p><a target="_blank" rel="noopener" href="https://github.com/hiyouga/LLaMA-Factory/tree/main">hiyouga/LLaMA-Factory: Unified Efficient Fine-Tuning of 100+ LLMs &amp; VLMs (ACL 2024)</a></p>
+<p>LLaMA Factory 是一个简单易用且高效的大型语言模型训练与微调平台。通过它，用户可以在无需编写任何代码的前提下，在本地完成上百种预训练模型的微调。</p>
+<p>LLaMA Factory 提供了API Server 和一站式 WebUI Board，方便企业进行模型的管理和部署。适合不会写代码或代码基础比较弱的同学快速上手进行微调。</p>
+<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><p>ms-SWIFT GitHub项目主页：<a target="_blank" rel="noopener" href="https://github.com/modelscope/swift">https://github.com/modelscope/swift</a></p>
+<p>ColossalAI GitHub项目主页：<a target="_blank" rel="noopener" href="https://github.com/hpcaitech/ColossalAI">https://github.com/hpcaitech/ColossalAI</a></p>
 <p>除此之外，也可以借助更加底层的库，如peft、LoRA、transformer等实现高效微调。</p>
-<h3 id="模型性能评估框架">模型性能评估框架</h3>
-<h4 id="evalscope">EvalScope</h4>
-<p>项目地址： https://github.com/modelscope/evalscope</p>
-<p>EvalScope
-是由阿里巴巴魔搭社区（ModelScope）推出的一款开源模型评估框架，旨在为大语言
-模型（LLM）和多模态模型提供统一、系统化的性能评估方案。该框架具备高度的自动化和可扩展性，
-适用于研究机构、工业界以及模型开发者在模型验证与性能对比场景中的广泛需求。</p>
-<h3 id="可视化框架">可视化框架</h3>
-<h4 id="wandb">wandb</h4>
-<p><strong>Weights &amp; Biases（简称 wandb）</strong>
-是一个专为机器学习 / 深度学习设计的
-<strong>云端实验管理、可视化与协作平台</strong>。它帮你把“训练过程中发生了什么”全部自动化地记录下来，并以网页仪表盘的形式实时展示，省去你手动保存日志、画图、整理表格的麻烦。</p>
-<p>wandb官网： https://wandb.ai/site</p>
-<h4 id="swanlab">swanlab</h4>
-<p>SwanLab 是一款<strong>开源、轻量</strong>的 AI
-模型训练跟踪与可视化工具，提供了一个<strong>跟踪、记录、比较、和协作实验</strong>的平台。</p>
-<p>SwanLab 面向人工智能研究者，设计了友好的Python API
-和漂亮的UI界面，并提供<strong>训练可视化、自动日志记录、超参数记录、实验对比、多人协同等功能</strong>。在SwanLab上，研究者能基于直观的可视化图表发现训练问题，对比多个实验找到研究灵感，并通过<strong>在线网页</strong>的分享与基于组织的<strong>多人协同训练</strong>，打破团队沟通的壁垒，提高组织训练效率。</p>
-<p><a target="_blank" rel="noopener" href="https://docs.swanlab.cn/">SwanLab官方文档 |
-先进的AI团队协作与模型创新引擎</a></p>
-<h3 id="构造微调数据集">构造微调数据集</h3>
-<h4 id="为什么要构造微调数据集">为什么要构造微调数据集</h4>
-<figure>
-<img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811162229104.png" alt="image-20250811162229104">
-<figcaption aria-hidden="true">image-20250811162229104</figcaption>
-</figure>
-<p>其中 &lt;∣im_start∣&gt;
-代表文本开始,而user则代表消息身份,用于构建多轮对话,而<lim_end>则代表文本结束,即用户输入结束,而<lim_start>代表新一段文本开始,assistant代表接下来由模型创建消息,而<lim_end>同样代表模型创建消息的结束。</lim_end></lim_start></lim_end></p>
+<h3 id="模型性能评估框架"><a href="#模型性能评估框架" class="headerlink" title="模型性能评估框架"></a>模型性能评估框架</h3><h4 id="EvalScope"><a href="#EvalScope" class="headerlink" title="EvalScope"></a>EvalScope</h4><p>项目地址： <a target="_blank" rel="noopener" href="https://github.com/modelscope/evalscope">https://github.com/modelscope/evalscope</a></p>
+<p>EvalScope 是由阿里巴巴魔搭社区（ModelScope）推出的一款开源模型评估框架，旨在为大语言 模型（LLM）和多模态模型提供统一、系统化的性能评估方案。该框架具备高度的自动化和可扩展性， 适用于研究机构、工业界以及模型开发者在模型验证与性能对比场景中的广泛需求。</p>
+<h3 id="可视化框架"><a href="#可视化框架" class="headerlink" title="可视化框架"></a>可视化框架</h3><h4 id="wandb"><a href="#wandb" class="headerlink" title="wandb"></a>wandb</h4><p><strong>Weights &amp; Biases（简称 wandb）</strong> 是一个专为机器学习 / 深度学习设计的 <strong>云端实验管理、可视化与协作平台</strong>。它帮你把“训练过程中发生了什么”全部自动化地记录下来，并以网页仪表盘的形式实时展示，省去你手动保存日志、画图、整理表格的麻烦。</p>
+<p>wandb官网： <a target="_blank" rel="noopener" href="https://wandb.ai/site">https://wandb.ai/site</a></p>
+<h4 id="swanlab"><a href="#swanlab" class="headerlink" title="swanlab"></a>swanlab</h4><p>SwanLab 是一款<strong>开源、轻量</strong>的 AI 模型训练跟踪与可视化工具，提供了一个<strong>跟踪、记录、比较、和协作实验</strong>的平台。</p>
+<p>SwanLab 面向人工智能研究者，设计了友好的Python API 和漂亮的UI界面，并提供<strong>训练可视化、自动日志记录、超参数记录、实验对比、多人协同等功能</strong>。在SwanLab上，研究者能基于直观的可视化图表发现训练问题，对比多个实验找到研究灵感，并通过<strong>在线网页</strong>的分享与基于组织的<strong>多人协同训练</strong>，打破团队沟通的壁垒，提高组织训练效率。</p>
+<p><a target="_blank" rel="noopener" href="https://docs.swanlab.cn/">SwanLab官方文档 | 先进的AI团队协作与模型创新引擎</a></p>
+<h3 id="构造微调数据集"><a href="#构造微调数据集" class="headerlink" title="构造微调数据集"></a>构造微调数据集</h3><h4 id="为什么要构造微调数据集"><a href="#为什么要构造微调数据集" class="headerlink" title="为什么要构造微调数据集"></a>为什么要构造微调数据集</h4><p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811162229104.png" alt="image-20250811162229104"></p>
+<p>其中 &lt;∣im_start∣&gt; 代表文本开始,而user则代表消息身份,用于构建多轮对话,而<lim_end>则代表文本结束,即用户输入结束,而<lim_start>代表新一段文本开始,assistant代表接下来由模型创建消息,而<lim_end>同样代表模型创建消息的结束。</lim_end></lim_start></lim_end></p>
 <p>而模型其实是通过这样一组<strong>特殊字符标记</strong>来规范自己的行为,<strong>判断当前消息类型,以及通过输出特殊标记来确定停止时间</strong>。对于绝大多数模型,我们可以在模型的<strong>tokenizer_config.json中看到完整的特殊标记符</strong>(以及系统提示词模板):</p>
-<figure>
-<img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811163120092.png" alt="image-20250811163120092">
-<figcaption aria-hidden="true">image-20250811163120092</figcaption>
-</figure>
+<p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811163120092.png" alt="image-20250811163120092"></p>
 <p>而在实际微调过程中,我们都知道需要<strong>有监督的数据集</strong>、也就是需要输入QA对来进行微调。以著名的<strong>alpaca_zh中文微调数据集</strong>来说,其基本格式如下:</p>
-<figure>
-<img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811163232521.png" alt="image-20250811163232521">
-<figcaption aria-hidden="true">image-20250811163232521</figcaption>
-</figure>
+<p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811163232521.png" alt="image-20250811163232521"></p>
 <p>就可以表示为下列json格式数据集:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">json&#123;  &quot;instruction&quot;: &quot;&quot;,  &quot;input&quot;: &quot;输入:你好。&quot;,  &quot;output&quot;: &quot;输出:你好,有什么可以帮到你的?&quot;&#125;</span><br></pre></td></tr></table></figure>
 <p>而在真实的微调过程中,如果是针对Qwen3进行微调,微调脚本会将这条数据集(无论什么格式)转化为如下格式:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xml&lt;im_start|&gt;user\n你好&lt;im_end|&gt;\n&lt;im_start|&gt;assistant\n你好,有什么可以帮到你的?&lt;im_end|&gt;</span><br></pre></td></tr></table></figure>
 <p>而在实际训练过程中,模型就会根据assistant前的内容,学习assistant后面的输出内容。</p>
 <p><strong>因此我们要在下载数据集后，进行微调前，对数据集进行预处理</strong>，接下来引出构造数据集的几种场景</p>
-<h4 id="带有系统提示微调数据集格式">带有系统提示微调数据集格式</h4>
-<p>在很多场景下,我们还会发现一些<strong>带有instruction字段的微调数据集</strong>,那instruction字段是如何带入到微调过程中的呢?</p>
-<figure>
-<img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811163232521.png" alt="image-20250811163232521">
-<figcaption aria-hidden="true">image-20250811163232521</figcaption>
-</figure>
+<h4 id="带有系统提示微调数据集格式"><a href="#带有系统提示微调数据集格式" class="headerlink" title="带有系统提示微调数据集格式"></a>带有系统提示微调数据集格式</h4><p>在很多场景下,我们还会发现一些<strong>带有instruction字段的微调数据集</strong>,那instruction字段是如何带入到微调过程中的呢?</p>
+<p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811163232521.png" alt="image-20250811163232521"></p>
 <p>答案非常简单,还是依靠特殊字符。例如有一个对话内容如下:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- 系统提示词(instruction):你是一名助人为乐的助手。</span><br><span class="line">- 用户输入(input):你好,好久不见。</span><br><span class="line">- 助手回复(output):是的呀,好久不见,最近有什么有趣的事情要和我分享么?</span><br></pre></td></tr></table></figure>
 <p>此时模型的输入和输出如下:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;lim_start|&gt;system你是一名助人为乐的助手。&lt;/im_end&gt;</span><br><span class="line">&lt;lim_start|&gt;user 你好,好久不见。&lt;/lim_end&gt;</span><br><span class="line">&lt;lim_start|&gt;assistant 是的呀,好久不见,最近有什么有趣的事情要和我分享么?&lt;/lim_end&gt;</span><br></pre></td></tr></table></figure>
-<p>即会通过&lt;lim_start|&gt;system…&lt;lim_end|&gt;来标记系统提示词。实际进行微调时,模型会根据assistant为界,学习assistant之前的文本输入情况下应该如何输出。</p>
-<h4 id="带function-calling微调数据集格式">带Function
-calling微调数据集格式</h4>
-<p>更进一步的,如果对话过程中带入了<strong>Function
-calling</strong>,此时首先模型会读取提前准备好的tool
-schema(也可能是自动生成的,例如MCP即可自动创建tool schema):</p>
+<p>即会通过<lim_start|>system…<lim_end|>来标记系统提示词。实际进行微调时,模型会根据assistant为界,学习assistant之前的文本输入情况下应该如何输出。</lim_end|></lim_start|></p>
+<h4 id="带Function-calling微调数据集格式"><a href="#带Function-calling微调数据集格式" class="headerlink" title="带Function calling微调数据集格式"></a>带Function calling微调数据集格式</h4><p>更进一步的,如果对话过程中带入了<strong>Function calling</strong>,此时首先模型会读取提前准备好的tool schema(也可能是自动生成的,例如MCP即可自动创建tool schema):</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;tool_schema&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;name&quot;: &quot;get_weather&quot;,</span><br><span class="line">      &quot;description&quot;: &quot;查询指定城市的天气信息&quot;,</span><br><span class="line">      &quot;parameters&quot;: &#123;</span><br><span class="line">        &quot;type&quot;: &quot;object&quot;,</span><br><span class="line">        &quot;properties&quot;: &#123;</span><br><span class="line">          &quot;location&quot;: &#123;</span><br><span class="line">            &quot;type&quot;: &quot;string&quot;,</span><br><span class="line">            &quot;description&quot;: &quot;要查询天气的城市名称&quot;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;required&quot;: [&quot;location&quot;]</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>而假设我们的对话内容如下:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- 系统提示词(instruction):你是一名助人为乐的助手。当用户查询天气的时候,请调用get_weather函数进行天气信息查询。</span><br><span class="line">- 用户输入(input):你好,请帮我查询下北京天气。</span><br><span class="line">- 助手回复(output):&#123;&quot;name&quot;: &quot;get_weather&quot;, &quot;arguments&quot;: &#123;&quot;location&quot;: &quot;北京&quot;&#125;&#125;</span><br></pre></td></tr></table></figure>
@@ -461,14 +376,9 @@ schema(也可能是自动生成的,例如MCP即可自动创建tool schema):</p>
 </blockquote>
 <p>而此时模型真实的输入和输出内容如下:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;|im_start|&gt;system</span><br><span class="line">你是天气助手，当用户查询天气时请调用 get_weather 函数。</span><br><span class="line"># Tools</span><br><span class="line">You may call one or more functions to assist with the user query.</span><br><span class="line">You are provided with function signatures within &lt;tools&gt;&lt;/tools&gt; XML tags:</span><br><span class="line">&lt;tools&gt;</span><br><span class="line">[&#123;&quot;name&quot;:&quot;get_weather&quot;,&quot;description&quot;:&quot;查询指定城市的天气信息&quot;,&quot;parameters&quot;:&#123;&quot;type&quot;:&quot;object&quot;,&quot;properties&quot;:&#123;&quot;location&quot;:&#123;&quot;type&quot;:&quot;string&quot;,&quot;description&quot;:&quot;要查询天气的城市名称&quot;&#125;&#125;,&quot;required&quot;:[&quot;location&quot;]&#125;&#125;]</span><br><span class="line">&lt;/tools&gt;</span><br><span class="line">&lt;tool_call&gt;</span><br><span class="line"> &#123;&quot;name&quot;: &lt;function-name&gt;, &quot;arguments&quot;: &lt;args-json-object&gt;&#125;</span><br><span class="line">&lt;/tool_call&gt;.</span><br><span class="line">&lt;|im_end|&gt;</span><br><span class="line">&lt;|im_start|&gt;user</span><br><span class="line">北京天气如何？</span><br><span class="line">&lt;|im_end|&gt;</span><br><span class="line">&lt;|im_start|&gt;assistant</span><br><span class="line">&lt;tool_call&gt;&#123;&quot;name&quot;:&quot;get_weather&quot;,&quot;arguments&quot;:&#123;&quot;location&quot;:&quot;北京&quot;&#125;&#125;&lt;/tool_call&gt;</span><br><span class="line">&lt;|im_end|&gt;</span><br></pre></td></tr></table></figure>
-<p>接下来在进行训练时,模型同样根据assistant前的内容,学习assistant后面的输出内容。不过需要注意的是,由于高效微调调整的参数量较少,因此只能优化模型的Function
-calling能力,并不能从无到有让模型学会Function calling。</p>
-<h4 id="带有思考过程的微调数据集结构">带有思考过程的微调数据集结构</h4>
-<p>而如果是带有思考链,则一个简单的问答数据如下:</p>
-<figure>
-<img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811165802090.png" alt="image-20250811165802090">
-<figcaption aria-hidden="true">image-20250811165802090</figcaption>
-</figure>
+<p>接下来在进行训练时,模型同样根据assistant前的内容,学习assistant后面的输出内容。不过需要注意的是,由于高效微调调整的参数量较少,因此只能优化模型的Function calling能力,并不能从无到有让模型学会Function calling。</p>
+<h4 id="带有思考过程的微调数据集结构"><a href="#带有思考过程的微调数据集结构" class="headerlink" title="带有思考过程的微调数据集结构"></a>带有思考过程的微调数据集结构</h4><p>而如果是带有思考链,则一个简单的问答数据如下:</p>
+<p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811165802090.png" alt="image-20250811165802090"></p>
 <ul>
 <li>系统提示词(instruction):你是一名助人为乐的助手。</li>
 <li>用户输入(input):你好,好久不见。</li>
@@ -477,91 +387,64 @@ calling能力,并不能从无到有让模型学会Function calling。</p>
 <p>此时模型真实的内部输入和输出结果如下:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;lim_start|&gt;system</span><br><span class="line">你是一名助人为乐的助手。&lt;lim_end|&gt;</span><br><span class="line">&lt;lim_start|&gt;user</span><br><span class="line">你好,好久不见。&lt;lim_end|&gt;</span><br><span class="line">&lt;lim_start|&gt;assistant</span><br><span class="line"></span><br><span class="line">&lt;think&gt;  好的,用户发来“你好,好久不见!”,我需要回应。首先,用户可能希望得到亲切的回应,所以应该用友好的语气。&lt;/think&gt;</span><br><span class="line"></span><br><span class="line">是的呀,好久不见,最近有什么有趣的事情要和我分享么?&lt;/lim_end|&gt;</span><br></pre></td></tr></table></figure>
 <p>模型同样根据assistant前的内容,学习assistant后面的输出内容。也就是说,所谓的思考过程,本质上其实是一种文本响应格式,通过模型训练而来。</p>
-<h4 id="混合推理模型构造微调数据集基本方法">混合推理模型构造微调数据集基本方法</h4>
-<p>在了解了微调数据集结构背后的基本原理后,接下来的问题是应该如何构造微调数据集呢?</p>
-<p>一般来说我们可以在huggingface、ModelScope或llama-
-factory中挑选合适的数据集,并根据实际情况进行组装。</p>
+<h4 id="混合推理模型构造微调数据集基本方法"><a href="#混合推理模型构造微调数据集基本方法" class="headerlink" title="混合推理模型构造微调数据集基本方法"></a>混合推理模型构造微调数据集基本方法</h4><p>在了解了微调数据集结构背后的基本原理后,接下来的问题是应该如何构造微调数据集呢?</p>
+<p>一般来说我们可以在huggingface、ModelScope或llama- factory中挑选合适的数据集,并根据实际情况进行组装。</p>
 <p>例如围绕Qwen3模型的高效微调,为了确保其仍然<strong>保留混合推理能力,</strong>我们可以考虑在微调数据集中加入如普<strong>通对话数据集</strong><a target="_blank" rel="noopener" href="https://huggingface.co/datasets/mlabonne/FineTome-100k">FineTome</a>,以及<strong>带有推理字段的数学类数据集</strong><a target="_blank" rel="noopener" href="https://huggingface.co/datasets/nvidia/OpenMathReasoning">OpenMathReasoning</a>,<strong>并围绕这两个数据集进行拼接</strong>,从而在确保能提升模型的数学能力的同时,保留非推理的功能。</p>
 <p>同时还需要在持续微调训练过程中<strong>不断调整COT数学数据集和普通文本问答数据集之间的配比</strong>,以确保模型能够在提升数学能力的同时,保留混合推理的性能。</p>
 <blockquote>
-<p>Qwen3 的「混合推理能力」=
-<strong>在同一个模型里内置两套“大脑”</strong>： •
-<strong>快思考（非思考模式）</strong>：轻量算力、秒级响应，适合简单问答；
-•
-<strong>慢思考（思考模式）</strong>：多步链式推理、深度推敲，适合复杂逻辑、数学、代码。
-系统会自动或按用户指令在两种模式之间 <strong>动态切换</strong>，从而
-<strong>既省算力又保证难题精度</strong>。</p>
+<p>Qwen3 的「混合推理能力」= <strong>在同一个模型里内置两套“大脑”</strong>：<br>• <strong>快思考（非思考模式）</strong>：轻量算力、秒级响应，适合简单问答；<br>• <strong>慢思考（思考模式）</strong>：多步链式推理、深度推敲，适合复杂逻辑、数学、代码。<br>系统会自动或按用户指令在两种模式之间 <strong>动态切换</strong>，从而 <strong>既省算力又保证难题精度</strong>。</p>
 </blockquote>
-<h3 id="微调的基本流程">微调的基本流程</h3>
-<figure>
-<img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250812105535330.png" alt="image-20250812105535330">
-<figcaption aria-hidden="true">image-20250812105535330</figcaption>
-</figure>
-<h3 id="环境配置">环境配置</h3>
-<p><strong>安装Unsloth</strong></p>
+<h3 id="微调的基本流程"><a href="#微调的基本流程" class="headerlink" title="微调的基本流程"></a>微调的基本流程</h3><p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250812105535330.png" alt="image-20250812105535330"></p>
+<h3 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h3><p><strong>安装Unsloth</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install --upgrade --force-reinstall --no-cache-dir unsloth unsloth_zoo</span><br></pre></td></tr></table></figure>
 <p><strong>安装Qwen3-8B-unsloth-bnb-4bit</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">modelscope download --model unsloth/Qwen3-8B-unsloth-bnb-4bit --local_dir /workspace/qwen3-8b</span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#模型下载</span><br><span class="line">from modelscope import snapshot_download</span><br><span class="line">model_dir = snapshot_download(&#x27;unsloth/Qwen3-8B-unsloth-bnb-4bit&#x27;)</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p><strong>unsloth/Qwen3-8B-unsloth-bnb-4bit</strong> 这个模型它是
-<strong>专门为Unsloth微调框架优化过的4bit量化版本</strong></p>
-<p>原始 Qwen3-8B（FP16）需要约 <strong>22GB 显存</strong>，而 4bit
-量化后仅需 <strong>6GB 左右</strong></p>
-<p><strong>只要显存允许，原始 FP16/BF16 模型也可以用 Unsloth 做 4-bit
-LoRA（即 QLoRA）微调；官方预量化 4-bit
-模型只是帮你把“量化”这一步提前做完了，二者本质相同。</strong></p>
+<p> <strong>unsloth/Qwen3-8B-unsloth-bnb-4bit</strong> 这个模型它是 <strong>专门为Unsloth微调框架优化过的4bit量化版本</strong></p>
+<p>原始 Qwen3-8B（FP16）需要约 <strong>22GB 显存</strong>，而 4bit 量化后仅需 <strong>6GB 左右</strong></p>
+<p><strong>只要显存允许，原始 FP16/BF16 模型也可以用 Unsloth 做 4-bit LoRA（即 QLoRA）微调；官方预量化 4-bit 模型只是帮你把“量化”这一步提前做完了，二者本质相同。</strong></p>
 <p><strong>Unsloth 的两种用法示例</strong></p>
+<div class="table-container">
 <table>
-<colgroup>
-<col style="width: 30%">
-<col style="width: 42%">
-<col style="width: 27%">
-</colgroup>
 <thead>
 <tr>
-<th style="text-align: left;">场景</th>
-<th style="text-align: left;">代码片段</th>
-<th style="text-align: left;">备注</th>
+<th style="text-align:left">场景</th>
+<th style="text-align:left">代码片段</th>
+<th style="text-align:left">备注</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;">A. 用官方已量化好的 4-bit 权重</td>
-<td style="text-align: left;"><code>model_name="unsloth/Qwen3-8B-bnb-4bit"</code></td>
-<td style="text-align: left;">显卡 6 GB 就能跑，省去自己量化</td>
+<td style="text-align:left">A. 用官方已量化好的 4-bit 权重</td>
+<td style="text-align:left"><code>model_name=&quot;unsloth/Qwen3-8B-bnb-4bit&quot;</code></td>
+<td style="text-align:left">显卡 6 GB 就能跑，省去自己量化</td>
 </tr>
 <tr>
-<td style="text-align: left;">B. 用原始 FP16 权重并现场 4-bit 量化</td>
-<td style="text-align: left;"><code>model_name="Qwen/Qwen3-8B"</code> +
-<code>load_in_4bit=True</code></td>
-<td style="text-align: left;">显卡仍需 6 GB，显存占用与 A 相同</td>
+<td style="text-align:left">B. 用原始 FP16 权重并现场 4-bit 量化</td>
+<td style="text-align:left"><code>model_name=&quot;Qwen/Qwen3-8B&quot;</code> + <code>load_in_4bit=True</code></td>
+<td style="text-align:left">显卡仍需 6 GB，显存占用与 A 相同</td>
 </tr>
 </tbody>
 </table>
+</div>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> unsloth <span class="keyword">import</span> FastLanguageModel</span><br><span class="line"></span><br><span class="line"><span class="comment"># 两种写法效果等价</span></span><br><span class="line">model, tokenizer = FastLanguageModel.from_pretrained(</span><br><span class="line">    model_name=<span class="string">&quot;Qwen/Qwen3-8B&quot;</span>,   <span class="comment"># 原始权重</span></span><br><span class="line">    load_in_4bit=<span class="literal">True</span>,            <span class="comment"># 现场量化到 4-bit</span></span><br><span class="line">    max_seq_length=<span class="number">2048</span>,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 </blockquote>
 <p><strong>安装EvalScope</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">pip install evalscope                </span><br><span class="line"># 安装 Native backend (默认)</span><br><span class="line"> # 额外选项</span><br><span class="line">pip install &#x27;evalscope[opencompass]&#x27;   # 安装 OpenCompass backend</span><br><span class="line"> pip install &#x27;evalscope[vlmeval]&#x27;       </span><br><span class="line"># 安装 VLMEvalKit backend</span><br><span class="line"> pip install &#x27;evalscope[rag]&#x27;           </span><br><span class="line">pip install &#x27;evalscope[perf]&#x27;          </span><br><span class="line">pip install &#x27;evalscope[app]&#x27;           </span><br><span class="line"># 或可以直接输入all，安装全部模块</span><br><span class="line"># pip install &#x27;evalscope[all]&#x27;           </span><br><span class="line"># 安装 RAGEval backend</span><br><span class="line"> # 安装 模型压测模块 依赖</span><br><span class="line"># 安装 可视化 相关依赖</span><br><span class="line"># 安装所有 backends (Native, OpenCompass, </span><br><span class="line">VLMEvalKit, RAGEval)</span><br></pre></td></tr></table></figure>
 <p><strong>安装wandb</strong></p>
-<p>wandb官网： https://wandb.ai/site</p>
-<p>安装wandb：</p>
+<p>wandb官网： <a target="_blank" rel="noopener" href="https://wandb.ai/site">https://wandb.ai/site</a></p>
+<p>安装wandb： </p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install wandb</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p><a target="_blank" rel="noopener" href="https://github.com/SwanHubX/SwanLab?tab=readme-ov-file#-快速开始">SwanHubX/SwanLab:
-⚡️SwanLab - an open-source, modern-design AI training tracking and
-visualization tool. Supports Cloud / Self-hosted use. Integrated with
-PyTorch / Transformers / LLaMA Factory / veRL/ Swift / Ultralytics /
-MMEngine / Keras etc.</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/SwanHubX/SwanLab?tab=readme-ov-file#-快速开始">SwanHubX/SwanLab: ⚡️SwanLab - an open-source, modern-design AI training tracking and visualization tool. Supports Cloud / Self-hosted use. Integrated with PyTorch / Transformers / LLaMA Factory / veRL/ Swift / Ultralytics / MMEngine / Keras etc.</a></p>
 <p>与其类似，一个开源、现代化设计的深度学习训练跟踪与可视化工具</p>
 </blockquote>
-<h3 id="参考资料">参考资料</h3>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV13BKozLEXE/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">DIY你的AI梦中情人？Qwen3微调手把手教你！_哔哩哔哩_bilibili</a></p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV13BKozLEXE/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">DIY你的AI梦中情人？Qwen3微调手把手教你！_哔哩哔哩_bilibili</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1tthPeFEWb/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">通俗易懂理解全量微调和LoRA微调_哔哩哔哩_bilibili</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1DT421r7Et?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">通俗易懂理解大模型预训练和微调_哔哩哔哩_bilibili</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1YLE1zyEvX?spm_id_from=333.788.videopod.episodes&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11&amp;p=3">3.四大微调框架及微调硬件环境介绍_哔哩哔哩_bilibili</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1s2AUe2EBq/?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">如何把你的
-DeePseek-R1 微调为某个领域的专家？（实战篇）_哔哩哔哩_bilibili</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1s2AUe2EBq/?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">如何把你的 DeePseek-R1 微调为某个领域的专家？（实战篇）_哔哩哔哩_bilibili</a></p>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/javatiange/article/details/149964743?fromshare=blogdetail&amp;sharetype=blogdetail&amp;sharerId=149964743&amp;sharerefer=PC&amp;sharesource=2501_91530961&amp;sharefrom=from_link">一文详解：8种常见的大模型微调方法，看这篇就够了！-CSDN博客</a></p>
 
     </div>
@@ -625,7 +508,7 @@ DeePseek-R1 微调为某个领域的专家？（实战篇）_哔哩哔哩_bilibi
 
   <div class="copyright">
     &copy; 
-    <span itemprop="copyrightYear">2025</span>
+    <span itemprop="copyrightYear">2026</span>
     <span class="with-love">
       <i class="fa fa-heart"></i>
     </span>

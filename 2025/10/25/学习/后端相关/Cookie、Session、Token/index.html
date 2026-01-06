@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="CookieHTTP Cookie（通常简称为 Cookie）是由 服务器通过 HTTP 响应头 Set-Cookie 发送给用户代理（如浏览器）的一小段数据，用户代理随后会在后续的、满足条件的 HTTP 请求中，通过 Cookie 请求头自动将其发送回服务器。  核心目的：在无状态的 HTTP 协议之上，实现 状态管理（State Management） 和 客户端数据持久化。  浏览器会：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cookie、Session、JWT">
+<meta property="og:url" content="http://example.com/2025/10/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/Cookie%E3%80%81Session%E3%80%81Token/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="CookieHTTP Cookie（通常简称为 Cookie）是由 服务器通过 HTTP 响应头 Set-Cookie 发送给用户代理（如浏览器）的一小段数据，用户代理随后会在后续的、满足条件的 HTTP 请求中，通过 Cookie 请求头自动将其发送回服务器。  核心目的：在无状态的 HTTP 协议之上，实现 状态管理（State Management） 和 客户端数据持久化。  浏览器会：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2025/10/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/Cookie%E3%80%81Session%E3%80%81Token/image-20251026164036642.png">
+<meta property="og:image" content="http://example.com/2025/10/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/Cookie%E3%80%81Session%E3%80%81Token/image-20251026164113650.png">
+<meta property="article:published_time" content="2025-10-24T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-11T07:43:01.345Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="后端">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2025/10/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/Cookie%E3%80%81Session%E3%80%81Token/image-20251026164036642.png">
+
+
+<link rel="canonical" href="http://example.com/2025/10/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/Cookie%E3%80%81Session%E3%80%81Token/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/10/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/Cookie%E3%80%81Session%E3%80%81Token/","path":"2025/10/25/学习/后端相关/Cookie、Session、Token/","title":"Cookie、Session、JWT"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Cookie、Session、JWT | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cookie"><span class="nav-number">1.</span> <span class="nav-text">Cookie</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E7%AB%AF%E6%9E%84%E5%BB%BA"><span class="nav-number">1.1.</span> <span class="nav-text">前端构建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-Vite-%E5%BF%AB%E9%80%9F%E5%88%9B%E5%BB%BA-React-%E9%A1%B9%E7%9B%AE"><span class="nav-number">1.1.1.</span> <span class="nav-text">使用 Vite 快速创建 React 项目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.2.</span> <span class="nav-text">项目结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E9%93%BE%E6%9D%A1"><span class="nav-number">1.1.3.</span> <span class="nav-text">启动链条</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#index-html"><span class="nav-number">1.1.4.</span> <span class="nav-text">index.html</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#main-jsx"><span class="nav-number">1.1.5.</span> <span class="nav-text">main.jsx</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#App-jsx"><span class="nav-number">1.1.6.</span> <span class="nav-text">App.jsx</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Login-jsx"><span class="nav-number">1.1.7.</span> <span class="nav-text">Login.jsx</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Profile-jsx"><span class="nav-number">1.1.8.</span> <span class="nav-text">Profile.jsx</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E7%AB%AF%E6%9E%84%E5%BB%BA"><span class="nav-number">1.2.</span> <span class="nav-text">后端构建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CORS%EF%BC%88Cross-Origin-Resource-Sharing%EF%BC%89-%E8%B7%A8%E5%9F%9F%E8%B5%84%E6%BA%90%E5%85%B1%E4%BA%AB"><span class="nav-number">1.2.1.</span> <span class="nav-text">CORS（Cross-Origin Resource Sharing） &#x3D; 跨域资源共享</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cookie%E6%9C%BA%E5%88%B6"><span class="nav-number">1.2.2.</span> <span class="nav-text">cookie机制</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Session"><span class="nav-number">2.</span> <span class="nav-text">Session</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E7%AB%AF%E6%9E%84%E5%BB%BA-1"><span class="nav-number">2.1.</span> <span class="nav-text">后端构建</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JWT"><span class="nav-number">3.</span> <span class="nav-text">JWT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#jwt%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">3.1.</span> <span class="nav-text">jwt是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JWT-%E7%9A%84%E7%BB%93%E6%9E%84"><span class="nav-number">3.2.</span> <span class="nav-text">JWT 的结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JWT-%E7%9A%84-sub%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">3.3.</span> <span class="nav-text">JWT 的 sub是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8-JWT%EF%BC%8C%E7%9B%B8%E6%AF%94%E8%BE%83session%E4%BC%98%E5%8A%BF%E5%9C%A8%E5%93%AA"><span class="nav-number">3.4.</span> <span class="nav-text">为什么用 JWT，相比较session优势在哪</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JWT%E7%9A%84%E7%BC%BA%E7%82%B9"><span class="nav-number">3.5.</span> <span class="nav-text">JWT的缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jwt%E4%B8%89%E7%A7%8D%E7%AD%BE%E5%90%8D%E7%AE%97%E6%B3%95"><span class="nav-number">3.6.</span> <span class="nav-text">jwt三种签名算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-HS256-HMAC-with-SHA-256"><span class="nav-number">3.6.1.</span> <span class="nav-text">1. HS256 (HMAC with SHA-256)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-RS256-RSA-Signature-with-SHA-256"><span class="nav-number">3.6.2.</span> <span class="nav-text">2. RS256 (RSA Signature with SHA-256)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-ES256-ECDSA-using-P-256-and-SHA-256"><span class="nav-number">3.6.3.</span> <span class="nav-text">3. ES256 (ECDSA using P-256 and SHA-256)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E7%AB%AF%E6%9E%84%E5%BB%BA-2"><span class="nav-number">3.7.</span> <span class="nav-text">后端构建</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">178</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/10/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/Cookie%E3%80%81Session%E3%80%81Token/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Cookie、Session、JWT | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Cookie、Session、JWT
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-10-25 00:00:00" itemprop="dateCreated datePublished" datetime="2025-10-25T00:00:00+08:00">2025-10-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-12-11 15:43:01" itemprop="dateModified" datetime="2025-12-11T15:43:01+08:00">2025-12-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/python-web/" itemprop="url" rel="index"><span itemprop="name">python-web</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="Cookie"><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h2><p><strong>HTTP Cookie</strong>（通常简称为 <em>Cookie</em>）是由 <strong>服务器通过 HTTP 响应头 <code>Set-Cookie</code> 发送给用户代理（如浏览器）的一小段数据</strong>，用户代理随后会在后续的、满足条件的 HTTP 请求中，通过 <code>Cookie</code> 请求头自动将其发送回服务器。</p>
+<ul>
+<li><strong>核心目的</strong>：在无状态的 HTTP 协议之上，实现 <strong>状态管理（State Management）</strong> 和 <strong>客户端数据持久化</strong>。</li>
+</ul>
+<p>浏览器会：</p>
+<ol>
+<li>保存它</li>
+<li>在后续<strong>同域名</strong>的请求中，自动通过 <code>Cookie</code> 请求头发回给服务器</li>
+</ol>
+<blockquote>
+<p>🔑 Cookie 的核心作用：<strong>在无状态的 HTTP 协议上实现“会话跟踪”</strong> </p>
+</blockquote>
+<h3 id="前端构建"><a href="#前端构建" class="headerlink" title="前端构建"></a>前端构建</h3><h4 id="使用-Vite-快速创建-React-项目"><a href="#使用-Vite-快速创建-React-项目" class="headerlink" title="使用 Vite 快速创建 React 项目"></a>使用 <strong>Vite</strong> 快速创建 React 项目</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#用最新版 Vite 脚手架，在名为 react-app 的文件夹中，创建一个基于 React 的项目。</span><br><span class="line">npm create vite@latest react-app -- --template react</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Vite（发音同 “veet”，法语“快”）是一个<strong>现代化的前端构建工具</strong>，由 Vue.js 作者尤雨溪（Evan You）开发，但<strong>不仅限于 Vue</strong>——它对 React、Svelte、Lit 等主流框架都有官方支持。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#安装项目依赖</span><br><span class="line">npm install</span><br><span class="line">#启动本地开发服务器</span><br><span class="line">npm run dev</span><br></pre></td></tr></table></figure>
+<h4 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a>项目结构</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">react-app/</span><br><span class="line">├── public/           # 静态资源目录</span><br><span class="line">├── src/             # 源代码目录</span><br><span class="line">│   ├── components/  # 组件目录</span><br><span class="line">		├── Login.jsx     # 登录组件</span><br><span class="line">    	├── Login.css     # 登录样式</span><br><span class="line">    	├── Profile.jsx   # 用户信息组件</span><br><span class="line">    	└── Profile.css   # 用户信息样式</span><br><span class="line">│   ├── App.jsx      # 主应用组件</span><br><span class="line">│   ├── main.jsx     # 应用入口文件</span><br><span class="line">│   └── *.css        # 样式文件</span><br><span class="line">├── package.json     # 项目配置和依赖</span><br><span class="line">├── index.html</span><br><span class="line">└── vite.config.js   # 构建工具配置</span><br></pre></td></tr></table></figure>
+<h4 id="启动链条"><a href="#启动链条" class="headerlink" title="启动链条"></a>启动链条</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">1. 浏览器加载 index.html</span><br><span class="line">   ↓</span><br><span class="line">2. 解析到 &lt;script src=&quot;/src/main.jsx&quot;&gt;</span><br><span class="line">   ↓  </span><br><span class="line">3. 加载并执行 main.jsx</span><br><span class="line">   ↓</span><br><span class="line">4. main.jsx 中的 createRoot(document.getElementById(&#x27;root&#x27;))</span><br><span class="line">   ↓</span><br><span class="line">5. 找到 &lt;div id=&quot;root&quot;&gt;&lt;/div&gt;</span><br><span class="line">   ↓</span><br><span class="line">6. 将 &lt;App /&gt; 组件渲染到 root 容器中</span><br><span class="line"></span><br><span class="line">index.html (HTML容器)</span><br><span class="line">    ↓</span><br><span class="line">main.jsx (入口文件) ← 你当前查看的文件</span><br><span class="line">    ↓</span><br><span class="line">App.jsx (主应用组件)</span><br><span class="line">    ↓</span><br><span class="line">Login.jsx, Profile.jsx (子组件)</span><br></pre></td></tr></table></figure>
+<h4 id="index-html"><a href="#index-html" class="headerlink" title="index.html"></a>index.html</h4><p>脚本标签指定入口</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=&quot;module&quot; src=&quot;/src/main.jsx&quot;&gt;&lt;/</span><br><span class="line">script&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>src=”/src/main.jsx” 明确指定 了入口文件路径</li>
+<li>type=”module” 表示这是ES6模块，支持import/export语法</li>
+<li>浏览器加载这个脚本时，就会执行main.jsx中的代码</li>
+</ul>
+<p><code>main.jsx</code> 中的这行代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">createRoot(document.getElementById(&#x27;root&#x27;))</span><br></pre></td></tr></table></figure>
+<p>与 <code>index.html</code> 中的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=&quot;root&quot;&gt;&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<p>通过 id=”root” 建立了连接！</p>
+<h4 id="main-jsx"><a href="#main-jsx" class="headerlink" title="main.jsx"></a>main.jsx</h4><p><code>main.jsx</code> 是整个React应用的 入口文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">import &#123; StrictMode &#125; from &#x27;react&#x27;</span><br><span class="line">import &#123; createRoot &#125; from &#x27;react-dom/client&#x27;</span><br><span class="line">import &#x27;./index.css&#x27;</span><br><span class="line">import App from &#x27;./App.jsx&#x27;</span><br><span class="line"></span><br><span class="line">createRoot(document.getElementById(&#x27;root&#x27;)).render(</span><br><span class="line">  &lt;StrictMode&gt;</span><br><span class="line">    &lt;App /&gt;</span><br><span class="line">  &lt;/StrictMode&gt;,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>创建React根节点<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">createRoot(document.getElementById(&#x27;root&#x27;))</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>在HTML页面中找到id为’root’的DOM元素</li>
+<li>创建一个React根渲染器，这是React应用挂载的地方 </li>
+</ul>
+<p>渲染应用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.render(</span><br><span class="line">  &lt;StrictMode&gt;</span><br><span class="line">    &lt;App /&gt;</span><br><span class="line">  &lt;/StrictMode&gt;,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>将整个React应用渲染到根节点</li>
+<li>StrictMode 包裹应用，提供开发时的额外检查和警告</li>
+<li><App> 是你的主应用组件</App></li>
+</ul>
+<h4 id="App-jsx"><a href="#App-jsx" class="headerlink" title="App.jsx"></a>App.jsx</h4><p>组件（Component） 是React的核心概念，可以理解为：</p>
+<ul>
+<li>可复用的UI构建块</li>
+<li>独立的功能单元</li>
+<li>像乐高积木一样可以组合的代码片段</li>
+</ul>
+<p>以App组件为例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">function App() &#123;</span><br><span class="line">  // 1. 状态管理</span><br><span class="line">  const [isLoggedIn, setIsLoggedIn] = </span><br><span class="line">  useState(false)</span><br><span class="line"></span><br><span class="line">  // 2. 事件处理函数</span><br><span class="line">  const handleLoginSuccess = () =&gt; &#123;</span><br><span class="line">    setIsLoggedIn(true)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 3. 渲染UI</span><br><span class="line">  return (</span><br><span class="line">    &lt;div className=&quot;app&quot;&gt;</span><br><span class="line">      &lt;header&gt;...&lt;/header&gt;</span><br><span class="line">      &lt;main&gt;</span><br><span class="line">        &#123;!isLoggedIn ? (</span><br><span class="line">          &lt;Login onLoginSuccess=</span><br><span class="line">          &#123;handleLoginSuccess&#125; /&gt;</span><br><span class="line">        ) : (</span><br><span class="line">          &lt;Profile isLoggedIn=&#123;isLoggedIn&#125; /</span><br><span class="line">          &gt;</span><br><span class="line">        )&#125;</span><br><span class="line">      &lt;/main&gt;</span><br><span class="line">      &lt;footer&gt;...&lt;/footer&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default App</span><br></pre></td></tr></table></figure>
+<p>🔍 组件的核心特征</p>
+<ol>
+<li>函数式组件</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">function App() &#123;</span><br><span class="line">  // 组件逻辑</span><br><span class="line">  return (</span><br><span class="line">    // JSX - 描述UI结构</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>App是一个 JavaScript函数</li>
+<li>函数名就是 组件名 （必须大写开头）</li>
+<li>返回 JSX （类似HTML的语法） </li>
+</ul>
+<ol>
+<li>状态管理（State）</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const [isLoggedIn, setIsLoggedIn] = useState(false)</span><br></pre></td></tr></table></figure>
+<p>isLoggedIn - 状态变量</p>
+<ul>
+<li>存储 当前的登录状态</li>
+<li>初始值是 false （未登录）</li>
+<li>只能 读取 ，不能直接修改 </li>
+</ul>
+<p>setIsLoggedIn - 状态更新函数</p>
+<ul>
+<li>用来 更新 isLoggedIn 的值</li>
+<li>调用时会 触发组件重新渲染</li>
+<li>是修改状态的 唯一正确方式 </li>
+</ul>
+<p>useState(false) - Hook调用</p>
+<ul>
+<li>false 是 初始值 ，表示默认未登录</li>
+<li>返回一个 数组 ： [当前值, 更新函数]</li>
+</ul>
+<ol>
+<li>事件处理</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">const handleLoginSuccess = () =&gt; &#123;</span><br><span class="line">  setIsLoggedIn(true)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>组件可以 响应用户交互</li>
+<li>处理点击、输入等事件</li>
+<li><p>更新状态，触发UI更新</p>
+<ol>
+<li>条件渲染</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;!isLoggedIn ? (</span><br><span class="line">  &lt;Login onLoginSuccess=</span><br><span class="line">  &#123;handleLoginSuccess&#125; /&gt;</span><br><span class="line">) : (</span><br><span class="line">  &lt;Profile isLoggedIn=&#123;isLoggedIn&#125; /&gt;</span><br><span class="line">)&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>根据 状态条件 显示不同内容</li>
+<li><p>动态决定渲染哪些子组件</p>
+<ol>
+<li>组件组合</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;Login onLoginSuccess=&#123;handleLoginSuccess&#125; /</span><br><span class="line">&gt;</span><br><span class="line">&lt;Profile isLoggedIn=&#123;isLoggedIn&#125; /&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>大组件由 小组件组合 而成</li>
+<li>通过 Props 传递数据给子组件</li>
+</ul>
+<p><strong>组件组合完整的数据流</strong> </p>
+<ol>
+<li>父组件（App.jsx）定义函数</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function App() &#123;</span><br><span class="line">  const [isLoggedIn, setIsLoggedIn] = </span><br><span class="line">  useState(false)</span><br><span class="line">  </span><br><span class="line">  // 定义回调函数</span><br><span class="line">  const handleLoginSuccess = () =&gt; &#123;</span><br><span class="line">    setIsLoggedIn(true)  // 更新父组件的状态</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  // 将函数传递给子组件</span><br><span class="line">  return &lt;Login onLoginSuccess=</span><br><span class="line">  &#123;handleLoginSuccess&#125; /&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>子组件（Login.jsx）接收并使用</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">function Login(&#123; onLoginSuccess &#125;) &#123;  // 通过Props接收函数</span><br><span class="line">  const handleLogin = async () =&gt; &#123;</span><br><span class="line">    // ... 登录逻辑</span><br><span class="line">    </span><br><span class="line">    if (response.ok) &#123;</span><br><span class="line">      // 登录成功时调用父组件传来的函数</span><br><span class="line">      onLoginSuccess()  // 🔥 关键：通知父组件</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  return &lt;button onClick=&#123;handleLogin&#125;&gt;登录&lt;/button&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Login-jsx"><a href="#Login-jsx" class="headerlink" title="Login.jsx"></a>Login.jsx</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">function Login(&#123; onLoginSuccess &#125;) &#123;</span><br><span class="line">  // 1. 管理登录状态</span><br><span class="line">  const [isLoading, setIsLoading] = useState(false)</span><br><span class="line">  const [message, setMessage] = useState(&#x27;&#x27;)</span><br><span class="line"></span><br><span class="line">  // 2. 处理登录逻辑</span><br><span class="line">  const handleLogin = async () =&gt; &#123;</span><br><span class="line">    // 调用后端API</span><br><span class="line">    const response = await fetch(&#x27;http://localhost:8000/login&#x27;, &#123;</span><br><span class="line">      method: &#x27;POST&#x27;,</span><br><span class="line">      credentials: &#x27;include&#x27;, // Cookie认证</span><br><span class="line">    &#125;)</span><br><span class="line">    </span><br><span class="line">    // 成功后通知父组件</span><br><span class="line">    if (response.ok) &#123;</span><br><span class="line">      onLoginSuccess() // 调用父组件传来的回调函数</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 3. 渲染登录界面</span><br><span class="line">  return (</span><br><span class="line">    &lt;div className=&quot;login-container&quot;&gt;</span><br><span class="line">      &lt;button onClick=&#123;handleLogin&#125;&gt;</span><br><span class="line">        &#123;isLoading ? &#x27;登录中...&#x27; : &#x27;登录&#x27;&#125;</span><br><span class="line">      &lt;/button&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Profile-jsx"><a href="#Profile-jsx" class="headerlink" title="Profile.jsx"></a>Profile.jsx</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">function Profile(&#123; isLoggedIn &#125;) &#123;</span><br><span class="line">  // 1. 管理用户数据状态</span><br><span class="line">  const [userInfo, setUserInfo] = useState(null)</span><br><span class="line">  const [isLoading, setIsLoading] = useState(false)</span><br><span class="line">  const [error, setError] = useState(&#x27;&#x27;)</span><br><span class="line"></span><br><span class="line">  // 2. 获取用户信息</span><br><span class="line">  const fetchProfile = async () =&gt; &#123;</span><br><span class="line">    const response = await fetch(&#x27;http://localhost:8000/profile&#x27;, &#123;</span><br><span class="line">      credentials: &#x27;include&#x27;, // 使用Cookie认证</span><br><span class="line">    &#125;)</span><br><span class="line">    const data = await response.json()</span><br><span class="line">    setUserInfo(data)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 3. 生命周期管理</span><br><span class="line">  useEffect(() =&gt; &#123;</span><br><span class="line">    fetchProfile() // 组件加载时自动获取数据</span><br><span class="line">  &#125;, [isLoggedIn])</span><br><span class="line"></span><br><span class="line">  // 4. 条件渲染</span><br><span class="line">  if (!isLoggedIn) &#123;</span><br><span class="line">    return &lt;p&gt;请先登录查看用户信息&lt;/p&gt;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  return (</span><br><span class="line">    &lt;div className=&quot;profile-container&quot;&gt;</span><br><span class="line">      &lt;h2&gt;用户信息&lt;/h2&gt;</span><br><span class="line">      &lt;div&gt;用户ID: &#123;userInfo?.user_id&#125;&lt;/div&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="后端构建"><a href="#后端构建" class="headerlink" title="后端构建"></a>后端构建</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">from fastapi import FastAPI, Response, Request</span><br><span class="line">from fastapi.middleware.cors import CORSMiddleware</span><br><span class="line"></span><br><span class="line">app = FastAPI()</span><br><span class="line"></span><br><span class="line"># 添加 CORS 中间件</span><br><span class="line">app.add_middleware(</span><br><span class="line">    CORSMiddleware,</span><br><span class="line">    allow_origins=[&quot;*&quot;],  # 允许所有前端地址</span><br><span class="line">    allow_credentials=True, # 允许携带 Cookie</span><br><span class="line">    allow_methods=[&quot;*&quot;],# 允许所有 HTTP 方法</span><br><span class="line">    allow_headers=[&quot;*&quot;],# 允许所有 HTTP 头</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">@app.post(&quot;/login&quot;)</span><br><span class="line">def login(response: Response):</span><br><span class="line">    response.set_cookie(key=&quot;user_id&quot;, value=&quot;123&quot;, httponly=True)</span><br><span class="line">    return &#123;&quot;msg&quot;: &quot;Logged in&quot;&#125;</span><br><span class="line"></span><br><span class="line">@app.get(&quot;/profile&quot;)</span><br><span class="line">def profile(request: Request):</span><br><span class="line">    user_id = request.cookies.get(&quot;user_id&quot;)</span><br><span class="line">    return &#123;&quot;user_id&quot;: user_id&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    import uvicorn</span><br><span class="line">    print(&quot;Starting FastAPI backend server...&quot;)</span><br><span class="line">    uvicorn.run(</span><br><span class="line">        &quot;backend.app:app&quot;,</span><br><span class="line">        host=&quot;127.0.0.1&quot;,</span><br><span class="line">        reload=True,#支持热重载</span><br><span class="line">        port=8000,</span><br><span class="line">        log_level=&quot;info&quot;</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<h4 id="CORS（Cross-Origin-Resource-Sharing）-跨域资源共享"><a href="#CORS（Cross-Origin-Resource-Sharing）-跨域资源共享" class="headerlink" title="CORS（Cross-Origin Resource Sharing） = 跨域资源共享"></a>CORS（Cross-Origin Resource Sharing） = 跨域资源共享</h4><p>否则会出现</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Access to fetch at &#x27;http://localhost:8000/login&#x27; </span><br><span class="line">from origin &#x27;http://localhost:5173&#x27; </span><br><span class="line">has been blocked by CORS policy</span><br></pre></td></tr></table></figure>
+<ul>
+<li>从 <a target="_blank" rel="noopener" href="http://localhost:5173">http://localhost:5173</a> （前端）</li>
+<li>访问 <a target="_blank" rel="noopener" href="http://localhost:8000/login">http://localhost:8000/login</a> （后端）</li>
+<li>被CORS策略阻止了</li>
+</ul>
+<h4 id="cookie机制"><a href="#cookie机制" class="headerlink" title="cookie机制"></a>cookie机制</h4><ol>
+<li><strong><code>POST /login</code></strong>：登录成功，服务器“记住”用户</li>
+<li><strong><code>GET /profile</code></strong>：获取用户资料，服务器“认出”用户</li>
+</ol>
+<p>关键就靠 <strong>Cookie</strong> 在浏览器和服务器之间传递身份。</p>
+<p>🔧 1. <code>response.set_cookie(key=&quot;user_id&quot;, value=&quot;123&quot;, httponly=True)</code></p>
+<p>✅ 作用：</p>
+<blockquote>
+<p><strong>让服务器告诉浏览器：“请保存一个叫 <code>user_id</code> 的 Cookie，值是 <code>123</code>”</strong></p>
+</blockquote>
+<p>📡 实际发生了什么？</p>
+<p>当 FastAPI 执行这行代码时，它会在 HTTP <strong>响应头（Response Headers）</strong> 中添加一行：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Set-Cookie</span><span class="punctuation">: </span>user_id=123; HttpOnly</span><br></pre></td></tr></table></figure>
+<p>然后整个响应看起来像这样：<br><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">HTTP/1.1</span> <span class="number">200</span> OK</span><br><span class="line"><span class="attribute">Content-Type</span><span class="punctuation">: </span>application/json</span><br><span class="line"><span class="attribute">Set-Cookie</span><span class="punctuation">: </span>user_id=123; HttpOnly</span><br><span class="line"></span><br><span class="line"><span class="language-json"><span class="punctuation">&#123;</span><span class="attr">&quot;msg&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Logged in&quot;</span><span class="punctuation">&#125;</span></span></span><br></pre></td></tr></table></figure></p>
+<p>🌐 浏览器收到后会：</p>
+<ol>
+<li>解析 <code>Set-Cookie</code> 头</li>
+<li>在本地（内存或磁盘）保存这个 Cookie：<ul>
+<li>名字：<code>user_id</code></li>
+<li>值：<code>123</code></li>
+<li>属性：<code>HttpOnly</code>（JS 无法读取）</li>
+</ul>
+</li>
+<li><strong>以后每次向该域名发请求，自动带上这个 Cookie</strong></li>
+</ol>
+<p>🔐 参数详解（你用的三个）：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>作用</th>
+<th>安全建议</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>key=&quot;user_id&quot;</code></td>
+<td>Cookie 的名字</td>
+<td>用语义化名称，如 <code>session_id</code></td>
+</tr>
+<tr>
+<td><code>value=&quot;123&quot;</code></td>
+<td>Cookie 的值</td>
+<td><strong>不要直接存用户 ID！</strong> 应该存随机 session ID（后面讲）</td>
+</tr>
+<tr>
+<td><code>httponly=True</code></td>
+<td>禁止 JavaScript 读取</td>
+<td>✅ <strong>强烈建议开启</strong>，防 XSS 攻击</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>📥 2. <code>user_id = request.cookies.get(&quot;user_id&quot;)</code></p>
+<p>✅ 作用：</p>
+<blockquote>
+<p><strong>从当前请求中读取浏览器自动发送的 Cookie</strong></p>
+</blockquote>
+<p>📤 实际发生了什么？</p>
+<p>当浏览器访问 <code>/profile</code> 时，它会自动在 HTTP <strong>请求头（Request Headers）</strong> 中加上：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Cookie</span><span class="punctuation">: </span>user_id=123</span><br></pre></td></tr></table></figure>
+<p>FastAPI 的 <code>request.cookies</code> 是一个字典，<code>.get(&quot;user_id&quot;)</code> 就是读取这个值。</p>
+<p><img src="/2025/10/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/Cookie%E3%80%81Session%E3%80%81Token/image-20251026164036642.png" alt="image-20251026164036642"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant Client as 客户端（React）</span><br><span class="line">    participant Server as 服务器（FastAPI）</span><br><span class="line"></span><br><span class="line">    Client-&gt;&gt;Server: 请求（Request）\n- URL: /login\n- Method: POST\n- Body: &#123;&#125;\n- Headers: ...</span><br><span class="line">    Server--&gt;&gt;Client: 响应（Response）\n- Status: 200\n- Set-Cookie: user_id=123\n- Body: &#123;&quot;msg&quot;: &quot;Logged in&quot;&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h2><p><strong>Session（会话）</strong> 是一种 <strong>服务器端状态管理机制</strong>，用于在无状态的 HTTP 协议之上，<strong>维护客户端与服务器之间的持续交互状态</strong>。</p>
+<ul>
+<li><strong>核心思想</strong>：为每个客户端分配一个唯一的会话标识符（Session ID），服务器通过该 ID 查找对应的会话数据。</li>
+<li><strong>存储位置</strong>：会话数据（如用户身份、权限、购物车等）<strong>存储在服务器端</strong>（内存、数据库、缓存等）。</li>
+<li><strong>传输载体</strong>：Session ID 通常通过 <strong>Cookie</strong>（最常见）、URL 重写或 HTTP 头在客户端与服务器之间传递。</li>
+</ul>
+<p><strong>为什么需要session</strong></p>
+<p>HTTP 协议是<strong>无状态</strong>的：</p>
+<ul>
+<li>每次请求都是独立的，服务器不知道你是谁</li>
+<li>如果你登录后访问个人页面，服务器怎么知道你是谁？</li>
+</ul>
+<p><strong>解决方案</strong>：</p>
+<ul>
+<li><strong>Cookie</strong>：浏览器存数据（但不安全，不能存敏感信息）</li>
+<li><strong>Session</strong>：服务器存数据，浏览器只存 ID（安全！）</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Session 是实现“登录状态”的标准方式</strong> </p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant Browser</span><br><span class="line">    participant Server</span><br><span class="line"></span><br><span class="line">    Browser-&gt;&gt;Server: POST /login (用户名+密码)</span><br><span class="line">    Server-&gt;&gt;Server: 验证成功，创建 Session</span><br><span class="line">    Note right of Server: sessions[&quot;abc123&quot;] = &#123;&quot;user_id&quot;: &quot;123&quot;&#125;</span><br><span class="line">    Server--&gt;&gt;Browser: Set-Cookie: session_id=abc123;</span><br><span class="line"></span><br><span class="line">    Note over Browser: 浏览器保存 session_id</span><br><span class="line"></span><br><span class="line">    Browser-&gt;&gt;Server: GET /profile&lt;br/&gt;Cookie: session_id=abc123</span><br><span class="line">    Server-&gt;&gt;Server: 查 sessions[&quot;abc123&quot;] → user_id=123</span><br><span class="line">    Server--&gt;&gt;Browser: &#123;&quot;user_id&quot;: &quot;123&quot;&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="后端构建-1"><a href="#后端构建-1" class="headerlink" title="后端构建"></a>后端构建</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"># 简化的内存session存储</span><br><span class="line">sessions = &#123;&#125;</span><br><span class="line"></span><br><span class="line">@app.post(&quot;/login&quot;)</span><br><span class="line">def login(response: Response):</span><br><span class="line">    # 创建新的session</span><br><span class="line">    session_id = str(uuid.uuid4())</span><br><span class="line">    session_data = &#123;&quot;user_id&quot;: &quot;123&quot;, &quot;username&quot;: &quot;admin&quot;&#125;</span><br><span class="line">    </span><br><span class="line">    # 将session数据存储到内存字典</span><br><span class="line">    sessions[session_id] = session_data</span><br><span class="line">    </span><br><span class="line">    # 设置session cookie</span><br><span class="line">    response.set_cookie(</span><br><span class="line">        key=&quot;session_id&quot;,</span><br><span class="line">        value=session_id,</span><br><span class="line">        httponly=True</span><br><span class="line">    )</span><br><span class="line">    </span><br><span class="line">    logger.info(f&quot;用户登录成功，session_id: &#123;session_id&#125;&quot;)</span><br><span class="line">    return &#123;&quot;msg&quot;: &quot;Logged in&quot;, &quot;session_id&quot;: session_id&#125;</span><br><span class="line"></span><br><span class="line">@app.get(&quot;/profile&quot;)</span><br><span class="line">def profile(request: Request):</span><br><span class="line">    # 从cookie中获取session_id</span><br><span class="line">    session_id = request.cookies.get(&quot;session_id&quot;)</span><br><span class="line">    </span><br><span class="line">    if session_id is None:</span><br><span class="line">        logger.warning(&quot;未找到session cookie&quot;)</span><br><span class="line">        return &#123;&quot;error&quot;: &quot;请先登录&quot;, &quot;user_id&quot;: None&#125;</span><br><span class="line">    </span><br><span class="line">    # 从内存字典获取session数据</span><br><span class="line">    session_data = sessions.get(session_id)</span><br><span class="line">    </span><br><span class="line">    if session_data is None:</span><br><span class="line">        logger.error(f&quot;Session不存在: &#123;session_id&#125;&quot;)</span><br><span class="line">        return &#123;&quot;error&quot;: &quot;Session已过期&quot;, &quot;user_id&quot;: None&#125;</span><br><span class="line">    </span><br><span class="line">    logger.info(f&quot;获取session数据成功: &#123;session_data&#125;&quot;)</span><br><span class="line">    return &#123;&quot;user_id&quot;: session_data.get(&quot;user_id&quot;), &quot;username&quot;: session_data.get(&quot;username&quot;)&#125;</span><br></pre></td></tr></table></figure>
+<p>重复部分进行省略</p>
+<h2 id="JWT"><a href="#JWT" class="headerlink" title="JWT"></a>JWT</h2><h3 id="jwt是什么"><a href="#jwt是什么" class="headerlink" title="jwt是什么"></a>jwt是什么</h3><p><strong>JWT（JSON Web Token）</strong> 是一种 <strong>开放标准（RFC 7519）</strong>，用于在各方之间<strong>安全地传输声明（claims）</strong>。它是一种<strong>紧凑、自包含（self-contained）</strong> 的令牌格式，通常用于 <strong>身份认证（Authentication）</strong> 和 <strong>信息交换（Information Exchange）</strong>。</p>
+<ul>
+<li><strong>核心特点</strong>：<ul>
+<li><strong>无状态（Stateless）</strong>：服务器无需存储令牌</li>
+<li><strong>自包含</strong>：令牌本身包含用户身份和元数据</li>
+<li><strong>可验证</strong>：通过数字签名确保完整性与真实性</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>✅ JWT 的本质是 <strong>“签名的用户声明”</strong>，而非会话 ID。 </p>
+</blockquote>
+<h3 id="JWT-的结构"><a href="#JWT-的结构" class="headerlink" title="JWT 的结构"></a>JWT 的结构</h3><p>JWT 由三部分组成，用 <code>.</code> 连接：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xxxxx.yyyyy.zzzzz</span><br></pre></td></tr></table></figure>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>部分</th>
+<th>说明</th>
+<th>内容示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Header</strong></td>
+<td>令牌类型 + 签名算法</td>
+<td><code>&#123;&quot;alg&quot;: &quot;HS256&quot;, &quot;typ&quot;: &quot;JWT&quot;&#125;</code></td>
+</tr>
+<tr>
+<td><strong>Payload</strong></td>
+<td>声明（Claims）</td>
+<td><code>&#123;&quot;sub&quot;: &quot;123&quot;, &quot;name&quot;: &quot;Alice&quot;, &quot;exp&quot;: 1735689600&#125;</code></td>
+</tr>
+<tr>
+<td><strong>Signature</strong></td>
+<td>签名（防篡改）</td>
+<td><code>HMACSHA256(base64UrlEncode(header)+&#39;.&#39;+base64UrlEncode(payload), secret)</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<p>🔐 <strong>只有签名部分能防止篡改</strong>，Header 和 Payload 只是 Base64Url 编码（<strong>可解码！勿存敏感信息</strong>）。</p>
+</blockquote>
+<h3 id="JWT-的-sub是什么"><a href="#JWT-的-sub是什么" class="headerlink" title="JWT 的 sub是什么"></a>JWT 的 <code>sub</code>是什么</h3><p>在 JSON Web Token (JWT) 中，<code>sub</code> 是 <strong>Subject</strong>（主题）的缩写。</p>
+<p>它是 JWT 规范（RFC 7519）中定义的一个<strong>注册声明（Registered Claim）</strong>。简单来说，<code>sub</code> 用于回答这个问题：<strong>“这个 Token 是代表谁的？”</strong></p>
+<p><strong>含义</strong>：它标识了该 JWT 所面向的主体（Principal）。在绝大多数应用场景中，这个主体就是<strong>用户</strong>。</p>
+<p><strong>作用</strong>：当服务器收到一个 JWT 时，它通过读取 <code>sub</code> 字段来知道“当前请求是谁发起的”或“当前登录的是哪个用户 ID”。</p>
+<p>在 JWT 的 Payload（载荷）部分，<code>sub</code> 通常是这样的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;iss&quot;: &quot;https://auth.example.com&quot;,</span><br><span class="line">  &quot;sub&quot;: &quot;1234567890&quot;,  &lt;-- 这里是 User ID</span><br><span class="line">  &quot;name&quot;: &quot;John Doe&quot;,</span><br><span class="line">  &quot;iat&quot;: 1516239022</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="为什么用-JWT，相比较session优势在哪"><a href="#为什么用-JWT，相比较session优势在哪" class="headerlink" title="为什么用 JWT，相比较session优势在哪"></a>为什么用 JWT，相比较session优势在哪</h3><ol>
+<li><strong>无状态（Stateless） → 天然支持水平扩展</strong></li>
+</ol>
+<ul>
+<li><strong>Session</strong>：服务器必须存储会话数据（内存/Redis），所有实例需共享存储。</li>
+<li><strong>JWT</strong>：服务器<strong>不存储任何状态</strong>，任意实例均可独立验证 Token。</li>
+</ul>
+<blockquote>
+<p>🌐 <strong>适用场景</strong>：微服务架构、Serverless、高并发 API 网关<br>💡 优势：<strong>去中心化、无共享存储依赖、部署简单</strong></p>
+</blockquote>
+<ol>
+<li><strong>跨域与跨平台原生支持</strong></li>
+</ol>
+<ul>
+<li><strong>Session</strong>：依赖 Cookie，受同源策略限制，跨域需复杂 CORS 配置。</li>
+<li><strong>JWT</strong>：通过 <code>Authorization: Bearer &lt;token&gt;</code> 传输，<strong>无 Cookie 依赖</strong>。</li>
+</ul>
+<blockquote>
+<p>📱 <strong>适用场景</strong>：</p>
+<ul>
+<li>移动 App（iOS/Android）</li>
+<li>多前端（Web + 小程序 + 桌面端）</li>
+<li>第三方集成（如开放平台 API）</li>
+</ul>
+<p>💡 优势：<strong>一套 API 服务所有客户端</strong></p>
+</blockquote>
+<ol>
+<li><strong>自包含（Self-contained） → 减少数据库查询</strong></li>
+</ol>
+<ul>
+<li><strong>Session</strong>：每次请求需查存储（如 Redis）获取用户信息。</li>
+<li><strong>JWT</strong>：Payload 可直接携带用户 ID、角色、权限等信息。</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;sub&quot;</span><span class="punctuation">:</span> <span class="string">&quot;user123&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;role&quot;</span><span class="punctuation">:</span> <span class="string">&quot;admin&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;permissions&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;read&quot;</span><span class="punctuation">,</span> <span class="string">&quot;write&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;exp&quot;</span><span class="punctuation">:</span> <span class="number">1735689600</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>⚡ <strong>优势</strong>：<strong>减少 I/O，提升性能</strong>（尤其对权限频繁校验的系统）</p>
+</blockquote>
+<ol>
+<li><strong>标准化 &amp; 生态成熟</strong></li>
+</ol>
+<ul>
+<li>JWT 是 <strong>IETF 标准（RFC 7519）</strong>，各语言均有高质量库。</li>
+<li>与 <strong>OAuth 2.0、OpenID Connect</strong> 深度集成，适合现代身份认证体系。</li>
+</ul>
+<blockquote>
+<p>🔌 <strong>优势</strong>：<strong>无缝对接 Auth0、Keycloak、Firebase 等身份提供商</strong></p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant Client</span><br><span class="line">    participant Server</span><br><span class="line"></span><br><span class="line">    Client-&gt;&gt;Server: 1. POST /login (用户名+密码)</span><br><span class="line">    Server-&gt;&gt;Server: 2. 验证凭证</span><br><span class="line">    Server--&gt;&gt;Client: 3. 返回 JWT: &#123;token: &quot;xxxx.yyyy.zzzz&quot;&#125;</span><br><span class="line"></span><br><span class="line">    Note over Client: 4. 客户端保存 Token（内存/LocalStorage）</span><br><span class="line"></span><br><span class="line">    Client-&gt;&gt;Server: 5. GET /profile&lt;br/&gt;Authorization: Bearer xxxx.yyyy.zzzz</span><br><span class="line">    Server-&gt;&gt;Server: 6. 验证签名 + 检查 exp</span><br><span class="line">    Server--&gt;&gt;Client: 7. 返回受保护资源</span><br></pre></td></tr></table></figure>
+<h3 id="JWT的缺点"><a href="#JWT的缺点" class="headerlink" title="JWT的缺点"></a>JWT的缺点</h3><ol>
+<li><strong>无法主动撤销</strong>：一旦签发，在过期前始终有效，难以实现“立即登出”或“账号禁用”。</li>
+<li><strong>XSS 风险高</strong>：通常需存于前端（如内存或 localStorage），若存在 XSS 漏洞，Token 易被窃取。</li>
+<li><strong>Payload 可解码</strong>：Header 和 Payload 仅 Base64 编码，<strong>不是加密</strong>，不能存敏感信息。</li>
+<li><strong>体积较大</strong>：每次请求都要携带完整 Token，增加带宽开销（相比 Session ID）。</li>
+</ol>
+<h3 id="jwt三种签名算法"><a href="#jwt三种签名算法" class="headerlink" title="jwt三种签名算法"></a>jwt三种签名算法</h3><h4 id="1-HS256-HMAC-with-SHA-256"><a href="#1-HS256-HMAC-with-SHA-256" class="headerlink" title="1. HS256 (HMAC with SHA-256)"></a>1. HS256 (HMAC with SHA-256)</h4><p><strong>类型：对称加密 (Symmetric)</strong></p>
+<p>这是最简单、最常见的算法，适合单体应用或内部受信任的服务之间通信。</p>
+<p><strong>具体原理</strong></p>
+<p>“共享密钥”模式。</p>
+<p>签发 Token 的一方（认证服务器）和验证 Token 的一方（应用服务器）必须持有完全相同的密钥（Secret）。</p>
+<ol>
+<li><strong>签名过程：</strong> 将 Header 和 Payload 进行 Base64Url 编码，用 <code>.</code> 连接。然后使用 <strong>Secret</strong> 对这个字符串进行 SHA-256 哈希计算。</li>
+<li><strong>验证过程：</strong> 接收方收到 Token 后，用<strong>同一个 Secret</strong> 对 Header 和 Payload 再次进行同样的哈希计算。如果计算出的结果与 Token 中的签名一致，则验证通过。</li>
+</ol>
+<p><strong>核心公式</strong></p>
+<script type="math/tex; mode=display">Signature = HMACSHA256(base64Url(Header) + "." + base64Url(Payload), secret)</script><p><strong>举例说明</strong></p>
+<p><strong>场景：</strong> 你是一个独自开发的网站站长。</p>
+<p><strong>Secret：</strong> <code>&quot;my_super_secret_password&quot;</code>（只有你的服务器知道）。</p>
+<p><strong>流程：</strong></p>
+<ol>
+<li>用户登录，你的代码生成 Payload <code>&#123;&quot;user&quot;: &quot;admin&quot;&#125;</code>。</li>
+<li>代码混合 Secret 进行哈希，生成签名 <code>abc123...</code>。</li>
+<li>当用户下次带着 Token 请求时，你的代码再次用 <code>&quot;my_super_secret_password&quot;</code> 算一遍。如果算出来也是 <code>abc123...</code>，说明 Token 没被黑客改过。</li>
+</ol>
+<p><strong>优点：</strong> 速度极快，生成签名极其简单。</p>
+<p><strong>缺点：</strong> 密钥一旦泄露，黑客既能验证也能<strong>伪造</strong>任意 Token。不适合多方系统（因为要把密钥分发给所有验证者，风险扩散）。</p>
+<h4 id="2-RS256-RSA-Signature-with-SHA-256"><a href="#2-RS256-RSA-Signature-with-SHA-256" class="headerlink" title="2. RS256 (RSA Signature with SHA-256)"></a>2. RS256 (RSA Signature with SHA-256)</h4><p><strong>类型：非对称加密 (Asymmetric)</strong></p>
+<p>这是企业级应用、微服务架构和 OAuth2/OIDC（如 Auth0, Okta）中的<strong>行业标准</strong>。</p>
+<p><strong>具体原理</strong></p>
+<p><strong>“私钥签名，公钥验证”模式</strong>。 使用一对密钥：<strong>私钥 (Private Key)</strong> 和 <strong>公钥 (Public Key)</strong>。</p>
+<ul>
+<li><strong>私钥：</strong> 只有认证服务器（Auth Server）拥有，绝不公开。用于<strong>生成签名</strong>。</li>
+<li><strong>公钥：</strong> 可以公开给任何服务（资源服务器、网关等）。用于<strong>验证签名</strong>。</li>
+</ul>
+<p><strong>核心原理</strong></p>
+<p>RSA 利用了大数因数分解的数学难题。私钥加密的数据，只能用公钥解密（在签名场景下，这意味着只有公钥能验证是由私钥签名的）。</p>
+<p><strong>举例说明</strong></p>
+<ul>
+<li><strong>场景：</strong> Google 颁发 Token 给第三方 App（如 Notion）。</li>
+<li><strong>私钥：</strong> Google 只有一把，锁在 Google 的保险柜里。</li>
+<li><strong>公钥：</strong> 公布在网上（JWKS 端点），Notion 可以随时下载。</li>
+<li><strong>流程：</strong><ol>
+<li>Google 用<strong>私钥</strong>给 Payload <code>&#123;&quot;sub&quot;: &quot;123&quot;&#125;</code> 盖了一个“数字章”（签名）。</li>
+<li>Notion 收到 Token，去 Google 下载<strong>公钥</strong>。</li>
+<li>Notion 用公钥验证这个“章”。如果验证通过，Notion 就能 100% 确定这个 Token 是 Google 签发的，而不是黑客伪造的。</li>
+</ol>
+</li>
+<li><strong>优点：</strong> 安全性高。即使公钥泄露，黑客也只能验证 Token，无法伪造 Token。非常适合微服务（Auth 服务发 Token，其他几十个微服务只拿公钥验 Token）。</li>
+<li><strong>缺点：</strong> 签名速度比 HS256 慢，生成的签名字符串较长。</li>
+</ul>
+<h4 id="3-ES256-ECDSA-using-P-256-and-SHA-256"><a href="#3-ES256-ECDSA-using-P-256-and-SHA-256" class="headerlink" title="3. ES256 (ECDSA using P-256 and SHA-256)"></a>3. ES256 (ECDSA using P-256 and SHA-256)</h4><p><strong>类型：非对称加密 (Asymmetric - Elliptic Curve)</strong></p>
+<p>这是目前推荐的新兴标准。它在保持非对称加密安全性的同时，解决了 RSA 的性能和体积问题。</p>
+<p><strong>具体原理</strong></p>
+<p><strong>“椭圆曲线”模式</strong>。 同样使用公钥和私钥，但基于<strong>椭圆曲线密码学 (ECC)</strong>。 与 RSA 相比，ECC 可以在<strong>密钥长度短得多</strong>的情况下，提供同等甚至更高的安全性。</p>
+<p><strong>核心原理</strong></p>
+<p>它利用了椭圆曲线上的离散对数问题。简而言之，在一个特定的数学曲线上做点运算非常容易，但反向推导非常困难。</p>
+<p><strong>举例说明</strong></p>
+<p><strong>场景：</strong> 需要高并发、低带宽的物联网 (IoT) 设备或移动端 App。</p>
+<p><strong>对比 RSA：</strong></p>
+<ul>
+<li>要达到 128 位安全级别，<strong>RS256</strong> 需要 3072 位的密钥（生成的 Token 会很长，占用流量）。</li>
+<li><strong>ES256</strong> 只需要 256 位的密钥（Token 非常短，传输快）。</li>
+</ul>
+<p><strong>流程：</strong> 逻辑与 RS256 一样（私钥签、公钥验），但数学计算过程不同。</p>
+<p><strong>优点：</strong></p>
+<ol>
+<li><strong>Token 更短</strong>：节省带宽，HTTP Header 更小。</li>
+<li><strong>生成速度快</strong>：在某些硬件上，签名速度比 RSA 更快。</li>
+</ol>
+<p><strong>缺点：</strong> 相对较新，极老旧的系统可能不支持；数学原理比 RSA 更复杂，排查问题稍难。</p>
+<h3 id="后端构建-2"><a href="#后端构建-2" class="headerlink" title="后端构建"></a>后端构建</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line">from pydantic import BaseModel</span><br><span class="line">from datetime import datetime, timedelta</span><br><span class="line">import jwt</span><br><span class="line"></span><br><span class="line"># JWT配置</span><br><span class="line">SECRET_KEY = &quot;your-secret-key&quot;</span><br><span class="line">ALGORITHM = &quot;HS256&quot;</span><br><span class="line"></span><br><span class="line"># 简单的用户数据</span><br><span class="line">users = &#123;</span><br><span class="line">    &quot;admin&quot;: &#123;&quot;user_id&quot;: &quot;123&quot;, &quot;username&quot;: &quot;admin&quot;, &quot;password&quot;: &quot;admin123&quot;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def create_token(username: str) -&gt; str:</span><br><span class="line">    &quot;&quot;&quot;创建JWT token&quot;&quot;&quot;</span><br><span class="line">    # 设置token过期时间为24小时</span><br><span class="line">    expire = datetime.utcnow() + timedelta(hours=24)</span><br><span class="line">    # 构建JWT载荷，包含用户名和过期时间</span><br><span class="line">    payload = &#123;</span><br><span class="line">        &quot;sub&quot;: username,  # subject: 用户名</span><br><span class="line">        &quot;exp&quot;: expire     # expiration: 过期时间</span><br><span class="line">    &#125;</span><br><span class="line">    # 使用密钥和算法对载荷进行编码生成token</span><br><span class="line">    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)</span><br><span class="line"></span><br><span class="line">def verify_token(token: str) -&gt; str:</span><br><span class="line">    &quot;&quot;&quot;验证JWT token&quot;&quot;&quot;</span><br><span class="line">    # 解码JWT token获取载荷信息</span><br><span class="line">    payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])</span><br><span class="line">    # 从载荷中提取用户名</span><br><span class="line">    username = payload.get(&quot;sub&quot;)</span><br><span class="line">    return username</span><br><span class="line"></span><br><span class="line">@app.post(&quot;/login&quot;)</span><br><span class="line">def login(response: Response):</span><br><span class="line">    &quot;&quot;&quot;用户登录&quot;&quot;&quot;</span><br><span class="line">    # 简化登录，直接使用默认用户</span><br><span class="line">    username = &quot;admin&quot;</span><br><span class="line">    # 从用户字典中获取用户信息</span><br><span class="line">    user = users.get(username)</span><br><span class="line">    </span><br><span class="line">    # 为用户创建JWT token</span><br><span class="line">    token = create_token(username)</span><br><span class="line">    # 将token设置为httponly cookie，与现有前端兼容</span><br><span class="line">    response.set_cookie(key=&quot;session_id&quot;, value=token, httponly=True)</span><br><span class="line">    # 返回token信息和登录成功消息</span><br><span class="line">    return &#123;&quot;access_token&quot;: token, &quot;token_type&quot;: &quot;bearer&quot;, &quot;msg&quot;: &quot;Logged in&quot;&#125;</span><br><span class="line"></span><br><span class="line">@app.get(&quot;/profile&quot;)</span><br><span class="line">def profile(request: Request):</span><br><span class="line">    &quot;&quot;&quot;获取用户信息&quot;&quot;&quot;</span><br><span class="line">    # 首先尝试从cookie获取token（兼容现有前端）</span><br><span class="line">    token = request.cookies.get(&quot;session_id&quot;)</span><br><span class="line">    </span><br><span class="line">    # 如果cookie中没有token，尝试从Authorization header获取</span><br><span class="line">    if not token:</span><br><span class="line">        auth_header = request.headers.get(&quot;authorization&quot;)</span><br><span class="line">        # 检查是否为Bearer token格式</span><br><span class="line">        if auth_header and auth_header.startswith(&quot;Bearer &quot;):</span><br><span class="line">            # 提取Bearer后面的token部分</span><br><span class="line">            token = auth_header.split(&quot; &quot;)[1]</span><br><span class="line">    </span><br><span class="line">    # 验证token并获取用户名</span><br><span class="line">    username = verify_token(token)</span><br><span class="line">    # 根据用户名获取用户信息</span><br><span class="line">    user = users.get(username)</span><br><span class="line">    # 返回用户ID和用户名</span><br><span class="line">    return &#123;&quot;user_id&quot;: user[&quot;user_id&quot;], &quot;username&quot;: user[&quot;username&quot;]&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="/2025/10/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/Cookie%E3%80%81Session%E3%80%81Token/image-20251026164113650.png" alt="image-20251026164113650"></p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV13t5PzDEzh/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">JWT身份认证算法、落地方案及优缺点_哔哩哔哩_bilibili</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1ob4y1Y7Ep/?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">Cookie、Session、Token究竟区别在哪？如何进行身份认证，保持用户登录状态？_哔哩哔哩_bilibili</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV13t5PzDEzh/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">JWT身份认证算法、落地方案及优缺点_哔哩哔哩_bilibili</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag"># 后端</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/10/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/Websockets/" rel="prev" title="Websockets">
+                  <i class="fa fa-angle-left"></i> Websockets
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/11/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/MMGraphRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" rel="next" title="MMGraphRAG论文阅读">
+                  MMGraphRAG论文阅读 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js","integrity":"sha256-stuqcu2FrjYCXDOytWFA5SoUE/r3nkp6gTglzNSlavU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

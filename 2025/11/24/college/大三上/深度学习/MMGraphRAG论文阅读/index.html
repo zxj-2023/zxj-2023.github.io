@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="MMGraphRAG流程说明： 索引阶段 (Indexing)  ◦ 目标： 将原始的多模态数据（文本和图像）转化为结构化的多模态知识图谱（MMKG）。   ◦ Text2Graph： 对文本输入进行分块并提取实体，构建文本知识图谱 (Text-based KG)。   ◦ Image2Graph： 图像通过场景图 (scene graphs) 精炼视觉内容。这包括使用 YOLOv8 进行语义分割">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MMGraphRAG论文阅读">
+<meta property="og:url" content="http://example.com/2025/11/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/MMGraphRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="MMGraphRAG流程说明： 索引阶段 (Indexing)  ◦ 目标： 将原始的多模态数据（文本和图像）转化为结构化的多模态知识图谱（MMKG）。   ◦ Text2Graph： 对文本输入进行分块并提取实体，构建文本知识图谱 (Text-based KG)。   ◦ Image2Graph： 图像通过场景图 (scene graphs) 精炼视觉内容。这包括使用 YOLOv8 进行语义分割">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2025/11/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/MMGraphRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/image-20251211192220984.png">
+<meta property="og:image" content="http://example.com/2025/11/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/MMGraphRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/image-20251212102050866.png">
+<meta property="article:published_time" content="2025-11-23T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-03T13:15:37.242Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="大学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2025/11/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/MMGraphRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/image-20251211192220984.png">
+
+
+<link rel="canonical" href="http://example.com/2025/11/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/MMGraphRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/11/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/MMGraphRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/","path":"2025/11/24/college/大三上/深度学习/MMGraphRAG论文阅读/","title":"MMGraphRAG论文阅读"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MMGraphRAG论文阅读 | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MMGraphRAG"><span class="nav-number">1.</span> <span class="nav-text">MMGraphRAG</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E8%AF%B4%E6%98%8E%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">流程说明：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E9%98%B6%E6%AE%B5-Indexing"><span class="nav-number">1.1.1.</span> <span class="nav-text">索引阶段 (Indexing)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A3%80%E7%B4%A2%E9%98%B6%E6%AE%B5-Retrieval"><span class="nav-number">1.1.2.</span> <span class="nav-text">检索阶段 (Retrieval)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E9%98%B6%E6%AE%B5-Generation"><span class="nav-number">1.1.3.</span> <span class="nav-text">生成阶段 (Generation)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5%E8%A7%A3%E6%9E%90"><span class="nav-number">1.2.</span> <span class="nav-text">概念解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E5%9B%BE%EF%BC%88Scene-Graphs%EF%BC%89"><span class="nav-number">1.2.1.</span> <span class="nav-text">场景图（Scene Graphs）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%A8%E6%A8%A1%E6%80%81%E5%AE%9E%E4%BD%93%E9%93%BE%E6%8E%A5%EF%BC%88Cross-Modal-Entity-Linking-CMEL%EF%BC%89"><span class="nav-number">1.2.2.</span> <span class="nav-text">跨模态实体链接（Cross-Modal Entity Linking, CMEL）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E8%B0%B1%E8%81%9A%E7%B1%BB%EF%BC%88Spectral-Clustering-Based%EF%BC%89%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">1.2.3.</span> <span class="nav-text">基于谱聚类（Spectral Clustering-Based）的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%B7%E5%90%88%E7%B2%92%E5%BA%A6%E6%A3%80%E7%B4%A2%EF%BC%88Hybrid-Granularity-Retrieval%EF%BC%89"><span class="nav-number">1.2.4.</span> <span class="nav-text">混合粒度检索（Hybrid Granularity Retrieval）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E8%B4%A1%E7%8C%AE"><span class="nav-number">1.3.</span> <span class="nav-text">核心贡献</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%90%E5%87%BA%E9%A6%96%E4%B8%AA%E5%9F%BA%E4%BA%8E%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E7%9A%84%E5%A4%9A%E6%A8%A1%E6%80%81-RAG-%E6%A1%86%E6%9E%B6-MMGraphRAG"><span class="nav-number">1.3.1.</span> <span class="nav-text">提出首个基于知识图谱的多模态 RAG 框架 (MMGraphRAG)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%A8%E6%A8%A1%E6%80%81%E5%AE%9E%E4%BD%93%E9%93%BE%E6%8E%A5%EF%BC%88CMEL%EF%BC%89%E7%9A%84%E5%88%9B%E6%96%B0%E6%96%B9%E6%B3%95%E5%92%8C%E5%9F%BA%E5%87%86%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">1.3.2.</span> <span class="nav-text">跨模态实体链接（CMEL）的创新方法和基准数据集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E9%AA%8C%E8%AF%81%EF%BC%9A%E5%AE%9E%E7%8E%B0%E6%9C%80%E5%85%88%E8%BF%9B%E6%80%A7%E8%83%BD%E5%92%8C%E9%AB%98%E9%B2%81%E6%A3%92%E6%80%A7"><span class="nav-number">1.3.3.</span> <span class="nav-text">实验验证：实现最先进性能和高鲁棒性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C-Related-Work"><span class="nav-number">1.4.</span> <span class="nav-text">相关工作 (Related Work)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GraphRAG"><span class="nav-number">1.4.1.</span> <span class="nav-text">GraphRAG</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E4%BD%93%E9%93%BE%E6%8E%A5-Entity-Linking"><span class="nav-number">1.4.2.</span> <span class="nav-text">实体链接 (Entity Linking</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Image2Graph-%E6%A8%A1%E5%9D%97"><span class="nav-number">1.5.</span> <span class="nav-text">Image2Graph 模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E5%83%8F%E5%88%86%E5%89%B2-Image-Segmentation-%EF%BC%9A"><span class="nav-number">1.5.1.</span> <span class="nav-text">图像分割 (Image Segmentation)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E5%83%8F%E7%89%B9%E5%BE%81%E5%9D%97%E6%8F%8F%E8%BF%B0-Image-Feature-Block-Description-%EF%BC%9A"><span class="nav-number">1.5.2.</span> <span class="nav-text">图像特征块描述 (Image Feature Block Description)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E4%BD%93%E5%92%8C%E5%85%B3%E7%B3%BB%E6%8F%90%E5%8F%96-Entity-and-Relation-Extraction-%EF%BC%9A"><span class="nav-number">1.5.3.</span> <span class="nav-text">实体和关系提取 (Entity and Relation Extraction)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E5%83%8F%E7%89%B9%E5%BE%81%E5%9D%97%E4%B8%8E%E5%AE%9E%E4%BD%93%E7%9A%84%E5%AF%B9%E9%BD%90-Alignment-of-Image-Feature-Blocks-with-Entities-%EF%BC%9A"><span class="nav-number">1.5.4.</span> <span class="nav-text">图像特征块与实体的对齐 (Alignment of Image Feature Blocks with Entities)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E5%AE%9E%E4%BD%93%E6%9E%84%E5%BB%BA-Global-Entity-Construction-%EF%BC%9A"><span class="nav-number">1.5.5.</span> <span class="nav-text">全局实体构建 (Global Entity Construction)：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E8%B0%B1%E8%81%9A%E7%B1%BB%E7%9A%84%E5%80%99%E9%80%89%E5%AE%9E%E4%BD%93%E7%94%9F%E6%88%90%EF%BC%88Spectral-Clustering-Based-Candidate-Generation%EF%BC%89"><span class="nav-number">1.6.</span> <span class="nav-text">基于谱聚类的候选实体生成（Spectral Clustering-Based Candidate Generation）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E4%B8%80%EF%BC%9A%E5%80%99%E9%80%89%E5%AE%9E%E4%BD%93%E7%9A%84%E7%94%9F%E6%88%90"><span class="nav-number">1.6.1.</span> <span class="nav-text">阶段一：候选实体的生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0-%E5%9C%BA%E6%99%AF%E8%AE%BE%E5%AE%9A"><span class="nav-number">1.6.2.</span> <span class="nav-text">0. 场景设定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E6%9E%84%E5%BB%BA%E9%82%BB%E6%8E%A5%E7%9F%A9%E9%98%B5-A-%E8%9E%8D%E5%90%88%E8%AF%AD%E4%B9%89%E4%B8%8E-LLM"><span class="nav-number">1.6.3.</span> <span class="nav-text">第一步：构建邻接矩阵 A (融合语义与 LLM)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E6%9E%84%E5%BB%BA%E5%BA%A6%E7%9F%A9%E9%98%B5-D"><span class="nav-number">1.6.4.</span> <span class="nav-text">第二步：构建度矩阵 D</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E8%B0%B1%E5%8F%98%E6%8D%A2%E4%B8%8E%E7%89%B9%E5%BE%81%E5%88%86%E8%A7%A3-%E7%94%9F%E6%88%90%E7%9F%A9%E9%98%B5-Q"><span class="nav-number">1.6.5.</span> <span class="nav-text">第三步：谱变换与特征分解 (生成矩阵 Q)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%9ADBSCAN-%E8%81%9A%E7%B1%BB"><span class="nav-number">1.6.6.</span> <span class="nav-text">第四步：DBSCAN 聚类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E6%AD%A5%EF%BC%9A%E5%80%99%E9%80%89%E5%AE%9E%E4%BD%93%E7%94%9F%E6%88%90-%E5%8C%B9%E9%85%8D%E5%9B%BE%E7%89%87"><span class="nav-number">1.6.7.</span> <span class="nav-text">第五步：候选实体生成 (匹配图片)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E4%BA%8C%EF%BC%9A%E4%BB%8E%E7%AD%9B%E9%80%89%E5%87%BA%E7%9A%84%E5%80%99%E9%80%89%E9%9B%86%E4%B8%AD%E7%A1%AE%E5%AE%9A%E6%9C%80%E4%BD%B3%E5%AF%B9%E9%BD%90%E7%BB%93%E6%9E%9C"><span class="nav-number">1.6.8.</span> <span class="nav-text">阶段二：从筛选出的候选集中确定最佳对齐结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CMEL-Cross-Modal-Entity-Linking-%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">1.7.</span> <span class="nav-text">CMEL (Cross-Modal Entity Linking) 数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-CMEL-%E6%95%B0%E6%8D%AE%E9%9B%86%E7%9A%84%E6%9E%84%E6%88%90%E5%92%8C%E9%A2%86%E5%9F%9F%E5%A4%9A%E6%A0%B7%E6%80%A7"><span class="nav-number">1.7.1.</span> <span class="nav-text">1. CMEL 数据集的构成和领域多样性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%AF%84%E4%BC%B0%E6%8C%87%E6%A0%87%EF%BC%88Evaluation-Metrics%EF%BC%89"><span class="nav-number">1.7.2.</span> <span class="nav-text">2. 评估指标（Evaluation Metrics）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E8%AE%BE%E7%BD%AE%E4%B8%8E%E7%BB%93%E6%9E%9C%EF%BC%88Experimental-Setup-and-Results%EF%BC%89"><span class="nav-number">1.8.</span> <span class="nav-text">实验设置与结果（Experimental Setup and Results）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%B7%A8%E6%A8%A1%E6%80%81%E5%AE%9E%E4%BD%93%E9%93%BE%E6%8E%A5%EF%BC%88CMEL%EF%BC%89%E5%AE%9E%E9%AA%8C%E8%AE%BE%E7%BD%AE%E4%B8%8E%E7%BB%93%E6%9E%9C"><span class="nav-number">1.8.1.</span> <span class="nav-text">1. 跨模态实体链接（CMEL）实验设置与结果</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.8.1.1.</span> <span class="nav-text">实验设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C%EF%BC%88CMEL%EF%BC%89"><span class="nav-number">1.8.1.2.</span> <span class="nav-text">关键实验结果（CMEL）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%A4%9A%E6%A8%A1%E6%80%81%E6%96%87%E6%A1%A3%E9%97%AE%E7%AD%94%EF%BC%88DocQA%EF%BC%89%E5%AE%9E%E9%AA%8C%E8%AE%BE%E7%BD%AE%E4%B8%8E%E7%BB%93%E6%9E%9C"><span class="nav-number">1.8.2.</span> <span class="nav-text">2. 多模态文档问答（DocQA）实验设置与结果</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E8%AE%BE%E7%BD%AE-1"><span class="nav-number">1.8.2.1.</span> <span class="nav-text">实验设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C%EF%BC%88DocQA%EF%BC%89"><span class="nav-number">1.8.2.2.</span> <span class="nav-text">关键实验结果（DocQA）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DocBench-%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">1.9.</span> <span class="nav-text">DocBench 数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%9B%AE%E7%9A%84%E4%B8%8E%E4%BD%9C%E7%94%A8"><span class="nav-number">1.9.1.</span> <span class="nav-text">1. 目的与作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%95%B0%E6%8D%AE%E6%9E%84%E6%88%90%E4%B8%8E%E9%A2%86%E5%9F%9F%E8%A6%86%E7%9B%96"><span class="nav-number">1.9.2.</span> <span class="nav-text">2. 数据构成与领域覆盖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E9%97%AE%E9%A2%98%E7%B1%BB%E5%9E%8B-Question-Types"><span class="nav-number">1.9.3.</span> <span class="nav-text">3. 问题类型 (Question Types)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E8%AF%84%E4%BC%B0%E6%9C%BA%E5%88%B6"><span class="nav-number">1.9.4.</span> <span class="nav-text">4. 评估机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E6%96%87"><span class="nav-number">1.10.</span> <span class="nav-text">原文</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">178</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/11/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/MMGraphRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="MMGraphRAG论文阅读 | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MMGraphRAG论文阅读
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-11-24 00:00:00" itemprop="dateCreated datePublished" datetime="2025-11-24T00:00:00+08:00">2025-11-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-01-03 21:15:37" itemprop="dateModified" datetime="2026-01-03T21:15:37+08:00">2026-01-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%B8%89%E4%B8%8A/" itemprop="url" rel="index"><span itemprop="name">大三上</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="MMGraphRAG"><a href="#MMGraphRAG" class="headerlink" title="MMGraphRAG"></a>MMGraphRAG</h1><h2 id="流程说明："><a href="#流程说明：" class="headerlink" title="流程说明："></a>流程说明：</h2><p><img src="/2025/11/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/MMGraphRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/image-20251211192220984.png" alt="image-20251211192220984"></p>
+<h3 id="索引阶段-Indexing"><a href="#索引阶段-Indexing" class="headerlink" title="索引阶段 (Indexing)"></a><strong>索引阶段 (Indexing)</strong></h3><p>  ◦ <strong>目标：</strong> 将原始的多模态数据（文本和图像）转化为结构化的多模态知识图谱（MMKG）。</p>
+<p>  ◦ <strong>Text2Graph：</strong> 对文本输入进行分块并提取实体，构建<strong>文本知识图谱 (Text-based KG)</strong>。</p>
+<p>  ◦ <strong>Image2Graph：</strong> 图像通过<strong>场景图 (scene graphs)</strong> 精炼视觉内容。这包括使用 YOLOv8 进行语义分割、使用多模态大语言模型（MLLM）生成特征块描述、提取实体和关系（包括显式和隐式关系），并构建描述整个图像的<strong>全局实体</strong>。从而构建<strong>图像知识图谱 (Image-based KG)</strong>。</p>
+<p>  ◦ <strong>跨模态知识融合 (Cross-Modal Knowledge Fusion)：</strong> 这是核心步骤，通过<strong>跨模态实体链接 (CMEL)</strong> 将文本 KG 和图像 KG 融合。</p>
+<p>​    ▪ 论文采用了<strong>基于谱聚类 (Spectral Clustering)</strong> 的优化策略来高效地生成候选实体对，该方法结合了实体间的语义和结构信息，从而增强了 CMEL 任务的准确性。</p>
+<p>​    ▪ 融合步骤还包括：对未对齐的图像实体进行描述增强，以及对全局图像实体进行对齐。</p>
+<p>  ◦ <strong>输出：</strong> <strong>多模态知识图谱 (MMKG)</strong>。该框架采用<strong>基于节点的 MMKG (N-MMKG)</strong> 范式，将图像视为独立的节点，以保留更丰富的语义信息和可扩展性。</p>
+<h3 id="检索阶段-Retrieval"><a href="#检索阶段-Retrieval" class="headerlink" title="检索阶段 (Retrieval)"></a><strong>检索阶段 (Retrieval)</strong></h3><p>  ◦ <strong>目标：</strong> 根据用户查询，在 MMKG 中提取相关知识线索。</p>
+<p>  ◦ <strong>混合粒度检索 (Hybrid Granularity Retriever)：</strong> 检索模块沿着 MMKG 中的<strong>多模态推理路径</strong>，提取相关的实体、关系和上下文信息。</p>
+<h3 id="生成阶段-Generation"><a href="#生成阶段-Generation" class="headerlink" title="生成阶段 (Generation)"></a><strong>生成阶段 (Generation)</strong></h3><p>  ◦ <strong>目标：</strong> 整合检索到的多模态线索，生成最终答案。</p>
+<p>  ◦ <strong>混合生成策略 (Hybrid Generation Strategy)：</strong></p>
+<p>​    ▪ 首先，<strong>大型语言模型 (LLM)</strong> 生成初步的文本响应。</p>
+<p>​    ▪ 随后，<strong>多模态大语言模型 (MLLM)</strong> 基于视觉和文本信息生成多个多模态响应。</p>
+<p>​    ▪ 最后，LLM 将这些响应整合并增强，输出一个统一且连贯的最终答案。</p>
+<h2 id="概念解析"><a href="#概念解析" class="headerlink" title="概念解析"></a>概念解析</h2><h3 id="场景图（Scene-Graphs）"><a href="#场景图（Scene-Graphs）" class="headerlink" title="场景图（Scene Graphs）"></a>场景图（Scene Graphs）</h3><p><strong>场景图</strong>是 MMGraphRAG 框架在<strong>索引阶段</strong>用于处理视觉信息的核心工具,d。</p>
+<p>• <strong>定义和作用：</strong> 场景图用于<strong>精炼视觉内容</strong>，将图像信息转化为实体和关系。通过构建场景图，MMGraphRAG 能够将原始视觉输入转换为结构化的<strong>图像知识图谱（Image-based KG）</strong>,。</p>
+<p>• <strong>结构和信息捕获：</strong> 传统的场景图方法通常会忽略细粒度的语义细节和物体之间隐藏的信息，导致在下游推理任务中产生偏差。相比之下，MMGraphRAG 采用基于<strong>多模态大语言模型（MLLM）</strong>的方法来生成场景图。这种方法能够：</p>
+<p>  ◦ 通过语义分割和 MLLM 的推理能力提取实体并推断出<strong>显式关系</strong>（例如：“女孩”——“拿着相机”——“相机”）和<strong>隐式关系</strong>（例如：“男孩”——“男孩和女孩看起来很亲密，可能是朋友或情侣”——“女孩”）,。</p>
+<p>  ◦ 为视觉实体提供更丰富的语义描述，例如将基本的标签“男孩”细化为更详细的表达，如“眼睛疲惫的大学生”。</p>
+<p>• <strong>构建过程：</strong> 在 MMGraphRAG 的 <code>Img2Graph</code> 模块中，场景图的构建流程包括图像语义分割、为每个特征块生成文本描述、提取实体和关系，以及构建描述整个图像的<strong>全局实体</strong>,。</p>
+<h3 id="跨模态实体链接（Cross-Modal-Entity-Linking-CMEL）"><a href="#跨模态实体链接（Cross-Modal-Entity-Linking-CMEL）" class="headerlink" title="跨模态实体链接（Cross-Modal Entity Linking, CMEL）"></a>跨模态实体链接（Cross-Modal Entity Linking, CMEL）</h3><p><strong>CMEL</strong> 是实现跨模态融合和构建统一 MMKG 的<strong>关键组成部分</strong>。</p>
+<p>• <strong>定义：</strong> CMEL 的目标是<strong>对齐从图像和文本中提取的实体</strong>，即识别指代同一现实世界概念的图像实体和文本实体对,。</p>
+<p>• <strong>在 MMGraphRAG 中的作用：</strong> 它是<strong>跨模态融合模块</strong>的第一步，也是最关键的一步。它负责在<strong>文本知识图谱（Text-based KG）</strong>和<strong>图像知识图谱（Image-based KG）</strong>之间建立连接。</p>
+<p>• <strong>与传统方法的区别：</strong></p>
+<p>  ◦ <strong>传统实体链接（EL）</strong>：仅将文本实体与知识库中的对应条目关联，忽略非文本信息。</p>
+<p>  ◦ <strong>多模态实体链接（MEL）</strong>：将视觉信息作为辅助属性来增强实体与知识库条目之间的对齐，但无法建立超出这些辅助关联的<strong>跨模态关系</strong>,。</p>
+<p>  ◦ <strong>CMEL</strong>：更进一步，它将视觉内容视为独立的实体，并将这些<strong>视觉实体</strong>与其<strong>文本对应物</strong>对齐，从而构建 MMKG 并促进<strong>显式的跨模态推理</strong>。</p>
+<h3 id="基于谱聚类（Spectral-Clustering-Based）的方法"><a href="#基于谱聚类（Spectral-Clustering-Based）的方法" class="headerlink" title="基于谱聚类（Spectral Clustering-Based）的方法"></a>基于谱聚类（Spectral Clustering-Based）的方法</h3><p>基于谱聚类的方法是 MMGraphRAG 针对 <strong>CMEL 任务</strong>中<strong>候选实体生成</strong>这一挑战提出的优化策略,。</p>
+<p>• <strong>目标：</strong> 在 CMEL 任务中，由于文本实体数量通常大于视觉实体，需要高效且鲁棒地为每个视觉实体生成一组<strong>候选文本实体</strong>,。</p>
+<p>• <strong>优势：</strong> 现有的聚类方法（如 KMeans、DBSCAN）依赖语义相似性，但忽略图结构；而图聚类方法（如 PageRank、Leiden）关注结构关系，但在稀疏图上表现不佳。<strong>基于谱聚类</strong>的方法解决了这两个方面的问题，它<strong>同时捕获实体间的语义信息和结构信息</strong>,。</p>
+<p>• <strong>具体实现：</strong></p>
+<p>  ◦ 该方法通过重新设计<strong>加权邻接矩阵</strong> <em>A</em> 和<strong>度矩阵</strong> <em>D</em> 来实现语义和结构的整合。</p>
+<p>  ◦ <strong>邻接矩阵</strong> <em>A</em> 的构建同时反映了节点间的<strong>余弦相似性</strong>（语义信息）和它们之间关系的<strong>重要性</strong>（结构信息），其中关系的重要性由 LLM 评估。</p>
+<p>  ◦ <strong>度矩阵</strong> <em>D</em> 的对角线值表示节点与其所有其他节点之间的<strong>总加权相似度</strong>。</p>
+<p>  ◦ 随后，遵循标准的谱聚类步骤，构建拉普拉斯矩阵并进行特征分解，然后利用 DBSCAN 在特征向量空间（矩阵 <em>Q</em> 的行空间）上进行聚类，从而获得簇划分,。</p>
+<p>• <strong>效果：</strong> 实验结果显示，该方法在 CMEL 任务上的表现显著优于其他聚类和嵌入方法，将微观准确率提高了约 15%，宏观准确率提高了约 30%。</p>
+<h3 id="混合粒度检索（Hybrid-Granularity-Retrieval）"><a href="#混合粒度检索（Hybrid-Granularity-Retrieval）" class="headerlink" title="混合粒度检索（Hybrid Granularity Retrieval）"></a>混合粒度检索（Hybrid Granularity Retrieval）</h3><p><strong>混合粒度检索</strong>是 MMGraphRAG <strong>检索阶段</strong>的核心功能,。</p>
+<p>• <strong>定义：</strong> 在接收到用户查询后，检索模块在构建好的<strong>多模态知识图谱（MMKG）</strong>内部执行检索。</p>
+<p>• <strong>检索内容：</strong> 这种检索方式会提取不同粒度的相关信息，包括<strong>实体（Entities）</strong>、<strong>关系（Relationships）</strong> <strong>上下文信息/文本块（Contextual Information/Text Chunks）</strong>,。</p>
+<p>• <strong>机制：</strong> 检索是沿着 MMKG 内的<strong>多模态推理路径</strong>进行的,。由于 MMKG 将图像建模为独立的节点，并明确地链接了视觉和文本实体，这种结构化的检索（基于推理路径）能够比传统的基于嵌入相似度的检索（如 NaiveRAG）<strong>更精确地检索出与问题相关的视觉内容</strong>，并支持复杂的跨模态推理,,。检索结果随后用于指导生成过程,。</p>
+<h2 id="核心贡献"><a href="#核心贡献" class="headerlink" title="核心贡献"></a>核心贡献</h2><p>论文的<strong>三个主要核心贡献</strong>如下：</p>
+<h3 id="提出首个基于知识图谱的多模态-RAG-框架-MMGraphRAG"><a href="#提出首个基于知识图谱的多模态-RAG-框架-MMGraphRAG" class="headerlink" title="提出首个基于知识图谱的多模态 RAG 框架 (MMGraphRAG)"></a>提出首个基于知识图谱的多模态 RAG 框架 (MMGraphRAG)</h3><p>MMGraphRAG 是<strong>第一个基于知识图谱（KG）的多模态 RAG 框架</strong>。它旨在实现深度跨模态融合和推理，其设计具有强大的可扩展性和适应性。</p>
+<p>A. 创新性的索引阶段（构建 MMKG）</p>
+<p>MMGraphRAG 的核心在于其索引阶段，它将原始的多模态数据（文本和图像）转化为统一的<strong>多模态知识图谱 (MMKG)</strong>。</p>
+<p>• <strong>视觉内容精炼：</strong> 图像信息首先通过<strong>场景图（Scene Graphs）</strong> <strong>显式和隐式关系</strong>，从而生成高精度和细粒度的场景图，将原始视觉输入转化为<strong>图像知识图谱</strong>。</p>
+<p>• <strong>MMKG 范式：</strong> 论文采用了<strong>基于节点的 MMKG（Node-based MMKG, N-MMKG）</strong>范式。在这种范式中，图像被视为独立的节点，而非仅仅是文本实体的属性（Attribute-MMKG, A-MMKG）。这种设计避免了将视觉数据存储为属性时带来的信息损失，保留了更丰富的语义信息，并显着增强了跨模态推理能力和图的灵活性与可扩展性。</p>
+<p>B. 结构化检索与生成</p>
+<p>• <strong>检索：</strong> 检索模块在 MMKG 内部沿着<strong>多模态推理路径</strong>执行<strong>混合粒度检索</strong>，从而提取相关的实体、关系和上下文信息，以指导生成过程。</p>
+<p>• <strong>混合生成策略：</strong> 生成阶段采用混合策略，首先由 <strong>LLM</strong> 生成初步的文本响应，然后由 <strong>MLLM</strong> 根据视觉和文本信息生成多模态响应。最后，LLM 将两者整合为一个统一且连贯的最终答案。这种方法有效缓解了当前 MLLM 在推理上的限制，确保了高质量、上下文适当的响应。</p>
+<h3 id="跨模态实体链接（CMEL）的创新方法和基准数据集"><a href="#跨模态实体链接（CMEL）的创新方法和基准数据集" class="headerlink" title="跨模态实体链接（CMEL）的创新方法和基准数据集"></a>跨模态实体链接（CMEL）的创新方法和基准数据集</h3><p>为解决构建 MMKG 中<strong>跨模态实体对齐</strong>的关键挑战，论文在 CMEL 任务上做出了重要贡献。</p>
+<p>A. 提出基于谱聚类的 CMEL 优化策略</p>
+<p>• <strong>挑战：</strong> 准确地为每个视觉实体从文本实体池中生成一组候选实体对，是一个高效且鲁棒性的挑战。</p>
+<p>• <strong>解决方案：</strong> 论文设计了<strong>基于谱聚类的优化策略</strong>，用于高效生成候选实体。这种方法通过重新设计邻接矩阵 <em>A</em> 和度矩阵 <em>D</em>，<strong>同时捕获实体间的语义信息和结构信息</strong>。这极大地增强了 CMEL 任务的准确性，实验结果表明其在微观准确率上提升了约 15%，在宏观准确率上提升了约 30%，显著优于其他聚类和嵌入方法。</p>
+<p>B. 构建并发布 CMEL 数据集</p>
+<p>• <strong>目的：</strong> 为了解决该领域<strong>缺乏统一基准评估</strong>的问题。</p>
+<p>• <strong>内容：</strong> 构建并发布了 <strong>CMEL 数据集</strong>，这是一个专门针对<strong>细粒度多实体对齐</strong>设计的新型基准，其在实体多样性和关系复杂性上都高于现有基准。该数据集包含来自<strong>新闻、学术和小说</strong>三个不同领域的文档，总共提供了 <strong>1,114 个对齐实例</strong>。</p>
+<h3 id="实验验证：实现最先进性能和高鲁棒性"><a href="#实验验证：实现最先进性能和高鲁棒性" class="headerlink" title="实验验证：实现最先进性能和高鲁棒性"></a>实验验证：实现最先进性能和高鲁棒性</h3><p>MMGraphRAG 框架在多模态文档问答（DocQA）任务上进行了全面的评估，验证了其优势：</p>
+<p>• <strong>达到 SOTA 性能：</strong> MMGraphRAG 在 <strong>DocBench</strong> 和 <strong>MMLongBench</strong> 这两个多模态 DocQA 基准数据集上均取得了<strong>最先进的性能</strong>，显着优于现有的 RAG 基线方法（包括 LLM、MLLM、NaiveRAG 和 GraphRAG）。</p>
+<p>• <strong>跨域适应性：</strong> MMGraphRAG 表现出<strong>强大的跨领域适应性</strong>，尤其在具有高视觉结构复杂性的领域（如<strong>学术</strong>和<strong>金融</strong>）中，相比于纯文本的 RAG 方法有实质性提升。</p>
+<p>• <strong>处理“不可回答”问题的优势：</strong> 该框架在处理<strong>不可回答（Unanswerable, Una.）</strong>的问题时显示出明显的优势。由于其通过 MMKG 进行结构化推理，MMGraphRAG 能够更可靠地评估问题是否可答，从而减少生成误导性答案，增强了在真实世界场景中的鲁棒性。</p>
+<p>• <strong>提供可解释性：</strong> 该框架通过<strong>可追溯的推理路径</strong>来指导多模态推理</p>
+<h2 id="相关工作-Related-Work"><a href="#相关工作-Related-Work" class="headerlink" title="相关工作 (Related Work)"></a><strong>相关工作 (Related Work)</strong></h2><h3 id="GraphRAG"><a href="#GraphRAG" class="headerlink" title="GraphRAG"></a>GraphRAG</h3><p><strong>多模态 GraphRAG 的尝试：</strong> 针对多模态数据，HM-RAG 提出了一个分层多智能体多模态 RAG 框架。该框架通过协调分解智能体、多源检索智能体和决策智能体，从结构化、非结构化和基于图的数据中动态地合成知识。</p>
+<p>• <strong>HM-RAG 的不足：</strong> 尽管 HM-RAG 在多模态处理方面有所进步，但它<strong>仍然依赖于通过多模态大语言模型（MLLMs）将多模态内容转换为文本</strong>，<strong>未能充分捕获跨模态关系</strong>，从而导致逻辑链不完整</p>
+<h3 id="实体链接-Entity-Linking"><a href="#实体链接-Entity-Linking" class="headerlink" title="实体链接 (Entity Linking"></a>实体链接 (Entity Linking</h3><p>• <strong>传统实体链接（EL）：</strong> 传统 EL 方法将文本实体与其在知识库中的对应条目关联起来，但<strong>忽略了非文本信息</strong>。</p>
+<p>• <strong>多模态实体链接（MEL）：</strong> MEL 扩展了 EL，它将视觉信息作为<strong>辅助属性</strong>纳入进来，以增强实体与知识库条目之间的对齐。</p>
+<p>• <strong>MEL 的局限性：</strong> 然而，MEL <strong>并未在这些辅助关联之外建立跨模态关系</strong>，从而限制了真正的跨模态交互。</p>
+<p>• <strong>跨模态实体链接（CMEL）：</strong> CMEL 更进一步，它将<strong>视觉内容视为实体</strong>，并将这些视觉实体与其<strong>文本对应物</strong>进行对齐，从而构建<strong>多模态知识图谱（MMKGs）</strong>，并促进<strong>显式的跨模态推理</strong>。</p>
+<p>• <strong>CMEL 研究现状与挑战：</strong> 当前，CMEL 领域的研究仍处于早期阶段，<strong>缺乏统一的理论框架和可靠的评估协议</strong>。例如，MATE 基准用于评估 CMEL 性能，但其合成的 3D 场景<strong>未能捕捉现实世界图像的复杂性和多样性</strong>。</p>
+<p><strong>MMGraphRAG 对 CMEL 的贡献：</strong></p>
+<p>• 为了弥补这一差距，MMGraphRAG <strong>构建了一个具有更高现实世界复杂性的 CMEL 数据集</strong>。</p>
+<p>• 同时，MMGraphRAG 提出了<strong>基于谱聚类的方法</strong>用于候选实体生成，旨在推动 CMEL 研究的进一步发展。</p>
+<h2 id="Image2Graph-模块"><a href="#Image2Graph-模块" class="headerlink" title="Image2Graph 模块"></a><strong>Image2Graph 模块</strong></h2><p>Img2Graph 模块通过一个五步流程将图像映射为知识图谱：</p>
+<h3 id="图像分割-Image-Segmentation-："><a href="#图像分割-Image-Segmentation-：" class="headerlink" title="图像分割 (Image Segmentation)："></a><strong>图像分割 (Image Segmentation)：</strong></h3><p>  ◦ 这是第一步，使用 YOLOv8 等工具执行语义分割，将图像划分为具有独立语义意义的区域，这些区域被称为<strong>图像特征块（image feature blocks）</strong>,。</p>
+<p>  ◦ 分割的粒度会显著影响知识图谱中边缘描绘的精度。</p>
+<h3 id="图像特征块描述-Image-Feature-Block-Description-："><a href="#图像特征块描述-Image-Feature-Block-Description-：" class="headerlink" title="图像特征块描述 (Image Feature Block Description)："></a><strong>图像特征块描述 (Image Feature Block Description)：</strong></h3><p>  ◦ 接下来，使用 MLLM 为每个分割后的特征块生成<strong>文本描述</strong>。</p>
+<p>  ◦ 这些描述不仅为图像模态构建了独立的实体，也为后续与文本模态的对齐提供了桥梁。模型会根据特征块的类别（物体、生物或人物）来生成详细描述，例如描述人物的性别、发型、衣着和姿势等,。</p>
+<h3 id="实体和关系提取-Entity-and-Relation-Extraction-："><a href="#实体和关系提取-Entity-and-Relation-Extraction-：" class="headerlink" title="实体和关系提取 (Entity and Relation Extraction)："></a><strong>实体和关系提取 (Entity and Relation Extraction)：</strong></h3><p>  ◦ 此步骤利用 MLLM 识别图像中的<strong>显式关系</strong>和<strong>隐式关系</strong>，并提取实体。</p>
+<p>  ◦ 这些提取出的实体和关系为知识图谱的多模态扩展提供了结构化信息。</p>
+<h3 id="图像特征块与实体的对齐-Alignment-of-Image-Feature-Blocks-with-Entities-："><a href="#图像特征块与实体的对齐-Alignment-of-Image-Feature-Blocks-with-Entities-：" class="headerlink" title="图像特征块与实体的对齐 (Alignment of Image Feature Blocks with Entities)："></a><strong>图像特征块与实体的对齐 (Alignment of Image Feature Blocks with Entities)：</strong></h3><p>  ◦ 通过 MLLM 的识别和推理能力，将分割生成的特征块与它们对应的<strong>视觉实体</strong>进行对齐,。</p>
+<p>  ◦ 例如，将“特征块 2”识别为“男孩”的图像，并在知识图谱中建立关系，这加强了模态间的关联。</p>
+<h3 id="全局实体构建-Global-Entity-Construction-："><a href="#全局实体构建-Global-Entity-Construction-：" class="headerlink" title="全局实体构建 (Global Entity Construction)："></a><strong>全局实体构建 (Global Entity Construction)：</strong></h3><p>  ◦ 最后，为整个图像构建一个<strong>全局实体</strong>，作为知识图谱中的全局节点。</p>
+<p>  ◦ 该全局节点提供对图像整体信息的补充描述（例如：“在桥上相遇”），并通过与局部实体的连接，增强了知识图谱的完整性。</p>
+<p><img src="/2025/11/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/MMGraphRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/image-20251212102050866.png" alt="image-20251212102050866"></p>
+<h2 id="基于谱聚类的候选实体生成（Spectral-Clustering-Based-Candidate-Generation）"><a href="#基于谱聚类的候选实体生成（Spectral-Clustering-Based-Candidate-Generation）" class="headerlink" title="基于谱聚类的候选实体生成（Spectral Clustering-Based Candidate Generation）"></a>基于谱聚类的候选实体生成（Spectral Clustering-Based Candidate Generation）</h2><p><strong>CMEL 的目标</strong>是识别指代同一现实世界概念的图像实体和文本实体对。<strong>由于文本实体的数量通常大于视觉实体</strong>，CMEL 任务被分解为两个阶段：</p>
+<p>(1) 为每个视觉实体生成一组候选文本实体，以及 (2) 从该集合中选择最佳对齐的文本实体。</p>
+<h3 id="阶段一：候选实体的生成"><a href="#阶段一：候选实体的生成" class="headerlink" title="阶段一：候选实体的生成"></a>阶段一：候选实体的生成</h3><p>基于谱聚类的方法主要解决了第一个阶段，即候选实体的生成。</p>
+<p><strong>方法创新</strong></p>
+<p>现有的候选实体生成方法存在局限性：</p>
+<ol>
+<li><strong>基于距离的聚类方法</strong>（如 KMeans 和 DBSCAN）依赖语义相似性，但忽略了图结构。</li>
+<li><strong>基于图的聚类方法</strong>（如 PageRank 和 Leiden）捕获结构关系，但在稀疏图上效果不佳。</li>
+</ol>
+<p>为了解决这些问题，MMGraphRAG 提出了一种专门为 CMEL 定制的谱聚类算法，该算法能够同时捕获实体之间的<strong>语义信息和结构信息</strong>。</p>
+<p><strong>核心机制</strong></p>
+<p>该方法重新设计了<strong>加权邻接矩阵 A</strong> 和 <strong>度矩阵 D</strong>，以融合语义和结构信息:</p>
+<ol>
+<li><strong>邻接矩阵 A 的构建：</strong> 矩阵 A 反映了节点之间的相似性以及它们之间关系的<strong>重要性</strong>。<ul>
+<li>其定义为 $A<em>{pq} = sim(v_p, v_q) \cdot weight(r</em>{pq})$。</li>
+<li>其中，$v_p$ 是实体 $e_p$ 的嵌入向量，$sim(\cdot)$ 表示余弦相似度。</li>
+<li>$weight(r<em>{pq})$ 是由大型语言模型（LLM）评估的关系 $r</em>{pq}$ 的重要性标量（如果两个实体之间没有关系，则权重设置为 1）。</li>
+</ul>
+</li>
+<li><strong>度矩阵 D 的构建：</strong> D 是一个对角矩阵，对角线上的每个值 $D_{pp}$ 表示节点 $p$ 的总加权连接强度，即节点 $p$ 与所有其他节点之间总的加权相似度。</li>
+</ol>
+<p>随后，按照标准的谱聚类步骤，构建拉普拉斯矩阵并执行特征分解。利用最小的 $m$ 个特征向量形成矩阵 $Q$。</p>
+<p><strong>候选实体生成</strong></p>
+<p>最后，在矩阵 $Q$ 的行空间上使用 <strong>DBSCAN</strong> 进行聚类，得到簇划分 ${C_1, C_2, \ldots, C_n}$。对于每个视觉实体 $e^{(I_i)}_k$，算法会根据其嵌入向量 $v^{(I_i)}_k$ 与簇成员之间的<strong>余弦相似度</strong>来选择最相关的簇。该簇中的所有实体构成了最终的候选实体集 $C(e^{(I_i)}_k)$。</p>
+<blockquote>
+<h3 id="0-场景设定"><a href="#0-场景设定" class="headerlink" title="0. 场景设定"></a>0. 场景设定</h3><ul>
+<li><strong>输入（视觉实体）</strong>：一张<strong>红富士苹果</strong>的照片 $e_{img}$。</li>
+<li><strong>数据库（文本实体池）</strong>：我们有 5 个文本实体（节点），它们都包含“Apple”或相关概念，导致传统方法容易混淆。<ol>
+<li><strong>$T_1$</strong>: “Fresh Fuji Apple”（新鲜红富士苹果 - <strong>水果</strong>）</li>
+<li><strong>$T_2$</strong>: “Red Delicious Apple”（红蛇果 - <strong>水果</strong>）</li>
+<li><strong>$T_3$</strong>: “Apple iPhone 15”（苹果手机 - <strong>科技</strong>）</li>
+<li><strong>$T_4$</strong>: “Apple MacBook Pro”（苹果电脑 - <strong>科技</strong>）</li>
+<li><strong>$T_5$</strong>: “Banana and Fruit Salad”（香蕉水果沙拉 - <strong>水果</strong>，但没有 Apple 这个词）</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h3 id="第一步：构建邻接矩阵-A-融合语义与-LLM"><a href="#第一步：构建邻接矩阵-A-融合语义与-LLM" class="headerlink" title="第一步：构建邻接矩阵 A (融合语义与 LLM)"></a>第一步：构建邻接矩阵 A (融合语义与 LLM)</h3><p>我们需要计算每两个文本实体之间的“亲密度”。公式是 $A<em>{pq} = \text{sim}(v_p, v_q) \cdot \text{weight}(r</em>{pq})$。</p>
+<ol>
+<li>语义相似度 (Sim)</li>
+</ol>
+<p>假设我们计算出 $T_1$ (“Fresh Fuji Apple”) 与其他词的向量相似度：</p>
+<ul>
+<li>与 $T_2$ (“Red Delicious”): <strong>0.9</strong> (都很像)</li>
+<li>与 $T_3$ (“Apple iPhone”): <strong>0.7</strong> (因为都有单词 “Apple”，向量空间里靠得较近，<strong>这是传统方法的陷阱</strong>)</li>
+<li>与 $T_5$ (“Banana…”): <strong>0.5</strong> (属于水果，但词不一样)</li>
+<li>LLM 权重 (Weight)</li>
+</ul>
+<p>这里 MMGraphRAG 的核心创新来了。我们问 LLM：“‘新鲜红富士’和‘iPhone 15’在现实世界中关系紧密吗？”</p>
+<ul>
+<li>LLM 答：关系很弱，它们属于不同领域。$\rightarrow \text{Weight} = \mathbf{0.1}$</li>
+<li>LLM 答：‘新鲜红富士’和‘红蛇果’都是水果。$\rightarrow \text{Weight} = \mathbf{1.0}$</li>
+<li>计算最终矩阵 A</li>
+</ul>
+<p>让我们看看 $T_1$ 和 $T_3$ 的连接发生了什么变化：</p>
+<ul>
+<li><strong>$T_1$ vs $T_2$ (水果 vs 水果)</strong>: $0.9 (\text{Sim}) \times 1.0 (\text{LLM}) = \mathbf{0.9}$ (强连接)</li>
+<li><strong>$T_1$ vs $T_3$ (水果 vs 科技)</strong>: $0.7 (\text{Sim}) \times 0.1 (\text{LLM}) = \mathbf{0.07}$ (连接被切断！)</li>
+</ul>
+<blockquote>
+<p><strong>关键点</strong>：LLM 成功把“水果苹果”和“科技苹果”原本虚高的相似度<strong>打压</strong>下去了。</p>
+</blockquote>
+<hr>
+<h3 id="第二步：构建度矩阵-D"><a href="#第二步：构建度矩阵-D" class="headerlink" title="第二步：构建度矩阵 D"></a>第二步：构建度矩阵 D</h3><p>计算每个节点与其他所有节点的总连接强度。</p>
+<ul>
+<li><strong>$T_1$ (Fuji Apple)</strong>: 连接 $T_2$ (0.9) + 连接 $T_5$ (0.4) + 连接 $T_3$ (0.07)… $\approx$ <strong>1.4</strong></li>
+<li><strong>$T_3$ (iPhone)</strong>: 连接 $T_4$ (MacBook, 强连接 0.9) + 连接 $T_1$ (0.07)… $\approx$ <strong>1.0</strong></li>
+</ul>
+<p>这反映了节点在各自簇内的“人缘”。</p>
+<hr>
+<h3 id="第三步：谱变换与特征分解-生成矩阵-Q"><a href="#第三步：谱变换与特征分解-生成矩阵-Q" class="headerlink" title="第三步：谱变换与特征分解 (生成矩阵 Q)"></a>第三步：谱变换与特征分解 (生成矩阵 Q)</h3><p>构建拉普拉斯矩阵并分解后，我们将这 5 个文本实体映射到一个<strong>新的坐标系</strong>（比如 2D 平面）。</p>
+<p>在这个新空间里，因为我们在第一步切断了“水果”和“科技”的强联系：</p>
+<ul>
+<li>$T_1, T_2, T_5$ 会紧紧聚在坐标系左下角。</li>
+<li>$T_3, T_4$ 会紧紧聚在坐标系右上角。</li>
+<li>它们之间的距离被拉得非常大，不再是原来混在一起的状态。</li>
+</ul>
+<hr>
+<h3 id="第四步：DBSCAN-聚类"><a href="#第四步：DBSCAN-聚类" class="headerlink" title="第四步：DBSCAN 聚类"></a>第四步：DBSCAN 聚类</h3><p>在矩阵 Q 的坐标系上运行 DBSCAN。</p>
+<ul>
+<li><strong>输入</strong>：上述分散的坐标点。</li>
+<li><strong>过程</strong>：<ol>
+<li>DBSCAN 发现 $T_1, T_2, T_5$ 密度很高，划分为 <strong>簇 C1 (水果簇)</strong>。</li>
+<li>DBSCAN 发现 $T_3, T_4$ 密度很高，划分为 <strong>簇 C2 (科技簇)</strong>。</li>
+<li>如果有一个 $T_6$ “SpaceX Rocket”，它离谁都远，DBSCAN 可能会把它标记为噪声并扔掉（优于 K-Means 的点）。</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h3 id="第五步：候选实体生成-匹配图片"><a href="#第五步：候选实体生成-匹配图片" class="headerlink" title="第五步：候选实体生成 (匹配图片)"></a>第五步：候选实体生成 (匹配图片)</h3><p>现在我们有了两个干净的候选池：</p>
+<ul>
+<li>$C_1$: {Fuji Apple, Red Delicious, Banana Salad}</li>
+<li>$C_2$: {iPhone 15, MacBook Pro}</li>
+</ul>
+<p><strong>最终匹配：</strong></p>
+<ol>
+<li>输入图片的向量 $v_{\text{img}}$ (红富士照片)。</li>
+<li>计算 $v_{\text{img}}$ 与 $C_1$ 中成员的平均相似度 $\rightarrow$ <strong>0.85</strong> (很高)。</li>
+<li>计算 $v_{\text{img}}$ 与 $C_2$ 中成员的平均相似度 $\rightarrow$ <strong>0.15</strong> (很低)。</li>
+</ol>
+<p>输出结果：</p>
+<p>算法选择 簇 C1 作为最终的候选集合。</p>
+</blockquote>
+<h3 id="阶段二：从筛选出的候选集中确定最佳对齐结果"><a href="#阶段二：从筛选出的候选集中确定最佳对齐结果" class="headerlink" title="阶段二：从筛选出的候选集中确定最佳对齐结果"></a>阶段二：从筛选出的候选集中确定最佳对齐结果</h3><ol>
+<li><strong>背景：</strong> 在 CMEL 任务中，第二阶段是从为每个视觉实体（visual entity）生成的<strong>候选实体集</strong>中选出最匹配的文本实体。这个过程通过基于 LLM 的推理来实现，因为 LLM 在复杂的对齐场景中展示了高准确性和适应性。</li>
+<li><strong>提示（Prompt）内容：</strong> 为了指导 LLM 完成实体对齐，向其提供的提示中包含以下关键信息：<ul>
+<li><strong>视觉实体的名称和描述（the name and description of the visual entity）</strong>。</li>
+<li><strong>来自所选簇的候选实体的描述（descriptions of candidate entities from the selected cluster）</strong>。这些候选实体是通过前一步骤的<strong>基于谱聚类的候选生成</strong>方法（Spec）得到的。</li>
+<li><strong>一套固定的对齐示例（a fixed set of alignment examples）</strong>，用于指导 LLM。</li>
+</ul>
+</li>
+<li><strong>最终输出：</strong> LLM 基于上述提示内容进行推理判断后，其输出<strong>被采纳为最终的对齐结果（The output is adopted as the final alignment result）</strong>。</li>
+</ol>
+<p>简而言之，这段文字是 <strong>MMGraphRAG 框架</strong>中<strong>跨模态知识融合模块（Cross-Modal Fusion Module）\</strong>执行 CMEL 任务时，利用 **LLM 进行最终实体对齐**的*<em>输入信息（Prompt）构成<strong>和</strong>结果决定*</em>的说明。</p>
+<h2 id="CMEL-Cross-Modal-Entity-Linking-数据集"><a href="#CMEL-Cross-Modal-Entity-Linking-数据集" class="headerlink" title="CMEL (Cross-Modal Entity Linking) 数据集"></a><strong>CMEL (Cross-Modal Entity Linking) 数据集</strong></h2><p>您提供的这段文字是对 <strong>CMEL (Cross-Modal Entity Linking) 数据集</strong> 的详细介绍，该数据集是为了解决跨模态实体链接任务中缺乏评估基准而专门构建和发布的。</p>
+<p>以下是对这段内容的详细解释：</p>
+<h3 id="1-CMEL-数据集的构成和领域多样性"><a href="#1-CMEL-数据集的构成和领域多样性" class="headerlink" title="1. CMEL 数据集的构成和领域多样性"></a>1. CMEL 数据集的构成和领域多样性</h3><p>CMEL 数据集是一个新颖的基准，专门用于评估复杂多模态场景下的细粒度<strong>跨实体对齐（cross-entity alignment）</strong>任务。</p>
+<ul>
+<li><strong>数据来源和领域：</strong> CMEL 数据集包含来自三个不同领域的文件，确保了广泛的领域多样性和实际适用性：<ul>
+<li>新闻（news）</li>
+<li>学术（academia）</li>
+<li>小说（novels）</li>
+</ul>
+</li>
+<li><strong>每个样本的内容：</strong> 数据集中的每个样本都包含三个核心组件：<ul>
+<li><strong>(i) 基于文本块构建的文本知识图谱（text-based KG built from text chunks）</strong>。</li>
+<li><strong>(ii) 源自每张图像的场景图的基于图像的知识图谱（image-based KG derived from per-image scene graphs）</strong>。</li>
+<li><strong>(iii) 原始 PDF 格式文档（the original PDF-format document）</strong>。</li>
+</ul>
+</li>
+<li><strong>对齐实例总数和分布：</strong> CMEL 数据集总共提供了 <strong>1,114 个对齐实例</strong>（alignment instances）。这些实例按领域分布如下：<ul>
+<li>来自新闻文章的实例：87 个。</li>
+<li>来自学术论文的实例：475 个。</li>
+<li>来自小说的实例：552 个。</li>
+</ul>
+</li>
+</ul>
+<p>CMEL 数据集相比现有基准（如 MATE）具有更强的实体多样性和关系复杂性，并且支持通过半自动化流程进行扩展。</p>
+<h3 id="2-评估指标（Evaluation-Metrics）"><a href="#2-评估指标（Evaluation-Metrics）" class="headerlink" title="2. 评估指标（Evaluation Metrics）"></a>2. 评估指标（Evaluation Metrics）</h3><p>为了全面评估跨模态实体链接（CMEL）的性能，该研究采用了两种不同的准确率指标：<strong>微观准确率（micro-accuracy）\</strong>和*<em>宏观准确率（macro-accuracy）*</em>。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>计算方式</th>
+<th>目的/反映的性能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>微观准确率 (Micro-accuracy)</strong></td>
+<td><strong>按实体（per-entity）</strong>计算。即所有正确预测的实体数占总实体数的比例。</td>
+<td>反映了整体预测的正确性，是<strong>全局性能</strong>的指标。</td>
+</tr>
+<tr>
+<td><strong>宏观准确率 (Macro-accuracy)</strong></td>
+<td><strong>按文档（per document）</strong>计算平均准确率。即每个文档的准确率的平均值。</td>
+<td>旨在<strong>减轻评估偏差</strong>，这种偏差由不同文档中实体分布不平衡引起。更好地突出了不同方法在<strong>不同领域</strong>的性能。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="实验设置与结果（Experimental-Setup-and-Results）"><a href="#实验设置与结果（Experimental-Setup-and-Results）" class="headerlink" title="实验设置与结果（Experimental Setup and Results）"></a>实验设置与结果（Experimental Setup and Results）</h2><p>“实验设置与结果”（Experimental Setup and Results）部分详细介绍了 MMGraphRAG 框架的评估方法，主要分为两部分：针对 CMEL 任务的评估，以及针对多模态文档问答（DocQA）任务的整体框架性能评估。</p>
+<h3 id="1-跨模态实体链接（CMEL）实验设置与结果"><a href="#1-跨模态实体链接（CMEL）实验设置与结果" class="headerlink" title="1. 跨模态实体链接（CMEL）实验设置与结果"></a>1. 跨模态实体链接（CMEL）实验设置与结果</h3><p>CMEL 实验的目的是验证 MMGraphRAG 提出的<strong>基于谱聚类的候选实体生成方法（Spec）</strong>在复杂多模态场景下的有效性。</p>
+<h4 id="实验设置"><a href="#实验设置" class="headerlink" title="实验设置"></a>实验设置</h4><ul>
+<li><p><strong>数据集：</strong> 实验基于新构建和发布的 <strong>CMEL 数据集</strong>，该数据集专为细粒度多实体对齐设计，包含来自<strong>新闻、学术和小说</strong>三个不同领域的 1,114 个对齐实例。</p>
+</li>
+<li><p><strong>评估指标：</strong> 采用<strong>微观准确率 (micro-accuracy)</strong> 和<strong>宏观准确率 (macro-accuracy)</strong>。</p>
+<ul>
+<li>微观准确率按实体计算，反映了<strong>整体预测的正确性</strong>（全局性能）。</li>
+<li>宏观准确率按文档计算平均准确率，旨在<strong>减轻实体分布不平衡导致的评估偏差</strong>，并更好地突出方法在不同领域中的性能。</li>
+</ul>
+</li>
+<li><p><strong>对比方法：</strong> 实验涵盖三类方法，并与主流聚类算法进行了全面比较：</p>
+<ol>
+<li><strong>基于嵌入的方法 (Emb)：</strong> 使用预训练嵌入模型（如 stella-en-1.5B-v5），通过计算余弦相似度来确定候选实体。</li>
+<li><strong>基于 LLM 的方法 (LLM)：</strong> 利用 LLM（如 Qwen2.5-72B-Instruct）直接基于上下文理解能力生成候选实体集。</li>
+<li><strong>聚类基线：</strong> 包括 DBSCAN (DB)、KMeans (KM)、PageRank (PR) 和 Leiden (Lei)。</li>
+</ol>
+<ul>
+<li><strong>统一处理：</strong> 所有聚类方法和基线，其候选集内的最终实体对齐都是通过统一的基于 LLM 的推理完成的。</li>
+</ul>
+</li>
+</ul>
+<h4 id="关键实验结果（CMEL）"><a href="#关键实验结果（CMEL）" class="headerlink" title="关键实验结果（CMEL）"></a>关键实验结果（CMEL）</h4><ul>
+<li><strong>聚类方法的优势：</strong> 总体而言，基于聚类的方法在 CMEL 任务中的表现显著优于基于嵌入和基于 LLM 的方法。</li>
+<li><strong>Spec 性能最佳：</strong> MMGraphRAG 的<strong>基于谱聚类的 Spec 方法表现最佳</strong>。与其他聚类方法相比，Spec 将<strong>微观准确率提高了约 15%</strong>，<strong>宏观准确率提高了约 30%</strong>。</li>
+<li><strong>具体结果（Table 1 所示最佳配置）：</strong> Spec 在整体微观/宏观准确率上达到了 <strong>65.5%/56.9%</strong>，明显优于排名第二的 Leiden (54.8%/44.7%)。</li>
+</ul>
+<h3 id="2-多模态文档问答（DocQA）实验设置与结果"><a href="#2-多模态文档问答（DocQA）实验设置与结果" class="headerlink" title="2. 多模态文档问答（DocQA）实验设置与结果"></a>2. 多模态文档问答（DocQA）实验设置与结果</h3><p>DocQA 实验用于评估 MMGraphRAG 框架在多模态信息集成、复杂推理和领域适应性方面的整体性能。</p>
+<h4 id="实验设置-1"><a href="#实验设置-1" class="headerlink" title="实验设置"></a>实验设置</h4><ul>
+<li><strong>评估任务：</strong> 选择 DocQA 作为主要评估任务，因为它能全面评估方法在处理长文档、集成多样格式以及跨领域适应性的能力。</li>
+<li><strong>基准数据集：</strong><ul>
+<li><strong>DocBench：</strong> 包含 229 份 PDF 文档，涵盖<strong>学术、金融、政府、法律和新闻</strong>五个领域，问题类型包括纯文本 (Txt.)、多模态 (Mm.) 和不可回答 (Una.)。</li>
+<li><strong>MMLongBench：</strong> 包含 135 份长 PDF 文档，证据格式包括文本 (Txt.)、图表/表格 (C.T.)、布局 (Lay.) 和图 (Fig.)。</li>
+</ul>
+</li>
+<li><strong>评估基线：</strong><ul>
+<li><strong>LLM：</strong> 通过 MLLM 将图像转换为文本后，输入 LLM（例如 Qwen2.5-72B-Instruct）。</li>
+<li><strong>MLLM：</strong> 直接输入图像块和问题，评估其多模态推理能力（例如 InternVL2.5-38B-MPO）。</li>
+<li><strong>NaiveRAG (NRAG)：</strong> 基于嵌入相似度的文本块检索。</li>
+<li><strong>GraphRAG (GRAG)：</strong> 基于知识图谱的 RAG，使用局部模式查询。</li>
+</ul>
+</li>
+</ul>
+<h4 id="关键实验结果（DocQA）"><a href="#关键实验结果（DocQA）" class="headerlink" title="关键实验结果（DocQA）"></a>关键实验结果（DocQA）</h4><ul>
+<li><strong>MMGraphRAG (MMGR) 表现：</strong> MMGraphRAG 在 DocBench 和 MMLongBench 数据集上都显著优于所有现有的 RAG 基线方法。<ul>
+<li>在 DocBench 上的总体准确率达到 <strong>60.5%</strong>（对比 NRAG 的 43.6% 和 GRAG 的 39.6%）。</li>
+<li>在 MMLongBench 上的总体准确率达到 <strong>39.6%</strong>，F1 分数达到 <strong>34.1%</strong>（对比 NRAG 的 22.3%/20.9% 和 GRAG 的 18.2%/19.3%）。</li>
+</ul>
+</li>
+<li><strong>多模态融合优势：</strong> MMGraphRAG 在多模态问题上的准确率（DocBench 上 MMGR 88.7%）显著高于 GraphRAG（26.0%），证明了跨模态融合对于复杂推理至关重要。</li>
+<li><strong>跨领域适应性：</strong> 相比纯文本 RAG 方法，MMGraphRAG 在<strong>学术和金融</strong>等具有高视觉结构复杂性的领域获得了显著提升，表明其在专业领域中具有出色的适应性和泛化能力。</li>
+<li><strong>不可回答问题处理：</strong> MMGraphRAG 在处理不可回答问题（Una.）时表现出明显优势。这归因于其通过 CMEL 实现完整和细粒度的跨模态信息交互，并在 MMKG 上进行结构化推理，从而更可靠地评估问题是否可回答，减少了误导性答案的生成。</li>
+</ul>
+<h2 id="DocBench-数据集"><a href="#DocBench-数据集" class="headerlink" title="DocBench 数据集"></a><strong>DocBench 数据集</strong></h2><p>DocBench 数据集是 MMGraphRAG 框架在<strong>多模态文档问答（DocQA）任务</strong>中用于评估其整体性能的主要基准之一</p>
+<p>以下是关于 DocBench 数据集的详细介绍：</p>
+<h3 id="1-目的与作用"><a href="#1-目的与作用" class="headerlink" title="1. 目的与作用"></a>1. 目的与作用</h3><p>DocBench 的主要作用是作为一个<strong>综合性基准</strong>，用于评估<strong>基于大型语言模型的文档阅读系统</strong>（LLM-based document reading systems）的性能,。</p>
+<p>在 MMGraphRAG 的实验中，选择 DocQA（文档问答）作为主要评估任务，因为 DocBench 这类基准能够<strong>全面评估</strong>方法在以下方面的能力：</p>
+<ul>
+<li>多模态信息集成。</li>
+<li>复杂推理。</li>
+<li>领域适应性。</li>
+<li>处理长文档和集成多种格式的能力。</li>
+</ul>
+<h3 id="2-数据构成与领域覆盖"><a href="#2-数据构成与领域覆盖" class="headerlink" title="2. 数据构成与领域覆盖"></a>2. 数据构成与领域覆盖</h3><p>DocBench 数据集包含来自公开在线资源的 <strong>229 份 PDF 文档</strong>。</p>
+<p>它涵盖了<strong>五个</strong>不同的领域（Domains），确保了评估的广泛性：</p>
+<ol>
+<li><strong>学术 (academia/Aca.)</strong>,。</li>
+<li><strong>金融 (finance/Fin.)</strong>,。</li>
+<li><strong>政府 (government/Gov.)</strong>,。</li>
+<li><strong>法律 (laws/Law.)</strong>,。</li>
+<li><strong>新闻 (news/News)</strong>,。</li>
+</ol>
+<h3 id="3-问题类型-Question-Types"><a href="#3-问题类型-Question-Types" class="headerlink" title="3. 问题类型 (Question Types)"></a>3. 问题类型 (Question Types)</h3><p>DocBench 数据集的问题涵盖了多种类型，以测试模型的不同能力。它包括四种类型的问题，但在 MMGraphRAG 的实验中，排除了其中一类：</p>
+<ol>
+<li><strong>Txt. (Pure Text Questions)</strong>：纯文本问题。</li>
+<li><strong>Mm. (Multimodal Questions)</strong>：多模态问题，需要整合文本和视觉信息才能回答。</li>
+<li><strong>Una. (Unanswerable Questions)</strong>：不可回答问题，文档中缺乏答案证据。</li>
+<li><strong>Metadata Questions</strong>：元数据问题。</li>
+</ol>
+<blockquote>
+<p><strong>注意：</strong> 在 MMGraphRAG 的实验中，由于信息被转换成了知识图谱（KG），因此<strong>元数据问题被排除在统计之外</strong>。</p>
+</blockquote>
+<h3 id="4-评估机制"><a href="#4-评估机制" class="headerlink" title="4. 评估机制"></a>4. 评估机制</h3><p>在实验中，DocBench 依靠大型语言模型（LLM）来确定答案的正确性。具体来说，在 MMGraphRAG 的实验中，<strong>Llama3.1-70B-Instruct</strong> 被用于评估 DocBench 上的答案正确性。</p>
+<p>MMGraphRAG 在 DocBench 数据集上取得了显著的优势，其总体准确率达到了 <strong>60.5%</strong>，明显优于 NaiveRAG 和 GraphRAG 等现有 RAG 基线方法,,。特别是在处理多模态问题（Mm.）上，MMGraphRAG 的准确率高达 <strong>88.7%</strong>,。</p>
+<h2 id="原文"><a href="#原文" class="headerlink" title="原文"></a>原文</h2><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2507.20804v1">[2507.20804v1] MMGraphRAG: Bridging Vision and Language with Interpretable Multimodal Knowledge Graphs</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag"># 深度学习</a>
+              <a href="/tags/%E5%A4%A7%E5%AD%A6/" rel="tag"># 大学</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/10/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/Cookie%E3%80%81Session%E3%80%81Token/" rel="prev" title="Cookie、Session、JWT">
+                  <i class="fa fa-angle-left"></i> Cookie、Session、JWT
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/12/02/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langchain%E5%AE%98%E6%96%B9%E6%95%99%E7%A8%8B/" rel="next" title="LangChain官方教程">
+                  LangChain官方教程 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js","integrity":"sha256-stuqcu2FrjYCXDOytWFA5SoUE/r3nkp6gTglzNSlavU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

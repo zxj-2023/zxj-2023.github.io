@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="浏览器的跨域预检 INFO:     127.0.0.1:54365 - “OPTIONS &#x2F;usersrole&#x3D;admin HTTP&#x2F;1.1” 200 OKINFO:     127.0.0.1:54365 - “GET &#x2F;usersrole&#x3D;admin HTTP&#x2F;1.1” 200 OK为什么每次调用这个接口会有两个  • 这是浏览器的跨域预检 + 实际请求各一次：  前端带 Authoriza">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记录开发过程中遇到的问题">
+<meta property="og:url" content="http://example.com/2025/12/11/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E8%AE%B0%E5%BD%95%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="浏览器的跨域预检 INFO:     127.0.0.1:54365 - “OPTIONS &#x2F;usersrole&#x3D;admin HTTP&#x2F;1.1” 200 OKINFO:     127.0.0.1:54365 - “GET &#x2F;usersrole&#x3D;admin HTTP&#x2F;1.1” 200 OK为什么每次调用这个接口会有两个  • 这是浏览器的跨域预检 + 实际请求各一次：  前端带 Authoriza">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-12-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-11T08:48:12.868Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="后端">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2025/12/11/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E8%AE%B0%E5%BD%95%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2025/12/11/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E8%AE%B0%E5%BD%95%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/","path":"2025/12/11/学习/后端相关/记录开发过程中遇到的问题/","title":"记录开发过程中遇到的问题"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>记录开发过程中遇到的问题 | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E8%B7%A8%E5%9F%9F%E9%A2%84%E6%A3%80"><span class="nav-number">1.</span> <span class="nav-text">浏览器的跨域预检</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E8%B7%A8%E6%BA%90%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">如何解决跨源的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%F0%9F%92%BB-%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83-Development"><span class="nav-number">2.0.1.</span> <span class="nav-text">💻 开发环境 (Development)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%F0%9F%9A%80-%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83-Production"><span class="nav-number">2.0.2.</span> <span class="nav-text">🚀 生产环境 (Production)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Authorization-%E5%A4%B4%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">3.</span> <span class="nav-text">Authorization 头是什么</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%A0%87%E5%87%86%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.1.</span> <span class="nav-text">1. 标准格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%84%E4%B8%A4%E7%A7%8D%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.2.</span> <span class="nav-text">2. 最常用的两种类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#A-Bearer-%E6%9C%80%E5%B8%B8%E8%A7%81%EF%BC%8C%E7%94%A8%E4%BA%8E-JWT"><span class="nav-number">3.2.1.</span> <span class="nav-text">A. Bearer (最常见，用于 JWT)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#B-Basic-%E6%9C%80%E5%9F%BA%E7%A1%80%EF%BC%8C%E7%94%A8%E4%BA%8E%E7%94%A8%E6%88%B7%E5%90%8D%E5%AF%86%E7%A0%81"><span class="nav-number">3.2.2.</span> <span class="nav-text">B. Basic (最基础，用于用户名密码)</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">178</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/12/11/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E8%AE%B0%E5%BD%95%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="记录开发过程中遇到的问题 | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          记录开发过程中遇到的问题
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-12-11 00:00:00 / 修改时间：16:48:12" itemprop="dateCreated datePublished" datetime="2025-12-11T00:00:00+08:00">2025-12-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/python-web/" itemprop="url" rel="index"><span itemprop="name">python-web</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="浏览器的跨域预检"><a href="#浏览器的跨域预检" class="headerlink" title="浏览器的跨域预检"></a>浏览器的跨域预检</h2><blockquote>
+<p>INFO:     127.0.0.1:54365 - “OPTIONS /usersrole=admin HTTP/1.1” 200 OK<br>INFO:     127.0.0.1:54365 - “GET /usersrole=admin HTTP/1.1” 200 OK<br>为什么每次调用这个接口会有两个</p>
+</blockquote>
+<p>• 这是浏览器的跨域预检 + 实际请求各一次：</p>
+<ul>
+<li>前端带 Authorization 头、跨域调用 /users?role=admin 时，浏览器会先发 OPTIONS 预检，看服务器是否允许该方法<br>头。你启用了 CORS，所以预检返回 200。</li>
+<li><p>预检通过后才发真正的 GET /users?role=admin，所以日志里看到两条。          </p>
+<p>这是正常行为；非浏览器（如 curl/postman）或同源、无自定义头的请求则不会有预检。</p>
+</li>
+</ul>
+<h2 id="如何解决跨源的问题"><a href="#如何解决跨源的问题" class="headerlink" title="如何解决跨源的问题"></a>如何解决跨源的问题</h2><p>我们推导出了两套针对不同环境的最佳实践方案，核心逻辑都是<strong>“利用中间人（代理）实现同源”</strong>。</p>
+<h4 id="💻-开发环境-Development"><a href="#💻-开发环境-Development" class="headerlink" title="💻 开发环境 (Development)"></a>💻 开发环境 (Development)</h4><ul>
+<li><strong>工具：</strong> Vite (<code>server.proxy</code>)</li>
+<li><strong>原理：</strong> 利用 Vite 启动的 Node.js 服务转发请求。</li>
+<li><strong>效果：</strong> 浏览器只跟 Vite 打交道（同源），Vite 跟后端打交道（服务器间无 CORS 限制）。<strong>完美消除预检和跨域报错。</strong></li>
+</ul>
+<h4 id="🚀-生产环境-Production"><a href="#🚀-生产环境-Production" class="headerlink" title="🚀 生产环境 (Production)"></a>🚀 生产环境 (Production)</h4><ul>
+<li><strong>工具：</strong> Nginx (反向代理)</li>
+<li><strong>原理：</strong> 浏览器所有请求（页面 + 接口）统一发给 Nginx（比如 80 端口）。<ul>
+<li><code>/</code> -&gt; Nginx 返回静态 HTML/JS 文件。</li>
+<li><code>/api</code> -&gt; Nginx 转发给后端服务（8000 端口）。</li>
+</ul>
+</li>
+<li><strong>效果：</strong> 在浏览器看来，它始终只访问了一个域名（同源），因此<strong>不需要 CORS 配置，也没有预检请求，性能最高</strong>。</li>
+</ul>
+<h2 id="Authorization-头是什么"><a href="#Authorization-头是什么" class="headerlink" title="Authorization 头是什么"></a>Authorization 头是什么</h2><p><code>Authorization</code> 头（Header）是 HTTP 协议中用来<strong>验证用户身份</strong>的一个标准字段。</p>
+<h3 id="1-标准格式"><a href="#1-标准格式" class="headerlink" title="1. 标准格式"></a>1. 标准格式</h3><p><code>Authorization</code> 头的值并不是随便填写的，它遵循一个严格的语法结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Authorization: &lt;认证类型&gt; &lt;凭证数据&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>认证类型 (Schema)：</strong> 说明后面跟的是哪种类型的凭证（比如是“密码”还是“令牌”）。常见的有 <code>Bearer</code> 和 <code>Basic</code>。</li>
+<li><strong>空格：</strong> 中间必须有一个空格分隔。</li>
+<li><strong>凭证数据 (Credentials)：</strong> 具体的加密字符串或 Token。</li>
+</ul>
+<hr>
+<h3 id="2-最常用的两种类型"><a href="#2-最常用的两种类型" class="headerlink" title="2. 最常用的两种类型"></a>2. 最常用的两种类型</h3><h4 id="A-Bearer-最常见，用于-JWT"><a href="#A-Bearer-最常见，用于-JWT" class="headerlink" title="A. Bearer (最常见，用于 JWT)"></a>A. Bearer (最常见，用于 JWT)</h4><p>这是目前现代 Web 应用和 API 最主流的方式，通常配合 <strong>JWT (JSON Web Token)</strong> 使用。</p>
+<ul>
+<li><p><strong>含义：</strong> “Bearer” 的意思是“持有者”。意思是：“谁持有这个令牌，谁就有权限。”</p>
+</li>
+<li><p><strong>场景：</strong> 用户登录后，服务器发给用户一个 JWT。用户下次请求时，把这个 JWT 放在这里。</p>
+</li>
+<li><p><strong>HTTP 请求示例：</strong></p>
+<p>HTTP</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GET /api/user/profile HTTP/1.1</span><br><span class="line">Host: example.com</span><br><span class="line">Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>注意：</strong> 这里的乱码字符串 <code>eyJ...</code> 就是上一条回答中提到的 JWT。</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="B-Basic-最基础，用于用户名密码"><a href="#B-Basic-最基础，用于用户名密码" class="headerlink" title="B. Basic (最基础，用于用户名密码)"></a>B. Basic (最基础，用于用户名密码)</h4><p>这是 HTTP 协议内置的最古老的认证方式。</p>
+<ul>
+<li><p><strong>含义：</strong> 直接把“用户名:密码”拼接，然后进行 Base64 编码传给服务器。</p>
+</li>
+<li><p><strong>场景：</strong> 内部系统、简单的测试环境、或者某些传统的网关认证。</p>
+</li>
+<li><p><strong>原理：</strong></p>
+<ol>
+<li>用户名 <code>admin</code>，密码 <code>123456</code>。</li>
+<li>拼接：<code>admin:123456</code>。</li>
+<li>Base64 编码：<code>YWRtaW46MTIzNDU2</code>。</li>
+</ol>
+</li>
+<li><p><strong>HTTP 请求示例：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">POST /api/login HTTP/1.1</span><br><span class="line">Authorization: Basic YWRtaW46MTIzNDU2</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag"># 后端</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/12/09/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/%E5%B8%B8%E7%94%A8mcp/" rel="prev" title="常用mcp">
+                  <i class="fa fa-angle-left"></i> 常用mcp
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/12/12/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E8%AE%A1%E7%BB%84%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA/" rel="next" title="计算机组成原理查漏补缺">
+                  计算机组成原理查漏补缺 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js","integrity":"sha256-stuqcu2FrjYCXDOytWFA5SoUE/r3nkp6gTglzNSlavU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

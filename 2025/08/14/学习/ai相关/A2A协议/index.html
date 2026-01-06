@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="前言 就是client调用agent那一块，感觉还是比较困惑，我看例子是要通过定义给的execut和cancel函数，那就意味着agent提供者都要去自己去定义这些怎么执行的函数，还有描述agent的skill和card，工作量明显比mcp大了很多，可能这也是现在a2a传播没有mcp好的一大原因吧，我的理解，不知道对不对  思考：现在利用a2a搭建多agent的现实例子多吗，从概念上，我认为">
+    <meta name="description" content="前言就是client调用agent那一块，感觉还是比较困惑，我看例子是要通过定义给的execut和cancel函数，那就意味着agent提供者都要去自己去定义这些怎么执行的函数，还有描述agent的skill和card，工作量明显比mcp大了很多，可能这也是现在a2a传播没有mcp好的一大原因吧，我的理解，不知道对不对  思考：现在利用a2a搭建多agent的现实例子多吗，从概念上，我认为a2a的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="A2A协议">
 <meta property="og:url" content="http://example.com/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/A2A%E5%8D%8F%E8%AE%AE/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="前言 就是client调用agent那一块，感觉还是比较困惑，我看例子是要通过定义给的execut和cancel函数，那就意味着agent提供者都要去自己去定义这些怎么执行的函数，还有描述agent的skill和card，工作量明显比mcp大了很多，可能这也是现在a2a传播没有mcp好的一大原因吧，我的理解，不知道对不对  思考：现在利用a2a搭建多agent的现实例子多吗，从概念上，我认为">
+<meta property="og:description" content="前言就是client调用agent那一块，感觉还是比较困惑，我看例子是要通过定义给的execut和cancel函数，那就意味着agent提供者都要去自己去定义这些怎么执行的函数，还有描述agent的skill和card，工作量明显比mcp大了很多，可能这也是现在a2a传播没有mcp好的一大原因吧，我的理解，不知道对不对  思考：现在利用a2a搭建多agent的现实例子多吗，从概念上，我认为a2a的">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/A2A%E5%8D%8F%E8%AE%AE/image-20250809222720192.png">
 <meta property="article:published_time" content="2025-08-13T16:00:00.000Z">
@@ -145,7 +145,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFa2a%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.</span> <span class="nav-text">什么是A2A协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8a2a%E5%8D%8F%E8%AE%AE"><span class="nav-number">3.</span> <span class="nav-text">为什么要使用A2A协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">环境配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#agent-skills-agent-card"><span class="nav-number">5.</span> <span class="nav-text">Agent Skills &amp; Agent Card</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#agent-skills"><span class="nav-number">5.1.</span> <span class="nav-text">Agent Skills</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#agent-card"><span class="nav-number">5.2.</span> <span class="nav-text">Agent Card</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#agent-executor"><span class="nav-number">6.</span> <span class="nav-text">Agent Executor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8server"><span class="nav-number">7.</span> <span class="nav-text">启动server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%BA%A4%E4%BA%92"><span class="nav-number">8.</span> <span class="nav-text">与服务器交互</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">9.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFA2A%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.</span> <span class="nav-text">什么是A2A协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8A2A%E5%8D%8F%E8%AE%AE"><span class="nav-number">3.</span> <span class="nav-text">为什么要使用A2A协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">环境配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Agent-Skills-amp-Agent-Card"><span class="nav-number">5.</span> <span class="nav-text">Agent Skills &amp; Agent Card</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Agent-Skills"><span class="nav-number">5.1.</span> <span class="nav-text">Agent Skills</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Agent-Card"><span class="nav-number">5.2.</span> <span class="nav-text">Agent Card</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Agent-Executor"><span class="nav-number">6.</span> <span class="nav-text">Agent Executor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8server"><span class="nav-number">7.</span> <span class="nav-text">启动server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%BA%A4%E4%BA%92"><span class="nav-number">8.</span> <span class="nav-text">与服务器交互</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">9.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -160,7 +160,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">177</span>
+          <span class="site-state-item-count">178</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -289,273 +289,165 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h3 id="前言">前言</h3>
-<p>就是client调用agent那一块，感觉还是比较困惑，我看例子是要通过定义给的execut和cancel函数，那就意味着agent提供者都要去自己去定义这些怎么执行的函数，还有描述agent的skill和card，工作量明显比mcp大了很多，可能这也是现在a2a传播没有mcp好的一大原因吧，我的理解，不知道对不对</p>
+    <div class="post-body" itemprop="articleBody"><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>就是client调用agent那一块，感觉还是比较困惑，我看例子是要通过定义给的execut和cancel函数，那就意味着agent提供者都要去自己去定义这些怎么执行的函数，还有描述agent的skill和card，工作量明显比mcp大了很多，可能这也是现在a2a传播没有mcp好的一大原因吧，我的理解，不知道对不对</p>
 <hr>
-<p>思考：现在利用a2a搭建多agent的现实例子多吗，从概念上，我认为a2a的思路是没问题的，但感觉下来，现在大多数的多agent的实现方式还是像langgraph中<strong>条件边</strong>来控制使用哪个agent，是不是因为a2a对于中小开发者搭建起来还是有些复杂，但我还是认为他这种于mcp类似，模块化，可以自定义的形式会是后续方向。就像现在的mcp
-client，可以在市场上下载自己想要的mcp，利用a2a协议，用户可以在市场上下载想用的agent，搭建自己的多agent管家，现在市场上有类似的产品吗？</p>
-<p>a2a协议其实与mcp类似，对象不同，一个是mcp client与mcp
-server（tool），一个是agent client与agent
-server。具体实现中，需要完成对agent
-server的信息暴露与executor的编写，以便让client正确调用agent，调用前要启动服务。</p>
-<p>一个agent
-server所要包含的要素包括：1.AgentSkill，用于描述agent可以实现的能力</p>
+<p>思考：现在利用a2a搭建多agent的现实例子多吗，从概念上，我认为a2a的思路是没问题的，但感觉下来，现在大多数的多agent的实现方式还是像langgraph中<strong>条件边</strong>来控制使用哪个agent，是不是因为a2a对于中小开发者搭建起来还是有些复杂，但我还是认为他这种于mcp类似，模块化，可以自定义的形式会是后续方向。就像现在的mcp client，可以在市场上下载自己想要的mcp，利用a2a协议，用户可以在市场上下载想用的agent，搭建自己的多agent管家，现在市场上有类似的产品吗？</p>
+<p>a2a协议其实与mcp类似，对象不同，一个是mcp client与mcp server（tool），一个是agent client与agent server。具体实现中，需要完成对agent server的信息暴露与executor的编写，以便让client正确调用agent，调用前要启动服务。</p>
+<p>一个agent server所要包含的要素包括：1.AgentSkill，用于描述agent可以实现的能力</p>
 <p>2.AgentCard，描述agent的信息，包括运行的url，输入和返回的数据类型，所包含的skills</p>
-<p>3.AgentExecutor，定义了如何执行智能体，通过定义execute方法，以便正确调用agent
-server</p>
-<p>4.通过DefaultRequestHandler，封装调用agent的接口，不用再手写接口，只要提供一个
-executor 和一个 store
-即可，收到对话内容后，<code>DefaultRequestHandler</code>
-会把对话打包成任务，交给 <code>HelloWorldAgentExecutor</code>
-去执行。、</p>
-<p>5.通过A2AStarletteApplication打包成应用（如fastapi），他的作用如下：1.把这个
-handler 注册成真正的 HTTP 路由，于是外部就能通过 <code>POST /</code>
-调用上述 JSON-RPC 方法。2.对外暴露名片</p>
-<h3 id="什么是a2a协议">什么是A2A协议</h3>
-<p>A2A 协议（Agent2Agent Protocol，智能体间通信协议）是 Google 在 2025
-年 4 月发布并开源的首个 AI
-智能体交互标准。它通过统一的通信规范，解决不同团队、不同框架、不同供应商开发的
-AI 智能体如何“对话”和协同工作的问题。</p>
+<p>3.AgentExecutor，定义了如何执行智能体，通过定义execute方法，以便正确调用agent server</p>
+<p>4.通过DefaultRequestHandler，封装调用agent的接口，不用再手写接口，只要提供一个 executor 和一个 store 即可，收到对话内容后，<code>DefaultRequestHandler</code> 会把对话打包成任务，交给 <code>HelloWorldAgentExecutor</code> 去执行。、</p>
+<p>5.通过A2AStarletteApplication打包成应用（如fastapi），他的作用如下：1.把这个 handler 注册成真正的 HTTP 路由，于是外部就能通过 <code>POST /</code> 调用上述 JSON-RPC 方法。2.对外暴露名片</p>
+<h3 id="什么是A2A协议"><a href="#什么是A2A协议" class="headerlink" title="什么是A2A协议"></a>什么是A2A协议</h3><p>A2A 协议（Agent2Agent Protocol，智能体间通信协议）是 Google 在 2025 年 4 月发布并开源的首个 AI 智能体交互标准。它通过统一的通信规范，解决不同团队、不同框架、不同供应商开发的 AI 智能体如何“对话”和协同工作的问题。</p>
 <blockquote>
-<p>与mcp区分，<strong>MCP</strong> 解决
-<strong>“单个智能体如何调用外部工具/数据”</strong>
-的问题，而<strong>A2A</strong> 解决
-<strong>“多个智能体如何协同完成任务”</strong> 的问题。</p>
+<p>与mcp区分，<strong>MCP</strong> 解决 <strong>“单个智能体如何调用外部工具/数据”</strong> 的问题，而<strong>A2A</strong> 解决 <strong>“多个智能体如何协同完成任务”</strong> 的问题。</p>
 </blockquote>
-<figure>
-<img src="/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/A2A%E5%8D%8F%E8%AE%AE/image-20250809222720192.png" alt="image-20250809222720192">
-<figcaption aria-hidden="true">image-20250809222720192</figcaption>
-</figure>
-<h3 id="为什么要使用a2a协议">为什么要使用A2A协议</h3>
-<p>随着 AI 应用深化，单一“万能”模型难以兼顾所有领域。A2A
-鼓励构建“小而专”的智能体生态：</p>
+<p><img src="/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/A2A%E5%8D%8F%E8%AE%AE/image-20250809222720192.png" alt="image-20250809222720192"></p>
+<h3 id="为什么要使用A2A协议"><a href="#为什么要使用A2A协议" class="headerlink" title="为什么要使用A2A协议"></a>为什么要使用A2A协议</h3><p>随着 AI 应用深化，单一“万能”模型难以兼顾所有领域。A2A 鼓励构建“小而专”的智能体生态：</p>
 <ul>
 <li>每个智能体专注一个领域（如订票、报税、图像处理）。</li>
-<li>通过 A2A
-协议，它们像乐高积木一样自由组合，快速响应新的业务需求。</li>
+<li>通过 A2A 协议，它们像乐高积木一样自由组合，快速响应新的业务需求。</li>
 </ul>
 <p>比如你让一个agent使用多个工具，不仅会浪费tokens，也会降低其调用工具的准确性。所有，专业的领域使用专业的agent，而agent间的通信便要依靠A2A协议</p>
-<h3 id="环境配置">环境配置</h3>
-<p><strong>克隆仓库</strong></p>
+<h3 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h3><p><strong>克隆仓库</strong></p>
 <p>如果你还没有克隆，请克隆 A2A Samples 仓库：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/a2aproject/a2a-samples.git -b main --depth 1</span><br><span class="line">cd a2a-samples</span><br></pre></td></tr></table></figure>
-<p><strong>Python 环境和 SDK 安装</strong></p>
-<p>我们推荐为 Python 项目使用虚拟环境。A2A Python SDK 使用
-<code>uv</code> 进行依赖管理，但你也可以使用 <code>pip</code> 与
-<code>venv</code>。</p>
-<ol type="1">
+<p><strong>Python 环境和 SDK 安装</strong> </p>
+<p>我们推荐为 Python 项目使用虚拟环境。A2A Python SDK 使用 <code>uv</code> 进行依赖管理，但你也可以使用 <code>pip</code> 与 <code>venv</code>。</p>
+<ol>
 <li><p><strong>创建并激活虚拟环境：</strong></p>
 <p>使用 <code>venv</code>（标准库）：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python -m venv .venv</span><br><span class="line">source .venv/bin/activate</span><br></pre></td></tr></table></figure></li>
-<li><p><strong>安装所需的 Python 依赖项以及 A2A SDK
-及其依赖项：</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install -r samples/python/requirements.txt</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python -m venv .venv</span><br><span class="line">source .venv/bin/activate</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>安装所需的 Python 依赖项以及 A2A SDK 及其依赖项：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install -r samples/python/requirements.txt</span><br></pre></td></tr></table></figure>
+</li>
 </ol>
-<h3 id="agent-skills-agent-card">Agent Skills &amp; Agent Card</h3>
-<h4 id="agent-skills">Agent Skills</h4>
-<p>一个<strong>代理技能</strong>描述了代理可以执行的具体能力或功能。它是告诉客户端代理擅长哪些任务的构建模块。</p>
-<p><code>AgentSkill</code> 的关键属性（定义在 <code>a2a.types</code>
-中）：</p>
+<h3 id="Agent-Skills-amp-Agent-Card"><a href="#Agent-Skills-amp-Agent-Card" class="headerlink" title="Agent Skills &amp; Agent Card"></a>Agent Skills &amp; Agent Card</h3><h4 id="Agent-Skills"><a href="#Agent-Skills" class="headerlink" title="Agent Skills"></a>Agent Skills</h4><p>一个<strong>代理技能</strong>描述了代理可以执行的具体能力或功能。它是告诉客户端代理擅长哪些任务的构建模块。</p>
+<p><code>AgentSkill</code> 的关键属性（定义在 <code>a2a.types</code> 中）：</p>
 <ul>
 <li><code>id</code>: 技能的唯一标识符。</li>
 <li><code>name</code>: 人类可读的名称。</li>
 <li><code>description</code>：对技能功能的更详细说明。</li>
 <li><code>tags</code>：用于分类和发现的关键词。</li>
 <li><code>examples</code>：示例提示或使用案例。</li>
-<li><code>inputModes</code> / <code>outputModes</code>:
-支持的输入和输出媒体类型（例如，“text/plain”，“application/json”）。</li>
+<li><code>inputModes</code> / <code>outputModes</code>: 支持的输入和输出媒体类型（例如，”text/plain”，”application/json”）。</li>
 </ul>
-<p>在 <code>__main__.py</code> 中，你可以看到如何为 Helloworld
-代理定义一个技能：</p>
+<p>在 <code>__main__.py</code> 中，你可以看到如何为 Helloworld 代理定义一个技能：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">skill = AgentSkill(</span><br><span class="line">    id=&#x27;hello_world&#x27;,</span><br><span class="line">    name=&#x27;Returns hello world&#x27;,</span><br><span class="line">    description=&#x27;just returns hello world&#x27;,</span><br><span class="line">    tags=[&#x27;hello world&#x27;],</span><br><span class="line">    examples=[&#x27;hi&#x27;, &#x27;hello world&#x27;],</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<p>这个技能非常简单：它的名称是 “Returns hello
-world”，并且主要处理文本。</p>
-<h4 id="agent-card">Agent Card</h4>
-<p><strong>代理卡</strong>是一个 A2A 服务器提供的 JSON 文档，通常位于
-<code>.well-known/agent-card.json</code>
-端点。它就像代理的数字名片。</p>
-<p><code>AgentCard</code> 的关键属性（定义在 <code>a2a.types</code>
-中）：</p>
+<p>这个技能非常简单：它的名称是 “Returns hello world”，并且主要处理文本。</p>
+<h4 id="Agent-Card"><a href="#Agent-Card" class="headerlink" title="Agent Card"></a>Agent Card</h4><p><strong>代理卡</strong>是一个 A2A 服务器提供的 JSON 文档，通常位于 <code>.well-known/agent-card.json</code> 端点。它就像代理的数字名片。</p>
+<p><code>AgentCard</code> 的关键属性（定义在 <code>a2a.types</code> 中）：</p>
 <ul>
-<li><code>name</code>, <code>description</code>, <code>version</code>:
-基本身份信息。</li>
+<li><code>name</code>, <code>description</code>, <code>version</code>: 基本身份信息。</li>
 <li><code>url</code>：A2A 服务可访问的端点。</li>
-<li><code>capabilities</code>：指定支持的 A2A 功能，如
-<code>streaming</code> 或 <code>pushNotifications</code>。</li>
-<li><code>defaultInputModes</code> / <code>defaultOutputModes</code>:
-代理的默认媒体类型。</li>
-<li><code>skills</code>: 代理提供的 <code>AgentSkill</code>
-对象列表。</li>
+<li><code>capabilities</code>：指定支持的 A2A 功能，如 <code>streaming</code> 或 <code>pushNotifications</code>。</li>
+<li><code>defaultInputModes</code> / <code>defaultOutputModes</code>: 代理的默认媒体类型。</li>
+<li><code>skills</code>: 代理提供的 <code>AgentSkill</code> 对象列表。</li>
 </ul>
 <p><code>helloworld</code> 示例定义其 Agent Card 如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># This will be the public-facing agent card</span><br><span class="line">public_agent_card = AgentCard(</span><br><span class="line">    name=&#x27;Hello World Agent&#x27;,</span><br><span class="line">    description=&#x27;Just a hello world agent&#x27;,</span><br><span class="line">    url=&#x27;http://localhost:9999/&#x27;,</span><br><span class="line">    version=&#x27;1.0.0&#x27;,</span><br><span class="line"> 	# 默认输入模式：Agent 能够接收的输入类型列表，这里仅支持纯文本</span><br><span class="line">    default_input_modes=[&#x27;text&#x27;],</span><br><span class="line">    # 默认输出模式：Agent 能够产生的输出类型列表，这里仅返回纯文本</span><br><span class="line">    default_output_modes=[&#x27;text&#x27;],</span><br><span class="line">    # 能力声明：告知调用方 Agent 支持的能力，例如是否支持流式输出（streaming）</span><br><span class="line">    capabilities=AgentCapabilities(streaming=True),</span><br><span class="line">    skills=[skill],  # Only the basic skill for the public card</span><br><span class="line">    supports_authenticated_extended_card=True,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<p>这张卡片告诉我们代理名为 “Hello World Agent”，运行在
-<code>http://localhost:9999/</code>，支持文本交互，并具有
-<code>hello_world</code>
-技能。它还表明支持公开认证，意味着无需特定凭证。</p>
-<h3 id="agent-executor">Agent Executor</h3>
-<p>A2A 代理处理请求和生成响应/事件的核心逻辑由一个 <strong>Agent
-Executor</strong> 负责。A2A Python SDK 提供了一个抽象基类
-<code>a2a.server.agent_execution.AgentExecutor</code> 供你实现。</p>
-<p><strong><code>AgentExecutor</code> 接口</strong></p>
+<p>这张卡片告诉我们代理名为 “Hello World Agent”，运行在 <code>http://localhost:9999/</code>，支持文本交互，并具有 <code>hello_world</code> 技能。它还表明支持公开认证，意味着无需特定凭证。</p>
+<h3 id="Agent-Executor"><a href="#Agent-Executor" class="headerlink" title="Agent Executor"></a>Agent Executor</h3><p>A2A 代理处理请求和生成响应/事件的核心逻辑由一个 <strong>Agent Executor</strong> 负责。A2A Python SDK 提供了一个抽象基类 <code>a2a.server.agent_execution.AgentExecutor</code> 供你实现。</p>
+<p><strong><code>AgentExecutor</code> 接口</strong> </p>
 <p><code>AgentExecutor</code> 类定义了两个主要方法：</p>
 <ul>
-<li><code>async def execute(self, context: RequestContext, event_queue: EventQueue)</code>
-: 处理期望响应或事件流的传入请求。它处理用户输入（可通过
-<code>context</code> 获取）并使用 <code>event_queue</code> 发送
-<code>Message</code>、<code>Task</code>、<code>TaskStatusUpdateEvent</code>
-或 <code>TaskArtifactUpdateEvent</code> 对象。</li>
-<li><code>async def cancel(self, context: RequestContext, event_queue: EventQueue)</code>
-: 处理取消正在进行的任务的请求。</li>
+<li><code>async def execute(self, context: RequestContext, event_queue: EventQueue)</code> : 处理期望响应或事件流的传入请求。它处理用户输入（可通过 <code>context</code> 获取）并使用 <code>event_queue</code> 发送 <code>Message</code>、<code>Task</code>、<code>TaskStatusUpdateEvent</code> 或 <code>TaskArtifactUpdateEvent</code> 对象。</li>
+<li><code>async def cancel(self, context: RequestContext, event_queue: EventQueue)</code> : 处理取消正在进行的任务的请求。</li>
 </ul>
-<p><code>RequestContext</code>
-提供有关传入请求的信息，例如用户消息和任何现有的任务详情。<code>EventQueue</code>
-由执行器使用，用于将事件发送回客户端。</p>
+<p><code>RequestContext</code> 提供有关传入请求的信息，例如用户消息和任何现有的任务详情。<code>EventQueue</code> 由执行器使用，用于将事件发送回客户端。</p>
 <p><strong>Helloworld AgentExecutor</strong></p>
-<p>让我们看看 <code>agent_executor.py</code>。它定义了
-<code>HelloWorldAgentExecutor</code>。</p>
-<ol type="1">
+<p>让我们看看 <code>agent_executor.py</code>。它定义了 <code>HelloWorldAgentExecutor</code>。</p>
+<ol>
 <li><p><strong>代理（<code>HelloWorldAgent</code>）</strong>：这是一个简单的辅助类，封装了实际的“业务逻辑”。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">class HelloWorldAgent:</span><br><span class="line">    &quot;&quot;&quot;Hello World Agent.&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    async def invoke(self) -&gt; str:</span><br><span class="line">        return &#x27;Hello World&#x27;</span><br></pre></td></tr></table></figure>
-<p>它有一个简单的 <code>invoke</code> 方法，返回字符串”Hello
-World”。</p></li>
-<li><p><strong>执行器（<code>HelloWorldAgentExecutor</code>）</strong>：这个类实现了
-<code>AgentExecutor</code> 接口。</p>
+<p>它有一个简单的 <code>invoke</code> 方法，返回字符串”Hello World”。</p>
+</li>
+<li><p><strong>执行器（<code>HelloWorldAgentExecutor</code>）</strong>：这个类实现了 <code>AgentExecutor</code> 接口。</p>
 <ul>
 <li><p><strong><code>__init__</code></strong>:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">class HelloWorldAgentExecutor(AgentExecutor):</span><br><span class="line">    &quot;&quot;&quot;Test AgentProxy Implementation.&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    def __init__(self):</span><br><span class="line">        self.agent = HelloWorldAgent()</span><br></pre></td></tr></table></figure>
-<p>它实例化了 <code>HelloWorldAgent</code>。</p></li>
+<p>它实例化了 <code>HelloWorldAgent</code>。</p>
+</li>
 <li><p><strong><code>execute</code></strong>:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">async def execute(</span><br><span class="line">    self,</span><br><span class="line">    context: RequestContext,</span><br><span class="line">    event_queue: EventQueue,</span><br><span class="line">) -&gt; None:</span><br><span class="line">    result = await self.agent.invoke()</span><br><span class="line">    await event_queue.enqueue_event(new_agent_text_message(result))</span><br></pre></td></tr></table></figure>
-<p>当收到一个 <code>message/send</code> 或 <code>message/stream</code>
-请求时（这两种请求在这个简化的执行器中均由 <code>execute</code>
-处理）：</p>
-<ol type="1">
-<li>它调用 <code>self.agent.invoke()</code> 来获取 “Hello World”
-字符串。</li>
-<li>它使用 <code>new_agent_text_message</code> 工具函数创建一个 A2A
-<code>Message</code> 对象。</li>
-<li>它将此消息入队到 <code>event_queue</code>。底层的
-<code>DefaultRequestHandler</code>
-随后会处理这个队列以向客户端发送响应。对于像这样的一条消息，在流关闭之前，它将导致一个
-<code>message/send</code> 的单一响应或一个 <code>message/stream</code>
-的单一事件。</li>
-</ol></li>
-<li><p><strong><code>cancel</code></strong>: Helloworld 示例的
-<code>cancel</code>
-方法简单地抛出一个异常，表明这个基本代理不支持取消操作。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">async def cancel(</span><br><span class="line">    self, context: RequestContext, event_queue: EventQueue</span><br><span class="line">) -&gt; None:</span><br><span class="line">    raise Exception(&#x27;cancel not supported&#x27;)</span><br></pre></td></tr></table></figure></li>
-</ul></li>
+<p>当收到一个 <code>message/send</code> 或 <code>message/stream</code> 请求时（这两种请求在这个简化的执行器中均由 <code>execute</code> 处理）：</p>
+<ol>
+<li>它调用 <code>self.agent.invoke()</code> 来获取 “Hello World” 字符串。</li>
+<li>它使用 <code>new_agent_text_message</code> 工具函数创建一个 A2A <code>Message</code> 对象。</li>
+<li>它将此消息入队到 <code>event_queue</code>。底层的 <code>DefaultRequestHandler</code> 随后会处理这个队列以向客户端发送响应。对于像这样的一条消息，在流关闭之前，它将导致一个 <code>message/send</code> 的单一响应或一个 <code>message/stream</code> 的单一事件。</li>
 </ol>
-<p><code>AgentExecutor</code> 充当 A2A
-协议（由请求处理器和服务器应用程序管理）与您的代理特定逻辑之间的桥梁。它接收关于请求的上下文信息，并使用事件队列来通信结果或更新。</p>
-<h3 id="启动server">启动server</h3>
-<p>现在我们已经有了 Agent Card 和 Agent Executor，可以设置并启动 A2A
-服务器。</p>
-<p>A2A Python SDK 提供了一个 <code>A2AStarletteApplication</code>
-类，简化了运行符合 A2A 标准的 HTTP 服务器。它使用 <a target="_blank" rel="noopener" href="https://www.starlette.io/">Starlette</a> 作为 Web 框架，通常与 <a target="_blank" rel="noopener" href="https://www.uvicorn.org/">Uvicorn</a> 等 ASGI 服务器一起运行。</p>
-<p>让我们再次查看
-<code>__main__.py</code>，看看服务器是如何初始化和启动的。</p>
+</li>
+<li><p><strong><code>cancel</code></strong>: Helloworld 示例的 <code>cancel</code> 方法简单地抛出一个异常，表明这个基本代理不支持取消操作。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">async def cancel(</span><br><span class="line">    self, context: RequestContext, event_queue: EventQueue</span><br><span class="line">) -&gt; None:</span><br><span class="line">    raise Exception(&#x27;cancel not supported&#x27;)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ol>
+<p><code>AgentExecutor</code> 充当 A2A 协议（由请求处理器和服务器应用程序管理）与您的代理特定逻辑之间的桥梁。它接收关于请求的上下文信息，并使用事件队列来通信结果或更新。</p>
+<h3 id="启动server"><a href="#启动server" class="headerlink" title="启动server"></a>启动server</h3><p>现在我们已经有了 Agent Card 和 Agent Executor，可以设置并启动 A2A 服务器。</p>
+<p>A2A Python SDK 提供了一个 <code>A2AStarletteApplication</code> 类，简化了运行符合 A2A 标准的 HTTP 服务器。它使用 <a target="_blank" rel="noopener" href="https://www.starlette.io/">Starlette</a> 作为 Web 框架，通常与 <a target="_blank" rel="noopener" href="https://www.uvicorn.org/">Uvicorn</a> 等 ASGI 服务器一起运行。</p>
+<p>让我们再次查看 <code>__main__.py</code>，看看服务器是如何初始化和启动的。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line">import uvicorn</span><br><span class="line"></span><br><span class="line">from a2a.server.apps import A2AStarletteApplication</span><br><span class="line">from a2a.server.request_handlers import DefaultRequestHandler</span><br><span class="line">from a2a.server.tasks import InMemoryTaskStore</span><br><span class="line">from a2a.types import (</span><br><span class="line">    AgentCapabilities,</span><br><span class="line">    AgentCard,</span><br><span class="line">    AgentSkill,</span><br><span class="line">)</span><br><span class="line">from agent_executor import (</span><br><span class="line">    HelloWorldAgentExecutor,  # type: ignore[import-untyped]</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    skill = AgentSkill(</span><br><span class="line">        id=&#x27;hello_world&#x27;,</span><br><span class="line">        name=&#x27;返回 hello world&#x27;,</span><br><span class="line">        description=&#x27;简单地返回 hello world&#x27;,</span><br><span class="line">        tags=[&#x27;hello world&#x27;],</span><br><span class="line">        examples=[&#x27;hi&#x27;, &#x27;hello world&#x27;],</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    extended_skill = AgentSkill(</span><br><span class="line">        id=&#x27;super_hello_world&#x27;,</span><br><span class="line">        name=&#x27;返回 SUPER Hello World&#x27;,</span><br><span class="line">        description=&#x27;仅限已认证用户使用的更热情的问候。&#x27;,</span><br><span class="line">        tags=[&#x27;hello world&#x27;, &#x27;super&#x27;, &#x27;extended&#x27;],</span><br><span class="line">        examples=[&#x27;super hi&#x27;, &#x27;give me a super hello&#x27;],</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    # 这是面向公众的 Agent 卡片</span><br><span class="line">    public_agent_card = AgentCard(</span><br><span class="line">        name=&#x27;Hello World Agent&#x27;,</span><br><span class="line">        description=&#x27;只是一个 hello world 代理&#x27;,</span><br><span class="line">        url=&#x27;http://localhost:9999/&#x27;,</span><br><span class="line">        version=&#x27;1.0.0&#x27;,</span><br><span class="line">        default_input_modes=[&#x27;text&#x27;],</span><br><span class="line">        default_output_modes=[&#x27;text&#x27;],</span><br><span class="line">        capabilities=AgentCapabilities(streaming=True),</span><br><span class="line">        skills=[skill],  # 公开卡片仅包含基础技能</span><br><span class="line">        supports_authenticated_extended_card=True,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    # 这是已认证用户的扩展 Agent 卡片</span><br><span class="line">    # 额外包含 &#x27;extended_skill&#x27;</span><br><span class="line">    specific_extended_agent_card = public_agent_card.model_copy(</span><br><span class="line">        update=&#123;</span><br><span class="line">            &#x27;name&#x27;: &#x27;Hello World Agent - Extended Edition&#x27;,  # 使用不同名称以便区分</span><br><span class="line">            &#x27;description&#x27;: &#x27;面向已认证用户的完整功能 hello world 代理。&#x27;,</span><br><span class="line">            &#x27;version&#x27;: &#x27;1.0.1&#x27;,  # 甚至可以是不同的版本</span><br><span class="line">            # capabilities 及其他字段（如 url、default_input_modes、default_output_modes、</span><br><span class="line">            # supports_authenticated_extended_card）均从 public_agent_card 继承，</span><br><span class="line">            # 除非在此处另行指定。</span><br><span class="line">            &#x27;skills&#x27;: [</span><br><span class="line">                skill,</span><br><span class="line">                extended_skill,</span><br><span class="line">            ],  # 扩展卡片包含两个技能</span><br><span class="line">        &#125;</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    request_handler = DefaultRequestHandler(</span><br><span class="line">        agent_executor=HelloWorldAgentExecutor(),</span><br><span class="line">        task_store=InMemoryTaskStore(),</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    server = A2AStarletteApplication(</span><br><span class="line">        agent_card=public_agent_card,</span><br><span class="line">        http_handler=request_handler,</span><br><span class="line">        extended_agent_card=specific_extended_agent_card,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    # 使用 uvicorn 启动服务，监听 0.0.0.0:9999</span><br><span class="line">    uvicorn.run(server.build(), host=&#x27;0.0.0.0&#x27;, port=9999)</span><br></pre></td></tr></table></figure>
 <p>我们来分解一下：</p>
-<ol type="1">
-<li><strong><code>DefaultRequestHandler</code></strong>:
-<ul>
-<li>SDK 提供了 <code>DefaultRequestHandler</code>。这个处理器接收你的
-<code>AgentExecutor</code>
-实现（这里，<code>HelloWorldAgentExecutor</code>）和一个
-<code>TaskStore</code>（这里，<code>InMemoryTaskStore</code>）。</li>
-<li>它将传入的 A2A RPC 调用路由到你的执行器的适当方法上（比如
-<code>execute</code> 或 <code>cancel</code>）。</li>
-<li><code>TaskStore</code> 被 <code>DefaultRequestHandler</code>
-用来管理任务的生命周期，特别是对于有状态交互、流式传输和重新订阅。即使你的代理执行器很简单，处理器也需要一个任务存储。</li>
-</ul></li>
-<li><strong><code>A2AStarletteApplication</code></strong>:
-<ul>
-<li><code>A2AStarletteApplication</code> 类使用 <code>agent_card</code>
-和 <code>request_handler</code>（在其构造函数中称为
-<code>http_handler</code>）进行实例化。</li>
-<li><code>agent_card</code> 至关重要，因为服务器将在
-<code>/.well-known/agent-card.json</code>
-端点（默认情况下）上公开它。</li>
-<li><code>request_handler</code> 负责通过与其 <code>AgentExecutor</code>
-交互来处理所有传入的 A2A 方法调用。</li>
-</ul></li>
-<li><strong><code>uvicorn.run(server_app_builder.build(), ...)</code></strong>:
-<ul>
-<li><code>A2AStarletteApplication</code> 有一个 <code>build()</code>
-方法，用于构建实际的 Starlette 应用程序。</li>
-<li>然后使用 <code>uvicorn.run()</code> 运行该应用程序，使您的代理可通过
-HTTP 访问。</li>
-<li><code>host='0.0.0.0'</code>
-使服务器可在您机器上的所有网络接口上访问。</li>
-<li><code>port=9999</code> 指定监听的端口。这需要与
-<code>AgentCard</code> 中的 <code>url</code> 匹配。</li>
-</ul></li>
-<li><code>specific_extended_agent_card</code>
-<ul>
-<li><strong>给同一个 Agent
-准备“两张不同权限的名片”</strong>，分别用于“普通访客”和“已认证用户”。、</li>
-</ul></li>
+<ol>
+<li><strong><code>DefaultRequestHandler</code></strong>:<ul>
+<li>SDK 提供了 <code>DefaultRequestHandler</code>。这个处理器接收你的 <code>AgentExecutor</code> 实现（这里，<code>HelloWorldAgentExecutor</code>）和一个 <code>TaskStore</code>（这里，<code>InMemoryTaskStore</code>）。</li>
+<li>它将传入的 A2A RPC 调用路由到你的执行器的适当方法上（比如 <code>execute</code> 或 <code>cancel</code>）。</li>
+<li><code>TaskStore</code> 被 <code>DefaultRequestHandler</code> 用来管理任务的生命周期，特别是对于有状态交互、流式传输和重新订阅。即使你的代理执行器很简单，处理器也需要一个任务存储。</li>
+</ul>
+</li>
+<li><strong><code>A2AStarletteApplication</code></strong>:<ul>
+<li><code>A2AStarletteApplication</code> 类使用 <code>agent_card</code> 和 <code>request_handler</code>（在其构造函数中称为 <code>http_handler</code>）进行实例化。</li>
+<li><code>agent_card</code> 至关重要，因为服务器将在 <code>/.well-known/agent-card.json</code> 端点（默认情况下）上公开它。</li>
+<li><code>request_handler</code> 负责通过与其 <code>AgentExecutor</code> 交互来处理所有传入的 A2A 方法调用。</li>
+</ul>
+</li>
+<li><strong><code>uvicorn.run(server_app_builder.build(), ...)</code></strong>:<ul>
+<li><code>A2AStarletteApplication</code> 有一个 <code>build()</code> 方法，用于构建实际的 Starlette 应用程序。</li>
+<li>然后使用 <code>uvicorn.run()</code> 运行该应用程序，使您的代理可通过 HTTP 访问。</li>
+<li><code>host=&#39;0.0.0.0&#39;</code> 使服务器可在您机器上的所有网络接口上访问。</li>
+<li><code>port=9999</code> 指定监听的端口。这需要与 <code>AgentCard</code> 中的 <code>url</code> 匹配。</li>
+</ul>
+</li>
+<li><code>specific_extended_agent_card</code><ul>
+<li><strong>给同一个 Agent 准备“两张不同权限的名片”</strong>，分别用于“普通访客”和“已认证用户”。、</li>
+</ul>
+</li>
 </ol>
-<h3 id="与服务器交互">与服务器交互</h3>
-<p>Helloworld A2A 服务器运行后，让我们向它发送一些请求。SDK
-包含一个客户端（<code>A2AClient</code>），可以简化这些交互。</p>
+<h3 id="与服务器交互"><a href="#与服务器交互" class="headerlink" title="与服务器交互"></a>与服务器交互</h3><p>Helloworld A2A 服务器运行后，让我们向它发送一些请求。SDK 包含一个客户端（<code>A2AClient</code>），可以简化这些交互。</p>
 <p>让我们看一下 <code>test_client.py</code> 的关键部分：</p>
-<ol type="1">
+<ol>
 <li><p><strong>获取代理卡 &amp; 初始化客户端</strong> ：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">base_url = &#x27;http://localhost:9999&#x27;</span><br><span class="line"></span><br><span class="line">async with httpx.AsyncClient() as httpx_client:</span><br><span class="line">    # 初始化 A2ACardResolver</span><br><span class="line">    resolver = A2ACardResolver(</span><br><span class="line">        httpx_client=httpx_client,</span><br><span class="line">        base_url=base_url,</span><br><span class="line">        # agent_card_path 使用默认值，extended_agent_card_path 也使用默认值</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
-<p><code>A2ACardResolver</code> 类是一个便捷工具。它首先从服务器端的
-<code>/.well-known/agent-card.json</code> 端点（基于提供的基 URL）获取
-<code>AgentCard</code>，然后使用它初始化客户端。</p></li>
+<p><code>A2ACardResolver</code> 类是一个便捷工具。它首先从服务器端的 <code>/.well-known/agent-card.json</code> 端点（基于提供的基 URL）获取 <code>AgentCard</code>，然后使用它初始化客户端。</p>
+</li>
 <li><p><strong>发送非流式消息 (<code>send_message</code>)</strong>:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">client = A2AClient(</span><br><span class="line">    httpx_client=httpx_client, </span><br><span class="line">    agent_card=final_agent_card_to_use#这个card为经过认证处理后暴露的card</span><br><span class="line">)</span><br><span class="line">logger.info(&#x27;A2AClient initialized.&#x27;)</span><br><span class="line"></span><br><span class="line">send_message_payload: dict[str, Any] = &#123;</span><br><span class="line">    &#x27;message&#x27;: &#123;</span><br><span class="line">        &#x27;role&#x27;: &#x27;user&#x27;,</span><br><span class="line">        &#x27;parts&#x27;: [</span><br><span class="line">            &#123;&#x27;kind&#x27;: &#x27;text&#x27;, &#x27;text&#x27;: &#x27;how much is 10 USD in INR?&#x27;&#125;</span><br><span class="line">        ],</span><br><span class="line">        &#x27;messageId&#x27;: uuid4().hex,</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br><span class="line">request = SendMessageRequest(</span><br><span class="line">    id=str(uuid4()), params=MessageSendParams(**send_message_payload)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">response = await client.send_message(request)</span><br><span class="line">print(response.model_dump(mode=&#x27;json&#x27;, exclude_none=True))</span><br></pre></td></tr></table></figure>
 <ul>
-<li><code>send_message_payload</code> 构建了
-<code>MessageSendParams</code> 的数据。</li>
+<li><code>send_message_payload</code> 构建了 <code>MessageSendParams</code> 的数据。</li>
 <li>这些数据被封装在 <code>SendMessageRequest</code> 中。</li>
-<li>它包含一个 <code>message</code> 对象，其中 <code>role</code>
-设置为”用户”，内容在 <code>parts</code> 中。</li>
-<li>Helloworld 代理的 <code>execute</code> 方法将入队一条”Hello
-World”消息。<code>DefaultRequestHandler</code>
-将获取这条消息并将其作为响应发送。</li>
-<li><code>response</code> 将是一个 <code>SendMessageResponse</code>
-对象，其中包含 <code>SendMessageSuccessResponse</code>（以代理的
-<code>Message</code> 作为结果）或
-<code>JSONRPCErrorResponse</code>。</li>
-</ul></li>
+<li>它包含一个 <code>message</code> 对象，其中 <code>role</code> 设置为”用户”，内容在 <code>parts</code> 中。</li>
+<li>Helloworld 代理的 <code>execute</code> 方法将入队一条”Hello World”消息。<code>DefaultRequestHandler</code> 将获取这条消息并将其作为响应发送。</li>
+<li><code>response</code> 将是一个 <code>SendMessageResponse</code> 对象，其中包含 <code>SendMessageSuccessResponse</code>（以代理的 <code>Message</code> 作为结果）或 <code>JSONRPCErrorResponse</code>。</li>
+</ul>
+</li>
 <li><p><strong>处理任务 ID（Helloworld 的说明性注释）</strong>:</p>
-<p>Helloworld 客户端（<code>test_client.py</code>）不会直接尝试
-<code>get_task</code> 或 <code>cancel_task</code>，因为简单的 Helloworld
-代理的 <code>execute</code> 方法，通过 <code>message/send</code>
-调用时，会导致 <code>DefaultRequestHandler</code> 返回一个直接的
-<code>Message</code> 响应，而不是 <code>Task</code>
-对象。更复杂的、明确管理任务的代理（如 LangGraph 示例）会从
-<code>message/send</code> 返回一个 <code>Task</code> 对象，然后其
-<code>id</code> 可用于 <code>get_task</code> 或
-<code>cancel_task</code>。</p></li>
+<p>Helloworld 客户端（<code>test_client.py</code>）不会直接尝试 <code>get_task</code> 或 <code>cancel_task</code>，因为简单的 Helloworld 代理的 <code>execute</code> 方法，通过 <code>message/send</code> 调用时，会导致 <code>DefaultRequestHandler</code> 返回一个直接的 <code>Message</code> 响应，而不是 <code>Task</code> 对象。更复杂的、明确管理任务的代理（如 LangGraph 示例）会从 <code>message/send</code> 返回一个 <code>Task</code> 对象，然后其 <code>id</code> 可用于 <code>get_task</code> 或 <code>cancel_task</code>。</p>
+</li>
 <li><p><strong>发送流式消息（<code>send_message_streaming</code>）</strong>：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">streaming_request = SendStreamingMessageRequest(</span><br><span class="line">    id=str(uuid4()), params=MessageSendParams(**send_message_payload)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">stream_response = client.send_message_streaming(streaming_request)</span><br><span class="line"></span><br><span class="line">async for chunk in stream_response:</span><br><span class="line">    print(chunk.model_dump(mode=&#x27;json&#x27;, exclude_none=True))</span><br></pre></td></tr></table></figure>
 <ul>
-<li>此方法调用代理的 <code>message/stream</code>
-端点。<code>DefaultRequestHandler</code> 将调用
-<code>HelloWorldAgentExecutor.execute</code> 方法。</li>
-<li><code>execute</code> 方法将一个”Hello
-World”消息入队，然后关闭事件队列。</li>
-<li>客户端将接收这条单条消息为一个
-<code>SendStreamingMessageResponse</code> 事件，然后流将终止。</li>
-<li><code>stream_response</code> 是一个
-<code>AsyncGenerator</code>。</li>
-</ul></li>
+<li>此方法调用代理的 <code>message/stream</code> 端点。<code>DefaultRequestHandler</code> 将调用 <code>HelloWorldAgentExecutor.execute</code> 方法。</li>
+<li><code>execute</code> 方法将一个”Hello World”消息入队，然后关闭事件队列。</li>
+<li>客户端将接收这条单条消息为一个 <code>SendStreamingMessageResponse</code> 事件，然后流将终止。</li>
+<li><code>stream_response</code> 是一个 <code>AsyncGenerator</code>。</li>
+</ul>
+</li>
 </ol>
-<h3 id="参考资料">参考资料</h3>
-<p><a target="_blank" rel="noopener" href="https://github.com/a2aproject/a2a-samples?tab=readme-ov-file">a2aproject/a2a-samples:
-Samples using the Agent2Agent (A2A) Protocol</a></p>
-<p><a target="_blank" rel="noopener" href="https://a2a-protocol.org/latest/">Agent2Agent (A2A)
-Protocol</a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/a2aproject/a2a-python">a2aproject/a2a-python:
-Agent2Agent (A2A) 协议的官方 Python SDK — a2aproject/a2a-python:
-Official Python SDK for the Agent2Agent (A2A) Protocol</a></p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://github.com/a2aproject/a2a-samples?tab=readme-ov-file">a2aproject/a2a-samples: Samples using the Agent2Agent (A2A) Protocol</a></p>
+<p><a target="_blank" rel="noopener" href="https://a2a-protocol.org/latest/">Agent2Agent (A2A) Protocol</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/a2aproject/a2a-python">a2aproject/a2a-python: Agent2Agent (A2A) 协议的官方 Python SDK —- a2aproject/a2a-python: Official Python SDK for the Agent2Agent (A2A) Protocol</a></p>
 
     </div>
 
@@ -590,13 +482,13 @@ Official Python SDK for the Agent2Agent (A2A) Protocol</a></p>
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langmem/" rel="prev" title="Langmem快速入门">
-                  <i class="fa fa-angle-left"></i> Langmem快速入门
+                <a href="/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/qwen3-8b%E5%BE%AE%E8%B0%83%E5%AE%9E%E6%88%98/" rel="prev" title="qwen3-8b微调实战">
+                  <i class="fa fa-angle-left"></i> qwen3-8b微调实战
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2025/08/15/%E5%AD%A6%E4%B9%A0/python-web/react/react/" rel="next" title="python web——react">
-                  python web——react <i class="fa fa-angle-right"></i>
+                <a href="/2025/08/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langmem/" rel="next" title="Langmem快速入门">
+                  Langmem快速入门 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
@@ -617,7 +509,7 @@ Official Python SDK for the Agent2Agent (A2A) Protocol</a></p>
 
   <div class="copyright">
     &copy; 
-    <span itemprop="copyrightYear">2025</span>
+    <span itemprop="copyrightYear">2026</span>
     <span class="with-love">
       <i class="fa fa-heart"></i>
     </span>

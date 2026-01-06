@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="什么是 MCP？  全称：Model Context Protocol 作用：让 AI 助手（如 Claude、Cline 等）在对话过程中，动态调用外部工具（Tool）完成复杂任务（读写文件、查询数据库、调用 API 等）。 组成：  MCP Host（宿主，如 Cline、Claude Desktop） MCP Server（提供 Tool 的后台服务） Tool（具体功能">
+    <meta name="description" content="什么是 MCP？ 全称：Model Context Protocol 作用：让 AI 助手（如 Claude、Cline 等）在对话过程中，动态调用外部工具（Tool）完成复杂任务（读写文件、查询数据库、调用 API 等）。 组成： MCP Host（宿主，如 Cline、Claude Desktop） MCP Server（提供 Tool 的后台服务） Tool（具体功能单元，如 read_fi">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MCP 学习笔记">
 <meta property="og:url" content="http://example.com/2025/07/27/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/MCP%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="什么是 MCP？  全称：Model Context Protocol 作用：让 AI 助手（如 Claude、Cline 等）在对话过程中，动态调用外部工具（Tool）完成复杂任务（读写文件、查询数据库、调用 API 等）。 组成：  MCP Host（宿主，如 Cline、Claude Desktop） MCP Server（提供 Tool 的后台服务） Tool（具体功能">
+<meta property="og:description" content="什么是 MCP？ 全称：Model Context Protocol 作用：让 AI 助手（如 Claude、Cline 等）在对话过程中，动态调用外部工具（Tool）完成复杂任务（读写文件、查询数据库、调用 API 等）。 组成： MCP Host（宿主，如 Cline、Claude Desktop） MCP Server（提供 Tool 的后台服务） Tool（具体功能单元，如 read_fi">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2025/07/27/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/MCP%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20250727154739013.png">
 <meta property="og:image" content="http://example.com/2025/07/27/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/MCP%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20250727163811531-1753605912284-1.png">
@@ -148,7 +148,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-mcp"><span class="nav-number">1.</span> <span class="nav-text">什么是 MCP？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E9%80%9F%E8%AE%B0"><span class="nav-number">2.</span> <span class="nav-text">核心概念速记</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mcp%E5%92%8Cfuction-calling%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">3.</span> <span class="nav-text">mcp和fuction calling的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85mcp"><span class="nav-number">4.</span> <span class="nav-text">安装mcp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AAmcp-server"><span class="nav-number">5.</span> <span class="nav-text">创建一个mcp server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90mcp-server%E4%B8%8Ehost%E7%9A%84%E9%80%9A%E4%BF%A1"><span class="nav-number">6.</span> <span class="nav-text">解析mcp server与host的通信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%90%86%E8%A7%A3mcp%E7%9A%84%E6%9C%AC%E8%B4%A8"><span class="nav-number">7.</span> <span class="nav-text">理解mcp的本质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mcp-host%E4%B8%8E%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%BA%A4%E4%BA%92"><span class="nav-number">8.</span> <span class="nav-text">mcp host与模型的交互</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mcp%E7%9A%84%E4%B8%89%E7%A7%8D%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE"><span class="nav-number">9.</span> <span class="nav-text">mcp的三种传输协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#react"><span class="nav-number">10.</span> <span class="nav-text">ReAct</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">11.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-MCP%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">什么是 MCP？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E9%80%9F%E8%AE%B0"><span class="nav-number">2.</span> <span class="nav-text">核心概念速记</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mcp%E5%92%8Cfuction-calling%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">3.</span> <span class="nav-text">mcp和fuction calling的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85mcp"><span class="nav-number">4.</span> <span class="nav-text">安装mcp</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AAmcp-server"><span class="nav-number">5.</span> <span class="nav-text">创建一个mcp server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90mcp-server%E4%B8%8Ehost%E7%9A%84%E9%80%9A%E4%BF%A1"><span class="nav-number">6.</span> <span class="nav-text">解析mcp server与host的通信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%90%86%E8%A7%A3mcp%E7%9A%84%E6%9C%AC%E8%B4%A8"><span class="nav-number">7.</span> <span class="nav-text">理解mcp的本质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mcp-host%E4%B8%8E%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%BA%A4%E4%BA%92"><span class="nav-number">8.</span> <span class="nav-text">mcp host与模型的交互</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mcp%E7%9A%84%E4%B8%89%E7%A7%8D%E4%BC%A0%E8%BE%93%E5%8D%8F%E8%AE%AE"><span class="nav-number">9.</span> <span class="nav-text">mcp的三种传输协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ReAct"><span class="nav-number">10.</span> <span class="nav-text">ReAct</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">11.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -163,7 +163,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">177</span>
+          <span class="site-state-item-count">178</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -288,38 +288,32 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h3 id="什么是-mcp">什么是 MCP？</h3>
-<ul>
+    <div class="post-body" itemprop="articleBody"><h3 id="什么是-MCP？"><a href="#什么是-MCP？" class="headerlink" title="什么是 MCP？"></a>什么是 MCP？</h3><ul>
 <li><strong>全称</strong>：Model Context Protocol</li>
-<li><strong>作用</strong>：让 AI 助手（如 Claude、Cline
-等）在对话过程中，动态调用外部工具（Tool）完成复杂任务（读写文件、查询数据库、调用
-API 等）。</li>
-<li><strong>组成</strong>：
-<ol type="1">
+<li><strong>作用</strong>：让 AI 助手（如 Claude、Cline 等）在对话过程中，动态调用外部工具（Tool）完成复杂任务（读写文件、查询数据库、调用 API 等）。</li>
+<li><strong>组成</strong>：<ol>
 <li><strong>MCP Host</strong>（宿主，如 Cline、Claude Desktop）</li>
 <li><strong>MCP Server</strong>（提供 Tool 的后台服务）</li>
-<li><strong>Tool</strong>（具体功能单元，如 <code>read_file</code>,
-<code>exec_command</code> 等）</li>
-</ol></li>
+<li><strong>Tool</strong>（具体功能单元，如 <code>read_file</code>, <code>exec_command</code> 等）</li>
+</ol>
+</li>
 </ul>
-<h3 id="核心概念速记">核心概念速记</h3>
-<ul>
-<li><strong>MCP Server</strong>
-<ul>
+<h3 id="核心概念速记"><a href="#核心概念速记" class="headerlink" title="核心概念速记"></a>核心概念速记</h3><ul>
+<li><strong>MCP Server</strong><ul>
 <li>一个独立进程，提供 1-N 个 Tool。</li>
 <li>可以用任何语言编写，只要暴露标准 MCP 接口。</li>
-</ul></li>
-<li><strong>Tool</strong>
-<ul>
-<li>最小执行单元，必须包含：
-<ul>
+</ul>
+</li>
+<li><strong>Tool</strong><ul>
+<li>最小执行单元，必须包含：<ul>
 <li>name（唯一）</li>
 <li>description（让 LLM 理解何时调用）</li>
 <li>input schema（参数结构，JSON Schema）</li>
-</ul></li>
-</ul></li>
-<li><strong>交互流程（重点）</strong>
-<ul>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>交互流程（重点）</strong><ul>
 <li>在启动mcp server时，server将tool信息传送给host</li>
 <li>用户在 Host 输入自然语言需求。</li>
 <li>Host 将需求 + 可用 Tool 列表发给 LLM。</li>
@@ -327,15 +321,11 @@ API 等）。</li>
 <li>Host 通过 MCP 协议向对应 Server 发送请求。</li>
 <li>Server 执行 Tool 并返回结果。</li>
 <li>Host 将结果合并上下文，继续对话。</li>
-</ul></li>
 </ul>
-<h3 id="mcp和fuction-calling的区别">mcp和fuction calling的区别</h3>
+</li>
+</ul>
+<h3 id="mcp和fuction-calling的区别"><a href="#mcp和fuction-calling的区别" class="headerlink" title="mcp和fuction calling的区别"></a>mcp和fuction calling的区别</h3><div class="table-container">
 <table>
-<colgroup>
-<col style="width: 7%">
-<col style="width: 46%">
-<col style="width: 46%">
-</colgroup>
 <thead>
 <tr>
 <th>维度</th>
@@ -346,16 +336,13 @@ API 等）。</li>
 <tbody>
 <tr>
 <td>本质</td>
-<td><strong>能力</strong> ——
-某个大模型原生就带的一种「调用函数」功能</td>
-<td><strong>协议</strong> —— 定义 AI
-与外部世界如何长期、标准、可复用地交互</td>
+<td><strong>能力</strong> —— 某个大模型原生就带的一种「调用函数」功能</td>
+<td><strong>协议</strong> —— 定义 AI 与外部世界如何长期、标准、可复用地交互</td>
 </tr>
 <tr>
 <td>工作方式</td>
 <td>模型在一次推理里<strong>主动</strong>决定要调用哪个函数，并吐出结构化参数</td>
-<td>通过「客户端-服务器」架构，由 MCP Server
-<strong>被动</strong>等待模型或 Agent 的请求</td>
+<td>通过「客户端-服务器」架构，由 MCP Server <strong>被动</strong>等待模型或 Agent 的请求</td>
 </tr>
 <tr>
 <td>是否标准化</td>
@@ -374,83 +361,50 @@ API 等）。</li>
 </tr>
 </tbody>
 </table>
-<p>一句话总结： <strong>Function Calling
-是「某个模型自带的快捷指令」，MCP
-是「让任何模型都能统一插拔工具的工业标准」。</strong> 二者并非互斥——MCP
-的实现里仍然可以用 Function Calling
-去触发具体函数，但它把「怎么描述工具、怎么发现工具、怎么保持会话」这些事都标准化了，从而解决了
-FC 带来的碎片化、难维护、难共享的问题 。</p>
-<h3 id="安装mcp">安装mcp</h3>
-<p>在mcp server市场查找自己想用的mcp服务，如<a target="_blank" rel="noopener" href="https://mcp.so/server/fetch/modelcontextprotocol?tab=content">Fetch
-MCP Server</a></p>
+</div>
+<p>一句话总结：<br><strong>Function Calling 是「某个模型自带的快捷指令」，MCP 是「让任何模型都能统一插拔工具的工业标准」。</strong><br>二者并非互斥——MCP 的实现里仍然可以用 Function Calling 去触发具体函数，但它把「怎么描述工具、怎么发现工具、怎么保持会话」这些事都标准化了，从而解决了 FC 带来的碎片化、难维护、难共享的问题 。</p>
+<h3 id="安装mcp"><a href="#安装mcp" class="headerlink" title="安装mcp"></a>安装mcp</h3><p>在mcp server市场查找自己想用的mcp服务，如<a target="_blank" rel="noopener" href="https://mcp.so/server/fetch/modelcontextprotocol?tab=content">Fetch MCP Server</a></p>
 <p>复制mcp配置</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;mcpServers&quot;: &#123;</span><br><span class="line">    &quot;fetch&quot;: &#123;</span><br><span class="line">      &quot;command&quot;: &quot;uvx&quot;,</span><br><span class="line">      &quot;args&quot;: [</span><br><span class="line">        &quot;mcp-server-fetch&quot;</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>在mcp host 中安装，如trae</p>
 <p>host会自动完成对mcp的配置</p>
-<h3 id="创建一个mcp-server">创建一个mcp server</h3>
-<p>初始化项目</p>
+<h3 id="创建一个mcp-server"><a href="#创建一个mcp-server" class="headerlink" title="创建一个mcp server"></a>创建一个mcp server</h3><p>初始化项目</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">uv init weather</span><br><span class="line"></span><br><span class="line">uv sync</span><br><span class="line"></span><br><span class="line">source .venv/bin/activate </span><br><span class="line"></span><br><span class="line">#添加依赖</span><br><span class="line">uv add &quot;mcp[cli]&quot; httpx</span><br></pre></td></tr></table></figure>
 <p>创建weather.py</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br></pre></td><td class="code"><pre><span class="line"># 导入类型提示模块，用于类型注解</span><br><span class="line">from typing import Any</span><br><span class="line"></span><br><span class="line"># 导入httpx库，用于发送HTTP请求</span><br><span class="line">import httpx</span><br><span class="line"></span><br><span class="line"># 从mcp.server.fastmcp模块导入FastMCP类</span><br><span class="line"># FastMCP是一个快速构建MCP（Model Control Protocol）服务器的框架</span><br><span class="line">from mcp.server.fastmcp import FastMCP</span><br><span class="line"></span><br><span class="line"># 创建FastMCP实例，命名为&quot;weather&quot;，日志级别设置为ERROR（只显示错误信息）</span><br><span class="line">mcp = FastMCP(&quot;weather&quot;, log_level=&quot;ERROR&quot;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 常量定义</span><br><span class="line"># NWS（National Weather Service）API的基础URL</span><br><span class="line">NWS_API_BASE = &quot;https://api.weather.gov&quot;</span><br><span class="line"># 用户代理字符串，用于标识应用程序</span><br><span class="line">USER_AGENT = &quot;weather-app/1.0&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">async def make_nws_request(url: str) -&gt; dict[str, Any] | None:</span><br><span class="line">    &quot;&quot;&quot;向NWS API发起请求并处理错误。</span><br><span class="line">    </span><br><span class="line">    Args:</span><br><span class="line">        url: 要请求的API URL</span><br><span class="line">        </span><br><span class="line">    Returns:</span><br><span class="line">        成功时返回解析后的JSON数据字典，失败时返回None</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    # 设置请求头信息</span><br><span class="line">    headers = &#123;</span><br><span class="line">        &quot;User-Agent&quot;: USER_AGENT,           # 用户代理标识</span><br><span class="line">        &quot;Accept&quot;: &quot;application/geo+json&quot;    # 接受的数据格式</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    # 创建异步HTTP客户端</span><br><span class="line">    async with httpx.AsyncClient() as client:</span><br><span class="line">        try:</span><br><span class="line">            # 发起GET请求，设置超时时间为30秒</span><br><span class="line">            response = await client.get(url, headers=headers, timeout=30.0)</span><br><span class="line">            # 如果响应状态码不是2xx，抛出异常</span><br><span class="line">            response.raise_for_status()</span><br><span class="line">            # 返回解析后的JSON数据</span><br><span class="line">            return response.json()</span><br><span class="line">        except Exception:</span><br><span class="line">            # 捕获所有异常，返回None表示请求失败</span><br><span class="line">            return None</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def format_alert(feature: dict) -&gt; str:</span><br><span class="line">    &quot;&quot;&quot;将警报数据格式化为可读的字符串。</span><br><span class="line">    </span><br><span class="line">    Args:</span><br><span class="line">        feature: 包含警报信息的字典</span><br><span class="line">        </span><br><span class="line">    Returns:</span><br><span class="line">        格式化后的警报字符串</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    # 获取警报属性</span><br><span class="line">    props = feature[&quot;properties&quot;]</span><br><span class="line">    # 格式化警报信息，使用get方法提供默认值防止键不存在</span><br><span class="line">    return f&quot;&quot;&quot;</span><br><span class="line">事件: &#123;props.get(&#x27;event&#x27;, &#x27;未知&#x27;)&#125;</span><br><span class="line">区域: &#123;props.get(&#x27;areaDesc&#x27;, &#x27;未知&#x27;)&#125;</span><br><span class="line">严重程度: &#123;props.get(&#x27;severity&#x27;, &#x27;未知&#x27;)&#125;</span><br><span class="line">描述: &#123;props.get(&#x27;description&#x27;, &#x27;无描述信息&#x27;)&#125;</span><br><span class="line">指示: &#123;props.get(&#x27;instruction&#x27;, &#x27;无具体指示&#x27;)&#125;</span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 使用@mcp.tool()装饰器将函数注册为MCP工具</span><br><span class="line">@mcp.tool()</span><br><span class="line">async def get_alerts(state: str) -&gt; str:</span><br><span class="line">    &quot;&quot;&quot;获取指定美国州的天气警报。</span><br><span class="line">    </span><br><span class="line">    Args:</span><br><span class="line">        state: 两个字母的美国州代码（例如：CA, NY）</span><br><span class="line">        </span><br><span class="line">    Returns:</span><br><span class="line">        格式化后的警报信息字符串</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    # 构建获取州警报的URL</span><br><span class="line">    url = f&quot;&#123;NWS_API_BASE&#125;/alerts/active/area/&#123;state&#125;&quot;</span><br><span class="line">    # 发起API请求获取数据</span><br><span class="line">    data = await make_nws_request(url)</span><br><span class="line"></span><br><span class="line">    # 检查数据是否有效</span><br><span class="line">    if not data or &quot;features&quot; not in data:</span><br><span class="line">        return &quot;无法获取警报或未找到警报。&quot;</span><br><span class="line"></span><br><span class="line">    # 检查是否有警报</span><br><span class="line">    if not data[&quot;features&quot;]:</span><br><span class="line">        return &quot;该州无活动警报。&quot;</span><br><span class="line"></span><br><span class="line">    # 格式化所有警报</span><br><span class="line">    alerts = [format_alert(feature) for feature in data[&quot;features&quot;]]</span><br><span class="line">    # 用分隔符连接所有警报</span><br><span class="line">    return &quot;\n---\n&quot;.join(alerts)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 注册为MCP工具的天气预报函数</span><br><span class="line">@mcp.tool()</span><br><span class="line">async def get_forecast(latitude: float, longitude: float) -&gt; str:</span><br><span class="line">    &quot;&quot;&quot;获取指定位置的天气预报。</span><br><span class="line">    </span><br><span class="line">    Args:</span><br><span class="line">        latitude: 位置的纬度</span><br><span class="line">        longitude: 位置的经度</span><br><span class="line">        </span><br><span class="line">    Returns:</span><br><span class="line">        格式化后的天气预报字符串</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    # 首先获取预报网格端点</span><br><span class="line">    points_url = f&quot;&#123;NWS_API_BASE&#125;/points/&#123;latitude&#125;,&#123;longitude&#125;&quot;</span><br><span class="line">    points_data = await make_nws_request(points_url)</span><br><span class="line"></span><br><span class="line">    # 检查点数据是否获取成功</span><br><span class="line">    if not points_data:</span><br><span class="line">        return &quot;无法获取此位置的预报数据。&quot;</span><br><span class="line"></span><br><span class="line">    # 从点响应中获取预报URL</span><br><span class="line">    forecast_url = points_data[&quot;properties&quot;][&quot;forecast&quot;]</span><br><span class="line">    forecast_data = await make_nws_request(forecast_url)</span><br><span class="line"></span><br><span class="line">    # 检查预报数据是否获取成功</span><br><span class="line">    if not forecast_data:</span><br><span class="line">        return &quot;无法获取详细预报。&quot;</span><br><span class="line"></span><br><span class="line">    # 将时间段格式化为可读的预报</span><br><span class="line">    periods = forecast_data[&quot;properties&quot;][&quot;periods&quot;]</span><br><span class="line">    forecasts = []</span><br><span class="line">    # 只显示接下来的5个时间段</span><br><span class="line">    for period in periods[:5]:</span><br><span class="line">        forecast = f&quot;&quot;&quot;</span><br><span class="line">&#123;period[&#x27;name&#x27;]&#125;:</span><br><span class="line">温度: &#123;period[&#x27;temperature&#x27;]&#125;°&#123;period[&#x27;temperatureUnit&#x27;]&#125;</span><br><span class="line">风力: &#123;period[&#x27;windSpeed&#x27;]&#125; &#123;period[&#x27;windDirection&#x27;]&#125;</span><br><span class="line">预报: &#123;period[&#x27;detailedForecast&#x27;]&#125;</span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line">        forecasts.append(forecast)</span><br><span class="line"></span><br><span class="line">    # 用分隔符连接所有预报</span><br><span class="line">    return &quot;\n---\n&quot;.join(forecasts)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 程序入口点</span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    # 初始化并运行服务器，使用stdio传输方式</span><br><span class="line">    mcp.run(transport=&#x27;stdio&#x27;)</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p><span class="citation" data-cites="mcp.tool">@mcp.tool</span>()可以将函数内的字符串，参数类型等信息传给大模型，以供大模型决定何时调用这个tool</p>
-<p>mcp.run(transport=‘stdio’)说明mcp
-server和host的传输方式是输入和输出</p>
+<p>@mcp.tool()可以将函数内的字符串，参数类型等信息传给大模型，以供大模型决定何时调用这个tool</p>
+<p>mcp.run(transport=’stdio’)说明mcp server和host的传输方式是输入和输出</p>
 </blockquote>
 <p>mcp server 配置信息</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&quot;weather&quot;: &#123;</span><br><span class="line">    &quot;disabled&quot;: false,</span><br><span class="line">    &quot;timeout&quot;: 60,</span><br><span class="line">    &quot;command&quot;: &quot;uv&quot;,</span><br><span class="line">    &quot;args&quot;: [</span><br><span class="line">      &quot;--directory&quot;,</span><br><span class="line">      &quot;/Users/joeygreen/PycharmProjects/weather&quot;,</span><br><span class="line">      &quot;run&quot;,</span><br><span class="line">      &quot;weather.py&quot;</span><br><span class="line">    ],</span><br><span class="line">    &quot;transportType&quot;: &quot;stdio&quot;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>“disabled”: false表示该服务是否被禁用。<code>false</code>
-表示该服务是启用状态，可以正常运行。</p>
+<p>“disabled”: false表示该服务是否被禁用。<code>false</code> 表示该服务是启用状态，可以正常运行。</p>
 <p>“timeout”: 60设置该服务的超时时间，单位为秒。</p>
 <p>“command”: “uv”指定执行该服务时使用的命令。</p>
 <p>“args”出了执行 <code>command</code> 时需要传递的参数。</p>
-<p>“transportType”: “stdio”指定服务的通信方式。<code>stdio</code>
-表示标准输入输出流（Standard Input Output），通常用于进程间通信。</p>
+<p>“transportType”: “stdio”指定服务的通信方式。<code>stdio</code> 表示标准输入输出流（Standard Input Output），通常用于进程间通信。</p>
 </blockquote>
-<h3 id="解析mcp-server与host的通信">解析mcp server与host的通信</h3>
-<figure>
-<img src="/2025/07/27/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/MCP%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20250727154739013.png" alt="image-20250727154739013">
-<figcaption aria-hidden="true">image-20250727154739013</figcaption>
-</figure>
+<h3 id="解析mcp-server与host的通信"><a href="#解析mcp-server与host的通信" class="headerlink" title="解析mcp server与host的通信"></a>解析mcp server与host的通信</h3><p><img src="/2025/07/27/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/MCP%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20250727154739013.png" alt="image-20250727154739013"></p>
 <p>输入为host对server发送，输出为server对host发送，以下将列举几个重要的说明</p>
-<p>输入中：<code>method</code>字段为host告诉server接下来要干什么，如<strong>初始化
-(Initialization)</strong>，<strong>通知已初始化
-(Notification)</strong>，<strong>查询可用工具 (Listing
-Tools)</strong>，<strong>调用工具 (Calling a Tool)</strong></p>
+<p>输入中：<code>method</code>字段为host告诉server接下来要干什么，如<strong>初始化 (Initialization)</strong>，<strong>通知已初始化 (Notification)</strong>，<strong>查询可用工具 (Listing Tools)</strong>，<strong>调用工具 (Calling a Tool)</strong></p>
 <p><code>protocolVersion</code>说明了mcp使用的协议版本</p>
 <p>以下见server返回的tool信息，其中的一个参数</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;: &quot;get_forecast&quot;,</span><br><span class="line">    &quot;description&quot;: &quot;Get weather forecast for a location.\n\nArgs:\n    latitude: Latitude of the location\n    longitude: Longitude of the location\n&quot;,</span><br><span class="line">    &quot;inputSchema&quot;: &#123;</span><br><span class="line">        &quot;properties&quot;: &#123;</span><br><span class="line">            &quot;latitude&quot;: &#123;</span><br><span class="line">                &quot;title&quot;: &quot;Latitude&quot;,</span><br><span class="line">                &quot;type&quot;: &quot;number&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;longitude&quot;: &#123;</span><br><span class="line">                &quot;title&quot;: &quot;Longitude&quot;,</span><br><span class="line">                &quot;type&quot;: &quot;number&quot;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;required&quot;: [</span><br><span class="line">            &quot;latitude&quot;,</span><br><span class="line">            &quot;longitude&quot;</span><br><span class="line">        ],</span><br><span class="line">        &quot;title&quot;: &quot;get_forecastArguments&quot;,</span><br><span class="line">        &quot;type&quot;: &quot;object&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>可以和定义的函数对比学习</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"># 注册为MCP工具的天气预报函数</span><br><span class="line">@mcp.tool()</span><br><span class="line">async def get_forecast(latitude: float, longitude: float) -&gt; str:</span><br><span class="line">    &quot;&quot;&quot;获取指定位置的天气预报。</span><br><span class="line">    </span><br><span class="line">    Args:</span><br><span class="line">        latitude: 位置的纬度</span><br><span class="line">        longitude: 位置的经度</span><br><span class="line">        </span><br><span class="line">    Returns:</span><br><span class="line">        格式化后的天气预报字符串</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    # 首先获取预报网格端点</span><br><span class="line">    points_url = f&quot;&#123;NWS_API_BASE&#125;/points/&#123;latitude&#125;,&#123;longitude&#125;&quot;</span><br><span class="line">    points_data = await make_nws_request(points_url)</span><br><span class="line"></span><br><span class="line">    # 检查点数据是否获取成功</span><br><span class="line">    if not points_data:</span><br><span class="line">        return &quot;无法获取此位置的预报数据。&quot;</span><br><span class="line"></span><br><span class="line">    # 从点响应中获取预报URL</span><br><span class="line">    forecast_url = points_data[&quot;properties&quot;][&quot;forecast&quot;]</span><br><span class="line">    forecast_data = await make_nws_request(forecast_url)</span><br><span class="line"></span><br><span class="line">    # 检查预报数据是否获取成功</span><br><span class="line">    if not forecast_data:</span><br><span class="line">        return &quot;无法获取详细预报。&quot;</span><br><span class="line"></span><br><span class="line">    # 将时间段格式化为可读的预报</span><br><span class="line">    periods = forecast_data[&quot;properties&quot;][&quot;periods&quot;]</span><br><span class="line">    forecasts = []</span><br><span class="line">    # 只显示接下来的5个时间段</span><br><span class="line">    for period in periods[:5]:</span><br><span class="line">        forecast = f&quot;&quot;&quot;</span><br><span class="line">&#123;period[&#x27;name&#x27;]&#125;:</span><br><span class="line">温度: &#123;period[&#x27;temperature&#x27;]&#125;°&#123;period[&#x27;temperatureUnit&#x27;]&#125;</span><br><span class="line">风力: &#123;period[&#x27;windSpeed&#x27;]&#125; &#123;period[&#x27;windDirection&#x27;]&#125;</span><br><span class="line">预报: &#123;period[&#x27;detailedForecast&#x27;]&#125;</span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line">        forecasts.append(forecast)</span><br><span class="line"></span><br><span class="line">    # 用分隔符连接所有预报</span><br><span class="line">    return &quot;\n---\n&quot;.join(forecasts)</span><br></pre></td></tr></table></figure>
-<p><code>description</code>内容即为我们在定义这个tool的时候写的<strong>文档字符串</strong>（Documentation
-String），通常简称为 <strong>docstring</strong></p>
-<p><code>inputSchema</code> 是在MCP（Model Control
-Protocol）中用来<strong>描述工具（tool）所需参数的结构和类型的规范</strong>。它本质上是一个JSON
-Schema。</p>
+<p><code>description</code>内容即为我们在定义这个tool的时候写的<strong>文档字符串</strong>（Documentation String），通常简称为 <strong>docstring</strong></p>
+<p><code>inputSchema</code> 是在MCP（Model Control Protocol）中用来<strong>描述工具（tool）所需参数的结构和类型的规范</strong>。它本质上是一个JSON Schema。</p>
 <blockquote>
-<p>JSON Schema 是一个用于<strong>描述和验证 JSON
-数据结构的规范</strong>。你可以把它理解为 JSON
-数据的“蓝图”或“模板”。</p>
+<p>JSON Schema 是一个用于<strong>描述和验证 JSON 数据结构的规范</strong>。你可以把它理解为 JSON 数据的“蓝图”或“模板”。</p>
 </blockquote>
 <p><code>required</code>指明哪些参数是必需的，哪些是可选的。</p>
-<h3 id="理解mcp的本质">理解mcp的本质</h3>
-<p>以上内容皆是server与host直接的交互，本质上可以理解成host对server提供的工具进行注册与使用。这其中并不涉及到host与大模型的交互，也就是大模型是如何使用host提供的信息。实际上不同的mcp
-host与模型的交互协议也不同，如cline使用的是xml格式；cherry
-studio使用的则是fuction calling</p>
-<p>再看mcp的全称Model Context
-Protocol，模型上下文协议，也就是mcp增加模型的扩展性，使他可以获取更多信息，而server就是为模型提供更多信息的工具</p>
-<h3 id="mcp-host与模型的交互">mcp host与模型的交互</h3>
-<p>使用中转服务器截获日志</p>
-<figure>
-<img src="/2025/07/27/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/MCP%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20250727163811531-1753605912284-1.png" alt="image-20250727163811531">
-<figcaption aria-hidden="true">image-20250727163811531</figcaption>
-</figure>
+<h3 id="理解mcp的本质"><a href="#理解mcp的本质" class="headerlink" title="理解mcp的本质"></a>理解mcp的本质</h3><p>以上内容皆是server与host直接的交互，本质上可以理解成host对server提供的工具进行注册与使用。这其中并不涉及到host与大模型的交互，也就是大模型是如何使用host提供的信息。实际上不同的mcp host与模型的交互协议也不同，如cline使用的是xml格式；cherry studio使用的则是fuction calling</p>
+<p>再看mcp的全称Model Context Protocol，模型上下文协议，也就是mcp增加模型的扩展性，使他可以获取更多信息，而server就是为模型提供更多信息的工具</p>
+<h3 id="mcp-host与模型的交互"><a href="#mcp-host与模型的交互" class="headerlink" title="mcp host与模型的交互"></a>mcp host与模型的交互</h3><p>使用中转服务器截获日志</p>
+<p><img src="/2025/07/27/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/MCP%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20250727163811531-1753605912284-1.png" alt="image-20250727163811531"></p>
 <p>以下为cline发送给模型的请求</p>
-<figure>
-<img src="/2025/07/27/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/MCP%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20250727164527797.png" alt="image-20250727164527797">
-<figcaption aria-hidden="true">image-20250727164527797</figcaption>
-</figure>
+<p><img src="/2025/07/27/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/MCP%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20250727164527797.png" alt="image-20250727164527797"></p>
 <p><code>messages</code>包含了系统提示词与用户输入</p>
 <p>先来看系统提示词，cline提供的提示词包括工具使用格式，工具信息，工具使用方法等。这里重点说一下，cline的工具使用格式xml</p>
 <p>结构如下：</p>
@@ -458,34 +412,18 @@ Protocol，模型上下文协议，也就是mcp增加模型的扩展性，使他
 <p>例如：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;read_file&gt;</span><br><span class="line">src/main.js</span><br><span class="line">&lt;/read_file&gt;</span><br></pre></td></tr></table></figure>
 <p>再举个例子</p>
-<p>use_mcp_tool 描述：请求使用由连接的 MCP 服务器提供的工具。每个 MCP
-服务器可以提供具有不同功能的多个工具。工具有定义的输入模式，用于指定必需和可选参数。
-参数：</p>
-<p>server_name: (必需) 提供该工具的 MCP 服务器的名称 tool_name: (必需)
-要执行的工具的名称 arguments: (必需) 一个 JSON
-对象，包含工具的输入参数，遵循工具的输入模式 用法：</p>
+<p>use_mcp_tool<br>描述：请求使用由连接的 MCP 服务器提供的工具。每个 MCP 服务器可以提供具有不同功能的多个工具。工具有定义的输入模式，用于指定必需和可选参数。<br>参数：</p>
+<p>server_name: (必需) 提供该工具的 MCP 服务器的名称<br>tool_name: (必需) 要执行的工具的名称<br>arguments: (必需) 一个 JSON 对象，包含工具的输入参数，遵循工具的输入模式<br>用法：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;use_mcp_tool&gt;</span><br><span class="line">&lt;server_name&gt;服务器名称在此&lt;/server_name&gt;</span><br><span class="line">&lt;tool_name&gt;工具名称在此&lt;/tool_name&gt;</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">&quot;param1&quot;: &quot;value1&quot;,</span><br><span class="line">&quot;param2&quot;: &quot;value2&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&lt;/use_mcp_tool&gt;</span><br></pre></td></tr></table></figure>
 <p>模型返回响应如下</p>
-<figure>
-<img src="/2025/07/27/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/MCP%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20250727174504506.png" alt="image-20250727174504506">
-<figcaption aria-hidden="true">image-20250727174504506</figcaption>
-</figure>
+<p><img src="/2025/07/27/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/MCP%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20250727174504506.png" alt="image-20250727174504506"></p>
 <p>sse连接，流式输出</p>
 <blockquote>
-<p>SSE 是一种<strong>基于标准
-HTTP</strong>、<strong>只允许服务器向客户端单向推送文本流</strong>的实时通信技术，浏览器原生支持，自动重连，常用于<strong>AI
-流式回答</strong>、<strong>实时日志</strong>、<strong>股价/监控推送</strong>等场景。</p>
+<p>SSE 是一种<strong>基于标准 HTTP</strong>、<strong>只允许服务器向客户端单向推送文本流</strong>的实时通信技术，浏览器原生支持，自动重连，常用于<strong>AI 流式回答</strong>、<strong>实时日志</strong>、<strong>股价/监控推送</strong>等场景。</p>
 <p>即客户端发送一次请求，连续接受多次响应直到结束</p>
 </blockquote>
-<h3 id="mcp的三种传输协议">mcp的三种传输协议</h3>
+<h3 id="mcp的三种传输协议"><a href="#mcp的三种传输协议" class="headerlink" title="mcp的三种传输协议"></a>mcp的三种传输协议</h3><div class="table-container">
 <table>
-<colgroup>
-<col style="width: 16%">
-<col style="width: 29%">
-<col style="width: 16%">
-<col style="width: 16%">
-<col style="width: 19%">
-</colgroup>
 <thead>
 <tr>
 <th>协议名称</th>
@@ -498,8 +436,7 @@ HTTP</strong>、<strong>只允许服务器向客户端单向推送文本流</str
 <tbody>
 <tr>
 <td><strong>Stdio</strong>（标准输入输出）</td>
-<td>使用进程的标准输入（stdin）和标准输出（stdout）进行本地通信，基于
-JSON-RPC 2.0 格式</td>
+<td>使用进程的标准输入（stdin）和标准输出（stdout）进行本地通信，基于 JSON-RPC 2.0 格式</td>
 <td>本地开发、调试、IDE插件、命令行工具</td>
 <td>简单易实现、跨平台、低延迟</td>
 <td>仅支持本地通信，无法跨网络，低并发</td>
@@ -513,28 +450,24 @@ JSON-RPC 2.0 格式</td>
 </tr>
 <tr>
 <td><strong>Streamable HTTP</strong>（新型流式HTTP）</td>
-<td>支持双向流式通信的现代 HTTP 协议，替代 SSE，支持会话恢复、OAuth
-认证等</td>
+<td>支持双向流式通信的现代 HTTP 协议，替代 SSE，支持会话恢复、OAuth 认证等</td>
 <td>分布式系统、高并发、双向实时交互</td>
 <td>双向通信、高性能、企业级安全机制</td>
 <td>实现较复杂，生态仍在发展中</td>
 </tr>
 </tbody>
 </table>
-<h3 id="react">ReAct</h3>
-<p>ReAct
-是一种用于增强大型语言模型（LLMs）推理和行动能力的技术框架，它通过结合“推理”（Reasoning）和“行动”（Acting）来提升模型处理复杂任务的能力。</p>
+</div>
+<h3 id="ReAct"><a href="#ReAct" class="headerlink" title="ReAct"></a>ReAct</h3><p>ReAct 是一种用于增强大型语言模型（LLMs）推理和行动能力的技术框架，它通过结合“推理”（Reasoning）和“行动”（Acting）来提升模型处理复杂任务的能力。</p>
 <p>其工作流程通常包括以下几个步骤：</p>
-<ol type="1">
+<ol>
 <li><strong>思考（Reasoning）</strong>：模型对当前问题进行分析，思考下一步需要采取的行动。</li>
 <li><strong>行动（Acting）</strong>：模型决定调用哪些工具或函数，并提供必要的参数。</li>
 <li><strong>观察（Observation）</strong>：工具执行后返回结果，模型对结果进行观察。</li>
 <li><strong>响应（Response）</strong>：根据观察结果，模型生成最终的用户响应。</li>
 </ol>
 <p>实际应用上就是告诉大模型用ReAct这种模式来思考</p>
-<h3 id="参考资料">参考资料</h3>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1uronYREWR?spm_id_from=333.788.player.switch&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">MCP终极指南
-- 从原理到实战，带你深入掌握MCP（基础篇）_哔哩哔哩_bilibili</a></p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1uronYREWR?spm_id_from=333.788.player.switch&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">MCP终极指南 - 从原理到实战，带你深入掌握MCP（基础篇）_哔哩哔哩_bilibili</a></p>
 
     </div>
 
@@ -596,7 +529,7 @@ JSON-RPC 2.0 格式</td>
 
   <div class="copyright">
     &copy; 
-    <span itemprop="copyrightYear">2025</span>
+    <span itemprop="copyrightYear">2026</span>
     <span class="with-love">
       <i class="fa fa-heart"></i>
     </span>

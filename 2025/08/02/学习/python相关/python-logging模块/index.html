@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="日志级别    级别 方法 用途     DEBUG logging.debug() 调试信息   INFO logging.info() 普通信息   WARNING logging.warning() 警告信息   ERROR logging.error() 错误信息   CRITICAL logging.critical()">
+    <meta name="description" content="日志级别    级别 方法 用途     DEBUG logging.debug() 调试信息   INFO logging.info() 普通信息   WARNING logging.warning() 警告信息   ERROR logging.error() 错误信息   CRITICAL logging.critical() 严重错误     python默认只会打印warning以上级别的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="python-logging模块">
 <meta property="og:url" content="http://example.com/2025/08/02/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/python-logging%E6%A8%A1%E5%9D%97/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="日志级别    级别 方法 用途     DEBUG logging.debug() 调试信息   INFO logging.info() 普通信息   WARNING logging.warning() 警告信息   ERROR logging.error() 错误信息   CRITICAL logging.critical()">
+<meta property="og:description" content="日志级别    级别 方法 用途     DEBUG logging.debug() 调试信息   INFO logging.info() 普通信息   WARNING logging.warning() 警告信息   ERROR logging.error() 错误信息   CRITICAL logging.critical() 严重错误     python默认只会打印warning以上级别的">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-08-01T16:00:00.000Z">
 <meta property="article:modified_time" content="2025-10-19T06:58:53.245Z">
@@ -159,7 +159,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">177</span>
+          <span class="site-state-item-count">178</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -288,7 +288,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h3 id="日志级别">日志级别</h3>
+    <div class="post-body" itemprop="articleBody"><h3 id="日志级别"><a href="#日志级别" class="headerlink" title="日志级别"></a>日志级别</h3><div class="table-container">
 <table>
 <thead>
 <tr>
@@ -325,26 +325,21 @@
 </tr>
 </tbody>
 </table>
+</div>
 <p>python默认只会打印warning以上级别的日志，可通过<code>basicConfig</code>进行设置，如下</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 基础配置</span><br><span class="line">logging.basicConfig(level=logging.DEBUG)</span><br><span class="line"></span><br><span class="line"># 记录不同级别的日志</span><br><span class="line">logging.debug(&quot;这是一个DEBUG级别的日志&quot;)</span><br><span class="line">logging.info(&quot;这是一个INFO级别的日志&quot;)</span><br><span class="line">logging.warning(&quot;这是一个WARNING级别的日志&quot;)</span><br><span class="line">logging.error(&quot;这是一个ERROR级别的日志&quot;)</span><br><span class="line">logging.critical(&quot;这是一个CRITICAL级别的日志&quot;)</span><br></pre></td></tr></table></figure>
-<h3 id="格式化log并输出">格式化log并输出</h3>
-<p>我们可以使用全局配置，完成log的格式化和输出成文件，如下</p>
+<h3 id="格式化log并输出"><a href="#格式化log并输出" class="headerlink" title="格式化log并输出"></a>格式化log并输出</h3><p>我们可以使用全局配置，完成log的格式化和输出成文件，如下</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logging.basicConfig(level=logging.DEBUG,format=&#x27;%(asctime)s - %(levelname)s - %(message)s&#x27;,filename=&#x27;basic.log&#x27;,filemode=&#x27;w&#x27;)</span><br></pre></td></tr></table></figure>
 <p>同样，我们可以自定义logger</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"># 创建自定义logger</span><br><span class="line">logger = logging.getLogger(&#x27;my_app&#x27;)</span><br><span class="line">logger.setLevel(logging.DEBUG)</span><br><span class="line"></span><br><span class="line"># 清除之前的处理器</span><br><span class="line">logger.handlers.clear()</span><br><span class="line"></span><br><span class="line"># 创建文件处理器</span><br><span class="line">file_handler = logging.FileHandler(&#x27;logs/my_app.log&#x27;, encoding=&#x27;utf-8&#x27;)</span><br><span class="line">file_handler.setLevel(logging.DEBUG)</span><br><span class="line"></span><br><span class="line"># 创建控制台处理器</span><br><span class="line">console_handler = logging.StreamHandler()</span><br><span class="line">console_handler.setLevel(logging.WARNING)</span><br><span class="line"></span><br><span class="line"># 创建不同的格式器</span><br><span class="line">file_formatter = logging.Formatter(</span><br><span class="line">    &#x27;%(asctime)s | %(name)s | %(levelname)s | %(funcName)s:%(lineno)d | %(message)s&#x27;</span><br><span class="line">)</span><br><span class="line">console_formatter = logging.Formatter(</span><br><span class="line">    &#x27;🚨 %(levelname)s: %(message)s&#x27;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">file_handler.setFormatter(file_formatter)</span><br><span class="line">console_handler.setFormatter(console_formatter)</span><br><span class="line"></span><br><span class="line"># 添加处理器</span><br><span class="line">logger.addHandler(file_handler)</span><br><span class="line">logger.addHandler(console_handler)</span><br><span class="line"></span><br><span class="line"># 测试不同级别的日志</span><br><span class="line">logger.debug(&quot;调试信息 - 只写入文件&quot;)</span><br><span class="line">logger.info(&quot;普通信息 - 只写入文件&quot;)</span><br><span class="line">logger.warning(&quot;警告信息 - 控制台和文件都有&quot;)</span><br><span class="line">logger.error(&quot;错误信息 - 控制台和文件都有&quot;)</span><br></pre></td></tr></table></figure>
-<h3 id="异常捕获">异常捕获</h3>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">try:</span><br><span class="line">    result = divide(10, 0)</span><br><span class="line">except ZeroDivisionError as exc:</span><br><span class="line">    # 方式 1：记录异常对象</span><br><span class="line">    logger.error(&quot;除零异常发生: &#123;&#125;&quot;, exc)</span><br><span class="line"></span><br><span class="line">    # 方式 2：记录完整 traceback（推荐）</span><br><span class="line">    logger.exception(&quot;捕获到异常，详情如下&quot;)</span><br></pre></td></tr></table></figure>
-<h3 id="loguru的常用使用方法">loguru的常用使用方法</h3>
-<p>基础用法</p>
+<h3 id="异常捕获"><a href="#异常捕获" class="headerlink" title="异常捕获"></a>异常捕获</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">try:</span><br><span class="line">    result = divide(10, 0)</span><br><span class="line">except ZeroDivisionError as exc:</span><br><span class="line">    # 方式 1：记录异常对象</span><br><span class="line">    logger.error(&quot;除零异常发生: &#123;&#125;&quot;, exc)</span><br><span class="line"></span><br><span class="line">    # 方式 2：记录完整 traceback（推荐）</span><br><span class="line">    logger.exception(&quot;捕获到异常，详情如下&quot;)</span><br></pre></td></tr></table></figure>
+<h3 id="loguru的常用使用方法"><a href="#loguru的常用使用方法" class="headerlink" title="loguru的常用使用方法"></a>loguru的常用使用方法</h3><p>基础用法</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">from loguru import logger</span><br><span class="line"></span><br><span class="line">logger.debug(&quot;这是 debug&quot;)</span><br><span class="line">logger.info(&quot;这是 info&quot;)</span><br><span class="line">logger.warning(&quot;这是 warning&quot;)</span><br><span class="line">logger.error(&quot;这是 error&quot;)</span><br><span class="line">logger.critical(&quot;这是 critical&quot;)</span><br></pre></td></tr></table></figure>
-<p>输出到文件 logger.add(“app.log”)</p>
-<p>过滤级别 logger.add(“app.log”, level=“WARNING”)</p>
-<p>移除默认控制台输出 logger.remove()</p>
-<h3 id="参考资料">参考资料</h3>
-<p>[<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1rJv8eNE1x?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">Python]
-logging模块怎么用_哔哩哔哩_bilibili</a></p>
-<p>[<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1VnW7edEq7?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">Python]
-打印log神器 —— loguru_哔哩哔哩_bilibili</a></p>
+<p>输出到文件    logger.add(“app.log”)</p>
+<p>过滤级别    logger.add(“app.log”, level=”WARNING”)</p>
+<p>移除默认控制台输出       logger.remove()</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1rJv8eNE1x?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">[Python] logging模块怎么用_哔哩哔哩_bilibili</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1VnW7edEq7?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">[Python] 打印log神器 —— loguru_哔哩哔哩_bilibili</a></p>
 
     </div>
 
@@ -407,7 +402,7 @@ logging模块怎么用_哔哩哔哩_bilibili</a></p>
 
   <div class="copyright">
     &copy; 
-    <span itemprop="copyrightYear">2025</span>
+    <span itemprop="copyrightYear">2026</span>
     <span class="with-love">
       <i class="fa fa-heart"></i>
     </span>

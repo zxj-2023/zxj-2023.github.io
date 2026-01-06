@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="前言 本文基于AI-Guide-and-Demos-zh_CN&#x2F;PaperNotes&#x2F;Transformer 论文精读.md at master · Hoper-J&#x2F;AI-Guide-and-Demos-zh_CN与Transformer论文逐段精读【论文精读】_哔哩哔哩_bilibili阅读学习 transformer贡献 实际在这一阶段的工作中，注意力机制就已经在编码器-解码器架构中被">
+    <meta name="description" content="前言本文基于AI-Guide-and-Demos-zh_CN&#x2F;PaperNotes&#x2F;Transformer 论文精读.md at master · Hoper-J&#x2F;AI-Guide-and-Demos-zh_CN与Transformer论文逐段精读【论文精读】_哔哩哔哩_bilibili阅读学习 transformer贡献实际在这一阶段的工作中，注意力机制就已经在编码器-解码器架构中被广泛应用（与">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Transformer学习">
 <meta property="og:url" content="http://example.com/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="前言 本文基于AI-Guide-and-Demos-zh_CN&#x2F;PaperNotes&#x2F;Transformer 论文精读.md at master · Hoper-J&#x2F;AI-Guide-and-Demos-zh_CN与Transformer论文逐段精读【论文精读】_哔哩哔哩_bilibili阅读学习 transformer贡献 实际在这一阶段的工作中，注意力机制就已经在编码器-解码器架构中被">
+<meta property="og:description" content="前言本文基于AI-Guide-and-Demos-zh_CN&#x2F;PaperNotes&#x2F;Transformer 论文精读.md at master · Hoper-J&#x2F;AI-Guide-and-Demos-zh_CN与Transformer论文逐段精读【论文精读】_哔哩哔哩_bilibili阅读学习 transformer贡献实际在这一阶段的工作中，注意力机制就已经在编码器-解码器架构中被广泛应用（与">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250807135151542.png">
 <meta property="og:image" content="http://example.com/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250807145354145.png">
@@ -162,16 +162,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#transformer%E8%B4%A1%E7%8C%AE"><span class="nav-number">2.</span> <span class="nav-text">transformer贡献</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#transformer%E6%9E%B6%E6%9E%84"><span class="nav-number">3.</span> <span class="nav-text">transformer架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B5%8C%E5%85%A5embeddings"><span class="nav-number">4.</span> <span class="nav-text">嵌入（Embeddings）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%8D%E7%BD%AE%E7%BC%96%E7%A0%81positional-encoding"><span class="nav-number">5.</span> <span class="nav-text">位置编码（Positional
-Encoding）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#linear%E4%B8%8Esoftmax"><span class="nav-number">6.</span> <span class="nav-text">linear与Softmax</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6"><span class="nav-number">7.</span> <span class="nav-text">注意力机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%A9%E6%94%BE%E7%82%B9%E7%A7%AF%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6scaled-dot-product-attention"><span class="nav-number">7.1.</span> <span class="nav-text">缩放点积注意力机制（Scaled
-Dot-Product Attention）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%A4%B4%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6single-head-attention"><span class="nav-number">8.</span> <span class="nav-text">单头注意力机制（Single-Head
-Attention）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A9%E7%A0%81%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6masked-attention"><span class="nav-number">8.1.</span> <span class="nav-text">掩码注意力机制（Masked
-Attention）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6self-attention"><span class="nav-number">8.2.</span> <span class="nav-text">自注意力机制（Self-attention）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%A4%E5%8F%89%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6cross-attention"><span class="nav-number">8.3.</span> <span class="nav-text">交叉注意力机制（Cross-Attention）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0"><span class="nav-number">8.4.</span> <span class="nav-text">对比学习</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E5%A4%B4%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6multi-head-attention"><span class="nav-number">9.</span> <span class="nav-text">多头注意力机制（Multi-Head
-Attention）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AE%8B%E5%B7%AE%E8%BF%9E%E6%8E%A5residual-connection%E5%92%8C%E5%B1%82%E5%BD%92%E4%B8%80%E5%8C%96layer-normalization-layernorm"><span class="nav-number">10.</span> <span class="nav-text">残差连接（Residual
-Connection）和层归一化（Layer Normalization, LayerNorm）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#add%E6%AE%8B%E5%B7%AE%E8%BF%9E%E6%8E%A5residual-connection"><span class="nav-number">10.1.</span> <span class="nav-text">Add（残差连接，Residual
-Connection）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#norm%E5%B1%82%E5%BD%92%E4%B8%80%E5%8C%96layer-normalization"><span class="nav-number">10.2.</span> <span class="nav-text">Norm（层归一化，Layer
-Normalization）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E9%A6%88%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C-position-wise-feed-forward-networksffn"><span class="nav-number">11.</span> <span class="nav-text">前馈神经网络
-Position-wise Feed-Forward Networks（FFN）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%8F%91%E5%B1%95%E6%A0%91"><span class="nav-number">12.</span> <span class="nav-text">大模型发展树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%84%E8%AE%AD%E7%BB%83%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B"><span class="nav-number">13.</span> <span class="nav-text">预训练语言模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#bert%E6%A8%A1%E5%9E%8Bencoder-only-plm"><span class="nav-number">13.1.</span> <span class="nav-text">BERT模型（Encoder-only PLM）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#t5encoder-decoder-plm"><span class="nav-number">13.2.</span> <span class="nav-text">T5（Encoder-Decoder PLM）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#llama%E6%A8%A1%E5%9E%8Bdecoder-only-plm"><span class="nav-number">13.3.</span> <span class="nav-text">LLama模型（Decoder-Only PLM）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gpt%E6%A8%A1%E5%9E%8Bdecoder-only-plm"><span class="nav-number">13.4.</span> <span class="nav-text">GPT模型（Decoder-Only PLM）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">14.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#transformer%E8%B4%A1%E7%8C%AE"><span class="nav-number">2.</span> <span class="nav-text">transformer贡献</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#transformer%E6%9E%B6%E6%9E%84"><span class="nav-number">3.</span> <span class="nav-text">transformer架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B5%8C%E5%85%A5%EF%BC%88Embeddings%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">嵌入（Embeddings）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%8D%E7%BD%AE%E7%BC%96%E7%A0%81%EF%BC%88Positional-Encoding%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">位置编码（Positional Encoding）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#linear%E4%B8%8ESoftmax"><span class="nav-number">6.</span> <span class="nav-text">linear与Softmax</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6"><span class="nav-number">7.</span> <span class="nav-text">注意力机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%A9%E6%94%BE%E7%82%B9%E7%A7%AF%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6%EF%BC%88Scaled-Dot-Product-Attention%EF%BC%89"><span class="nav-number">7.1.</span> <span class="nav-text">缩放点积注意力机制（Scaled Dot-Product Attention）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%A4%B4%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6%EF%BC%88Single-Head-Attention%EF%BC%89"><span class="nav-number">8.</span> <span class="nav-text">单头注意力机制（Single-Head Attention）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A9%E7%A0%81%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6%EF%BC%88Masked-Attention%EF%BC%89"><span class="nav-number">8.1.</span> <span class="nav-text">掩码注意力机制（Masked Attention）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6%EF%BC%88Self-attention%EF%BC%89"><span class="nav-number">8.2.</span> <span class="nav-text">自注意力机制（Self-attention）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%A4%E5%8F%89%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6%EF%BC%88Cross-Attention%EF%BC%89"><span class="nav-number">8.3.</span> <span class="nav-text">交叉注意力机制（Cross-Attention）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94%E5%AD%A6%E4%B9%A0"><span class="nav-number">8.4.</span> <span class="nav-text">对比学习</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E5%A4%B4%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6%EF%BC%88Multi-Head-Attention%EF%BC%89"><span class="nav-number">9.</span> <span class="nav-text">多头注意力机制（Multi-Head Attention）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AE%8B%E5%B7%AE%E8%BF%9E%E6%8E%A5%EF%BC%88Residual-Connection%EF%BC%89%E5%92%8C%E5%B1%82%E5%BD%92%E4%B8%80%E5%8C%96%EF%BC%88Layer-Normalization-LayerNorm%EF%BC%89"><span class="nav-number">10.</span> <span class="nav-text">残差连接（Residual Connection）和层归一化（Layer Normalization, LayerNorm）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Add%EF%BC%88%E6%AE%8B%E5%B7%AE%E8%BF%9E%E6%8E%A5%EF%BC%8CResidual-Connection%EF%BC%89"><span class="nav-number">10.1.</span> <span class="nav-text">Add（残差连接，Residual Connection）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Norm%EF%BC%88%E5%B1%82%E5%BD%92%E4%B8%80%E5%8C%96%EF%BC%8CLayer-Normalization%EF%BC%89"><span class="nav-number">10.2.</span> <span class="nav-text">Norm（层归一化，Layer Normalization）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E9%A6%88%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C-Position-wise-Feed-Forward-Networks%EF%BC%88FFN%EF%BC%89"><span class="nav-number">11.</span> <span class="nav-text">前馈神经网络 Position-wise Feed-Forward Networks（FFN）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%8F%91%E5%B1%95%E6%A0%91"><span class="nav-number">12.</span> <span class="nav-text">大模型发展树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%84%E8%AE%AD%E7%BB%83%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B"><span class="nav-number">13.</span> <span class="nav-text">预训练语言模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#BERT%E6%A8%A1%E5%9E%8B%EF%BC%88Encoder-only-PLM%EF%BC%89"><span class="nav-number">13.1.</span> <span class="nav-text">BERT模型（Encoder-only PLM）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#T5%EF%BC%88Encoder-Decoder-PLM%EF%BC%89"><span class="nav-number">13.2.</span> <span class="nav-text">T5（Encoder-Decoder PLM）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LLama%E6%A8%A1%E5%9E%8B%EF%BC%88Decoder-Only-PLM%EF%BC%89"><span class="nav-number">13.3.</span> <span class="nav-text">LLama模型（Decoder-Only PLM）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GPT%E6%A8%A1%E5%9E%8B%EF%BC%88Decoder-Only-PLM%EF%BC%89"><span class="nav-number">13.4.</span> <span class="nav-text">GPT模型（Decoder-Only PLM）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">14.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -186,7 +177,7 @@ Position-wise Feed-Forward Networks（FFN）</span></a></li><li class="nav-item 
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">177</span>
+          <span class="site-state-item-count">178</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -315,44 +306,25 @@ Position-wise Feed-Forward Networks（FFN）</span></a></li><li class="nav-item 
     
     
     
-    <div class="post-body" itemprop="articleBody"><h3 id="前言">前言</h3>
-<p>本文基于<a target="_blank" rel="noopener" href="https://github.com/Hoper-J/AI-Guide-and-Demos-zh_CN/blob/master/PaperNotes/Transformer%20论文精读.md#前言">AI-Guide-and-Demos-zh_CN/PaperNotes/Transformer
-论文精读.md at master · Hoper-J/AI-Guide-and-Demos-zh_CN</a>与<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1pu411o7BE/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">Transformer论文逐段精读【论文精读】_哔哩哔哩_bilibili</a>阅读学习</p>
-<h3 id="transformer贡献">transformer贡献</h3>
-<p>实际在这一阶段的工作中，<strong>注意力机制</strong>就已经在<strong>编码器-解码器架构</strong>中被广泛应用（与
-RNN 一起使用），但 Transformer
-彻底颠覆了默认采取的逻辑：<strong>直接放弃 RNN
-的递归结构，只使用注意力机制来编码和解码序列信息</strong>。</p>
+    <div class="post-body" itemprop="articleBody"><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本文基于<a target="_blank" rel="noopener" href="https://github.com/Hoper-J/AI-Guide-and-Demos-zh_CN/blob/master/PaperNotes/Transformer 论文精读.md#前言">AI-Guide-and-Demos-zh_CN/PaperNotes/Transformer 论文精读.md at master · Hoper-J/AI-Guide-and-Demos-zh_CN</a>与<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1pu411o7BE/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">Transformer论文逐段精读【论文精读】_哔哩哔哩_bilibili</a>阅读学习</p>
+<h3 id="transformer贡献"><a href="#transformer贡献" class="headerlink" title="transformer贡献"></a>transformer贡献</h3><p>实际在这一阶段的工作中，<strong>注意力机制</strong>就已经在<strong>编码器-解码器架构</strong>中被广泛应用（与 RNN 一起使用），但 Transformer 彻底颠覆了默认采取的逻辑：<strong>直接放弃 RNN 的递归结构，只使用注意力机制来编码和解码序列信息</strong>。</p>
 <p>Transformer 的主要贡献如下：</p>
 <ul>
 <li><p><strong>取消递归结构，实现并行计算</strong></p>
-<p>通过采用<strong>自注意力机制（Self-Attention）</strong>，Transformer
-可以同时处理多个输入序列，极大提高了计算的并行度和训练速度。</p></li>
-<li><p><strong>引入位置编码（Positional Encoding）并结合 Attention
-机制巧妙地捕捉位置信息</strong></p>
-<p>在不依赖 RNN
-结构的情况下，通过位置编码为序列中的每个元素嵌入位置信息，从而使模型能够感知输入的顺序。</p></li>
+<p>通过采用<strong>自注意力机制（Self-Attention）</strong>，Transformer 可以同时处理多个输入序列，极大提高了计算的并行度和训练速度。</p>
+</li>
+<li><p><strong>引入位置编码（Positional Encoding）并结合 Attention 机制巧妙地捕捉位置信息</strong></p>
+<p>在不依赖 RNN 结构的情况下，通过位置编码为序列中的每个元素嵌入位置信息，从而使模型能够感知输入的顺序。</p>
+</li>
 </ul>
-<h3 id="transformer架构">transformer架构</h3>
-<figure>
-<img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250807135151542.png" alt="image-20250807135151542">
-<figcaption aria-hidden="true">image-20250807135151542</figcaption>
-</figure>
-<figure>
-<img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250807145354145.png" alt="image-20250807145354145">
-<figcaption aria-hidden="true">image-20250807145354145</figcaption>
-</figure>
+<h3 id="transformer架构"><a href="#transformer架构" class="headerlink" title="transformer架构"></a>transformer架构</h3><p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250807135151542.png" alt="image-20250807135151542"></p>
+<p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250807145354145.png" alt="image-20250807145354145"></p>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1MY41137AK?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">【Transformer模型】曼妙动画轻松学，形象比喻贼好记_哔哩哔哩_bilibili</a></p>
-<p>Transformer 模型基于<strong>编码器</strong>（左）-
-<strong>解码器</strong>（右）架构</p>
-<p><strong>Transformer编码器</strong>同样由 <strong>N
-个完全相同的层</strong>（原始论文中
-N=6）堆叠而成，每层只有两个子层，而解码器有三个。</p>
-<ol type="1">
-<li>多头自注意力（Multi-Head Self-Attention）
-让输入序列中的每个位置都能关注序列内所有位置，直接建模全局依赖。</li>
-<li>前馈全连接网络（Position-wise Feed-Forward Network）
-对每个位置独立地做一次两层的全连接变换（通常先升维再降维）。</li>
+<p>Transformer 模型基于<strong>编码器</strong>（左）- <strong>解码器</strong>（右）架构</p>
+<p><strong>Transformer编码器</strong>同样由 <strong>N 个完全相同的层</strong>（原始论文中 N=6）堆叠而成，每层只有两个子层，而解码器有三个。</p>
+<ol>
+<li>多头自注意力（Multi-Head Self-Attention）<br>让输入序列中的每个位置都能关注序列内所有位置，直接建模全局依赖。</li>
+<li>前馈全连接网络（Position-wise Feed-Forward Network）<br>对每个位置独立地做一次两层的全连接变换（通常先升维再降维）。</li>
 </ol>
 <p>同样，每个子层后都有</p>
 <ul>
@@ -361,394 +333,175 @@ N=6）堆叠而成，每层只有两个子层，而解码器有三个。</p>
 </ul>
 <p>另外，编码器在输入端还会用到</p>
 <ul>
-<li>位置编码（Positional
-Encoding）——给模型提供序列位置信息，因为注意力本身不包含顺序信息。</li>
+<li>位置编码（Positional Encoding）——给模型提供序列位置信息，因为注意力本身不包含顺序信息。</li>
 </ul>
 <p><strong>Transformer解码器</strong>由多个相同的层堆叠而成，每一层包含三个核心子层：</p>
-<ol type="1">
-<li><strong>掩蔽多头自注意力机制</strong>（Masked Multi-Head Attention）
-用于处理目标序列，通过掩码防止当前位置关注未来位置，确保生成过程的自回归特性。</li>
-<li><strong>编码器-解码器注意力机制</strong>（Encoder-Decoder
-Attention）
-使解码器能够关注编码器输出的上下文信息，建立输入与输出序列之间的关联。</li>
-<li><strong>前馈神经网络</strong>（Feed-Forward Neural Network）
-对注意力机制的输出进行非线性变换，增强模型的表达能力。</li>
+<ol>
+<li><strong>掩蔽多头自注意力机制</strong>（Masked Multi-Head Attention）<br>用于处理目标序列，通过掩码防止当前位置关注未来位置，确保生成过程的自回归特性。</li>
+<li><strong>编码器-解码器注意力机制</strong>（Encoder-Decoder Attention）<br>使解码器能够关注编码器输出的上下文信息，建立输入与输出序列之间的关联。</li>
+<li><strong>前馈神经网络</strong>（Feed-Forward Neural Network）<br>对注意力机制的输出进行非线性变换，增强模型的表达能力。</li>
 </ol>
-<p>此外，每个子层后均包含<strong>残差连接</strong>（Residual
-Connection）和<strong>层归一化</strong>（Layer
-Normalization），以稳定训练过程并加速收敛。最终，解码器的输出通过线性层和Softmax层映射为词汇表上的概率分布。</p>
-<h3 id="嵌入embeddings">嵌入（Embeddings）</h3>
-<figure>
-<img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808103256344.png" alt="image-20250808103256344">
-<figcaption aria-hidden="true">image-20250808103256344</figcaption>
-</figure>
-<p>在 Transformer 模型中，<strong>嵌入层</strong>（Embedding Layer）
-是处理输入和输出数据的关键步骤，因为模型实际操作的是<strong>张量</strong>（tensor），而非<strong>字符串</strong>（string）。在将输入文本传递给模型之前，首先需要进行<strong>分词</strong>（tokenization），即将文本拆解为多个
-<strong>token</strong>，随后这些 token 会被映射为对应的 <strong>token
-ID</strong>，从而转换为模型可理解的数值形式。此时，数据的形状为
-<code>(seq_len,)</code>，其中 <code>seq_len</code>
-表示输入序列的长度。</p>
-<p>目的：为了让模型捕捉到 token 背后复杂的语义（Semantic
-meaning）关系，我们需要将离散的 token ID
-映射到一个高维的连续向量空间（Continuous, dense）。这意味着每个 token ID
-会被转换为一个<strong>嵌入向量</strong>（embedding
-vector），期望通过这种方式让语义相近的词汇在向量空间中距离更近，使模型能更好地捕捉词汇之间的关系。</p>
+<p>此外，每个子层后均包含<strong>残差连接</strong>（Residual Connection）和<strong>层归一化</strong>（Layer Normalization），以稳定训练过程并加速收敛。最终，解码器的输出通过线性层和Softmax层映射为词汇表上的概率分布。</p>
+<h3 id="嵌入（Embeddings）"><a href="#嵌入（Embeddings）" class="headerlink" title="嵌入（Embeddings）"></a>嵌入（Embeddings）</h3><p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808103256344.png" alt="image-20250808103256344"></p>
+<p>在 Transformer 模型中，<strong>嵌入层</strong>（Embedding Layer） 是处理输入和输出数据的关键步骤，因为模型实际操作的是<strong>张量</strong>（tensor），而非<strong>字符串</strong>（string）。在将输入文本传递给模型之前，首先需要进行<strong>分词</strong>（tokenization），即将文本拆解为多个 <strong>token</strong>，随后这些 token 会被映射为对应的 <strong>token ID</strong>，从而转换为模型可理解的数值形式。此时，数据的形状为 <code>(seq_len,)</code>，其中 <code>seq_len</code> 表示输入序列的长度。</p>
+<p>目的：为了让模型捕捉到 token 背后复杂的语义（Semantic meaning）关系，我们需要将离散的 token ID 映射到一个高维的连续向量空间（Continuous, dense）。这意味着每个 token ID 会被转换为一个<strong>嵌入向量</strong>（embedding vector），期望通过这种方式让语义相近的词汇在向量空间中距离更近，使模型能更好地捕捉词汇之间的关系。</p>
 <p>流程：（前面要进行分词，后面要进行位置编码）</p>
-<p>初始化一个可学习的矩阵 <code>E ∈ ℝ^(|V| × d_model)</code>
-<code>|V|</code> = 词表大小（比如 32 k、50 k），<code>d_model</code> =
-512/768/1024…</p>
-<p>把 token id 作为行号，直接取对应行： <code>x_i = E[token_id_i]</code>
-得到 <code>[batch, seq_len, d_model]</code> 的浮点张量。</p>
-<h3 id="位置编码positional-encoding">位置编码（Positional
-Encoding）</h3>
-<figure>
-<img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808103418150.png" alt="image-20250808103418150">
-<figcaption aria-hidden="true">image-20250808103418150</figcaption>
-</figure>
-<p>Transformer
-的自注意力机制（Self-Attention）是<strong>位置无关（position-agnostic）</strong>的。也就是说，如果不做任何处理，模型无法区分“我爱你”和“你爱我”这两个句子的差异，因为自注意力机制只关注
-token 之间的相关性，而不考虑它们在序列中的顺序。</p>
-<p>为了让模型感知到 token 的位置信息，Transformer
-引入了<strong>位置编码</strong>。</p>
-<p>在原始论文中，Transformer 使用的是固定位置编码（Positional
-Encoding），其公式如下：</p>
-<p><span class="math display">$$
+<p>初始化一个可学习的矩阵 <code>E ∈ ℝ^(|V| × d_model)</code><br><code>|V|</code> = 词表大小（比如 32 k、50 k），<code>d_model</code> = 512/768/1024…</p>
+<p>把 token id 作为行号，直接取对应行：<br><code>x_i = E[token_id_i]</code><br>得到 <code>[batch, seq_len, d_model]</code> 的浮点张量。</p>
+<h3 id="位置编码（Positional-Encoding）"><a href="#位置编码（Positional-Encoding）" class="headerlink" title="位置编码（Positional Encoding）"></a>位置编码（Positional Encoding）</h3><p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808103418150.png" alt="image-20250808103418150"></p>
+<p>Transformer 的自注意力机制（Self-Attention）是<strong>位置无关（position-agnostic）</strong>的。也就是说，如果不做任何处理，模型无法区分“我爱你”和“你爱我”这两个句子的差异，因为自注意力机制只关注 token 之间的相关性，而不考虑它们在序列中的顺序。</p>
+<p>为了让模型感知到 token 的位置信息，Transformer 引入了<strong>位置编码</strong>。</p>
+<p>在原始论文中，Transformer 使用的是固定位置编码（Positional Encoding），其公式如下：</p>
+<script type="math/tex; mode=display">
 \begin{aligned}
-PE_{(pos, 2i)} &amp;=
-\sin\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right), \\
-PE_{(pos, 2i+1)} &amp;=
-\cos\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right).
-\end{aligned}
-$$</span></p>
-<p>其中：</p>
+PE_{(pos, 2i)} &= \sin\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right), \\
+PE_{(pos, 2i+1)} &= \cos\left(\frac{pos}{10000^{2i/d_{\text{model}}}}\right).
+\end{aligned}</script><p>其中：</p>
 <ul>
-<li><span class="math inline"><em>p</em><em>o</em><em>s</em></span>
-表示位置索引（Position）。</li>
-<li><span class="math inline"><em>i</em></span> 表示维度索引。</li>
-<li><span class="math inline"><em>d</em><sub>model</sub></span>
-是嵌入向量的维度。</li>
+<li>$pos$ 表示位置索引（Position）。</li>
+<li>$i$ 表示维度索引。</li>
+<li>$d_{\text{model}}$ 是嵌入向量的维度。</li>
 </ul>
-<p>流程：输入的是一个<strong>整数索引</strong>（位置序号
-0,1,2,…）。位置编码模块先把这些整数映射成与词向量同维度的向量（例如 512
-维），再把结果加到词向量上。</p>
-<h3 id="linear与softmax">linear与Softmax</h3>
-<figure>
-<img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808111823715.png" alt="image-20250808111823715">
-<figcaption aria-hidden="true">image-20250808111823715</figcaption>
-</figure>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1i5koBtEUU?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">从Linear到MLP
-AI模型的数学本质【Transformer结构拆解】_哔哩哔哩_bilibili</a></p>
-<p>在 Transformer 模型中，<strong>Softmax</strong>
-函数不仅在计算<strong>注意力权重</strong>时用到，在预测阶段的输出处理环节也会用到，因为预测
-token 的过程可以看成是<strong>多分类问题</strong>。</p>
-<p><strong>Softmax</strong>
-函数是一种常用的激活函数，能够将任意实数向量转换为<strong>概率分布</strong>，确保每个元素的取值范围在
-[0, 1] 之间，并且所有元素的和为 1。其数学定义如下：</p>
-<p><span class="math display">$$
-\text{Softmax}(x_i) = \frac{e^{x_i}}{\sum_{j} e^{x_j}}
-$$</span></p>
-<p>其中：</p>
+<p>流程：输入的是一个<strong>整数索引</strong>（位置序号 0,1,2,…）。位置编码模块先把这些整数映射成与词向量同维度的向量（例如 512 维），再把结果加到词向量上。</p>
+<h3 id="linear与Softmax"><a href="#linear与Softmax" class="headerlink" title="linear与Softmax"></a>linear与Softmax</h3><p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808111823715.png" alt="image-20250808111823715"></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1i5koBtEUU?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">从Linear到MLP AI模型的数学本质【Transformer结构拆解】_哔哩哔哩_bilibili</a></p>
+<p>在 Transformer 模型中，<strong>Softmax</strong> 函数不仅在计算<strong>注意力权重</strong>时用到，在预测阶段的输出处理环节也会用到，因为预测 token 的过程可以看成是<strong>多分类问题</strong>。</p>
+<p><strong>Softmax</strong> 函数是一种常用的激活函数，能够将任意实数向量转换为<strong>概率分布</strong>，确保每个元素的取值范围在 [0, 1] 之间，并且所有元素的和为 1。其数学定义如下：</p>
+<script type="math/tex; mode=display">
+\text{Softmax}(x_i) = \frac{e^{x_i}}{\sum_{j} e^{x_j}}</script><p>其中：</p>
 <ul>
-<li><span class="math inline"><em>x</em><sub><em>i</em></sub></span>
-表示输入向量中的第 <span class="math inline"><em>i</em></span>
-个元素。</li>
-<li><span class="math inline">Softmax(<em>x</em><sub><em>i</em></sub>)</span>
-表示输入 <span class="math inline"><em>x</em><sub><em>i</em></sub></span>
-转换后的概率。</li>
+<li>$x_i$ 表示输入向量中的第 $i$ 个元素。</li>
+<li>$\text{Softmax}(x_i)$ 表示输入 $x_i$ 转换后的概率。</li>
 </ul>
-<p>我们可以把 Softmax
-看作一种<strong>归一化的指数变换</strong>。相比于简单的比例归一化 <span class="math inline">$\frac{x_i}{\sum_j x_j}$</span>, <strong>Softmax
-通过指数变换放大数值间的差异，让较大的值对应更高的概率，同时避免了负值和数值过小的问题，让模型聚焦于权重最高的位置</strong>，同时保留全局信息（低权重仍非零）。</p>
-<h3 id="注意力机制">注意力机制</h3>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1xS4y1k7tn?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">【Attention
-注意力机制】激情告白transformer、Bert、GNN的精髓_哔哩哔哩_bilibili</a></p>
-<figure>
-<img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808135811744.png" alt="image-20250808135811744">
-<figcaption aria-hidden="true">image-20250808135811744</figcaption>
-</figure>
-<h4 id="缩放点积注意力机制scaled-dot-product-attention"><strong>缩放点积注意力机制（Scaled
-Dot-Product Attention）</strong></h4>
-<figure>
-<img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808140834132.png" alt="image-20250808140834132">
-<figcaption aria-hidden="true">image-20250808140834132</figcaption>
-</figure>
-<p>Transformer 的核心是<strong>多头注意力机制（Multi-Head
-Attention）</strong>，它能够捕捉输入序列中不同位置之间的依赖关系，并从多个角度对信息进行建模。模块将自底向上的进行讲解：在深入理解注意力机制前，首先需要理解论文使用的<strong>缩放点积注意力机制（Scaled
-Dot-Product Attention）</strong>。</p>
-<p>给定查询矩阵 <span class="math inline"><em>Q</em></span>、键矩阵
-<span class="math inline"><em>K</em></span> 和值矩阵 <span class="math inline"><em>V</em></span>,
-其注意力输出的数学表达式如下：</p>
-<p><span class="math display">$$
-\text{Attention}(Q, K, V) = \text{Softmax}\left(\frac{Q
-K^\top}{\sqrt{d_k}}\right) V
-$$</span></p>
-<ul>
-<li><strong><span class="math inline"><em>Q</em></span>（Query）</strong>:
-用于查询的向量矩阵。</li>
-<li><strong><span class="math inline"><em>K</em></span>（Key）</strong>:
-表示键的向量矩阵，用于与查询匹配。</li>
-<li><strong><span class="math inline"><em>V</em></span>（Value）</strong>:
-值矩阵，注意力权重最终会作用在该矩阵上。</li>
-<li><strong><span class="math inline"><em>d</em><sub><em>k</em></sub></span></strong>:
-键或查询向量的维度。</li>
+<p>我们可以把 Softmax 看作一种<strong>归一化的指数变换</strong>。相比于简单的比例归一化 $\frac{x_i}{\sum_j x_j}$, <strong>Softmax 通过指数变换放大数值间的差异，让较大的值对应更高的概率，同时避免了负值和数值过小的问题，让模型聚焦于权重最高的位置</strong>，同时保留全局信息（低权重仍非零）。</p>
+<h3 id="注意力机制"><a href="#注意力机制" class="headerlink" title="注意力机制"></a>注意力机制</h3><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1xS4y1k7tn?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">【Attention 注意力机制】激情告白transformer、Bert、GNN的精髓_哔哩哔哩_bilibili</a></p>
+<p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808135811744.png" alt="image-20250808135811744"></p>
+<h4 id="缩放点积注意力机制（Scaled-Dot-Product-Attention）"><a href="#缩放点积注意力机制（Scaled-Dot-Product-Attention）" class="headerlink" title="缩放点积注意力机制（Scaled Dot-Product Attention）"></a><strong>缩放点积注意力机制（Scaled Dot-Product Attention）</strong></h4><p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808140834132.png" alt="image-20250808140834132"></p>
+<p>Transformer 的核心是<strong>多头注意力机制（Multi-Head Attention）</strong>，它能够捕捉输入序列中不同位置之间的依赖关系，并从多个角度对信息进行建模。模块将自底向上的进行讲解：在深入理解注意力机制前，首先需要理解论文使用的<strong>缩放点积注意力机制（Scaled Dot-Product Attention）</strong>。</p>
+<p>给定查询矩阵 $Q$、键矩阵 $K$ 和值矩阵 $V$, 其注意力输出的数学表达式如下：</p>
+<script type="math/tex; mode=display">
+\text{Attention}(Q, K, V) = \text{Softmax}\left(\frac{Q K^\top}{\sqrt{d_k}}\right) V</script><ul>
+<li><strong>$Q$（Query）</strong>: 用于查询的向量矩阵。</li>
+<li><strong>$K$（Key）</strong>: 表示键的向量矩阵，用于与查询匹配。</li>
+<li><strong>$V$（Value）</strong>: 值矩阵，注意力权重最终会作用在该矩阵上。</li>
+<li><strong>$d_k$</strong>: 键或查询向量的维度。</li>
 </ul>
 <blockquote>
-<p>理解 Q、K、V
-的关键在于代码，它们实际上是通过线性变换从输入序列生成的</p>
+<p>理解 Q、K、V 的关键在于代码，它们实际上是通过线性变换从输入序列生成的</p>
 </blockquote>
 <p>公式解释</p>
-<ol type="1">
+<ol>
 <li><p><strong>点积计算（Dot Produce）</strong></p>
-<p>将查询矩阵 <span class="math inline"><em>Q</em></span> 与键矩阵的转置
-<span class="math inline"><em>K</em><sup>⊤</sup></span>
-做点积，计算每个查询向量与所有键向量之间的相似度：</p>
-<p><span class="math inline">$`\text{Scores} = Q K^\top`$</span></p>
+<p>将查询矩阵 $Q$ 与键矩阵的转置 $K^\top$ 做点积，计算每个查询向量与所有键向量之间的相似度：</p>
+<p>$<code>\text&#123;Scores&#125; = Q K^\top</code>$</p>
 <ul>
 <li><strong>每一行</strong>表示某个查询与所有键之间的相似度（匹配分数）。</li>
 <li><strong>每一列</strong>表示某个键与所有查询之间的相似度（匹配分数）。</li>
-</ul></li>
+</ul>
+</li>
 <li><p><strong>缩放（Scaling）</strong></p>
-<p>当 <span class="math inline"><em>d</em><sub><em>k</em></sub></span>
-较大时，点积的数值可能会过大，导致 Softmax 过后的梯度变得极小，因此除以
-<span class="math inline">$\sqrt{d_k}$</span>
-缩放点积结果的数值范围：</p>
-<p><span class="math inline">$`\text{Scaled Scores} = \frac{Q
-K^\top}{\sqrt{d_k}}`$</span></p>
-<p>缩放后（Scaled Dot-Product）也称为注意力分数（<strong>attention
-scores</strong>）。</p></li>
+<p>当 $d_k$ 较大时，点积的数值可能会过大，导致 Softmax 过后的梯度变得极小，因此除以 $\sqrt{d_k}$ 缩放点积结果的数值范围：</p>
+<p>$<code>\text&#123;Scaled Scores&#125; = \frac&#123;Q K^\top&#125;&#123;\sqrt&#123;d_k&#125;&#125;</code>$</p>
+<p>缩放后（Scaled Dot-Product）也称为注意力分数（<strong>attention scores</strong>）。</p>
+</li>
 <li><p><strong>Softmax 归一化</strong></p>
 <p>使用 Softmax 函数将缩放后的分数转换为概率分布：</p>
-<p><span class="math inline">$`\text{Attention Weights} =
-\text{Softmax}\left(\frac{Q K^\top}{\sqrt{d_k}}\right)`$</span></p>
+<p>$<code>\text&#123;Attention Weights&#125; = \text&#123;Softmax&#125;\left(\frac&#123;Q K^\top&#125;&#123;\sqrt&#123;d_k&#125;&#125;\right)</code>$</p>
 <blockquote>
-<p><strong>注意</strong>：Softmax
-是在每一行上进行的，这意味着每个查询的匹配分数将归一化为概率，总和为
-1。</p>
-</blockquote></li>
+<p><strong>注意</strong>：Softmax 是在每一行上进行的，这意味着每个查询的匹配分数将归一化为概率，总和为 1。</p>
+</blockquote>
+</li>
 <li><p><strong>加权求和（Weighted Sum）</strong></p>
-<p>最后，使用归一化后的注意力权重对值矩阵 <span class="math inline"><em>V</em></span>
-进行加权求和，得到每个查询位置的最终输出： <span class="math inline">$`\text{Output} = \text{Attention Weights} \times
-V`$</span></p></li>
+<p>最后，使用归一化后的注意力权重对值矩阵 $V$ 进行加权求和，得到每个查询位置的最终输出：<br>$<code>\text&#123;Output&#125; = \text&#123;Attention Weights&#125; \times V</code>$</p>
+</li>
 </ol>
-<h3 id="单头注意力机制single-head-attention">单头注意力机制（Single-Head
-Attention）</h3>
-<p>将输入序列（Inputs）通过线性变换生成<strong>查询矩阵</strong>（Query,
-Q）、<strong>键矩阵</strong>（Key, K）和<strong>值矩阵</strong>（Value,
-V），随后执行<strong>缩放点积注意力</strong>（Scaled Dot-Product
-Attention）。</p>
-<h4 id="掩码注意力机制masked-attention">掩码注意力机制（Masked
-Attention）</h4>
-<p>如果使用 mask 掩盖将要预测的词汇，那么 Attention 就延伸为 Masked
-Attention</p>
-<p>在这段代码中，<code>mask</code>
-矩阵用于指定哪些位置应该被遮蔽（即填充为
--∞），从而保证这些位置的注意力权重在 softmax
-输出中接近于零。注意，掩码机制并不是直接在截断输入序列，也不是在算分数的时候就排除不应该看到的位置，因为看到也没有关系，不会影响与其他位置的分数，所以在传入
-Softmax（计算注意力权重）之前排除就可以了。</p>
+<h3 id="单头注意力机制（Single-Head-Attention）"><a href="#单头注意力机制（Single-Head-Attention）" class="headerlink" title="单头注意力机制（Single-Head Attention）"></a>单头注意力机制（Single-Head Attention）</h3><p>将输入序列（Inputs）通过线性变换生成<strong>查询矩阵</strong>（Query, Q）、<strong>键矩阵</strong>（Key, K）和<strong>值矩阵</strong>（Value, V），随后执行<strong>缩放点积注意力</strong>（Scaled Dot-Product Attention）。</p>
+<h4 id="掩码注意力机制（Masked-Attention）"><a href="#掩码注意力机制（Masked-Attention）" class="headerlink" title="掩码注意力机制（Masked Attention）"></a>掩码注意力机制（Masked Attention）</h4><p>如果使用 mask 掩盖将要预测的词汇，那么 Attention 就延伸为 Masked Attention</p>
+<p>在这段代码中，<code>mask</code> 矩阵用于指定哪些位置应该被遮蔽（即填充为 -∞），从而保证这些位置的注意力权重在 softmax 输出中接近于零。注意，掩码机制并不是直接在截断输入序列，也不是在算分数的时候就排除不应该看到的位置，因为看到也没有关系，不会影响与其他位置的分数，所以在传入 Softmax（计算注意力权重）之前排除就可以了。</p>
 <p>另外，根据输入数据的来源，还可以将注意力分为<strong>自注意力（Self-Attention）和交叉注意力（Cross-Attention)</strong>。</p>
-<h4 id="自注意力机制self-attention">自注意力机制（Self-attention）</h4>
-<figure>
-<img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808142109091.png" alt="image-20250808142109091">
-<figcaption aria-hidden="true">image-20250808142109091</figcaption>
-</figure>
-<p>Transformer
-模型架构使用到了三个看起来不同的注意力机制，我们继续忽视共有的
-Multi-Head。观察输入，线条一分为三传入 Attention
-模块，这意味着查询（query）、键（key）和值（value）实际上都来自<strong>同一输入序列
-<span class="math inline"><strong>X</strong></span></strong>，数学表达如下：</p>
-<p><span class="math display"><em>Q</em> = <em>X</em><em>W</em><sup><em>Q</em></sup>,  <em>K</em> = <em>X</em><em>W</em><sup><em>K</em></sup>,  <em>V</em> = <em>X</em><em>W</em><sup><em>V</em></sup></span></p>
-<ul>
-<li><strong><span class="math inline"><em>W</em><sup><em>Q</em></sup>, <em>W</em><sup><em>K</em></sup>, <em>W</em><sup><em>V</em></sup></span></strong>：可训练的线性变换权重，实际上就是简单的线性层</li>
+<h4 id="自注意力机制（Self-attention）"><a href="#自注意力机制（Self-attention）" class="headerlink" title="自注意力机制（Self-attention）"></a>自注意力机制（Self-attention）</h4><p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808142109091.png" alt="image-20250808142109091"></p>
+<p>Transformer 模型架构使用到了三个看起来不同的注意力机制，我们继续忽视共有的 Multi-Head。观察输入，线条一分为三传入 Attention 模块，这意味着查询（query）、键（key）和值（value）实际上都来自<strong>同一输入序列 $\mathbf{X}$</strong>，数学表达如下：</p>
+<script type="math/tex; mode=display">
+Q = XW^Q, \quad K = XW^K, \quad V = XW^V</script><ul>
+<li><strong>$W^Q, W^K, W^V$</strong>：可训练的线性变换权重，实际上就是简单的线性层</li>
 </ul>
-<h4 id="交叉注意力机制cross-attention">交叉注意力机制（Cross-Attention）</h4>
-<p>在 Transformer 解码器中，除了自注意力外，还使用了
-<strong>交叉注意力（Cross-Attention）</strong>。</p>
+<h4 id="交叉注意力机制（Cross-Attention）"><a href="#交叉注意力机制（Cross-Attention）" class="headerlink" title="交叉注意力机制（Cross-Attention）"></a>交叉注意力机制（Cross-Attention）</h4><p>在 Transformer 解码器中，除了自注意力外，还使用了 <strong>交叉注意力（Cross-Attention）</strong>。</p>
 <p>如下图所示，解码器（右）在自底向上的处理过程中，先执行自注意力机制，然后通过交叉注意力从编码器的输出中获取上下文信息。</p>
-<figure>
-<img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808142428374.png" alt="image-20250808142428374">
-<figcaption aria-hidden="true">image-20250808142428374</figcaption>
-</figure>
+<p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808142428374.png" alt="image-20250808142428374"></p>
 <p>数学表达如下：</p>
-<p><span class="math display"><em>Q</em> = <em>X</em><sub>decoder</sub><em>W</em><sup><em>Q</em></sup>,  <em>K</em> = <em>X</em><sub>encoder</sub><em>W</em><sup><em>K</em></sup>,  <em>V</em> = <em>X</em><sub>encoder</sub><em>W</em><sup><em>V</em></sup></span></p>
-<h4 id="对比学习">对比学习</h4>
-<p><strong>Masked Attention</strong>、<strong>Self-Attention</strong> 和
-<strong>Cross-Attention</strong>
-的本质是一致的，这一点从代码调用可以看出来，三者的区别在于未来掩码的使用和输入数据的来源：</p>
+<script type="math/tex; mode=display">
+Q = X_{\text{decoder}} W^Q, \quad K = X_{\text{encoder}} W^K, \quad V = X_{\text{encoder}} W^V</script><h4 id="对比学习"><a href="#对比学习" class="headerlink" title="对比学习"></a>对比学习</h4><p><strong>Masked Attention</strong>、<strong>Self-Attention</strong> 和 <strong>Cross-Attention</strong> 的本质是一致的，这一点从代码调用可以看出来，三者的区别在于未来掩码的使用和输入数据的来源：</p>
 <ul>
-<li><p><strong>Masked
-Attention</strong>：用于解码过程，通过掩码屏蔽未来的时间步，确保模型只能基于已生成的部分进行预测，论文中解码器部分的第一个
-Attention 使用的是 Masked Self-Attention。</p></li>
-<li><p><strong>Self-Attention</strong>：查询、键和值矩阵来自同一输入序列，模型通过自注意力机制学习输入序列的全局依赖关系。</p></li>
-<li><p><strong>Cross-Attention</strong>：查询矩阵来自解码器的输入，而键和值矩阵来自编码器的输出，解码器的第二个
-Attention 模块就是
-Cross-Attention，用于从编码器输出中获取相关的上下文信息。</p>
+<li><p><strong>Masked Attention</strong>：用于解码过程，通过掩码屏蔽未来的时间步，确保模型只能基于已生成的部分进行预测，论文中解码器部分的第一个 Attention 使用的是 Masked Self-Attention。</p>
+</li>
+<li><p><strong>Self-Attention</strong>：查询、键和值矩阵来自同一输入序列，模型通过自注意力机制学习输入序列的全局依赖关系。</p>
+</li>
+<li><p><strong>Cross-Attention</strong>：查询矩阵来自解码器的输入，而键和值矩阵来自编码器的输出，解码器的第二个 Attention 模块就是 Cross-Attention，用于从编码器输出中获取相关的上下文信息。</p>
 <ul>
-<li><p>以<strong>机器翻译</strong>中的<strong>中译英任务</strong>为例：对于中文句子“<strong>中国的首都是北京</strong>”，假设模型已经生成了部分译文“The
-capital of China is”，此时需要预测下一个单词。</p>
-<p>在这一阶段，<strong>解码器中的交叉注意力机制</strong>会使用<strong>当前已生成的译文“The
-capital of China
-is”的编码表示作为查询</strong>，并将<strong>编码器对输入句子“中国的首都是北京”编码表示</strong>作为<strong>键</strong>和<strong>值</strong>，通过计算<strong>查询与键之间的匹配程度</strong>，生成相应的注意力权重，以此从值中提取上下文信息，基于这些信息生成下一个可能的单词（token），比如：“Beijing”。</p></li>
-</ul></li>
+<li><p>以<strong>机器翻译</strong>中的<strong>中译英任务</strong>为例：对于中文句子“<strong>中国的首都是北京</strong>”，假设模型已经生成了部分译文“The capital of China is”，此时需要预测下一个单词。</p>
+<p>在这一阶段，<strong>解码器中的交叉注意力机制</strong>会使用<strong>当前已生成的译文“The capital of China is”的编码表示作为查询</strong>，并将<strong>编码器对输入句子“中国的首都是北京”编码表示</strong>作为<strong>键</strong>和<strong>值</strong>，通过计算<strong>查询与键之间的匹配程度</strong>，生成相应的注意力权重，以此从值中提取上下文信息，基于这些信息生成下一个可能的单词（token），比如：“Beijing”。</p>
+</li>
 </ul>
-<h3 id="多头注意力机制multi-head-attention">多头注意力机制（Multi-Head
-Attention）</h3>
-<figure>
-<img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808143810965.png" alt="image-20250808143810965">
-<figcaption aria-hidden="true">image-20250808143810965</figcaption>
-</figure>
-<figure>
-<img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808143822630.png" alt="image-20250808143822630">
-<figcaption aria-hidden="true">image-20250808143822630</figcaption>
-</figure>
-<figure>
-<img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808143845681.png" alt="image-20250808143845681">
-<figcaption aria-hidden="true">image-20250808143845681</figcaption>
-</figure>
-<figure>
-<img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808145725202.png" alt="image-20250808145725202">
-<figcaption aria-hidden="true">image-20250808145725202</figcaption>
-</figure>
-<p>多头注意力机制就是存在多个不同的权重矩阵，形成多个矩阵Z，再把它们
-<strong>按最后一维（hidden）拼接（concat）→ 做一次线性变换</strong>
-得到最终输出。</p>
+</li>
+</ul>
+<h3 id="多头注意力机制（Multi-Head-Attention）"><a href="#多头注意力机制（Multi-Head-Attention）" class="headerlink" title="多头注意力机制（Multi-Head Attention）"></a>多头注意力机制（Multi-Head Attention）</h3><p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808143810965.png" alt="image-20250808143810965"></p>
+<p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808143822630.png" alt="image-20250808143822630"></p>
+<p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808143845681.png" alt="image-20250808143845681"></p>
+<p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808145725202.png" alt="image-20250808145725202"></p>
+<p>多头注意力机制就是存在多个不同的权重矩阵，形成多个矩阵Z，再把它们 <strong>按最后一维（hidden）拼接（concat）→ 做一次线性变换</strong> 得到最终输出。</p>
 <blockquote>
-<p>线性bian’h把拼接后的多头结果 <code>Z_concat</code>（形状
-batch×seq×d_model）重新<strong>线性映射</strong>回与输入相同的维度，同时让网络可以<strong>学习如何融合不同头的信息</strong>。</p>
+<p>线性bian’h把拼接后的多头结果 <code>Z_concat</code>（形状 batch×seq×d_model）重新<strong>线性映射</strong>回与输入相同的维度，同时让网络可以<strong>学习如何融合不同头的信息</strong>。</p>
 </blockquote>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1MY41137AK?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">【Transformer模型】曼妙动画轻松学，形象比喻贼好记_哔哩哔哩_bilibili</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1HsTyz8ECC?spm_id_from=333.788.player.switch&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">Transformer原理及架构：多头自注意力机制_哔哩哔哩_bilibili</a></p>
-<h3 id="残差连接residual-connection和层归一化layer-normalization-layernorm">残差连接（Residual
-Connection）和层归一化（Layer Normalization, LayerNorm）</h3>
-<figure>
-<img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808150313758.png" alt="image-20250808150313758">
-<figcaption aria-hidden="true">image-20250808150313758</figcaption>
-</figure>
-<p>在 Transformer 架构中，<strong>残差连接</strong>（Residual
-Connection）与<strong>层归一化</strong>（LayerNorm）结合使用，统称为
-<strong>Add &amp; Norm</strong> 操作。</p>
-<h4 id="add残差连接residual-connection">Add（残差连接，Residual
-Connection）</h4>
-<p>残差连接是一种跳跃连接（Skip
-Connection），它将层的输入直接加到输出上（观察架构图中的箭头），对应的公式如下：</p>
-<p><span class="math display">Output = SubLayer(<em>x</em>) + <em>x</em></span></p>
-<p>这种连接方式有效缓解了<strong>深层神经网络的梯度消失</strong>问题。</p>
-<figure>
-<img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808151004667.png" alt="image-20250808151004667">
-<figcaption aria-hidden="true">image-20250808151004667</figcaption>
-</figure>
+<h3 id="残差连接（Residual-Connection）和层归一化（Layer-Normalization-LayerNorm）"><a href="#残差连接（Residual-Connection）和层归一化（Layer-Normalization-LayerNorm）" class="headerlink" title="残差连接（Residual Connection）和层归一化（Layer Normalization, LayerNorm）"></a>残差连接（Residual Connection）和层归一化（Layer Normalization, LayerNorm）</h3><p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808150313758.png" alt="image-20250808150313758"></p>
+<p>在 Transformer 架构中，<strong>残差连接</strong>（Residual Connection）与<strong>层归一化</strong>（LayerNorm）结合使用，统称为 <strong>Add &amp; Norm</strong> 操作。</p>
+<h4 id="Add（残差连接，Residual-Connection）"><a href="#Add（残差连接，Residual-Connection）" class="headerlink" title="Add（残差连接，Residual Connection）"></a>Add（残差连接，Residual Connection）</h4><p>残差连接是一种跳跃连接（Skip Connection），它将层的输入直接加到输出上（观察架构图中的箭头），对应的公式如下：</p>
+<script type="math/tex; mode=display">
+\text{Output} = \text{SubLayer}(x) + x</script><p>这种连接方式有效缓解了<strong>深层神经网络的梯度消失</strong>问题。</p>
+<p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250808151004667.png" alt="image-20250808151004667"></p>
 <p>在transform中，就是输入的矩阵x加上经过注意力机制计算出来的z矩阵</p>
-<h4 id="norm层归一化layer-normalization">Norm（层归一化，Layer
-Normalization）</h4>
-<p><strong>层归一化</strong>（LayerNorm）是一种归一化技术，用于提升训练的稳定性和模型的泛化能力。</p>
-<p>假设输入向量为 <span class="math inline"><em>x</em> = (<em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>d</em></sub>)</span>,
-LayerNorm 的计算步骤如下：</p>
-<ol type="1">
-<li><p><strong>计算均值和方差</strong>： 对输入的所有特征求均值 <span class="math inline"><em>μ</em></span> 和方差 <span class="math inline"><em>σ</em><sup>2</sup></span>：</p>
-<p><span class="math inline">$`
-\mu = \frac{1}{d} \sum_{j=1}^{d} x_j, \quad
-\sigma^2 = \frac{1}{d} \sum_{j=1}^{d} (x_j - \mu)^2
-`$</span></p></li>
-<li><p><strong>归一化公式</strong>： 将输入特征 <span class="math inline"><em>x̂</em><sub><em>i</em></sub></span>
-进行归一化：</p>
-<p><span class="math inline">$`
-\hat{x}_i = \frac{x_i - \mu}{\sqrt{\sigma^2 + \epsilon}}
-`$</span></p>
-<p>其中, <span class="math inline"><em>ϵ</em></span>
-是一个很小的常数（比如 1e-9），用于防止除以零的情况。</p></li>
-<li><p><strong>引入可学习参数</strong>： 归一化后的输出乘以 <span class="math inline"><em>γ</em></span> 并加上 <span class="math inline"><em>β</em></span>, 公式如下：</p>
-<p><span class="math inline">$`
-\text{Output} = \gamma \hat{x} + \beta
-`$</span></p>
-<p>其中 <span class="math inline"><em>γ</em></span> 和 <span class="math inline"><em>β</em></span>
-是可学习的参数，用于进一步调整归一化后的输出。</p></li>
+<h4 id="Norm（层归一化，Layer-Normalization）"><a href="#Norm（层归一化，Layer-Normalization）" class="headerlink" title="Norm（层归一化，Layer Normalization）"></a>Norm（层归一化，Layer Normalization）</h4><p><strong>层归一化</strong>（LayerNorm）是一种归一化技术，用于提升训练的稳定性和模型的泛化能力。</p>
+<p>假设输入向量为 $x = (x_1, x_2, \dots, x_d)$, LayerNorm 的计算步骤如下：</p>
+<ol>
+<li><p><strong>计算均值和方差</strong>：<br>对输入的所有特征求均值 $\mu$ 和方差 $\sigma^2$：</p>
+<p>$<code>\mu = \frac&#123;1&#125;&#123;d&#125; \sum_&#123;j=1&#125;^&#123;d&#125; x_j, \quad 
+\sigma^2 = \frac&#123;1&#125;&#123;d&#125; \sum_&#123;j=1&#125;^&#123;d&#125; (x_j - \mu)^2</code>$</p>
+</li>
+<li><p><strong>归一化公式</strong>：<br>将输入特征 $\hat{x}_i$ 进行归一化：</p>
+<p>$<code>\hat&#123;x&#125;_i = \frac&#123;x_i - \mu&#125;&#123;\sqrt&#123;\sigma^2 + \epsilon&#125;&#125;</code>$</p>
+<p>其中, $\epsilon$ 是一个很小的常数（比如 1e-9），用于防止除以零的情况。</p>
+</li>
+<li><p><strong>引入可学习参数</strong>：<br>归一化后的输出乘以 $\gamma$ 并加上 $\beta$, 公式如下：</p>
+<p>$<code>\text&#123;Output&#125; = \gamma \hat&#123;x&#125; + \beta</code>$</p>
+<p>其中 $\gamma$ 和 $\beta$ 是可学习的参数，用于进一步调整归一化后的输出。</p>
+</li>
 </ol>
-<h3 id="前馈神经网络-position-wise-feed-forward-networksffn">前馈神经网络
-Position-wise Feed-Forward Networks（FFN）</h3>
-<figure>
-<img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20251220191959727.png" alt="image-20251220191959727">
-<figcaption aria-hidden="true">image-20251220191959727</figcaption>
-</figure>
-<p>在 Transformer 中，前馈网络层（Feed-Forward
-Network，FFN）的作用可以概括为一句话：
-<strong>“对每个位置的向量进行非线性变换，增加模型的表达能力。”</strong></p>
-<p>在编码器-解码器架构中，另一个看起来“大一点”的模块就是 Feed
-Forward，它在每个位置 <span class="math inline"><em>i</em></span>
-上的计算可以表示为：</p>
-<p><span class="math display">FFN(<em>x</em><sub><em>i</em></sub>) = max(0, <em>x</em><sub><em>i</em></sub><em>W</em><sub>1</sub> + <em>b</em><sub>1</sub>)<em>W</em><sub>2</sub> + <em>b</em><sub>2</sub></span></p>
-<p>其中：</p>
+<h3 id="前馈神经网络-Position-wise-Feed-Forward-Networks（FFN）"><a href="#前馈神经网络-Position-wise-Feed-Forward-Networks（FFN）" class="headerlink" title="前馈神经网络 Position-wise Feed-Forward Networks（FFN）"></a>前馈神经网络 Position-wise Feed-Forward Networks（FFN）</h3><p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20251220191959727.png" alt="image-20251220191959727"></p>
+<p>在 Transformer 中，前馈网络层（Feed-Forward Network，FFN）的作用可以概括为一句话：<br><strong>“对每个位置的向量进行非线性变换，增加模型的表达能力。”</strong></p>
+<p>在编码器-解码器架构中，另一个看起来“大一点”的模块就是 Feed Forward，它在每个位置 $i$ 上的计算可以表示为：</p>
+<script type="math/tex; mode=display">
+\text{FFN}(x_i) = \text{max}(0, x_i W_1 + b_1) W_2 + b_2</script><p>其中：</p>
 <ul>
-<li><span class="math inline"><em>x</em><sub><em>i</em></sub> ∈ ℝ<sup><em>d</em><sub>model</sub></sup></span>
-表示第 <span class="math inline"><em>i</em></span>
-个位置的输入向量。</li>
-<li><span class="math inline"><em>W</em><sub>1</sub> ∈ ℝ<sup><em>d</em><sub>model</sub> × <em>d</em><sub>ff</sub></sup></span>
-和 <span class="math inline"><em>W</em><sub>2</sub> ∈ ℝ<sup><em>d</em><sub>ff</sub> × <em>d</em><sub>model</sub></sup></span>
-是两个线性变换的权重矩阵。</li>
-<li><span class="math inline"><em>b</em><sub>1</sub> ∈ ℝ<sup><em>d</em><sub>ff</sub></sup></span>
-和 <span class="math inline"><em>b</em><sub>2</sub> ∈ ℝ<sup><em>d</em><sub>model</sub></sup></span>
-是对应的偏置向量。</li>
-<li><span class="math inline">max(0, ⋅)</span> 是 <strong>ReLU
-激活函数</strong>，用于引入非线性。</li>
+<li>$x<em>i \in \mathbb{R}^{d</em>{\text{model}}}$ 表示第 $i$ 个位置的输入向量。 </li>
+<li>$W<em>1 \in \mathbb{R}^{d</em>{\text{model}} \times d<em>{\text{ff}}}$ 和 $W_2 \in \mathbb{R}^{d</em>{\text{ff}} \times d_{\text{model}}}$ 是两个线性变换的权重矩阵。</li>
+<li>$b<em>1 \in \mathbb{R}^{d</em>{\text{ff}}}$ 和 $b<em>2 \in \mathbb{R}^{d</em>{\text{model}}}$ 是对应的偏置向量。</li>
+<li>$\text{max}(0, \cdot)$ 是 <strong>ReLU 激活函数</strong>，用于引入非线性。</li>
 </ul>
-<h3 id="大模型发展树">大模型发展树</h3>
-<figure>
-<img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250807171237889.png" alt="image-20250807171237889">
-<figcaption aria-hidden="true">image-20250807171237889</figcaption>
-</figure>
-<figure>
-<img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250807173520481.png" alt="image-20250807173520481">
-<figcaption aria-hidden="true">image-20250807173520481</figcaption>
-</figure>
-<h3 id="预训练语言模型">预训练语言模型</h3>
-<p>预训练语言模型（PLM）是一种通过大量文本数据进行无监督或弱监督训练的语言模型，目的是学习语言的通用表示（即语言的模式、语法、语义等）。这些模型通常在大规模文本数据上进行预训练，然后可以被微调（Fine
-- tuning）以适应各种下游任务，如文本分类、问答、命名实体识别等。</p>
+<h3 id="大模型发展树"><a href="#大模型发展树" class="headerlink" title="大模型发展树"></a>大模型发展树</h3><p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250807171237889.png" alt="image-20250807171237889"></p>
+<p><img src="/2025/07/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/Transformer%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/image-20250807173520481.png" alt="image-20250807173520481"></p>
+<h3 id="预训练语言模型"><a href="#预训练语言模型" class="headerlink" title="预训练语言模型"></a>预训练语言模型</h3><p>预训练语言模型（PLM）是一种通过大量文本数据进行无监督或弱监督训练的语言模型，目的是学习语言的通用表示（即语言的模式、语法、语义等）。这些模型通常在大规模文本数据上进行预训练，然后可以被微调（Fine - tuning）以适应各种下游任务，如文本分类、问答、命名实体识别等。</p>
 <p>预训练语言模型的核心思想是利用大量的无标注文本数据来学习语言的通用特征，从而为各种自然语言处理任务提供强大的语言理解能力。预训练模型可以显著提高任务的性能，减少对标注数据的依赖，并且能够快速适应新的任务。</p>
-<h4 id="bert模型encoder-only-plm">BERT模型（Encoder-only PLM）</h4>
-<p>针对 Encoder、Decoder 的特点，引入 ELMo
-的预训练思路，开始出现不同的、对 Transformer
-进行优化的思路。例如，<strong>Google 仅选择了 Encoder
-层</strong>，通过将 Encoder
-层进行堆叠，再提出不同的预训练任务-掩码语言模型（Masked Language
-Model，MLM），打造了一统自然语言理解（Natural Language
-Understanding，NLU）任务的代表模型——<strong>BERT</strong>。</p>
-<p>BERT，全名为 Bidirectional Encoder Representations from
-Transformers，是由 Google 团队在
-2018年发布的预训练语言模型。该模型发布于论文《BERT: Pre-training of Deep
-Bidirectional Transformers for Language Understanding》，实现了包括
-GLUE、MultiNLI 等七个自然语言处理评测任务的最优性能（State Of The
-Art，SOTA），堪称里程碑式的成果。</p>
-<h4 id="t5encoder-decoder-plm">T5（Encoder-Decoder PLM）</h4>
-<p>BERT 也存在一些问题，例如 MLM
-任务和下游任务微调的不一致性，以及无法处理超过模型训练长度的输入等问题。为了解决这些问题，研究者们提出了
-<strong>Encoder-Decoder 模型</strong>，通过引入 Decoder
-部分来解决这些问题，同时也为 NLP 领域带来了新的思路和方法。</p>
-<p><strong>T5（Text-To-Text Transfer Transformer）是由 Google
-提出的一种预训练语言模型</strong>，通过将所有 NLP
-任务统一表示为文本到文本的转换问题，大大简化了模型设计和任务处理。T5
-基于 Transformer
-架构，包含编码器和解码器两个部分，使用自注意力机制和多头注意力捕捉全局依赖关系，利用相对位置编码处理长序列中的位置信息，并在每层中包含前馈神经网络进一步处理特征。</p>
-<h4 id="llama模型decoder-only-plm">LLama模型（Decoder-Only PLM）</h4>
-<p>LLaMA模型是由Meta（前Facebook）开发的一系列大型预训练语言模型。从LLaMA-1到LLaMA-3，LLaMA系列模型展示了大规模预训练语言模型的演进及其在实际应用中的显著潜力。</p>
-<h4 id="gpt模型decoder-only-plm">GPT模型（Decoder-Only PLM）</h4>
-<p>GPT，即 Generative Pre-Training Language Model，是由 OpenAI 团队于
-2018年发布的预训练语言模型。虽然学界普遍认可 BERT
-作为预训练语言模型时代的代表，但首先明确提出<strong>预训练-微调思想的模型</strong>其实是
-GPT。</p>
-<p>GPT
-提出了通用预训练的概念，也就是在海量无监督语料上预训练，进而在每个特定任务上进行微调，从而实现这些任务的巨大收益。虽然在发布之初，由于性能略输于不久后发布的
-BERT，没能取得轰动性成果，也没能让 GPT 所使用的 <strong>Decoder-Only
-架构</strong>成为学界研究的主流，但 OpenAI
-团队坚定地选择了不断扩大预训练数据、增加模型参数，在 GPT
-架构上不断优化，最终在 2020年发布的 GPT-3 成就了 LLM 时代的基础，并以
-GPT-3 为基座模型的 ChatGPT 成功打开新时代的大门，成为 LLM
-时代的最强竞争者也是目前的最大赢家。</p>
-<h3 id="参考资料">参考资料</h3>
-<p><a target="_blank" rel="noopener" href="https://transformers.run/">Hello! ·
-Transformers快速入门</a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/jsksxs360/How-to-use-Transformers">jsksxs360/How-to-use-Transformers:
-Transformers 库快速入门教程</a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/Hoper-J/AI-Guide-and-Demos-zh_CN">Hoper-J/AI-Guide-and-Demos-zh_CN:
-这是一份入门AI/LLM大模型的逐步指南，包含教程和演示代码，带你从API走进本地大模型部署和微调，代码文件会提供Kaggle或Colab在线版本，即便没有显卡也可以进行学习。项目中还开设了一个小型的代码游乐场🎡，你可以尝试在里面实验一些有意思的AI脚本。同时，包含李宏毅
-(HUNG-YI LEE）2024生成式人工智能导论课程的完整中文镜像作业。</a></p>
+<h4 id="BERT模型（Encoder-only-PLM）"><a href="#BERT模型（Encoder-only-PLM）" class="headerlink" title="BERT模型（Encoder-only PLM）"></a>BERT模型（Encoder-only PLM）</h4><p>针对 Encoder、Decoder 的特点，引入 ELMo 的预训练思路，开始出现不同的、对 Transformer 进行优化的思路。例如，<strong>Google 仅选择了 Encoder 层</strong>，通过将 Encoder 层进行堆叠，再提出不同的预训练任务-掩码语言模型（Masked Language Model，MLM），打造了一统自然语言理解（Natural Language Understanding，NLU）任务的代表模型——<strong>BERT</strong>。</p>
+<p>BERT，全名为 Bidirectional Encoder Representations from Transformers，是由 Google 团队在 2018年发布的预训练语言模型。该模型发布于论文《BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding》，实现了包括 GLUE、MultiNLI 等七个自然语言处理评测任务的最优性能（State Of The Art，SOTA），堪称里程碑式的成果。</p>
+<h4 id="T5（Encoder-Decoder-PLM）"><a href="#T5（Encoder-Decoder-PLM）" class="headerlink" title="T5（Encoder-Decoder PLM）"></a>T5（Encoder-Decoder PLM）</h4><p>BERT 也存在一些问题，例如 MLM 任务和下游任务微调的不一致性，以及无法处理超过模型训练长度的输入等问题。为了解决这些问题，研究者们提出了 <strong>Encoder-Decoder 模型</strong>，通过引入 Decoder 部分来解决这些问题，同时也为 NLP 领域带来了新的思路和方法。</p>
+<p><strong>T5（Text-To-Text Transfer Transformer）是由 Google 提出的一种预训练语言模型</strong>，通过将所有 NLP 任务统一表示为文本到文本的转换问题，大大简化了模型设计和任务处理。T5 基于 Transformer 架构，包含编码器和解码器两个部分，使用自注意力机制和多头注意力捕捉全局依赖关系，利用相对位置编码处理长序列中的位置信息，并在每层中包含前馈神经网络进一步处理特征。</p>
+<h4 id="LLama模型（Decoder-Only-PLM）"><a href="#LLama模型（Decoder-Only-PLM）" class="headerlink" title="LLama模型（Decoder-Only PLM）"></a>LLama模型（Decoder-Only PLM）</h4><p>LLaMA模型是由Meta（前Facebook）开发的一系列大型预训练语言模型。从LLaMA-1到LLaMA-3，LLaMA系列模型展示了大规模预训练语言模型的演进及其在实际应用中的显著潜力。</p>
+<h4 id="GPT模型（Decoder-Only-PLM）"><a href="#GPT模型（Decoder-Only-PLM）" class="headerlink" title="GPT模型（Decoder-Only PLM）"></a>GPT模型（Decoder-Only PLM）</h4><p>GPT，即 Generative Pre-Training Language Model，是由 OpenAI 团队于 2018年发布的预训练语言模型。虽然学界普遍认可 BERT 作为预训练语言模型时代的代表，但首先明确提出<strong>预训练-微调思想的模型</strong>其实是 GPT。</p>
+<p>GPT 提出了通用预训练的概念，也就是在海量无监督语料上预训练，进而在每个特定任务上进行微调，从而实现这些任务的巨大收益。虽然在发布之初，由于性能略输于不久后发布的 BERT，没能取得轰动性成果，也没能让 GPT 所使用的 <strong>Decoder-Only 架构</strong>成为学界研究的主流，但 OpenAI 团队坚定地选择了不断扩大预训练数据、增加模型参数，在 GPT 架构上不断优化，最终在 2020年发布的 GPT-3 成就了 LLM 时代的基础，并以 GPT-3 为基座模型的 ChatGPT 成功打开新时代的大门，成为 LLM 时代的最强竞争者也是目前的最大赢家。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://transformers.run/">Hello! · Transformers快速入门</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/jsksxs360/How-to-use-Transformers">jsksxs360/How-to-use-Transformers: Transformers 库快速入门教程</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Hoper-J/AI-Guide-and-Demos-zh_CN">Hoper-J/AI-Guide-and-Demos-zh_CN: 这是一份入门AI/LLM大模型的逐步指南，包含教程和演示代码，带你从API走进本地大模型部署和微调，代码文件会提供Kaggle或Colab在线版本，即便没有显卡也可以进行学习。项目中还开设了一个小型的代码游乐场🎡，你可以尝试在里面实验一些有意思的AI脚本。同时，包含李宏毅 (HUNG-YI LEE）2024生成式人工智能导论课程的完整中文镜像作业。</a></p>
 <p><a target="_blank" rel="noopener" href="https://datawhalechina.github.io/happy-llm/#/">Happy-LLM</a></p>
 <p><a target="_blank" rel="noopener" href="https://gengzhige.ai/video.html">梗直哥</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1RBdTYxENw/?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">90%人不知道的LLM黑科技：拆解Transformer如何吃透全网知识！_哔哩哔哩_bilibili</a></p>
@@ -814,7 +567,7 @@ Transformers 库快速入门教程</a></p>
 
   <div class="copyright">
     &copy; 
-    <span itemprop="copyrightYear">2025</span>
+    <span itemprop="copyrightYear">2026</span>
     <span class="with-love">
       <i class="fa fa-heart"></i>
     </span>

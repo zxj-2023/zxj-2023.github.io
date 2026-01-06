@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="什么是消息队列 用一个最简单的生活类比：去餐厅吃饭。  没有 MQ (同步通信)：你（客户端）点完菜，必须站在厨房门口盯着厨师（服务端）把菜做好，端走后才能去干别的事。如果厨师动作慢，你就被“卡”住了。 有 MQ (异步通信)：你把点菜单交给服务员（MQ）。服务员把单子贴在后厨的墙上（队列）。你就可以回座位玩手机了。厨师做完一道菜，就从墙上撕下一个单子继续做。  技术上的定义：">
+    <meta name="description" content="什么是消息队列用一个最简单的生活类比：去餐厅吃饭。  没有 MQ (同步通信)：你（客户端）点完菜，必须站在厨房门口盯着厨师（服务端）把菜做好，端走后才能去干别的事。如果厨师动作慢，你就被“卡”住了。 有 MQ (异步通信)：你把点菜单交给服务员（MQ）。服务员把单子贴在后厨的墙上（队列）。你就可以回座位玩手机了。厨师做完一道菜，就从墙上撕下一个单子继续做。  技术上的定义： 消息队列是一个存放消">
 <meta property="og:type" content="article">
 <meta property="og:title" content="消息队列Message Queue">
 <meta property="og:url" content="http://example.com/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="什么是消息队列 用一个最简单的生活类比：去餐厅吃饭。  没有 MQ (同步通信)：你（客户端）点完菜，必须站在厨房门口盯着厨师（服务端）把菜做好，端走后才能去干别的事。如果厨师动作慢，你就被“卡”住了。 有 MQ (异步通信)：你把点菜单交给服务员（MQ）。服务员把单子贴在后厨的墙上（队列）。你就可以回座位玩手机了。厨师做完一道菜，就从墙上撕下一个单子继续做。  技术上的定义：">
+<meta property="og:description" content="什么是消息队列用一个最简单的生活类比：去餐厅吃饭。  没有 MQ (同步通信)：你（客户端）点完菜，必须站在厨房门口盯着厨师（服务端）把菜做好，端走后才能去干别的事。如果厨师动作慢，你就被“卡”住了。 有 MQ (异步通信)：你把点菜单交给服务员（MQ）。服务员把单子贴在后厨的墙上（队列）。你就可以回座位玩手机了。厨师做完一道菜，就从墙上撕下一个单子继续做。  技术上的定义： 消息队列是一个存放消">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/image-20251217163458817.png">
 <meta property="og:image" content="http://example.com/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/image-20251217163433856.png">
@@ -152,27 +152,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">1.</span> <span class="nav-text">什么是消息队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8-mq"><span class="nav-number">2.</span> <span class="nav-text">为什么要用 MQ？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E8%80%A6-decoupling"><span class="nav-number">2.0.1.</span> <span class="nav-text">1. 解耦 (Decoupling)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5-asynchronous"><span class="nav-number">2.0.2.</span> <span class="nav-text">2. 异步 (Asynchronous)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8A%E5%B3%B0-peak-shaving-load-leveling"><span class="nav-number">2.0.3.</span> <span class="nav-text">3. 削峰 (Peak Shaving &#x2F; Load
-Leveling)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%82%E9%9D%A2%E4%B8%8A%E4%B8%BB%E6%B5%81%E7%9A%84-mq-%E9%80%89%E5%9E%8B"><span class="nav-number">3.</span> <span class="nav-text">市面上主流的 MQ 选型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exchange%E4%BA%A4%E6%8D%A2%E5%99%A8"><span class="nav-number">4.</span> <span class="nav-text">Exchange（交换器）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6binding-%E4%B8%8E-routing-key"><span class="nav-number">4.1.</span> <span class="nav-text">核心机制：Binding 与 Routing
-Key</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rabbitmq-%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F"><span class="nav-number">5.</span> <span class="nav-text">RabbitMQ 的工作模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%B1%BB%E5%9F%BA%E7%A1%80%E9%98%9F%E5%88%97%E6%A8%A1%E5%BC%8F-%E7%82%B9%E5%AF%B9%E7%82%B9"><span class="nav-number">5.1.</span> <span class="nav-text">第一类：基础队列模式 (点对点)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E6%A8%A1%E5%BC%8F-simple-hello-world"><span class="nav-number">5.1.1.</span> <span class="nav-text">1. 简单模式 (Simple &#x2F; Hello
-World)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E9%98%9F%E5%88%97%E6%A8%A1%E5%BC%8F-work-queues"><span class="nav-number">5.1.2.</span> <span class="nav-text">2. 工作队列模式 (Work Queues)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%B1%BB%E9%AB%98%E7%BA%A7%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F-publishsubscribe"><span class="nav-number">5.2.</span> <span class="nav-text">第二类：高级发布订阅模式
-(Publish&#x2F;Subscribe)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F-publishsubscribe---fanout"><span class="nav-number">5.2.1.</span> <span class="nav-text">3. 发布&#x2F;订阅模式
-(Publish&#x2F;Subscribe - Fanout)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E6%A8%A1%E5%BC%8F-routing---direct"><span class="nav-number">5.2.2.</span> <span class="nav-text">4. 路由模式 (Routing - Direct)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BB%E9%A2%98%E6%A8%A1%E5%BC%8F-topics---topic"><span class="nav-number">5.2.3.</span> <span class="nav-text">5. 主题模式 (Topics - Topic)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#quorum-%E9%98%9F%E5%88%97"><span class="nav-number">6.</span> <span class="nav-text">Quorum 队列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%8F%91%E6%98%8E-quorum-%E9%98%9F%E5%88%97%E5%8E%86%E5%8F%B2%E8%83%8C%E6%99%AF"><span class="nav-number">6.1.</span> <span class="nav-text">1. 为什么要发明 Quorum
-队列？(历史背景)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#quorum-%E9%98%9F%E5%88%97%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86raft-%E7%AE%97%E6%B3%95"><span class="nav-number">6.2.</span> <span class="nav-text">2. Quorum 队列的核心原理：Raft
-算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6%E5%9B%BE%E8%A7%A3"><span class="nav-number">6.2.1.</span> <span class="nav-text">工作机制图解：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="nav-number">7.</span> <span class="nav-text">常见问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E6%9E%9C%E9%87%8D%E5%90%AFrabbitmq%E5%87%BA%E7%8E%B0%E6%B6%88%E6%81%AF%E4%B8%A2%E5%A4%B1%E9%97%AE%E9%A2%98%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3"><span class="nav-number">7.1.</span> <span class="nav-text">如果重启rabbitmq，出现消息丢失问题如何解决</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E5%99%A8%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96-exchange-durability"><span class="nav-number">7.1.1.</span> <span class="nav-text">1. 交换器的持久化 (Exchange
-Durability)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%9F%E5%88%97%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96-queue-durability"><span class="nav-number">7.1.2.</span> <span class="nav-text">2. 队列的持久化 (Queue
-Durability)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96-message-persistence"><span class="nav-number">7.1.3.</span> <span class="nav-text">3. 消息的持久化 (Message
-Persistence)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9B%E9%98%B6%E8%BF%99%E6%A0%B7%E5%B0%B1-100-%E5%AE%89%E5%85%A8%E4%BA%86%E5%90%97"><span class="nav-number">7.1.4.</span> <span class="nav-text">进阶：这样就 100% 安全了吗？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%90%8C%E4%B8%80%E4%B8%AA%E6%B6%88%E6%81%AF%E8%A2%AB%E6%B6%88%E8%B4%B9%E5%A4%9A%E6%AC%A1%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">7.2.</span> <span class="nav-text">如何解决同一个消息被消费多次的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%80%E5%88%A9%E7%94%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F-%E6%9C%80%E5%BC%BA%E7%A1%AC%E6%96%B9%E6%A1%88"><span class="nav-number">7.2.1.</span> <span class="nav-text">方案一：利用数据库的唯一约束
-(最强硬方案)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%BA%8C%E5%88%A9%E7%94%A8-sql-%E7%9A%84%E6%9D%A1%E4%BB%B6%E6%9B%B4%E6%96%B0-%E7%8A%B6%E6%80%81%E6%9C%BA%E6%96%B9%E6%A1%88"><span class="nav-number">7.2.2.</span> <span class="nav-text">方案二：利用 SQL
-的条件更新 (状态机方案)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%89redis-%E5%8E%BB%E9%87%8D%E8%A1%A8-%E6%9C%80%E9%AB%98%E6%80%A7%E8%83%BD%E6%96%B9%E6%A1%88"><span class="nav-number">7.2.3.</span> <span class="nav-text">方案三：Redis 去重表
-(最高性能方案)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E6%B6%88%E6%81%AF%E4%B9%B1%E5%BA%8F%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">7.3.</span> <span class="nav-text">如何处理消息乱序的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%96%B9%E6%A1%88%E6%8B%86%E5%88%86-queue-%E4%B8%80%E8%87%B4%E6%80%A7-hash"><span class="nav-number">7.3.1.</span> <span class="nav-text">核心方案：拆分 Queue + 一致性
-Hash</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E5%9B%BE%E8%A7%A3"><span class="nav-number">7.3.2.</span> <span class="nav-text">1. 架构设计图解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0%E6%AD%A5%E9%AA%A4"><span class="nav-number">7.3.3.</span> <span class="nav-text">2. 具体实现步骤</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86%E5%A4%B1%E8%B4%A5%E7%9A%84%E6%83%85%E5%86%B5"><span class="nav-number">7.4.</span> <span class="nav-text">如何处理消息处理失败的情况</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%E5%88%A4%E6%96%AD%E5%BC%82%E5%B8%B8%E7%B1%BB%E5%9E%8B%E6%98%AF%E7%97%85%E8%BF%98%E6%98%AF%E5%91%BD"><span class="nav-number">7.4.1.</span> <span class="nav-text">第一步：判断异常类型（是“病”还是“命”？）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%E5%B8%A6%E7%AD%96%E7%95%A5%E7%9A%84%E9%87%8D%E8%AF%95retry-%E5%85%B3%E9%94%AE%E7%BC%93%E5%86%B2"><span class="nav-number">7.4.2.</span> <span class="nav-text">第二步：带策略的重试（Retry）——
-关键缓冲</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97dlq-%E6%9C%80%E7%BB%88%E5%85%9C%E5%BA%95"><span class="nav-number">7.4.3.</span> <span class="nav-text">第三步：死信队列（DLQ）——
-最终兜底</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka"><span class="nav-number">8.</span> <span class="nav-text">Kafka</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E7%BB%B4%E8%BD%AC%E5%8F%98%E4%BB%8E%E9%98%9F%E5%88%97%E5%88%B0%E6%97%A5%E5%BF%97"><span class="nav-number">8.1.</span> <span class="nav-text">1. 核心思维转变：从“队列”到“日志”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88-kafka-%E5%BF%AB%E5%BE%97%E7%A6%BB%E8%B0%B1%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1"><span class="nav-number">8.2.</span> <span class="nav-text">2. 为什么 Kafka
-快得离谱？(架构设计)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a.-%E9%A1%BA%E5%BA%8F%E5%86%99%E7%A3%81%E7%9B%98-sequential-write"><span class="nav-number">8.2.1.</span> <span class="nav-text">A. 顺序写磁盘 (Sequential
-Write)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b.-%E9%9B%B6%E6%8B%B7%E8%B4%9D-zero-copy"><span class="nav-number">8.2.2.</span> <span class="nav-text">B. 零拷贝 (Zero-Copy)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#c.-%E5%88%86%E5%8C%BA-partitioning-%E6%89%A9%E5%B1%95%E6%80%A7%E7%9A%84%E6%A0%B8%E5%BF%83"><span class="nav-number">8.2.3.</span> <span class="nav-text">C. 分区 (Partitioning) ——
-扩展性的核心</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka-%E7%9A%84%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6"><span class="nav-number">8.3.</span> <span class="nav-text">3. Kafka 的核心组件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#broker"><span class="nav-number">8.3.1.</span> <span class="nav-text">1. Broker</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#topic-partition"><span class="nav-number">8.3.2.</span> <span class="nav-text">2. Topic &amp; Partition</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#producer-%E7%94%9F%E4%BA%A7%E8%80%85"><span class="nav-number">8.3.3.</span> <span class="nav-text">3. Producer (生产者)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#consumer-group-%E6%B6%88%E8%B4%B9%E8%80%85%E7%BB%84-kafka-%E7%9A%84%E7%A5%9E%E6%9D%A5%E4%B9%8B%E7%AC%94"><span class="nav-number">8.3.4.</span> <span class="nav-text">4. Consumer Group
-(消费者组) —— Kafka 的神来之笔</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#offset-%E5%81%8F%E7%A7%BB%E9%87%8F"><span class="nav-number">8.3.5.</span> <span class="nav-text">5. Offset (偏移量)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rocketmq"><span class="nav-number">9.</span> <span class="nav-text">RocketMQ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">10.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">1.</span> <span class="nav-text">什么是消息队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8-MQ%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">为什么要用 MQ？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E8%A7%A3%E8%80%A6-Decoupling"><span class="nav-number">2.0.1.</span> <span class="nav-text">1. 解耦 (Decoupling)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%BC%82%E6%AD%A5-Asynchronous"><span class="nav-number">2.0.2.</span> <span class="nav-text">2. 异步 (Asynchronous)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%89%8A%E5%B3%B0-Peak-Shaving-Load-Leveling"><span class="nav-number">2.0.3.</span> <span class="nav-text">3. 削峰 (Peak Shaving &#x2F; Load Leveling)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%82%E9%9D%A2%E4%B8%8A%E4%B8%BB%E6%B5%81%E7%9A%84-MQ-%E9%80%89%E5%9E%8B"><span class="nav-number">3.</span> <span class="nav-text">市面上主流的 MQ 选型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exchange%EF%BC%88%E4%BA%A4%E6%8D%A2%E5%99%A8%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">Exchange（交换器）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6%EF%BC%9ABinding-%E4%B8%8E-Routing-Key"><span class="nav-number">4.1.</span> <span class="nav-text">核心机制：Binding 与 Routing Key</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RabbitMQ-%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F"><span class="nav-number">5.</span> <span class="nav-text">RabbitMQ 的工作模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%B1%BB%EF%BC%9A%E5%9F%BA%E7%A1%80%E9%98%9F%E5%88%97%E6%A8%A1%E5%BC%8F-%E7%82%B9%E5%AF%B9%E7%82%B9"><span class="nav-number">5.1.</span> <span class="nav-text">第一类：基础队列模式 (点对点)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E7%AE%80%E5%8D%95%E6%A8%A1%E5%BC%8F-Simple-Hello-World"><span class="nav-number">5.1.1.</span> <span class="nav-text">1. 简单模式 (Simple &#x2F; Hello World)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%B7%A5%E4%BD%9C%E9%98%9F%E5%88%97%E6%A8%A1%E5%BC%8F-Work-Queues"><span class="nav-number">5.1.2.</span> <span class="nav-text">2. 工作队列模式 (Work Queues)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%B1%BB%EF%BC%9A%E9%AB%98%E7%BA%A7%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F-Publish-Subscribe"><span class="nav-number">5.2.</span> <span class="nav-text">第二类：高级发布订阅模式 (Publish&#x2F;Subscribe)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%8F%91%E5%B8%83-%E8%AE%A2%E9%98%85%E6%A8%A1%E5%BC%8F-Publish-Subscribe-Fanout"><span class="nav-number">5.2.1.</span> <span class="nav-text">3. 发布&#x2F;订阅模式 (Publish&#x2F;Subscribe - Fanout)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E8%B7%AF%E7%94%B1%E6%A8%A1%E5%BC%8F-Routing-Direct"><span class="nav-number">5.2.2.</span> <span class="nav-text">4. 路由模式 (Routing - Direct)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E4%B8%BB%E9%A2%98%E6%A8%A1%E5%BC%8F-Topics-Topic"><span class="nav-number">5.2.3.</span> <span class="nav-text">5. 主题模式 (Topics - Topic)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Quorum-%E9%98%9F%E5%88%97"><span class="nav-number">6.</span> <span class="nav-text">Quorum 队列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%8F%91%E6%98%8E-Quorum-%E9%98%9F%E5%88%97%EF%BC%9F-%E5%8E%86%E5%8F%B2%E8%83%8C%E6%99%AF"><span class="nav-number">6.1.</span> <span class="nav-text">1. 为什么要发明 Quorum 队列？(历史背景)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Quorum-%E9%98%9F%E5%88%97%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86%EF%BC%9ARaft-%E7%AE%97%E6%B3%95"><span class="nav-number">6.2.</span> <span class="nav-text">2. Quorum 队列的核心原理：Raft 算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6%E5%9B%BE%E8%A7%A3%EF%BC%9A"><span class="nav-number">6.2.1.</span> <span class="nav-text">工作机制图解：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98"><span class="nav-number">7.</span> <span class="nav-text">常见问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E6%9E%9C%E9%87%8D%E5%90%AFrabbitmq%EF%BC%8C%E5%87%BA%E7%8E%B0%E6%B6%88%E6%81%AF%E4%B8%A2%E5%A4%B1%E9%97%AE%E9%A2%98%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3"><span class="nav-number">7.1.</span> <span class="nav-text">如果重启rabbitmq，出现消息丢失问题如何解决</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E4%BA%A4%E6%8D%A2%E5%99%A8%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96-Exchange-Durability"><span class="nav-number">7.1.1.</span> <span class="nav-text">1. 交换器的持久化 (Exchange Durability)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E9%98%9F%E5%88%97%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96-Queue-Durability"><span class="nav-number">7.1.2.</span> <span class="nav-text">2. 队列的持久化 (Queue Durability)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E6%B6%88%E6%81%AF%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96-Message-Persistence"><span class="nav-number">7.1.3.</span> <span class="nav-text">3. 消息的持久化 (Message Persistence)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9B%E9%98%B6%EF%BC%9A%E8%BF%99%E6%A0%B7%E5%B0%B1-100-%E5%AE%89%E5%85%A8%E4%BA%86%E5%90%97%EF%BC%9F"><span class="nav-number">7.1.4.</span> <span class="nav-text">进阶：这样就 100% 安全了吗？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%90%8C%E4%B8%80%E4%B8%AA%E6%B6%88%E6%81%AF%E8%A2%AB%E6%B6%88%E8%B4%B9%E5%A4%9A%E6%AC%A1%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">7.2.</span> <span class="nav-text">如何解决同一个消息被消费多次的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%80%EF%BC%9A%E5%88%A9%E7%94%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%94%AF%E4%B8%80%E7%BA%A6%E6%9D%9F-%E6%9C%80%E5%BC%BA%E7%A1%AC%E6%96%B9%E6%A1%88"><span class="nav-number">7.2.1.</span> <span class="nav-text">方案一：利用数据库的唯一约束 (最强硬方案)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%BA%8C%EF%BC%9A%E5%88%A9%E7%94%A8-SQL-%E7%9A%84%E6%9D%A1%E4%BB%B6%E6%9B%B4%E6%96%B0-%E7%8A%B6%E6%80%81%E6%9C%BA%E6%96%B9%E6%A1%88"><span class="nav-number">7.2.2.</span> <span class="nav-text">方案二：利用 SQL 的条件更新 (状态机方案)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%A1%88%E4%B8%89%EF%BC%9ARedis-%E5%8E%BB%E9%87%8D%E8%A1%A8-%E6%9C%80%E9%AB%98%E6%80%A7%E8%83%BD%E6%96%B9%E6%A1%88"><span class="nav-number">7.2.3.</span> <span class="nav-text">方案三：Redis 去重表 (最高性能方案)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E6%B6%88%E6%81%AF%E4%B9%B1%E5%BA%8F%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">7.3.</span> <span class="nav-text">如何处理消息乱序的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%96%B9%E6%A1%88%EF%BC%9A%E6%8B%86%E5%88%86-Queue-%E4%B8%80%E8%87%B4%E6%80%A7-Hash"><span class="nav-number">7.3.1.</span> <span class="nav-text">核心方案：拆分 Queue + 一致性 Hash</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E5%9B%BE%E8%A7%A3"><span class="nav-number">7.3.2.</span> <span class="nav-text">1. 架构设计图解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0%E6%AD%A5%E9%AA%A4"><span class="nav-number">7.3.3.</span> <span class="nav-text">2. 具体实现步骤</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86%E5%A4%B1%E8%B4%A5%E7%9A%84%E6%83%85%E5%86%B5"><span class="nav-number">7.4.</span> <span class="nav-text">如何处理消息处理失败的情况</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E5%88%A4%E6%96%AD%E5%BC%82%E5%B8%B8%E7%B1%BB%E5%9E%8B%EF%BC%88%E6%98%AF%E2%80%9C%E7%97%85%E2%80%9D%E8%BF%98%E6%98%AF%E2%80%9C%E5%91%BD%E2%80%9D%EF%BC%9F%EF%BC%89"><span class="nav-number">7.4.1.</span> <span class="nav-text">第一步：判断异常类型（是“病”还是“命”？）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E5%B8%A6%E7%AD%96%E7%95%A5%E7%9A%84%E9%87%8D%E8%AF%95%EF%BC%88Retry%EF%BC%89%E2%80%94%E2%80%94-%E5%85%B3%E9%94%AE%E7%BC%93%E5%86%B2"><span class="nav-number">7.4.2.</span> <span class="nav-text">第二步：带策略的重试（Retry）—— 关键缓冲</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97%EF%BC%88DLQ%EF%BC%89%E2%80%94%E2%80%94-%E6%9C%80%E7%BB%88%E5%85%9C%E5%BA%95"><span class="nav-number">7.4.3.</span> <span class="nav-text">第三步：死信队列（DLQ）—— 最终兜底</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka"><span class="nav-number">8.</span> <span class="nav-text">Kafka</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%A0%B8%E5%BF%83%E6%80%9D%E7%BB%B4%E8%BD%AC%E5%8F%98%EF%BC%9A%E4%BB%8E%E2%80%9C%E9%98%9F%E5%88%97%E2%80%9D%E5%88%B0%E2%80%9C%E6%97%A5%E5%BF%97%E2%80%9D"><span class="nav-number">8.1.</span> <span class="nav-text">1. 核心思维转变：从“队列”到“日志”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%B8%BA%E4%BB%80%E4%B9%88-Kafka-%E5%BF%AB%E5%BE%97%E7%A6%BB%E8%B0%B1%EF%BC%9F-%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1"><span class="nav-number">8.2.</span> <span class="nav-text">2. 为什么 Kafka 快得离谱？(架构设计)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#A-%E9%A1%BA%E5%BA%8F%E5%86%99%E7%A3%81%E7%9B%98-Sequential-Write"><span class="nav-number">8.2.1.</span> <span class="nav-text">A. 顺序写磁盘 (Sequential Write)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#B-%E9%9B%B6%E6%8B%B7%E8%B4%9D-Zero-Copy"><span class="nav-number">8.2.2.</span> <span class="nav-text">B. 零拷贝 (Zero-Copy)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#C-%E5%88%86%E5%8C%BA-Partitioning-%E2%80%94%E2%80%94-%E6%89%A9%E5%B1%95%E6%80%A7%E7%9A%84%E6%A0%B8%E5%BF%83"><span class="nav-number">8.2.3.</span> <span class="nav-text">C. 分区 (Partitioning) —— 扩展性的核心</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Kafka-%E7%9A%84%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6"><span class="nav-number">8.3.</span> <span class="nav-text">3. Kafka 的核心组件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Broker"><span class="nav-number">8.3.1.</span> <span class="nav-text">1. Broker</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Topic-amp-Partition"><span class="nav-number">8.3.2.</span> <span class="nav-text">2. Topic &amp; Partition</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Producer-%E7%94%9F%E4%BA%A7%E8%80%85"><span class="nav-number">8.3.3.</span> <span class="nav-text">3. Producer (生产者)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Consumer-Group-%E6%B6%88%E8%B4%B9%E8%80%85%E7%BB%84-%E2%80%94%E2%80%94-Kafka-%E7%9A%84%E7%A5%9E%E6%9D%A5%E4%B9%8B%E7%AC%94"><span class="nav-number">8.3.4.</span> <span class="nav-text">4. Consumer Group (消费者组) —— Kafka 的神来之笔</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Offset-%E5%81%8F%E7%A7%BB%E9%87%8F"><span class="nav-number">8.3.5.</span> <span class="nav-text">5. Offset (偏移量)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RocketMQ"><span class="nav-number">9.</span> <span class="nav-text">RocketMQ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">10.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -187,7 +167,7 @@ Write)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href=
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">177</span>
+          <span class="site-state-item-count">178</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -306,74 +286,37 @@ Write)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href=
     
     
     
-    <div class="post-body" itemprop="articleBody"><h2 id="什么是消息队列">什么是消息队列</h2>
-<p>用一个最简单的生活类比：<strong>去餐厅吃饭</strong>。</p>
+    <div class="post-body" itemprop="articleBody"><h2 id="什么是消息队列"><a href="#什么是消息队列" class="headerlink" title="什么是消息队列"></a>什么是消息队列</h2><p>用一个最简单的生活类比：<strong>去餐厅吃饭</strong>。</p>
 <ul>
-<li><strong>没有 MQ
-(同步通信)</strong>：你（客户端）点完菜，必须站在厨房门口盯着厨师（服务端）把菜做好，端走后才能去干别的事。如果厨师动作慢，你就被“卡”住了。</li>
-<li><strong>有 MQ
-(异步通信)</strong>：你把点菜单交给服务员（MQ）。服务员把单子贴在后厨的墙上（队列）。你就可以回座位玩手机了。厨师做完一道菜，就从墙上撕下一个单子继续做。</li>
+<li><strong>没有 MQ (同步通信)</strong>：你（客户端）点完菜，必须站在厨房门口盯着厨师（服务端）把菜做好，端走后才能去干别的事。如果厨师动作慢，你就被“卡”住了。</li>
+<li><strong>有 MQ (异步通信)</strong>：你把点菜单交给服务员（MQ）。服务员把单子贴在后厨的墙上（队列）。你就可以回座位玩手机了。厨师做完一道菜，就从墙上撕下一个单子继续做。</li>
 </ul>
-<p><strong>技术上的定义：</strong>
-消息队列是一个<strong>存放消息的容器</strong>。</p>
-<ol type="1">
-<li><strong>生产者
-(Producer)</strong>：发送消息的程序（比如：点餐系统）。</li>
-<li><strong>消费者
-(Consumer)</strong>：从队列中读取并处理消息的程序（比如：后厨系统）。</li>
+<p><strong>技术上的定义：</strong> 消息队列是一个<strong>存放消息的容器</strong>。</p>
+<ol>
+<li><strong>生产者 (Producer)</strong>：发送消息的程序（比如：点餐系统）。</li>
+<li><strong>消费者 (Consumer)</strong>：从队列中读取并处理消息的程序（比如：后厨系统）。</li>
 <li><strong>Broker</strong>：消息队列的服务端本身，负责接收、存储和转发消息。</li>
 </ol>
-<p><strong>消息队列（Message Queue, MQ）</strong>
-是一种<strong>进程间通信（IPC）*<em>或*</em>服务间通信</strong>的中间件机制。它通过提供<strong>异步通信协议</strong>，允许发送者（Producer）和接收者（Consumer）在不同的时间、不同的进程甚至不同的网络环境下进行数据交换。</p>
-<h2 id="为什么要用-mq">为什么要用 MQ？</h2>
-<p>MQ 主要是为了解决三个问题：</p>
-<h4 id="解耦-decoupling">1. 解耦 (Decoupling)</h4>
-<ul>
-<li><strong>场景</strong>：系统 A 下单后，需要通知系统 B（库存）、系统
-C（积分）、系统 D（短信）。</li>
-<li><strong>问题</strong>：如果不用 MQ，A 必须调用 B、C、D 的接口。如果
-D 挂了，A 也会报错；如果后面加个系统 E，A 又要改代码。</li>
-<li><strong>MQ 方案</strong>：A 下单后，往 MQ
-扔一条消息“有人下单了”，然后就不管了。B、C、D 自己去 MQ
-里监听这条消息。哪怕 D 挂了，A 也不受影响。</li>
+<p><strong>消息队列（Message Queue, MQ）</strong> 是一种<strong>进程间通信（IPC）\</strong>或*<em>服务间通信<strong>的中间件机制。它通过提供</strong>异步通信协议*</em>，允许发送者（Producer）和接收者（Consumer）在不同的时间、不同的进程甚至不同的网络环境下进行数据交换。</p>
+<h2 id="为什么要用-MQ？"><a href="#为什么要用-MQ？" class="headerlink" title="为什么要用 MQ？"></a>为什么要用 MQ？</h2><p>MQ 主要是为了解决三个问题：</p>
+<h4 id="1-解耦-Decoupling"><a href="#1-解耦-Decoupling" class="headerlink" title="1. 解耦 (Decoupling)"></a>1. 解耦 (Decoupling)</h4><ul>
+<li><strong>场景</strong>：系统 A 下单后，需要通知系统 B（库存）、系统 C（积分）、系统 D（短信）。</li>
+<li><strong>问题</strong>：如果不用 MQ，A 必须调用 B、C、D 的接口。如果 D 挂了，A 也会报错；如果后面加个系统 E，A 又要改代码。</li>
+<li><strong>MQ 方案</strong>：A 下单后，往 MQ 扔一条消息“有人下单了”，然后就不管了。B、C、D 自己去 MQ 里监听这条消息。哪怕 D 挂了，A 也不受影响。</li>
 </ul>
-<figure>
-<img src="/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/image-20251217163458817.png" alt="image-20251217163458817">
-<figcaption aria-hidden="true">image-20251217163458817</figcaption>
-</figure>
-<h4 id="异步-asynchronous">2. 异步 (Asynchronous)</h4>
-<ul>
-<li><strong>场景</strong>：用户注册，需要写数据库(50ms) + 发邮件(50ms) +
-发短信(50ms)。总共耗时 150ms。</li>
-<li><strong>MQ 方案</strong>：写完数据库(50ms)后，往 MQ
-发个消息(5ms)就直接告诉用户“注册成功”。邮件和短信服务自己在后台慢慢消费消息去发送。响应时间从
-150ms 降到了 55ms。</li>
+<p><img src="/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/image-20251217163458817.png" alt="image-20251217163458817"></p>
+<h4 id="2-异步-Asynchronous"><a href="#2-异步-Asynchronous" class="headerlink" title="2. 异步 (Asynchronous)"></a>2. 异步 (Asynchronous)</h4><ul>
+<li><strong>场景</strong>：用户注册，需要写数据库(50ms) + 发邮件(50ms) + 发短信(50ms)。总共耗时 150ms。</li>
+<li><strong>MQ 方案</strong>：写完数据库(50ms)后，往 MQ 发个消息(5ms)就直接告诉用户“注册成功”。邮件和短信服务自己在后台慢慢消费消息去发送。响应时间从 150ms 降到了 55ms。</li>
 </ul>
-<figure>
-<img src="/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/image-20251217163433856.png" alt="image-20251217163433856">
-<figcaption aria-hidden="true">image-20251217163433856</figcaption>
-</figure>
-<h4 id="削峰-peak-shaving-load-leveling">3. 削峰 (Peak Shaving / Load
-Leveling)</h4>
-<ul>
-<li><strong>场景</strong>：秒杀活动，平时每秒 10 个请求，秒杀时每秒 5000
-个请求。数据库只能抗 2000 个，直接崩了。</li>
-<li><strong>MQ 方案</strong>：把 5000 个请求全部打入 MQ（MQ
-的写入性能通常极高）。后台系统按照自己的能力（比如每秒处理 2000
-个）慢慢从 MQ 里拉取处理。就像水库蓄水一样，保护下游系统不被冲垮。</li>
+<p><img src="/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/image-20251217163433856.png" alt="image-20251217163433856"></p>
+<h4 id="3-削峰-Peak-Shaving-Load-Leveling"><a href="#3-削峰-Peak-Shaving-Load-Leveling" class="headerlink" title="3. 削峰 (Peak Shaving / Load Leveling)"></a>3. 削峰 (Peak Shaving / Load Leveling)</h4><ul>
+<li><strong>场景</strong>：秒杀活动，平时每秒 10 个请求，秒杀时每秒 5000 个请求。数据库只能抗 2000 个，直接崩了。</li>
+<li><strong>MQ 方案</strong>：把 5000 个请求全部打入 MQ（MQ 的写入性能通常极高）。后台系统按照自己的能力（比如每秒处理 2000 个）慢慢从 MQ 里拉取处理。就像水库蓄水一样，保护下游系统不被冲垮。</li>
 </ul>
-<figure>
-<img src="/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/image-20251217163517525.png" alt="image-20251217163517525">
-<figcaption aria-hidden="true">image-20251217163517525</figcaption>
-</figure>
-<h2 id="市面上主流的-mq-选型">市面上主流的 MQ 选型</h2>
+<p><img src="/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/image-20251217163517525.png" alt="image-20251217163517525"></p>
+<h2 id="市面上主流的-MQ-选型"><a href="#市面上主流的-MQ-选型" class="headerlink" title="市面上主流的 MQ 选型"></a>市面上主流的 MQ 选型</h2><div class="table-container">
 <table>
-<colgroup>
-<col style="width: 8%">
-<col style="width: 27%">
-<col style="width: 32%">
-<col style="width: 30%">
-</colgroup>
 <thead>
 <tr>
 <th><strong>特性</strong></th>
@@ -421,519 +364,323 @@ Leveling)</h4>
 </tr>
 </tbody>
 </table>
-<h2 id="exchange交换器">Exchange（交换器）</h2>
-<p>在消息队列（特别是基于 <strong>AMQP 协议</strong> 的实现，如
-<strong>RabbitMQ</strong>）中，<strong>交换器 (Exchange)</strong>
-是核心组件之一。</p>
-<p>如果说 Queue（队列）是存储消息的“仓库”，那么
-Exchange（交换器）就是负责分拣和投递的“<strong>路由器</strong>”。</p>
-<p>在专业的 AMQP 架构中，<strong>生产者 (Producer)
-绝不会直接把消息发送到队列中</strong>，而是发送给交换器。交换器根据既定的<strong>路由规则
-(Routing Key)</strong>，将消息分发到一个或多个队列中。</p>
-<h3 id="核心机制binding-与-routing-key">核心机制：Binding 与 Routing
-Key</h3>
-<p>理解交换器，必须先理解两个概念：</p>
+</div>
+<h2 id="Exchange（交换器）"><a href="#Exchange（交换器）" class="headerlink" title="Exchange（交换器）"></a>Exchange（交换器）</h2><p>在消息队列（特别是基于 <strong>AMQP 协议</strong> 的实现，如 <strong>RabbitMQ</strong>）中，<strong>交换器 (Exchange)</strong> 是核心组件之一。</p>
+<p>如果说 Queue（队列）是存储消息的“仓库”，那么 Exchange（交换器）就是负责分拣和投递的“<strong>路由器</strong>”。</p>
+<p>在专业的 AMQP 架构中，<strong>生产者 (Producer) 绝不会直接把消息发送到队列中</strong>，而是发送给交换器。交换器根据既定的<strong>路由规则 (Routing Key)</strong>，将消息分发到一个或多个队列中。</p>
+<h3 id="核心机制：Binding-与-Routing-Key"><a href="#核心机制：Binding-与-Routing-Key" class="headerlink" title="核心机制：Binding 与 Routing Key"></a>核心机制：Binding 与 Routing Key</h3><p>理解交换器，必须先理解两个概念：</p>
 <ul>
-<li><strong>Binding (绑定)</strong>：这是连接 Exchange 和 Queue
-的纽带。它告诉交换器：“如果你收到了消息，请把它按这条路径转给这个队列。”</li>
-<li><strong>Routing Key
-(路由键)</strong>：生产者发送消息时带的一个“标签”。交换器会拿着这个标签，去和
-Binding 规则做匹配。</li>
+<li><strong>Binding (绑定)</strong>：这是连接 Exchange 和 Queue 的纽带。它告诉交换器：“如果你收到了消息，请把它按这条路径转给这个队列。”</li>
+<li><strong>Routing Key (路由键)</strong>：生产者发送消息时带的一个“标签”。交换器会拿着这个标签，去和 Binding 规则做匹配。</li>
 </ul>
 <p><strong>数据流向：</strong></p>
 <blockquote>
-<p>Producer –&gt; <code>Message + RoutingKey</code> –&gt;
-<strong>Exchange</strong> –&gt; (匹配逻辑) –&gt; <strong>Queue</strong>
-–&gt; Consumer</p>
+<p>Producer —&gt; <code>Message + RoutingKey</code> —&gt; <strong>Exchange</strong> —&gt; (匹配逻辑) —&gt; <strong>Queue</strong> —&gt; Consumer</p>
 </blockquote>
-<h2 id="rabbitmq-的工作模式">RabbitMQ 的工作模式</h2>
-<h3 id="第一类基础队列模式-点对点">第一类：基础队列模式 (点对点)</h3>
-<p>这两种模式主要利用队列“存储转发”的特性，通常不需要显式配置复杂的
-Exchange（交换机）。</p>
-<h4 id="简单模式-simple-hello-world">1. 简单模式 (Simple / Hello
-World)</h4>
-<ul>
-<li><strong>架构</strong>：<code>P</code> (生产者) -&gt;
-<code>Queue</code> (队列) -&gt; <code>C</code> (消费者)</li>
+<h2 id="RabbitMQ-的工作模式"><a href="#RabbitMQ-的工作模式" class="headerlink" title="RabbitMQ 的工作模式"></a>RabbitMQ 的工作模式</h2><h3 id="第一类：基础队列模式-点对点"><a href="#第一类：基础队列模式-点对点" class="headerlink" title="第一类：基础队列模式 (点对点)"></a>第一类：基础队列模式 (点对点)</h3><p>这两种模式主要利用队列“存储转发”的特性，通常不需要显式配置复杂的 Exchange（交换机）。</p>
+<h4 id="1-简单模式-Simple-Hello-World"><a href="#1-简单模式-Simple-Hello-World" class="headerlink" title="1. 简单模式 (Simple / Hello World)"></a>1. 简单模式 (Simple / Hello World)</h4><ul>
+<li><strong>架构</strong>：<code>P</code> (生产者) -&gt; <code>Queue</code> (队列) -&gt; <code>C</code> (消费者)</li>
 <li><strong>机制</strong>：最原始的模式。一个生产者对应一个消费者。</li>
-<li><strong>场景</strong>：简单的“短信发送”任务。程序 A 产生内容，程序 B
-发送，两者不需要同时在线。</li>
+<li><strong>场景</strong>：简单的“短信发送”任务。程序 A 产生内容，程序 B 发送，两者不需要同时在线。</li>
 </ul>
-<h4 id="工作队列模式-work-queues">2. 工作队列模式 (Work Queues)</h4>
-<ul>
-<li><strong>架构</strong>：<code>P</code> -&gt; <code>Queue</code> -&gt;
-<code>C1</code>, <code>C2</code>…</li>
+<h4 id="2-工作队列模式-Work-Queues"><a href="#2-工作队列模式-Work-Queues" class="headerlink" title="2. 工作队列模式 (Work Queues)"></a>2. 工作队列模式 (Work Queues)</h4><ul>
+<li><strong>架构</strong>：<code>P</code> -&gt; <code>Queue</code> -&gt; <code>C1</code>, <code>C2</code>…</li>
 <li><strong>机制</strong>：<strong>竞争消费</strong>。一个队列对应多个消费者，但<strong>一条消息只能被一个消费者抢到</strong>。</li>
-<li><strong>核心逻辑</strong>：
-<ul>
-<li><strong>轮询 (Round-robin)</strong>：默认情况下，RabbitMQ
-会依次把消息分给每个消费者（你一条，我一条）。</li>
-<li><strong>公平分发 (Fair Dispatch)</strong>：通过设置
-<code>prefetch=1</code>，让“忙碌”的消费者不接新单，把消息给“空闲”的消费者（即：谁处理得快谁多干活）。</li>
-</ul></li>
-<li><strong>场景</strong>：<strong>集群削峰</strong>。比如大促期间的订单处理，启动
-100 个订单处理服务（Worker）去消费同一个订单队列，加快处理速度。</li>
+<li><strong>核心逻辑</strong>：<ul>
+<li><strong>轮询 (Round-robin)</strong>：默认情况下，RabbitMQ 会依次把消息分给每个消费者（你一条，我一条）。</li>
+<li><strong>公平分发 (Fair Dispatch)</strong>：通过设置 <code>prefetch=1</code>，让“忙碌”的消费者不接新单，把消息给“空闲”的消费者（即：谁处理得快谁多干活）。</li>
+</ul>
+</li>
+<li><strong>场景</strong>：<strong>集群削峰</strong>。比如大促期间的订单处理，启动 100 个订单处理服务（Worker）去消费同一个订单队列，加快处理速度。</li>
 </ul>
 <hr>
-<h3 id="第二类高级发布订阅模式-publishsubscribe">第二类：高级发布订阅模式
-(Publish/Subscribe)</h3>
-<p>这类模式引入了 <strong>Exchange (交换机)</strong>
-的概念，实现了“一次发送，多处接收”。区别在于路由规则的不同。</p>
-<h4 id="发布订阅模式-publishsubscribe---fanout">3. 发布/订阅模式
-(Publish/Subscribe - Fanout)</h4>
-<ul>
-<li><strong>架构</strong>：<code>P</code> -&gt;
-<code>Exchange (Fanout)</code> -&gt; <code>Queue A</code>,
-<code>Queue B</code> -&gt; <code>C1</code>, <code>C2</code></li>
+<h3 id="第二类：高级发布订阅模式-Publish-Subscribe"><a href="#第二类：高级发布订阅模式-Publish-Subscribe" class="headerlink" title="第二类：高级发布订阅模式 (Publish/Subscribe)"></a>第二类：高级发布订阅模式 (Publish/Subscribe)</h3><p>这类模式引入了 <strong>Exchange (交换机)</strong> 的概念，实现了“一次发送，多处接收”。区别在于路由规则的不同。</p>
+<h4 id="3-发布-订阅模式-Publish-Subscribe-Fanout"><a href="#3-发布-订阅模式-Publish-Subscribe-Fanout" class="headerlink" title="3. 发布/订阅模式 (Publish/Subscribe - Fanout)"></a>3. 发布/订阅模式 (Publish/Subscribe - Fanout)</h4><ul>
+<li><strong>架构</strong>：<code>P</code> -&gt; <code>Exchange (Fanout)</code> -&gt; <code>Queue A</code>, <code>Queue B</code> -&gt; <code>C1</code>, <code>C2</code></li>
 <li><strong>机制</strong>：<strong>广播</strong>。生产者把消息发给交换机，交换机把它<strong>复制</strong>给所有绑定到它身上的队列。</li>
-<li><strong>特点</strong>：速度最快，因为它完全忽略 Routing
-Key，闭着眼转发。</li>
+<li><strong>特点</strong>：速度最快，因为它完全忽略 Routing Key，闭着眼转发。</li>
 <li><strong>场景</strong>：<strong>数据同步</strong>或<strong>日志广播</strong>。比如“修改密码”事件，既要发给“短信队列”通知用户，又要发给“审计队列”记录日志。</li>
 </ul>
-<h4 id="路由模式-routing---direct">4. 路由模式 (Routing - Direct)</h4>
-<ul>
-<li><strong>架构</strong>：<code>P</code> -&gt;
-<code>Exchange (Direct)</code> -&gt; <code>Queue A (error)</code>,
-<code>Queue B (info)</code></li>
-<li><strong>机制</strong>：<strong>精准匹配</strong>。发送消息时携带
-<code>Routing Key</code>（比如 “error”），交换机只把消息投递给绑定了
-“error” Key 的队列。</li>
-<li><strong>场景</strong>：<strong>日志分级存储</strong>。
-<ul>
-<li>消费者 A 只想接收 <code>error</code> 级别的日志写磁盘（绑定
-key=“error”）。</li>
-<li>消费者 B 想接收所有级别的日志打印控制台（绑定 key=“info”, “warning”,
-“error”）</li>
-</ul></li>
+<h4 id="4-路由模式-Routing-Direct"><a href="#4-路由模式-Routing-Direct" class="headerlink" title="4. 路由模式 (Routing - Direct)"></a>4. 路由模式 (Routing - Direct)</h4><ul>
+<li><strong>架构</strong>：<code>P</code> -&gt; <code>Exchange (Direct)</code> -&gt; <code>Queue A (error)</code>, <code>Queue B (info)</code></li>
+<li><strong>机制</strong>：<strong>精准匹配</strong>。发送消息时携带 <code>Routing Key</code>（比如 “error”），交换机只把消息投递给绑定了 “error” Key 的队列。</li>
+<li><strong>场景</strong>：<strong>日志分级存储</strong>。<ul>
+<li>消费者 A 只想接收 <code>error</code> 级别的日志写磁盘（绑定 key=”error”）。</li>
+<li>消费者 B 想接收所有级别的日志打印控制台（绑定 key=”info”, “warning”, “error”）</li>
 </ul>
-<figure>
-<img src="/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/image-20251217182529481.png" alt="image-20251217182529481">
-<figcaption aria-hidden="true">image-20251217182529481</figcaption>
-</figure>
-<h4 id="主题模式-topics---topic">5. 主题模式 (Topics - Topic)</h4>
-<ul>
-<li><strong>架构</strong>：<code>P</code> -&gt;
-<code>Exchange (Topic)</code> -&gt; <code>Queue</code></li>
-<li><strong>机制</strong>：<strong>通配符匹配</strong>。这是最灵活的模式。
-<ul>
+</li>
+</ul>
+<p><img src="/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/image-20251217182529481.png" alt="image-20251217182529481"></p>
+<h4 id="5-主题模式-Topics-Topic"><a href="#5-主题模式-Topics-Topic" class="headerlink" title="5. 主题模式 (Topics - Topic)"></a>5. 主题模式 (Topics - Topic)</h4><ul>
+<li><strong>架构</strong>：<code>P</code> -&gt; <code>Exchange (Topic)</code> -&gt; <code>Queue</code></li>
+<li><strong>机制</strong>：<strong>通配符匹配</strong>。这是最灵活的模式。<ul>
 <li><code>#</code>：匹配 0 个或多个单词。</li>
 <li><code>*</code>：匹配 1 个单词。</li>
-</ul></li>
-<li><strong>例子</strong>：
-<ul>
+</ul>
+</li>
+<li><strong>例子</strong>：<ul>
 <li>发送 Key：<code>usa.news</code></li>
 <li>队列 A 绑定：<code>usa.#</code> (接收美国的所有消息)</li>
 <li>队列 B 绑定：<code>#.news</code> (接收全世界的新闻)</li>
-</ul></li>
+</ul>
+</li>
 <li><strong>场景</strong>：<strong>复杂业务路由</strong>。比如外卖系统，按区域（北京.海淀）、按品类（食品.奶茶）进行多维度的消息分发。</li>
 </ul>
-<figure>
-<img src="/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/image-20251217182552430.png" alt="image-20251217182552430">
-<figcaption aria-hidden="true">image-20251217182552430</figcaption>
-</figure>
-<h2 id="quorum-队列">Quorum 队列</h2>
-<h3 id="为什么要发明-quorum-队列历史背景">1. 为什么要发明 Quorum
-队列？(历史背景)</h3>
-<p>在 Quorum 队列出现之前，RabbitMQ
-想要实现“一台机器挂了数据不丢”，用的是 <strong>镜像队列 (Mirrored
-Queues)</strong>。</p>
+<p><img src="/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/image-20251217182552430.png" alt="image-20251217182552430"></p>
+<h2 id="Quorum-队列"><a href="#Quorum-队列" class="headerlink" title="Quorum 队列"></a>Quorum 队列</h2><h3 id="1-为什么要发明-Quorum-队列？-历史背景"><a href="#1-为什么要发明-Quorum-队列？-历史背景" class="headerlink" title="1. 为什么要发明 Quorum 队列？(历史背景)"></a>1. 为什么要发明 Quorum 队列？(历史背景)</h3><p>在 Quorum 队列出现之前，RabbitMQ 想要实现“一台机器挂了数据不丢”，用的是 <strong>镜像队列 (Mirrored Queues)</strong>。</p>
 <p><strong>老镜像队列的致命痛点：</strong></p>
-<ol type="1">
+<ol>
 <li><strong>同步风暴</strong>：当一个新节点加入集群时，它需要从老节点把所有数据复制过来。这个过程会导致整个集群卡顿（Stop-the-world），甚至导致集群崩溃。</li>
 <li><strong>效率低下</strong>：它采用的是“链式复制”或者简单的广播，一条消息要在所有节点间转圈圈，性能随着节点数增加而剧烈下降。</li>
-<li><strong>即将被废弃</strong>：RabbitMQ
-官方已经宣布，在未来的版本（4.0）中将<strong>彻底删除</strong>镜像队列。</li>
+<li><strong>即将被废弃</strong>：RabbitMQ 官方已经宣布，在未来的版本（4.0）中将<strong>彻底删除</strong>镜像队列。</li>
 </ol>
 <p>所以，Quorum 队列就是为了<strong>“接班”</strong>而来的。</p>
 <hr>
-<h3 id="quorum-队列的核心原理raft-算法">2. Quorum 队列的核心原理：Raft
-算法</h3>
-<p>“Quorum”这个词的本意是<strong>“法定人数”</strong>（也就是<strong>多数派</strong>）。</p>
-<p>它的核心逻辑不再是“所有人都必须收到消息”，而是<strong>“只要大多数人收到消息，这事儿就成了”</strong>。它基于著名的分布式一致性算法
-<strong>Raft</strong>。</p>
-<h4 id="工作机制图解">工作机制图解：</h4>
-<p>假设你的集群有 3 个节点（Node A, Node B, Node C）。</p>
-<ol type="1">
-<li><strong>Leader 选举</strong>：三个节点通过投票，选出 Node A 作为
-<strong>Leader</strong>，B 和 C 是 <strong>Follower</strong>。</li>
-<li><strong>写消息</strong>：
-<ul>
+<h3 id="2-Quorum-队列的核心原理：Raft-算法"><a href="#2-Quorum-队列的核心原理：Raft-算法" class="headerlink" title="2. Quorum 队列的核心原理：Raft 算法"></a>2. Quorum 队列的核心原理：Raft 算法</h3><p>“Quorum”这个词的本意是<strong>“法定人数”</strong>（也就是<strong>多数派</strong>）。</p>
+<p>它的核心逻辑不再是“所有人都必须收到消息”，而是<strong>“只要大多数人收到消息，这事儿就成了”</strong>。它基于著名的分布式一致性算法 <strong>Raft</strong>。</p>
+<h4 id="工作机制图解："><a href="#工作机制图解：" class="headerlink" title="工作机制图解："></a>工作机制图解：</h4><p>假设你的集群有 3 个节点（Node A, Node B, Node C）。</p>
+<ol>
+<li><strong>Leader 选举</strong>：三个节点通过投票，选出 Node A 作为 <strong>Leader</strong>，B 和 C 是 <strong>Follower</strong>。</li>
+<li><strong>写消息</strong>：<ul>
 <li>生产者把消息发给 Leader (A)。</li>
 <li>A 把消息写入自己的日志，并同时发给 B 和 C。</li>
-<li><strong>关键点</strong>：只要 B 或者 C <strong>其中有一个</strong>
-回复“我收到了”（加上 A 自己，就是 2 票，满足 3 票中的多数派），A
-就认为这条消息<strong>写入成功</strong>。</li>
+<li><strong>关键点</strong>：只要 B 或者 C <strong>其中有一个</strong> 回复“我收到了”（加上 A 自己，就是 2 票，满足 3 票中的多数派），A 就认为这条消息<strong>写入成功</strong>。</li>
 <li>A 返回 ACK 给生产者。</li>
-</ul></li>
-<li><strong>故障切换</strong>：
-<ul>
+</ul>
+</li>
+<li><strong>故障切换</strong>：<ul>
 <li>如果 Leader (A) 挂了。</li>
 <li>B 和 C 发现老大不在了，迅速发起新一轮投票。</li>
-<li>因为 B 和 C 都是活着的（2 &gt; 3/2），它们能立刻选出新的
-Leader，继续工作。</li>
-</ul></li>
+<li>因为 B 和 C 都是活着的（2 &gt; 3/2），它们能立刻选出新的 Leader，继续工作。</li>
+</ul>
+</li>
 </ol>
-<figure>
-<img src="/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/image-20251217190353627.png" alt="image-20251217190353627">
-<figcaption aria-hidden="true">image-20251217190353627</figcaption>
-</figure>
-<h2 id="常见问题">常见问题</h2>
-<h3 id="如果重启rabbitmq出现消息丢失问题如何解决">如果重启rabbitmq，出现消息丢失问题如何解决</h3>
-<p>核心原因是默认情况下 RabbitMQ
-是将数据存储在内存中的。一旦进程关闭或服务器重启，内存数据就会被清空。</p>
-<p>要解决这个问题，必须配置 <strong>“持久化”
-(Persistence)</strong>。</p>
-<p>但这不仅仅是改一个配置那么简单。要保证消息绝对不丢，你需要同时满足
-<strong>三个层面的持久化</strong>（缺一不可）：</p>
-<h4 id="交换器的持久化-exchange-durability">1. 交换器的持久化 (Exchange
-Durability)</h4>
-<p>如果你只持久化了队列和消息，但交换器没持久化。重启后，交换器没了，生产者发消息时找不到交换器，消息就会直接报错或丢弃。</p>
+<p><img src="/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/image-20251217190353627.png" alt="image-20251217190353627"></p>
+<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><h3 id="如果重启rabbitmq，出现消息丢失问题如何解决"><a href="#如果重启rabbitmq，出现消息丢失问题如何解决" class="headerlink" title="如果重启rabbitmq，出现消息丢失问题如何解决"></a>如果重启rabbitmq，出现消息丢失问题如何解决</h3><p>核心原因是默认情况下 RabbitMQ 是将数据存储在内存中的。一旦进程关闭或服务器重启，内存数据就会被清空。</p>
+<p>要解决这个问题，必须配置 <strong>“持久化” (Persistence)</strong>。</p>
+<p>但这不仅仅是改一个配置那么简单。要保证消息绝对不丢，你需要同时满足 <strong>三个层面的持久化</strong>（缺一不可）：</p>
+<h4 id="1-交换器的持久化-Exchange-Durability"><a href="#1-交换器的持久化-Exchange-Durability" class="headerlink" title="1. 交换器的持久化 (Exchange Durability)"></a>1. 交换器的持久化 (Exchange Durability)</h4><p>如果你只持久化了队列和消息，但交换器没持久化。重启后，交换器没了，生产者发消息时找不到交换器，消息就会直接报错或丢弃。</p>
 <ul>
-<li><p><strong>如何设置</strong>：在声明交换器时，将
-<code>durable</code> 参数设为 <code>True</code>。</p></li>
+<li><p><strong>如何设置</strong>：在声明交换器时，将 <code>durable</code> 参数设为 <code>True</code>。</p>
+</li>
 <li><p><strong>代码示例 (Python)</strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import pika</span><br><span class="line"></span><br><span class="line"># durable=True 是关键</span><br><span class="line">channel.exchange_declare(exchange=&#x27;my_exchange&#x27;, </span><br><span class="line">                         exchange_type=&#x27;direct&#x27;, </span><br><span class="line">                         durable=True)</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import pika</span><br><span class="line"></span><br><span class="line"># durable=True 是关键</span><br><span class="line">channel.exchange_declare(exchange=&#x27;my_exchange&#x27;, </span><br><span class="line">                         exchange_type=&#x27;direct&#x27;, </span><br><span class="line">                         durable=True)</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
-<h4 id="队列的持久化-queue-durability">2. 队列的持久化 (Queue
-Durability)</h4>
-<p>如果队列不持久化，重启后队列元数据会消失，依附于该队列的消息（无论消息本身是否持久化）都会一起消失。</p>
+<h4 id="2-队列的持久化-Queue-Durability"><a href="#2-队列的持久化-Queue-Durability" class="headerlink" title="2. 队列的持久化 (Queue Durability)"></a>2. 队列的持久化 (Queue Durability)</h4><p>如果队列不持久化，重启后队列元数据会消失，依附于该队列的消息（无论消息本身是否持久化）都会一起消失。</p>
 <ul>
-<li><p><strong>如何设置</strong>：在声明队列时，将 <code>durable</code>
-参数设为 <code>True</code>。</p></li>
+<li><p><strong>如何设置</strong>：在声明队列时，将 <code>durable</code> 参数设为 <code>True</code>。</p>
+</li>
 <li><p><strong>代码示例 (Python)</strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># durable=True 告诉 RabbitMQ 重启后恢复该队列</span><br><span class="line">channel.queue_declare(queue=&#x27;my_queue&#x27;, durable=True)</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># durable=True 告诉 RabbitMQ 重启后恢复该队列</span><br><span class="line">channel.queue_declare(queue=&#x27;my_queue&#x27;, durable=True)</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
-<h4 id="消息的持久化-message-persistence">3. 消息的持久化 (Message
-Persistence)</h4>
-<p>这是最容易被遗忘的一步。即便队列还在，如果消息本身是“瞬态”的，重启后队列是空的。</p>
+<h4 id="3-消息的持久化-Message-Persistence"><a href="#3-消息的持久化-Message-Persistence" class="headerlink" title="3. 消息的持久化 (Message Persistence)"></a>3. 消息的持久化 (Message Persistence)</h4><p>这是最容易被遗忘的一步。即便队列还在，如果消息本身是“瞬态”的，重启后队列是空的。</p>
 <ul>
-<li><p><strong>如何设置</strong>：在发送消息（Publish）时，设置
-<code>delivery_mode = 2</code>（1 是非持久化，2 是持久化）。</p></li>
+<li><p><strong>如何设置</strong>：在发送消息（Publish）时，设置 <code>delivery_mode = 2</code>（1 是非持久化，2 是持久化）。</p>
+</li>
 <li><p><strong>代码示例 (Python)</strong>：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">channel.basic_publish(</span><br><span class="line">    exchange=&#x27;my_exchange&#x27;,</span><br><span class="line">    routing_key=&#x27;my_queue&#x27;,</span><br><span class="line">    body=&#x27;Hello World&#x27;,</span><br><span class="line">    properties=pika.BasicProperties(</span><br><span class="line">        delivery_mode=2,  # 关键点：2 代表消息持久化</span><br><span class="line">    )</span><br><span class="line">)</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">channel.basic_publish(</span><br><span class="line">    exchange=&#x27;my_exchange&#x27;,</span><br><span class="line">    routing_key=&#x27;my_queue&#x27;,</span><br><span class="line">    body=&#x27;Hello World&#x27;,</span><br><span class="line">    properties=pika.BasicProperties(</span><br><span class="line">        delivery_mode=2,  # 关键点：2 代表消息持久化</span><br><span class="line">    )</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
-<h4 id="进阶这样就-100-安全了吗">进阶：这样就 100% 安全了吗？</h4>
-<p><strong>不是的。</strong>
-即便你做到了以上三点，依然存在两个极端情况会导致丢失：</p>
+<h4 id="进阶：这样就-100-安全了吗？"><a href="#进阶：这样就-100-安全了吗？" class="headerlink" title="进阶：这样就 100% 安全了吗？"></a>进阶：这样就 100% 安全了吗？</h4><p><strong>不是的。</strong> 即便你做到了以上三点，依然存在两个极端情况会导致丢失：</p>
 <ul>
-<li><strong>漏洞 1：消息刚到内存，还没来得及刷盘</strong> RabbitMQ
-为了性能，不会每收到一条消息就立马写硬盘（fsync），而是先存缓存区。如果这时候断电了，缓存区里的几条消息就丢了。
-<ul>
-<li><strong>解决方案</strong>：<strong>发布确认机制 (Publisher
-Confirms)</strong>。 生产者开启 Confirm 模式。只有当 RabbitMQ
-明确告诉你“我已经把这条消息存入硬盘了”（Handle
-Ack），你才算发送成功。如果超时未收到 Ack，生产者需要重发。</li>
-</ul></li>
-<li><strong>漏洞 2：磁盘坏了 / 物理机报废</strong>
-如果单台机器硬盘物理损坏，持久化也没用。
-<ul>
-<li><strong>解决方案</strong>：<strong>镜像队列 (Mirrored
-Queues)</strong> 或 <strong>仲裁队列 (Quorum Queues)</strong>。
-这是集群层面的高可用。将消息复制到 3
-台不同的机器上。挂掉一台，另外两台还有数据。</li>
-</ul></li>
+<li><strong>漏洞 1：消息刚到内存，还没来得及刷盘</strong> RabbitMQ 为了性能，不会每收到一条消息就立马写硬盘（fsync），而是先存缓存区。如果这时候断电了，缓存区里的几条消息就丢了。<ul>
+<li><strong>解决方案</strong>：<strong>发布确认机制 (Publisher Confirms)</strong>。 生产者开启 Confirm 模式。只有当 RabbitMQ 明确告诉你“我已经把这条消息存入硬盘了”（Handle Ack），你才算发送成功。如果超时未收到 Ack，生产者需要重发。</li>
 </ul>
-<h3 id="如何解决同一个消息被消费多次的问题">如何解决同一个消息被消费多次的问题</h3>
-<p>这是一个非常经典且必须解决的分布式系统问题。在专业术语中，解决这个问题的方法叫做<strong>实现接口的“幂等性”
-(Idempotency)</strong>。</p>
+</li>
+<li><strong>漏洞 2：磁盘坏了 / 物理机报废</strong> 如果单台机器硬盘物理损坏，持久化也没用。<ul>
+<li><strong>解决方案</strong>：<strong>镜像队列 (Mirrored Queues)</strong> 或 <strong>仲裁队列 (Quorum Queues)</strong>。 这是集群层面的高可用。将消息复制到 3 台不同的机器上。挂掉一台，另外两台还有数据。</li>
+</ul>
+</li>
+</ul>
+<h3 id="如何解决同一个消息被消费多次的问题"><a href="#如何解决同一个消息被消费多次的问题" class="headerlink" title="如何解决同一个消息被消费多次的问题"></a>如何解决同一个消息被消费多次的问题</h3><p>这是一个非常经典且必须解决的分布式系统问题。在专业术语中，解决这个问题的方法叫做<strong>实现接口的“幂等性” (Idempotency)</strong>。</p>
 <p>简单来说，<strong>幂等性</strong>意味着：<strong>无论我对同一个消息处理多少次，最终的结果都和处理一次是一样的。</strong></p>
-<p>在 RabbitMQ（以及大多数 MQ）的设计中，为了保证消息不丢，默认采用的是
-<strong>“至少投递一次” (At-Least-Once)</strong> 策略。</p>
+<p>在 RabbitMQ（以及大多数 MQ）的设计中，为了保证消息不丢，默认采用的是 <strong>“至少投递一次” (At-Least-Once)</strong> 策略。</p>
 <ul>
-<li><strong>场景还原</strong>：消费者把钱扣了，正准备告诉 MQ
-“我办完了(ACK)”，结果<strong>网线断了</strong>或<strong>进程崩了</strong>。</li>
-<li><strong>后果</strong>：MQ 没收到
-ACK，以为你没办完，于是把消息重新发给另一个消费者。结果：<strong>扣了两次钱</strong>。</li>
+<li><strong>场景还原</strong>：消费者把钱扣了，正准备告诉 MQ “我办完了(ACK)”，结果<strong>网线断了</strong>或<strong>进程崩了</strong>。</li>
+<li><strong>后果</strong>：MQ 没收到 ACK，以为你没办完，于是把消息重新发给另一个消费者。结果：<strong>扣了两次钱</strong>。</li>
 </ul>
-<p>要解决这个问题，不能依赖
-MQ，必须由<strong>消费者（Consumer）</strong>在业务逻辑层面来保证。以下是三种最主流的工程实现方案：</p>
-<h4 id="方案一利用数据库的唯一约束-最强硬方案">方案一：利用数据库的唯一约束
-(最强硬方案)</h4>
-<p>这是最简单、最可靠的方法，适用于<strong>新增数据</strong>（Insert）的场景。</p>
+<p>要解决这个问题，不能依赖 MQ，必须由<strong>消费者（Consumer）</strong>在业务逻辑层面来保证。以下是三种最主流的工程实现方案：</p>
+<h4 id="方案一：利用数据库的唯一约束-最强硬方案"><a href="#方案一：利用数据库的唯一约束-最强硬方案" class="headerlink" title="方案一：利用数据库的唯一约束 (最强硬方案)"></a>方案一：利用数据库的唯一约束 (最强硬方案)</h4><p>这是最简单、最可靠的方法，适用于<strong>新增数据</strong>（Insert）的场景。</p>
 <ul>
-<li><strong>原理</strong>：利用数据库（MySQL/Oracle）的主键（Primary
-Key）或唯一索引（Unique Key）约束。</li>
-<li><strong>做法</strong>：
-<ol type="1">
-<li>每条消息必须携带一个<strong>全局唯一的 ID</strong>（比如
-<code>message_id</code> 或者业务上的 <code>order_id</code>）。</li>
+<li><strong>原理</strong>：利用数据库（MySQL/Oracle）的主键（Primary Key）或唯一索引（Unique Key）约束。</li>
+<li><strong>做法</strong>：<ol>
+<li>每条消息必须携带一个<strong>全局唯一的 ID</strong>（比如 <code>message_id</code> 或者业务上的 <code>order_id</code>）。</li>
 <li>消费者尝试向数据库插入数据。</li>
 <li>如果插入成功 -&gt; 处理结束，发送 ACK。</li>
-<li>如果插入失败（报 <code>DuplicateKeyException</code>） -&gt;
-说明已经处理过了，<strong>直接忽略，发送 ACK</strong>。</li>
-</ol></li>
+<li>如果插入失败（报 <code>DuplicateKeyException</code>） -&gt; 说明已经处理过了，<strong>直接忽略，发送 ACK</strong>。</li>
+</ol>
+</li>
 </ul>
-<h4 id="方案二利用-sql-的条件更新-状态机方案">方案二：利用 SQL
-的条件更新 (状态机方案)</h4>
-<p>适用于<strong>更新数据</strong>（Update）的场景，比如更新订单状态。</p>
+<h4 id="方案二：利用-SQL-的条件更新-状态机方案"><a href="#方案二：利用-SQL-的条件更新-状态机方案" class="headerlink" title="方案二：利用 SQL 的条件更新 (状态机方案)"></a>方案二：利用 SQL 的条件更新 (状态机方案)</h4><p>适用于<strong>更新数据</strong>（Update）的场景，比如更新订单状态。</p>
 <ul>
-<li><p><strong>原理</strong>：利用 SQL 的 <code>WHERE</code>
-条件作为乐观锁，防止回退。</p></li>
+<li><p><strong>原理</strong>：利用 SQL 的 <code>WHERE</code> 条件作为乐观锁，防止回退。</p>
+</li>
 <li><p><strong>错误做法</strong>：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UPDATE orders SET status = &#x27;PAID&#x27; WHERE id = 1001;</span><br></pre></td></tr></table></figure>
-<p><em>风险：如果你执行两次，它就更新两次，虽然状态看起来一样，但如果有触发器或日志，就会重复。</em></p></li>
+<p><em>风险：如果你执行两次，它就更新两次，虽然状态看起来一样，但如果有触发器或日志，就会重复。</em></p>
+</li>
 <li><p><strong>正确做法 (带前置条件)</strong>：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">UPDATE orders SET status = &#x27;PAID&#x27; </span><br><span class="line">WHERE id = 1001 AND status = &#x27;UNPAID&#x27;; -- 关键在这里</span><br></pre></td></tr></table></figure>
 <ul>
-<li><strong>第一次执行</strong>：找到 ID=1001 且状态是 UNPAID
-的记录，更新成功，影响行数 = 1。</li>
-<li><strong>第二次执行</strong>：虽然 ID=1001 还在，但这时的状态已经是
-PAID 了，不满足 <code>status = 'UNPAID'</code>，所以<strong>影响行数 =
-0</strong>。业务逻辑判断影响行数为 0，即视为重复消费，直接 ACK。</li>
-</ul></li>
+<li><strong>第一次执行</strong>：找到 ID=1001 且状态是 UNPAID 的记录，更新成功，影响行数 = 1。</li>
+<li><strong>第二次执行</strong>：虽然 ID=1001 还在，但这时的状态已经是 PAID 了，不满足 <code>status = &#39;UNPAID&#39;</code>，所以<strong>影响行数 = 0</strong>。业务逻辑判断影响行数为 0，即视为重复消费，直接 ACK。</li>
 </ul>
-<h4 id="方案三redis-去重表-最高性能方案">方案三：Redis 去重表
-(最高性能方案)</h4>
-<p>如果你的业务不涉及数据库，或者并发量极高，可以用 Redis
-做“去重记录表”。</p>
+</li>
+</ul>
+<h4 id="方案三：Redis-去重表-最高性能方案"><a href="#方案三：Redis-去重表-最高性能方案" class="headerlink" title="方案三：Redis 去重表 (最高性能方案)"></a>方案三：Redis 去重表 (最高性能方案)</h4><p>如果你的业务不涉及数据库，或者并发量极高，可以用 Redis 做“去重记录表”。</p>
 <ul>
 <li><p><strong>做法</strong>：</p>
-<ol type="1">
-<li>消息到达，先拿着 <code>message_id</code> 去 Redis
-查一下：<code>EXISTS message_id</code>？</li>
+<ol>
+<li>消息到达，先拿着 <code>message_id</code> 去 Redis 查一下：<code>EXISTS message_id</code>？</li>
 <li><strong>如果有</strong>：说明处理过了，直接丢弃，ACK。</li>
 <li><strong>如果无</strong>：开始处理业务。</li>
-<li>业务处理完，把 <code>message_id</code> 写入
-Redis（通常设置一个过期时间，比如 24 小时）。</li>
+<li>业务处理完，把 <code>message_id</code> 写入 Redis（通常设置一个过期时间，比如 24 小时）。</li>
 </ol>
-<p><em>注意：这里存在原子性问题（先查后写中间可能并发），通常使用
-<code>SETNX</code> (Set if Not Exists) 命令或者 Lua
-脚本来保证原子性。</em></p></li>
+<p><em>注意：这里存在原子性问题（先查后写中间可能并发），通常使用 <code>SETNX</code> (Set if Not Exists) 命令或者 Lua 脚本来保证原子性。</em></p>
+</li>
 </ul>
-<h3 id="如何处理消息乱序的问题">如何处理消息乱序的问题</h3>
-<p>在 RabbitMQ
-中，<strong>单个队列由单个消费者消费</strong>时，是严格保证先进先出（FIFO）的。</p>
-<p>但是，为了提升性能，我们通常会开启<strong>多个消费者</strong>（Competing
-Consumers
-Pattern）同时消费同一个队列，或者发生消息重试（Nack/Requeue）。这时候，顺序就乱了。</p>
+<h3 id="如何处理消息乱序的问题"><a href="#如何处理消息乱序的问题" class="headerlink" title="如何处理消息乱序的问题"></a>如何处理消息乱序的问题</h3><p>在 RabbitMQ 中，<strong>单个队列由单个消费者消费</strong>时，是严格保证先进先出（FIFO）的。</p>
+<p>但是，为了提升性能，我们通常会开启<strong>多个消费者</strong>（Competing Consumers Pattern）同时消费同一个队列，或者发生消息重试（Nack/Requeue）。这时候，顺序就乱了。</p>
 <blockquote>
-<p><strong>场景举例</strong>： 生产者依次发了三条关于“订单
-A”的消息：</p>
-<ol type="1">
+<p><strong>场景举例</strong>： 生产者依次发了三条关于“订单 A”的消息：</p>
+<ol>
 <li><code>INSERT</code> (创建订单)</li>
 <li><code>UPDATE</code> (支付订单)</li>
 <li><code>DELETE</code> (删除订单)</li>
 </ol>
-<p>如果有两个消费者 C1 和 C2。 C1 拿到了 <code>INSERT</code>，C2 拿到了
-<code>UPDATE</code>。 C2 的网速很快，先处理完
-<code>UPDATE</code>。结果数据库报错“找不到订单”，操作失败。然后 C1 才把
-<code>INSERT</code> 做完。
-<strong>结果</strong>：数据不一致，业务崩盘。</p>
+<p>如果有两个消费者 C1 和 C2。 C1 拿到了 <code>INSERT</code>，C2 拿到了 <code>UPDATE</code>。 C2 的网速很快，先处理完 <code>UPDATE</code>。结果数据库报错“找不到订单”，操作失败。然后 C1 才把 <code>INSERT</code> 做完。 <strong>结果</strong>：数据不一致，业务崩盘。</p>
 </blockquote>
-<p>解决这个问题的核心思路是：<strong>我们不需要“全局有序”，只需要“局部有序”</strong>（即：保证同一个
-ID 的消息是有序的即可，不同 ID 之间的顺序无所谓）。</p>
-<p>对于 Python
-开发者以及大多数分布式系统来说，解决消息乱序最稳健、最通用的方案就是：<strong>拆分
-Queue + 一致性 Hash (Queue Sharding)</strong>。</p>
-<h4 id="核心方案拆分-queue-一致性-hash">核心方案：拆分 Queue + 一致性
-Hash</h4>
-<p>这个方案的核心逻辑是：<strong>我们不需要“全局有序”，只需要保证“同一业务
-ID 的消息有序”</strong>。</p>
-<p>只要保证同一个订单（例如
-<code>Order_1001</code>）的所有操作（下单、支付、发货）都严格进入<strong>同一个队列</strong>，并且被<strong>同一个消费者</strong>处理，那么顺序就绝对不会乱。</p>
-<h4 id="架构设计图解">1. 架构设计图解</h4>
-<p>我们要把原来的“一个大队列”拆分成 N 个“小队列”。</p>
+<p>解决这个问题的核心思路是：<strong>我们不需要“全局有序”，只需要“局部有序”</strong>（即：保证同一个 ID 的消息是有序的即可，不同 ID 之间的顺序无所谓）。</p>
+<p>对于 Python 开发者以及大多数分布式系统来说，解决消息乱序最稳健、最通用的方案就是：<strong>拆分 Queue + 一致性 Hash (Queue Sharding)</strong>。</p>
+<h4 id="核心方案：拆分-Queue-一致性-Hash"><a href="#核心方案：拆分-Queue-一致性-Hash" class="headerlink" title="核心方案：拆分 Queue + 一致性 Hash"></a>核心方案：拆分 Queue + 一致性 Hash</h4><p>这个方案的核心逻辑是：<strong>我们不需要“全局有序”，只需要保证“同一业务 ID 的消息有序”</strong>。</p>
+<p>只要保证同一个订单（例如 <code>Order_1001</code>）的所有操作（下单、支付、发货）都严格进入<strong>同一个队列</strong>，并且被<strong>同一个消费者</strong>处理，那么顺序就绝对不会乱。</p>
+<h4 id="1-架构设计图解"><a href="#1-架构设计图解" class="headerlink" title="1. 架构设计图解"></a>1. 架构设计图解</h4><p>我们要把原来的“一个大队列”拆分成 N 个“小队列”。</p>
 <ul>
-<li><strong>原来的模型（会乱序）</strong>： <code>Producer</code> -&gt;
-<code>Queue</code> -&gt; <code>Consumer A</code>,
-<code>Consumer B</code> (并发抢单，顺序错乱)</li>
-<li><strong>现在的模型（保证有序）</strong>： <code>Producer</code>
--&gt; <code>Exchange</code> -&gt; <code>Queue_1</code> -&gt;
-<code>Consumer A</code> (只负责 Queue_1) <code>Producer</code> -&gt;
-<code>Exchange</code> -&gt; <code>Queue_2</code> -&gt;
-<code>Consumer B</code> (只负责 Queue_2) <code>Producer</code> -&gt;
-<code>Exchange</code> -&gt; <code>Queue_3</code> -&gt;
-<code>Consumer C</code> (只负责 Queue_3)</li>
+<li><strong>原来的模型（会乱序）</strong>： <code>Producer</code> -&gt; <code>Queue</code> -&gt; <code>Consumer A</code>, <code>Consumer B</code> (并发抢单，顺序错乱)</li>
+<li><strong>现在的模型（保证有序）</strong>： <code>Producer</code> -&gt; <code>Exchange</code> -&gt; <code>Queue_1</code> -&gt; <code>Consumer A</code> (只负责 Queue_1) <code>Producer</code> -&gt; <code>Exchange</code> -&gt; <code>Queue_2</code> -&gt; <code>Consumer B</code> (只负责 Queue_2) <code>Producer</code> -&gt; <code>Exchange</code> -&gt; <code>Queue_3</code> -&gt; <code>Consumer C</code> (只负责 Queue_3)</li>
 </ul>
-<h4 id="具体实现步骤">2. 具体实现步骤</h4>
-<p>这个方案分为三个关键环节：</p>
-<p><strong>第一步：生产者负责“路由分发”</strong>
-在发送消息时，生产者必须根据业务 ID（如
-<code>order_id</code>）决定这条消息发往哪个队列。通常使用 <strong>Hash
-取模</strong> 算法。</p>
+<h4 id="2-具体实现步骤"><a href="#2-具体实现步骤" class="headerlink" title="2. 具体实现步骤"></a>2. 具体实现步骤</h4><p>这个方案分为三个关键环节：</p>
+<p><strong>第一步：生产者负责“路由分发”</strong> 在发送消息时，生产者必须根据业务 ID（如 <code>order_id</code>）决定这条消息发往哪个队列。通常使用 <strong>Hash 取模</strong> 算法。</p>
 <ul>
-<li><strong>逻辑</strong>：<code>index = hash(order_id) % N</code> (N
-是队列的总数量)。</li>
-<li><strong>例子</strong>：假设有 3 个队列。
-<ul>
-<li><code>Order_1001</code> 的 Hash 模 3 结果是 0 -&gt; <strong>发往
-Queue_0</strong></li>
-<li><code>Order_1002</code> 的 Hash 模 3 结果是 1 -&gt; <strong>发往
-Queue_1</strong></li>
-<li><code>Order_1001</code> 的<strong>后续状态</strong>（如支付）Hash
-结果肯定还是 0 -&gt; <strong>依然发往 Queue_0</strong></li>
-</ul></li>
+<li><strong>逻辑</strong>：<code>index = hash(order_id) % N</code> (N 是队列的总数量)。</li>
+<li><strong>例子</strong>：假设有 3 个队列。<ul>
+<li><code>Order_1001</code> 的 Hash 模 3 结果是 0 -&gt; <strong>发往 Queue_0</strong></li>
+<li><code>Order_1002</code> 的 Hash 模 3 结果是 1 -&gt; <strong>发往 Queue_1</strong></li>
+<li><code>Order_1001</code> 的<strong>后续状态</strong>（如支付）Hash 结果肯定还是 0 -&gt; <strong>依然发往 Queue_0</strong></li>
 </ul>
-<p><strong>第二步：RabbitMQ 队列配置</strong> 你需要创建 N 个队列（如
-<code>order_sub_queue_0</code>, <code>order_sub_queue_1</code>…）。</p>
-<ul>
-<li><em>进阶技巧</em>：RabbitMQ 有一个官方插件叫
-<strong><code>rabbitmq_consistent_hash_exchange</code></strong>。你只需要把消息发给这个交换机，带上
-routing_key（设为 order_id），交换机会自动帮你根据 Hash
-值均匀分发到绑定的队列中，连生产者的代码都不用改太复杂。</li>
+</li>
 </ul>
-<p><strong>第三步：消费者“独占”队列 (关键)</strong>
-这是最重要的一点：<strong>每个小队列，同一时刻只能有一个消费者在监听。</strong></p>
+<p><strong>第二步：RabbitMQ 队列配置</strong> 你需要创建 N 个队列（如 <code>order_sub_queue_0</code>, <code>order_sub_queue_1</code>…）。</p>
+<ul>
+<li><em>进阶技巧</em>：RabbitMQ 有一个官方插件叫 <strong><code>rabbitmq_consistent_hash_exchange</code></strong>。你只需要把消息发给这个交换机，带上 routing_key（设为 order_id），交换机会自动帮你根据 Hash 值均匀分发到绑定的队列中，连生产者的代码都不用改太复杂。</li>
+</ul>
+<p><strong>第三步：消费者“独占”队列 (关键)</strong> 这是最重要的一点：<strong>每个小队列，同一时刻只能有一个消费者在监听。</strong></p>
 <ul>
 <li><strong>Consumer A</strong> 专门监听 <code>Queue_0</code>。</li>
 <li><strong>Consumer B</strong> 专门监听 <code>Queue_1</code>。</li>
 </ul>
-<p>因为 RabbitMQ 的单个队列是先进先出 (FIFO) 的，而 Consumer A
-是单线程顺序处理 Queue_0 的，所以 <code>Order_1001</code>
-的“下单”一定比“支付”先被处理。</p>
-<h3 id="如何处理消息处理失败的情况">如何处理消息处理失败的情况</h3>
-<p>在分布式系统中，<strong>消息处理失败是常态</strong>（比如数据库挂了、网络抖动、代码
-bug）。</p>
+<p>因为 RabbitMQ 的单个队列是先进先出 (FIFO) 的，而 Consumer A 是单线程顺序处理 Queue_0 的，所以 <code>Order_1001</code> 的“下单”一定比“支付”先被处理。</p>
+<h3 id="如何处理消息处理失败的情况"><a href="#如何处理消息处理失败的情况" class="headerlink" title="如何处理消息处理失败的情况"></a>如何处理消息处理失败的情况</h3><p>在分布式系统中，<strong>消息处理失败是常态</strong>（比如数据库挂了、网络抖动、代码 bug）。</p>
 <p>如果处理失败，绝不能简单地忽略，否则会导致数据丢失；也不能死板地无限重试，否则会死循环拖垮系统。</p>
 <p>处理失败通常有<strong>三道防线</strong>，层层递进：</p>
-<h4 id="第一步判断异常类型是病还是命">第一步：判断异常类型（是“病”还是“命”？）</h4>
-<p>当 <code>try...except</code>
-捕获到异常时，不能盲目重试，先看是什么错：</p>
-<ol type="1">
-<li><strong>致命错误（Fatal Error）</strong>：
-<ul>
+<h4 id="第一步：判断异常类型（是“病”还是“命”？）"><a href="#第一步：判断异常类型（是“病”还是“命”？）" class="headerlink" title="第一步：判断异常类型（是“病”还是“命”？）"></a>第一步：判断异常类型（是“病”还是“命”？）</h4><p>当 <code>try...except</code> 捕获到异常时，不能盲目重试，先看是什么错：</p>
+<ol>
+<li><strong>致命错误（Fatal Error）</strong>：<ul>
 <li>例如：<code>JsonDecodeError</code>（格式不对）、<code>KeyError</code>（缺字段）、<code>NullPointerException</code>（空指针）。</li>
 <li><strong>决策</strong>：这种错误重试一万次也没用。<strong>跳过重试，直接进死信队列</strong>。</li>
-</ul></li>
-<li><strong>临时错误（Transient Error）</strong>：
-<ul>
+</ul>
+</li>
+<li><strong>临时错误（Transient Error）</strong>：<ul>
 <li>例如：<code>Timeout</code>（连接超时）、<code>Deadlock</code>（数据库死锁）、<code>503 Service Unavailable</code>。</li>
 <li><strong>决策</strong>：这种病能治。<strong>进入重试流程</strong>。</li>
-</ul></li>
+</ul>
+</li>
 </ol>
-<h4 id="第二步带策略的重试retry-关键缓冲">第二步：带策略的重试（Retry）——
-关键缓冲</h4>
-<p>既然决定要救，也不能瞎救（比如立即原地无限重试，那是“毒药”）。我们需要<strong>“有节制、有延迟”</strong>的重试。</p>
+<h4 id="第二步：带策略的重试（Retry）——-关键缓冲"><a href="#第二步：带策略的重试（Retry）——-关键缓冲" class="headerlink" title="第二步：带策略的重试（Retry）—— 关键缓冲"></a>第二步：带策略的重试（Retry）—— 关键缓冲</h4><p>既然决定要救，也不能瞎救（比如立即原地无限重试，那是“毒药”）。我们需要<strong>“有节制、有延迟”</strong>的重试。</p>
 <ul>
-<li><strong>检查重试次数</strong>： 从消息 Header 中读取
-<code>retry_count</code>。</li>
-<li><strong>逻辑</strong>：
-<ul>
-<li><strong>如果 count &lt; 3</strong>（假设最大重试3次）：
-<ol type="1">
+<li><strong>检查重试次数</strong>： 从消息 Header 中读取 <code>retry_count</code>。</li>
+<li><strong>逻辑</strong>：<ul>
+<li><strong>如果 count &lt; 3</strong>（假设最大重试3次）：<ol>
 <li><code>count + 1</code>。</li>
-<li><strong>等待一会儿</strong>（Backoff）：不要立即重试，而是把消息发到一个
-<strong>“延迟队列”</strong>（或者用代码 <code>sleep</code> 一会儿，但
-Python 中不建议阻塞主线程，推荐用延迟插件
-<code>rabbitmq_delayed_message_exchange</code>）。</li>
+<li><strong>等待一会儿</strong>（Backoff）：不要立即重试，而是把消息发到一个 <strong>“延迟队列”</strong>（或者用代码 <code>sleep</code> 一会儿，但 Python 中不建议阻塞主线程，推荐用延迟插件 <code>rabbitmq_delayed_message_exchange</code>）。</li>
 <li>重新发布这条消息（Publish）。</li>
-<li>对当前失败的这条消息进行
-<code>ACK</code>（因为它已经生成了新的替身去排队了）。</li>
-</ol></li>
-<li><strong>如果 count &gt;= 3</strong>：
-<ul>
+<li>对当前失败的这条消息进行 <code>ACK</code>（因为它已经生成了新的替身去排队了）。</li>
+</ol>
+</li>
+<li><strong>如果 count &gt;= 3</strong>：<ul>
 <li>说明救不活了，放弃治疗。</li>
 <li><strong>进入第三步</strong>。</li>
-</ul></li>
-</ul></li>
 </ul>
-<h4 id="第三步死信队列dlq-最终兜底">第三步：死信队列（DLQ）——
-最终兜底</h4>
-<p>这是最后一道防线。当重试次数耗尽，或者遇到致命错误时，才轮到它出场。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="第三步：死信队列（DLQ）——-最终兜底"><a href="#第三步：死信队列（DLQ）——-最终兜底" class="headerlink" title="第三步：死信队列（DLQ）—— 最终兜底"></a>第三步：死信队列（DLQ）—— 最终兜底</h4><p>这是最后一道防线。当重试次数耗尽，或者遇到致命错误时，才轮到它出场。</p>
 <ul>
-<li><strong>操作</strong>：调用
-<code>basic_nack(delivery_tag, requeue=False)</code>。</li>
-<li><strong>结果</strong>：
-<ul>
+<li><strong>操作</strong>：调用 <code>basic_nack(delivery_tag, requeue=False)</code>。</li>
+<li><strong>结果</strong>：<ul>
 <li>RabbitMQ 会根据配置，自动把这条消息“踢”到死信交换机。</li>
 <li>死信交换机把它路由到 <strong>死信队列</strong>。</li>
-</ul></li>
-<li><strong>后续</strong>：
-<ul>
+</ul>
+</li>
+<li><strong>后续</strong>：<ul>
 <li>开发/运维人员配置报警脚本，监听死信队列。</li>
 <li>一旦有消息进来，<strong>发钉钉/邮件报警</strong>。</li>
 <li>人工排查原因（比如发现是数据库挂了），修复后，手动把死信队列里的消息取出来再发回业务队列（或者写脚本批量重发）。</li>
-</ul></li>
 </ul>
-<h2 id="kafka">Kafka</h2>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1TT421y79S/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">消息队列Kafka是什么？架构是怎么样的？5分钟快速入门_哔哩哔哩_bilibili</a></p>
-<h3 id="核心思维转变从队列到日志">1. 核心思维转变：从“队列”到“日志”</h3>
-<p>这是理解 Kafka 最重要的一步。</p>
+</li>
+</ul>
+<h2 id="Kafka"><a href="#Kafka" class="headerlink" title="Kafka"></a>Kafka</h2><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1TT421y79S/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">消息队列Kafka是什么？架构是怎么样的？5分钟快速入门_哔哩哔哩_bilibili</a></p>
+<h3 id="1-核心思维转变：从“队列”到“日志”"><a href="#1-核心思维转变：从“队列”到“日志”" class="headerlink" title="1. 核心思维转变：从“队列”到“日志”"></a>1. 核心思维转变：从“队列”到“日志”</h3><p>这是理解 Kafka 最重要的一步。</p>
 <ul>
-<li><strong>RabbitMQ
-(队列模型)</strong>：就像<strong>“收件箱”</strong>。你把信拿出来，信就没了（Delete）。它的目标是让消息越快被处理完越好，堆积消息是异常状态。</li>
-<li><strong>Kafka
-(日志模型)</strong>：就像<strong>“船长的航海日志”</strong>。
-<ul>
+<li><strong>RabbitMQ (队列模型)</strong>：就像<strong>“收件箱”</strong>。你把信拿出来，信就没了（Delete）。它的目标是让消息越快被处理完越好，堆积消息是异常状态。</li>
+<li><strong>Kafka (日志模型)</strong>：就像<strong>“船长的航海日志”</strong>。<ul>
 <li>消息是<strong>追加写入 (Append-only)</strong> 的。</li>
-<li>消费者读消息，<strong>不会删除消息</strong>，只是在自己的笔记本上记一下：“我读到了第
-100 行”。</li>
+<li>消费者读消息，<strong>不会删除消息</strong>，只是在自己的笔记本上记一下：“我读到了第 100 行”。</li>
 <li>这意味着：<strong>消息可以被多个不同的消费者重复读取，甚至可以“倒带”回去重读历史数据。</strong></li>
-</ul></li>
+</ul>
+</li>
 </ul>
 <hr>
-<h3 id="为什么-kafka-快得离谱架构设计">2. 为什么 Kafka
-快得离谱？(架构设计)</h3>
-<p>Kafka 单机可以轻松抗住 <strong>每秒几十万甚至上百万</strong>
-的写入，它是怎么做到的？</p>
-<h4 id="a.-顺序写磁盘-sequential-write">A. 顺序写磁盘 (Sequential
-Write)</h4>
-<p>RabbitMQ 尽量用内存，而 Kafka <strong>直接写磁盘</strong>。
-你可能会问：“写磁盘不是慢吗？”
-<strong>随机写</strong>确实慢，但<strong>顺序写</strong>极快。Kafka
-强制所有数据只能追加到文件末尾。在现代操作系统中，顺序写磁盘的速度（600MB/s+）甚至可以超过随机写内存的速度。</p>
-<h4 id="b.-零拷贝-zero-copy">B. 零拷贝 (Zero-Copy)</h4>
-<p>还记得你之前感兴趣的底层原理吗？Kafka 是利用 OS <code>sendfile</code>
-系统调用的教科书级案例。</p>
+<h3 id="2-为什么-Kafka-快得离谱？-架构设计"><a href="#2-为什么-Kafka-快得离谱？-架构设计" class="headerlink" title="2. 为什么 Kafka 快得离谱？(架构设计)"></a>2. 为什么 Kafka 快得离谱？(架构设计)</h3><p>Kafka 单机可以轻松抗住 <strong>每秒几十万甚至上百万</strong> 的写入，它是怎么做到的？</p>
+<h4 id="A-顺序写磁盘-Sequential-Write"><a href="#A-顺序写磁盘-Sequential-Write" class="headerlink" title="A. 顺序写磁盘 (Sequential Write)"></a>A. 顺序写磁盘 (Sequential Write)</h4><p>RabbitMQ 尽量用内存，而 Kafka <strong>直接写磁盘</strong>。 你可能会问：“写磁盘不是慢吗？” <strong>随机写</strong>确实慢，但<strong>顺序写</strong>极快。Kafka 强制所有数据只能追加到文件末尾。在现代操作系统中，顺序写磁盘的速度（600MB/s+）甚至可以超过随机写内存的速度。</p>
+<h4 id="B-零拷贝-Zero-Copy"><a href="#B-零拷贝-Zero-Copy" class="headerlink" title="B. 零拷贝 (Zero-Copy)"></a>B. 零拷贝 (Zero-Copy)</h4><p>还记得你之前感兴趣的底层原理吗？Kafka 是利用 OS <code>sendfile</code> 系统调用的教科书级案例。</p>
 <ul>
-<li><strong>传统方式</strong>：磁盘 -&gt; 内核 Buffer -&gt; 用户态
-Buffer (Application) -&gt; 内核 Socket Buffer -&gt; 网卡。</li>
-<li><strong>Kafka 方式</strong>：磁盘 -&gt; 内核 Buffer -&gt;
-<strong>直接传给网卡</strong>。
-<ul>
+<li><strong>传统方式</strong>：磁盘 -&gt; 内核 Buffer -&gt; 用户态 Buffer (Application) -&gt; 内核 Socket Buffer -&gt; 网卡。</li>
+<li><strong>Kafka 方式</strong>：磁盘 -&gt; 内核 Buffer -&gt; <strong>直接传给网卡</strong>。<ul>
 <li>数据完全不经过应用程序（Kafka JVM），CPU 也就不用瞎忙活。</li>
-</ul></li>
 </ul>
-<h4 id="c.-分区-partitioning-扩展性的核心">C. 分区 (Partitioning) ——
-扩展性的核心</h4>
-<p>Kafka 将一个 <strong>Topic (主题)</strong> 拆分成了多个
-<strong>Partition (分区)</strong>。</p>
+</li>
+</ul>
+<h4 id="C-分区-Partitioning-——-扩展性的核心"><a href="#C-分区-Partitioning-——-扩展性的核心" class="headerlink" title="C. 分区 (Partitioning) —— 扩展性的核心"></a>C. 分区 (Partitioning) —— 扩展性的核心</h4><p>Kafka 将一个 <strong>Topic (主题)</strong> 拆分成了多个 <strong>Partition (分区)</strong>。</p>
 <ul>
 <li>每个 Partition 是一个独立的物理日志文件。</li>
 <li>不同的 Partition 可以分布在不同的服务器上。</li>
 <li><strong>结果</strong>：并发读写能力随着机器数量线性扩展。</li>
 </ul>
 <hr>
-<h3 id="kafka-的核心组件">3. Kafka 的核心组件</h3>
-<h4 id="broker">1. Broker</h4>
-<p>Kafka 的服务器节点。</p>
-<h4 id="topic-partition">2. Topic &amp; Partition</h4>
-<ul>
+<h3 id="3-Kafka-的核心组件"><a href="#3-Kafka-的核心组件" class="headerlink" title="3. Kafka 的核心组件"></a>3. Kafka 的核心组件</h3><h4 id="1-Broker"><a href="#1-Broker" class="headerlink" title="1. Broker"></a>1. Broker</h4><p>Kafka 的服务器节点。</p>
+<h4 id="2-Topic-amp-Partition"><a href="#2-Topic-amp-Partition" class="headerlink" title="2. Topic &amp; Partition"></a>2. Topic &amp; Partition</h4><ul>
 <li>Topic 是逻辑分类（比如 <code>logs</code>）。</li>
 <li>Partition 是物理存储。Topic A 可以分为 Partition 0, 1, 2。</li>
-<li><strong>注意</strong>：Kafka <strong>只保证 Partition
-内部的消息有序</strong>，不保证整个 Topic 全局有序。</li>
+<li><strong>注意</strong>：Kafka <strong>只保证 Partition 内部的消息有序</strong>，不保证整个 Topic 全局有序。</li>
 </ul>
-<h4 id="producer-生产者">3. Producer (生产者)</h4>
-<p>生产者决定把消息发给哪个 Partition（通常轮询或 Hash）。</p>
-<h4 id="consumer-group-消费者组-kafka-的神来之笔">4. Consumer Group
-(消费者组) —— Kafka 的神来之笔</h4>
-<p>这是 Kafka 区别于 RabbitMQ 的最大特色。</p>
+<h4 id="3-Producer-生产者"><a href="#3-Producer-生产者" class="headerlink" title="3. Producer (生产者)"></a>3. Producer (生产者)</h4><p>生产者决定把消息发给哪个 Partition（通常轮询或 Hash）。</p>
+<h4 id="4-Consumer-Group-消费者组-——-Kafka-的神来之笔"><a href="#4-Consumer-Group-消费者组-——-Kafka-的神来之笔" class="headerlink" title="4. Consumer Group (消费者组) —— Kafka 的神来之笔"></a>4. Consumer Group (消费者组) —— Kafka 的神来之笔</h4><p>这是 Kafka 区别于 RabbitMQ 的最大特色。</p>
 <ul>
 <li><strong>机制</strong>：一个 Topic 可以被多个 Group 消费。</li>
-<li><strong>组内 (Queue 模式)</strong>：同一个 Group
-里的消费者，互相竞争。Partition 0 给消费者 A，Partition 1 给消费者
-B。<strong>一个 Partition
-只能被组内的一个消费者消费</strong>（防止乱序）。</li>
-<li><strong>组间 (Pub/Sub 模式)</strong>：Group A 消费了一遍数据，Group
-B 可以再消费一遍同样的数据，互不干扰。</li>
+<li><strong>组内 (Queue 模式)</strong>：同一个 Group 里的消费者，互相竞争。Partition 0 给消费者 A，Partition 1 给消费者 B。<strong>一个 Partition 只能被组内的一个消费者消费</strong>（防止乱序）。</li>
+<li><strong>组间 (Pub/Sub 模式)</strong>：Group A 消费了一遍数据，Group B 可以再消费一遍同样的数据，互不干扰。</li>
 </ul>
-<h4 id="offset-偏移量">5. Offset (偏移量)</h4>
-<p>消费者读到哪了？RabbitMQ 是 Server 记，Kafka 是
-<strong>消费者自己记</strong>（或者提交给 Kafka 的内部 Topic
-<code>__consumer_offsets</code>）。</p>
+<h4 id="5-Offset-偏移量"><a href="#5-Offset-偏移量" class="headerlink" title="5. Offset (偏移量)"></a>5. Offset (偏移量)</h4><p>消费者读到哪了？RabbitMQ 是 Server 记，Kafka 是 <strong>消费者自己记</strong>（或者提交给 Kafka 的内部 Topic <code>__consumer_offsets</code>）。</p>
 <ul>
-<li>你可以随时修改 Offset，让消费者从昨天的数据开始重新跑一遍（用于修复
-Bug 后重算数据）。</li>
+<li>你可以随时修改 Offset，让消费者从昨天的数据开始重新跑一遍（用于修复 Bug 后重算数据）。</li>
 </ul>
-<figure>
-<img src="/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/image-20251217193104605.png" alt="image-20251217193104605">
-<figcaption aria-hidden="true">image-20251217193104605</figcaption>
-</figure>
-<h2 id="rocketmq">RocketMQ</h2>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1m7421Z7fN/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">消息队列RocketMQ是什么？和Kafka有什么区别？架构是怎么样的？7分钟快速入门_哔哩哔哩_bilibili</a></p>
-<h2 id="参考资料">参考资料</h2>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV12qmyBQEwL?buvid=XX7932A7E9DD8A1DA92D4974AB535749A9B44&amp;from_spmid=tm.recommend.0.0&amp;is_story_h5=false&amp;mid=25yhOI1fPeVYa5V16BFcAw%3D%3D&amp;plat_id=116&amp;share_from=ugc&amp;share_medium=android&amp;share_plat=android&amp;share_session_id=32fc9f4a-5eb3-4380-b6c8-f84d3b23dfe8&amp;share_source=QQ&amp;share_tag=s_i&amp;spmid=united.player-video-detail.0.0&amp;timestamp=1765803150&amp;unique_k=uPhnhXg&amp;up_id=12890453&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">什么是消息队列？不就是排个队么？_哔哩哔哩_bilibili</a></p>
+<p><img src="/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/image-20251217193104605.png" alt="image-20251217193104605"></p>
+<h2 id="RocketMQ"><a href="#RocketMQ" class="headerlink" title="RocketMQ"></a>RocketMQ</h2><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1m7421Z7fN/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">消息队列RocketMQ是什么？和Kafka有什么区别？架构是怎么样的？7分钟快速入门_哔哩哔哩_bilibili</a></p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV12qmyBQEwL?buvid=XX7932A7E9DD8A1DA92D4974AB535749A9B44&amp;from_spmid=tm.recommend.0.0&amp;is_story_h5=false&amp;mid=25yhOI1fPeVYa5V16BFcAw%3D%3D&amp;plat_id=116&amp;share_from=ugc&amp;share_medium=android&amp;share_plat=android&amp;share_session_id=32fc9f4a-5eb3-4380-b6c8-f84d3b23dfe8&amp;share_source=QQ&amp;share_tag=s_i&amp;spmid=united.player-video-detail.0.0&amp;timestamp=1765803150&amp;unique_k=uPhnhXg&amp;up_id=12890453&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">什么是消息队列？不就是排个队么？_哔哩哔哩_bilibili</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1oCwEeVEe4/?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">RabbitMQ是什么？架构是怎么样的？_哔哩哔哩_bilibili</a></p>
 
     </div>
@@ -970,13 +717,13 @@ Bug 后重算数据）。</li>
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2025/12/16/%E6%8A%80%E6%9C%AF%E6%9D%82%E8%AE%B0/%E5%AE%9E%E7%94%A8%E7%BD%91%E9%A1%B5/" rel="prev" title="开发实用网页记录">
-                  <i class="fa fa-angle-left"></i> 开发实用网页记录
+                <a href="/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" rel="prev" title="负载均衡（Load Balancing）">
+                  <i class="fa fa-angle-left"></i> 负载均衡（Load Balancing）
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2025/12/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" rel="next" title="负载均衡（Load Balancing）">
-                  负载均衡（Load Balancing） <i class="fa fa-angle-right"></i>
+                <a href="/2025/12/18/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%A4%A7%E4%BD%9C%E4%B8%9A/" rel="next" title="数据库大作业——工厂管理系统复盘">
+                  数据库大作业——工厂管理系统复盘 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
@@ -997,7 +744,7 @@ Bug 后重算数据）。</li>
 
   <div class="copyright">
     &copy; 
-    <span itemprop="copyrightYear">2025</span>
+    <span itemprop="copyrightYear">2026</span>
     <span class="with-love">
       <i class="fa fa-heart"></i>
     </span>
