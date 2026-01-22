@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="浏览器的跨域预检 INFO:     127.0.0.1:54365 - “OPTIONS &#x2F;usersrole&#x3D;admin HTTP&#x2F;1.1” 200 OKINFO:     127.0.0.1:54365 - “GET &#x2F;usersrole&#x3D;admin HTTP&#x2F;1.1” 200 OK为什么每次调用这个接口会有两个  • 这是浏览器的跨域预检 + 实际请求各一次：  前端带 Authoriza">
+    <meta name="description" content="浏览器的跨域预检  INFO: 127.0.0.1:54365 - “OPTIONS &#x2F;usersrole&#x3D;admin HTTP&#x2F;1.1” 200 OK INFO: 127.0.0.1:54365 - “GET &#x2F;usersrole&#x3D;admin HTTP&#x2F;1.1” 200 OK 为什么每次调用这个接口会有两个  • 这是浏览器的跨域预检 + 实际请求各一次：  前端带 Author">
 <meta property="og:type" content="article">
 <meta property="og:title" content="记录开发过程中遇到的问题">
 <meta property="og:url" content="http://example.com/2025/12/11/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E8%AE%B0%E5%BD%95%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="浏览器的跨域预检 INFO:     127.0.0.1:54365 - “OPTIONS &#x2F;usersrole&#x3D;admin HTTP&#x2F;1.1” 200 OKINFO:     127.0.0.1:54365 - “GET &#x2F;usersrole&#x3D;admin HTTP&#x2F;1.1” 200 OK为什么每次调用这个接口会有两个  • 这是浏览器的跨域预检 + 实际请求各一次：  前端带 Authoriza">
+<meta property="og:description" content="浏览器的跨域预检  INFO: 127.0.0.1:54365 - “OPTIONS &#x2F;usersrole&#x3D;admin HTTP&#x2F;1.1” 200 OK INFO: 127.0.0.1:54365 - “GET &#x2F;usersrole&#x3D;admin HTTP&#x2F;1.1” 200 OK 为什么每次调用这个接口会有两个  • 这是浏览器的跨域预检 + 实际请求各一次：  前端带 Author">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-12-10T16:00:00.000Z">
 <meta property="article:modified_time" content="2025-12-11T08:48:12.868Z">
@@ -144,7 +144,8 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E8%B7%A8%E5%9F%9F%E9%A2%84%E6%A3%80"><span class="nav-number">1.</span> <span class="nav-text">浏览器的跨域预检</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E8%B7%A8%E6%BA%90%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">如何解决跨源的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%F0%9F%92%BB-%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83-Development"><span class="nav-number">2.0.1.</span> <span class="nav-text">💻 开发环境 (Development)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%F0%9F%9A%80-%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83-Production"><span class="nav-number">2.0.2.</span> <span class="nav-text">🚀 生产环境 (Production)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Authorization-%E5%A4%B4%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">3.</span> <span class="nav-text">Authorization 头是什么</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%A0%87%E5%87%86%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.1.</span> <span class="nav-text">1. 标准格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%84%E4%B8%A4%E7%A7%8D%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.2.</span> <span class="nav-text">2. 最常用的两种类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#A-Bearer-%E6%9C%80%E5%B8%B8%E8%A7%81%EF%BC%8C%E7%94%A8%E4%BA%8E-JWT"><span class="nav-number">3.2.1.</span> <span class="nav-text">A. Bearer (最常见，用于 JWT)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#B-Basic-%E6%9C%80%E5%9F%BA%E7%A1%80%EF%BC%8C%E7%94%A8%E4%BA%8E%E7%94%A8%E6%88%B7%E5%90%8D%E5%AF%86%E7%A0%81"><span class="nav-number">3.2.2.</span> <span class="nav-text">B. Basic (最基础，用于用户名密码)</span></a></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E8%B7%A8%E5%9F%9F%E9%A2%84%E6%A3%80"><span class="nav-number">1.</span> <span class="nav-text">浏览器的跨域预检</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E8%B7%A8%E6%BA%90%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">如何解决跨源的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83-development"><span class="nav-number">2.0.1.</span> <span class="nav-text">💻 开发环境 (Development)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83-production"><span class="nav-number">2.0.2.</span> <span class="nav-text">🚀 生产环境 (Production)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#authorization-%E5%A4%B4%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">3.</span> <span class="nav-text">Authorization 头是什么</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%87%E5%87%86%E6%A0%BC%E5%BC%8F"><span class="nav-number">3.1.</span> <span class="nav-text">1. 标准格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E5%B8%B8%E7%94%A8%E7%9A%84%E4%B8%A4%E7%A7%8D%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.2.</span> <span class="nav-text">2. 最常用的两种类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a.-bearer-%E6%9C%80%E5%B8%B8%E8%A7%81%E7%94%A8%E4%BA%8E-jwt"><span class="nav-number">3.2.1.</span> <span class="nav-text">A. Bearer (最常见，用于 JWT)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b.-basic-%E6%9C%80%E5%9F%BA%E7%A1%80%E7%94%A8%E4%BA%8E%E7%94%A8%E6%88%B7%E5%90%8D%E5%AF%86%E7%A0%81"><span class="nav-number">3.2.2.</span> <span class="nav-text">B. Basic
+(最基础，用于用户名密码)</span></a></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -159,7 +160,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">178</span>
+          <span class="site-state-item-count">176</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -278,70 +279,94 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h2 id="浏览器的跨域预检"><a href="#浏览器的跨域预检" class="headerlink" title="浏览器的跨域预检"></a>浏览器的跨域预检</h2><blockquote>
-<p>INFO:     127.0.0.1:54365 - “OPTIONS /usersrole=admin HTTP/1.1” 200 OK<br>INFO:     127.0.0.1:54365 - “GET /usersrole=admin HTTP/1.1” 200 OK<br>为什么每次调用这个接口会有两个</p>
+    <div class="post-body" itemprop="articleBody"><h2 id="浏览器的跨域预检">浏览器的跨域预检</h2>
+<blockquote>
+<p>INFO: 127.0.0.1:54365 - “OPTIONS /usersrole=admin HTTP/1.1” 200 OK
+INFO: 127.0.0.1:54365 - “GET /usersrole=admin HTTP/1.1” 200 OK
+为什么每次调用这个接口会有两个</p>
 </blockquote>
 <p>• 这是浏览器的跨域预检 + 实际请求各一次：</p>
 <ul>
-<li>前端带 Authorization 头、跨域调用 /users?role=admin 时，浏览器会先发 OPTIONS 预检，看服务器是否允许该方法<br>头。你启用了 CORS，所以预检返回 200。</li>
-<li><p>预检通过后才发真正的 GET /users?role=admin，所以日志里看到两条。          </p>
-<p>这是正常行为；非浏览器（如 curl/postman）或同源、无自定义头的请求则不会有预检。</p>
-</li>
+<li>前端带 Authorization 头、跨域调用 /users?role=admin 时，浏览器会先发
+OPTIONS 预检，看服务器是否允许该方法 头。你启用了 CORS，所以预检返回
+200。</li>
+<li>预检通过后才发真正的 GET
+/users?role=admin，所以日志里看到两条。</li>
 </ul>
-<h2 id="如何解决跨源的问题"><a href="#如何解决跨源的问题" class="headerlink" title="如何解决跨源的问题"></a>如何解决跨源的问题</h2><p>我们推导出了两套针对不同环境的最佳实践方案，核心逻辑都是<strong>“利用中间人（代理）实现同源”</strong>。</p>
-<h4 id="💻-开发环境-Development"><a href="#💻-开发环境-Development" class="headerlink" title="💻 开发环境 (Development)"></a>💻 开发环境 (Development)</h4><ul>
+<p>这是正常行为；非浏览器（如
+curl/postman）或同源、无自定义头的请求则不会有预检。</p>
+<h2 id="如何解决跨源的问题">如何解决跨源的问题</h2>
+<p>我们推导出了两套针对不同环境的最佳实践方案，核心逻辑都是<strong>“利用中间人（代理）实现同源”</strong>。</p>
+<h4 id="开发环境-development">💻 开发环境 (Development)</h4>
+<ul>
 <li><strong>工具：</strong> Vite (<code>server.proxy</code>)</li>
 <li><strong>原理：</strong> 利用 Vite 启动的 Node.js 服务转发请求。</li>
-<li><strong>效果：</strong> 浏览器只跟 Vite 打交道（同源），Vite 跟后端打交道（服务器间无 CORS 限制）。<strong>完美消除预检和跨域报错。</strong></li>
+<li><strong>效果：</strong> 浏览器只跟 Vite 打交道（同源），Vite
+跟后端打交道（服务器间无 CORS
+限制）。<strong>完美消除预检和跨域报错。</strong></li>
 </ul>
-<h4 id="🚀-生产环境-Production"><a href="#🚀-生产环境-Production" class="headerlink" title="🚀 生产环境 (Production)"></a>🚀 生产环境 (Production)</h4><ul>
+<h4 id="生产环境-production">🚀 生产环境 (Production)</h4>
+<ul>
 <li><strong>工具：</strong> Nginx (反向代理)</li>
-<li><strong>原理：</strong> 浏览器所有请求（页面 + 接口）统一发给 Nginx（比如 80 端口）。<ul>
+<li><strong>原理：</strong> 浏览器所有请求（页面 + 接口）统一发给
+Nginx（比如 80 端口）。
+<ul>
 <li><code>/</code> -&gt; Nginx 返回静态 HTML/JS 文件。</li>
 <li><code>/api</code> -&gt; Nginx 转发给后端服务（8000 端口）。</li>
+</ul></li>
+<li><strong>效果：</strong>
+在浏览器看来，它始终只访问了一个域名（同源），因此<strong>不需要 CORS
+配置，也没有预检请求，性能最高</strong>。</li>
 </ul>
-</li>
-<li><strong>效果：</strong> 在浏览器看来，它始终只访问了一个域名（同源），因此<strong>不需要 CORS 配置，也没有预检请求，性能最高</strong>。</li>
-</ul>
-<h2 id="Authorization-头是什么"><a href="#Authorization-头是什么" class="headerlink" title="Authorization 头是什么"></a>Authorization 头是什么</h2><p><code>Authorization</code> 头（Header）是 HTTP 协议中用来<strong>验证用户身份</strong>的一个标准字段。</p>
-<h3 id="1-标准格式"><a href="#1-标准格式" class="headerlink" title="1. 标准格式"></a>1. 标准格式</h3><p><code>Authorization</code> 头的值并不是随便填写的，它遵循一个严格的语法结构：</p>
+<h2 id="authorization-头是什么">Authorization 头是什么</h2>
+<p><code>Authorization</code> 头（Header）是 HTTP
+协议中用来<strong>验证用户身份</strong>的一个标准字段。</p>
+<h3 id="标准格式">1. 标准格式</h3>
+<p><code>Authorization</code>
+头的值并不是随便填写的，它遵循一个严格的语法结构：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Authorization: &lt;认证类型&gt; &lt;凭证数据&gt;</span><br></pre></td></tr></table></figure>
 <ul>
-<li><strong>认证类型 (Schema)：</strong> 说明后面跟的是哪种类型的凭证（比如是“密码”还是“令牌”）。常见的有 <code>Bearer</code> 和 <code>Basic</code>。</li>
+<li><strong>认证类型 (Schema)：</strong>
+说明后面跟的是哪种类型的凭证（比如是“密码”还是“令牌”）。常见的有
+<code>Bearer</code> 和 <code>Basic</code>。</li>
 <li><strong>空格：</strong> 中间必须有一个空格分隔。</li>
-<li><strong>凭证数据 (Credentials)：</strong> 具体的加密字符串或 Token。</li>
+<li><strong>凭证数据 (Credentials)：</strong> 具体的加密字符串或
+Token。</li>
 </ul>
 <hr>
-<h3 id="2-最常用的两种类型"><a href="#2-最常用的两种类型" class="headerlink" title="2. 最常用的两种类型"></a>2. 最常用的两种类型</h3><h4 id="A-Bearer-最常见，用于-JWT"><a href="#A-Bearer-最常见，用于-JWT" class="headerlink" title="A. Bearer (最常见，用于 JWT)"></a>A. Bearer (最常见，用于 JWT)</h4><p>这是目前现代 Web 应用和 API 最主流的方式，通常配合 <strong>JWT (JSON Web Token)</strong> 使用。</p>
+<h3 id="最常用的两种类型">2. 最常用的两种类型</h3>
+<h4 id="a.-bearer-最常见用于-jwt">A. Bearer (最常见，用于 JWT)</h4>
+<p>这是目前现代 Web 应用和 API 最主流的方式，通常配合 <strong>JWT (JSON
+Web Token)</strong> 使用。</p>
 <ul>
-<li><p><strong>含义：</strong> “Bearer” 的意思是“持有者”。意思是：“谁持有这个令牌，谁就有权限。”</p>
-</li>
-<li><p><strong>场景：</strong> 用户登录后，服务器发给用户一个 JWT。用户下次请求时，把这个 JWT 放在这里。</p>
-</li>
+<li><p><strong>含义：</strong> “Bearer”
+的意思是“持有者”。意思是：“谁持有这个令牌，谁就有权限。”</p></li>
+<li><p><strong>场景：</strong> 用户登录后，服务器发给用户一个
+JWT。用户下次请求时，把这个 JWT 放在这里。</p></li>
 <li><p><strong>HTTP 请求示例：</strong></p>
 <p>HTTP</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GET /api/user/profile HTTP/1.1</span><br><span class="line">Host: example.com</span><br><span class="line">Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p><strong>注意：</strong> 这里的乱码字符串 <code>eyJ...</code> 就是上一条回答中提到的 JWT。</p>
-</blockquote>
-</li>
+<p><strong>注意：</strong> 这里的乱码字符串 <code>eyJ...</code>
+就是上一条回答中提到的 JWT。</p>
+</blockquote></li>
 </ul>
-<h4 id="B-Basic-最基础，用于用户名密码"><a href="#B-Basic-最基础，用于用户名密码" class="headerlink" title="B. Basic (最基础，用于用户名密码)"></a>B. Basic (最基础，用于用户名密码)</h4><p>这是 HTTP 协议内置的最古老的认证方式。</p>
+<h4 id="b.-basic-最基础用于用户名密码">B. Basic
+(最基础，用于用户名密码)</h4>
+<p>这是 HTTP 协议内置的最古老的认证方式。</p>
 <ul>
-<li><p><strong>含义：</strong> 直接把“用户名:密码”拼接，然后进行 Base64 编码传给服务器。</p>
-</li>
-<li><p><strong>场景：</strong> 内部系统、简单的测试环境、或者某些传统的网关认证。</p>
-</li>
+<li><p><strong>含义：</strong> 直接把“用户名:密码”拼接，然后进行 Base64
+编码传给服务器。</p></li>
+<li><p><strong>场景：</strong>
+内部系统、简单的测试环境、或者某些传统的网关认证。</p></li>
 <li><p><strong>原理：</strong></p>
-<ol>
+<ol type="1">
 <li>用户名 <code>admin</code>，密码 <code>123456</code>。</li>
 <li>拼接：<code>admin:123456</code>。</li>
 <li>Base64 编码：<code>YWRtaW46MTIzNDU2</code>。</li>
-</ol>
-</li>
+</ol></li>
 <li><p><strong>HTTP 请求示例：</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">POST /api/login HTTP/1.1</span><br><span class="line">Authorization: Basic YWRtaW46MTIzNDU2</span><br></pre></td></tr></table></figure>
-</li>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">POST /api/login HTTP/1.1</span><br><span class="line">Authorization: Basic YWRtaW46MTIzNDU2</span><br></pre></td></tr></table></figure></li>
 </ul>
 
     </div>

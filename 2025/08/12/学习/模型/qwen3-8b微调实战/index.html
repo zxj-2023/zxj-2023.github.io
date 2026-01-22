@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="前言在完成微调前备知识的学习后，正式开始使用unsloth对Qwen3-8B-unsloth-bnb-4bit模型的lora微调实战 模型加载12345678910111213from unsloth import FastLanguageModelimport torchmax_seq_length &#x3D; 8192dtype &#x3D; Noneload_in_4bit &#x3D; Truemodel, toke">
+    <meta name="description" content="前言 在完成微调前备知识的学习后，正式开始使用unsloth对Qwen3-8B-unsloth-bnb-4bit模型的lora微调实战 模型加载 12345678910111213from unsloth import FastLanguageModelimport torchmax_seq_length &#x3D; 8192dtype &#x3D; Noneload_in_4bit &#x3D; Truemodel,">
 <meta property="og:type" content="article">
 <meta property="og:title" content="qwen3-8b微调实战">
 <meta property="og:url" content="http://example.com/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/qwen3-8b%E5%BE%AE%E8%B0%83%E5%AE%9E%E6%88%98/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="前言在完成微调前备知识的学习后，正式开始使用unsloth对Qwen3-8B-unsloth-bnb-4bit模型的lora微调实战 模型加载12345678910111213from unsloth import FastLanguageModelimport torchmax_seq_length &#x3D; 8192dtype &#x3D; Noneload_in_4bit &#x3D; Truemodel, toke">
+<meta property="og:description" content="前言 在完成微调前备知识的学习后，正式开始使用unsloth对Qwen3-8B-unsloth-bnb-4bit模型的lora微调实战 模型加载 12345678910111213from unsloth import FastLanguageModelimport torchmax_seq_length &#x3D; 8192dtype &#x3D; Noneload_in_4bit &#x3D; Truemodel,">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/qwen3-8b%E5%BE%AE%E8%B0%83%E5%AE%9E%E6%88%98/image-20250812153659843.png">
 <meta property="og:image" content="http://example.com/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/qwen3-8b%E5%BE%AE%E8%B0%83%E5%AE%9E%E6%88%98/image-20250813111238359.png">
@@ -147,7 +147,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E5%8A%A0%E8%BD%BD"><span class="nav-number">2.</span> <span class="nav-text">模型加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%A8%A1%E5%9E%8B%E4%B8%8E%E5%88%86%E8%AF%8D%E5%99%A8%E4%BF%A1%E6%81%AF"><span class="nav-number">3.</span> <span class="nav-text">查看模型与分词器信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E4%BF%A1%E6%81%AF"><span class="nav-number">3.1.</span> <span class="nav-text">模型信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E8%AF%8D%E5%99%A8%E4%BF%A1%E6%81%AF"><span class="nav-number">3.2.</span> <span class="nav-text">分词器信息</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E4%B8%80%E6%AC%A1%E6%A8%A1%E5%9E%8B%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">模拟一次模型处理流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">5.</span> <span class="nav-text">准备数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">5.1.</span> <span class="nav-text">下载数据集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">5.2.</span> <span class="nav-text">查看数据集</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E6%B8%85%E6%B4%97"><span class="nav-number">6.</span> <span class="nav-text">数据集清洗</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E8%AF%9D%E6%95%B0%E6%8D%AE%E9%9B%86%E7%9A%84%E6%B8%85%E6%B4%97"><span class="nav-number">6.1.</span> <span class="nav-text">对话数据集的清洗</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A8%E7%90%86%E6%95%B0%E6%8D%AE%E9%9B%86%E7%9A%84%E6%8E%A8%E7%90%86"><span class="nav-number">6.2.</span> <span class="nav-text">推理数据集的推理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E9%87%87%E6%A0%B7"><span class="nav-number">6.3.</span> <span class="nav-text">数据集采样</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E9%9B%86-1"><span class="nav-number">6.4.</span> <span class="nav-text">查看数据集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E4%BF%9D%E5%AD%98"><span class="nav-number">6.5.</span> <span class="nav-text">数据集保存</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Qwen3%E6%8E%A8%E7%90%86%E8%83%BD%E5%8A%9B%E9%AB%98%E6%95%88%E5%BE%AE%E8%B0%83%E6%B5%81%E7%A8%8B"><span class="nav-number">7.</span> <span class="nav-text">Qwen3推理能力高效微调流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9B%E8%A1%8CLoRA%E5%8F%82%E6%95%B0%E6%B3%A8%E5%85%A5"><span class="nav-number">7.1.</span> <span class="nav-text">进行LoRA参数注入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E5%BE%AE%E8%B0%83%E5%8F%82%E6%95%B0"><span class="nav-number">7.2.</span> <span class="nav-text">设置微调参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E8%AE%AD%E7%BB%83%E5%8F%AF%E8%A7%86%E5%8C%96swanlab"><span class="nav-number">7.3.</span> <span class="nav-text">设置训练可视化swanlab</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="nav-number">7.4.</span> <span class="nav-text">微调执行流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%9D%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="nav-number">7.5.</span> <span class="nav-text">保存模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83%E7%BB%93%E6%9E%9C"><span class="nav-number">8.</span> <span class="nav-text">微调结果</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E7%BB%93%E6%9E%9C"><span class="nav-number">8.1.</span> <span class="nav-text">可视化结果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E8%AF%9D%E6%B5%8B%E8%AF%95"><span class="nav-number">8.2.</span> <span class="nav-text">对话测试</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E5%8A%A0%E8%BD%BD"><span class="nav-number">2.</span> <span class="nav-text">模型加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%A8%A1%E5%9E%8B%E4%B8%8E%E5%88%86%E8%AF%8D%E5%99%A8%E4%BF%A1%E6%81%AF"><span class="nav-number">3.</span> <span class="nav-text">查看模型与分词器信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E4%BF%A1%E6%81%AF"><span class="nav-number">3.1.</span> <span class="nav-text">模型信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E8%AF%8D%E5%99%A8%E4%BF%A1%E6%81%AF"><span class="nav-number">3.2.</span> <span class="nav-text">分词器信息</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E4%B8%80%E6%AC%A1%E6%A8%A1%E5%9E%8B%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">模拟一次模型处理流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">5.</span> <span class="nav-text">准备数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">5.1.</span> <span class="nav-text">下载数据集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">5.2.</span> <span class="nav-text">查看数据集</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E6%B8%85%E6%B4%97"><span class="nav-number">6.</span> <span class="nav-text">数据集清洗</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E8%AF%9D%E6%95%B0%E6%8D%AE%E9%9B%86%E7%9A%84%E6%B8%85%E6%B4%97"><span class="nav-number">6.1.</span> <span class="nav-text">对话数据集的清洗</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A8%E7%90%86%E6%95%B0%E6%8D%AE%E9%9B%86%E7%9A%84%E6%8E%A8%E7%90%86"><span class="nav-number">6.2.</span> <span class="nav-text">推理数据集的推理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E9%87%87%E6%A0%B7"><span class="nav-number">6.3.</span> <span class="nav-text">数据集采样</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E9%9B%86-1"><span class="nav-number">6.4.</span> <span class="nav-text">查看数据集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E4%BF%9D%E5%AD%98"><span class="nav-number">6.5.</span> <span class="nav-text">数据集保存</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#qwen3%E6%8E%A8%E7%90%86%E8%83%BD%E5%8A%9B%E9%AB%98%E6%95%88%E5%BE%AE%E8%B0%83%E6%B5%81%E7%A8%8B"><span class="nav-number">7.</span> <span class="nav-text">Qwen3推理能力高效微调流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9B%E8%A1%8Clora%E5%8F%82%E6%95%B0%E6%B3%A8%E5%85%A5"><span class="nav-number">7.1.</span> <span class="nav-text">进行LoRA参数注入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E5%BE%AE%E8%B0%83%E5%8F%82%E6%95%B0"><span class="nav-number">7.2.</span> <span class="nav-text">设置微调参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E8%AE%AD%E7%BB%83%E5%8F%AF%E8%A7%86%E5%8C%96swanlab"><span class="nav-number">7.3.</span> <span class="nav-text">设置训练可视化swanlab</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="nav-number">7.4.</span> <span class="nav-text">微调执行流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%9D%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="nav-number">7.5.</span> <span class="nav-text">保存模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83%E7%BB%93%E6%9E%9C"><span class="nav-number">8.</span> <span class="nav-text">微调结果</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E7%BB%93%E6%9E%9C"><span class="nav-number">8.1.</span> <span class="nav-text">可视化结果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E8%AF%9D%E6%B5%8B%E8%AF%95"><span class="nav-number">8.2.</span> <span class="nav-text">对话测试</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -162,7 +162,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">178</span>
+          <span class="site-state-item-count">176</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -291,52 +291,92 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>在完成微调前备知识的学习后，正式开始使用unsloth对Qwen3-8B-unsloth-bnb-4bit模型的lora微调实战</p>
-<h3 id="模型加载"><a href="#模型加载" class="headerlink" title="模型加载"></a>模型加载</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">from unsloth import FastLanguageModel</span><br><span class="line">import torch</span><br><span class="line"></span><br><span class="line">max_seq_length = 8192</span><br><span class="line">dtype = None</span><br><span class="line">load_in_4bit = True</span><br><span class="line"></span><br><span class="line">model, tokenizer = FastLanguageModel.from_pretrained(</span><br><span class="line">    model_name = &quot;/workspace/qwen3-8b&quot;,</span><br><span class="line">    max_seq_length = max_seq_length,</span><br><span class="line">    dtype = dtype,</span><br><span class="line">    load_in_4bit = load_in_4bit,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+    <div class="post-body" itemprop="articleBody"><h3 id="前言">前言</h3>
+<p>在完成微调前备知识的学习后，正式开始使用unsloth对Qwen3-8B-unsloth-bnb-4bit模型的lora微调实战</p>
+<h3 id="模型加载">模型加载</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">from unsloth import FastLanguageModel</span><br><span class="line">import torch</span><br><span class="line"></span><br><span class="line">max_seq_length = 8192</span><br><span class="line">dtype = None</span><br><span class="line">load_in_4bit = True</span><br><span class="line"></span><br><span class="line">model, tokenizer = FastLanguageModel.from_pretrained(</span><br><span class="line">    model_name = &quot;/workspace/qwen3-8b&quot;,</span><br><span class="line">    max_seq_length = max_seq_length,</span><br><span class="line">    dtype = dtype,</span><br><span class="line">    load_in_4bit = load_in_4bit,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p><code>FastLanguageModel</code> 是 <strong>Unsloth 框架的核心入口类</strong>，即<strong>“把 Hugging Face 的 transformers 模型‘加速’成支持 QLoRA 微调、显存占用减半、速度提升 2-5 倍的封装器。”</strong></p>
-<p><code>max_seq_length = 8192</code><strong>作用</strong>：告诉框架 <strong>“后续所有输入序列的最大长度”</strong>。<strong>内部一次性为位置编码、注意力掩码、KV-Cache 等开辟的张量尺寸</strong>，因此显存随它 <strong>平方级增长</strong>。</p>
-<p><code>dtype = None</code><strong>作用</strong>：让 Unsloth <strong>自动选择最合适的浮点精度</strong>。</p>
-<p><code>load_in_4bit = True</code><strong>作用</strong>：把模型<strong>权重量化成 4-bit</strong>，显存降到 1/4，QLoRA 微调必备。</p>
+<p><code>FastLanguageModel</code> 是 <strong>Unsloth
+框架的核心入口类</strong>，即<strong>“把 Hugging Face 的 transformers
+模型‘加速’成支持 QLoRA 微调、显存占用减半、速度提升 2-5
+倍的封装器。”</strong></p>
+<p><code>max_seq_length = 8192</code><strong>作用</strong>：告诉框架
+<strong>“后续所有输入序列的最大长度”</strong>。<strong>内部一次性为位置编码、注意力掩码、KV-Cache
+等开辟的张量尺寸</strong>，因此显存随它
+<strong>平方级增长</strong>。</p>
+<p><code>dtype = None</code><strong>作用</strong>：让 Unsloth
+<strong>自动选择最合适的浮点精度</strong>。</p>
+<p><code>load_in_4bit = True</code><strong>作用</strong>：把模型<strong>权重量化成
+4-bit</strong>，显存降到 1/4，QLoRA 微调必备。</p>
 </blockquote>
-<h3 id="查看模型与分词器信息"><a href="#查看模型与分词器信息" class="headerlink" title="查看模型与分词器信息"></a>查看模型与分词器信息</h3><h4 id="模型信息"><a href="#模型信息" class="headerlink" title="模型信息"></a>模型信息</h4><p>运行</p>
+<h3 id="查看模型与分词器信息">查看模型与分词器信息</h3>
+<h4 id="模型信息">模型信息</h4>
+<p>运行</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model</span><br></pre></td></tr></table></figure>
 <p>通过阅读模型信息我们可以了解到：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(embed_tokens): Embedding(151936, 4096, padding_idx=151654)</span><br></pre></td></tr></table></figure>
-<p><strong>模型有 15 万个 token 的字典，每个字/词被翻译成 4096 维向量，第 151 654 号 token 被官方指定为填充符。</strong></p>
+<p><strong>模型有 15 万个 token 的字典，每个字/词被翻译成 4096
+维向量，第 151 654 号 token 被官方指定为填充符。</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">(layers): ModuleList(</span><br><span class="line">      (0-2): 3 x Qwen3DecoderLayer(</span><br><span class="line">        (self_attn): Qwen3Attention(</span><br><span class="line">          (q_proj): Linear4bit(in_features=4096, out_features=4096, bias=False)</span><br><span class="line">          (k_proj): Linear4bit(in_features=4096, out_features=1024, bias=False)</span><br><span class="line">          (v_proj): Linear4bit(in_features=4096, out_features=1024, bias=False)</span><br><span class="line">          (o_proj): Linear4bit(in_features=4096, out_features=4096, bias=False)</span><br><span class="line">          (q_norm): Qwen3RMSNorm((128,), eps=1e-06)</span><br><span class="line">          (k_norm): Qwen3RMSNorm((128,), eps=1e-06)</span><br><span class="line">          (rotary_emb): LlamaRotaryEmbedding()</span><br><span class="line">        )</span><br><span class="line">        (mlp): Qwen3MLP(</span><br><span class="line">          (gate_proj): Linear(in_features=4096, out_features=12288, bias=False)</span><br><span class="line">          (up_proj): Linear(in_features=4096, out_features=12288, bias=False)</span><br><span class="line">          (down_proj): Linear(in_features=12288, out_features=4096, bias=False)</span><br><span class="line">          (act_fn): SiLU()</span><br><span class="line">        )</span><br><span class="line">        (input_layernorm): Qwen3RMSNorm((4096,), eps=1e-06)</span><br><span class="line">        (post_attention_layernorm): Qwen3RMSNorm((4096,), eps=1e-06)</span><br><span class="line">      )</span><br></pre></td></tr></table></figure>
-<p>共有36层<strong>Qwen3DecoderLayer</strong>，每层包含<strong>Qwen3Attention</strong>，<strong>Qwen3MLP</strong>（<strong>一个 SwiGLU 前馈网络</strong>），<strong>Qwen3RMSNorm</strong>（两个<strong>归一化层</strong>，对 4096 维的隐藏向量做“均方根归一化”，防止梯度爆炸、稳定训练。）</p>
-<p><img src="/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/qwen3-8b%E5%BE%AE%E8%B0%83%E5%AE%9E%E6%88%98/image-20250812153659843.png" alt="image-20250812153659843"></p>
-<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/cavalier-chen/p/18937098">大模型-qwen3 模型结构解读-66 - jack-chen666 - 博客园</a></p>
+<p>共有36层<strong>Qwen3DecoderLayer</strong>，每层包含<strong>Qwen3Attention</strong>，<strong>Qwen3MLP</strong>（<strong>一个
+SwiGLU
+前馈网络</strong>），<strong>Qwen3RMSNorm</strong>（两个<strong>归一化层</strong>，对
+4096 维的隐藏向量做“均方根归一化”，防止梯度爆炸、稳定训练。）</p>
+<figure>
+<img src="/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/qwen3-8b%E5%BE%AE%E8%B0%83%E5%AE%9E%E6%88%98/image-20250812153659843.png" alt="image-20250812153659843">
+<figcaption aria-hidden="true">image-20250812153659843</figcaption>
+</figure>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/cavalier-chen/p/18937098">大模型-qwen3
+模型结构解读-66 - jack-chen666 - 博客园</a></p>
 <blockquote>
 <p><strong>LoRA可以插到哪里呢？</strong></p>
-<p><strong>凡是打印里每层 Decoder 中出现的 <code>Linear4bit</code>（q/k/v/o + gate/up/down）就是 LoRA 可插、且默认会被插入的位置。</strong></p>
+<p><strong>凡是打印里每层 Decoder 中出现的
+<code>Linear4bit</code>（q/k/v/o + gate/up/down）就是 LoRA
+可插、且默认会被插入的位置。</strong></p>
 </blockquote>
-<h4 id="分词器信息"><a href="#分词器信息" class="headerlink" title="分词器信息"></a>分词器信息</h4><p>运行</p>
+<h4 id="分词器信息">分词器信息</h4>
+<p>运行</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tokenizer</span><br></pre></td></tr></table></figure>
 <p>查看tokenizer信息</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Qwen2TokenizerFast(name_or_path=&#x27;/workspace/qwen3-8b&#x27;, vocab_size=151643, model_max_length=40960, is_fast=True, padding_side=&#x27;left&#x27;, truncation_side=&#x27;right&#x27;, special_tokens=&#123;&#x27;eos_token&#x27;: &#x27;&lt;|im_end|&gt;&#x27;, &#x27;pad_token&#x27;: &#x27;&lt;|vision_pad|&gt;&#x27;, &#x27;additional_special_tokens&#x27;: [&#x27;&lt;|im_start|&gt;&#x27;, &#x27;&lt;|im_end|&gt;&#x27;, &#x27;&lt;|object_ref_start|&gt;&#x27;, &#x27;&lt;|object_ref_end|&gt;&#x27;, &#x27;&lt;|box_start|&gt;&#x27;, &#x27;&lt;|box_end|&gt;&#x27;, &#x27;&lt;|quad_start|&gt;&#x27;, &#x27;&lt;|quad_end|&gt;&#x27;, &#x27;&lt;|vision_start|&gt;&#x27;, &#x27;&lt;|vision_end|&gt;&#x27;, &#x27;&lt;|vision_pad|&gt;&#x27;, &#x27;&lt;|image_pad|&gt;&#x27;, &#x27;&lt;|video_pad|&gt;&#x27;]&#125;, clean_up_tokenization_spaces=False, added_tokens_decoder=&#123;</span><br><span class="line">	151643: AddedToken(&quot;&lt;|endoftext|&gt;&quot;, rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),</span><br><span class="line">	151644: AddedToken(&quot;&lt;|im_start|&gt;&quot;, rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),</span><br><span class="line">	151645: AddedToken(&quot;&lt;|im_end|&gt;&quot;, rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),</span><br><span class="line">	151646: AddedToken(&quot;&lt;|object_ref_start|&gt;&quot;, rstrip=False, lstrip=False, single_word=False, normalized=False, special=True),</span><br><span class="line">	截取部分</span><br><span class="line">&#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<p>vocab_size=151643：<strong>模型真正能理解和生成的子词/符号有这 151643 种，其余位置是预留空白。</strong></p>
-<p>model_max_length=40960：<strong>理论最大输入长度 40k token</strong>（实际受显存限制）</p>
-<p>is_fast=True：表示 <strong>tokenizer 使用的是 Hugging Face 的「Rust 高速实现」</strong>（即 <em>tokenizers</em> 库）</p>
-<p>special_tokens：打印的 <code>special_tokens</code> 字典 &amp; <code>added_tokens_decoder</code> 已经把 <strong>151643-151668</strong> 全部列出，共 <strong>26 个</strong>。</p>
-<h3 id="模拟一次模型处理流程"><a href="#模拟一次模型处理流程" class="headerlink" title="模拟一次模型处理流程"></a>模拟一次模型处理流程</h3><p>将对话内容通过tokenizer进行处理</p>
+<p>vocab_size=151643：<strong>模型真正能理解和生成的子词/符号有这 151643
+种，其余位置是预留空白。</strong></p>
+<p>model_max_length=40960：<strong>理论最大输入长度 40k
+token</strong>（实际受显存限制）</p>
+<p>is_fast=True：表示 <strong>tokenizer 使用的是 Hugging Face 的「Rust
+高速实现」</strong>（即 <em>tokenizers</em> 库）</p>
+<p>special_tokens：打印的 <code>special_tokens</code> 字典 &amp;
+<code>added_tokens_decoder</code> 已经把 <strong>151643-151668</strong>
+全部列出，共 <strong>26 个</strong>。</p>
+<h3 id="模拟一次模型处理流程">模拟一次模型处理流程</h3>
+<p>将对话内容通过tokenizer进行处理</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">messages = [</span><br><span class="line">    &#123;&quot;role&quot; : &quot;user&quot;, &quot;content&quot; : &quot;你好，好久不见！&quot;&#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">text = tokenizer.apply_chat_template(</span><br><span class="line">    messages,</span><br><span class="line">    tokenize = False,</span><br><span class="line">    add_generation_prompt = True, </span><br><span class="line">    enable_thinking = False, # 设置不思考</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<p><code>apply_chat_template</code> 是把「人类对话格式的 Python 列表」一键翻译成 <strong>模型能直接理解的带特殊标记的文本字符串（或 token id 序列）</strong> 的“官方模板引擎”。</p>
+<p><code>apply_chat_template</code> 是把「人类对话格式的 Python
+列表」一键翻译成 <strong>模型能直接理解的带特殊标记的文本字符串（或
+token id 序列）</strong> 的“官方模板引擎”。</p>
 <p>转化后的格式为：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27;&lt;|im_start|&gt;user\n你好，好久不见！&lt;|im_end|&gt;\n&lt;|im_start|&gt;assistant\n&lt;think&gt;\n\n&lt;/think&gt;\n\n&#x27;</span><br></pre></td></tr></table></figure>
-<p>然后将转化后的字符串<strong>转成 GPU 上的 PyTorch token 张量，准备直接送进模型推理或训练。</strong></p>
+<p>然后将转化后的字符串<strong>转成 GPU 上的 PyTorch token
+张量，准备直接送进模型推理或训练。</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">inputs = tokenizer(text, return_tensors=&quot;pt&quot;).to(&quot;cuda&quot;)</span><br></pre></td></tr></table></figure>
 <p>以上代码共做了三步：</p>
-<ol>
-<li><strong>tokenizer(text)</strong><br>把前面 <code>apply_chat_template</code> 得到的字符串按词表切成 <strong>token id 列表</strong>。</li>
-<li><strong>return_tensors=”pt”</strong><br>把列表包成 <strong>PyTorch 张量</strong>（shape = [1, seq_len]）。</li>
-<li><strong>.to(“cuda”)</strong><br>把张量搬到 <strong>GPU 显存</strong>。</li>
+<ol type="1">
+<li><strong>tokenizer(text)</strong> 把前面
+<code>apply_chat_template</code> 得到的字符串按词表切成 <strong>token id
+列表</strong>。</li>
+<li><strong>return_tensors=“pt”</strong> 把列表包成 <strong>PyTorch
+张量</strong>（shape = [1, seq_len]）。</li>
+<li><strong>.to(“cuda”)</strong> 把张量搬到 <strong>GPU
+显存</strong>。</li>
 </ol>
 <p>输出如下</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#x27;input_ids&#x27;: tensor([[151644,    872,    198, 108386,   3837, 111920, 101571,   6313, 151645,</span><br><span class="line">            198, 151644,  77091,    198, 151667,    271, 151668,    271]],</span><br><span class="line">       device=&#x27;cuda:0&#x27;), &#x27;attention_mask&#x27;: tensor([[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]], device=&#x27;cuda:0&#x27;)&#125;</span><br></pre></td></tr></table></figure>
-<div class="table-container">
 <table>
+<colgroup>
+<col style="width: 24%">
+<col style="width: 11%">
+<col style="width: 63%">
+</colgroup>
 <thead>
 <tr>
 <th>键</th>
@@ -357,44 +397,66 @@
 </tr>
 </tbody>
 </table>
-</div>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">outputs = model.generate(</span><br><span class="line">    input_ids=inputs.input_ids,</span><br><span class="line">    attention_mask=inputs.attention_mask,</span><br><span class="line">    max_new_tokens=max_seq_length,</span><br><span class="line">    use_cache=True,#启用 KV-Cache，避免重复计算，显存换时间</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<p>让模型在 GPU 上 <strong>根据已有 token 继续生成文本</strong>，直到达到 <code>max_new_tokens</code> 或遇到终止符。</p>
+<p>让模型在 GPU 上 <strong>根据已有 token
+继续生成文本</strong>，直到达到 <code>max_new_tokens</code>
+或遇到终止符。</p>
 <p>outputs格式和inputs类似，使用nput_ids表示后续字符</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">response = tokenizer.batch_decode(outputs)</span><br></pre></td></tr></table></figure>
-<p>把模型输出的 <strong>token id 序列</strong>（<code>outputs</code>）一次性还原成 <strong>人类可读的字符串</strong>。</p>
+<p>把模型输出的 <strong>token id
+序列</strong>（<code>outputs</code>）一次性还原成
+<strong>人类可读的字符串</strong>。</p>
 <p>输出如下</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27;&lt;|im_start|&gt;user\n你好，好久不见！&lt;|im_end|&gt;\n&lt;|im_start|&gt;assistant\n&lt;think&gt;\n\n&lt;/think&gt;\n\n你好！好久不见！最近过得怎么样？有什么新鲜事想和我分享吗？😊&lt;|im_end|&gt;&#x27;</span><br></pre></td></tr></table></figure>
 <p>这里展示的是没有思考过程的，最简单对话流程，若设置思考模式，完整代码如下</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">text = tokenizer.apply_chat_template(</span><br><span class="line">    messages,</span><br><span class="line">    tools = tools,#同样，可以设置function calling</span><br><span class="line">    tokenize = False,</span><br><span class="line">    add_generation_prompt = True, </span><br><span class="line">    enable_thinking = True, # 设置思考</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">inputs = tokenizer(text, return_tensors=&quot;pt&quot;).to(&quot;cuda&quot;)</span><br><span class="line"></span><br><span class="line">outputs = model.generate(</span><br><span class="line">    input_ids=inputs.input_ids,</span><br><span class="line">    attention_mask=inputs.attention_mask,</span><br><span class="line">    max_new_tokens=max_seq_length,</span><br><span class="line">    use_cache=True,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">response = tokenizer.batch_decode(outputs)</span><br></pre></td></tr></table></figure>
 <p>当然，除了使用上述底层API进行对话外，Unsloth还提供了更加便捷的流式输出模型对话信息的函数，基本对话效果如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">messages = [</span><br><span class="line">    &#123;&quot;role&quot; : &quot;user&quot;, &quot;content&quot; : &quot;你好，好久不见！&quot;&#125;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">text = tokenizer.apply_chat_template(</span><br><span class="line">    messages,</span><br><span class="line">    tokenize = False,</span><br><span class="line">    add_generation_prompt = True, </span><br><span class="line">    enable_thinking = False, </span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">_ = model.generate(</span><br><span class="line">    **tokenizer(text, return_tensors = &quot;pt&quot;).to(&quot;cuda&quot;),</span><br><span class="line">    max_new_tokens = 256, # Increase for longer outputs!</span><br><span class="line">    temperature = 0.7, top_p = 0.8, top_k = 20, # For non thinking</span><br><span class="line">    streamer = TextStreamer(tokenizer, skip_prompt = True),#实时流式输出：每解码一个 token 就立刻打印到终端</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<h3 id="准备数据集"><a href="#准备数据集" class="headerlink" title="准备数据集"></a>准备数据集</h3><h4 id="下载数据集"><a href="#下载数据集" class="headerlink" title="下载数据集"></a>下载数据集</h4><p>选取的两个数据集</p>
-<ol>
-<li>我们使用 Open Math Reasoning 数据集，该数据集曾被用于赢得 AIMO（AI 数学奥林匹克 - 第二届进步奖）挑战！我们从中抽取了 10% 可验证的推理轨迹，这些轨迹是基于 DeepSeek R1 模型生成的，并且准确率超过 95%。数据集地址：<a target="_blank" rel="noopener" href="https://huggingface.co/datasets/unsloth/OpenMathReasoning-mini">https://huggingface.co/datasets/unsloth/OpenMathReasoning-mini</a></li>
-<li>我们还利用了 Maxime Labonne 的 FineTome-100k 数据集，该数据集风格类似 ShareGPT。但我们需要将其转换为 HuggingFace 通用的多轮对话格式。数据集地址：<a target="_blank" rel="noopener" href="https://huggingface.co/datasets/mlabonne/FineTome-100k">https://huggingface.co/datasets/mlabonne/FineTome-100k</a></li>
+<h3 id="准备数据集">准备数据集</h3>
+<h4 id="下载数据集">下载数据集</h4>
+<p>选取的两个数据集</p>
+<ol type="1">
+<li>我们使用 Open Math Reasoning 数据集，该数据集曾被用于赢得 AIMO（AI
+数学奥林匹克 - 第二届进步奖）挑战！我们从中抽取了 10%
+可验证的推理轨迹，这些轨迹是基于 DeepSeek R1 模型生成的，并且准确率超过
+95%。数据集地址：https://huggingface.co/datasets/unsloth/OpenMathReasoning-mini</li>
+<li>我们还利用了 Maxime Labonne 的 FineTome-100k
+数据集，该数据集风格类似 ShareGPT。但我们需要将其转换为 HuggingFace
+通用的多轮对话格式。数据集地址：https://huggingface.co/datasets/mlabonne/FineTome-100k</li>
 </ol>
 <p>在实际微调过程中，大多都会使用huggingface的datasets库进行数据集下载和管理，实际下载流程如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!pip install --upgrade datasets huggingface_hub</span><br></pre></td></tr></table></figure>
-<p><code>datasets</code> 是 Hugging Face 提供的一个高效数据处理库，专为机器学习和大语言模型（LLM）训练而设计。它支持加载、处理、转换和保存各种格式的数据（如 JSON、CSV、Parquet 等），并能与 <code>transformers</code> 模型无缝集成。通过 <code>datasets</code>，开发者可以快速完成数据清洗、切分、tokenization 等常见任务，大大提升训练效率，特别适合用于指令微调、对话生成、Function Calling 等任务的数据预处理。</p>
+<p><code>datasets</code> 是 Hugging Face
+提供的一个高效数据处理库，专为机器学习和大语言模型（LLM）训练而设计。它支持加载、处理、转换和保存各种格式的数据（如
+JSON、CSV、Parquet 等），并能与 <code>transformers</code>
+模型无缝集成。通过
+<code>datasets</code>，开发者可以快速完成数据清洗、切分、tokenization
+等常见任务，大大提升训练效率，特别适合用于指令微调、对话生成、Function
+Calling 等任务的数据预处理。</p>
 <p>然后分别下载并导入这两个库：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reasoning_dataset = load_dataset(&quot;unsloth/OpenMathReasoning-mini&quot;, split = &quot;cot&quot;)</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>cot全称为<strong>Chain-of-Thought，思维链</strong>，是「<strong>一步一步把思考过程写出来</strong>」的解题方式，而不是直接给出最终答案。</p>
-<p><strong>只下 cot 是因为任务只需要“带推理过程”的那部分数据，其他子集对当前微调目标无用，避免冗余下载。</strong></p>
+<p><strong>只下 cot
+是因为任务只需要“带推理过程”的那部分数据，其他子集对当前微调目标无用，避免冗余下载。</strong></p>
 </blockquote>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">non_reasoning_dataset = load_dataset(&quot;mlabonne/FineTome-100k&quot;, split = &quot;train&quot;)</span><br></pre></td></tr></table></figure>
-<h4 id="查看数据集"><a href="#查看数据集" class="headerlink" title="查看数据集"></a>查看数据集</h4><p>然后输入数据集名称，即可查看数据集基本信息：</p>
+<h4 id="查看数据集">查看数据集</h4>
+<p>然后输入数据集名称，即可查看数据集基本信息：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reasoning_dataset</span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Dataset(&#123;</span><br><span class="line">    features: [&#x27;expected_answer&#x27;, &#x27;problem_type&#x27;, &#x27;problem_source&#x27;, &#x27;generation_model&#x27;, &#x27;pass_rate_72b_tir&#x27;, &#x27;problem&#x27;, &#x27;generated_solution&#x27;, &#x27;inference_mode&#x27;],</span><br><span class="line">    num_rows: 19252</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p><strong>一共 19 252 条</strong> <strong>CoT（思维链）数学题</strong>，每条包含 8 个字段，可直接用来训练/评估模型的逐步推理能力。</p>
-<p>generated_solution：模型自己写的 逐步推理 + 最终答案（就是你想要的 CoT）</p>
+<p><strong>一共 19 252 条</strong>
+<strong>CoT（思维链）数学题</strong>，每条包含 8
+个字段，可直接用来训练/评估模型的逐步推理能力。</p>
+<p>generated_solution：模型自己写的 逐步推理 + 最终答案（就是你想要的
+CoT）</p>
 <p>expected_answer：标准答案（通常是一个简洁数字或表达式）</p>
 <p>generation_model：生成这条 CoT 的“教师模型”名字，比如 qwen2-72b</p>
 <p>加上索引则可以直接查看对应数据集信息：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reasoning_dataset[0]</span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#x27;expected_answer&#x27;: &#x27;14&#x27;,</span><br><span class="line"> &#x27;problem_type&#x27;: &#x27;has_answer_extracted&#x27;,</span><br><span class="line"> &#x27;problem_source&#x27;: &#x27;aops_c4_high_school_math&#x27;,</span><br><span class="line"> &#x27;generation_model&#x27;: &#x27;DeepSeek-R1&#x27;,</span><br><span class="line"> &#x27;pass_rate_72b_tir&#x27;: &#x27;0.96875&#x27;,</span><br><span class="line"> &#x27;problem&#x27;: &#x27;Given $\\sqrt&#123;x^2+165&#125;-\\sqrt&#123;x^2-52&#125;=7$ and $x$ is positive, find all possible values of $x$.&#x27;,</span><br><span class="line"> &#x27;generated_solution&#x27;: &quot;&lt;think&gt;\nOkay, let&#x27;s see. I need to solve the equation √(x² + 165) - √(x² - 52) = 7, a截取部分&quot;,</span><br><span class="line"> &#x27;inference_mode&#x27;: &#x27;cot&#x27;&#125;</span><br></pre></td></tr></table></figure>
-<p>能够看出这是一个基于DeepSeek R1回答的数学数据集，其中<code>problem</code>是问题，<code>generated_solution</code>是数学推导过程（即思考过程），而<code>expected_answer</code>则是最终的答案。该数据集总共接近2万条数据</p>
+<p>能够看出这是一个基于DeepSeek
+R1回答的数学数据集，其中<code>problem</code>是问题，<code>generated_solution</code>是数学推导过程（即思考过程），而<code>expected_answer</code>则是最终的答案。该数据集总共接近2万条数据</p>
 <p>而对话数据集如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">non_reasoning_dataset</span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Dataset(&#123;</span><br><span class="line">    features: [&#x27;conversations&#x27;, &#x27;source&#x27;, &#x27;score&#x27;],</span><br><span class="line">    num_rows: 100000</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
@@ -402,22 +464,28 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#x27;conversations&#x27;: [&#123;&#x27;from&#x27;: &#x27;human&#x27;,</span><br><span class="line">   &#x27;value&#x27;: &#x27;Explain what boolean operators are, what they do, and provide examples of how they can be used in programming. Additionally, describe the concept of operator precedence and prov截取&#x27;&#125;,</span><br><span class="line">  &#123;&#x27;from&#x27;: &#x27;gpt&#x27;,</span><br><span class="line">   &#x27;value&#x27;: &#x27;Boolean operators are logical operators used in programming to manipulate boolean values. The截取&#x27;&#125;],</span><br><span class="line"> &#x27;source&#x27;: &#x27;infini-instruct-top-500k&#x27;,</span><br><span class="line"> &#x27;score&#x27;: 5.212620735168457&#125;</span><br></pre></td></tr></table></figure>
 <p>其中每一条数据都是一个对话，包含一组或者多组ChatGPT的聊天信息，其中<code>from</code>代表是用户消息还是大模型回复消息，而<code>value</code>则是对应的文本。该对话数据集总共包含10万条数据</p>
 <p>能够看出dataset是一种类似json的数据格式，每条数据都以字段格式进行存储，在实际微调过程中，我们需要先将数据集的目标字段进行提取和拼接，然后加载到Qwen3模型的提示词模板中，并最终带入Unsloth进行微调。</p>
-<h3 id="数据集清洗"><a href="#数据集清洗" class="headerlink" title="数据集清洗"></a>数据集清洗</h3><h4 id="对话数据集的清洗"><a href="#对话数据集的清洗" class="headerlink" title="对话数据集的清洗"></a>对话数据集的清洗</h4><p>接下来尝试对上述两个格式各异的数据集进行数据清洗，主要是围绕数据集进行<strong>数据格式</strong>的调整，便于后续<strong>带入Qwen3提示词模板</strong>。对于dataset格式的数据对象来说，可以先创建满足格式调整的函数，然后使用map方法对数据集格式进行调整。</p>
+<h3 id="数据集清洗">数据集清洗</h3>
+<h4 id="对话数据集的清洗">对话数据集的清洗</h4>
+<p>接下来尝试对上述两个格式各异的数据集进行数据清洗，主要是围绕数据集进行<strong>数据格式</strong>的调整，便于后续<strong>带入Qwen3提示词模板</strong>。对于dataset格式的数据对象来说，可以先创建满足格式调整的函数，然后使用map方法对数据集格式进行调整。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">def generate_conversation(examples):</span><br><span class="line">    problems  = examples[&quot;problem&quot;]</span><br><span class="line">    solutions = examples[&quot;generated_solution&quot;]</span><br><span class="line">    conversations = []</span><br><span class="line">    for problem, solution in zip(problems, solutions):</span><br><span class="line">        conversations.append([</span><br><span class="line">            &#123;&quot;role&quot; : &quot;user&quot;,      &quot;content&quot; : problem&#125;,</span><br><span class="line">            &#123;&quot;role&quot; : &quot;assistant&quot;, &quot;content&quot; : solution&#125;,</span><br><span class="line">        ])</span><br><span class="line">    return &#123; &quot;conversations&quot;: conversations, &#125;</span><br></pre></td></tr></table></figure>
 <p>这里先创建generate_conversation函数，用于对reasoning_dataset中的每一条数据进行格式调整，即通过新创建一个新的特征conversations，来以对话形式保存历史问答数据：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">reasoning_data = reasoning_dataset.map(</span><br><span class="line">    generate_conversation,  # 处理函数</span><br><span class="line">    batched=True            # 批量处理，加快速度</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>map：对数据集中的每一批样本调用 generate_conversation</p>
-<p>batched=True：一次传入一批（几百到几千条）样本，避免逐行慢速 Python 循环</p>
+<p>batched=True：一次传入一批（几百到几千条）样本，避免逐行慢速 Python
+循环</p>
 </blockquote>
 <p>接下来将其带入Qwen3的提示词模板中进行转化：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">reasoning_conversations = tokenizer.apply_chat_template(</span><br><span class="line">    reasoning_data[&quot;conversations&quot;],</span><br><span class="line">    tokenize = False,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 <p>之后即可带入这些数据进行微调。能看出每条数据的格式都和Unsloth底层对话API创建的数据格式类似，之后我们或许可以借助Unsloth底层对话API来创建微调数据集。</p>
-<h4 id="推理数据集的推理"><a href="#推理数据集的推理" class="headerlink" title="推理数据集的推理"></a>推理数据集的推理</h4><p>然后继续处理non_reasoning_conversations数据集，由于该数据集采用了sharegpt对话格式，因此可以直接借助Unsloth的standardize_sharegpt库进行数据集的格式转化，转化效果如下所示：</p>
+<h4 id="推理数据集的推理">推理数据集的推理</h4>
+<p>然后继续处理non_reasoning_conversations数据集，由于该数据集采用了sharegpt对话格式，因此可以直接借助Unsloth的standardize_sharegpt库进行数据集的格式转化，转化效果如下所示：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from unsloth.chat_templates import standardize_sharegpt</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>standardize_sharegpt的作用</p>
-<p><strong>把“ShareGPT 格式”的对话数据一键转成 Unsloth / Hugging Face 通用的 <code>role/content</code> 列表，后续就能直接用 <code>apply_chat_template</code> 生成训练文本。</strong></p>
+<p><strong>把“ShareGPT 格式”的对话数据一键转成 Unsloth / Hugging Face
+通用的 <code>role/content</code> 列表，后续就能直接用
+<code>apply_chat_template</code> 生成训练文本。</strong></p>
 <p>1️⃣ ShareGPT 原始长什么样？</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;from&quot;</span><span class="punctuation">:</span> <span class="string">&quot;human&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1+1=?&quot;</span><span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;from&quot;</span><span class="punctuation">:</span> <span class="string">&quot;gpt&quot;</span><span class="punctuation">,</span>  <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2&quot;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 <p>2️⃣ 转换后长什么样？</p>
@@ -426,38 +494,68 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dataset = standardize_sharegpt(non_reasoning_dataset)</span><br></pre></td></tr></table></figure>
 <p>接下来即可直接带入Qwen3对话模板中进行格式调整：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">non_reasoning_conversations = tokenizer.apply_chat_template(</span><br><span class="line">    dataset[&quot;conversations&quot;],</span><br><span class="line">    tokenize = False,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<h4 id="数据集采样"><a href="#数据集采样" class="headerlink" title="数据集采样"></a>数据集采样</h4><p>自此即完成了每个数据集的格式调整工作，不过这两个数据集并不均衡，能看得出非推理类数据集的长度更长。我们假设希望模型保留一定的推理能力，但又特别希望它作为一个聊天模型来使用。</p>
-<p>因此，我们需要定义一个 <strong>仅聊天数据的比例</strong>。<strong>目标是从两个数据集中构建一个混合训练集</strong>。这里我们可以设定一个 25% 推理数据、75% 聊天数据的比例：也就是说，从推理数据集中抽取 25%（或者说，抽取占比为 100% - 聊天数据占比 的部分），最后将这两个数据集合并起来即可。</p>
+<h4 id="数据集采样">数据集采样</h4>
+<p>自此即完成了每个数据集的格式调整工作，不过这两个数据集并不均衡，能看得出非推理类数据集的长度更长。我们假设希望模型保留一定的推理能力，但又特别希望它作为一个聊天模型来使用。</p>
+<p>因此，我们需要定义一个
+<strong>仅聊天数据的比例</strong>。<strong>目标是从两个数据集中构建一个混合训练集</strong>。这里我们可以设定一个
+25% 推理数据、75% 聊天数据的比例：也就是说，从推理数据集中抽取
+25%（或者说，抽取占比为 100% - 聊天数据占比
+的部分），最后将这两个数据集合并起来即可。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">chat_percentage = 0.75</span><br><span class="line"></span><br><span class="line">import pandas as pd</span><br><span class="line">#先把非推理对话列表转成 Pandas Series，方便后续抽样</span><br><span class="line">non_reasoning_subset = pd.Series(non_reasoning_conversations)</span><br><span class="line"></span><br><span class="line">non_reasoning_subset = non_reasoning_subset.sample(#sample(...)为无放回随机抽样</span><br><span class="line">    int(len(reasoning_conversations) * (1.0 - chat_percentage)),#计算 需要抽多少条非推理样本</span><br><span class="line">    random_state = 2407,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 <p>这里我们需要先将上述list格式的数据转化为pd.Series数据，然后进行采样，并最终将其转化为dataset类型对象。（此外也可以先转化为dataset对象类型，然后再进行采样）</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">data = pd.concat([</span><br><span class="line">    pd.Series(reasoning_conversations),</span><br><span class="line">    pd.Series(non_reasoning_subset)</span><br><span class="line">])</span><br><span class="line">data.name = &quot;text&quot;</span><br><span class="line"></span><br><span class="line">from datasets import Dataset</span><br><span class="line"></span><br><span class="line">combined_dataset = Dataset.from_pandas(pd.DataFrame(data))</span><br><span class="line">combined_dataset = combined_dataset.shuffle(seed = 3407)#用固定种子随机打乱顺序</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>pd.concat([…])：纵向拼接 → 一条长 Series，顺序：先推理，后非推理</p>
-<p>Dataset.from_pandas(…)：把 Pandas Series 转成 Hugging Face Dataset</p>
+<p>Dataset.from_pandas(…)：把 Pandas Series 转成 Hugging Face
+Dataset</p>
 </blockquote>
-<p><strong>把“推理对话”和“抽样后的非推理对话”合并成一个</strong> <strong>随机打乱</strong> <strong>的 <code>Dataset</code> 对象，后面可直接拿去训练。</strong></p>
-<h4 id="查看数据集-1"><a href="#查看数据集-1" class="headerlink" title="查看数据集"></a>查看数据集</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">combined_dataset[0]</span><br></pre></td></tr></table></figure>
+<p><strong>把“推理对话”和“抽样后的非推理对话”合并成一个</strong>
+<strong>随机打乱</strong> <strong>的 <code>Dataset</code>
+对象，后面可直接拿去训练。</strong></p>
+<h4 id="查看数据集-1">查看数据集</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">combined_dataset[0]</span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#x27;text&#x27;: &quot;&lt;|im_start|&gt;user\nCalculate the pH during a titration when 9.54 mL of a 0.15 M HCl solution has reacted with 22.88 mL of a 0.14 M NaOH solution?&lt;|im_end|&gt;\n&lt;|im_st截取&quot;,</span><br><span class="line"> &#x27;__index_level_0__&#x27;: 49038&#125;</span><br></pre></td></tr></table></figure>
 <p>其中text字段就是后续带入微调的字段。</p>
-<h4 id="数据集保存"><a href="#数据集保存" class="headerlink" title="数据集保存"></a>数据集保存</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">combined_dataset.save_to_disk(&quot;/workspace/cleaned_qwen3_dataset&quot;)</span><br></pre></td></tr></table></figure>
+<h4 id="数据集保存">数据集保存</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">combined_dataset.save_to_disk(&quot;/workspace/cleaned_qwen3_dataset&quot;)</span><br></pre></td></tr></table></figure>
 <p>后续使用时即可使用如下代码进行读取：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from datasets import load_from_disk</span><br><span class="line">combined_dataset = load_from_disk(&quot;cleaned_qwen3_dataset&quot;)</span><br></pre></td></tr></table></figure>
-<h3 id="Qwen3推理能力高效微调流程"><a href="#Qwen3推理能力高效微调流程" class="headerlink" title="Qwen3推理能力高效微调流程"></a>Qwen3推理能力高效微调流程</h3><p>准备完数据之后，即可开始进行微调。这里我们先进行少量数据微调测试，程序能够基本跑通后，我们再进行大规模数据集微调。</p>
-<h4 id="进行LoRA参数注入"><a href="#进行LoRA参数注入" class="headerlink" title="进行LoRA参数注入"></a>进行LoRA参数注入</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">model = FastLanguageModel.get_peft_model(</span><br><span class="line">    model,</span><br><span class="line">    r = 32,           # 秩（LoRA 低秩矩阵的列数）。越大可学习参数越多，显存也越高。常用 8/16/32/64/128</span><br><span class="line">    target_modules = [&quot;q_proj&quot;, &quot;k_proj&quot;, &quot;v_proj&quot;, &quot;o_proj&quot;,</span><br><span class="line">                      &quot;gate_proj&quot;, &quot;up_proj&quot;, &quot;down_proj&quot;],  # 在哪些线性层插入 LoRA 适配器（Attention + MLP）</span><br><span class="line">    lora_alpha = 32,  # 缩放因子。经验值 = rank 或 2×rank，控制更新强度</span><br><span class="line">    lora_dropout = 0, # LoRA 本身的 dropout 比例；0 省显存且速度最快</span><br><span class="line">    bias = &quot;none&quot;,    # 是否训练原 Linear 的偏置。设为 &quot;none&quot; 不训练，进一步节省显存</span><br><span class="line">    use_gradient_checkpointing = &quot;unsloth&quot;,  # 梯度检查点：True 省显存，&quot;unsloth&quot; 再省 30 %，超长上下文必开</span><br><span class="line">    random_state = 3407,  # 随机种子，保证 LoRA 初始化可复现</span><br><span class="line">    use_rslora = False,   # 默认 False，True 则启用 Rank-Stabilized LoRA（训练更稳，但显存稍高）</span><br><span class="line">    loftq_config = None,  # LoftQ 量化初始化，None 表示不用；若配置可进一步压缩初始权重</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<p>这一步<strong>“LoRA 参数注入”</strong>就是：<strong>在不改动原模型权重的前提下，给指定层插入少量</strong> <strong>可训练低秩矩阵</strong> <strong>（LoRA 适配器），从而只更新 &lt; 1 % 的参数，完成高效微调。</strong></p>
+<h3 id="qwen3推理能力高效微调流程">Qwen3推理能力高效微调流程</h3>
+<p>准备完数据之后，即可开始进行微调。这里我们先进行少量数据微调测试，程序能够基本跑通后，我们再进行大规模数据集微调。</p>
+<h4 id="进行lora参数注入">进行LoRA参数注入</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">model = FastLanguageModel.get_peft_model(</span><br><span class="line">    model,</span><br><span class="line">    r = 32,           # 秩（LoRA 低秩矩阵的列数）。越大可学习参数越多，显存也越高。常用 8/16/32/64/128</span><br><span class="line">    target_modules = [&quot;q_proj&quot;, &quot;k_proj&quot;, &quot;v_proj&quot;, &quot;o_proj&quot;,</span><br><span class="line">                      &quot;gate_proj&quot;, &quot;up_proj&quot;, &quot;down_proj&quot;],  # 在哪些线性层插入 LoRA 适配器（Attention + MLP）</span><br><span class="line">    lora_alpha = 32,  # 缩放因子。经验值 = rank 或 2×rank，控制更新强度</span><br><span class="line">    lora_dropout = 0, # LoRA 本身的 dropout 比例；0 省显存且速度最快</span><br><span class="line">    bias = &quot;none&quot;,    # 是否训练原 Linear 的偏置。设为 &quot;none&quot; 不训练，进一步节省显存</span><br><span class="line">    use_gradient_checkpointing = &quot;unsloth&quot;,  # 梯度检查点：True 省显存，&quot;unsloth&quot; 再省 30 %，超长上下文必开</span><br><span class="line">    random_state = 3407,  # 随机种子，保证 LoRA 初始化可复现</span><br><span class="line">    use_rslora = False,   # 默认 False，True 则启用 Rank-Stabilized LoRA（训练更稳，但显存稍高）</span><br><span class="line">    loftq_config = None,  # LoftQ 量化初始化，None 表示不用；若配置可进一步压缩初始权重</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>这一步<strong>“LoRA
+参数注入”</strong>就是：<strong>在不改动原模型权重的前提下，给指定层插入少量</strong>
+<strong>可训练低秩矩阵</strong> <strong>（LoRA 适配器），从而只更新 &lt;
+1 % 的参数，完成高效微调。</strong></p>
 <blockquote>
-<p>不是“在原有层之外再增加一层”，而是<strong>把 LoRA 的“小矩阵”插到</strong> <strong>原有线性层内部</strong>：</p>
+<p>不是“在原有层之外再增加一层”，而是<strong>把 LoRA
+的“小矩阵”插到</strong> <strong>原有线性层内部</strong>：</p>
 <ul>
-<li>原层结构（冻结）：<br><code>x → Linear4bit(W) → y</code></li>
-<li>注入后结构（冻结 + 可训练）：<br><code>x → [Linear4bit(W)  +  LoRA(A·B)] → y</code></li>
+<li>原层结构（冻结）： <code>x → Linear4bit(W) → y</code></li>
+<li>注入后结构（冻结 + 可训练）：
+<code>x → [Linear4bit(W)  +  LoRA(A·B)] → y</code></li>
 </ul>
-<p><code>A</code> 和 <code>B</code> 两个低秩矩阵被 <strong>注册为同一层的新参数</strong>，<strong>不新建网络层</strong>，参数在 <strong>前向时相加</strong>，<strong>反向只更新 A 和 B</strong>。</p>
+<p><code>A</code> 和 <code>B</code> 两个低秩矩阵被
+<strong>注册为同一层的新参数</strong>，<strong>不新建网络层</strong>，参数在
+<strong>前向时相加</strong>，<strong>反向只更新 A 和 B</strong>。</p>
 </blockquote>
-<h4 id="设置微调参数"><a href="#设置微调参数" class="headerlink" title="设置微调参数"></a>设置微调参数</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">from trl import SFTTrainer, SFTConfig</span><br><span class="line"></span><br><span class="line">trainer = SFTTrainer(</span><br><span class="line">    model=model,                       # 已插入 LoRA 的 4-bit 模型</span><br><span class="line">    tokenizer=tokenizer,               # 对应 tokenizer（含 chat 模板）</span><br><span class="line">    train_dataset=combined_dataset,    # 训练集：聊天+推理对话</span><br><span class="line">    eval_dataset=None,                 # 如需验证，把验证集放进来即可</span><br><span class="line"></span><br><span class="line">    args=SFTConfig(</span><br><span class="line">        dataset_text_field=&quot;text&quot;,      # 训练集中每条样本的字段名（对话列表）</span><br><span class="line">        per_device_train_batch_size=2,  # 每张显卡上的 batch_size（显存决定）</span><br><span class="line">        gradient_accumulation_steps=4,  # 4 次累积 → 全局有效 batch = 2×4 = 8</span><br><span class="line">        warmup_steps=5,                # 前 5 步线性预热学习率</span><br><span class="line">        max_steps=30,                  # 训练 30 步（调试阶段）；正式可用 num_train_epochs</span><br><span class="line">        learning_rate=2e-4,            # LoRA 常用 2e-4；长训降到 2e-5</span><br><span class="line">        logging_steps=1,               # 每 1 步打印一次日志</span><br><span class="line">        optim=&quot;adamw_8bit&quot;,            # 8-bit AdamW，省显存</span><br><span class="line">        weight_decay=0.01,             # L2 正则</span><br><span class="line">        lr_scheduler_type=&quot;linear&quot;,    # 线性衰减到 0</span><br><span class="line">        seed=3407,                     # 固定随机种子</span><br><span class="line">        report_to=&quot;swanlab&quot;,             # 把指标推送到 swanlab</span><br><span class="line">    ),</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<p><a target="_blank" rel="noopener" href="https://github.com/huggingface/trl">TRL</a> (Transformers Reinforcement Learning，用强化学习训练Transformers模型) 是一个领先的Python库，旨在通过监督微调（SFT）、近端策略优化（PPO）和直接偏好优化（DPO）等先进技术，对基础模型进行训练后优化。TRL 建立在 🤗 Transformers 生态系统之上，支持多种模型架构和模态，并且能够在各种硬件配置上进行扩展。</p>
-<p>其中<code>SFTTrainer</code>：一个专门为指令微调设计的训练器，封装了 Hugging Face 的 <code>Trainer</code>，而<code>SFTConfig</code>：配置训练参数的专用类，功能类似 <code>TrainingArguments</code>。而SFTConfig核心参数解释如下：</p>
-<div class="table-container">
+<h4 id="设置微调参数">设置微调参数</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">from trl import SFTTrainer, SFTConfig</span><br><span class="line"></span><br><span class="line">trainer = SFTTrainer(</span><br><span class="line">    model=model,                       # 已插入 LoRA 的 4-bit 模型</span><br><span class="line">    tokenizer=tokenizer,               # 对应 tokenizer（含 chat 模板）</span><br><span class="line">    train_dataset=combined_dataset,    # 训练集：聊天+推理对话</span><br><span class="line">    eval_dataset=None,                 # 如需验证，把验证集放进来即可</span><br><span class="line"></span><br><span class="line">    args=SFTConfig(</span><br><span class="line">        dataset_text_field=&quot;text&quot;,      # 训练集中每条样本的字段名（对话列表）</span><br><span class="line">        per_device_train_batch_size=2,  # 每张显卡上的 batch_size（显存决定）</span><br><span class="line">        gradient_accumulation_steps=4,  # 4 次累积 → 全局有效 batch = 2×4 = 8</span><br><span class="line">        warmup_steps=5,                # 前 5 步线性预热学习率</span><br><span class="line">        max_steps=30,                  # 训练 30 步（调试阶段）；正式可用 num_train_epochs</span><br><span class="line">        learning_rate=2e-4,            # LoRA 常用 2e-4；长训降到 2e-5</span><br><span class="line">        logging_steps=1,               # 每 1 步打印一次日志</span><br><span class="line">        optim=&quot;adamw_8bit&quot;,            # 8-bit AdamW，省显存</span><br><span class="line">        weight_decay=0.01,             # L2 正则</span><br><span class="line">        lr_scheduler_type=&quot;linear&quot;,    # 线性衰减到 0</span><br><span class="line">        seed=3407,                     # 固定随机种子</span><br><span class="line">        report_to=&quot;swanlab&quot;,             # 把指标推送到 swanlab</span><br><span class="line">    ),</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://github.com/huggingface/trl">TRL</a> (Transformers
+Reinforcement Learning，用强化学习训练Transformers模型)
+是一个领先的Python库，旨在通过监督微调（SFT）、近端策略优化（PPO）和直接偏好优化（DPO）等先进技术，对基础模型进行训练后优化。TRL
+建立在 🤗 Transformers
+生态系统之上，支持多种模型架构和模态，并且能够在各种硬件配置上进行扩展。</p>
+<p>其中<code>SFTTrainer</code>：一个专门为指令微调设计的训练器，封装了
+Hugging Face 的
+<code>Trainer</code>，而<code>SFTConfig</code>：配置训练参数的专用类，功能类似
+<code>TrainingArguments</code>。而SFTConfig核心参数解释如下：</p>
 <table>
+<colgroup>
+<col style="width: 34%">
+<col style="width: 65%">
+</colgroup>
 <thead>
 <tr>
 <th>参数名</th>
@@ -466,8 +564,9 @@
 </thead>
 <tbody>
 <tr>
-<td><code>dataset_text_field=&quot;text&quot;</code></td>
-<td>数据集中用于训练的字段名称，如 <code>text</code> 或 <code>prompt</code></td>
+<td><code>dataset_text_field="text"</code></td>
+<td>数据集中用于训练的字段名称，如 <code>text</code> 或
+<code>prompt</code></td>
 </tr>
 <tr>
 <td><code>per_device_train_batch_size=2</code></td>
@@ -475,7 +574,8 @@
 </tr>
 <tr>
 <td><code>gradient_accumulation_steps=4</code></td>
-<td>梯度累计 4 次后才进行一次反向传播（等效于总 batch size = 2 × 4 = 8）</td>
+<td>梯度累计 4 次后才进行一次反向传播（等效于总 batch size = 2 × 4 =
+8）</td>
 </tr>
 <tr>
 <td><code>warmup_steps=5</code></td>
@@ -494,7 +594,7 @@
 <td>每训练 1 步就打印一次日志</td>
 </tr>
 <tr>
-<td><code>optim=&quot;adamw_8bit&quot;</code></td>
+<td><code>optim="adamw_8bit"</code></td>
 <td>使用 8-bit AdamW 优化器（节省内存，Unsloth 支持）</td>
 </tr>
 <tr>
@@ -502,7 +602,7 @@
 <td>权重衰减，用于防止过拟合</td>
 </tr>
 <tr>
-<td><code>lr_scheduler_type=&quot;linear&quot;</code></td>
+<td><code>lr_scheduler_type="linear"</code></td>
 <td>线性学习率调度器（从高到低线性下降）</td>
 </tr>
 <tr>
@@ -510,48 +610,67 @@
 <td>固定随机种子，确保结果可复现</td>
 </tr>
 <tr>
-<td><code>report_to=&quot;none&quot;</code></td>
-<td>不使用 WandB 或 TensorBoard 等日志平台（可改为 <code>&quot;wandb&quot;</code>）</td>
+<td><code>report_to="none"</code></td>
+<td>不使用 WandB 或 TensorBoard 等日志平台（可改为
+<code>"wandb"</code>）</td>
 </tr>
 </tbody>
 </table>
-</div>
 <blockquote>
-<ol>
-<li><p><strong>per_device_train_batch_size=2</strong><br><strong>每次前向只用了 2 条样本</strong> → 显存占用小，单卡就能跑。</p>
-<p><strong>batch_size 决定「每一步真正喂给模型的样本数量」，越大训练越稳，但对显存要求越高。</strong></p>
-</li>
-<li><p><strong>gradient_accumulation_steps=4</strong><br><strong>把这 2 条样本算出的梯度先攒起来，攒够 4 次再一次性做反向传播</strong> → 等效于一次性看了 <strong>2 × 4 = 8 条样本</strong>，但显存仍按 2 条算。</p>
-</li>
+<ol type="1">
+<li><p><strong>per_device_train_batch_size=2</strong>
+<strong>每次前向只用了 2 条样本</strong> → 显存占用小，单卡就能跑。</p>
+<p><strong>batch_size
+决定「每一步真正喂给模型的样本数量」，越大训练越稳，但对显存要求越高。</strong></p></li>
+<li><p><strong>gradient_accumulation_steps=4</strong> <strong>把这 2
+条样本算出的梯度先攒起来，攒够 4 次再一次性做反向传播</strong> →
+等效于一次性看了 <strong>2 × 4 = 8 条样本</strong>，但显存仍按 2
+条算。</p></li>
 </ol>
 </blockquote>
-<p>此时基本训练过程为：</p>
-<ol>
-<li>从 <code>combined_dataset</code> 中取出一批样本（2 条）</li>
-<li>重复上面过程 4 次（<code>gradient_accumulation_steps=4</code>）</li>
-<li>将累计的梯度用于更新模型一次参数（等效于一次大 batch 更新）</li>
-<li>重复上述过程，直到 <code>max_steps=30</code> 停止</li>
-</ol>
-<h4 id="设置训练可视化swanlab"><a href="#设置训练可视化swanlab" class="headerlink" title="设置训练可视化swanlab"></a>设置训练可视化swanlab</h4><p><a target="_blank" rel="noopener" href="https://docs.swanlab.cn/guide_cloud/integration/integration-huggingface-trl.html">🤗HuggingFace Trl | SwanLab官方文档</a></p>
-<p>只需要在你的训练代码中，找到HF的<code>Config</code>部分（比如<code>SFTConfig</code>、<code>GRPOConfig</code>等），添加<code>report_to=&quot;swanlab&quot;</code>参数，即可完成集成。</p>
+<p>此时基本训练过程为： 1. 从 <code>combined_dataset</code>
+中取出一批样本（2 条） 2. 重复上面过程 4
+次（<code>gradient_accumulation_steps=4</code>） 3.
+将累计的梯度用于更新模型一次参数（等效于一次大 batch 更新） 4.
+重复上述过程，直到 <code>max_steps=30</code> 停止</p>
+<h4 id="设置训练可视化swanlab">设置训练可视化swanlab</h4>
+<p><a target="_blank" rel="noopener" href="https://docs.swanlab.cn/guide_cloud/integration/integration-huggingface-trl.html">🤗HuggingFace
+Trl | SwanLab官方文档</a></p>
+<p>只需要在你的训练代码中，找到HF的<code>Config</code>部分（比如<code>SFTConfig</code>、<code>GRPOConfig</code>等），添加<code>report_to="swanlab"</code>参数，即可完成集成。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">from trl import SFTConfig, SFTTrainer</span><br><span class="line"></span><br><span class="line">args = SFTConfig(</span><br><span class="line">    ...,</span><br><span class="line">    report_to=&quot;swanlab&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">trainer = Trainer(..., args=args)</span><br></pre></td></tr></table></figure>
 <p>默认下，项目名会使用你运行代码的<code>目录名</code>。</p>
 <p>如果你想自定义项目名，可以设置<code>SWANLAB_PROJECT</code>环境变量：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import os</span><br><span class="line">os.environ[&quot;SWANLAB_PROJECT&quot;]=&quot;qwen2-sft&quot;</span><br></pre></td></tr></table></figure>
-<h4 id="微调执行流程"><a href="#微调执行流程" class="headerlink" title="微调执行流程"></a>微调执行流程</h4><p>一切准备就绪后，接下来即可开始进行微调。由于本次微调总共只运行30个step，整个过程并不会很长，实际执行过程如下：</p>
+<h4 id="微调执行流程">微调执行流程</h4>
+<p>一切准备就绪后，接下来即可开始进行微调。由于本次微调总共只运行30个step，整个过程并不会很长，实际执行过程如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">trainer_stats = trainer.train()</span><br></pre></td></tr></table></figure>
-<h4 id="保存模型"><a href="#保存模型" class="headerlink" title="保存模型"></a>保存模型</h4><p> <strong>1. 保存 LoRA Adapter</strong></p>
+<h4 id="保存模型">保存模型</h4>
+<p><strong>1. 保存 LoRA Adapter</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 保存 LoRA adapter（仅几十 MB）</span><br><span class="line">save_path = &quot;./lora-adapter&quot;</span><br><span class="line">model.save_pretrained(save_path)          # LoRA 权重</span><br><span class="line">tokenizer.save_pretrained(save_path)      # 词表</span><br></pre></td></tr></table></figure>
 <p>以后加载：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> unsloth <span class="keyword">import</span> FastLanguageModel</span><br><span class="line">model, tokenizer = FastLanguageModel.from_pretrained(</span><br><span class="line">    model_name = <span class="string">&quot;base-model-name-or-path&quot;</span>,</span><br><span class="line">    max_seq_length = <span class="number">2048</span>,</span><br><span class="line">    load_in_4bit = <span class="literal">True</span>,</span><br><span class="line">)</span><br><span class="line">model = FastLanguageModel.get_peft_model(model, ...)  <span class="comment"># 同训练时参数</span></span><br><span class="line">model.load_adapter(save_path)   <span class="comment"># 把 LoRA 权重挂回去</span></span><br></pre></td></tr></table></figure>
 <p><strong>2.合并 LoRA → 完整模型</strong></p>
-<p>如果你想把 <strong>LoRA 权重合并到基座</strong> 得到一个独立的大模型（方便推理、上传 Hub）：</p>
+<p>如果你想把 <strong>LoRA 权重合并到基座</strong>
+得到一个独立的大模型（方便推理、上传 Hub）：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 合并权重</span></span><br><span class="line">merged_model = model.merge_and_unload()   <span class="comment"># 返回普通 transformers 模型</span></span><br><span class="line">merged_model.save_pretrained(<span class="string">&quot;./merged-model&quot;</span>)</span><br><span class="line">tokenizer.save_pretrained(<span class="string">&quot;./merged-model&quot;</span>)</span><br></pre></td></tr></table></figure>
-<p>合并后就是完整的大模型（GB 级），可直接用 <code>AutoModelForCausalLM.from_pretrained(&quot;./merged-model&quot;)</code> 加载，不依赖 Unsloth。</p>
-<h3 id="微调结果"><a href="#微调结果" class="headerlink" title="微调结果"></a>微调结果</h3><h4 id="可视化结果"><a href="#可视化结果" class="headerlink" title="可视化结果"></a>可视化结果</h4><p><img src="/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/qwen3-8b%E5%BE%AE%E8%B0%83%E5%AE%9E%E6%88%98/image-20250813111238359.png" alt="image-20250813111238359"></p>
-<p><a target="_blank" rel="noopener" href="https://swanlab.cn/@zxj123/Fine-tune-Qwen-8B/runs/e2l6g6s3v7dlb7hmfircv/chart">图表 ｜ Fine-tune-Qwen-8B/rat-2</a></p>
-<div class="table-container">
+<p>合并后就是完整的大模型（GB 级），可直接用
+<code>AutoModelForCausalLM.from_pretrained("./merged-model")</code>
+加载，不依赖 Unsloth。</p>
+<h3 id="微调结果">微调结果</h3>
+<h4 id="可视化结果">可视化结果</h4>
+<figure>
+<img src="/2025/08/12/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/qwen3-8b%E5%BE%AE%E8%B0%83%E5%AE%9E%E6%88%98/image-20250813111238359.png" alt="image-20250813111238359">
+<figcaption aria-hidden="true">image-20250813111238359</figcaption>
+</figure>
+<p><a target="_blank" rel="noopener" href="https://swanlab.cn/@zxj123/Fine-tune-Qwen-8B/runs/e2l6g6s3v7dlb7hmfircv/chart">图表
+｜ Fine-tune-Qwen-8B/rat-2</a></p>
 <table>
+<colgroup>
+<col style="width: 18%">
+<col style="width: 22%">
+<col style="width: 28%">
+<col style="width: 30%">
+</colgroup>
 <thead>
 <tr>
 <th>指标名称</th>
@@ -593,8 +712,8 @@
 </tr>
 </tbody>
 </table>
-</div>
-<h4 id="对话测试"><a href="#对话测试" class="headerlink" title="对话测试"></a>对话测试</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">messages = [</span><br><span class="line">    &#123;&quot;role&quot; : &quot;user&quot;, &quot;content&quot; : &quot;解决(x + 2)^2 = 0.&quot;&#125;</span><br><span class="line">]</span><br><span class="line">text = tokenizer.apply_chat_template(</span><br><span class="line">    messages,</span><br><span class="line">    tokenize = False,</span><br><span class="line">    add_generation_prompt = True, # Must add for generation</span><br><span class="line">    enable_thinking = True, # Disable thinking</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">from transformers import TextStreamer</span><br><span class="line">_ = model.generate(</span><br><span class="line">    **tokenizer(text, return_tensors = &quot;pt&quot;).to(&quot;cuda&quot;),</span><br><span class="line">    max_new_tokens = 20488, # Increase for longer outputs!</span><br><span class="line">    temperature = 0.6, top_p = 0.95, top_k = 20, # For thinking</span><br><span class="line">    streamer = TextStreamer(tokenizer, skip_prompt = True),</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h4 id="对话测试">对话测试</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">messages = [</span><br><span class="line">    &#123;&quot;role&quot; : &quot;user&quot;, &quot;content&quot; : &quot;解决(x + 2)^2 = 0.&quot;&#125;</span><br><span class="line">]</span><br><span class="line">text = tokenizer.apply_chat_template(</span><br><span class="line">    messages,</span><br><span class="line">    tokenize = False,</span><br><span class="line">    add_generation_prompt = True, # Must add for generation</span><br><span class="line">    enable_thinking = True, # Disable thinking</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">from transformers import TextStreamer</span><br><span class="line">_ = model.generate(</span><br><span class="line">    **tokenizer(text, return_tensors = &quot;pt&quot;).to(&quot;cuda&quot;),</span><br><span class="line">    max_new_tokens = 20488, # Increase for longer outputs!</span><br><span class="line">    temperature = 0.6, top_p = 0.95, top_k = 20, # For thinking</span><br><span class="line">    streamer = TextStreamer(tokenizer, skip_prompt = True),</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 
     </div>
 
