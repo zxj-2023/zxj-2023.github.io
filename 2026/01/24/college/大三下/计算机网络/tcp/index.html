@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="TCP和UDP协议的核心原理和区别 TCP：全称是 Transmission Control Protocol，中文翻译为传输控制协议。 UDP：全称是 User Datagram Protocol，中文翻译为用户数据报协议。 1. 连接类型和服务对象 这决定了通信双方在“开聊”之前要做什么，以及能和谁聊。  TCP（面向连接）：  连接类型：必须通过“三次握手”建立逻辑连接。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tcp协议">
+<meta property="og:url" content="http://example.com/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="TCP和UDP协议的核心原理和区别 TCP：全称是 Transmission Control Protocol，中文翻译为传输控制协议。 UDP：全称是 User Datagram Protocol，中文翻译为用户数据报协议。 1. 连接类型和服务对象 这决定了通信双方在“开聊”之前要做什么，以及能和谁聊。  TCP（面向连接）：  连接类型：必须通过“三次握手”建立逻辑连接。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/image-20260126145037525.png">
+<meta property="og:image" content="http://example.com/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/image-20260126145256624.png">
+<meta property="og:image" content="http://example.com/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/image-20260126145536691.png">
+<meta property="og:image" content="http://example.com/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/image-20260126151050859.png">
+<meta property="article:published_time" content="2026-01-23T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-26T07:19:19.656Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="大学">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/image-20260126145037525.png">
+
+
+<link rel="canonical" href="http://example.com/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/","path":"2026/01/24/college/大三下/计算机网络/tcp/","title":"tcp协议"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>tcp协议 | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#tcp%E5%92%8Cudp%E5%8D%8F%E8%AE%AE%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86%E5%92%8C%E5%8C%BA%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">TCP和UDP协议的核心原理和区别</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E7%B1%BB%E5%9E%8B%E5%92%8C%E6%9C%8D%E5%8A%A1%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.1.</span> <span class="nav-text">1. 连接类型和服务对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A6%96%E9%83%A8header"><span class="nav-number">1.2.</span> <span class="nav-text">2. 首部（Header）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%9D%A0%E6%80%A7%E4%B8%8E%E4%BC%A0%E8%BE%93%E6%96%B9%E5%BC%8F"><span class="nav-number">1.3.</span> <span class="nav-text">3. 可靠性与传输方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E5%92%8C%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6"><span class="nav-number">1.4.</span> <span class="nav-text">4. 流量控制和拥塞控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.5.</span> <span class="nav-text">5. 应用场景</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tcp%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%92%8C%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B"><span class="nav-number">2.</span> <span class="nav-text">TCP三次握手和四次挥手</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5"><span class="nav-number">2.1.</span> <span class="nav-text">1. 三次握手（建立连接）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B%E9%87%8A%E6%94%BE%E8%BF%9E%E6%8E%A5"><span class="nav-number">2.2.</span> <span class="nav-text">2. 四次挥手（释放连接）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">176</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">66</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="tcp协议 | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          tcp协议
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-01-24 00:00:00" itemprop="dateCreated datePublished" datetime="2026-01-24T00:00:00+08:00">2026-01-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-01-26 15:19:19" itemprop="dateModified" datetime="2026-01-26T15:19:19+08:00">2026-01-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%B8%89%E4%B8%8A/" itemprop="url" rel="index"><span itemprop="name">大三上</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="tcp和udp协议的核心原理和区别">TCP和UDP协议的核心原理和区别</h1>
+<p><strong>TCP</strong>：全称是 <strong>Transmission Control
+Protocol</strong>，中文翻译为<strong>传输控制协议</strong>。</p>
+<p><strong>UDP</strong>：全称是 <strong>User Datagram
+Protocol</strong>，中文翻译为<strong>用户数据报协议</strong>。</p>
+<h2 id="连接类型和服务对象">1. 连接类型和服务对象</h2>
+<p>这决定了通信双方在“开聊”之前要做什么，以及能和谁聊。</p>
+<ul>
+<li><strong>TCP（面向连接）</strong>：
+<ul>
+<li><strong>连接类型</strong>：必须通过“三次握手”建立逻辑连接。通信结束后，还需“四次挥手”断开。</li>
+<li><strong>服务对象</strong>：它是<strong>端到端</strong>的，即点对点通信。一旦连接建立，就是两个特定
+IP/端口之间的独占通道。</li>
+</ul></li>
+<li><strong>UDP（无连接）</strong>：
+<ul>
+<li><strong>连接类型</strong>：完全无连接。想发就发，不需要预先建立任何关系。</li>
+<li><strong>服务对象</strong>：支持<strong>一对一、一对多（广播）、多对一和多对多（组播）</strong>。它更像是一个大喇叭，谁都能听，谁都能喊。</li>
+</ul></li>
+</ul>
+<hr>
+<h2 id="首部header">2. 首部（Header）</h2>
+<figure>
+<img src="/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/image-20260126145037525.png" alt="image-20260126145037525">
+<figcaption aria-hidden="true">image-20260126145037525</figcaption>
+</figure>
+<p>这决定了协议的“管理成本”和传输效率。</p>
+<ul>
+<li><strong>TCP（臃肿但功能全）</strong>：
+<ul>
+<li><strong>长度</strong>：最小 <strong>20
+字节</strong>，如果包含选项字段会更长。</li>
+<li><strong>内容</strong>：包含序列号、确认号、各种标志位（SYN/ACK/FIN）、窗口大小等。这些复杂的字段都是为了确保“可靠传输”。</li>
+</ul></li>
+<li><strong>UDP（简洁精悍）</strong>：
+<ul>
+<li><strong>长度</strong>：固定为 <strong>8 字节</strong>。</li>
+<li><strong>内容</strong>：只包含四个字段：源端口、目的端口、长度和校验和。这让它的处理速度极快，开销极低。</li>
+</ul></li>
+</ul>
+<hr>
+<h2 id="可靠性与传输方式">3. 可靠性与传输方式</h2>
+<figure>
+<img src="/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/image-20260126145256624.png" alt="image-20260126145256624">
+<figcaption aria-hidden="true">image-20260126145256624</figcaption>
+</figure>
+<p>这是两者最本质的区别。</p>
+<ul>
+<li><strong>TCP（可靠的字节流）</strong>：
+<ul>
+<li><strong>可靠性</strong>：通过确认应答（ACK）、超时重传、丢包检测来保证数据<strong>不丢失、不重复、且按序到达</strong>。</li>
+<li><strong>传输方式</strong>：<strong>面向字节流</strong>。TCP
+不管你应用层发的是什么，它把数据看成一串流。它可能会把你的大报文拆开，也可能把几个小报文合并。</li>
+</ul></li>
+<li><strong>UDP（不可靠的报文）</strong>：
+<ul>
+<li><strong>可靠性</strong>：<strong>尽力而为</strong>。不保证送达，也不保证顺序。丢了就丢了，UDP
+本身不负责重传。</li>
+<li><strong>传输方式</strong>：<strong>面向报文</strong>。你给它一个 500
+字节的包，它就原封不动打上头发出去，保留了报文的边界，不会进行拆分或合并。</li>
+</ul></li>
+</ul>
+<hr>
+<h2 id="流量控制和拥塞控制">4. 流量控制和拥塞控制</h2>
+<p>这决定了协议如何应对网络环境的变化。</p>
+<ul>
+<li><strong>TCP（智能管家）</strong>：
+<ul>
+<li><strong>流量控制</strong>：通过“滑动窗口”机制，根据接收方的处理能力动态调整发送速度，防止把对方“淹没”。</li>
+<li><strong>拥塞控制</strong>：当网络出现拥堵时，TCP
+会通过慢启动、拥塞避免等算法主动降低发送速率。它有很强的<strong>自我约束和适应能力</strong>。</li>
+</ul></li>
+<li><strong>UDP（热血青年）</strong>：
+<ul>
+<li><strong>控制机制</strong>：<strong>完全没有</strong>。网络堵不堵、对方收不收得下，UDP
+全然不理。它只会按应用层要求的速度拼命发。这种特性在网络差时可能导致严重的丢包，但也保证了实时性。</li>
+</ul></li>
+</ul>
+<hr>
+<h2 id="应用场景">5. 应用场景</h2>
+<p>基于上述特性，它们的应用领域泾渭分明。</p>
+<table>
+<colgroup>
+<col style="width: 8%">
+<col style="width: 29%">
+<col style="width: 61%">
+</colgroup>
+<thead>
+<tr>
+<th><strong>协议</strong></th>
+<th><strong>适用核心需求</strong></th>
+<th><strong>典型应用</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>TCP</strong></td>
+<td>准确性第一，宁慢勿错</td>
+<td><strong>浏览器(HTTP/HTTPS)</strong>、<strong>文件传输(FTP)</strong>、<strong>邮件(SMTP)</strong>、<strong>远程登录(SSH)</strong></td>
+</tr>
+<tr>
+<td><strong>UDP</strong></td>
+<td>速度/实时性第一，允许少量错误</td>
+<td><strong>视频会议(Zoom/WeChat)</strong>、<strong>在线直播</strong>、<strong>实时竞技游戏</strong>、<strong>域名解析(DNS)</strong></td>
+</tr>
+</tbody>
+</table>
+<h1 id="tcp三次握手和四次挥手">TCP三次握手和四次挥手</h1>
+<p>理解 TCP
+的“三次握手”和“四次挥手”，本质上是理解两个终端如何在不可靠的网络环境下，建立并优雅地释放一个<strong>可靠的</strong>双工（双向）通道。</p>
+<hr>
+<h2 id="三次握手建立连接">1. 三次握手（建立连接）</h2>
+<figure>
+<img src="/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/image-20260126145536691.png" alt="image-20260126145536691">
+<figcaption aria-hidden="true">image-20260126145536691</figcaption>
+</figure>
+<p>目的是确认双方的<strong>收发能力</strong>都正常，并交换初始序列号（ISN）。</p>
+<ol type="1">
+<li><strong>第一次握手 (SYN)</strong>：客户端发送一个 <code>SYN</code>
+包（序列号为 <span class="math inline"><em>x</em></span>）给服务端。
+<ul>
+<li><em>潜台词</em>：客户端说：“我想和你建连，这是我的初始序列号。”</li>
+</ul></li>
+<li><strong>第二次握手 (SYN + ACK)</strong>：服务端收到后，回传一个
+<code>SYN</code> 包（序列号为 <span class="math inline"><em>y</em></span>）和 <code>ACK</code> 包（确认号为
+<span class="math inline"><em>x</em> + 1</span>）。
+<ul>
+<li><em>潜台词</em>：服务端说：“收到！我同意建连，这是我的序列号，我也确认收到你的了。”</li>
+</ul></li>
+<li><strong>第三次握手 (ACK)</strong>：客户端再回传一个 <code>ACK</code>
+包（确认号为 <span class="math inline"><em>y</em> + 1</span>）。
+<ul>
+<li><em>潜台词</em>：客户端说：“收到！那我们正式开始传数据吧。”</li>
+</ul></li>
+</ol>
+<blockquote>
+<p><strong>为什么要三次？</strong></p>
+<p>为了防止“已失效的连接请求报文”突然又传到了服务端。如果只有两次握手，服务端一响应就建立连接，那么旧的重复请求会导致服务端浪费资源去维持一个根本不存在的连接。</p>
+</blockquote>
+<hr>
+<h2 id="四次挥手释放连接">2. 四次挥手（释放连接）</h2>
+<figure>
+<img src="/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/image-20260126151050859.png" alt="image-20260126151050859">
+<figcaption aria-hidden="true">image-20260126151050859</figcaption>
+</figure>
+<p>由于 TCP
+是<strong>全双工</strong>的，断开连接时需要双方都确认“我没数据要发了”。</p>
+<ol type="1">
+<li><strong>第一次挥手 (FIN)</strong>：客户端发一个 <code>FIN</code>
+包给服务端。
+<ul>
+<li><em>状态</em>：客户端进入
+<code>FIN_WAIT_1</code>，表示客户端不再发数据了。</li>
+</ul></li>
+<li><strong>第二次挥手 (ACK)</strong>：服务端回一个 <code>ACK</code>。
+<ul>
+<li><em>状态</em>：服务端进入
+<code>CLOSE_WAIT</code>。此时连接处于<strong>半关闭</strong>状态，服务端可能还有没发完的数据。</li>
+</ul></li>
+<li><strong>第三次挥手 (FIN)</strong>：服务端发完最后的数据，发送
+<code>FIN</code> 包给客户端。
+<ul>
+<li><em>状态</em>：服务端进入 <code>LAST_ACK</code>。</li>
+</ul></li>
+<li><strong>第四次挥手 (ACK)</strong>：客户端收到后，回一个
+<code>ACK</code>，然后进入 <code>TIME_WAIT</code> 状态。
+<ul>
+<li><em>状态</em>：经过 <span class="math inline">2<em>M</em><em>S</em><em>L</em></span>（最长报文段寿命）时间后，客户端正式关闭。</li>
+</ul></li>
+</ol>
+<h1 id="参考资料">参考资料</h1>
+<p>【神奇的滑动窗口 | TCP流量控制】
+https://www.bilibili.com/video/BV1sQXDYREwP/?share_source=copy_web&amp;vd_source=5e54f7845fd2cf2828efb1bae2286590</p>
+<p>【“我为人人，人人为我”的TCP拥塞控制】
+https://www.bilibili.com/video/BV1jWS7BeEX5/?share_source=copy_web&amp;vd_source=5e54f7845fd2cf2828efb1bae2286590</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%A4%A7%E5%AD%A6/" rel="tag"># 大学</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag"># 计算机网络</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/01/02/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LinearRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/" rel="prev" title="LinearRAG论文阅读">
+                  <i class="fa fa-angle-left"></i> LinearRAG论文阅读
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/01/26/%E5%AD%A6%E4%B9%A0/%E8%8B%B1%E8%AF%AD/%E5%8D%95%E8%AF%8D/" rel="next" title="雅思——单词">
+                  雅思——单词 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js","integrity":"sha256-stuqcu2FrjYCXDOytWFA5SoUE/r3nkp6gTglzNSlavU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
