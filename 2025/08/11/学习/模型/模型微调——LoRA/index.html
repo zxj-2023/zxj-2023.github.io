@@ -22,15 +22,18 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="为什么要微调预训练大模型在海量通用语料上学到的知识，在垂直场景（医疗、法律、零售客服等）里往往“泛而浅”。 从零训练一个同等规模的大模型成本极高（千卡周级别），而微调只需在已有权重上做小步调整，算力&#x2F;数据量都指数级下降。 什么是全量微调 全量微调（full fine-tuning）通俗来说，对于参数的每一个权重，都要学习一个新的值（或者偏移量），更新所有 Transformer 层里的权重矩阵（包">
+    <meta name="description" content="大模型训练的三大阶段SFT 的全称是 Supervised Fine-Tuning，中文通常翻译为“监督微调”或“有监督微调”。     阶段 英文名称 核心数据 模型学到了什么？     1. 预训练 Pre-training 海量的网络文章、图书、代码等（几万亿 Token） 学到世界知识。此时只会无脑地“盲猜下一个字”，给他提问他只会顺着往下编小说。   2. 监督微调 SFT (Super">
 <meta property="og:type" content="article">
 <meta property="og:title" content="模型微调——LoRA">
 <meta property="og:url" content="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="为什么要微调预训练大模型在海量通用语料上学到的知识，在垂直场景（医疗、法律、零售客服等）里往往“泛而浅”。 从零训练一个同等规模的大模型成本极高（千卡周级别），而微调只需在已有权重上做小步调整，算力&#x2F;数据量都指数级下降。 什么是全量微调 全量微调（full fine-tuning）通俗来说，对于参数的每一个权重，都要学习一个新的值（或者偏移量），更新所有 Transformer 层里的权重矩阵（包">
+<meta property="og:description" content="大模型训练的三大阶段SFT 的全称是 Supervised Fine-Tuning，中文通常翻译为“监督微调”或“有监督微调”。     阶段 英文名称 核心数据 模型学到了什么？     1. 预训练 Pre-training 海量的网络文章、图书、代码等（几万亿 Token） 学到世界知识。此时只会无脑地“盲猜下一个字”，给他提问他只会顺着往下编小说。   2. 监督微调 SFT (Super">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811104846104.png">
+<meta property="og:image" content="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20260523142111377.png">
 <meta property="og:image" content="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811105145633.png">
+<meta property="og:image" content="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20260523143050178.png">
+<meta property="og:image" content="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20260523143030620.png">
 <meta property="og:image" content="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811142432782.png">
 <meta property="og:image" content="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811162229104.png">
 <meta property="og:image" content="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811163120092.png">
@@ -39,7 +42,7 @@
 <meta property="og:image" content="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811165802090.png">
 <meta property="og:image" content="http://example.com/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250812105535330.png">
 <meta property="article:published_time" content="2025-08-10T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-08-12T11:15:16.000Z">
+<meta property="article:modified_time" content="2026-05-23T06:34:58.205Z">
 <meta property="article:author" content="张熙浚">
 <meta property="article:tag" content="模型微调">
 <meta property="article:tag" content="LoRA">
@@ -154,7 +157,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%BE%AE%E8%B0%83"><span class="nav-number">1.</span> <span class="nav-text">为什么要微调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%85%A8%E9%87%8F%E5%BE%AE%E8%B0%83"><span class="nav-number">2.</span> <span class="nav-text">什么是全量微调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFLoRA"><span class="nav-number">3.</span> <span class="nav-text">什么是LoRA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8lora"><span class="nav-number">4.</span> <span class="nav-text">为什么要用lora</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFQLoRA"><span class="nav-number">5.</span> <span class="nav-text">什么是QLoRA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83%E5%B7%A5%E5%85%B7%E7%9A%84%E4%BB%8B%E7%BB%8D"><span class="nav-number">6.</span> <span class="nav-text">微调工具的介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#unsloth"><span class="nav-number">6.1.</span> <span class="nav-text">unsloth</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LLaMA-Factory"><span class="nav-number">6.2.</span> <span class="nav-text">LLaMA Factory</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">6.3.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%80%A7%E8%83%BD%E8%AF%84%E4%BC%B0%E6%A1%86%E6%9E%B6"><span class="nav-number">7.</span> <span class="nav-text">模型性能评估框架</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#EvalScope"><span class="nav-number">7.1.</span> <span class="nav-text">EvalScope</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E6%A1%86%E6%9E%B6"><span class="nav-number">8.</span> <span class="nav-text">可视化框架</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#wandb"><span class="nav-number">8.1.</span> <span class="nav-text">wandb</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#swanlab"><span class="nav-number">8.2.</span> <span class="nav-text">swanlab</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">9.</span> <span class="nav-text">构造微调数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%9E%84%E9%80%A0%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">9.1.</span> <span class="nav-text">为什么要构造微调数据集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%A6%E6%9C%89%E7%B3%BB%E7%BB%9F%E6%8F%90%E7%A4%BA%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86%E6%A0%BC%E5%BC%8F"><span class="nav-number">9.2.</span> <span class="nav-text">带有系统提示微调数据集格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%A6Function-calling%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86%E6%A0%BC%E5%BC%8F"><span class="nav-number">9.3.</span> <span class="nav-text">带Function calling微调数据集格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%A6%E6%9C%89%E6%80%9D%E8%80%83%E8%BF%87%E7%A8%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86%E7%BB%93%E6%9E%84"><span class="nav-number">9.4.</span> <span class="nav-text">带有思考过程的微调数据集结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%B7%E5%90%88%E6%8E%A8%E7%90%86%E6%A8%A1%E5%9E%8B%E6%9E%84%E9%80%A0%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95"><span class="nav-number">9.5.</span> <span class="nav-text">混合推理模型构造微调数据集基本方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="nav-number">10.</span> <span class="nav-text">微调的基本流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-number">11.</span> <span class="nav-text">环境配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">12.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A7%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E7%9A%84%E4%B8%89%E5%A4%A7%E9%98%B6%E6%AE%B5"><span class="nav-number">1.</span> <span class="nav-text">大模型训练的三大阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%BE%AE%E8%B0%83"><span class="nav-number">2.</span> <span class="nav-text">为什么要微调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%85%A8%E9%87%8F%E5%BE%AE%E8%B0%83"><span class="nav-number">3.</span> <span class="nav-text">什么是全量微调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E9%87%8F%E5%BE%AE%E8%B0%83%E7%9A%84%E6%98%BE%E5%AD%98%E4%BC%B0%E7%AE%97"><span class="nav-number">4.</span> <span class="nav-text">全量微调的显存估算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFLoRA"><span class="nav-number">5.</span> <span class="nav-text">什么是LoRA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lora%E7%9A%84%E6%98%BE%E5%AD%98%E4%BC%B0%E7%AE%97"><span class="nav-number">6.</span> <span class="nav-text">lora的显存估算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8lora"><span class="nav-number">7.</span> <span class="nav-text">为什么要用lora</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFQLoRA"><span class="nav-number">8.</span> <span class="nav-text">什么是QLoRA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83%E5%B7%A5%E5%85%B7%E7%9A%84%E4%BB%8B%E7%BB%8D"><span class="nav-number">9.</span> <span class="nav-text">微调工具的介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#unsloth"><span class="nav-number">9.1.</span> <span class="nav-text">unsloth</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LLaMA-Factory"><span class="nav-number">9.2.</span> <span class="nav-text">LLaMA Factory</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">9.3.</span> <span class="nav-text">其他</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%80%A7%E8%83%BD%E8%AF%84%E4%BC%B0%E6%A1%86%E6%9E%B6"><span class="nav-number">10.</span> <span class="nav-text">模型性能评估框架</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#EvalScope"><span class="nav-number">10.1.</span> <span class="nav-text">EvalScope</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E8%A7%86%E5%8C%96%E6%A1%86%E6%9E%B6"><span class="nav-number">11.</span> <span class="nav-text">可视化框架</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#wandb"><span class="nav-number">11.1.</span> <span class="nav-text">wandb</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#swanlab"><span class="nav-number">11.2.</span> <span class="nav-text">swanlab</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">12.</span> <span class="nav-text">构造微调数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%9E%84%E9%80%A0%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">12.1.</span> <span class="nav-text">为什么要构造微调数据集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%A6%E6%9C%89%E7%B3%BB%E7%BB%9F%E6%8F%90%E7%A4%BA%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86%E6%A0%BC%E5%BC%8F"><span class="nav-number">12.2.</span> <span class="nav-text">带有系统提示微调数据集格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%A6Function-calling%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86%E6%A0%BC%E5%BC%8F"><span class="nav-number">12.3.</span> <span class="nav-text">带Function calling微调数据集格式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%A6%E6%9C%89%E6%80%9D%E8%80%83%E8%BF%87%E7%A8%8B%E7%9A%84%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86%E7%BB%93%E6%9E%84"><span class="nav-number">12.4.</span> <span class="nav-text">带有思考过程的微调数据集结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%B7%E5%90%88%E6%8E%A8%E7%90%86%E6%A8%A1%E5%9E%8B%E6%9E%84%E9%80%A0%E5%BE%AE%E8%B0%83%E6%95%B0%E6%8D%AE%E9%9B%86%E5%9F%BA%E6%9C%AC%E6%96%B9%E6%B3%95"><span class="nav-number">12.5.</span> <span class="nav-text">混合推理模型构造微调数据集基本方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="nav-number">13.</span> <span class="nav-text">微调的基本流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-number">14.</span> <span class="nav-text">环境配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">15.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -169,7 +172,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">177</span>
+          <span class="site-state-item-count">181</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -180,7 +183,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">66</span>
+        <span class="site-state-item-count">67</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -266,7 +269,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-08-12 19:15:16" itemprop="dateModified" datetime="2025-08-12T19:15:16+08:00">2025-08-12</time>
+      <time title="修改时间：2026-05-23 14:34:58" itemprop="dateModified" datetime="2026-05-23T14:34:58+08:00">2026-05-23</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -298,10 +301,79 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h3 id="为什么要微调"><a href="#为什么要微调" class="headerlink" title="为什么要微调"></a>为什么要微调</h3><p>预训练大模型在海量通用语料上学到的知识，在垂直场景（医疗、法律、零售客服等）里往往“泛而浅”。</p>
+    <div class="post-body" itemprop="articleBody"><h3 id="大模型训练的三大阶段"><a href="#大模型训练的三大阶段" class="headerlink" title="大模型训练的三大阶段"></a>大模型训练的三大阶段</h3><p><strong>SFT</strong> 的全称是 <strong>Supervised Fine-Tuning</strong>，中文通常翻译为“监督微调”<strong>或</strong>“有监督微调”。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th><strong>阶段</strong></th>
+<th><strong>英文名称</strong></th>
+<th><strong>核心数据</strong></th>
+<th><strong>模型学到了什么？</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. 预训练</strong></td>
+<td><strong>Pre-training</strong></td>
+<td>海量的网络文章、图书、代码等（几万亿 Token）</td>
+<td><strong>学到世界知识</strong>。此时只会无脑地“盲猜下一个字”，给他提问他只会顺着往下编小说。</td>
+</tr>
+<tr>
+<td><strong>2. 监督微调</strong></td>
+<td><strong>SFT (Supervised Fine-Tuning)</strong></td>
+<td><strong>高质量的人工标注对话数据</strong>（通常几万到几十万条）</td>
+<td><strong>学到对话格式</strong>。理解了什么是“Prompt（提示词）”，什么是“Response（回答）”，学会了听懂人话、按格式回答。</td>
+</tr>
+<tr>
+<td><strong>3. 强化学习</strong></td>
+<td><strong>RLHF / RLAIF</strong></td>
+<td>人类偏好对齐、或者是奖励模型（Reward Model）反馈</td>
+<td><strong>学到价值观与推理深度</strong>。让模型拒绝回答有害内容，或者像 DeepSeek-R1 那样学会自我反思（产生 <code>&lt;think&gt;</code> 标签）。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="为什么要微调"><a href="#为什么要微调" class="headerlink" title="为什么要微调"></a>为什么要微调</h3><p>预训练大模型在海量通用语料上学到的知识，在垂直场景（医疗、法律、零售客服等）里往往“泛而浅”。</p>
 <p>从零训练一个同等规模的大模型成本极高（千卡周级别），而微调只需在已有权重上做小步调整，算力/数据量都指数级下降。</p>
 <h3 id="什么是全量微调"><a href="#什么是全量微调" class="headerlink" title="什么是全量微调"></a>什么是全量微调</h3><p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811104846104.png" alt="image-20250811104846104"></p>
 <p>全量微调（full fine-tuning）通俗来说，对于参数的每一个权重，都要学习一个新的值（或者偏移量），更新所有 Transformer 层里的权重矩阵（包括 embedding、attention、FFN），这样的开销是很大的。</p>
+<h3 id="全量微调的显存估算"><a href="#全量微调的显存估算" class="headerlink" title="全量微调的显存估算"></a>全量微调的显存估算</h3><p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20260523142111377.png" alt="image-20260523142111377"></p>
+<p><strong>1. 推理显存：最基础的入场券（约 5GB）</strong></p>
+<p>图中的上半部分是<strong>推理显存</strong>，也就是模型只要开机、能回话，就必须吃掉的保底显存。</p>
+<ul>
+<li><p><strong>模型参数 (fp16) —— 3GB</strong></p>
+<ul>
+<li><p><strong>算账</strong>：这个模型有 15 亿参数（1.5B）。在半精度（float16，每个参数占 2 字节/Bytes）下，它占用的物理空间就是：</p>
+<script type="math/tex; mode=display">1.5 \text{B} \times 2 \text{ Bytes} = 3 \text{ GB}</script></li>
+</ul>
+<blockquote>
+<p>$1 \text{ KB} = 1,000 \text{ Bytes}$</p>
+<p>$1 \text{ MB} = 1,000 \text{ KB} = 1,000,000 \text{ Bytes}$</p>
+<p>$1 \text{ GB} = 1,000 \text{ MB} = 1,000,000,000 \text{ Bytes}$（十亿字节）</p>
+</blockquote>
+</li>
+<li><p><strong>KV-Cache + 激活值 —— 2GB</strong></p>
+<ul>
+<li><strong>含义</strong>：我们在前面“左右填充”那两问里学到过，批量推理时，模型为了不重复计算，需要把历史对话的 $K$ 和 $V$ 矩阵缓存在显存里。加上前向传播时每一层神经网络激活产生的临时中间张量，这里预留了 2GB 左右的动态水位。</li>
+</ul>
+</li>
+</ul>
+<p><strong>2. 训练显存：吞噬显存的绝对主力（红框区）</strong></p>
+<p>到了下半部分的<strong>训练显存</strong>，才是全量微调的恐怖所在。<strong>全量微调意味着模型中的每一个参数不仅要参与前向盲猜，还要在反向传播中计算梯度，并在优化器里记录状态。</strong></p>
+<p>由于训练时对抗震荡的需要，为了保证微积分计算的精度，训练的核心部分必须使用<strong>单精度（fp32，每个参数占 4 字节）</strong>。</p>
+<p>🥊 核心三剑客（共 18GB）：</p>
+<p>为了让模型完成一次反向传播和参数更新，AdamW 优化器（大模型最常用的优化器）必须在后台给每一个参数配上<strong>三个全职私人秘书</strong>。这三个秘书的形状和模型一模一样，且全部是 fp32 格式（每个占 6GB）：</p>
+<ol>
+<li><strong>主权重 (fp32) —— 6GB</strong>：用来在后台做高精度微调更新的真身参数（$1.5\text{B} \times 4\text{ Bytes} = 6\text{ GB}$）。</li>
+<li><strong>一阶动量 (fp32) —— 6GB</strong>：记录参数更新的方向和惯性（类似物理学里的速度，让优化少走弯路）。</li>
+<li><strong>二阶动量 (fp32) —— 6GB</strong>：记录参数更新的步长和梯度平方的移动平均（用来做自适应学习率调整）。</li>
+</ol>
+<p>📐 梯度 (Gradients) —— 3GB：</p>
+<ul>
+<li><strong>含义</strong>：反向传播时，根据交叉熵损失函数倒推算出来的、每个参数对应的导数（微分变动量）。</li>
+<li><strong>算账</strong>：通常用 fp16 存储，所以大小和静态参数一样，稳稳地占掉 3GB。</li>
+</ul>
 <h3 id="什么是LoRA"><a href="#什么是LoRA" class="headerlink" title="什么是LoRA"></a>什么是LoRA</h3><p>LoRA（Low-Rank Adaptation，低秩适配）是一种<strong>参数高效微调（PEFT）</strong>技术，核心目的：<br><strong>“冻结大模型 99 % 以上原始权重，只额外训练极少量低秩矩阵，就能让模型在下游任务上达到近似全量微调的效果。”</strong></p>
 <p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20250811105145633.png" alt="image-20250811105145633"></p>
 <p>通俗来说，通过学习两个低秩的矩阵，来近似于完整的矩阵，如图，W=A*B，矩阵相乘</p>
@@ -313,6 +385,23 @@
 <script type="math/tex; mode=display">
 Q = X_Q W_Q, \quad K = X_K W_K, \quad V = X_V W_V</script><p> $X_Q$, $X_K$, $X_V$ 的输入可以相同，也可以不同。例如，在 Cross-Attention 中，解码器的隐藏状态作为 $X_Q$，编码器的输出作为 $X_K$ 和 $X_V$。</p>
 <p><strong>LoRA 可以应用到 $W_Q$, $W_K$, $W_V$ 上，采用与线性层类似的方式</strong>。</p>
+<h3 id="lora的显存估算"><a href="#lora的显存估算" class="headerlink" title="lora的显存估算"></a>lora的显存估算</h3><p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20260523143050178.png" alt="image-20260523143050178"></p>
+<p><img src="/2025/08/11/%E5%AD%A6%E4%B9%A0/%E6%A8%A1%E5%9E%8B/%E6%A8%A1%E5%9E%8B%E5%BE%AE%E8%B0%83%E2%80%94%E2%80%94LoRA/image-20260523143030620.png" alt="image-20260523143030620"></p>
+<p><strong>1. 数学原理层：LoRA 是如何通过“低秩”省参数的？（图一）</strong></p>
+<p>假设大模型内部原本有一个 $100 \times 200$ 的静态参数矩阵（比如某个 $W_v$ ），它的参数量是：</p>
+<script type="math/tex; mode=display">100 \times 200 = 20,000</script><p>全量微调时，为了更新这个大矩阵，你需要老老实实为这 $20,000$ 个参数计算梯度和优化器状态。</p>
+<p>LoRA 引入了一个低秩（Rank，通常设为 $r=8$）的概念。它把一个原本要新增的 $100 \times 200$ 的大变化量矩阵，强行拆解成两个极窄的小矩阵相乘</p>
+<ul>
+<li>两个小矩阵的参数量之和：$800 + 1600 = 2400$。</li>
+<li>占原矩阵参数量的比例：$2400 / 20000 = 12\%$。</li>
+<li><strong>核心操作</strong>：原本的 20,000 个参数<strong>被彻底冻结，保持不变</strong>。在整个微调过程中，<strong>只训练这两个加起来才 2400 参数的小矩阵！</strong></li>
+</ul>
+<p><strong>2. 显存算账层：21GB 暴跌至 2.5GB 的奇迹（图二）</strong></p>
+<p>带着这个 $12\%$ 的参数缩减比例，我们来看<strong>第二张图</strong>红框里的训练显存发生了怎样惊天动地的变化：</p>
+<p>因为大模型本体 88% 的参数被冻结了，不需要算梯度，不需要进优化器。此时，<strong>只有那 12% 参与训练的 LoRA 旁路参数，才需要配那四个全职 fp32 秘书（梯度、主权重、一阶/二阶动量）！</strong></p>
+<script type="math/tex; mode=display">\text{训练动态显存总计} = 0.36 + 0.72 + 0.72 + 0.72 = \mathbf{2.5\text{ GB}}</script><p><strong>3. 为什么推理显存反而微微上升了？（5GB $\rightarrow$ 5.6GB）</strong></p>
+<p>这是因为：</p>
+<p>天下没有免费的午餐。虽然 LoRA 帮你省下了巨额的训练状态显存，但那两个新加入的 A、B 旁路小矩阵，在训练的前向传播阶段，也是需要实打实占用显存去存储它们本身的参数值（+0.36GB）以及它们计算时产生的激活值（+0.24GB）的。</p>
 <h3 id="为什么要用lora"><a href="#为什么要用lora" class="headerlink" title="为什么要用lora"></a>为什么要用lora</h3><p>首先要理解低秩：秩可以理解成一个矩阵所代表的信息，低秩矩阵，便是带有少量信息的矩阵，当然这样的矩阵计算效率是更高的，</p>
 <p>在全量微调中，由于训练一个完整的矩阵开销是非常大的；在lora中就通过训练低秩矩阵，来近似<strong>模型权重更新</strong>的效果</p>
 <blockquote>
