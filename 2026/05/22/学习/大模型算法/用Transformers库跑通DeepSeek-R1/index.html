@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="简介 今天尝试使用hugging的transformer库跑通litert-community&#x2F;DeepSeek-R1-Distill-Qwen-1.5B · Hugging Face Qwen-1.5B 基底：它使用了阿里云开源的 Qwen2.5-1.5B 作为基础架构，参数量只有 15 亿（1.5 Billion），天生体积小、运行速度快。 DeepSeek-R1 蒸馏：DeepS">
+    <meta name="description" content="简介今天尝试使用hugging的transformer库跑通litert-community&#x2F;DeepSeek-R1-Distill-Qwen-1.5B · Hugging Face Qwen-1.5B 基底：它使用了阿里云开源的 Qwen2.5-1.5B 作为基础架构，参数量只有 15 亿（1.5 Billion），天生体积小、运行速度快。 DeepSeek-R1 蒸馏：DeepSeek 把他们">
 <meta property="og:type" content="article">
 <meta property="og:title" content="用Transformers库跑通DeepSeek-R1">
 <meta property="og:url" content="http://example.com/2026/05/22/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/%E7%94%A8Transformers%E5%BA%93%E8%B7%91%E9%80%9ADeepSeek-R1/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="简介 今天尝试使用hugging的transformer库跑通litert-community&#x2F;DeepSeek-R1-Distill-Qwen-1.5B · Hugging Face Qwen-1.5B 基底：它使用了阿里云开源的 Qwen2.5-1.5B 作为基础架构，参数量只有 15 亿（1.5 Billion），天生体积小、运行速度快。 DeepSeek-R1 蒸馏：DeepS">
+<meta property="og:description" content="简介今天尝试使用hugging的transformer库跑通litert-community&#x2F;DeepSeek-R1-Distill-Qwen-1.5B · Hugging Face Qwen-1.5B 基底：它使用了阿里云开源的 Qwen2.5-1.5B 作为基础架构，参数量只有 15 亿（1.5 Billion），天生体积小、运行速度快。 DeepSeek-R1 蒸馏：DeepSeek 把他们">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2026/05/22/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/%E7%94%A8Transformers%E5%BA%93%E8%B7%91%E9%80%9ADeepSeek-R1/image-20260522175239547.png">
 <meta property="og:image" content="http://example.com/2026/05/22/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/%E7%94%A8Transformers%E5%BA%93%E8%B7%91%E9%80%9ADeepSeek-R1/image-20260523110036536.png">
@@ -153,12 +153,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tranformer%E5%BA%93%E5%92%8Cpytorch%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">2.</span> <span class="nav-text">tranformer库和pytorch的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.</span> <span class="nav-text">下载模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.</span> <span class="nav-text">加载模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFforcausallm%E5%9B%A0%E6%9E%9C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.1.</span> <span class="nav-text">什么是ForCausalLM（因果语言模型）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#forcausallm%E5%9B%A0%E6%9E%9C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B-%E5%8F%AA%E8%83%BD%E7%9C%8B%E5%B7%A6%E8%BE%B9%E7%8C%9C%E5%8F%B3%E8%BE%B9"><span class="nav-number">4.1.1.</span> <span class="nav-text">ForCausalLM（因果语言模型）——
-只能看左边，猜右边</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#formaskedlm%E6%8E%A9%E7%A0%81%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B-%E6%95%B4%E5%8F%A5%E8%AF%9D%E5%85%A8%E7%9C%8B%E8%A7%81%E5%81%9A%E5%AE%8C%E5%BD%A2%E5%A1%AB%E7%A9%BA"><span class="nav-number">4.1.2.</span> <span class="nav-text">ForMaskedLM（掩码语言模型）——
-整句话全看见，做完形填空</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#qwen%E4%B8%8Edeepseek%E6%9E%B6%E6%9E%84%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">4.2.</span> <span class="nav-text">qwen与deepseek架构的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8C%BA%E5%88%AB%E4%B8%80%E5%89%8D%E9%A6%88%E7%BD%91%E7%BB%9Cffn%E7%9A%84%E5%A4%A7%E4%B8%80%E7%BB%9F-vs-moe-%E6%B7%B7%E5%90%88%E4%B8%93%E5%AE%B6"><span class="nav-number">4.2.1.</span> <span class="nav-text">区别一：前馈网络（FFN）的“大一统”
-vs “MoE 混合专家”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8C%BA%E5%88%AB%E4%BA%8C%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6%E7%9A%84gqa-vs-mla%E4%BD%8E%E7%A7%A9%E5%A4%9A%E5%A4%B4%E6%B3%A8%E6%84%8F%E5%8A%9B"><span class="nav-number">4.2.2.</span> <span class="nav-text">区别二：注意力机制的“GQA”
-vs “MLA（低秩多头注意力）”</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E5%88%86%E8%AF%8D%E5%99%A8"><span class="nav-number">5.</span> <span class="nav-text">加载分词器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#padding%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">5.1.</span> <span class="nav-text">padding的作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#padding-side%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">5.2.</span> <span class="nav-text">Padding Side的作用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86"><span class="nav-number">6.</span> <span class="nav-text">模型推理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%A0%87%E7%AD%BE"><span class="nav-number">7.</span> <span class="nav-text">添加标签</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E8%B9%A6%E5%87%BA%E8%BF%99%E4%B9%88%E5%A4%9A-endofsentence"><span class="nav-number">7.0.1.</span> <span class="nav-text">为什么会蹦出这么多
-&lt;｜end▁of▁sentence｜&gt;？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">8.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tranformer%E5%BA%93%E5%92%8Cpytorch%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">2.</span> <span class="nav-text">tranformer库和pytorch的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.</span> <span class="nav-text">下载模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.</span> <span class="nav-text">加载模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFForCausalLM%EF%BC%88%E5%9B%A0%E6%9E%9C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%EF%BC%89"><span class="nav-number">4.1.</span> <span class="nav-text">什么是ForCausalLM（因果语言模型）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ForCausalLM%EF%BC%88%E5%9B%A0%E6%9E%9C%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%EF%BC%89%E2%80%94%E2%80%94-%E5%8F%AA%E8%83%BD%E7%9C%8B%E5%B7%A6%E8%BE%B9%EF%BC%8C%E7%8C%9C%E5%8F%B3%E8%BE%B9"><span class="nav-number">4.1.1.</span> <span class="nav-text">ForCausalLM（因果语言模型）—— 只能看左边，猜右边</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ForMaskedLM%EF%BC%88%E6%8E%A9%E7%A0%81%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%EF%BC%89%E2%80%94%E2%80%94-%E6%95%B4%E5%8F%A5%E8%AF%9D%E5%85%A8%E7%9C%8B%E8%A7%81%EF%BC%8C%E5%81%9A%E5%AE%8C%E5%BD%A2%E5%A1%AB%E7%A9%BA"><span class="nav-number">4.1.2.</span> <span class="nav-text">ForMaskedLM（掩码语言模型）—— 整句话全看见，做完形填空</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#qwen%E4%B8%8Edeepseek%E6%9E%B6%E6%9E%84%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">4.2.</span> <span class="nav-text">qwen与deepseek架构的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8C%BA%E5%88%AB%E4%B8%80%EF%BC%9A%E5%89%8D%E9%A6%88%E7%BD%91%E7%BB%9C%EF%BC%88FFN%EF%BC%89%E7%9A%84%E2%80%9C%E5%A4%A7%E4%B8%80%E7%BB%9F%E2%80%9D-vs-%E2%80%9CMoE-%E6%B7%B7%E5%90%88%E4%B8%93%E5%AE%B6%E2%80%9D"><span class="nav-number">4.2.1.</span> <span class="nav-text">区别一：前馈网络（FFN）的“大一统” vs “MoE 混合专家”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8C%BA%E5%88%AB%E4%BA%8C%EF%BC%9A%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6%E7%9A%84%E2%80%9CGQA%E2%80%9D-vs-%E2%80%9CMLA%EF%BC%88%E4%BD%8E%E7%A7%A9%E5%A4%9A%E5%A4%B4%E6%B3%A8%E6%84%8F%E5%8A%9B%EF%BC%89%E2%80%9D"><span class="nav-number">4.2.2.</span> <span class="nav-text">区别二：注意力机制的“GQA” vs “MLA（低秩多头注意力）”</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E5%88%86%E8%AF%8D%E5%99%A8"><span class="nav-number">5.</span> <span class="nav-text">加载分词器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#padding%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">5.1.</span> <span class="nav-text">padding的作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Padding-Side%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">5.2.</span> <span class="nav-text">Padding Side的作用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86"><span class="nav-number">6.</span> <span class="nav-text">模型推理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%A0%87%E7%AD%BE"><span class="nav-number">7.</span> <span class="nav-text">添加标签</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E8%B9%A6%E5%87%BA%E8%BF%99%E4%B9%88%E5%A4%9A-lt-%EF%BD%9Cend%E2%96%81of%E2%96%81sentence%EF%BD%9C-gt-%EF%BC%9F"><span class="nav-number">7.0.1.</span> <span class="nav-text">为什么会蹦出这么多 &lt;｜end▁of▁sentence｜&gt;？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">8.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -173,18 +168,18 @@ vs “MLA（低秩多头注意力）”</span></a></li></ol></li></ol></li><li c
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">181</span>
+          <span class="site-state-item-count">182</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-count">64</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">67</span>
+        <span class="site-state-item-count">66</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -298,181 +293,94 @@ vs “MLA（低秩多头注意力）”</span></a></li></ol></li></ol></li><li c
     
     
     
-    <div class="post-body" itemprop="articleBody"><h2 id="简介">简介</h2>
-<p>今天尝试使用hugging的transformer库跑通<a target="_blank" rel="noopener" href="https://huggingface.co/litert-community/DeepSeek-R1-Distill-Qwen-1.5B">litert-community/DeepSeek-R1-Distill-Qwen-1.5B
-· Hugging Face</a></p>
-<p><strong>Qwen-1.5B 基底</strong>：它使用了阿里云开源的
-<strong>Qwen2.5-1.5B</strong> 作为基础架构，参数量只有 15 亿（1.5
-Billion），天生体积小、运行速度快。</p>
-<p><strong>DeepSeek-R1 蒸馏</strong>：DeepSeek 把他们那个 6710
-亿参数、拥有强大推理思维能力的巨型模型（DeepSeek-R1）所产生的<strong>思维链（Chain
-of Thought）数据和推理样本</strong>，喂给了这个 1.5B 的小模型。</p>
-<p><strong>核心能力</strong>：这意味着它虽然只有 15
-亿参数，却<strong>继承了 DeepSeek-R1 的“思考”习惯（会在
-<code>&lt;think&gt;</code>
-标签内进行自我纠错、逻辑推理）</strong>，在数学、代码和逻辑推理上，性能远超普通的
-1.5B 级别模型。</p>
-<h2 id="tranformer库和pytorch的区别">tranformer库和pytorch的区别</h2>
-<p><strong>PyTorch（底层深度学习框架）</strong></p>
+    <div class="post-body" itemprop="articleBody"><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>今天尝试使用hugging的transformer库跑通<a target="_blank" rel="noopener" href="https://huggingface.co/litert-community/DeepSeek-R1-Distill-Qwen-1.5B">litert-community/DeepSeek-R1-Distill-Qwen-1.5B · Hugging Face</a></p>
+<p><strong>Qwen-1.5B 基底</strong>：它使用了阿里云开源的 <strong>Qwen2.5-1.5B</strong> 作为基础架构，参数量只有 15 亿（1.5 Billion），天生体积小、运行速度快。</p>
+<p><strong>DeepSeek-R1 蒸馏</strong>：DeepSeek 把他们那个 6710 亿参数、拥有强大推理思维能力的巨型模型（DeepSeek-R1）所产生的<strong>思维链（Chain of Thought）数据和推理样本</strong>，喂给了这个 1.5B 的小模型。</p>
+<p><strong>核心能力</strong>：这意味着它虽然只有 15 亿参数，却<strong>继承了 DeepSeek-R1 的“思考”习惯（会在 <code>&lt;think&gt;</code> 标签内进行自我纠错、逻辑推理）</strong>，在数学、代码和逻辑推理上，性能远超普通的 1.5B 级别模型。</p>
+<h2 id="tranformer库和pytorch的区别"><a href="#tranformer库和pytorch的区别" class="headerlink" title="tranformer库和pytorch的区别"></a>tranformer库和pytorch的区别</h2><p><strong>PyTorch（底层深度学习框架）</strong></p>
 <ul>
 <li><strong>角色</strong>：通用数学和张量（Tensor）计算库，专门为深度学习设计。</li>
-<li><strong>干什么</strong>：它提供最基础的算子。比如图下半部分看到的
-<code>Softmax</code>、<code>Linear</code>（全连接层）、矩阵乘法、梯度反向传播，以及直接对接显卡硬件（NVIDIA
-CUDA、AMD ROCm、Apple Metal）的驱动支持。</li>
-<li><strong>特点</strong>：它本身<strong>不知道</strong>什么是大语言模型，什么是
-Llama 或 DeepSeek。它只知道如何高效地在 GPU 上做矩阵加减乘除。</li>
+<li><strong>干什么</strong>：它提供最基础的算子。比如图下半部分看到的 <code>Softmax</code>、<code>Linear</code>（全连接层）、矩阵乘法、梯度反向传播，以及直接对接显卡硬件（NVIDIA CUDA、AMD ROCm、Apple Metal）的驱动支持。</li>
+<li><strong>特点</strong>：它本身<strong>不知道</strong>什么是大语言模型，什么是 Llama 或 DeepSeek。它只知道如何高效地在 GPU 上做矩阵加减乘除。</li>
 </ul>
 <p><strong>Transformers 库（上层模型生态库）</strong></p>
 <ul>
-<li><strong>角色</strong>：由 Hugging Face 开发的、专为 Transformer
-架构模型定制的<strong>高级封装库</strong>。</li>
-<li><strong>干什么</strong>：它把 PyTorch
-提供的基础算子（Linear、Softmax
-等）拼接起来，组装成一个个具体的经典模型结构（如
-DeepSeek、Qwen、Llama）。</li>
-<li><strong>特点</strong>：它让你不需要从零去写注意力机制（Attention）的数学公式，直接通过几行代码（如
-<code>AutoModelForCausalLM.from_pretrained('deepseek-ai/DeepSeek-R1')</code>）就能把整个模型跑起来。</li>
+<li><strong>角色</strong>：由 Hugging Face 开发的、专为 Transformer 架构模型定制的<strong>高级封装库</strong>。</li>
+<li><strong>干什么</strong>：它把 PyTorch 提供的基础算子（Linear、Softmax 等）拼接起来，组装成一个个具体的经典模型结构（如 DeepSeek、Qwen、Llama）。</li>
+<li><strong>特点</strong>：它让你不需要从零去写注意力机制（Attention）的数学公式，直接通过几行代码（如 <code>AutoModelForCausalLM.from_pretrained(&#39;deepseek-ai/DeepSeek-R1&#39;)</code>）就能把整个模型跑起来。</li>
 </ul>
-<figure>
-<img src="/2026/05/22/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/%E7%94%A8Transformers%E5%BA%93%E8%B7%91%E9%80%9ADeepSeek-R1/image-20260522175239547.png" alt="image-20260522175239547">
-<figcaption aria-hidden="true">image-20260522175239547</figcaption>
-</figure>
-<h2 id="下载模型">下载模型</h2>
-<p>配置环境</p>
+<p><img src="/2026/05/22/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/%E7%94%A8Transformers%E5%BA%93%E8%B7%91%E9%80%9ADeepSeek-R1/image-20260522175239547.png" alt="image-20260522175239547"></p>
+<h2 id="下载模型"><a href="#下载模型" class="headerlink" title="下载模型"></a>下载模型</h2><p>配置环境</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">uv add transformer huggingface_hub</span><br><span class="line">uv add torch torchvision torchaudio --index https://download.pytorch.org/whl/cu128</span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">import os</span><br><span class="line"></span><br><span class="line"># 1. 必须最先设置环境变量（在 import huggingface_hub 之前）</span><br><span class="line">os.environ[&quot;HF_ENDPOINT&quot;] = &quot;https://hf-mirror.com&quot;</span><br><span class="line"></span><br><span class="line"># 2. 然后再导入 Hugging Face 的下载工具</span><br><span class="line">from huggingface_hub import snapshot_download</span><br><span class="line"></span><br><span class="line"># 3. 最后执行下载</span><br><span class="line">snapshot_download(</span><br><span class="line">    repo_id=&quot;deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B&quot;,</span><br><span class="line">    local_dir=&quot;models/DeepSeek-R1-Distill-Qwen-1.5B&quot;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<h2 id="加载模型">加载模型</h2>
-<p>先查看模型文件夹下的config.json文件</p>
+<h2 id="加载模型"><a href="#加载模型" class="headerlink" title="加载模型"></a>加载模型</h2><p>先查看模型文件夹下的config.json文件</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  // 模型的架构类名，告诉 Transformers 库在代码中应该用哪个具体的类来实例化这个模型</span><br><span class="line">  &quot;architectures&quot;: [</span><br><span class="line">    &quot;Qwen2ForCausalLM&quot;</span><br><span class="line">  ],</span><br><span class="line">  </span><br><span class="line">  // 在注意力机制（Attention）层中 Dropout 的比例。0.0 代表不随机丢弃神经元节点</span><br><span class="line">  &quot;attention_dropout&quot;: 0.0,</span><br><span class="line">  </span><br><span class="line">  // 序列开始特殊标记（BOS, Begin of Sequence）的 ID 编码</span><br><span class="line">  &quot;bos_token_id&quot;: 151643,</span><br><span class="line">  </span><br><span class="line">  // 序列结束特殊标记（EOS, End of Sequence）的 ID 编码。模型吐出这个 ID 时就会停止生成</span><br><span class="line">  &quot;eos_token_id&quot;: 151643,</span><br><span class="line">  </span><br><span class="line">  // 隐藏层（前馈神经网络）中使用的激活函数类型。这里采用的是 SiLU（Sigmoid Linear Unit）</span><br><span class="line">  &quot;hidden_act&quot;: &quot;silu&quot;,</span><br><span class="line">  </span><br><span class="line">  // 隐藏层的维度（模型的宽度）。即每个 Token 进入模型内部后转换成的向量长度（1536维）</span><br><span class="line">  &quot;hidden_size&quot;: 1536,</span><br><span class="line">  </span><br><span class="line">  // 权重参数初始化时的标准差。模型刚创建、未训练时，权重会在这个范围的随机正态分布中生成</span><br><span class="line">  &quot;initializer_range&quot;: 0.02,</span><br><span class="line">  </span><br><span class="line">  // 前馈神经网络（FFN/MLP）内部升维后的中间层维度。向量会在这里从 1536 临时扩大到 8960 维再缩回</span><br><span class="line">  &quot;intermediate_size&quot;: 8960,</span><br><span class="line">  </span><br><span class="line">  // 模型支持的最大位置编码长度。也就是该模型的理论最大上下文窗口（128K Context Window）</span><br><span class="line">  &quot;max_position_embeddings&quot;: 131072,</span><br><span class="line">  </span><br><span class="line">  // 启用滑动窗口注意力机制（Sliding Window Attention）的最大层数。这里前 21 层会受到相关策略影响</span><br><span class="line">  &quot;max_window_layers&quot;: 21,</span><br><span class="line">  </span><br><span class="line">  // 模型的类型基础名称，这里注册为千问2代架构（qwen2）</span><br><span class="line">  &quot;model_type&quot;: &quot;qwen2&quot;,</span><br><span class="line">  </span><br><span class="line">  // 多头注意力机制（MHA）中 Query（查询）头的总数量</span><br><span class="line">  &quot;num_attention_heads&quot;: 12,</span><br><span class="line">  </span><br><span class="line">  // 模型的总层数（深度）。数据需要连续穿过 28 个 Transformer 块（Block）</span><br><span class="line">  &quot;num_hidden_layers&quot;: 28,</span><br><span class="line">  </span><br><span class="line">  // 分组查询注意力（GQA）中 Key 和 Value 头的数量。</span><br><span class="line">  // 12 个 Q 头共享 2 个 KV 头，能大幅减少推理时的 KV Cache 显存占用</span><br><span class="line">  &quot;num_key_value_heads&quot;: 2,</span><br><span class="line">  </span><br><span class="line">  // RMSNorm（均方根归一化）层为了防止分母为 0 而引入的极小常量值（$\epsilon$）</span><br><span class="line">  &quot;rms_norm_eps&quot;: 1e-06,</span><br><span class="line">  </span><br><span class="line">  // 旋转位置编码（RoPE）的底数基频（$\theta$）。控制位置编码在长文本下的外推和衰减敏感度</span><br><span class="line">  &quot;rope_theta&quot;: 10000,</span><br><span class="line">  </span><br><span class="line">  // 当启用滑动窗口注意力时，窗口的具体大小（限制只能看到过去 4096 个 Token）</span><br><span class="line">  &quot;sliding_window&quot;: 4096,</span><br><span class="line">  </span><br><span class="line">  // 是否绑定输入和输出的嵌入层权重。false 代表输入 Embedding 和输出 Linear 层的参数各自独立</span><br><span class="line">  &quot;tie_word_embeddings&quot;: false,</span><br><span class="line">  </span><br><span class="line">  // 模型训练和默认保存时的数据精度类型。bfloat16 代表 16位脑浮点数，兼顾范围与精度</span><br><span class="line">  &quot;torch_dtype&quot;: &quot;bfloat16&quot;,</span><br><span class="line">  </span><br><span class="line">  // 导出该配置文件时，所使用的官方 Hugging Face Transformers 库的版本号</span><br><span class="line">  &quot;transformers_version&quot;: &quot;4.44.0&quot;,</span><br><span class="line">  </span><br><span class="line">  // 是否默认开启键值缓存（KV Cache）。开启后可以避免重复计算历史 Token，实现流式快速生成</span><br><span class="line">  &quot;use_cache&quot;: true,</span><br><span class="line">  </span><br><span class="line">  // 是否启用多模态旋转位置编码（Multimodal RoPE），常用于处理视觉等多模态输入。这里为 false</span><br><span class="line">  &quot;use_mrope&quot;: false,</span><br><span class="line">  </span><br><span class="line">  // 是否在全局强制启用滑动窗口注意力机制。这里为 false，说明默认使用全量的全局注意力</span><br><span class="line">  &quot;use_sliding_window&quot;: false,</span><br><span class="line">  </span><br><span class="line">  // 词表的大小。代表模型一共认识 151,936 个不同的字、词或特殊符号</span><br><span class="line">  &quot;vocab_size&quot;: 151936</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>在这个文件里：</p>
 <ul>
-<li><code>"architectures": ["Qwen2ForCausalLM"]</code></li>
-<li><code>"model_type": "qwen2"</code></li>
+<li><code>&quot;architectures&quot;: [&quot;Qwen2ForCausalLM&quot;]</code></li>
+<li><code>&quot;model_type&quot;: &quot;qwen2&quot;</code></li>
 </ul>
 <p>说明这个模型底层架构为qwen2因果解码器</p>
-<figure>
-<img src="/2026/05/22/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/%E7%94%A8Transformers%E5%BA%93%E8%B7%91%E9%80%9ADeepSeek-R1/image-20260523110036536.png" alt="image-20260523110036536">
-<figcaption aria-hidden="true">image-20260523110036536</figcaption>
-</figure>
+<p><img src="/2026/05/22/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/%E7%94%A8Transformers%E5%BA%93%E8%B7%91%E9%80%9ADeepSeek-R1/image-20260523110036536.png" alt="image-20260523110036536"></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">from transformers import Qwen2ForCausalLM</span><br><span class="line">model = Qwen2ForCausalLM.from_pretrained(&quot;models/DeepSeek-R1-Distill-Qwen-1.5B&quot;)</span><br><span class="line">model</span><br><span class="line">或</span><br><span class="line">from transformers import AutoModelForCausalLM</span><br><span class="line">model = AutoModelForCausalLM.from_pretrained(&quot;models/DeepSeek-R1-Distill-Qwen-1.5B&quot;)</span><br><span class="line">model</span><br></pre></td></tr></table></figure>
 <p>下面的AutoModelForCausalLM可以通过读取config文件，使用正确的架构加载模型</p>
-<h3 id="什么是forcausallm因果语言模型">什么是<code>ForCausalLM</code>（因果语言模型）</h3>
-<h4 id="forcausallm因果语言模型-只能看左边猜右边"><code>ForCausalLM</code>（因果语言模型）——
-只能看左边，猜右边</h4>
-<p>这种模型在训练和推理时，就像是在看一部<strong>正在播放的电影</strong>。</p>
+<h3 id="什么是ForCausalLM（因果语言模型）"><a href="#什么是ForCausalLM（因果语言模型）" class="headerlink" title="什么是ForCausalLM（因果语言模型）"></a>什么是<code>ForCausalLM</code>（因果语言模型）</h3><h4 id="ForCausalLM（因果语言模型）——-只能看左边，猜右边"><a href="#ForCausalLM（因果语言模型）——-只能看左边，猜右边" class="headerlink" title="ForCausalLM（因果语言模型）—— 只能看左边，猜右边"></a><code>ForCausalLM</code>（因果语言模型）—— 只能看左边，猜右边</h4><p>这种模型在训练和推理时，就像是在看一部<strong>正在播放的电影</strong>。</p>
 <p>通俗例子：</p>
 <p>假设训练数据是一句话：<code>“我 喜欢 吃 南京 盐水鸭”</code></p>
 <p>当模型处理到 <code>“吃”</code> 这个字时：</p>
 <ul>
 <li><strong>它能看到什么</strong>：<code>“我 喜欢”</code>（左边的历史信息，它100%看得见）。</li>
 <li><strong>它被隐藏了什么</strong>：<code>[南京 盐水鸭]</code>（右边的未来信息。模型被戴上了特殊的“向后看”的眼罩，技术上叫<strong>因果掩码</strong>，强行把右边的字遮住）。</li>
-<li><strong>它的任务</strong>：根据
-<code>“我 喜欢 吃”</code>，去猜后面接 <code>“南京”</code>
-的概率是多少。</li>
+<li><strong>它的任务</strong>：根据 <code>“我 喜欢 吃”</code>，去猜后面接 <code>“南京”</code> 的概率是多少。</li>
 </ul>
 <blockquote>
-<p><strong>为什么必须隐藏后面的？</strong> 因为如果训练时不把右边的
-<code>“南京 盐水鸭”</code>
-挡住，模型就会直接去偷看标准答案，这就成了“作弊”。这样训练出来的模型在实际聊天时，由于没有未来可以偷看，就会彻底废掉。</p>
+<p><strong>为什么必须隐藏后面的？</strong> 因为如果训练时不把右边的 <code>“南京 盐水鸭”</code> 挡住，模型就会直接去偷看标准答案，这就成了“作弊”。这样训练出来的模型在实际聊天时，由于没有未来可以偷看，就会彻底废掉。</p>
 </blockquote>
-<h4 id="formaskedlm掩码语言模型-整句话全看见做完形填空"><code>ForMaskedLM</code>（掩码语言模型）——
-整句话全看见，做完形填空</h4>
-<p>这就对应了你说的“一整句话都能看到”的模型。它在训练时不需要戴单向眼罩。</p>
+<h4 id="ForMaskedLM（掩码语言模型）——-整句话全看见，做完形填空"><a href="#ForMaskedLM（掩码语言模型）——-整句话全看见，做完形填空" class="headerlink" title="ForMaskedLM（掩码语言模型）—— 整句话全看见，做完形填空"></a><code>ForMaskedLM</code>（掩码语言模型）—— 整句话全看见，做完形填空</h4><p>这就对应了你说的“一整句话都能看到”的模型。它在训练时不需要戴单向眼罩。</p>
 <p>通俗例子：</p>
 <p>同样是这句话：<code>“我 喜欢 吃 南京 盐水鸭”</code></p>
-<p>AI
-老师在训练它时，直接把整句话拍在它面前，但是用黑笔随机涂黑（Mask）了一个词：</p>
+<p>AI 老师在训练它时，直接把整句话拍在它面前，但是用黑笔随机涂黑（Mask）了一个词：</p>
 <ul>
 <li><strong>输入给模型的</strong>：<code>“我 喜欢 吃 [ ❌ ] 盐水鸭”</code></li>
-<li><strong>它能看到什么</strong>：它能同时看到左边的
-<code>“我 喜欢 吃”</code> 和右边的
-<code>“盐水鸭”</code>。整句话的上下文它尽收眼底。</li>
-<li><strong>它的任务</strong>：像做高考<strong>完形填空</strong>一样，结合两边的线索，推测被涂黑的
-<code>[ ❌ ]</code> 里面有高概率是 <code>“南京”</code>。</li>
+<li><strong>它能看到什么</strong>：它能同时看到左边的 <code>“我 喜欢 吃”</code> 和右边的 <code>“盐水鸭”</code>。整句话的上下文它尽收眼底。</li>
+<li><strong>它的任务</strong>：像做高考<strong>完形填空</strong>一样，结合两边的线索，推测被涂黑的 <code>[ ❌ ]</code> 里面有高概率是 <code>“南京”</code>。</li>
 </ul>
-<h3 id="qwen与deepseek架构的区别">qwen与deepseek架构的区别</h3>
-<figure>
-<img src="/2026/05/22/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/%E7%94%A8Transformers%E5%BA%93%E8%B7%91%E9%80%9ADeepSeek-R1/image-20260523100747237.png" alt="image-20260523100747237">
-<figcaption aria-hidden="true">image-20260523100747237</figcaption>
-</figure>
-<figure>
-<img src="/2026/05/22/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/%E7%94%A8Transformers%E5%BA%93%E8%B7%91%E9%80%9ADeepSeek-R1/image-20260523100939383.png" alt="image-20260523100939383">
-<figcaption aria-hidden="true">image-20260523100939383</figcaption>
-</figure>
-<h4 id="区别一前馈网络ffn的大一统-vs-moe-混合专家">区别一：前馈网络（FFN）的“大一统”
-vs “MoE 混合专家”</h4>
-<p>这是两家最本质的区别。</p>
+<h3 id="qwen与deepseek架构的区别"><a href="#qwen与deepseek架构的区别" class="headerlink" title="qwen与deepseek架构的区别"></a>qwen与deepseek架构的区别</h3><p><img src="/2026/05/22/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/%E7%94%A8Transformers%E5%BA%93%E8%B7%91%E9%80%9ADeepSeek-R1/image-20260523100747237.png" alt="image-20260523100747237"></p>
+<p><img src="/2026/05/22/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/%E7%94%A8Transformers%E5%BA%93%E8%B7%91%E9%80%9ADeepSeek-R1/image-20260523100939383.png" alt="image-20260523100939383"></p>
+<h4 id="区别一：前馈网络（FFN）的“大一统”-vs-“MoE-混合专家”"><a href="#区别一：前馈网络（FFN）的“大一统”-vs-“MoE-混合专家”" class="headerlink" title="区别一：前馈网络（FFN）的“大一统” vs “MoE 混合专家”"></a>区别一：前馈网络（FFN）的“大一统” vs “MoE 混合专家”</h4><p>这是两家最本质的区别。</p>
 <ul>
-<li><strong>Qwen（Dense 稠密流派）</strong>： Qwen2.5-72B 采用的是标准的
-Dense 结构。这意味着无论是算 <code>1+1=</code>
-这种简单的算术题，还是写复杂的 Linux
-内核代码，模型在每一层里的前馈网络（FFN）都是<strong>全员上阵</strong>。720亿参数全部参与计算。
-<ul>
+<li><strong>Qwen（Dense 稠密流派）</strong>： Qwen2.5-72B 采用的是标准的 Dense 结构。这意味着无论是算 <code>1+1=</code> 这种简单的算术题，还是写复杂的 Linux 内核代码，模型在每一层里的前馈网络（FFN）都是<strong>全员上阵</strong>。720亿参数全部参与计算。<ul>
 <li><strong>优缺点</strong>：对硬件非常友好，算子成熟，但在参数量极大时，计算成本（算力消耗）呈线性飙升。</li>
-</ul></li>
-<li><strong>DeepSeek（MoE 专家流派）</strong>： DeepSeek-V3 采用了独创的
-<strong>DeepSeekMoE</strong> 架构。它把原本一个巨大的 FFN 拆分成了
-<strong>1个共享专家（Shared Expert）</strong> 和
-<strong>256个路由专家（Routed Experts）</strong>。
-<ul>
-<li><strong>独特设计</strong>：当一个 Token
-传过来时，共享专家永远参与计算（抓取全局共性知识），而路由专家中只有<strong>最对口的
-2 个</strong>会被激活（抓取垂直专业知识）。</li>
-<li><strong>恐怖的性价比</strong>：DeepSeek-V3 的总参数量高达
-<strong>6710亿（671B）</strong>，但因为 MoE 的存在，每个 Token
-进来时实际上只激活了 <strong>370亿（37B）</strong>
-参数。这就是为什么它能用极低的算力成本，抗衡甚至超越其他几千亿规模的稠密模型。</li>
-</ul></li>
 </ul>
-<h4 id="区别二注意力机制的gqa-vs-mla低秩多头注意力">区别二：注意力机制的“GQA”
-vs “MLA（低秩多头注意力）”</h4>
-<p>在处理上下文和长文本记忆（KV
-Cache）时，两家拿出了不同的看家本领。</p>
-<ul>
-<li><strong>Qwen（采用 GQA）</strong>： 正如我们在它的
-<code>config.json</code> 里看到的，Qwen 采用的是
-<strong>GQA（Grouped-Query Attention）</strong>。它让多个 Query
-头共用一组 KV 头。这在 2024~2026
-年是行业标准设计，已经能把显存占用砍掉一大截。</li>
-<li><strong>DeepSeek（独创 MLA）</strong>： DeepSeek 觉得 GQA
-还不够省。他们发明了 <strong>MLA（Multi-head Latent
-Attention，低秩多头注意力机制）</strong>。
-<ul>
-<li><strong>硬核原理</strong>：传统的 GQA 随着上下文变长，显存里的 KV
-缓存依然会线性增加。而 MLA 在计算注意力时，通过矩阵低秩分解（Low-rank
-Compression）技术，把原本巨大的 KV
-矩阵压缩成了一个极小的“特征向量”（Latent
-Vector）存进显存里。在真正计算的一瞬间，再在显存里动态把它解压放大恢复出来。</li>
-<li><strong>效果</strong>：DeepSeek-V3 的 MLA 技术，让它的 <strong>KV
-Cache 显存占用直接暴降了 93%</strong>。这意味着同样的显卡硬件，DeepSeek
-可以容纳超出 Qwen 数倍的并发量（Batch Size）或更长的上下文交互。</li>
-</ul></li>
+</li>
+<li><strong>DeepSeek（MoE 专家流派）</strong>： DeepSeek-V3 采用了独创的 <strong>DeepSeekMoE</strong> 架构。它把原本一个巨大的 FFN 拆分成了 <strong>1个共享专家（Shared Expert）</strong> 和 <strong>256个路由专家（Routed Experts）</strong>。<ul>
+<li><strong>独特设计</strong>：当一个 Token 传过来时，共享专家永远参与计算（抓取全局共性知识），而路由专家中只有<strong>最对口的 2 个</strong>会被激活（抓取垂直专业知识）。</li>
+<li><strong>恐怖的性价比</strong>：DeepSeek-V3 的总参数量高达 <strong>6710亿（671B）</strong>，但因为 MoE 的存在，每个 Token 进来时实际上只激活了 <strong>370亿（37B）</strong> 参数。这就是为什么它能用极低的算力成本，抗衡甚至超越其他几千亿规模的稠密模型。</li>
 </ul>
-<h2 id="加载分词器">加载分词器</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from transformers import AutoTokenizer</span><br><span class="line">tokenizer = AutoTokenizer.from_pretrained(&quot;models/DeepSeek-R1-Distill-Qwen-1.5B&quot;)</span><br><span class="line">tokenizer</span><br></pre></td></tr></table></figure>
-<p>可以查看models-R1-Distill-Qwen-1.5B.json</p>
+</li>
+</ul>
+<h4 id="区别二：注意力机制的“GQA”-vs-“MLA（低秩多头注意力）”"><a href="#区别二：注意力机制的“GQA”-vs-“MLA（低秩多头注意力）”" class="headerlink" title="区别二：注意力机制的“GQA” vs “MLA（低秩多头注意力）”"></a>区别二：注意力机制的“GQA” vs “MLA（低秩多头注意力）”</h4><p>在处理上下文和长文本记忆（KV Cache）时，两家拿出了不同的看家本领。</p>
+<ul>
+<li><strong>Qwen（采用 GQA）</strong>： 正如我们在它的 <code>config.json</code> 里看到的，Qwen 采用的是 <strong>GQA（Grouped-Query Attention）</strong>。它让多个 Query 头共用一组 KV 头。这在 2024~2026 年是行业标准设计，已经能把显存占用砍掉一大截。</li>
+<li><strong>DeepSeek（独创 MLA）</strong>： DeepSeek 觉得 GQA 还不够省。他们发明了 <strong>MLA（Multi-head Latent Attention，低秩多头注意力机制）</strong>。<ul>
+<li><strong>硬核原理</strong>：传统的 GQA 随着上下文变长，显存里的 KV 缓存依然会线性增加。而 MLA 在计算注意力时，通过矩阵低秩分解（Low-rank Compression）技术，把原本巨大的 KV 矩阵压缩成了一个极小的“特征向量”（Latent Vector）存进显存里。在真正计算的一瞬间，再在显存里动态把它解压放大恢复出来。</li>
+<li><strong>效果</strong>：DeepSeek-V3 的 MLA 技术，让它的 <strong>KV Cache 显存占用直接暴降了 93%</strong>。这意味着同样的显卡硬件，DeepSeek 可以容纳超出 Qwen 数倍的并发量（Batch Size）或更长的上下文交互。</li>
+</ul>
+</li>
+</ul>
+<h2 id="加载分词器"><a href="#加载分词器" class="headerlink" title="加载分词器"></a>加载分词器</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from transformers import AutoTokenizer</span><br><span class="line">tokenizer = AutoTokenizer.from_pretrained(&quot;models/DeepSeek-R1-Distill-Qwen-1.5B&quot;)</span><br><span class="line">tokenizer</span><br></pre></td></tr></table></figure>
+<p>可以查看models\DeepSeek-R1-Distill-Qwen-1.5B\tokenizer.json</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;model&quot;: &#123;</span><br><span class="line">    // 分词器（Tokenizer）采用的核心算法。</span><br><span class="line">    // &quot;BPE&quot; 代表 Byte-Pair Encoding（字节对编码），是目前大模型（如 GPT、Llama、Qwen）最主流的分词算法</span><br><span class="line">    &quot;type&quot;: &quot;BPE&quot;,</span><br><span class="line">    </span><br><span class="line">    // 在分词阶段随机丢弃 Token 的比例（用于某些分词器的训练或正则化）。</span><br><span class="line">    // null 代表关闭该功能，确保分词结果是完全确定且唯一的</span><br><span class="line">    &quot;dropout&quot;: null,</span><br><span class="line">    </span><br><span class="line">    // 未知词标记（Unknown Token）。当遇到词表里完全不认识的字符时，会用这个符号代替。</span><br><span class="line">    // null 代表没有设置或不需要（在现代 BPE 分词器中，通常通过字节回退机制来彻底消灭未知词）</span><br><span class="line">    &quot;unk_token&quot;: null,</span><br><span class="line">    </span><br><span class="line">    // 持续子词前缀。如果一个词被切碎了，后续的碎片可以用这个前缀来标记它们属于同一个词。</span><br><span class="line">    // 空字符串 &quot;&quot; 代表不显式添加前缀（Qwen2/Llama 通常通过在 Token 内部保留空格空间来处理词边界）</span><br><span class="line">    &quot;continuing_subword_prefix&quot;: &quot;&quot;,</span><br><span class="line">    </span><br><span class="line">    // 词尾后缀。用来标记一个分词片段是一个完整单词的结尾。</span><br><span class="line">    // 空字符串 &quot;&quot; 代表不使用特定的词尾后缀符号</span><br><span class="line">    &quot;end_of_word_suffix&quot;: &quot;&quot;,</span><br><span class="line">    </span><br><span class="line">    // 是否把连续出现的未知词（UNK）融合合并成一个。</span><br><span class="line">    // false 代表不融合，每个不认识的字符单独处理</span><br><span class="line">    &quot;fuse_unk&quot;: false,</span><br><span class="line">    </span><br><span class="line">    // 字节回退机制开关。</span><br><span class="line">    // 核心技术点：当设置为 true 时，如果遇到词表里没有的生僻字（比如特殊的emoji），</span><br><span class="line">    // 分词器不会报错，也不会把它变成 UNK，而是直接把它拆解成底层的 UTF-8 字节（Byte）符号来兜底，确保全字符覆盖。这里为 false。</span><br><span class="line">    &quot;byte_fallback&quot;: false,</span><br><span class="line">    </span><br><span class="line">    // 核心词表（Vocabulary 字典）。它是一个庞大的映射表，规定了“文本片段”到“数字 ID”的唯一对应关系</span><br><span class="line">    &quot;vocab&quot;: &#123;</span><br><span class="line">      &quot;!&quot;: 0,    // 文本中的感叹号，映射到模型内部的数字 ID 是 0</span><br><span class="line">      &quot;\&quot;&quot;: 1,   // 文本中的双引号（经过了转义），映射到模型内部的数字 ID 是 1</span><br><span class="line">      &quot;#&quot;: 2     // 文本中的井号，映射到模型内部的数字 ID 是 2</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">inputs = tokenizer(</span><br><span class="line">    [</span><br><span class="line">        &quot;Hello, how are you?&quot;,        # 输入的第一句话（较短，包含 5 个 Token）</span><br><span class="line">        &quot;I&#x27;m doing well, thank you!&quot;,  # 输入的第二句话（较长，包含 7 个 Token）</span><br><span class="line">    ],</span><br><span class="line">    </span><br><span class="line">    # 1. 填充策略（Padding）</span><br><span class="line">    # 作用：强制对齐批次（Batch）内所有句子的长度，让它们变成规整的矩阵（行、列对齐）。</span><br><span class="line">    padding=True,</span><br><span class="line">    </span><br><span class="line">    # 2. 返回数据类型（Return Tensors）</span><br><span class="line">    # 作用：&quot;pt&quot; 代表 PyTorch Tensor。直接将结果打包成 PyTorch 的张量矩阵，不需要手动转换，方便直接 `.to(&quot;cuda&quot;)` 送进显卡。</span><br><span class="line">    return_tensors=&quot;pt&quot;,</span><br><span class="line">    </span><br><span class="line">    # 3. 填充方向（Padding Side）—— 本次最核心的修改！</span><br><span class="line">    # 作用：强行规定把用来凑数的补零标记（[PAD]）加在短句子的“左侧”（开头位置）。</span><br><span class="line">    # 核心技术原因（大模型推理的铁律）：</span><br><span class="line">    #   现代大语言模型是自回归生成（从左到右逐字吐字）。</span><br><span class="line">    #   如果把 [PAD] 放在右边（默认行为），模型生成新字时，它看到的最新上文就会是 [PAD]，这会彻底破坏位置编码（RoPE）以及 Attention 的最新特征，导致模型直接开始胡言乱语或者卡死。</span><br><span class="line">    #   把 [PAD] 放在左边，能确保所有句子的“最右端”（即接下来要吐新字的位置）在数学矩阵上完美对齐，而且模型能无缝读到最新的有效上文。</span><br><span class="line">    padding_side=&quot;left&quot;</span><br><span class="line">).to(model.device)</span><br><span class="line"></span><br><span class="line">inputs</span><br></pre></td></tr></table></figure>
-<figure>
-<img src="/2026/05/22/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/%E7%94%A8Transformers%E5%BA%93%E8%B7%91%E9%80%9ADeepSeek-R1/image-20260523134035248.png" alt="image-20260523134035248">
-<figcaption aria-hidden="true">image-20260523134035248</figcaption>
-</figure>
-<h3 id="padding的作用">padding的作用</h3>
-<p>模型会把多个句子打包成一个批次（Batch）同时塞给模型同时预测的，但是<strong>批量计算要求输入必须是一个完美的矩形矩阵（行和列的数量必须严格相等）</strong>，所以在句子长度不一的时候，需要设置padding，也就是填充[PAD]</p>
+<p><img src="/2026/05/22/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/%E7%94%A8Transformers%E5%BA%93%E8%B7%91%E9%80%9ADeepSeek-R1/image-20260523134035248.png" alt="image-20260523134035248"></p>
+<h3 id="padding的作用"><a href="#padding的作用" class="headerlink" title="padding的作用"></a>padding的作用</h3><p>模型会把多个句子打包成一个批次（Batch）同时塞给模型同时预测的，但是<strong>批量计算要求输入必须是一个完美的矩形矩阵（行和列的数量必须严格相等）</strong>，所以在句子长度不一的时候，需要设置padding，也就是填充[PAD]</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">行1 ──&gt; [   你 ,   叫 ,   什么 ,   名字 ,   呀 ,   ？ ]  (原本就最长，无需Padding)</span><br><span class="line">行2 ──&gt; [ [PAD], [PAD], [PAD], [PAD],  南京 , 大学 ]  (短句，左边被垫了 4 个 PAD)</span><br></pre></td></tr></table></figure>
-<p>分词器还会同时生成一个 <strong><code>attention_mask</code></strong>
-矩阵，防止Attention 难被无意义的 <code>[PAD]</code> 干扰</p>
+<p>分词器还会同时生成一个 <strong><code>attention_mask</code></strong> 矩阵，防止Attention 难被无意义的 <code>[PAD]</code> 干扰</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">行1 ──&gt; [ 1, 1, 1, 1, 1, 1 ]  (全看)</span><br><span class="line">行2 ──&gt; [ 0, 0, 0, 0, 1, 1 ]  (前4个PAD被强制致盲，Attention 算矩阵时直接把它们当空气)</span><br></pre></td></tr></table></figure>
-<figure>
-<img src="/2026/05/22/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/%E7%94%A8Transformers%E5%BA%93%E8%B7%91%E9%80%9ADeepSeek-R1/image-20260523134330284.png" alt="image-20260523134330284">
-<figcaption aria-hidden="true">image-20260523134330284</figcaption>
-</figure>
-<h3 id="padding-side的作用">Padding Side的作用</h3>
-<p><strong>既然有attentionmask了，为什么还要填充方向（），填充到右边不也行吗</strong></p>
+<p><img src="/2026/05/22/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/%E7%94%A8Transformers%E5%BA%93%E8%B7%91%E9%80%9ADeepSeek-R1/image-20260523134330284.png" alt="image-20260523134330284"></p>
+<h3 id="Padding-Side的作用"><a href="#Padding-Side的作用" class="headerlink" title="Padding Side的作用"></a>Padding Side的作用</h3><p><strong>既然有attentionmask了，为什么还要填充方向（），填充到右边不也行吗</strong></p>
 <p><strong>致命原因一：位置编码（RoPE）完全错乱</strong></p>
-<p>现代大模型（如 Qwen2、DeepSeek）使用的是
-<strong>旋转位置编码（RoPE）</strong>。模型必须要知道每个 Token
-在句子里的<strong>绝对位置（它是第几个字）</strong>，才能理解语法。</p>
+<p>现代大模型（如 Qwen2、DeepSeek）使用的是 <strong>旋转位置编码（RoPE）</strong>。模型必须要知道每个 Token 在句子里的<strong>绝对位置（它是第几个字）</strong>，才能理解语法。</p>
 <p>假设有两句话同时预测，最大对齐长度是 6：</p>
 <ul>
 <li>句子 A 只有 3 个字：<code>“真 漂 亮”</code></li>
@@ -480,101 +388,62 @@ Cache 显存占用直接暴降了 93%</strong>。这意味着同样的显卡硬�
 </ul>
 <p>❌ 如果填充在右边（Right Padding）：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">【第1步：输入矩阵】</span><br><span class="line">行 1 ──&gt; [ 真(pos:0) , 漂(pos:1) , 亮(pos:2) , [PAD](pos:3) , [PAD](pos:4) , [PAD](pos:5) ]</span><br><span class="line">行 2 ──&gt; [ 南(pos:0) , 京(pos:1) , 师(pos:2) ,  范(pos:3)  ,  大(pos:4)  ,  学(pos:5)  ]</span><br></pre></td></tr></table></figure>
-<p>第一步计算时，有 <code>attention_mask</code> 挡着，句子 A 只看了前 3
-个字，成功预测出下一个字是 <code>“啊”</code>。</p>
-<p><strong>但是，接下来模型要同时生出第 2
-个字了（自回归下一步）：</strong></p>
+<p>第一步计算时，有 <code>attention_mask</code> 挡着，句子 A 只看了前 3 个字，成功预测出下一个字是 <code>“啊”</code>。</p>
+<p><strong>但是，接下来模型要同时生出第 2 个字了（自回归下一步）：</strong></p>
 <p>新生成的字 <code>“啊”</code> 必须拼到句子的末尾。</p>
 <ul>
-<li>句子 B 的 <code>“学”</code> 在位置 5，所以新生成的字在 <strong>位置
-6</strong>。</li>
-<li>句子 A 的 <code>“亮”</code> 在位置 2，新生成的字 <code>“啊”</code>
-应该在 <strong>位置 3</strong>。</li>
+<li>句子 B 的 <code>“学”</code> 在位置 5，所以新生成的字在 <strong>位置 6</strong>。</li>
+<li>句子 A 的 <code>“亮”</code> 在位置 2，新生成的字 <code>“啊”</code> 应该在 <strong>位置 3</strong>。</li>
 </ul>
-<p><strong>灾难发生了</strong>：在矩阵计算中，显卡必须整齐划一地把新字拼在矩阵的<strong>最后一列（位置
-6）</strong>。</p>
-<p>这导致句子 A 的 <code>“啊”</code> 被强行赋予了 <strong>位置
-6</strong> 的位置编码！</p>
+<p><strong>灾难发生了</strong>：在矩阵计算中，显卡必须整齐划一地把新字拼在矩阵的<strong>最后一列（位置 6）</strong>。</p>
+<p>这导致句子 A 的 <code>“啊”</code> 被强行赋予了 <strong>位置 6</strong> 的位置编码！</p>
 <p>在模型眼里，这个句子变成了：<code>“真(0) 漂(1) 亮(2) ...空了3个位置... 啊(6)”</code>。位置编码的断层会直接让自注意力机制彻底报废，模型开始疯狂吐胡话。</p>
 <p>如果填充在左边（Left Padding）：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">【第1步：输入矩阵】</span><br><span class="line">行 1 ──&gt; [ [PAD](pos:0) , [PAD](pos:0) , [PAD](pos:0) , 真(pos:1) , 漂(pos:2) , 亮(pos:3) ]</span><br><span class="line">行 2 ──&gt; [  南(pos:1)  ,  京(pos:2)  ,  师(pos:3)  , 范(pos:4) , 大(pos:5) , 学(pos:6) ]</span><br></pre></td></tr></table></figure>
 <p>通过特殊的处理，左边的 <code>[PAD]</code> 位置编码直接被无视。</p>
-<p>重点看右边：句子 A 的末尾 <code>“亮”</code> 在位置 3，句子 B 的末尾
-<code>“学”</code> 在位置 6。</p>
-<p>当模型同时吐出新字时，它们都可以<strong>规整地统一拼在矩阵的右侧边框（也就是下一列）</strong>，各自的位置编码能够丝滑地递增（位置
-3 变 4，位置 6 变 7），绝对不会发生空间断层。</p>
-<p><strong>致命原因二：自回归推理的“长文本记忆（KV
-Cache）”无法对齐</strong></p>
-<p>大模型为了单字蹦字变快，内部有一套叫 <strong>KV Cache</strong>
-的机制——它会把前面已经算过的词的 <span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span>
-矩阵存存在显存里，下一次算新字时，直接复用旧的，不重新计算。</p>
+<p>重点看右边：句子 A 的末尾 <code>“亮”</code> 在位置 3，句子 B 的末尾 <code>“学”</code> 在位置 6。</p>
+<p>当模型同时吐出新字时，它们都可以<strong>规整地统一拼在矩阵的右侧边框（也就是下一列）</strong>，各自的位置编码能够丝滑地递增（位置 3 变 4，位置 6 变 7），绝对不会发生空间断层。</p>
+<p><strong>致命原因二：自回归推理的“长文本记忆（KV Cache）”无法对齐</strong></p>
+<p>大模型为了单字蹦字变快，内部有一套叫 <strong>KV Cache</strong> 的机制——它会把前面已经算过的词的 $K$ 和 $V$ 矩阵存存在显存里，下一次算新字时，直接复用旧的，不重新计算。</p>
 <p>显卡在批量（Batch）计算时，要求每一行的<strong>记忆长度必须是一致的</strong>。</p>
 <p>❌ 如果 Padding 在右边：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">行 1 (有效记忆3个) ──&gt; [ K1, K2, K3, [PAD], [PAD], [PAD] ] ──&gt; 接下来新字在这里 💥 撞墙了</span><br><span class="line">行 2 (有效记忆6个) ──&gt; [ K1, K2, K3,  K4 ,  K5 ,  K6  ] ──&gt; 接下来新字在这里</span><br></pre></td></tr></table></figure>
-<p>当自回归进行到第二步、第三步时，最新的 Token 需要不断追加到 KV
-缓存的末尾。</p>
-<p>第一行的末尾被 <code>[PAD]</code> 占着坑，新词进不来；如果强行覆盖
-<code>[PAD]</code>，第一行的有效长度只有 3，第二行有效长度是 6，这导致
-<strong>KV 缓存矩阵的各行长度不一致</strong>。</p>
+<p>当自回归进行到第二步、第三步时，最新的 Token 需要不断追加到 KV 缓存的末尾。</p>
+<p>第一行的末尾被 <code>[PAD]</code> 占着坑，新词进不来；如果强行覆盖 <code>[PAD]</code>，第一行的有效长度只有 3，第二行有效长度是 6，这导致 <strong>KV 缓存矩阵的各行长度不一致</strong>。</p>
 <p>显卡的核心在面对这种“参差不齐”的动态矩阵时，<strong>根本无法做并行的矩阵乘法</strong>。</p>
 <p>如果 Padding 在左边：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">行 1 ──&gt; [ [PAD], [PAD], [PAD], K1, K2, K3 ] ──&gt; 最新插入点 ──&gt; [这里完美对齐]</span><br><span class="line">行 2 ──&gt; [  K1 ,  K2 ,  K3 , K4, K5, K6 ] ──&gt; 最新插入点 ──&gt; [这里完美对齐]</span><br></pre></td></tr></table></figure>
-<p>因为 <code>[PAD]</code>
-稳稳地呆在左边底座，<strong>所有句子的动态增长前沿（右侧边缘）是完全对齐的</strong>。</p>
-<p>每蹦出一个新字，所有的句子都可以整齐划一地向右集体拓宽一列。显存里的
-KV Cache 矩阵始终是一个标准的、完美的矩形，显卡可以用 <span class="math inline"><em>O</em>(1)</span> 的极高效率并行吞吐。</p>
-<h2 id="模型推理">模型推理</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">output=model.generate(</span><br><span class="line">    input_ids=inputs[&quot;input_ids&quot;],</span><br><span class="line">    attention_mask=inputs[&quot;attention_mask&quot;],</span><br><span class="line">    max_new_tokens=50</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">output</span><br></pre></td></tr></table></figure>
+<p>因为 <code>[PAD]</code> 稳稳地呆在左边底座，<strong>所有句子的动态增长前沿（右侧边缘）是完全对齐的</strong>。</p>
+<p>每蹦出一个新字，所有的句子都可以整齐划一地向右集体拓宽一列。显存里的 KV Cache 矩阵始终是一个标准的、完美的矩形，显卡可以用 $O(1)$ 的极高效率并行吞吐。</p>
+<h2 id="模型推理"><a href="#模型推理" class="headerlink" title="模型推理"></a>模型推理</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">output=model.generate(</span><br><span class="line">    input_ids=inputs[&quot;input_ids&quot;],</span><br><span class="line">    attention_mask=inputs[&quot;attention_mask&quot;],</span><br><span class="line">    max_new_tokens=50</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">output</span><br></pre></td></tr></table></figure>
 <p>使用模型进行推理后面的向量</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tokenizer.batch_decode(output)</span><br></pre></td></tr></table></figure>
 <p>解码翻译成人类语言</p>
 <p>但是目前模型的回答是这样</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[&quot;&lt;｜end▁of▁sentence｜&gt;&lt;｜end▁of▁sentence｜&gt;Hello, how are you? I&#x27;m trying to understand some concepts about the electromagnetic spectrum. Could you explain the different parts of it and their relationships? Also, what&#x27;s the significance of each part?\n\nCertainly! The electromagnetic spectrum is a range of all possible wavelengths of electromagnetic radiation.&quot;,</span><br><span class="line"> &quot;I&#x27;m doing well, thank you! What is the sum of 1/3 and 1/6? Let me think. Hmm, okay, so I need to add these two fractions together. I remember that to add fractions, they need to have the same denominator. The denomin&quot;]</span><br></pre></td></tr></table></figure>
 <p><strong>很明显是有问题的，为什么呢</strong></p>
-<figure>
-<img src="/2026/05/22/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/%E7%94%A8Transformers%E5%BA%93%E8%B7%91%E9%80%9ADeepSeek-R1/image-20260523135418262.png" alt="image-20260523135418262">
-<figcaption aria-hidden="true">image-20260523135418262</figcaption>
-</figure>
-<p>它在<strong>预训练阶段（图中的第 1
-步）学到的本领是自回归续写（盲猜下一个字）</strong>。它习惯了看到普通文章，就顺着普通文章的语法往下编。</p>
-<p>但是，现代的对话/推理模型（如
-DeepSeek-R1、Qwen2.5-Instruct）是通过<strong>微调（图中的第 2
-步）训练出来的。为了让它知道什么时候该“闭嘴”、什么时候该“思考（<code>&lt;think&gt;</code>）”、什么时候该“回答”，官方在训练它时，强行给它定了一套严格的特殊符号包围圈</strong>。</p>
-<p>如果你直接把普通的字符串 <code>"Hello, how are you?"</code>
-喂给它，对它来说<strong>格式是完全陌生的</strong>（它找不到应有的标记）。</p>
-<h2 id="添加标签">添加标签</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">message=[</span><br><span class="line">    [</span><br><span class="line">        &#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Hello, how are you?&quot;&#125;</span><br><span class="line">    ],</span><br><span class="line">    [</span><br><span class="line">        &#123;&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: &quot;I&#x27;m doing well, thank you!&quot;&#125;</span><br><span class="line">    ]</span><br><span class="line">]</span><br><span class="line">tokenizer.padding_side=&quot;left&quot;</span><br><span class="line"></span><br><span class="line">inputs=tokenizer.apply_chat_template(</span><br><span class="line">    message,</span><br><span class="line">    return_tensors=&quot;pt&quot;,</span><br><span class="line">    padding=True,</span><br><span class="line">    add_generation_prompt=True</span><br><span class="line">).to(model.device)</span><br><span class="line"></span><br><span class="line">tokenizer.batch_decode(inputs[&quot;input_ids&quot;])</span><br></pre></td></tr></table></figure>
-<p>tokenizer.apply_chat_template是调用models-R1-Distill-Qwen-1.5B_config.json中的chat_template
-Jinja2 模板，将对话添加标签</p>
+<p><img src="/2026/05/22/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/%E7%94%A8Transformers%E5%BA%93%E8%B7%91%E9%80%9ADeepSeek-R1/image-20260523135418262.png" alt="image-20260523135418262"></p>
+<p>它在<strong>预训练阶段（图中的第 1 步）学到的本领是自回归续写（盲猜下一个字）</strong>。它习惯了看到普通文章，就顺着普通文章的语法往下编。</p>
+<p>但是，现代的对话/推理模型（如 DeepSeek-R1、Qwen2.5-Instruct）是通过<strong>微调（图中的第 2 步）训练出来的。为了让它知道什么时候该“闭嘴”、什么时候该“思考（<code>&lt;think&gt;</code>）”、什么时候该“回答”，官方在训练它时，强行给它定了一套严格的特殊符号包围圈</strong>。</p>
+<p>如果你直接把普通的字符串 <code>&quot;Hello, how are you?&quot;</code> 喂给它，对它来说<strong>格式是完全陌生的</strong>（它找不到应有的标记）。</p>
+<h2 id="添加标签"><a href="#添加标签" class="headerlink" title="添加标签"></a>添加标签</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">message=[</span><br><span class="line">    [</span><br><span class="line">        &#123;&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Hello, how are you?&quot;&#125;</span><br><span class="line">    ],</span><br><span class="line">    [</span><br><span class="line">        &#123;&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: &quot;I&#x27;m doing well, thank you!&quot;&#125;</span><br><span class="line">    ]</span><br><span class="line">]</span><br><span class="line">tokenizer.padding_side=&quot;left&quot;</span><br><span class="line"></span><br><span class="line">inputs=tokenizer.apply_chat_template(</span><br><span class="line">    message,</span><br><span class="line">    return_tensors=&quot;pt&quot;,</span><br><span class="line">    padding=True,</span><br><span class="line">    add_generation_prompt=True</span><br><span class="line">).to(model.device)</span><br><span class="line"></span><br><span class="line">tokenizer.batch_decode(inputs[&quot;input_ids&quot;])</span><br></pre></td></tr></table></figure>
+<p>tokenizer.apply_chat_template是调用models\DeepSeek-R1-Distill-Qwen-1.5B\tokenizer_config.json中的chat_template Jinja2 模板，将对话添加标签</p>
 <blockquote>
-<p><strong>Jinja2</strong> 本质上是 Python
-编程世界里最著名、使用最广泛的 <strong>“文本自动化渲染引擎”（Template
-Engine）</strong>。</p>
+<p><strong>Jinja2</strong> 本质上是 Python 编程世界里最著名、使用最广泛的 <strong>“文本自动化渲染引擎”（Template Engine）</strong>。</p>
 <p>在代码层面上，它的工作公式非常纯粹：</p>
-<p><span class="math display">$$\text{Jinja2 模板 (死标签)} \quad +
-\quad \text{Python 变量 (活数据)} \quad \xrightarrow{\text{Render
-(渲染)}} \quad \text{最终的纯文本字符串}$$</span></p>
-</blockquote>
-<figure>
-<img src="/2026/05/22/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/%E7%94%A8Transformers%E5%BA%93%E8%B7%91%E9%80%9ADeepSeek-R1/image-20260523140200484.png" alt="image-20260523140200484">
-<figcaption aria-hidden="true">image-20260523140200484</figcaption>
-</figure>
+<script type="math/tex; mode=display">\text{Jinja2 模板 (死标签)} \quad + \quad \text{Python 变量 (活数据)} \quad \xrightarrow{\text{Render (渲染)}} \quad \text{最终的纯文本字符串}</script></blockquote>
+<p><img src="/2026/05/22/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/%E7%94%A8Transformers%E5%BA%93%E8%B7%91%E9%80%9ADeepSeek-R1/image-20260523140200484.png" alt="image-20260523140200484"></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[&#x27;&lt;｜end▁of▁sentence｜&gt;&lt;｜end▁of▁sentence｜&gt;&lt;｜end▁of▁sentence｜&gt;&lt;｜begin▁of▁sentence｜&gt;&lt;｜User｜&gt;Hello, how are you?&lt;｜Assistant｜&gt;&lt;think&gt;\n&#x27;,</span><br><span class="line"> &quot;&lt;｜begin▁of▁sentence｜&gt;&lt;｜Assistant｜&gt;I&#x27;m doing well, thank you!&lt;｜end▁of▁sentence｜&gt;&lt;｜Assistant｜&gt;&lt;think&gt;\n&quot;]</span><br></pre></td></tr></table></figure>
-<p>add_generation_prompt=True会在最后添加<code>&lt;｜Assistant｜&gt;&lt;think&gt;\n</code>用来引导模型生成</p>
+<p> add_generation_prompt=True会在最后添加<code>&lt;｜Assistant｜&gt;&lt;think&gt;\n</code>用来引导模型生成</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">output=model.generate(</span><br><span class="line">    input_ids=inputs[&quot;input_ids&quot;],</span><br><span class="line">    attention_mask=inputs[&quot;attention_mask&quot;],</span><br><span class="line">    max_new_tokens=256</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">tokenizer.batch_decode(output)</span><br></pre></td></tr></table></figure>
 <p>最后再让模型推理，便能正确生成答案了</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[&#x27;&lt;｜end▁of▁sentence｜&gt;&lt;｜end▁of▁sentence｜&gt;&lt;｜end▁of▁sentence｜&gt;&lt;｜begin▁of▁sentence｜&gt;&lt;｜User｜&gt;Hello, how are you?&lt;｜Assistant｜&gt;&lt;think&gt;\nAlright, the user greeted me with &quot;Hello, how are you?&quot; which is a friendly and open way to start a conversation.\n\nI should respond in a similar positive manner to keep the conversation going smoothly.\n\nI need to make sure my response is welcoming and inviting them to share what they\&#x27;re up to.\n\nKeeping it simple and open-ended is key here.\n&lt;/think&gt;\n\nHello! I\&#x27;m doing well. How can I assist you today?&lt;｜end▁of▁sentence｜&gt;&lt;｜end▁of▁sentence｜&gt;&lt;｜end▁of▁sentence｜&gt;&lt;｜end▁of▁sentence｜&gt;&lt;｜end▁of▁sentence｜&gt;&lt;｜end▁of▁sentence｜&gt;&lt;｜end▁of▁sentence｜&gt;&lt;｜end▁of▁sentence｜&gt;&lt;｜end▁of▁sentence｜&gt;&#x27;,</span><br><span class="line"> &#x27;&lt;｜begin▁of▁sentence｜&gt;&lt;｜Assistant｜&gt;I\&#x27;m doing well, thank you!&lt;｜end▁of▁sentence｜&gt;&lt;｜Assistant｜&gt;&lt;think&gt;\nOkay, so the user just said, &quot;I\&#x27;m doing well, thank you!&quot; Hmm, I need to figure out what they\&#x27;re really looking for here. Let me break it down.\n\nFirst, they said, &quot;I\&#x27;m doing well, thank you!&quot; That\&#x27;s pretty straightforward. They\&#x27;re acknowledging their effort and appreciation. But maybe they want more than that? Maybe they\&#x27;re feeling a bit overwhelmed or just looking for reassurance.\n\nI should consider different scenarios. Could they be feeling down because of something recent? Or maybe they\&#x27;re feeling a bit isolated? Sometimes people appreciate a simple thank you but need more support or a different perspective.\n\nI wonder if they\&#x27;re asking for tips on how to handle situations or if they need advice on how to improve. It\&#x27;s possible they\&#x27;re seeking encouragement or motivation. Alternatively, they might be seeking reassurance that they\&#x27;re not alone in feeling this way.\n\nAnother angle is that they might be looking for a way to express gratitude in a different way. Maybe they want to change their approach to communication. Or perhaps they\&#x27;re dealing with a specific challenge that\&#x27;s making them feel inadequate, and they need validation.\n\nI should also think about the tone they\&#x27;re using. They said, &quot;I\&#x27;m doing well, thank you!&quot; which is positive and&#x27;]</span><br></pre></td></tr></table></figure>
-<h4 id="为什么会蹦出这么多-endofsentence">为什么会蹦出这么多
-<code>&lt;｜end▁of▁sentence｜&gt;</code>？</h4>
-<p>大模型提前说完了话，它会吐出一个<strong>终止符</strong>，也就是
-<code>&lt;｜end▁of▁sentence｜&gt;</code>（意为“句子结束”）。</p>
+<h4 id="为什么会蹦出这么多-lt-｜end▁of▁sentence｜-gt-？"><a href="#为什么会蹦出这么多-lt-｜end▁of▁sentence｜-gt-？" class="headerlink" title="为什么会蹦出这么多 &lt;｜end▁of▁sentence｜&gt;？"></a>为什么会蹦出这么多 <code>&lt;｜end▁of▁sentence｜&gt;</code>？</h4><p>大模型提前说完了话，它会吐出一个<strong>终止符</strong>，也就是 <code>&lt;｜end▁of▁sentence｜&gt;</code>（意为“句子结束”）。</p>
 <p>但是，由于这是<strong>批量推理</strong>，第一句话的通道虽然无话可说了，但<strong>第二句话的通道还没写完，显卡不能停，必须硬着头皮继续往后算满剩下的步数。</strong></p>
 <p>为了保持矩阵的绝对规整，显卡在接下来的每一步里，只能在第一句的通道后面<strong>疯狂重复填充“终止符”来凑数</strong>：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">【显卡最终吐出的 output 矩阵物理外观】</span><br><span class="line"></span><br><span class="line">第一行 (短句通道) ──&gt; [ Hello! ... assist you today? , &lt;｜end...＞ , &lt;｜end...＞ , &lt;｜end...＞, ... ] (后面全在机械重复填终止符)</span><br><span class="line">第二行 (长句通道) ──&gt; [ I&#x27;m doing well... (模型正兴高采烈地写到一半)                                    ] </span><br></pre></td></tr></table></figure>
-<p><strong>因为显卡矩阵在右侧必须对齐，短句子通道在“无话可说”到“等长句子写完”之间的所有空白格，全部被强行塞满了
-<code>&lt;｜end▁of▁sentence｜&gt;</code>。</strong></p>
-<h2 id="参考资料">参考资料</h2>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1xNAiziEhP?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">本地部署大模型！用Transformers库跑通DeepSeek-R1_哔哩哔哩_bilibili</a></p>
+<p><strong>因为显卡矩阵在右侧必须对齐，短句子通道在“无话可说”到“等长句子写完”之间的所有空白格，全部被强行塞满了 <code>&lt;｜end▁of▁sentence｜&gt;</code>。</strong></p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1xNAiziEhP?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">本地部署大模型！用Transformers库跑通DeepSeek-R1_哔哩哔哩_bilibili</a></p>
 
     </div>
 
@@ -615,6 +484,9 @@ Engine）</strong>。</p>
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/2026/05/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/openai%E4%B8%8Eclaude%E5%93%8D%E5%BA%94%E6%A0%BC%E5%BC%8F/" rel="next" title="openai与claude响应格式">
+                  openai与claude响应格式 <i class="fa fa-angle-right"></i>
+                </a>
             </div>
           </div>
     </footer>

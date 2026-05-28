@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="asyncio是什么 asyncio 是 Python 标准库中的一个模块，用于编写异步（asynchronous）程序。它提供了一套完整的工具，让你可以用 async&#x2F;await 语法编写并发代码，特别适合处理 I&#x2F;O 密集型任务（比如网络请求、文件读写、数据库查询等），而不会阻塞整个程序。 概念学习 并发 并发（Concurrency）是一种“效果”——多个任务在一段时间内交替">
+    <meta name="description" content="asyncio是什么asyncio 是 Python 标准库中的一个模块，用于编写异步（asynchronous）程序。它提供了一套完整的工具，让你可以用 async&#x2F;await 语法编写并发代码，特别适合处理 I&#x2F;O 密集型任务（比如网络请求、文件读写、数据库查询等），而不会阻塞整个程序。 概念学习并发并发（Concurrency）是一种“效果”——多个任务在一段时间内交替或同时推进。它可以通过">
 <meta property="og:type" content="article">
 <meta property="og:title" content="python异步编程-asyncio">
 <meta property="og:url" content="http://example.com/2025/10/19/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/python-async/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="asyncio是什么 asyncio 是 Python 标准库中的一个模块，用于编写异步（asynchronous）程序。它提供了一套完整的工具，让你可以用 async&#x2F;await 语法编写并发代码，特别适合处理 I&#x2F;O 密集型任务（比如网络请求、文件读写、数据库查询等），而不会阻塞整个程序。 概念学习 并发 并发（Concurrency）是一种“效果”——多个任务在一段时间内交替">
+<meta property="og:description" content="asyncio是什么asyncio 是 Python 标准库中的一个模块，用于编写异步（asynchronous）程序。它提供了一套完整的工具，让你可以用 async&#x2F;await 语法编写并发代码，特别适合处理 I&#x2F;O 密集型任务（比如网络请求、文件读写、数据库查询等），而不会阻塞整个程序。 概念学习并发并发（Concurrency）是一种“效果”——多个任务在一段时间内交替或同时推进。它可以通过">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-10-18T16:00:00.000Z">
 <meta property="article:modified_time" content="2025-10-25T06:45:09.511Z">
@@ -144,9 +144,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#asyncio%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.</span> <span class="nav-text">asyncio是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5%E5%AD%A6%E4%B9%A0"><span class="nav-number">2.</span> <span class="nav-text">概念学习</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91"><span class="nav-number">2.1.</span> <span class="nav-text">并发</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8Bprocess%E7%BA%BF%E7%A8%8Bthread-%E5%92%8C-%E5%8D%8F%E7%A8%8Bcoroutine"><span class="nav-number">2.2.</span> <span class="nav-text">进程（Process）、线程（Thread）
-和 协程（Coroutine）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python-%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B%E7%9A%84%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">Python 异步编程的核心机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%88%98%E5%AD%A6%E4%B9%A0"><span class="nav-number">4.</span> <span class="nav-text">实战学习</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#sync_demo.py"><span class="nav-number">4.1.</span> <span class="nav-text">sync_demo.py</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#async_demo.py"><span class="nav-number">4.2.</span> <span class="nav-text">async_demo.py</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B%E5%87%BD%E6%95%B0"><span class="nav-number">5.</span> <span class="nav-text">协程函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#await%E5%85%B3%E9%94%AE%E5%AD%97"><span class="nav-number">6.</span> <span class="nav-text">await关键字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AFevent-loop%E4%B8%8E%E4%BB%BB%E5%8A%A1task"><span class="nav-number">7.</span> <span class="nav-text">事件循环（Event
-Loop）与任务（Task）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#asyncio.gather"><span class="nav-number">8.</span> <span class="nav-text">asyncio.gather</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#asyncio.as_completed"><span class="nav-number">9.</span> <span class="nav-text">asyncio.as_completed</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#asyncio.to_thread"><span class="nav-number">10.</span> <span class="nav-text">asyncio.to_thread</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#aiohttp%E5%92%8Caiofiles"><span class="nav-number">11.</span> <span class="nav-text">aiohttp和aiofiles</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">12.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#asyncio%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.</span> <span class="nav-text">asyncio是什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5%E5%AD%A6%E4%B9%A0"><span class="nav-number">2.</span> <span class="nav-text">概念学习</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91"><span class="nav-number">2.1.</span> <span class="nav-text">并发</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%EF%BC%88Process%EF%BC%89%E3%80%81%E7%BA%BF%E7%A8%8B%EF%BC%88Thread%EF%BC%89-%E5%92%8C-%E5%8D%8F%E7%A8%8B%EF%BC%88Coroutine%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">进程（Process）、线程（Thread） 和 协程（Coroutine）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Python-%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B%E7%9A%84%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">Python 异步编程的核心机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%88%98%E5%AD%A6%E4%B9%A0"><span class="nav-number">4.</span> <span class="nav-text">实战学习</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#sync-demo-py"><span class="nav-number">4.1.</span> <span class="nav-text">sync_demo.py</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#async-demo-py"><span class="nav-number">4.2.</span> <span class="nav-text">async_demo.py</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%8F%E7%A8%8B%E5%87%BD%E6%95%B0"><span class="nav-number">5.</span> <span class="nav-text">协程函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#await%E5%85%B3%E9%94%AE%E5%AD%97"><span class="nav-number">6.</span> <span class="nav-text">await关键字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%EF%BC%88Event-Loop%EF%BC%89%E4%B8%8E%E4%BB%BB%E5%8A%A1%EF%BC%88Task%EF%BC%89"><span class="nav-number">7.</span> <span class="nav-text">事件循环（Event Loop）与任务（Task）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#asyncio-gather"><span class="nav-number">8.</span> <span class="nav-text">asyncio.gather</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#asyncio-as-completed"><span class="nav-number">9.</span> <span class="nav-text">asyncio.as_completed</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#asyncio-to-thread"><span class="nav-number">10.</span> <span class="nav-text">asyncio.to_thread</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#aiohttp%E5%92%8Caiofiles"><span class="nav-number">11.</span> <span class="nav-text">aiohttp和aiofiles</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">12.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -161,18 +159,18 @@ Loop）与任务（Task）</span></a></li><li class="nav-item nav-level-3"><a cl
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">181</span>
+          <span class="site-state-item-count">182</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-count">64</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">67</span>
+        <span class="site-state-item-count">66</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -290,29 +288,15 @@ Loop）与任务（Task）</span></a></li><li class="nav-item nav-level-3"><a cl
     
     
     
-    <div class="post-body" itemprop="articleBody"><h3 id="asyncio是什么">asyncio是什么</h3>
-<p><code>asyncio</code> 是 <strong>Python
-标准库中的一个模块</strong>，用于编写<strong>异步（asynchronous）程序</strong>。它提供了一套完整的工具，让你可以用
-<code>async</code>/<code>await</code> 语法编写并发代码，特别适合处理
-<strong>I/O
-密集型任务</strong>（比如网络请求、文件读写、数据库查询等），而不会阻塞整个程序。</p>
-<h3 id="概念学习">概念学习</h3>
-<h4 id="并发">并发</h4>
-<p><strong>并发（Concurrency）是一种“效果”——多个任务在一段时间内交替或同时推进。</strong>
-它可以通过多种方式实现，常见的有：</p>
-<ol type="1">
+    <div class="post-body" itemprop="articleBody"><h3 id="asyncio是什么"><a href="#asyncio是什么" class="headerlink" title="asyncio是什么"></a>asyncio是什么</h3><p><code>asyncio</code> 是 <strong>Python 标准库中的一个模块</strong>，用于编写<strong>异步（asynchronous）程序</strong>。它提供了一套完整的工具，让你可以用 <code>async</code>/<code>await</code> 语法编写并发代码，特别适合处理 <strong>I/O 密集型任务</strong>（比如网络请求、文件读写、数据库查询等），而不会阻塞整个程序。</p>
+<h3 id="概念学习"><a href="#概念学习" class="headerlink" title="概念学习"></a>概念学习</h3><h4 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h4><p><strong>并发（Concurrency）是一种“效果”——多个任务在一段时间内交替或同时推进。</strong><br>它可以通过多种方式实现，常见的有： </p>
+<ol>
 <li><strong>多线程（Multithreading）</strong></li>
-<li><strong>异步编程（Asynchronous programming，如
-asyncio）</strong></li>
+<li><strong>异步编程（Asynchronous programming，如 asyncio）</strong></li>
 <li><strong>多进程（Multiprocessing）</strong>（严格说更偏向“并行”，但也支持并发）</li>
 </ol>
-<h4 id="进程process线程thread-和-协程coroutine"><strong>进程（Process）</strong>、<strong>线程（Thread）</strong>
-和 <strong>协程（Coroutine）</strong></h4>
+<h4 id="进程（Process）、线程（Thread）-和-协程（Coroutine）"><a href="#进程（Process）、线程（Thread）-和-协程（Coroutine）" class="headerlink" title="进程（Process）、线程（Thread） 和 协程（Coroutine）"></a><strong>进程（Process）</strong>、<strong>线程（Thread）</strong> 和 <strong>协程（Coroutine）</strong></h4><div class="table-container">
 <table>
-<colgroup>
-<col style="width: 25%">
-<col style="width: 74%">
-</colgroup>
 <thead>
 <tr>
 <th>概念</th>
@@ -326,29 +310,19 @@ asyncio）</strong></li>
 </tr>
 <tr>
 <td><strong>线程（Thread）</strong></td>
-<td>进程内的执行流（execution context），是 CPU
-调度的基本单位。同一进程内的多个线程共享该进程的地址空间和大部分资源（如堆、全局变量、打开的文件），但各自拥有独立的栈、寄存器状态和线程局部存储（TLS）。</td>
+<td>进程内的执行流（execution context），是 CPU 调度的基本单位。同一进程内的多个线程共享该进程的地址空间和大部分资源（如堆、全局变量、打开的文件），但各自拥有独立的栈、寄存器状态和线程局部存储（TLS）。</td>
 </tr>
 <tr>
 <td><strong>协程（Coroutine）</strong></td>
-<td>一种用户态的轻量级并发原语，属于<strong>协作式多任务（cooperative
-multitasking）</strong>模型。协程的切换由程序显式控制（如通过
-<code>await</code> 或
-<code>yield</code>），不依赖操作系统调度，上下文切换在用户空间完成，无内核介入。</td>
+<td>一种用户态的轻量级并发原语，属于<strong>协作式多任务（cooperative multitasking）</strong>模型。协程的切换由程序显式控制（如通过 <code>await</code> 或 <code>yield</code>），不依赖操作系统调度，上下文切换在用户空间完成，无内核介入。</td>
 </tr>
 </tbody>
 </table>
-<p><strong>线程”在 CPU 核心上运行。</strong>
-<strong>进程是资源容器，线程是执行单位。</strong></p>
+</div>
+<p><strong>线程”在 CPU 核心上运行。</strong><br><strong>进程是资源容器，线程是执行单位。</strong> </p>
 <p>内存与资源共享模型</p>
+<div class="table-container">
 <table>
-<colgroup>
-<col style="width: 5%">
-<col style="width: 12%">
-<col style="width: 7%">
-<col style="width: 32%">
-<col style="width: 42%">
-</colgroup>
 <thead>
 <tr>
 <th>模型</th>
@@ -382,13 +356,10 @@ multitasking）</strong>模型。协程的切换由程序显式控制（如通�
 </tr>
 </tbody>
 </table>
+</div>
 <p>在 Python 中的实现</p>
+<div class="table-container">
 <table>
-<colgroup>
-<col style="width: 8%">
-<col style="width: 28%">
-<col style="width: 63%">
-</colgroup>
 <thead>
 <tr>
 <th>模型</th>
@@ -400,179 +371,120 @@ multitasking）</strong>模型。协程的切换由程序显式控制（如通�
 <tr>
 <td><strong>进程</strong></td>
 <td><code>multiprocessing</code></td>
-<td><code>Process</code>, <code>Pool</code>, <code>Queue</code>,
-<code>Pipe</code>, <code>Manager</code></td>
+<td><code>Process</code>, <code>Pool</code>, <code>Queue</code>, <code>Pipe</code>, <code>Manager</code></td>
 </tr>
 <tr>
 <td><strong>线程</strong></td>
 <td><code>threading</code></td>
-<td><code>Thread</code>, <code>Lock</code>, <code>Condition</code>,
-<code>Semaphore</code></td>
+<td><code>Thread</code>, <code>Lock</code>, <code>Condition</code>, <code>Semaphore</code></td>
 </tr>
 <tr>
 <td><strong>协程</strong></td>
 <td><code>asyncio</code> + <code>async</code>/<code>await</code></td>
-<td><code>async def</code>, <code>await</code>,
-<code>asyncio.run()</code>, <code>create_task()</code>,
-<code>gather()</code></td>
+<td><code>async def</code>, <code>await</code>, <code>asyncio.run()</code>, <code>create_task()</code>, <code>gather()</code></td>
 </tr>
 </tbody>
 </table>
-<p><strong>进程</strong>
-是<strong>资源隔离与并行计算</strong>的基石；</p>
-<p><strong>线程</strong>
-是<strong>操作系统级并发</strong>的传统手段，但在 Python 中受 GIL
-限制；</p>
-<p><strong>协程</strong> 是<strong>高并发 I/O
-的现代解决方案</strong>，以极低开销实现大规模并发，已成为 Python
-异步编程的事实标准。</p>
+</div>
+<p><strong>进程</strong> 是<strong>资源隔离与并行计算</strong>的基石；</p>
+<p><strong>线程</strong> 是<strong>操作系统级并发</strong>的传统手段，但在 Python 中受 GIL 限制；</p>
+<p><strong>协程</strong> 是<strong>高并发 I/O 的现代解决方案</strong>，以极低开销实现大规模并发，已成为 Python 异步编程的事实标准。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">操作系统</span><br><span class="line"> └── 进程（Process） ← 资源容器（内存、文件描述符等）</span><br><span class="line">      └── 线程（Thread） ← CPU 调度单元（至少一个）</span><br><span class="line">           └── 协程（Coroutine） ← 用户态逻辑任务（可多个，协作式切换）</span><br></pre></td></tr></table></figure>
-<p>当你运行一个 Python 脚本（如
-<code>python app.py</code>），操作系统会：</p>
-<ol type="1">
+<p>当你运行一个 Python 脚本（如 <code>python app.py</code>），操作系统会：</p>
+<ol>
 <li>创建一个<strong>新进程</strong>（Process）</li>
 <li>加载 Python 解释器（CPython）</li>
 <li>在该进程中<strong>启动主线程（Main Thread）</strong></li>
 <li>执行你的代码</li>
 </ol>
 <blockquote>
-<p>📌 所以：<strong>一个正在运行的 Python 程序 = 1 个进程 + 至少 1
-个线程（主线程）</strong></p>
+<p>📌 所以：<strong>一个正在运行的 Python 程序 = 1 个进程 + 至少 1 个线程（主线程）</strong> </p>
 </blockquote>
 <p>但注意：</p>
 <ul>
-<li>程序<strong>可以创建更多进程</strong>（通过
-<code>multiprocessing</code>）</li>
-<li>程序<strong>可以创建更多线程</strong>（通过
-<code>threading</code>）</li>
+<li>程序<strong>可以创建更多进程</strong>（通过 <code>multiprocessing</code>）</li>
+<li>程序<strong>可以创建更多线程</strong>（通过 <code>threading</code>）</li>
 <li>所以“一个程序”最终可能对应 <strong>多个进程、多个线程</strong></li>
 </ul>
-<h3 id="python-异步编程的核心机制">Python 异步编程的核心机制</h3>
-<ol type="1">
-<li><strong><code>async def</code></strong> 定义协程函数 → 返回
-<strong>协程对象（Coroutine Object）</strong></li>
-<li><strong><code>await</code></strong>
-用于挂起当前协程，等待另一个协程或异步操作完成</li>
-<li><strong>事件循环（Event Loop）</strong>（由 <code>asyncio</code>
-提供）负责：
-<ul>
+<h3 id="Python-异步编程的核心机制"><a href="#Python-异步编程的核心机制" class="headerlink" title="Python 异步编程的核心机制"></a>Python 异步编程的核心机制</h3><ol>
+<li><strong><code>async def</code></strong> 定义协程函数 → 返回 <strong>协程对象（Coroutine Object）</strong></li>
+<li><strong><code>await</code></strong> 用于挂起当前协程，等待另一个协程或异步操作完成</li>
+<li><strong>事件循环（Event Loop）</strong>（由 <code>asyncio</code> 提供）负责：<ul>
 <li>调度协程</li>
 <li>管理 I/O 多路复用（如 <code>epoll</code>/<code>kqueue</code>）</li>
 <li>在 I/O 就绪时恢复对应协程</li>
-</ul></li>
+</ul>
+</li>
 </ol>
-<h3 id="实战学习">实战学习</h3>
-<h4 id="sync_demo.py">sync_demo.py</h4>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">from time import sleep, perf_counter</span><br><span class="line"></span><br><span class="line">def fetch_url(url):</span><br><span class="line">    print(&#x27;Fetching the URL&#x27;)</span><br><span class="line">    sleep(1)#模拟阻塞</span><br><span class="line">    print(&#x27;Finished fetching&#x27;)</span><br><span class="line">    return &#x27;url_content&#x27;</span><br><span class="line"></span><br><span class="line">def read_file(filepath):</span><br><span class="line">    print(&#x27;Reading the file&#x27;)</span><br><span class="line">    sleep(1)#模拟阻塞</span><br><span class="line">    print(&#x27;Finished reading&#x27;)</span><br><span class="line">    return &#x27;file_content&#x27;</span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    url = &#x27;example.com&#x27;</span><br><span class="line">    filepath = &#x27;example.txt&#x27;</span><br><span class="line">    fetch_result = fetch_url(url)</span><br><span class="line">    read_result = read_file(filepath)</span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    start_time = perf_counter()</span><br><span class="line">    main()</span><br><span class="line">    end_time = perf_counter()</span><br><span class="line">    print(f&#x27;Time taken: &#123;end_time - start_time:.2f&#125; seconds&#x27;)</span><br></pre></td></tr></table></figure>
+<h3 id="实战学习"><a href="#实战学习" class="headerlink" title="实战学习"></a>实战学习</h3><h4 id="sync-demo-py"><a href="#sync-demo-py" class="headerlink" title="sync_demo.py"></a>sync_demo.py</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">from time import sleep, perf_counter</span><br><span class="line"></span><br><span class="line">def fetch_url(url):</span><br><span class="line">    print(&#x27;Fetching the URL&#x27;)</span><br><span class="line">    sleep(1)#模拟阻塞</span><br><span class="line">    print(&#x27;Finished fetching&#x27;)</span><br><span class="line">    return &#x27;url_content&#x27;</span><br><span class="line"></span><br><span class="line">def read_file(filepath):</span><br><span class="line">    print(&#x27;Reading the file&#x27;)</span><br><span class="line">    sleep(1)#模拟阻塞</span><br><span class="line">    print(&#x27;Finished reading&#x27;)</span><br><span class="line">    return &#x27;file_content&#x27;</span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    url = &#x27;example.com&#x27;</span><br><span class="line">    filepath = &#x27;example.txt&#x27;</span><br><span class="line">    fetch_result = fetch_url(url)</span><br><span class="line">    read_result = read_file(filepath)</span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    start_time = perf_counter()</span><br><span class="line">    main()</span><br><span class="line">    end_time = perf_counter()</span><br><span class="line">    print(f&#x27;Time taken: &#123;end_time - start_time:.2f&#125; seconds&#x27;)</span><br></pre></td></tr></table></figure>
 <p>以上展示一份同步的代码，sleep用来模拟阻塞</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Fetching the URL</span><br><span class="line">Finished fetching</span><br><span class="line">Reading the file</span><br><span class="line">Finished reading</span><br><span class="line">Time taken: 2.00 seconds</span><br></pre></td></tr></table></figure>
-<h4 id="async_demo.py">async_demo.py</h4>
-<p><strong>异步编程的三步核心流程</strong>：</p>
+<h4 id="async-demo-py"><a href="#async-demo-py" class="headerlink" title="async_demo.py"></a>async_demo.py</h4><p><strong>异步编程的三步核心流程</strong>：</p>
 <blockquote>
-<p><strong>1. 定义协程函数 → 2. 包装协程为任务 → 3.
-建立事件循环</strong></p>
+<p><strong>1. 定义协程函数 → 2. 包装协程为任务 → 3. 建立事件循环</strong> </p>
 </blockquote>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">from time import sleep, perf_counter</span><br><span class="line">import asyncio</span><br><span class="line"></span><br><span class="line">#定义协程函数</span><br><span class="line">async def fetch_url(url):</span><br><span class="line">    print(f&#x27;Fetching the url&#x27;)</span><br><span class="line">    #把阻塞操作包装成协程</span><br><span class="line">    await asyncio.sleep(1)</span><br><span class="line">    print(&#x27;Finished fetching&#x27;)</span><br><span class="line">    return &#x27;url_content&#x27;</span><br><span class="line"></span><br><span class="line">async def read_file(filepath):</span><br><span class="line">    print(&#x27;Reading the file&#x27;)</span><br><span class="line">    await asyncio.sleep(1)</span><br><span class="line">    print(&#x27;Finished reading&#x27;)</span><br><span class="line">    return &#x27;file_content&#x27;</span><br><span class="line"></span><br><span class="line">#若想使用await，需要把main函数定义成协程函数</span><br><span class="line">async def main():</span><br><span class="line">    url = &#x27;example.com&#x27;</span><br><span class="line">    filepath = &#x27;example.txt&#x27;</span><br><span class="line">    #创建任务</span><br><span class="line">    tasks = [asyncio.create_task(coro) for coro in [</span><br><span class="line">        fetch_url(url),</span><br><span class="line">        read_file(filepath)]]</span><br><span class="line">    fetch_result = await tasks[0]</span><br><span class="line">    read_result = await tasks[1]</span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    start_time = perf_counter()</span><br><span class="line">    #创建事件循环</span><br><span class="line">    asyncio.run(main())</span><br><span class="line">    end_time = perf_counter()</span><br><span class="line">    print(f&#x27;Time taken: &#123;end_time - start_time:.2f&#125; seconds&#x27;)</span><br></pre></td></tr></table></figure>
 <p>以上则是改为了异步的代码</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Fetching the url</span><br><span class="line">Reading the file</span><br><span class="line">Finished fetching</span><br><span class="line">Finished reading</span><br><span class="line">Time taken: 1.01 seconds</span><br></pre></td></tr></table></figure>
-<h3 id="协程函数">协程函数</h3>
-<p>协程函数（Coroutine Function）是 <strong>Python 中使用
-<code>async def</code>
-语法定义的函数</strong>，它是异步编程的核心构建单元。调用协程函数<strong>不会立即执行其内部代码</strong>，而是返回一个
-<strong>协程对象（Coroutine Object）</strong>，该对象必须由事件循环（如
-<code>asyncio</code>）驱动或通过 <code>await</code>
-在另一个协程中调用，才能真正执行。</p>
+<h3 id="协程函数"><a href="#协程函数" class="headerlink" title="协程函数"></a>协程函数</h3><p>协程函数（Coroutine Function）是 <strong>Python 中使用 <code>async def</code> 语法定义的函数</strong>，它是异步编程的核心构建单元。调用协程函数<strong>不会立即执行其内部代码</strong>，而是返回一个 <strong>协程对象（Coroutine Object）</strong>，该对象必须由事件循环（如 <code>asyncio</code>）驱动或通过 <code>await</code> 在另一个协程中调用，才能真正执行。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">import asyncio</span><br><span class="line"></span><br><span class="line">#协程函数</span><br><span class="line">async def coroutine_func():</span><br><span class="line">    return &#x27;coroutine_result&#x27;</span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">    print(coroutine_func())</span><br><span class="line">    result = asyncio.run(coroutine_func())</span><br><span class="line">    print(&quot;---&quot;)</span><br><span class="line">    print(result)</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;coroutine object coroutine_func at 0x000001958D88A4B0&gt;</span><br><span class="line">d:\code\python\learn_pythontips\learn_async\coroutine_func.py:8: RuntimeWarning: coroutine &#x27;coroutine_func&#x27; was never awaited</span><br><span class="line">  print(coroutine_func())</span><br><span class="line">RuntimeWarning: Enable tracemalloc to get the object allocation traceback</span><br><span class="line">---</span><br><span class="line">coroutine_result</span><br></pre></td></tr></table></figure>
 <p>由输出可见，coroutine object，返回的是一个协程对象</p>
-<h3 id="await关键字">await关键字</h3>
-<p><code>await</code> 是 Python
-异步编程中的<strong>核心关键字</strong>，它的作用是：</p>
+<h3 id="await关键字"><a href="#await关键字" class="headerlink" title="await关键字"></a>await关键字</h3><p><code>await</code> 是 Python 异步编程中的<strong>核心关键字</strong>，它的作用是：</p>
 <blockquote>
-<p><strong>暂停当前协程的执行，等待一个“可等待对象”（awaitable）完成，并获取其结果，同时将控制权交还给事件循环，使其能运行其他任务。</strong></p>
+<p><strong>暂停当前协程的执行，等待一个“可等待对象”（awaitable）完成，并获取其结果，同时将控制权交还给事件循环，使其能运行其他任务。</strong> </p>
 </blockquote>
 <p>✅ 三大功能：</p>
-<ol type="1">
+<ol>
 <li><strong>挂起（Suspend）</strong>：当前协程在此处暂停，不阻塞线程。</li>
 <li><strong>等待（Wait）</strong>：等待一个异步操作（如网络请求、文件读写、定时器）完成。</li>
 <li><strong>恢复（Resume）</strong>：当被等待的对象完成后，协程从此处恢复执行，并拿到结果。</li>
 </ol>
 <blockquote>
-<p>⚠️ 关键：<strong><code>await</code>
-不会阻塞整个线程</strong>，而是让事件循环去执行其他就绪的协程。</p>
+<p>⚠️ 关键：<strong><code>await</code> 不会阻塞整个线程</strong>，而是让事件循环去执行其他就绪的协程。 </p>
 </blockquote>
-<h3 id="事件循环event-loop与任务task">事件循环（Event
-Loop）与任务（Task）</h3>
-<p><strong>事件循环（Event Loop）</strong>
-是异步编程的<strong>核心引擎</strong>，尤其在 Python 的
-<code>asyncio</code> 模型中，它是<strong>驱动协程执行、管理异步
-I/O、调度任务的中枢系统</strong>。</p>
+<h3 id="事件循环（Event-Loop）与任务（Task）"><a href="#事件循环（Event-Loop）与任务（Task）" class="headerlink" title="事件循环（Event Loop）与任务（Task）"></a>事件循环（Event Loop）与任务（Task）</h3><p><strong>事件循环（Event Loop）</strong> 是异步编程的<strong>核心引擎</strong>，尤其在 Python 的 <code>asyncio</code> 模型中，它是<strong>驱动协程执行、管理异步 I/O、调度任务的中枢系统</strong>。</p>
 <blockquote>
-<p><strong>事件循环是一个程序结构，用于监听和分发事件或消息，实现非阻塞
-I/O 和协作式多任务调度。</strong></p>
+<p><strong>事件循环是一个程序结构，用于监听和分发事件或消息，实现非阻塞 I/O 和协作式多任务调度。</strong> </p>
 </blockquote>
 <p>在 Python <code>asyncio</code> 中，事件循环：</p>
 <ul>
 <li>维护一个<strong>待执行协程队列</strong></li>
 <li>管理<strong>定时器</strong>（如 <code>asyncio.sleep</code>）</li>
-<li>使用操作系统提供的 <strong>I/O 多路复用机制</strong>（如 Linux 的
-<code>epoll</code>、macOS 的 <code>kqueue</code>、Windows 的
-<code>IOCP</code>）来高效监听大量文件描述符（如 socket）</li>
+<li>使用操作系统提供的 <strong>I/O 多路复用机制</strong>（如 Linux 的 <code>epoll</code>、macOS 的 <code>kqueue</code>、Windows 的 <code>IOCP</code>）来高效监听大量文件描述符（如 socket）</li>
 <li>在 I/O 就绪时，<strong>恢复对应的协程</strong></li>
 </ul>
 <p><strong>那事件循环如何知道哪些协程可以执行，哪些协程需要暂停呢</strong></p>
-<p>在 Python 异步编程（特别是
-<code>asyncio</code>）中，<strong>任务（Task）</strong>
-是是对<strong>协程（Coroutine）的封装</strong>，用于<strong>被事件循环调度和并发执行</strong>。</p>
+<p>在 Python 异步编程（特别是 <code>asyncio</code>）中，<strong>任务（Task）</strong> 是是对<strong>协程（Coroutine）的封装</strong>，用于<strong>被事件循环调度和并发执行</strong>。</p>
 <blockquote>
-<p><strong><code>Task</code> 是 <code>asyncio</code>
-中表示“未来会完成的异步操作”的对象，它是 <code>Future</code>
-的子类，用于包装协程并自动调度其执行。</strong></p>
+<p><strong><code>Task</code> 是 <code>asyncio</code> 中表示“未来会完成的异步操作”的对象，它是 <code>Future</code> 的子类，用于包装协程并自动调度其执行。</strong> </p>
 </blockquote>
 <p>核心作用：</p>
-<ol type="1">
+<ol>
 <li><strong>将协程注册到事件循环中</strong>，使其能够<strong>并发运行</strong>（而非顺序等待）</li>
 <li><strong>提供状态管理</strong>（如是否完成、是否取消、结果或异常）</li>
 <li><strong>支持取消操作</strong>（<code>task.cancel()</code>）</li>
-<li><strong>允许多次 <code>await</code></strong>（协程对象只能
-<code>await</code> 一次，但 <code>Task</code> 可以）</li>
+<li><strong>允许多次 <code>await</code></strong>（协程对象只能 <code>await</code> 一次，但 <code>Task</code> 可以）</li>
 </ol>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">import asyncio</span><br><span class="line"></span><br><span class="line">async def work(name, delay):</span><br><span class="line">    print(f&quot;开始 &#123;name&#125;&quot;)</span><br><span class="line">    await asyncio.sleep(delay)</span><br><span class="line">    print(f&quot;完成 &#123;name&#125;&quot;)</span><br><span class="line">    return f&quot;result-&#123;name&#125;&quot;</span><br><span class="line"></span><br><span class="line">async def main():</span><br><span class="line">    # 创建任务 → 立即开始执行！</span><br><span class="line">    task1 = asyncio.create_task(work(&quot;A&quot;, 2))</span><br><span class="line">    task2 = asyncio.create_task(work(&quot;B&quot;, 1))</span><br><span class="line"></span><br><span class="line">    # 等待任务完成（可获取结果）</span><br><span class="line">    r1 = await task1</span><br><span class="line">    r2 = await task2</span><br><span class="line">    print(r1, r2)</span><br><span class="line"></span><br><span class="line">asyncio.run(main())</span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">开始 A</span><br><span class="line">开始 B</span><br><span class="line">完成 B</span><br><span class="line">完成 A</span><br><span class="line">result-A result-B</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>💡 <strong>Task
-是实现并发的关键</strong>：它让多个协程“同时启动”，而不是“一个接一个等”。</p>
+<p>💡 <strong>Task 是实现并发的关键</strong>：它让多个协程“同时启动”，而不是“一个接一个等”。 </p>
 </blockquote>
-<h3 id="asyncio.gather">asyncio.gather</h3>
-<p>asyncio.gather用于<strong>并发运行多个 awaitable
-对象</strong>（如协程、Task、Future），并<strong>按顺序返回它们的结果列表</strong>。</p>
-<p>默认：<strong>任意一个任务出错，其他任务会被取消</strong>（除非
-<code>return_exceptions=True</code>）</p>
+<h3 id="asyncio-gather"><a href="#asyncio-gather" class="headerlink" title="asyncio.gather"></a>asyncio.gather</h3><p>asyncio.gather用于<strong>并发运行多个 awaitable 对象</strong>（如协程、Task、Future），并<strong>按顺序返回它们的结果列表</strong>。 </p>
+<p>默认：<strong>任意一个任务出错，其他任务会被取消</strong>（除非 <code>return_exceptions=True</code>）</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">async def main():</span><br><span class="line">    url = &#x27;example.com&#x27;</span><br><span class="line">    filepath = &#x27;example.txt&#x27;</span><br><span class="line">    results = await asyncio.gather(</span><br><span class="line">        fetch_url(url),</span><br><span class="line">        read_file(filepath))</span><br><span class="line">    print(results)</span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Fetching the url</span><br><span class="line">Reading the file</span><br><span class="line">Finished fetching</span><br><span class="line">Finished reading</span><br><span class="line">[&#x27;url_content&#x27;, &#x27;file_content&#x27;]</span><br><span class="line">Time taken: 1.00 seconds</span><br></pre></td></tr></table></figure>
-<h3 id="asyncio.as_completed">asyncio.as_completed</h3>
-<p>asyncio.as_completed返回一个<strong>异步迭代器（async
-iterator）</strong>，按<strong>任务完成的先后顺序</strong>，逐个产出已完成的
-awaitable 对象（通常是 Task 或 Future）。</p>
+<h3 id="asyncio-as-completed"><a href="#asyncio-as-completed" class="headerlink" title="asyncio.as_completed"></a>asyncio.as_completed</h3><p>asyncio.as_completed返回一个<strong>异步迭代器（async iterator）</strong>，按<strong>任务完成的先后顺序</strong>，逐个产出已完成的 awaitable 对象（通常是 Task 或 Future）。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">results = asyncio.as_completed([</span><br><span class="line">    fetch_url(url),</span><br><span class="line">    read_file(filepath)])</span><br><span class="line">for result in results:</span><br><span class="line">    print(await result)</span><br></pre></td></tr></table></figure>
 <p>特点：<strong>先完成的任务先被处理</strong>，无需等待所有任务结束</p>
-<h3 id="asyncio.to_thread">asyncio.to_thread</h3>
-<p><strong><code>await asyncio.to_thread(func, \*args)</code></strong>在<strong>默认线程池</strong>中运行同步函数
-<code>func(*args)</code>，并返回结果。 它是
-<code>loop.run_in_executor(None, func, *args)</code>
-的<strong>高层封装</strong>。</p>
+<h3 id="asyncio-to-thread"><a href="#asyncio-to-thread" class="headerlink" title="asyncio.to_thread"></a>asyncio.to_thread</h3><p><strong><code>await asyncio.to_thread(func, \*args)</code></strong>在<strong>默认线程池</strong>中运行同步函数 <code>func(*args)</code>，并返回结果。<br>它是 <code>loop.run_in_executor(None, func, *args)</code> 的<strong>高层封装</strong>。 </p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">import asyncio</span><br><span class="line">import time</span><br><span class="line"></span><br><span class="line">def blocking_io():</span><br><span class="line">    time.sleep(1)</span><br><span class="line">    return &quot;Done!&quot;</span><br><span class="line"></span><br><span class="line">async def main():</span><br><span class="line">    result = await asyncio.to_thread(blocking_io)</span><br><span class="line">    print(result)</span><br><span class="line"></span><br><span class="line">asyncio.run(main())</span><br></pre></td></tr></table></figure>
-<h3 id="aiohttp和aiofiles">aiohttp和aiofiles</h3>
-<p><code>aiohttp</code>：异步 HTTP 客户端与服务器框架</p>
+<h3 id="aiohttp和aiofiles"><a href="#aiohttp和aiofiles" class="headerlink" title="aiohttp和aiofiles"></a>aiohttp和aiofiles</h3><p><code>aiohttp</code>：异步 HTTP 客户端与服务器框架</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">import aiohttp</span><br><span class="line">import asyncio</span><br><span class="line"></span><br><span class="line">async def fetch(url):</span><br><span class="line">    async with aiohttp.ClientSession() as session:</span><br><span class="line">        async with session.get(url) as response:</span><br><span class="line">            return await response.text()</span><br><span class="line"></span><br><span class="line">asyncio.run(fetch(&quot;https://example.com&quot;))</span><br></pre></td></tr></table></figure>
-<p><strong><code>aiofiles</code>
-是一个为标准文件操作提供异步接口的库</strong>，允许你在
-<code>async/await</code>
-代码中安全地读写文件，<strong>而不会阻塞事件循环</strong>。</p>
+<p><strong><code>aiofiles</code> 是一个为标准文件操作提供异步接口的库</strong>，允许你在 <code>async/await</code> 代码中安全地读写文件，<strong>而不会阻塞事件循环</strong>。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">import aiofiles</span><br><span class="line">import asyncio</span><br><span class="line"></span><br><span class="line">async def main():</span><br><span class="line">    # 写文件</span><br><span class="line">    async with aiofiles.open(&#x27;data.txt&#x27;, &#x27;w&#x27;) as f:</span><br><span class="line">        await f.write(&#x27;Hello, async files!&#x27;)</span><br><span class="line"></span><br><span class="line">    # 读文件</span><br><span class="line">    async with aiofiles.open(&#x27;data.txt&#x27;, &#x27;r&#x27;) as f:</span><br><span class="line">        content = await f.read()</span><br><span class="line">        print(content)</span><br><span class="line"></span><br><span class="line">asyncio.run(main())</span><br></pre></td></tr></table></figure>
-<h3 id="参考资料">参考资料</h3>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV157mFYEEkH/?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">【Py】asyncio：为异步编程而生
-| Python 特性 | 并发编程 | 协程_哔哩哔哩_bilibili</a></p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV157mFYEEkH/?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">【Py】asyncio：为异步编程而生 | Python 特性 | 并发编程 | 协程_哔哩哔哩_bilibili</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1oa411b7c9/?spm_id_from=333.788.recommend_more_video.1&amp;trackid=web_related_0.router-related-2206146-bk62g.1761373068954.153&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">【python】asyncio的理解与入门，搞不明白协程？看这个视频就够了。_哔哩哔哩_bilibili</a></p>
 
     </div>
@@ -609,8 +521,8 @@ awaitable 对象（通常是 Task 或 Future）。</p>
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2025/10/19/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/python%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="prev" title="python设计模式">
-                  <i class="fa fa-angle-left"></i> python设计模式
+                <a href="/2025/10/19/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/python%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" rel="prev" title="python内存管理-GIL">
+                  <i class="fa fa-angle-left"></i> python内存管理-GIL
                 </a>
             </div>
             <div class="post-nav-item">
