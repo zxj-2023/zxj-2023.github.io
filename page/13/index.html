@@ -155,7 +155,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">182</span>
+          <span class="site-state-item-count">183</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -206,6 +206,248 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/16/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/04/16/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/" class="post-title-link" itemprop="url">机器学习——支持向量机</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-04-16 00:00:00" itemprop="dateCreated datePublished" datetime="2025-04-16T00:00:00+08:00">2025-04-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-12 19:00:02" itemprop="dateModified" datetime="2025-06-12T19:00:02+08:00">2025-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/" itemprop="url" rel="index"><span itemprop="name">大二下</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>下面我将为你详细解释KKT（Karush-Kuhn-Tucker）条件。KKT条件是优化理论中用于求解带约束非线性规划问题的一组必要条件，广泛应用于支持向量机（SVM）等机器学习算法中。我会使用内联数学公式（如 <script type="math/tex">f(\mathbf{x})</script>）来展示相关表达式。</p>
+<hr>
+<h3 id="1-优化问题的一般形式"><a href="#1-优化问题的一般形式" class="headerlink" title="1. 优化问题的一般形式"></a>1. 优化问题的一般形式</h3><p>我们考虑一个带有约束的优化问题，数学形式如下：</p>
+<ul>
+<li>目标：<script type="math/tex">\min_{\mathbf{x}} f(\mathbf{x})</script></li>
+<li>不等式约束：<script type="math/tex">g_i(\mathbf{x}) \leq 0</script>，其中 <script type="math/tex">i = 1, 2, \dots, m</script></li>
+<li>等式约束：<script type="math/tex">h_j(\mathbf{x}) = 0</script>，其中 <script type="math/tex">j = 1, 2, \dots, p</script></li>
+</ul>
+<p>这里：</p>
+<ul>
+<li><script type="math/tex">f(\mathbf{x})</script> 是目标函数，通常是我们希望最小化的函数。</li>
+<li><script type="math/tex">g_i(\mathbf{x}) \leq 0</script> 表示 <script type="math/tex">m</script> 个不等式约束。</li>
+<li><script type="math/tex">h_j(\mathbf{x}) = 0</script> 表示 <script type="math/tex">p</script> 个等式约束。</li>
+</ul>
+<p>KKT条件的目标是找到满足这些约束的局部最优解 <script type="math/tex">\mathbf{x}</script>。</p>
+<hr>
+<h3 id="2-拉格朗日函数"><a href="#2-拉格朗日函数" class="headerlink" title="2. 拉格朗日函数"></a>2. 拉格朗日函数</h3><p>为了引入KKT条件，我们首先定义拉格朗日函数：</p>
+<script type="math/tex; mode=display">\mathcal{L}(\mathbf{x}, \boldsymbol{\lambda}, \boldsymbol{\mu}) = f(\mathbf{x}) + \sum_{i=1}^{m} \lambda_i g_i(\mathbf{x}) + \sum_{j=1}^{p} \mu_j h_j(\mathbf{x})</script><p>其中：</p>
+<ul>
+<li><script type="math/tex">\boldsymbol{\lambda} = (\lambda_1, \lambda_2, \dots, \lambda_m)</script> 是与不等式约束 <script type="math/tex">g_i(\mathbf{x}) \leq 0</script> 对应的拉格朗日乘子。</li>
+<li><script type="math/tex">\boldsymbol{\mu} = (\mu_1, \mu_2, \dots, \mu_p)</script> 是与等式约束 <script type="math/tex">h_j(\mathbf{x}) = 0</script> 对应的拉格朗日乘子。</li>
+</ul>
+<p>拉格朗日函数将目标函数和约束条件结合在一起，通过引入乘子 <script type="math/tex">\lambda_i</script> 和 <script type="math/tex">\mu_j</script> 来平衡约束对优化的影响。</p>
+<hr>
+<h3 id="3-KKT条件的组成部分"><a href="#3-KKT条件的组成部分" class="headerlink" title="3. KKT条件的组成部分"></a>3. KKT条件的组成部分</h3><p>KKT条件由以下四个部分组成，只有当某些正则性条件（如Slater条件）满足时，局部最优解 <script type="math/tex">\mathbf{x}</script> 才会同时满足这些条件。以下是具体的KKT条件：</p>
+<h4 id="3-1-梯度条件（Stationarity）"><a href="#3-1-梯度条件（Stationarity）" class="headerlink" title="3.1 梯度条件（Stationarity）"></a>3.1 梯度条件（Stationarity）</h4><p>拉格朗日函数对 <script type="math/tex">\mathbf{x}</script> 的梯度必须为零，即：</p>
+<script type="math/tex; mode=display">\nabla_{\mathbf{x}} \mathcal{L}(\mathbf{x}, \boldsymbol{\lambda}, \boldsymbol{\mu}) = \nabla f(\mathbf{x}) + \sum_{i=1}^{m} \lambda_i \nabla g_i(\mathbf{x}) + \sum_{j=1}^{p} \mu_j \nabla h_j(\mathbf{x}) = 0</script><p>这意味着在最优解处，目标函数的梯度可以通过约束函数梯度的线性组合来表示。</p>
+<h4 id="3-2-原始可行性（Primal-Feasibility）"><a href="#3-2-原始可行性（Primal-Feasibility）" class="headerlink" title="3.2 原始可行性（Primal Feasibility）"></a>3.2 原始可行性（Primal Feasibility）</h4><p>解 <script type="math/tex">\mathbf{x}</script> 必须满足原始问题的所有约束：</p>
+<ul>
+<li>不等式约束：<script type="math/tex">g_i(\mathbf{x}) \leq 0</script>，其中 <script type="math/tex">i = 1, 2, \dots, m</script></li>
+<li>等式约束：<script type="math/tex">h_j(\mathbf{x}) = 0</script>，其中 <script type="math/tex">j = 1, 2, \dots, p</script></li>
+</ul>
+<p>这确保了解仍在问题的可行域内。</p>
+<h4 id="3-3-对偶可行性（Dual-Feasibility）"><a href="#3-3-对偶可行性（Dual-Feasibility）" class="headerlink" title="3.3 对偶可行性（Dual Feasibility）"></a>3.3 对偶可行性（Dual Feasibility）</h4><p>对于不等式约束对应的拉格朗日乘子，必须满足：</p>
+<script type="math/tex; mode=display">\lambda_i \geq 0$$，其中 $$i = 1, 2, \dots, m</script><p>这表明不等式约束的乘子非负，反映了约束对优化方向的影响。</p>
+<h4 id="3-4-互补松弛条件（Complementary-Slackness）"><a href="#3-4-互补松弛条件（Complementary-Slackness）" class="headerlink" title="3.4 互补松弛条件（Complementary Slackness）"></a>3.4 互补松弛条件（Complementary Slackness）</h4><p>对于每个不等式约束，乘子与约束函数的乘积必须为零：</p>
+<script type="math/tex; mode=display">\lambda_i g_i(\mathbf{x}) = 0$$，其中 $$i = 1, 2, \dots, m</script><p>这意味着：</p>
+<ul>
+<li>如果某个约束不“紧”（即 <script type="math/tex">g_i(\mathbf{x}) < 0</script>），则对应的乘子 <script type="math/tex">\lambda_i = 0</script>。</li>
+<li>如果 <script type="math/tex">\lambda_i > 0</script>，则该约束必须是“紧”的（即 <script type="math/tex">g_i(\mathbf{x}) = 0</script>）。</li>
+</ul>
+<hr>
+<h3 id="4-KKT条件的意义"><a href="#4-KKT条件的意义" class="headerlink" title="4. KKT条件的意义"></a>4. KKT条件的意义</h3><ul>
+<li><strong>梯度条件</strong>：表明最优解处目标函数的改变方向被约束完全平衡。</li>
+<li><strong>原始可行性</strong>：确保解满足所有约束条件。</li>
+<li><strong>对偶可行性</strong>：限制拉格朗日乘子的符号，保证优化方向的合理性。</li>
+<li><strong>互补松弛条件</strong>：揭示哪些约束在最优解处起作用（紧约束），哪些不起作用。</li>
+</ul>
+<hr>
+<h3 id="5-KKT条件在SVM中的应用示例"><a href="#5-KKT条件在SVM中的应用示例" class="headerlink" title="5. KKT条件在SVM中的应用示例"></a>5. KKT条件在SVM中的应用示例</h3><p>KKT条件在支持向量机（SVM）中尤为重要。SVM的原始优化问题为：</p>
+<ul>
+<li>目标：<script type="math/tex">\min_{\mathbf{w}, b} \frac{1}{2} \|\mathbf{w}\|^2</script></li>
+<li>约束：<script type="math/tex">y_i (\mathbf{w} \cdot \mathbf{x}_i + b) \geq 1</script>，其中 <script type="math/tex">i = 1, 2, \dots, n</script></li>
+</ul>
+<p>将其改写为标准形式的不等式约束：<script type="math/tex">1 - y_i (\mathbf{w} \cdot \mathbf{x}_i + b) \leq 0</script>。</p>
+<p>拉格朗日函数为：</p>
+<script type="math/tex; mode=display">\mathcal{L}(\mathbf{w}, b, \boldsymbol{\alpha}) = \frac{1}{2} \|\mathbf{w}\|^2 + \sum_{i=1}^{n} \alpha_i \left[ 1 - y_i (\mathbf{w} \cdot \mathbf{x}_i + b) \right]</script><p>应用KKT条件：</p>
+<ol>
+<li><strong>梯度条件</strong>：<ul>
+<li>对 <script type="math/tex">\mathbf{w}</script>：<script type="math/tex">\nabla_{\mathbf{w}} \mathcal{L} = \mathbf{w} - \sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i = 0</script></li>
+<li>对 <script type="math/tex">b</script>：<script type="math/tex">\frac{\partial \mathcal{L}}{\partial b} = -\sum_{i=1}^{n} \alpha_i y_i = 0</script></li>
+</ul>
+</li>
+<li><strong>原始可行性</strong>：<script type="math/tex">y_i (\mathbf{w} \cdot \mathbf{x}_i + b) \geq 1</script></li>
+<li><strong>对偶可行性</strong>：<script type="math/tex">\alpha_i \geq 0</script></li>
+<li><strong>互补松弛条件</strong>：<script type="math/tex">\alpha_i \left[ y_i (\mathbf{w} \cdot \mathbf{x}_i + b) - 1 \right] = 0</script></li>
+</ol>
+<p>这些条件帮助我们识别支持向量（<script type="math/tex">\alpha_i > 0</script> 的点）并求解最优的 <script type="math/tex">\mathbf{w}</script> 和 <script type="math/tex">b</script>。</p>
+<hr>
+<h3 id="6-总结"><a href="#6-总结" class="headerlink" title="6. 总结"></a>6. 总结</h3><p>KKT条件是求解带约束优化问题的核心工具，它通过梯度条件、原始可行性、对偶可行性和互补松弛条件，确保了解既是最优的，又满足所有约束。在机器学习中，KKT条件为SVM等算法提供了理论支持，是理解和实现这些模型的关键。</p>
+<h3 id="作业"><a href="#作业" class="headerlink" title="作业"></a>作业</h3><h4 id="关于支持向量机，推导目标函数的原始问题转换为对偶问题的过程和条件。（使用拉格朗日乘子法）"><a href="#关于支持向量机，推导目标函数的原始问题转换为对偶问题的过程和条件。（使用拉格朗日乘子法）" class="headerlink" title="关于支持向量机，推导目标函数的原始问题转换为对偶问题的过程和条件。（使用拉格朗日乘子法）"></a>关于支持向量机，推导目标函数的原始问题转换为对偶问题的过程和条件。（使用拉格朗日乘子法）</h4><p><img src="/2025/04/16/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/IMG_20250416_164811.jpg" alt="IMG_20250416_164811"></p>
+<p>下面我们将推导支持向量机（SVM）中目标函数从原始问题转换为对偶问题的过程和条件，使用拉格朗日乘子法。我们将一步步展开，确保推导清晰且完整。</p>
+<hr>
+<h3 id="1-原始问题"><a href="#1-原始问题" class="headerlink" title="1. 原始问题"></a>1. 原始问题</h3><p>支持向量机（SVM）的目标是找到一个超平面，能够最大化到最近数据点的间隔。对于线性可分的情况，原始优化问题可以定义为：</p>
+<ul>
+<li><p><strong>目标函数</strong>：  </p>
+<script type="math/tex; mode=display">\min_{\mathbf{w}, b} \frac{1}{2} \|\mathbf{w}\|^2</script></li>
+<li><p><strong>约束条件</strong>：  </p>
+<script type="math/tex; mode=display">y_i (\mathbf{w} \cdot \mathbf{x}_i + b) \geq 1, \quad i = 1, 2, \dots, n</script></li>
+</ul>
+<p>其中：</p>
+<ul>
+<li><script type="math/tex">\mathbf{w}</script> 是超平面的法向量；</li>
+<li><script type="math/tex">b</script> 是超平面的截距；</li>
+<li><script type="math/tex">\mathbf{x}_i</script> 是训练样本，<script type="math/tex">y_i \in \{-1, 1\}</script> 是对应的类别标签；</li>
+<li><script type="math/tex">\|\mathbf{w}\|^2</script> 表示法向量的平方范数，目标是最小化它以最大化间隔；</li>
+<li>约束条件确保所有样本点被正确分类，并且到超平面的归一化距离至少为 1。</li>
+</ul>
+<hr>
+<h3 id="2-引入拉格朗日乘子法"><a href="#2-引入拉格朗日乘子法" class="headerlink" title="2. 引入拉格朗日乘子法"></a>2. 引入拉格朗日乘子法</h3><p>由于这是一个带不等式约束的优化问题，我们使用拉格朗日乘子法将其转换为无约束形式。引入拉格朗日乘子 <script type="math/tex">\boldsymbol{\alpha} = (\alpha_1, \alpha_2, \dots, \alpha_n)</script>，其中 <script type="math/tex">\alpha_i \geq 0</script>，构造拉格朗日函数：</p>
+<script type="math/tex; mode=display">\mathcal{L}(\mathbf{w}, b, \boldsymbol{\alpha}) = \frac{1}{2} \|\mathbf{w}\|^2 - \sum_{i=1}^{n} \alpha_i \left[ y_i (\mathbf{w} \cdot \mathbf{x}_i + b) - 1 \right]</script><ul>
+<li>第一项 <script type="math/tex">\frac{1}{2} \|\mathbf{w}\|^2</script> 是原始目标函数；</li>
+<li>第二项 <script type="math/tex">-\sum_{i=1}^{n} \alpha_i \left[ y_i (\mathbf{w} \cdot \mathbf{x}_i + b) - 1 \right]</script> 将约束条件引入，由于是 <script type="math/tex">\geq</script> 不等式，乘子 <script type="math/tex">\alpha_i \geq 0</script>。</li>
+</ul>
+<p>我们的目标是通过拉格朗日函数，将原始问题转换为对偶问题。</p>
+<hr>
+<h3 id="3-转换为对偶问题"><a href="#3-转换为对偶问题" class="headerlink" title="3. 转换为对偶问题"></a>3. 转换为对偶问题</h3><p>对偶问题的核心思想是：先对 <script type="math/tex">\mathbf{w}</script> 和 <script type="math/tex">b</script> 求拉格朗日函数的极小值，然后对 <script type="math/tex">\boldsymbol{\alpha}</script> 求极大值。即：</p>
+<script type="math/tex; mode=display">\max_{\boldsymbol{\alpha} \geq 0} \min_{\mathbf{w}, b} \mathcal{L}(\mathbf{w}, b, \boldsymbol{\alpha})</script><h4 id="3-1-对-mathbf-w-和-b-求偏导"><a href="#3-1-对-mathbf-w-和-b-求偏导" class="headerlink" title="3.1 对 \mathbf{w} 和 b 求偏导"></a>3.1 对 <script type="math/tex">\mathbf{w}</script> 和 <script type="math/tex">b</script> 求偏导</h4><p>为了找到 <script type="math/tex">\mathcal{L}</script> 关于 <script type="math/tex">\mathbf{w}</script> 和 <script type="math/tex">b</script> 的极小值，分别求偏导并令其为零：</p>
+<ul>
+<li><p>对 <script type="math/tex">\mathbf{w}</script> 求偏导：  </p>
+<script type="math/tex; mode=display">\frac{\partial \mathcal{L}}{\partial \mathbf{w}} = \mathbf{w} - \sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i = 0</script><p>解得：  </p>
+<script type="math/tex; mode=display">\mathbf{w} = \sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i</script></li>
+<li><p>对 <script type="math/tex">b</script> 求偏导：  </p>
+<script type="math/tex; mode=display">\frac{\partial \mathcal{L}}{\partial b} = -\sum_{i=1}^{n} \alpha_i y_i = 0</script><p>解得：  </p>
+<script type="math/tex; mode=display">\sum_{i=1}^{n} \alpha_i y_i = 0</script></li>
+</ul>
+<p>这两个结果是后续推导的关键。</p>
+<h4 id="3-2-代入拉格朗日函数"><a href="#3-2-代入拉格朗日函数" class="headerlink" title="3.2 代入拉格朗日函数"></a>3.2 代入拉格朗日函数</h4><p>将 <script type="math/tex">\mathbf{w} = \sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i</script> 代入拉格朗日函数，并利用 <script type="math/tex">\sum_{i=1}^{n} \alpha_i y_i = 0</script> 简化：</p>
+<script type="math/tex; mode=display">\mathcal{L} = \frac{1}{2} \left\| \sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i \right\|^2 - \sum_{i=1}^{n} \alpha_i \left[ y_i \left( \left( \sum_{j=1}^{n} \alpha_j y_j \mathbf{x}_j \right) \cdot \mathbf{x}_i + b \right) - 1 \right]</script><ul>
+<li><p>计算第一项：  </p>
+<script type="math/tex; mode=display">\left\| \sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i \right\|^2 = \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j)</script></li>
+<li><p>计算第二项中的内积部分：  </p>
+<script type="math/tex; mode=display">y_i \left( \sum_{j=1}^{n} \alpha_j y_j \mathbf{x}_j \right) \cdot \mathbf{x}_i = y_i \sum_{j=1}^{n} \alpha_j y_j (\mathbf{x}_j \cdot \mathbf{x}_i)</script><p>所以：  </p>
+<script type="math/tex; mode=display">\sum_{i=1}^{n} \alpha_i y_i \left( \sum_{j=1}^{n} \alpha_j y_j (\mathbf{x}_j \cdot \mathbf{x}_i) \right) = \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j)</script></li>
+<li><p>考虑 <script type="math/tex">b</script> 项：  </p>
+<script type="math/tex; mode=display">\sum_{i=1}^{n} \alpha_i y_i b = b \sum_{i=1}^{n} \alpha_i y_i = 0 \quad (\text{因为} \sum_{i=1}^{n} \alpha_i y_i = 0)</script></li>
+</ul>
+<p>代入后，拉格朗日函数变为：  </p>
+<script type="math/tex; mode=display">\mathcal{L} = \frac{1}{2} \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j) - \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j) + \sum_{i=1}^{n} \alpha_i</script><p>化简：  </p>
+<script type="math/tex; mode=display">\mathcal{L} = -\frac{1}{2} \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j) + \sum_{i=1}^{n} \alpha_i</script><h4 id="3-3-对偶优化问题"><a href="#3-3-对偶优化问题" class="headerlink" title="3.3 对偶优化问题"></a>3.3 对偶优化问题</h4><p>于是，对偶问题是：  </p>
+<script type="math/tex; mode=display">\max_{\boldsymbol{\alpha}} \left[ \sum_{i=1}^{n} \alpha_i - \frac{1}{2} \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j) \right]</script><ul>
+<li><strong>约束条件</strong>：  <script type="math/tex; mode=display">\sum_{i=1}^{n} \alpha_i y_i = 0</script><script type="math/tex; mode=display">\alpha_i \geq 0, \quad i = 1, 2, \dots, n</script></li>
+</ul>
+<p>为了与标准优化形式一致，常将其写为最小化问题：  </p>
+<script type="math/tex; mode=display">\min_{\boldsymbol{\alpha}} \left[ \frac{1}{2} \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j) - \sum_{i=1}^{n} \alpha_i \right]</script><ul>
+<li><strong>约束条件不变</strong>：  <script type="math/tex; mode=display">\sum_{i=1}^{n} \alpha_i y_i = 0</script><script type="math/tex; mode=display">\alpha_i \geq 0</script></li>
+</ul>
+<hr>
+<h3 id="4-转换的条件"><a href="#4-转换的条件" class="headerlink" title="4. 转换的条件"></a>4. 转换的条件</h3><p>原始问题与对偶问题之间的关系由<strong>强对偶性</strong>保证。在SVM中：</p>
+<ul>
+<li>目标函数 <script type="math/tex">\frac{1}{2} \|\mathbf{w}\|^2</script> 是凸函数（二次函数）；</li>
+<li>约束条件 <script type="math/tex">y_i (\mathbf{w} \cdot \mathbf{x}_i + b) \geq 1</script> 是线性不等式；</li>
+<li>对于线性可分数据，Slater条件满足（存在可行解使约束严格成立）。</li>
+</ul>
+<p>因此，强对偶性成立，原始问题的最优解可以通过对偶问题求解得到。</p>
+<p>此外：</p>
+<ul>
+<li>最优的 <script type="math/tex">\boldsymbol{\alpha}</script> 通过对偶问题求解；</li>
+<li><script type="math/tex">\mathbf{w} = \sum_{i=1}^{n} \alpha_i y_i \mathbf{x}_i</script>；</li>
+<li>对于支持向量（<script type="math/tex">\alpha_i > 0</script> 的样本），<script type="math/tex">y_i (\mathbf{w} \cdot \mathbf{x}_i + b) = 1</script>，可据此解出 <script type="math/tex">b</script>。</li>
+</ul>
+<hr>
+<h3 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a>5. 总结</h3><ul>
+<li><p><strong>原始问题</strong>：  </p>
+<script type="math/tex; mode=display">\min_{\mathbf{w}, b} \frac{1}{2} \|\mathbf{w}\|^2</script><p>受约束：<script type="math/tex">y_i (\mathbf{w} \cdot \mathbf{x}_i + b) \geq 1</script></p>
+</li>
+<li><p><strong>对偶问题</strong>：  </p>
+<script type="math/tex; mode=display">\max_{\boldsymbol{\alpha}} \left[ \sum_{i=1}^{n} \alpha_i - \frac{1}{2} \sum_{i=1}^{n} \sum_{j=1}^{n} \alpha_i \alpha_j y_i y_j (\mathbf{x}_i \cdot \mathbf{x}_j) \right]</script><p>受约束：<script type="math/tex">\sum_{i=1}^{n} \alpha_i y_i = 0</script>，<script type="math/tex">\alpha_i \geq 0</script></p>
+</li>
+<li><p><strong>转换条件</strong>：<br>通过拉格朗日乘子法，基于凸优化和强对偶性完成转换。对偶形式不仅便于求解，还为引入核函数奠定了基础。</p>
+</li>
+</ul>
+<p>以上就是SVM目标函数从原始问题到对偶问题的推导过程和条件。</p>
+<h4 id="2-已知训练数据集中正例点x1-2-3-，x2-3-3-，x3-3-2-，负例点x4-1-2-，-x5-2-1-，x6-3-1-，训练线性SVM分类器。求最大间隔分类超平面和分类决策函数，并画出分类超平面、间隔边界以及支持向量。"><a href="#2-已知训练数据集中正例点x1-2-3-，x2-3-3-，x3-3-2-，负例点x4-1-2-，-x5-2-1-，x6-3-1-，训练线性SVM分类器。求最大间隔分类超平面和分类决策函数，并画出分类超平面、间隔边界以及支持向量。" class="headerlink" title="2.已知训练数据集中正例点x1=(2,3)，x2=(3,3)，x3=(3,2)，负例点x4=(1,2)，    x5=(2,1)，x6=(3,1)，训练线性SVM分类器。求最大间隔分类超平面和分类决策函数，并画出分类超平面、间隔边界以及支持向量。"></a>2.已知训练数据集中正例点x1=(2,3)，x2=(3,3)，x3=(3,2)，负例点x4=(1,2)，    x5=(2,1)，x6=(3,1)，训练线性SVM分类器。求最大间隔分类超平面和分类决策函数，并画出分类超平面、间隔边界以及支持向量。</h4><p><img src="/2025/04/16/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/IMG_20250416_164804-1744793466526-4.jpg" alt="IMG_20250416_164804"></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -441,245 +683,6 @@
 <li>这种行为是 C 语言类型转换规则的结果：为了保证比较时类型一致，<code>-2</code> 被按无符号数处理。</li>
 </ul>
 <p>这种机制虽然确保了类型一致性，但在处理负数时可能导致意外结果，因此在使用无符号类型时需要特别注意。希望这个解释清晰地回答了你的问题！</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/15/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%B8%8A%E6%9C%BA/%E4%B8%8A%E6%9C%BA%E5%AE%9E%E9%AA%8C10--%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/04/15/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%B8%8A%E6%9C%BA/%E4%B8%8A%E6%9C%BA%E5%AE%9E%E9%AA%8C10--%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/" class="post-title-link" itemprop="url">机器学习——上机实验10--支持向量机</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-04-15 00:00:00" itemprop="dateCreated datePublished" datetime="2025-04-15T00:00:00+08:00">2025-04-15</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-04-17 11:30:38" itemprop="dateModified" datetime="2025-04-17T11:30:38+08:00">2025-04-17</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/" itemprop="url" rel="index"><span itemprop="name">大二下</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="上机实验10—支持向量机"><a href="#上机实验10—支持向量机" class="headerlink" title="上机实验10—支持向量机"></a>上机实验10—支持向量机</h1><h2 id="任务1：sklearn中的SVC与惩罚系数C"><a href="#任务1：sklearn中的SVC与惩罚系数C" class="headerlink" title="任务1：sklearn中的SVC与惩罚系数C"></a>任务1：sklearn中的SVC与惩罚系数C</h2><ul>
-<li>提供一份糖尿病患者数据集diabetes.csv，该数据集有768个数据样本，9个特征(最后一列为目标特征数据)，并且已经存入变量data。特征的具体信息如下：</li>
-</ul>
-<div class="table-container">
-<table>
-<thead>
-<tr>
-<th>特征名称</th>
-<th>特征含义</th>
-<th>取值举例</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>feature1</td>
-<td>怀孕次数</td>
-<td>6</td>
-</tr>
-<tr>
-<td>feature2</td>
-<td>2小时口服葡萄糖耐受实验中的血浆葡萄浓度</td>
-<td>148</td>
-</tr>
-<tr>
-<td>feature3</td>
-<td>舒张压 (mm Hg)</td>
-<td>72</td>
-</tr>
-<tr>
-<td>feature4</td>
-<td>三头肌皮褶厚度(mm)</td>
-<td>35</td>
-</tr>
-<tr>
-<td>feature5</td>
-<td>2小时血清胰岛素浓度 (mu U/ml)</td>
-<td>0</td>
-</tr>
-<tr>
-<td>feature6</td>
-<td>体重指数(weight in kg/(height in m)^2)</td>
-<td>33.6</td>
-</tr>
-<tr>
-<td>feature7</td>
-<td>糖尿病谱系功能(Diabetes pedigree function)</td>
-<td>0.627</td>
-</tr>
-<tr>
-<td>feature8</td>
-<td>年龄</td>
-<td>50</td>
-</tr>
-<tr>
-<td>class</td>
-<td>是否患有糖尿病</td>
-<td>1：阳性；0：阴性</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>主要任务如下：</p>
-<ul>
-<li>请先将数据使用sklearn中的StandardScaler进行标准化；</li>
-<li>然后使用sklearn中的svm.SVC支持向量分类器，构建支持向量机模型（所有参数使用默认参数），对测试集进行预测，将预测结果存为pred_y，并对模型进行评价；</li>
-<li>最后新建一个svm.SVC实例clf_new，并设置惩罚系数C=0.3，并利用该支持向量分类器对测试集进行预测，将预测结果存为pred_y_new，并比较两个模型的预测效果。</li>
-</ul>
-<blockquote>
-<p>待补全代码</p>
-</blockquote>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> classification_report</span><br><span class="line"><span class="keyword">from</span> sklearn.svm <span class="keyword">import</span> SVC</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取数据</span></span><br><span class="line">data = pd.read_csv(<span class="string">&#x27;diabetes.csv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 请在下方作答 #</span></span><br><span class="line"><span class="comment"># 将目标特征与其他特征分离</span></span><br><span class="line">X = data.drop(<span class="string">&#x27;class&#x27;</span>, axis=<span class="number">1</span>)  </span><br><span class="line">y = data[<span class="string">&#x27;class&#x27;</span>]  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 划分训练集train_X, train_y和测试集train_X, train_y</span></span><br><span class="line">train_X, test_X, train_y, test_y = train_test_split(X, y, test_size = <span class="number">.2</span>, random_state = <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 训练集标准化，返回结果为scaled_train_X</span></span><br><span class="line">scaler = StandardScaler()</span><br><span class="line">scaled_train_X = scaler.fit_transform(train_X)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 构建支持向量机模型</span></span><br><span class="line">clf = SVC()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 模型训练</span></span><br><span class="line">clf.fit(scaled_train_X, train_y)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试集标准化</span></span><br><span class="line">scaled_test_X = scaler.transform(test_X)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用模型返回预测值</span></span><br><span class="line">pred_y = clf.predict(scaled_test_X)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印支持向量的个数，返回结果为列表，[-1标签的支持向量，+1标签的支持向量]</span></span><br><span class="line"><span class="built_in">print</span>(clf.n_support_)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用classification_report函数进行模型评价</span></span><br><span class="line"><span class="built_in">print</span>(classification_report(test_y, pred_y))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 构建惩罚系数C为0.3的模型，并与之前的模型做比较</span></span><br><span class="line">clf_new = SVC(C=<span class="number">0.3</span>)</span><br><span class="line">clf_new.fit(scaled_train_X, train_y)</span><br><span class="line">pred_y_new = clf_new.predict(scaled_test_X)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(clf_new.n_support_)</span><br><span class="line"><span class="built_in">print</span>(classification_report(test_y, pred_y_new))</span><br><span class="line"></span><br><span class="line"><span class="comment">#调整惩罚系数C寻优</span></span><br></pre></td></tr></table></figure>
-<pre><code>[187 180]
-
-              precision    recall  f1-score   support
-</code></pre><p>​    </p>
-<pre><code>           0       0.82      0.90      0.86       107
-
-           1       0.70      0.55      0.62        47
-</code></pre><p>​    </p>
-<pre><code>    accuracy                           0.79       154
-
-   macro avg       0.76      0.73      0.74       154
-
-weighted avg       0.78      0.79      0.78       154
-</code></pre><p>​    </p>
-<pre><code>[197 196]
-
-              precision    recall  f1-score   support
-</code></pre><p>​    </p>
-<pre><code>           0       0.83      0.92      0.87       107
-
-           1       0.75      0.57      0.65        47
-</code></pre><p>​    </p>
-<pre><code>    accuracy                           0.81       154
-
-   macro avg       0.79      0.75      0.76       154
-
-weighted avg       0.81      0.81      0.80       154
-</code></pre><p>​    </p>
-<blockquote>
-<p>预期结果</p>
-</blockquote>
-<p><img src="https://ai-studio-static-online.cdn.bcebos.com/0768604ae0644fcdb3edd584090f6af7fae81344e0b14da789ec1324ee81bcf0" alt></p>
-<h2 id="任务2：SVC选定RBF核函数，并寻优核带宽参数gamma"><a href="#任务2：SVC选定RBF核函数，并寻优核带宽参数gamma" class="headerlink" title="任务2：SVC选定RBF核函数，并寻优核带宽参数gamma"></a>任务2：SVC选定RBF核函数，并寻优核带宽参数gamma</h2><blockquote>
-<p>在支持向量分类器中，核函数对其性能有直接的影响。已知径向基函数 RBF 及核矩阵元素为：</p>
-<script type="math/tex; mode=display">K(\boldsymbol{x}_i, \boldsymbol{x}_j)=\exp(-\gamma\|\boldsymbol{x}_i-\boldsymbol{x}_j\|^2)</script><p>且对于核矩阵K，有$K_{ij}=K(\boldsymbol{x}_i, \boldsymbol{x}_j).$</p>
-</blockquote>
-<p>主要任务如下：</p>
-<ul>
-<li>自定义函数实现径向基函数 rbf_kernel，要求输入参数为两个矩阵 X、Y，以及 gamma；</li>
-<li>利用rbf_kernel核函数，计算标准化后的训练集scaled_train_X的核矩阵，并存为 rbf_matrix；</li>
-<li>利用rbf_kernel核函数，训练支持向量分类器 clf，并预测标准化后的测试数据 scaled_test_X 的标签，最后评价模型效果。<blockquote>
-<p>提示：先计算各自的 Gram 矩阵，然后再使用 np.diag 提取对角线元素，使用 np.tile 将列表扩展成一个矩阵。</p>
-</blockquote>
-</li>
-</ul>
-<blockquote>
-<p>待补全代码</p>
-</blockquote>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="comment"># 请在下方作答 #</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">rbf_kernel</span>(<span class="params">X, Y, gamma=<span class="number">0.5</span></span>):</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 获取X和Y的大小</span></span><br><span class="line">    num1 = X.shape[<span class="number">0</span>]</span><br><span class="line">    num2 = Y.shape[<span class="number">0</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 计算X和X^T的矩阵乘积</span></span><br><span class="line">    gram_1 = X.dot(X.T)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 获取gram_1对角线位置的元素，组成大小(num1, 1)的列表，并将整个列表复制，扩展为(num1, num2)大小的矩阵component1</span></span><br><span class="line">    component1 = np.tile(np.diag(gram_1).reshape(-<span class="number">1</span>, <span class="number">1</span>), (<span class="number">1</span>, num2))</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 计算Y和Y^T的乘积</span></span><br><span class="line">    gram_2 = Y.dot(Y.T)</span><br><span class="line">     </span><br><span class="line">    <span class="comment"># 获取gram_2对角线位置的元素，组成(1, num2)的列表，并将整个列表复制，扩展为(num1, num2)大小的矩阵component2</span></span><br><span class="line">    component2 = np.tile(np.diag(gram_2).reshape(<span class="number">1</span>, -<span class="number">1</span>), (num1, <span class="number">1</span>))</span><br><span class="line">   </span><br><span class="line">    <span class="comment"># 计算2X和Y^T的内积 </span></span><br><span class="line">    component3 = <span class="number">2</span> * X.dot(Y.T)</span><br><span class="line">  </span><br><span class="line">    <span class="comment"># 返回结果</span></span><br><span class="line">    result = np.exp(gamma*(component3 - component1 - component2))</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算糖尿病患者训练数据集的核矩阵</span></span><br><span class="line">rbf_matrix = rbf_kernel(scaled_train_X, scaled_train_X)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 训练一个支持向量分类器</span></span><br><span class="line">clf = SVC(kernel=rbf_kernel)</span><br><span class="line">clf.fit(scaled_train_X, train_y)</span><br><span class="line">pred_y = clf.predict(scaled_test_X)</span><br><span class="line"><span class="built_in">print</span> (clf.n_support_)</span><br><span class="line"><span class="built_in">print</span> (classification_report(test_y, pred_y))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 调整gamma值寻找最优</span></span><br></pre></td></tr></table></figure>
-<pre><code>[250 208]
-
-              precision    recall  f1-score   support
-
-           0       0.84      0.89      0.86       107
-
-           1       0.71      0.62      0.66        47
-
-    accuracy                           0.81       154
-
-   macro avg       0.77      0.75      0.76       154
-
-weighted avg       0.80      0.81      0.80       154
-</code></pre><blockquote>
-<p>预期结果</p>
-</blockquote>
-<p><img src="https://ai-studio-static-online.cdn.bcebos.com/09cbd0f9a36e4802941289e87082169b6640e370714642d38606e76575bc5632" alt></p>
-<h2 id="任务3：自定义函数实现SVM（选做）"><a href="#任务3：自定义函数实现SVM（选做）" class="headerlink" title="任务3：自定义函数实现SVM（选做）"></a>任务3：自定义函数实现SVM（选做）</h2><p>主要任务如下：</p>
-<ul>
-<li>读取sklearn中的iris数据集，提取特征与标记，并进行数据划分为训练与测试集；</li>
-<li>自定义函数实现SVM；</li>
-<li>调用SVM函数进行支持向量机训练，并对测试集进行测试。</li>
-</ul>
-<blockquote>
-<p>待补全代码</p>
-</blockquote>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> classification_report</span><br><span class="line"><span class="keyword">from</span> sklearn.svm <span class="keyword">import</span> SVC</span><br><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_iris</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_data</span>():</span><br><span class="line">    iris = load_iris()</span><br><span class="line">    df = pd.DataFrame(iris.data, columns=iris.feature_names)</span><br><span class="line">    df[<span class="string">&#x27;label&#x27;</span>] = iris.target</span><br><span class="line">    df.columns = [<span class="string">&#x27;sepal length&#x27;</span>, <span class="string">&#x27;sepal width&#x27;</span>, <span class="string">&#x27;petal length&#x27;</span>, <span class="string">&#x27;petal width&#x27;</span>, <span class="string">&#x27;label&#x27;</span>]</span><br><span class="line">    data = np.array(df.iloc[:<span class="number">100</span>, [<span class="number">0</span>, <span class="number">1</span>, -<span class="number">1</span>]])</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(data)):</span><br><span class="line">        <span class="keyword">if</span> data[i,-<span class="number">1</span>] == <span class="number">0</span>:</span><br><span class="line">            data[i,-<span class="number">1</span>] = -<span class="number">1</span></span><br><span class="line">    <span class="comment"># print(data)</span></span><br><span class="line">    <span class="keyword">return</span> data[:,:<span class="number">2</span>], data[:,-<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取数据，拆分数据，训练测试集划分</span></span><br><span class="line">X, y = create_data()</span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="number">0.25</span>)</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SVM</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, max_iter=<span class="number">100</span>, kernel=<span class="string">&#x27;linear&#x27;</span></span>):</span><br><span class="line">        <span class="variable language_">self</span>.max_iter = max_iter</span><br><span class="line">        <span class="variable language_">self</span>._kernel = kernel</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">init_args</span>(<span class="params">self, features, labels</span>):</span><br><span class="line">        <span class="variable language_">self</span>.m, <span class="variable language_">self</span>.n = features.shape</span><br><span class="line">        <span class="variable language_">self</span>.X = features</span><br><span class="line">        <span class="variable language_">self</span>.Y = labels</span><br><span class="line">        <span class="variable language_">self</span>.b = <span class="number">0.0</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 将Ei保存在一个列表里</span></span><br><span class="line">        <span class="variable language_">self</span>.alpha = np.ones(<span class="variable language_">self</span>.m)</span><br><span class="line">        <span class="variable language_">self</span>.E = [<span class="variable language_">self</span>._E(i) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.m)]</span><br><span class="line">        <span class="comment"># 松弛变量</span></span><br><span class="line">        <span class="variable language_">self</span>.C = <span class="number">1.0</span></span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_KKT</span>(<span class="params">self, i</span>):</span><br><span class="line">        y_g = <span class="variable language_">self</span>._g(i)*<span class="variable language_">self</span>.Y[i]</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.alpha[i] == <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> y_g &gt;= <span class="number">1</span></span><br><span class="line">        <span class="keyword">elif</span> <span class="number">0</span> &lt; <span class="variable language_">self</span>.alpha[i] &lt; <span class="variable language_">self</span>.C:</span><br><span class="line">            <span class="keyword">return</span> y_g == <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> y_g &lt;= <span class="number">1</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># g(x)预测值，输入xi（X[i]）</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_g</span>(<span class="params">self, i</span>):</span><br><span class="line">        r = <span class="variable language_">self</span>.b</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.m):</span><br><span class="line">            r += <span class="variable language_">self</span>.alpha[j] * <span class="variable language_">self</span>.Y[j] * <span class="variable language_">self</span>.kernel(<span class="variable language_">self</span>.X[j], <span class="variable language_">self</span>.X[i])</span><br><span class="line">        <span class="keyword">return</span> r</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 核函数</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">kernel</span>(<span class="params">self, x1, x2</span>):</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>._kernel == <span class="string">&#x27;linear&#x27;</span>:</span><br><span class="line">            <span class="keyword">return</span> np.dot(x1, x2)</span><br><span class="line">        <span class="keyword">elif</span> <span class="variable language_">self</span>._kernel == <span class="string">&#x27;poly&#x27;</span>:</span><br><span class="line">            <span class="keyword">return</span> (<span class="built_in">sum</span>([x1[k]*x2[k] <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.n)]) + <span class="number">1</span>)**<span class="number">2</span></span><br><span class="line">    </span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># E（x）为g(x)对输入x的预测值和y的差</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_E</span>(<span class="params">self, i</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>._g(i) - <span class="variable language_">self</span>.Y[i]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_init_alpha</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="comment"># 外层循环首先遍历所有满足0&lt;a&lt;C的样本点，检验是否满足KKT</span></span><br><span class="line">        index_list = [i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.m) <span class="keyword">if</span> <span class="number">0</span> &lt; <span class="variable language_">self</span>.alpha[i] &lt; <span class="variable language_">self</span>.C]</span><br><span class="line">        <span class="comment"># 否则遍历整个训练集</span></span><br><span class="line">        non_satisfy_list = [i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.m) <span class="keyword">if</span> i <span class="keyword">not</span> <span class="keyword">in</span> index_list]</span><br><span class="line">        index_list.extend(non_satisfy_list)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> index_list:</span><br><span class="line">            <span class="keyword">if</span> <span class="variable language_">self</span>._KKT(i):</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            </span><br><span class="line">            E1 = <span class="variable language_">self</span>.E[i]</span><br><span class="line">            <span class="comment"># 如果E2是+，选择最小的；如果E2是负的，选择最大的</span></span><br><span class="line">            <span class="keyword">if</span> E1 &gt;= <span class="number">0</span>:</span><br><span class="line">                j = <span class="built_in">min</span>(<span class="built_in">range</span>(<span class="variable language_">self</span>.m), key=<span class="keyword">lambda</span> x: <span class="variable language_">self</span>.E[x])</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                j = <span class="built_in">max</span>(<span class="built_in">range</span>(<span class="variable language_">self</span>.m), key=<span class="keyword">lambda</span> x: <span class="variable language_">self</span>.E[x])</span><br><span class="line">            <span class="keyword">return</span> i, j</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_compare</span>(<span class="params">self, _alpha, L, H</span>):</span><br><span class="line">        <span class="keyword">if</span> _alpha &gt; H:</span><br><span class="line">            <span class="keyword">return</span> H</span><br><span class="line">        <span class="keyword">elif</span> _alpha &lt; L:</span><br><span class="line">            <span class="keyword">return</span> L</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> _alpha      </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">fit</span>(<span class="params">self, features, labels</span>):</span><br><span class="line">        <span class="variable language_">self</span>.init_args(features, labels)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.max_iter):</span><br><span class="line">            <span class="comment"># train</span></span><br><span class="line">            i1, i2 =<span class="variable language_">self</span>._init_alpha()</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># 边界</span></span><br><span class="line">            <span class="keyword">if</span> <span class="variable language_">self</span>.Y[i1] == <span class="variable language_">self</span>.Y[i2]:</span><br><span class="line">                L = <span class="built_in">max</span>(<span class="number">0</span>, <span class="variable language_">self</span>.alpha[i1]+<span class="variable language_">self</span>.alpha[i2]-<span class="variable language_">self</span>.C)</span><br><span class="line">                H = <span class="built_in">min</span>(<span class="variable language_">self</span>.C, <span class="variable language_">self</span>.alpha[i1]+<span class="variable language_">self</span>.alpha[i2])</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                L = <span class="built_in">max</span>(<span class="number">0</span>, <span class="variable language_">self</span>.alpha[i2]-<span class="variable language_">self</span>.alpha[i1])</span><br><span class="line">                H = <span class="built_in">min</span>(<span class="variable language_">self</span>.C, <span class="variable language_">self</span>.C+<span class="variable language_">self</span>.alpha[i2]-<span class="variable language_">self</span>.alpha[i1])</span><br><span class="line">                </span><br><span class="line">            E1 = <span class="variable language_">self</span>.E[i1]</span><br><span class="line">            E2 = <span class="variable language_">self</span>.E[i2]</span><br><span class="line">            <span class="comment"># eta=K11+K22-2K12</span></span><br><span class="line">            eta = <span class="variable language_">self</span>.kernel(<span class="variable language_">self</span>.X[i1], <span class="variable language_">self</span>.X[i1]) + \</span><br><span class="line">                  <span class="variable language_">self</span>.kernel(<span class="variable language_">self</span>.X[i2], <span class="variable language_">self</span>.X[i2]) - \</span><br><span class="line">                  <span class="number">2</span> * <span class="variable language_">self</span>.kernel(<span class="variable language_">self</span>.X[i1], <span class="variable language_">self</span>.X[i2])</span><br><span class="line">            <span class="keyword">if</span> eta &lt;= <span class="number">0</span>:</span><br><span class="line">                <span class="comment"># print(&#x27;eta &lt;= 0&#x27;)</span></span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">                </span><br><span class="line">            alpha2_new_unc = <span class="variable language_">self</span>.alpha[i2] + <span class="variable language_">self</span>.Y[i2] * (E2 - E1) / eta</span><br><span class="line">            alpha2_new = <span class="variable language_">self</span>._compare(alpha2_new_unc, L, H)</span><br><span class="line">            </span><br><span class="line">            alpha1_new = <span class="variable language_">self</span>.alpha[i1] + <span class="variable language_">self</span>.Y[i1] * <span class="variable language_">self</span>.Y[i2] * (<span class="variable language_">self</span>.alpha[i2] - alpha2_new)</span><br><span class="line">            </span><br><span class="line">            b1_new = -E1 - <span class="variable language_">self</span>.Y[i1] * <span class="variable language_">self</span>.kernel(<span class="variable language_">self</span>.X[i1], <span class="variable language_">self</span>.X[i1]) * (alpha1_new-<span class="variable language_">self</span>.alpha[i1]) - <span class="variable language_">self</span>.Y[i2] * <span class="variable language_">self</span>.kernel(<span class="variable language_">self</span>.X[i2], <span class="variable language_">self</span>.X[i1]) * (alpha2_new-<span class="variable language_">self</span>.alpha[i2])+ <span class="variable language_">self</span>.b </span><br><span class="line">            b2_new = -E2 - <span class="variable language_">self</span>.Y[i1] * <span class="variable language_">self</span>.kernel(<span class="variable language_">self</span>.X[i1], <span class="variable language_">self</span>.X[i2]) * (alpha1_new-<span class="variable language_">self</span>.alpha[i1]) - <span class="variable language_">self</span>.Y[i2] * <span class="variable language_">self</span>.kernel(<span class="variable language_">self</span>.X[i2], <span class="variable language_">self</span>.X[i2]) * (alpha2_new-<span class="variable language_">self</span>.alpha[i2])+ <span class="variable language_">self</span>.b </span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> <span class="number">0</span> &lt; alpha1_new &lt; <span class="variable language_">self</span>.C:</span><br><span class="line">                b_new = b1_new</span><br><span class="line">            <span class="keyword">elif</span> <span class="number">0</span> &lt; alpha2_new &lt; <span class="variable language_">self</span>.C:</span><br><span class="line">                b_new = b2_new</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 选择中点</span></span><br><span class="line">                b_new = (b1_new + b2_new) / <span class="number">2</span></span><br><span class="line">                </span><br><span class="line">            <span class="comment"># 更新参数</span></span><br><span class="line">            <span class="variable language_">self</span>.alpha[i1] = alpha1_new</span><br><span class="line">            <span class="variable language_">self</span>.alpha[i2] = alpha2_new</span><br><span class="line">            <span class="variable language_">self</span>.b = b_new</span><br><span class="line">            </span><br><span class="line">            <span class="variable language_">self</span>.E[i1] = <span class="variable language_">self</span>._E(i1)</span><br><span class="line">            <span class="variable language_">self</span>.E[i2] = <span class="variable language_">self</span>._E(i2)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;train done!&#x27;</span></span><br><span class="line">            </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">predict</span>(<span class="params">self, data</span>):</span><br><span class="line">        r = <span class="variable language_">self</span>.b</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.m):</span><br><span class="line">            r += <span class="variable language_">self</span>.alpha[i] * <span class="variable language_">self</span>.Y[i] * <span class="variable language_">self</span>.kernel(<span class="variable language_">self</span>.X[i], data)</span><br><span class="line">            </span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span> <span class="keyword">if</span> r &gt; <span class="number">0</span> <span class="keyword">else</span> -<span class="number">1</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">score</span>(<span class="params">self, X_test, y_test</span>):</span><br><span class="line">        right_count = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(X_test)):</span><br><span class="line">            result = <span class="variable language_">self</span>.predict(X_test[i])</span><br><span class="line">            <span class="keyword">if</span> result == y_test[i]:</span><br><span class="line">                right_count += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> right_count / <span class="built_in">len</span>(X_test)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_weight</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="comment"># linear model</span></span><br><span class="line">        yx = <span class="variable language_">self</span>.Y.reshape(-<span class="number">1</span>, <span class="number">1</span>)*<span class="variable language_">self</span>.X</span><br><span class="line">        <span class="variable language_">self</span>.w = np.dot(<span class="variable language_">self</span>.alpha, yx)</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.w</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 调用SVM进行模型训练与测试评估</span></span><br><span class="line">svm = SVM(max_iter=<span class="number">100</span>)</span><br><span class="line">svm.fit(X_train, y_train)</span><br><span class="line">svm.score(X_test, y_test)</span><br></pre></td></tr></table></figure>
-<pre><code>0.92
-</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -1087,6 +1090,245 @@ k \leqslant\left(\frac{R}{\gamma}\right)^{2}</script><p>当训练数据集线性
 /opt/conda/envs/python35-paddle120-env/lib/python3.7/site-packages/matplotlib/font_manager.py:1331: UserWarning: findfont: Font family [&#39;sans-serif&#39;] not found. Falling back to DejaVu Sans
   (prop.get_family(), self.defaultFamily[fontext]))
 </code></pre><p><img src="/2025/04/15/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%B8%8A%E6%9C%BA/%E4%B8%8A%E6%9C%BA%E5%AE%9E%E9%AA%8C9--%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/output_14_2.png" alt="output_14_2"></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/15/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%B8%8A%E6%9C%BA/%E4%B8%8A%E6%9C%BA%E5%AE%9E%E9%AA%8C10--%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/04/15/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%B8%8A%E6%9C%BA/%E4%B8%8A%E6%9C%BA%E5%AE%9E%E9%AA%8C10--%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/" class="post-title-link" itemprop="url">机器学习——上机实验10--支持向量机</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-04-15 00:00:00" itemprop="dateCreated datePublished" datetime="2025-04-15T00:00:00+08:00">2025-04-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-04-17 11:30:38" itemprop="dateModified" datetime="2025-04-17T11:30:38+08:00">2025-04-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/" itemprop="url" rel="index"><span itemprop="name">大二下</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="上机实验10—支持向量机"><a href="#上机实验10—支持向量机" class="headerlink" title="上机实验10—支持向量机"></a>上机实验10—支持向量机</h1><h2 id="任务1：sklearn中的SVC与惩罚系数C"><a href="#任务1：sklearn中的SVC与惩罚系数C" class="headerlink" title="任务1：sklearn中的SVC与惩罚系数C"></a>任务1：sklearn中的SVC与惩罚系数C</h2><ul>
+<li>提供一份糖尿病患者数据集diabetes.csv，该数据集有768个数据样本，9个特征(最后一列为目标特征数据)，并且已经存入变量data。特征的具体信息如下：</li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>特征名称</th>
+<th>特征含义</th>
+<th>取值举例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>feature1</td>
+<td>怀孕次数</td>
+<td>6</td>
+</tr>
+<tr>
+<td>feature2</td>
+<td>2小时口服葡萄糖耐受实验中的血浆葡萄浓度</td>
+<td>148</td>
+</tr>
+<tr>
+<td>feature3</td>
+<td>舒张压 (mm Hg)</td>
+<td>72</td>
+</tr>
+<tr>
+<td>feature4</td>
+<td>三头肌皮褶厚度(mm)</td>
+<td>35</td>
+</tr>
+<tr>
+<td>feature5</td>
+<td>2小时血清胰岛素浓度 (mu U/ml)</td>
+<td>0</td>
+</tr>
+<tr>
+<td>feature6</td>
+<td>体重指数(weight in kg/(height in m)^2)</td>
+<td>33.6</td>
+</tr>
+<tr>
+<td>feature7</td>
+<td>糖尿病谱系功能(Diabetes pedigree function)</td>
+<td>0.627</td>
+</tr>
+<tr>
+<td>feature8</td>
+<td>年龄</td>
+<td>50</td>
+</tr>
+<tr>
+<td>class</td>
+<td>是否患有糖尿病</td>
+<td>1：阳性；0：阴性</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>主要任务如下：</p>
+<ul>
+<li>请先将数据使用sklearn中的StandardScaler进行标准化；</li>
+<li>然后使用sklearn中的svm.SVC支持向量分类器，构建支持向量机模型（所有参数使用默认参数），对测试集进行预测，将预测结果存为pred_y，并对模型进行评价；</li>
+<li>最后新建一个svm.SVC实例clf_new，并设置惩罚系数C=0.3，并利用该支持向量分类器对测试集进行预测，将预测结果存为pred_y_new，并比较两个模型的预测效果。</li>
+</ul>
+<blockquote>
+<p>待补全代码</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> classification_report</span><br><span class="line"><span class="keyword">from</span> sklearn.svm <span class="keyword">import</span> SVC</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取数据</span></span><br><span class="line">data = pd.read_csv(<span class="string">&#x27;diabetes.csv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 请在下方作答 #</span></span><br><span class="line"><span class="comment"># 将目标特征与其他特征分离</span></span><br><span class="line">X = data.drop(<span class="string">&#x27;class&#x27;</span>, axis=<span class="number">1</span>)  </span><br><span class="line">y = data[<span class="string">&#x27;class&#x27;</span>]  </span><br><span class="line"></span><br><span class="line"><span class="comment"># 划分训练集train_X, train_y和测试集train_X, train_y</span></span><br><span class="line">train_X, test_X, train_y, test_y = train_test_split(X, y, test_size = <span class="number">.2</span>, random_state = <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 训练集标准化，返回结果为scaled_train_X</span></span><br><span class="line">scaler = StandardScaler()</span><br><span class="line">scaled_train_X = scaler.fit_transform(train_X)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 构建支持向量机模型</span></span><br><span class="line">clf = SVC()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 模型训练</span></span><br><span class="line">clf.fit(scaled_train_X, train_y)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试集标准化</span></span><br><span class="line">scaled_test_X = scaler.transform(test_X)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用模型返回预测值</span></span><br><span class="line">pred_y = clf.predict(scaled_test_X)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印支持向量的个数，返回结果为列表，[-1标签的支持向量，+1标签的支持向量]</span></span><br><span class="line"><span class="built_in">print</span>(clf.n_support_)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用classification_report函数进行模型评价</span></span><br><span class="line"><span class="built_in">print</span>(classification_report(test_y, pred_y))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 构建惩罚系数C为0.3的模型，并与之前的模型做比较</span></span><br><span class="line">clf_new = SVC(C=<span class="number">0.3</span>)</span><br><span class="line">clf_new.fit(scaled_train_X, train_y)</span><br><span class="line">pred_y_new = clf_new.predict(scaled_test_X)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(clf_new.n_support_)</span><br><span class="line"><span class="built_in">print</span>(classification_report(test_y, pred_y_new))</span><br><span class="line"></span><br><span class="line"><span class="comment">#调整惩罚系数C寻优</span></span><br></pre></td></tr></table></figure>
+<pre><code>[187 180]
+
+              precision    recall  f1-score   support
+</code></pre><p>​    </p>
+<pre><code>           0       0.82      0.90      0.86       107
+
+           1       0.70      0.55      0.62        47
+</code></pre><p>​    </p>
+<pre><code>    accuracy                           0.79       154
+
+   macro avg       0.76      0.73      0.74       154
+
+weighted avg       0.78      0.79      0.78       154
+</code></pre><p>​    </p>
+<pre><code>[197 196]
+
+              precision    recall  f1-score   support
+</code></pre><p>​    </p>
+<pre><code>           0       0.83      0.92      0.87       107
+
+           1       0.75      0.57      0.65        47
+</code></pre><p>​    </p>
+<pre><code>    accuracy                           0.81       154
+
+   macro avg       0.79      0.75      0.76       154
+
+weighted avg       0.81      0.81      0.80       154
+</code></pre><p>​    </p>
+<blockquote>
+<p>预期结果</p>
+</blockquote>
+<p><img src="https://ai-studio-static-online.cdn.bcebos.com/0768604ae0644fcdb3edd584090f6af7fae81344e0b14da789ec1324ee81bcf0" alt></p>
+<h2 id="任务2：SVC选定RBF核函数，并寻优核带宽参数gamma"><a href="#任务2：SVC选定RBF核函数，并寻优核带宽参数gamma" class="headerlink" title="任务2：SVC选定RBF核函数，并寻优核带宽参数gamma"></a>任务2：SVC选定RBF核函数，并寻优核带宽参数gamma</h2><blockquote>
+<p>在支持向量分类器中，核函数对其性能有直接的影响。已知径向基函数 RBF 及核矩阵元素为：</p>
+<script type="math/tex; mode=display">K(\boldsymbol{x}_i, \boldsymbol{x}_j)=\exp(-\gamma\|\boldsymbol{x}_i-\boldsymbol{x}_j\|^2)</script><p>且对于核矩阵K，有$K_{ij}=K(\boldsymbol{x}_i, \boldsymbol{x}_j).$</p>
+</blockquote>
+<p>主要任务如下：</p>
+<ul>
+<li>自定义函数实现径向基函数 rbf_kernel，要求输入参数为两个矩阵 X、Y，以及 gamma；</li>
+<li>利用rbf_kernel核函数，计算标准化后的训练集scaled_train_X的核矩阵，并存为 rbf_matrix；</li>
+<li>利用rbf_kernel核函数，训练支持向量分类器 clf，并预测标准化后的测试数据 scaled_test_X 的标签，最后评价模型效果。<blockquote>
+<p>提示：先计算各自的 Gram 矩阵，然后再使用 np.diag 提取对角线元素，使用 np.tile 将列表扩展成一个矩阵。</p>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<p>待补全代码</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="comment"># 请在下方作答 #</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">rbf_kernel</span>(<span class="params">X, Y, gamma=<span class="number">0.5</span></span>):</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 获取X和Y的大小</span></span><br><span class="line">    num1 = X.shape[<span class="number">0</span>]</span><br><span class="line">    num2 = Y.shape[<span class="number">0</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 计算X和X^T的矩阵乘积</span></span><br><span class="line">    gram_1 = X.dot(X.T)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 获取gram_1对角线位置的元素，组成大小(num1, 1)的列表，并将整个列表复制，扩展为(num1, num2)大小的矩阵component1</span></span><br><span class="line">    component1 = np.tile(np.diag(gram_1).reshape(-<span class="number">1</span>, <span class="number">1</span>), (<span class="number">1</span>, num2))</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 计算Y和Y^T的乘积</span></span><br><span class="line">    gram_2 = Y.dot(Y.T)</span><br><span class="line">     </span><br><span class="line">    <span class="comment"># 获取gram_2对角线位置的元素，组成(1, num2)的列表，并将整个列表复制，扩展为(num1, num2)大小的矩阵component2</span></span><br><span class="line">    component2 = np.tile(np.diag(gram_2).reshape(<span class="number">1</span>, -<span class="number">1</span>), (num1, <span class="number">1</span>))</span><br><span class="line">   </span><br><span class="line">    <span class="comment"># 计算2X和Y^T的内积 </span></span><br><span class="line">    component3 = <span class="number">2</span> * X.dot(Y.T)</span><br><span class="line">  </span><br><span class="line">    <span class="comment"># 返回结果</span></span><br><span class="line">    result = np.exp(gamma*(component3 - component1 - component2))</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算糖尿病患者训练数据集的核矩阵</span></span><br><span class="line">rbf_matrix = rbf_kernel(scaled_train_X, scaled_train_X)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 训练一个支持向量分类器</span></span><br><span class="line">clf = SVC(kernel=rbf_kernel)</span><br><span class="line">clf.fit(scaled_train_X, train_y)</span><br><span class="line">pred_y = clf.predict(scaled_test_X)</span><br><span class="line"><span class="built_in">print</span> (clf.n_support_)</span><br><span class="line"><span class="built_in">print</span> (classification_report(test_y, pred_y))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 调整gamma值寻找最优</span></span><br></pre></td></tr></table></figure>
+<pre><code>[250 208]
+
+              precision    recall  f1-score   support
+
+           0       0.84      0.89      0.86       107
+
+           1       0.71      0.62      0.66        47
+
+    accuracy                           0.81       154
+
+   macro avg       0.77      0.75      0.76       154
+
+weighted avg       0.80      0.81      0.80       154
+</code></pre><blockquote>
+<p>预期结果</p>
+</blockquote>
+<p><img src="https://ai-studio-static-online.cdn.bcebos.com/09cbd0f9a36e4802941289e87082169b6640e370714642d38606e76575bc5632" alt></p>
+<h2 id="任务3：自定义函数实现SVM（选做）"><a href="#任务3：自定义函数实现SVM（选做）" class="headerlink" title="任务3：自定义函数实现SVM（选做）"></a>任务3：自定义函数实现SVM（选做）</h2><p>主要任务如下：</p>
+<ul>
+<li>读取sklearn中的iris数据集，提取特征与标记，并进行数据划分为训练与测试集；</li>
+<li>自定义函数实现SVM；</li>
+<li>调用SVM函数进行支持向量机训练，并对测试集进行测试。</li>
+</ul>
+<blockquote>
+<p>待补全代码</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> classification_report</span><br><span class="line"><span class="keyword">from</span> sklearn.svm <span class="keyword">import</span> SVC</span><br><span class="line"><span class="keyword">from</span> sklearn.datasets <span class="keyword">import</span> load_iris</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_data</span>():</span><br><span class="line">    iris = load_iris()</span><br><span class="line">    df = pd.DataFrame(iris.data, columns=iris.feature_names)</span><br><span class="line">    df[<span class="string">&#x27;label&#x27;</span>] = iris.target</span><br><span class="line">    df.columns = [<span class="string">&#x27;sepal length&#x27;</span>, <span class="string">&#x27;sepal width&#x27;</span>, <span class="string">&#x27;petal length&#x27;</span>, <span class="string">&#x27;petal width&#x27;</span>, <span class="string">&#x27;label&#x27;</span>]</span><br><span class="line">    data = np.array(df.iloc[:<span class="number">100</span>, [<span class="number">0</span>, <span class="number">1</span>, -<span class="number">1</span>]])</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(data)):</span><br><span class="line">        <span class="keyword">if</span> data[i,-<span class="number">1</span>] == <span class="number">0</span>:</span><br><span class="line">            data[i,-<span class="number">1</span>] = -<span class="number">1</span></span><br><span class="line">    <span class="comment"># print(data)</span></span><br><span class="line">    <span class="keyword">return</span> data[:,:<span class="number">2</span>], data[:,-<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取数据，拆分数据，训练测试集划分</span></span><br><span class="line">X, y = create_data()</span><br><span class="line">X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="number">0.25</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SVM</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, max_iter=<span class="number">100</span>, kernel=<span class="string">&#x27;linear&#x27;</span></span>):</span><br><span class="line">        <span class="variable language_">self</span>.max_iter = max_iter</span><br><span class="line">        <span class="variable language_">self</span>._kernel = kernel</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">init_args</span>(<span class="params">self, features, labels</span>):</span><br><span class="line">        <span class="variable language_">self</span>.m, <span class="variable language_">self</span>.n = features.shape</span><br><span class="line">        <span class="variable language_">self</span>.X = features</span><br><span class="line">        <span class="variable language_">self</span>.Y = labels</span><br><span class="line">        <span class="variable language_">self</span>.b = <span class="number">0.0</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 将Ei保存在一个列表里</span></span><br><span class="line">        <span class="variable language_">self</span>.alpha = np.ones(<span class="variable language_">self</span>.m)</span><br><span class="line">        <span class="variable language_">self</span>.E = [<span class="variable language_">self</span>._E(i) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.m)]</span><br><span class="line">        <span class="comment"># 松弛变量</span></span><br><span class="line">        <span class="variable language_">self</span>.C = <span class="number">1.0</span></span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_KKT</span>(<span class="params">self, i</span>):</span><br><span class="line">        y_g = <span class="variable language_">self</span>._g(i)*<span class="variable language_">self</span>.Y[i]</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.alpha[i] == <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> y_g &gt;= <span class="number">1</span></span><br><span class="line">        <span class="keyword">elif</span> <span class="number">0</span> &lt; <span class="variable language_">self</span>.alpha[i] &lt; <span class="variable language_">self</span>.C:</span><br><span class="line">            <span class="keyword">return</span> y_g == <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> y_g &lt;= <span class="number">1</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># g(x)预测值，输入xi（X[i]）</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_g</span>(<span class="params">self, i</span>):</span><br><span class="line">        r = <span class="variable language_">self</span>.b</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.m):</span><br><span class="line">            r += <span class="variable language_">self</span>.alpha[j] * <span class="variable language_">self</span>.Y[j] * <span class="variable language_">self</span>.kernel(<span class="variable language_">self</span>.X[j], <span class="variable language_">self</span>.X[i])</span><br><span class="line">        <span class="keyword">return</span> r</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 核函数</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">kernel</span>(<span class="params">self, x1, x2</span>):</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>._kernel == <span class="string">&#x27;linear&#x27;</span>:</span><br><span class="line">            <span class="keyword">return</span> np.dot(x1, x2)</span><br><span class="line">        <span class="keyword">elif</span> <span class="variable language_">self</span>._kernel == <span class="string">&#x27;poly&#x27;</span>:</span><br><span class="line">            <span class="keyword">return</span> (<span class="built_in">sum</span>([x1[k]*x2[k] <span class="keyword">for</span> k <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.n)]) + <span class="number">1</span>)**<span class="number">2</span></span><br><span class="line">    </span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># E（x）为g(x)对输入x的预测值和y的差</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_E</span>(<span class="params">self, i</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>._g(i) - <span class="variable language_">self</span>.Y[i]</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_init_alpha</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="comment"># 外层循环首先遍历所有满足0&lt;a&lt;C的样本点，检验是否满足KKT</span></span><br><span class="line">        index_list = [i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.m) <span class="keyword">if</span> <span class="number">0</span> &lt; <span class="variable language_">self</span>.alpha[i] &lt; <span class="variable language_">self</span>.C]</span><br><span class="line">        <span class="comment"># 否则遍历整个训练集</span></span><br><span class="line">        non_satisfy_list = [i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.m) <span class="keyword">if</span> i <span class="keyword">not</span> <span class="keyword">in</span> index_list]</span><br><span class="line">        index_list.extend(non_satisfy_list)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> index_list:</span><br><span class="line">            <span class="keyword">if</span> <span class="variable language_">self</span>._KKT(i):</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            </span><br><span class="line">            E1 = <span class="variable language_">self</span>.E[i]</span><br><span class="line">            <span class="comment"># 如果E2是+，选择最小的；如果E2是负的，选择最大的</span></span><br><span class="line">            <span class="keyword">if</span> E1 &gt;= <span class="number">0</span>:</span><br><span class="line">                j = <span class="built_in">min</span>(<span class="built_in">range</span>(<span class="variable language_">self</span>.m), key=<span class="keyword">lambda</span> x: <span class="variable language_">self</span>.E[x])</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                j = <span class="built_in">max</span>(<span class="built_in">range</span>(<span class="variable language_">self</span>.m), key=<span class="keyword">lambda</span> x: <span class="variable language_">self</span>.E[x])</span><br><span class="line">            <span class="keyword">return</span> i, j</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_compare</span>(<span class="params">self, _alpha, L, H</span>):</span><br><span class="line">        <span class="keyword">if</span> _alpha &gt; H:</span><br><span class="line">            <span class="keyword">return</span> H</span><br><span class="line">        <span class="keyword">elif</span> _alpha &lt; L:</span><br><span class="line">            <span class="keyword">return</span> L</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> _alpha      </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">fit</span>(<span class="params">self, features, labels</span>):</span><br><span class="line">        <span class="variable language_">self</span>.init_args(features, labels)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> t <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.max_iter):</span><br><span class="line">            <span class="comment"># train</span></span><br><span class="line">            i1, i2 =<span class="variable language_">self</span>._init_alpha()</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># 边界</span></span><br><span class="line">            <span class="keyword">if</span> <span class="variable language_">self</span>.Y[i1] == <span class="variable language_">self</span>.Y[i2]:</span><br><span class="line">                L = <span class="built_in">max</span>(<span class="number">0</span>, <span class="variable language_">self</span>.alpha[i1]+<span class="variable language_">self</span>.alpha[i2]-<span class="variable language_">self</span>.C)</span><br><span class="line">                H = <span class="built_in">min</span>(<span class="variable language_">self</span>.C, <span class="variable language_">self</span>.alpha[i1]+<span class="variable language_">self</span>.alpha[i2])</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                L = <span class="built_in">max</span>(<span class="number">0</span>, <span class="variable language_">self</span>.alpha[i2]-<span class="variable language_">self</span>.alpha[i1])</span><br><span class="line">                H = <span class="built_in">min</span>(<span class="variable language_">self</span>.C, <span class="variable language_">self</span>.C+<span class="variable language_">self</span>.alpha[i2]-<span class="variable language_">self</span>.alpha[i1])</span><br><span class="line">                </span><br><span class="line">            E1 = <span class="variable language_">self</span>.E[i1]</span><br><span class="line">            E2 = <span class="variable language_">self</span>.E[i2]</span><br><span class="line">            <span class="comment"># eta=K11+K22-2K12</span></span><br><span class="line">            eta = <span class="variable language_">self</span>.kernel(<span class="variable language_">self</span>.X[i1], <span class="variable language_">self</span>.X[i1]) + \</span><br><span class="line">                  <span class="variable language_">self</span>.kernel(<span class="variable language_">self</span>.X[i2], <span class="variable language_">self</span>.X[i2]) - \</span><br><span class="line">                  <span class="number">2</span> * <span class="variable language_">self</span>.kernel(<span class="variable language_">self</span>.X[i1], <span class="variable language_">self</span>.X[i2])</span><br><span class="line">            <span class="keyword">if</span> eta &lt;= <span class="number">0</span>:</span><br><span class="line">                <span class="comment"># print(&#x27;eta &lt;= 0&#x27;)</span></span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">                </span><br><span class="line">            alpha2_new_unc = <span class="variable language_">self</span>.alpha[i2] + <span class="variable language_">self</span>.Y[i2] * (E2 - E1) / eta</span><br><span class="line">            alpha2_new = <span class="variable language_">self</span>._compare(alpha2_new_unc, L, H)</span><br><span class="line">            </span><br><span class="line">            alpha1_new = <span class="variable language_">self</span>.alpha[i1] + <span class="variable language_">self</span>.Y[i1] * <span class="variable language_">self</span>.Y[i2] * (<span class="variable language_">self</span>.alpha[i2] - alpha2_new)</span><br><span class="line">            </span><br><span class="line">            b1_new = -E1 - <span class="variable language_">self</span>.Y[i1] * <span class="variable language_">self</span>.kernel(<span class="variable language_">self</span>.X[i1], <span class="variable language_">self</span>.X[i1]) * (alpha1_new-<span class="variable language_">self</span>.alpha[i1]) - <span class="variable language_">self</span>.Y[i2] * <span class="variable language_">self</span>.kernel(<span class="variable language_">self</span>.X[i2], <span class="variable language_">self</span>.X[i1]) * (alpha2_new-<span class="variable language_">self</span>.alpha[i2])+ <span class="variable language_">self</span>.b </span><br><span class="line">            b2_new = -E2 - <span class="variable language_">self</span>.Y[i1] * <span class="variable language_">self</span>.kernel(<span class="variable language_">self</span>.X[i1], <span class="variable language_">self</span>.X[i2]) * (alpha1_new-<span class="variable language_">self</span>.alpha[i1]) - <span class="variable language_">self</span>.Y[i2] * <span class="variable language_">self</span>.kernel(<span class="variable language_">self</span>.X[i2], <span class="variable language_">self</span>.X[i2]) * (alpha2_new-<span class="variable language_">self</span>.alpha[i2])+ <span class="variable language_">self</span>.b </span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> <span class="number">0</span> &lt; alpha1_new &lt; <span class="variable language_">self</span>.C:</span><br><span class="line">                b_new = b1_new</span><br><span class="line">            <span class="keyword">elif</span> <span class="number">0</span> &lt; alpha2_new &lt; <span class="variable language_">self</span>.C:</span><br><span class="line">                b_new = b2_new</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 选择中点</span></span><br><span class="line">                b_new = (b1_new + b2_new) / <span class="number">2</span></span><br><span class="line">                </span><br><span class="line">            <span class="comment"># 更新参数</span></span><br><span class="line">            <span class="variable language_">self</span>.alpha[i1] = alpha1_new</span><br><span class="line">            <span class="variable language_">self</span>.alpha[i2] = alpha2_new</span><br><span class="line">            <span class="variable language_">self</span>.b = b_new</span><br><span class="line">            </span><br><span class="line">            <span class="variable language_">self</span>.E[i1] = <span class="variable language_">self</span>._E(i1)</span><br><span class="line">            <span class="variable language_">self</span>.E[i2] = <span class="variable language_">self</span>._E(i2)</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;train done!&#x27;</span></span><br><span class="line">            </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">predict</span>(<span class="params">self, data</span>):</span><br><span class="line">        r = <span class="variable language_">self</span>.b</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.m):</span><br><span class="line">            r += <span class="variable language_">self</span>.alpha[i] * <span class="variable language_">self</span>.Y[i] * <span class="variable language_">self</span>.kernel(<span class="variable language_">self</span>.X[i], data)</span><br><span class="line">            </span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span> <span class="keyword">if</span> r &gt; <span class="number">0</span> <span class="keyword">else</span> -<span class="number">1</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">score</span>(<span class="params">self, X_test, y_test</span>):</span><br><span class="line">        right_count = <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(X_test)):</span><br><span class="line">            result = <span class="variable language_">self</span>.predict(X_test[i])</span><br><span class="line">            <span class="keyword">if</span> result == y_test[i]:</span><br><span class="line">                right_count += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> right_count / <span class="built_in">len</span>(X_test)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">_weight</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="comment"># linear model</span></span><br><span class="line">        yx = <span class="variable language_">self</span>.Y.reshape(-<span class="number">1</span>, <span class="number">1</span>)*<span class="variable language_">self</span>.X</span><br><span class="line">        <span class="variable language_">self</span>.w = np.dot(<span class="variable language_">self</span>.alpha, yx)</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.w</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 调用SVM进行模型训练与测试评估</span></span><br><span class="line">svm = SVM(max_iter=<span class="number">100</span>)</span><br><span class="line">svm.fit(X_train, y_train)</span><br><span class="line">svm.score(X_test, y_test)</span><br></pre></td></tr></table></figure>
+<pre><code>0.92
+</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -1531,142 +1773,6 @@ weighted avg       0.83      0.75      0.73         4
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/03/31/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E4%B8%8A%E6%9C%BA%E4%BD%9C%E4%B8%9A2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/03/31/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E4%B8%8A%E6%9C%BA%E4%BD%9C%E4%B8%9A2/" class="post-title-link" itemprop="url">计算机系统基础——上机作业2</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2025-03-31 00:00:00 / 修改时间：15:53:34" itemprop="dateCreated datePublished" datetime="2025-03-31T00:00:00+08:00">2025-03-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/" itemprop="url" rel="index"><span itemprop="name">大二下</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">计算机系统基础</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="实验1：变量输出与机器数分析"><a href="#实验1：变量输出与机器数分析" class="headerlink" title="实验1：变量输出与机器数分析"></a><strong>实验1：变量输出与机器数分析</strong></h3><h4 id="1-1-运行代码并分析输出"><a href="#1-1-运行代码并分析输出" class="headerlink" title="1.1 运行代码并分析输出"></a><strong>1.1 运行代码并分析输出</strong></h4><p><strong>源代码</strong>：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">int</span> x = <span class="number">-1</span>;</span><br><span class="line">    <span class="type">unsigned</span> u = <span class="number">2147483648</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;x = %u = %d.\n&quot;</span>, x, x);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;u = %u = %d.\n&quot;</span>, u, u);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><strong>编译与运行</strong>：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gcc -o test1 test1.c</span><br><span class="line">./test1</span><br></pre></td></tr></table></figure></p>
-<p><strong>输出结果</strong>（假设32位系统）：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x = 4294967295 = -1.</span><br><span class="line">u = 2147483648 = -2147483648.</span><br></pre></td></tr></table></figure></p>
-<p><strong>结果分析</strong>：</p>
-<ul>
-<li><strong><code>x = %u</code></strong>：<br><code>x</code> 是 <code>int</code> 类型的 <code>-1</code>，二进制补码为 <code>0xFFFFFFFF</code>。用 <code>%u</code>（无符号）解释时，<code>0xFFFFFFFF</code> 对应 <code>4294967295</code>。</li>
-<li><strong><code>x = %d</code></strong>：<br>正常输出 <code>-1</code>。</li>
-<li><strong><code>u = %u</code></strong>：<br><code>u</code> 是 <code>unsigned</code> 类型的 <code>2147483648</code>（即 <code>0x80000000</code>），直接输出为 <code>2147483648</code>。</li>
-<li><strong><code>u = %d</code></strong>：<br>用 <code>%d</code>（有符号）解释 <code>0x80000000</code>，最高位为1，表示负数，结果为 <code>-2147483648</code>。</li>
-</ul>
-<hr>
-<h4 id="1-2-反汇编分析机器数"><a href="#1-2-反汇编分析机器数" class="headerlink" title="1.2 反汇编分析机器数"></a><strong>1.2 反汇编分析机器数</strong></h4><p><strong>步骤</strong>：</p>
-<ol>
-<li>生成目标文件：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -c test1.c -o test1.o</span><br></pre></td></tr></table></figure></li>
-<li>反汇编查看变量赋值：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objdump -d -M intel test1.o</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p><strong>关键汇编代码</strong>（简化）：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov DWORD PTR [rbp-4], 0xffffffff   ; x = -1 (机器数 0xFFFFFFFF)</span><br><span class="line">mov DWORD PTR [rbp-8], 0x80000000   ; u = 2147483648 (机器数 0x80000000)</span><br></pre></td></tr></table></figure></p>
-<p><strong>变量机器数总结</strong>：<br>| 变量 | 机器数（十六进制） |<br>| —— | ————————— |<br>| x    | 0xFFFFFFFF         |<br>| u    | 0x80000000         |</p>
-<hr>
-<h3 id="实验2：表达式结果与反汇编分析"><a href="#实验2：表达式结果与反汇编分析" class="headerlink" title="实验2：表达式结果与反汇编分析"></a><strong>实验2：表达式结果与反汇编分析</strong></h3><h4 id="2-1-验证表达式结果"><a href="#2-1-验证表达式结果" class="headerlink" title="2.1 验证表达式结果"></a><strong>2.1 验证表达式结果</strong></h4><p><strong>源代码</strong>：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;-1 &lt; 0\t\t -&gt; %d\n&quot;</span>, (<span class="number">-1</span> &lt; <span class="number">0</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;-1 &lt; 0U\t -&gt; %d\n&quot;</span>, (<span class="number">-1</span> &lt; <span class="number">0U</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;2147483647 &gt; -2147483647 - 1\t -&gt; %d\n&quot;</span>, (<span class="number">2147483647</span> &gt; <span class="number">-2147483647</span> - <span class="number">1</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;2147483647U &gt; -2147483647 - 1\t -&gt; %d\n&quot;</span>, (<span class="number">2147483647U</span> &gt; <span class="number">-2147483647</span> - <span class="number">1</span>));</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><strong>编译与运行</strong>：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gcc -o test2 test2.c</span><br><span class="line">./test2</span><br></pre></td></tr></table></figure></p>
-<p><strong>输出结果</strong>：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-1 &lt; 0           -&gt; 1</span><br><span class="line">-1 &lt; 0U          -&gt; 0</span><br><span class="line">2147483647 &gt; -2147483647 - 1  -&gt; 1</span><br><span class="line">2147483647U &gt; -2147483647 - 1 -&gt; 0</span><br></pre></td></tr></table></figure></p>
-<p><strong>结果分析</strong>：</p>
-<ol>
-<li><strong><code>-1 &lt; 0</code></strong>：<br>有符号比较，<code>-1</code> 小于 <code>0</code>，结果为真（<code>1</code>）。</li>
-<li><strong><code>-1 &lt; 0U</code></strong>：<br><code>0U</code> 是无符号，<code>-1</code> 被转换为无符号数 <code>0xFFFFFFFF</code>（4294967295），远大于 <code>0U</code>，结果为假（<code>0</code>）。</li>
-<li><strong><code>2147483647 &gt; -2147483647 - 1</code></strong>：<br>右侧表达式 <code>-2147483647 - 1</code> 等于 <code>-2147483648</code>（<code>INT_MIN</code>），有符号比较，<code>2147483647</code>（<code>INT_MAX</code>）大于 <code>INT_MIN</code>，结果为真（<code>1</code>）。</li>
-<li><strong><code>2147483647U &gt; -2147483647 - 1</code></strong>：<br>左侧是无符号，右侧 <code>INT_MIN</code> 被转换为无符号数 <code>0x80000000</code>（2147483648），比较 <code>2147483647</code> 和 <code>2147483648</code>，结果为假（<code>0</code>）。</li>
-</ol>
-<hr>
-<h4 id="2-2-反汇编分析表达式"><a href="#2-2-反汇编分析表达式" class="headerlink" title="2.2 反汇编分析表达式"></a><strong>2.2 反汇编分析表达式</strong></h4><p><strong>步骤</strong>：</p>
-<ol>
-<li>生成目标文件：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -c test2.c -o test2.o</span><br></pre></td></tr></table></figure></li>
-<li>反汇编查看比较指令：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objdump -d -M intel test2.o</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p><strong>关键汇编代码</strong>（以 <code>-1 &lt; 0U</code> 为例）：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov DWORD PTR [rbp-4], 0xffffffff   ; -1 的机器数</span><br><span class="line">cmp DWORD PTR [rbp-4], 0            ; 比较时，-1 被视为无符号数 4294967295</span><br><span class="line">setb al                             ; 设置结果（0 表示假）</span><br></pre></td></tr></table></figure></p>
-<p><strong>总结</strong>：</p>
-<ul>
-<li>类型转换规则决定了比较结果。</li>
-<li>反汇编显示编译器如何处理有符号与无符号的隐式转换。</li>
-</ul>
-<hr>
-<h3 id="实验报告建议"><a href="#实验报告建议" class="headerlink" title="实验报告建议"></a><strong>实验报告建议</strong></h3><ol>
-<li><strong>源代码与输出结果</strong>：附上代码及运行结果。</li>
-<li><strong>反汇编截图</strong>：展示变量赋值和表达式比较的汇编代码。</li>
-<li><strong>分析</strong>：<ul>
-<li>解释类型转换对输出的影响。</li>
-<li>说明反汇编中机器数与表达式比较的底层实现。</li>
-</ul>
-</li>
-</ol>
-<p>如果需要更详细的反汇编代码或具体步骤解释，请随时告知！</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="http://example.com/2025/03/31/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E4%B8%8A%E6%9C%BA%E4%BD%9C%E4%B8%9A1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1839,6 +1945,142 @@ weighted avg       0.83      0.75      0.73         4
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/03/31/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E4%B8%8A%E6%9C%BA%E4%BD%9C%E4%B8%9A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/03/31/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E4%B8%8A%E6%9C%BA%E4%BD%9C%E4%B8%9A2/" class="post-title-link" itemprop="url">计算机系统基础——上机作业2</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-03-31 00:00:00 / 修改时间：15:53:34" itemprop="dateCreated datePublished" datetime="2025-03-31T00:00:00+08:00">2025-03-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/" itemprop="url" rel="index"><span itemprop="name">大二下</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">计算机系统基础</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="实验1：变量输出与机器数分析"><a href="#实验1：变量输出与机器数分析" class="headerlink" title="实验1：变量输出与机器数分析"></a><strong>实验1：变量输出与机器数分析</strong></h3><h4 id="1-1-运行代码并分析输出"><a href="#1-1-运行代码并分析输出" class="headerlink" title="1.1 运行代码并分析输出"></a><strong>1.1 运行代码并分析输出</strong></h4><p><strong>源代码</strong>：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">int</span> x = <span class="number">-1</span>;</span><br><span class="line">    <span class="type">unsigned</span> u = <span class="number">2147483648</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;x = %u = %d.\n&quot;</span>, x, x);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;u = %u = %d.\n&quot;</span>, u, u);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>编译与运行</strong>：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gcc -o test1 test1.c</span><br><span class="line">./test1</span><br></pre></td></tr></table></figure></p>
+<p><strong>输出结果</strong>（假设32位系统）：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x = 4294967295 = -1.</span><br><span class="line">u = 2147483648 = -2147483648.</span><br></pre></td></tr></table></figure></p>
+<p><strong>结果分析</strong>：</p>
+<ul>
+<li><strong><code>x = %u</code></strong>：<br><code>x</code> 是 <code>int</code> 类型的 <code>-1</code>，二进制补码为 <code>0xFFFFFFFF</code>。用 <code>%u</code>（无符号）解释时，<code>0xFFFFFFFF</code> 对应 <code>4294967295</code>。</li>
+<li><strong><code>x = %d</code></strong>：<br>正常输出 <code>-1</code>。</li>
+<li><strong><code>u = %u</code></strong>：<br><code>u</code> 是 <code>unsigned</code> 类型的 <code>2147483648</code>（即 <code>0x80000000</code>），直接输出为 <code>2147483648</code>。</li>
+<li><strong><code>u = %d</code></strong>：<br>用 <code>%d</code>（有符号）解释 <code>0x80000000</code>，最高位为1，表示负数，结果为 <code>-2147483648</code>。</li>
+</ul>
+<hr>
+<h4 id="1-2-反汇编分析机器数"><a href="#1-2-反汇编分析机器数" class="headerlink" title="1.2 反汇编分析机器数"></a><strong>1.2 反汇编分析机器数</strong></h4><p><strong>步骤</strong>：</p>
+<ol>
+<li>生成目标文件：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -c test1.c -o test1.o</span><br></pre></td></tr></table></figure></li>
+<li>反汇编查看变量赋值：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objdump -d -M intel test1.o</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><strong>关键汇编代码</strong>（简化）：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov DWORD PTR [rbp-4], 0xffffffff   ; x = -1 (机器数 0xFFFFFFFF)</span><br><span class="line">mov DWORD PTR [rbp-8], 0x80000000   ; u = 2147483648 (机器数 0x80000000)</span><br></pre></td></tr></table></figure></p>
+<p><strong>变量机器数总结</strong>：<br>| 变量 | 机器数（十六进制） |<br>| —— | ————————— |<br>| x    | 0xFFFFFFFF         |<br>| u    | 0x80000000         |</p>
+<hr>
+<h3 id="实验2：表达式结果与反汇编分析"><a href="#实验2：表达式结果与反汇编分析" class="headerlink" title="实验2：表达式结果与反汇编分析"></a><strong>实验2：表达式结果与反汇编分析</strong></h3><h4 id="2-1-验证表达式结果"><a href="#2-1-验证表达式结果" class="headerlink" title="2.1 验证表达式结果"></a><strong>2.1 验证表达式结果</strong></h4><p><strong>源代码</strong>：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;-1 &lt; 0\t\t -&gt; %d\n&quot;</span>, (<span class="number">-1</span> &lt; <span class="number">0</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;-1 &lt; 0U\t -&gt; %d\n&quot;</span>, (<span class="number">-1</span> &lt; <span class="number">0U</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;2147483647 &gt; -2147483647 - 1\t -&gt; %d\n&quot;</span>, (<span class="number">2147483647</span> &gt; <span class="number">-2147483647</span> - <span class="number">1</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;2147483647U &gt; -2147483647 - 1\t -&gt; %d\n&quot;</span>, (<span class="number">2147483647U</span> &gt; <span class="number">-2147483647</span> - <span class="number">1</span>));</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>编译与运行</strong>：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gcc -o test2 test2.c</span><br><span class="line">./test2</span><br></pre></td></tr></table></figure></p>
+<p><strong>输出结果</strong>：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-1 &lt; 0           -&gt; 1</span><br><span class="line">-1 &lt; 0U          -&gt; 0</span><br><span class="line">2147483647 &gt; -2147483647 - 1  -&gt; 1</span><br><span class="line">2147483647U &gt; -2147483647 - 1 -&gt; 0</span><br></pre></td></tr></table></figure></p>
+<p><strong>结果分析</strong>：</p>
+<ol>
+<li><strong><code>-1 &lt; 0</code></strong>：<br>有符号比较，<code>-1</code> 小于 <code>0</code>，结果为真（<code>1</code>）。</li>
+<li><strong><code>-1 &lt; 0U</code></strong>：<br><code>0U</code> 是无符号，<code>-1</code> 被转换为无符号数 <code>0xFFFFFFFF</code>（4294967295），远大于 <code>0U</code>，结果为假（<code>0</code>）。</li>
+<li><strong><code>2147483647 &gt; -2147483647 - 1</code></strong>：<br>右侧表达式 <code>-2147483647 - 1</code> 等于 <code>-2147483648</code>（<code>INT_MIN</code>），有符号比较，<code>2147483647</code>（<code>INT_MAX</code>）大于 <code>INT_MIN</code>，结果为真（<code>1</code>）。</li>
+<li><strong><code>2147483647U &gt; -2147483647 - 1</code></strong>：<br>左侧是无符号，右侧 <code>INT_MIN</code> 被转换为无符号数 <code>0x80000000</code>（2147483648），比较 <code>2147483647</code> 和 <code>2147483648</code>，结果为假（<code>0</code>）。</li>
+</ol>
+<hr>
+<h4 id="2-2-反汇编分析表达式"><a href="#2-2-反汇编分析表达式" class="headerlink" title="2.2 反汇编分析表达式"></a><strong>2.2 反汇编分析表达式</strong></h4><p><strong>步骤</strong>：</p>
+<ol>
+<li>生成目标文件：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -c test2.c -o test2.o</span><br></pre></td></tr></table></figure></li>
+<li>反汇编查看比较指令：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objdump -d -M intel test2.o</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><strong>关键汇编代码</strong>（以 <code>-1 &lt; 0U</code> 为例）：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov DWORD PTR [rbp-4], 0xffffffff   ; -1 的机器数</span><br><span class="line">cmp DWORD PTR [rbp-4], 0            ; 比较时，-1 被视为无符号数 4294967295</span><br><span class="line">setb al                             ; 设置结果（0 表示假）</span><br></pre></td></tr></table></figure></p>
+<p><strong>总结</strong>：</p>
+<ul>
+<li>类型转换规则决定了比较结果。</li>
+<li>反汇编显示编译器如何处理有符号与无符号的隐式转换。</li>
+</ul>
+<hr>
+<h3 id="实验报告建议"><a href="#实验报告建议" class="headerlink" title="实验报告建议"></a><strong>实验报告建议</strong></h3><ol>
+<li><strong>源代码与输出结果</strong>：附上代码及运行结果。</li>
+<li><strong>反汇编截图</strong>：展示变量赋值和表达式比较的汇编代码。</li>
+<li><strong>分析</strong>：<ul>
+<li>解释类型转换对输出的影响。</li>
+<li>说明反汇编中机器数与表达式比较的底层实现。</li>
+</ul>
+</li>
+</ol>
+<p>如果需要更详细的反汇编代码或具体步骤解释，请随时告知！</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="http://example.com/2025/03/31/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/%E4%B8%8A%E6%9C%BA%E4%BD%9C%E4%B8%9A3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1942,171 +2184,6 @@ weighted avg       0.83      0.75      0.73         4
 <li><strong>逻辑运算替代</strong>：用 <code>!!x</code> 将非零值转换为1，用 <code>x ^ (x &gt;&gt; 31)</code> 处理绝对值。</li>
 </ul>
 <p>如果需要具体函数的详细推导或测试用例，可进一步说明！</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/03/21/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%B8%8A%E6%9C%BA/%E4%B8%8A%E6%9C%BA3%E2%80%94%E2%80%94%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%EF%BC%88%E5%8C%BB%E7%96%97%E4%BF%9D%E9%99%A9%E8%B4%B9%E9%A2%84%E6%B5%8B%EF%BC%89/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/03/21/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%B8%8A%E6%9C%BA/%E4%B8%8A%E6%9C%BA3%E2%80%94%E2%80%94%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%EF%BC%88%E5%8C%BB%E7%96%97%E4%BF%9D%E9%99%A9%E8%B4%B9%E9%A2%84%E6%B5%8B%EF%BC%89/" class="post-title-link" itemprop="url">机器学习——上机3——线性回归（医疗保险费预测）</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-03-21 00:00:00" itemprop="dateCreated datePublished" datetime="2025-03-21T00:00:00+08:00">2025-03-21</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-03-22 14:44:46" itemprop="dateModified" datetime="2025-03-22T14:44:46+08:00">2025-03-22</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/" itemprop="url" rel="index"><span itemprop="name">大二下</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="线性回归"><a href="#线性回归" class="headerlink" title="线性回归"></a>线性回归</h1><h2 id="任务1-一元线性回归"><a href="#任务1-一元线性回归" class="headerlink" title="任务1. 一元线性回归"></a>任务1. 一元线性回归</h2><h3 id="任务介绍："><a href="#任务介绍：" class="headerlink" title="任务介绍："></a>任务介绍：</h3><ul>
-<li>自定义一元回归函数MyLinearRegression()，输入参数为x和y的数组xArr和yArr，输出为参数w1和w0，利用最小二乘法求得参数;</li>
-<li>使用美国医疗保险费数据insurance.csv中的输入特征age和目标特征charges，输入MyLinearRegression()函数，得到回归参数值w1和w0，并保留到小数点后两位;</li>
-<li>调用sklearn的LinearRegression()函数，比较其运行结果与上述自定义函数MyLinearRegression()的输出结果是否一致。</li>
-<li>利用age与charges绘制真实样本点，利用w1与w0计算预测值，再绘制age与预测值的点图，观察真实样本点与预测点之间的拟合程度。</li>
-</ul>
-<blockquote>
-<p>补全代码</p>
-</blockquote>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LinearRegression</span><br><span class="line"></span><br><span class="line">insurance = pd.read_csv(<span class="string">&#x27;insurance.csv&#x27;</span>)</span><br><span class="line">age = insurance[<span class="string">&#x27;age&#x27;</span>].values</span><br><span class="line">charges = insurance[<span class="string">&#x27;charges&#x27;</span>].values</span><br><span class="line"></span><br><span class="line"><span class="comment"># 请在下方作答</span></span><br><span class="line"><span class="comment"># 定义一元线性回归函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">MyLinearRegression</span>(<span class="params">xArr, yArr</span>):</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># x均值, y均值计算</span></span><br><span class="line">    mean_x = xArr.mean()</span><br><span class="line">    mean_y = yArr.mean()</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># w0, w1计算，公式</span></span><br><span class="line">    numerator = np.<span class="built_in">sum</span>((xArr - mean_x) * (yArr - mean_y))</span><br><span class="line">    denominator = np.<span class="built_in">sum</span>((xArr - mean_x)**<span class="number">2</span>)</span><br><span class="line">    w1 = numerator / denominator</span><br><span class="line">    w0 = mean_y - w1 * mean_x</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">round</span>(w0,<span class="number">2</span>), <span class="built_in">round</span>(w1,<span class="number">2</span>)</span><br><span class="line">    </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;模型训练，得到参数值&quot;</span>)</span><br><span class="line">w0, w1 = MyLinearRegression(age, charges)</span><br><span class="line"><span class="built_in">print</span>(w1,<span class="string">&#x27;\n&#x27;</span>, w0)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;sklearn的训练结果&quot;</span>)</span><br><span class="line">lr = LinearRegression()</span><br><span class="line"><span class="comment">#线性回归模型训练</span></span><br><span class="line">lr.fit(age.reshape(-<span class="number">1</span>, <span class="number">1</span>), charges)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">round</span>(lr.coef_[<span class="number">0</span>],<span class="number">2</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">round</span>(lr.intercept_,<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 观察真实样本点与预测点之间的拟合程度</span></span><br><span class="line">plt.scatter(age, charges, marker=<span class="string">&#x27;.&#x27;</span>)  <span class="comment"># 画样本点，随机散点</span></span><br><span class="line"><span class="comment"># 利用w1与w0计算预测值，绘制预测点</span></span><br><span class="line">plt.scatter(age, w1 * age + w0, marker=<span class="string">&#x27;+&#x27;</span>)  <span class="comment"># 画预测点，形成直线</span></span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 请直接运行处结果，然后提交作业，该运行结果会自动一同提交上去</span></span><br></pre></td></tr></table></figure>
-<pre><code>模型训练，得到参数值
-257.72 
- 3165.89
-sklearn的训练结果
-257.72
-3165.89
-</code></pre><p><img src="/2025/03/21/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%B8%8A%E6%9C%BA/%E4%B8%8A%E6%9C%BA3%E2%80%94%E2%80%94%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%EF%BC%88%E5%8C%BB%E7%96%97%E4%BF%9D%E9%99%A9%E8%B4%B9%E9%A2%84%E6%B5%8B%EF%BC%89/main_2_1.png" alt="png"></p>
-<h3 id="最小二乘法求解公式"><a href="#最小二乘法求解公式" class="headerlink" title="最小二乘法求解公式"></a><strong>最小二乘法求解公式</strong></h3><p><strong>目标</strong>：最小化预测值与真实值的平方误差之和：</p>
-<script type="math/tex; mode=display">\min_{w_0, w_1} \sum_{i=1}^n (y_i - \hat{y}_i)^2</script><p><strong>闭式解（Normal Equation）</strong>：  </p>
-<ol>
-<li><p><strong>斜率 ( w_1 )</strong>：  </p>
-<script type="math/tex; mode=display">w_1 = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^n (x_i - \bar{x})^2}</script><p>其中 (\bar{x}) 和 (\bar{y}) 分别是 (x) 和 (y) 的均值。</p>
-</li>
-<li><p><strong>截距 ( w_0 )</strong>：  </p>
-<script type="math/tex; mode=display">w_0 = \bar{y} - w_1 \bar{x}</script></li>
-</ol>
-<p>round(w0, 2) 和 round(w1, 2) 的作用是对线性回归模型的参数进行四舍五入处理，保留两位小数。</p>
-<p>这段代码使用 <code>scikit-learn</code> 的 <code>LinearRegression</code> 类实现线性回归，并输出模型参数。以下是逐行解释：</p>
-<h3 id="1-创建线性回归模型实例"><a href="#1-创建线性回归模型实例" class="headerlink" title="1. 创建线性回归模型实例"></a>1. <strong>创建线性回归模型实例</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lr = LinearRegression()</span><br></pre></td></tr></table></figure>
-<ul>
-<li><code>LinearRegression()</code> 是 <code>scikit-learn</code> 中用于线性回归的类。</li>
-<li><code>lr</code> 是该类的一个实例，后续通过它调用模型训练、预测等方法。<h3 id="2-模型训练"><a href="#2-模型训练" class="headerlink" title="2. 模型训练"></a>2. <strong>模型训练</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lr.fit(age.reshape(-<span class="number">1</span>, <span class="number">1</span>), charges)</span><br></pre></td></tr></table></figure></li>
-<li><strong>作用</strong>：用输入数据 <code>age</code>（特征）和 <code>charges</code>（目标值）训练线性回归模型。</li>
-<li><strong>关键细节</strong>：<ul>
-<li><code>age</code> 是一维数组（形状如 <code>(n,)</code>），但 <code>scikit-learn</code> 要求输入特征为二维数组（形状如 <code>(n, 1)</code>）。</li>
-<li><code>age.reshape(-1, 1)</code> 将一维数组转换为二维列向量（<code>n</code> 行 1 列），确保输入格式正确。</li>
-<li><code>charges</code> 是目标值的一维数组，无需调整形状。<h3 id="3-输出模型参数"><a href="#3-输出模型参数" class="headerlink" title="3. 输出模型参数"></a>3. <strong>输出模型参数</strong></h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="built_in">round</span>(lr.coef_[<span class="number">0</span>], <span class="number">2</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">round</span>(lr.intercept_, <span class="number">2</span>))</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><strong><code>lr.coef_</code></strong>：<ul>
-<li>存储模型的回归系数（即 <code>w1</code>，特征权重）。</li>
-<li>对于一元线性回归，<code>coef_</code> 是一个包含单个元素的数组（如 <code>[w1]</code>），因此用 <code>coef_[0]</code> 提取数值。</li>
-</ul>
-</li>
-<li><strong><code>lr.intercept_</code></strong>：<ul>
-<li>存储模型的截距项（即 <code>w0</code>）。</li>
-<li>直接通过 <code>intercept_</code> 访问，无需索引。</li>
-</ul>
-</li>
-<li><strong><code>round(..., 2)</code></strong>：将参数四舍五入保留两位小数，便于与自定义函数结果对比。</li>
-</ul>
-<h2 id="任务2-多元线性回归"><a href="#任务2-多元线性回归" class="headerlink" title="任务2. 多元线性回归"></a>任务2. 多元线性回归</h2><h3 id="任务介绍：-1"><a href="#任务介绍：-1" class="headerlink" title="任务介绍："></a>任务介绍：</h3><ul>
-<li>自定义多元线性回归函数MyLinearRegression2()，输入参数为X和y的数组xArr和yArr，输出为参数ws，利用最小二乘法求得参数;</li>
-<li>使用美国医疗保险费数据insurance.csv中的输入特征age、bmi和children，目标特征charges，根据MyLinearRegression2()函数，得到回归参数值ws；注意判断（X^T X）^{-1}是否为满秩，如果满秩，则引入正则项，参数为alpha，目标函数变为岭回归问题。</li>
-<li>为了得到模型的截距，需要在矩阵X最后增加一列，并且该列所有行的值均为1。</li>
-<li>调用sklearn的LinearRegression()函数，比较其运行结果与上述自定义函数MyLinearRegression2()的输出结果是否一致。</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LinearRegression</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> numpy <span class="keyword">import</span> linalg, column_stack, ones, array</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line">insurance = pd.read_csv(<span class="string">&#x27;insurance.csv&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 请在下方作答 #</span></span><br><span class="line"><span class="comment"># 定义多元线性回归函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">MyLinearRegression2</span>(<span class="params">xArr, yArr</span>):</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 调用mat将Array转换为矩阵</span></span><br><span class="line">    xMat = np.asmatrix(xArr)</span><br><span class="line">    yMat = np.asmatrix(yArr).T  <span class="comment"># 转换为列向量</span></span><br><span class="line">    xTx = xMat.T*xMat</span><br><span class="line">    <span class="comment"># 通过调用linalg计算行列式来判定协方差矩阵是否可逆</span></span><br><span class="line">    <span class="keyword">if</span> linalg.det(xTx) &lt; <span class="number">1e-8</span>:</span><br><span class="line">        <span class="built_in">print</span>( <span class="string">&quot;singular matrix, can&#x27;t do inverse&quot;</span>)</span><br><span class="line">        <span class="comment"># 引入正则项，即 岭回归</span></span><br><span class="line">        alpha = <span class="number">0.1</span></span><br><span class="line">        <span class="comment"># 添加岭回归正则项（单位矩阵大小为特征数+1）</span></span><br><span class="line">        xTx  += alpha * np.eye(xMat.shape[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 计算参数向量</span></span><br><span class="line">    <span class="comment"># 计算参数并转为一维数组</span></span><br><span class="line">    ws = xTx.I * (xMat.T * yMat)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> ws</span><br><span class="line"></span><br><span class="line"><span class="comment"># 模型训练，得到参数值</span></span><br><span class="line">X = insurance[[<span class="string">&#x27;age&#x27;</span>, <span class="string">&#x27;bmi&#x27;</span>, <span class="string">&#x27;children&#x27;</span>]].values</span><br><span class="line"><span class="comment"># 调用column_stack函数在矩阵X后增加一列，并且该列所有行的值均为1</span></span><br><span class="line"><span class="comment"># 添加截距列（全1）</span></span><br><span class="line">X = column_stack((X, ones(X.shape[<span class="number">0</span>])))</span><br><span class="line">y = insurance[<span class="string">&#x27;charges&#x27;</span>]</span><br><span class="line">ws = MyLinearRegression2(X, y)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;自定义的训练结果&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(ws)</span><br><span class="line"><span class="comment"># sklearn的训练结果</span></span><br><span class="line">lr = LinearRegression(fit_intercept=<span class="literal">False</span>)  <span class="comment"># 关键：禁用自动截距</span></span><br><span class="line"><span class="comment">#线性回归模型训练</span></span><br><span class="line">lr.fit(X, y)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;sklearn的训练结果&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(lr.coef_)</span><br><span class="line"><span class="built_in">print</span>(lr.intercept_)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 请直接运行处结果，然后提交作业，该运行结果会自动一同提交上去</span></span><br></pre></td></tr></table></figure>
-<pre><code>自定义的训练结果
-[[  239.99447429]
- [  332.0833645 ]
- [  542.86465225]
- [-6916.24334779]]
-sklearn的训练结果
-[  239.99447429   332.0833645    542.86465225 -6916.24334779]
-0.0
-</code></pre><h2 id="任务3-线性回归应用：预测医疗费用"><a href="#任务3-线性回归应用：预测医疗费用" class="headerlink" title="任务3. 线性回归应用：预测医疗费用"></a>任务3. 线性回归应用：预测医疗费用</h2><h3 id="任务介绍"><a href="#任务介绍" class="headerlink" title="任务介绍"></a>任务介绍</h3><ul>
-<li>对insurance.csv中的名义型特征进行One-Hot编码，得到了数据变量insurance</li>
-<li>请使用自定义的多元回归函数MyLinearRegression2()得到回归模型参数ws和预测值y_pred，并计算R2分数</li>
-<li>比较使用sklearn进行模型训练和模型评价R2分数的结果</li>
-</ul>
-<p>复用上一节实验中实现的代码，可以复制粘贴代替下面的代码</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> linear_model, metrics</span><br><span class="line"><span class="keyword">from</span> numpy <span class="keyword">import</span> array, mean, ones</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 调用get_dummies函数对非数值型特征进行 one-hot 编码处理，以便于运算</span></span><br><span class="line">insurance = pd.read_csv(<span class="string">&#x27;insurance.csv&#x27;</span>)</span><br><span class="line">insurance = pd.get_dummies(insurance, drop_first=<span class="literal">True</span>)  <span class="comment"># One-Hot编码</span></span><br><span class="line"><span class="built_in">print</span>(insurance.shape)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 从insurance中获取X与y</span></span><br><span class="line">X = insurance.drop([<span class="string">&#x27;charges&#x27;</span>], axis=<span class="number">1</span>).values.astype(np.float64)</span><br><span class="line">y = insurance[<span class="string">&#x27;charges&#x27;</span>].values.astype(np.float64)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 对每个特征与y的关系进行可视化，观察与y的相关性</span></span><br><span class="line">plt.figure(figsize=(<span class="number">20</span>,<span class="number">10</span>))</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(X.shape[<span class="number">1</span>]):</span><br><span class="line">    plt.subplot(<span class="number">2</span>,<span class="number">6</span>,i+<span class="number">1</span>)</span><br><span class="line">    plt.scatter(array(X)[:,i],y,s=<span class="number">20</span>)</span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">MyLinearRegression2</span>(<span class="params">xArr, yArr</span>):</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 调用mat将Array转换为矩阵</span></span><br><span class="line">    xMat = np.asmatrix(xArr)</span><br><span class="line">    yMat = np.asmatrix(yArr).T  <span class="comment"># 转换为列向量</span></span><br><span class="line">    xTx = xMat.T*xMat</span><br><span class="line">    <span class="comment"># 通过调用linalg计算行列式来判定协方差矩阵是否可逆</span></span><br><span class="line">    <span class="keyword">if</span> np.linalg.det(xTx) &lt; <span class="number">1e-8</span>:</span><br><span class="line">        <span class="built_in">print</span>( <span class="string">&quot;singular matrix, can&#x27;t do inverse&quot;</span>)</span><br><span class="line">        <span class="comment"># 引入正则项，即 岭回归</span></span><br><span class="line">        alpha = <span class="number">0.1</span></span><br><span class="line">        <span class="comment"># 添加岭回归正则项（单位矩阵大小为特征数+1）</span></span><br><span class="line">        xTx  += alpha * np.eye(xMat.shape[<span class="number">1</span>])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 计算参数向量</span></span><br><span class="line">    <span class="comment"># 计算参数并转为一维数组</span></span><br><span class="line">    ws = xTx.I * (xMat.T * yMat)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> ws</span><br><span class="line"></span><br><span class="line"><span class="comment"># 根据X、y和自定义函数MyLinearRegression2()训练模型参数ws，并计算X的预测值y_pred</span></span><br><span class="line">ws = MyLinearRegression2(X, y)</span><br><span class="line">y_pred = X.dot(ws)</span><br><span class="line">y_pred = array(y_pred).reshape(y_pred.shape[<span class="number">0</span>],) <span class="comment"># 将矩阵转换为一行多列的array格式</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 调用metrics中的r2_score函数根据y和y_pred计算决定系数score</span></span><br><span class="line">score = metrics.r2_score(y, y_pred)</span><br><span class="line"></span><br><span class="line"><span class="comment"># sklearn模型训练与预测</span></span><br><span class="line">lr = linear_model.LinearRegression(fit_intercept=<span class="literal">False</span>)</span><br><span class="line"><span class="comment"># 模型训练</span></span><br><span class="line">lr.fit(X, y)</span><br><span class="line"><span class="comment"># 计算X的预测值y_pred_sk与R2分数score_sk</span></span><br><span class="line">y_pred_sk = lr.predict(X)              <span class="comment"># 使用训练好的sklearn模型进行预测</span></span><br><span class="line">score_sk = metrics.r2_score(y, y_pred_sk)  <span class="comment"># 计算决定系数R²</span></span><br><span class="line"><span class="built_in">print</span>(score_sk)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 请直接运行处结果，然后提交作业，该运行结果会自动一同提交上去</span></span><br></pre></td></tr></table></figure>
-<pre><code>(1338, 9)
-</code></pre><p><img src="/2025/03/21/college/%E5%A4%A7%E4%BA%8C%E4%B8%8B/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E4%B8%8A%E6%9C%BA/%E4%B8%8A%E6%9C%BA3%E2%80%94%E2%80%94%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92%EF%BC%88%E5%8C%BB%E7%96%97%E4%BF%9D%E9%99%A9%E8%B4%B9%E9%A2%84%E6%B5%8B%EF%BC%89/main_9_1.png" alt="png"></p>
-<pre><code>0.7235368166092777
-</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
 
       
     </div>
