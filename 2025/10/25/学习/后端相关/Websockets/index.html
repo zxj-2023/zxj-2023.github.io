@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="🕰️ 什么是长轮询（Long Polling）？长轮询 是一种在 没有 WebSocket 或 Server-Sent Events（SSE） 的环境下，模拟“服务器推送” 的技术。 客户端发起 HTTP 请求后，服务器不会立即响应，而是挂起连接，直到有新数据可返回或超时才发送响应；客户端收到响应后立即重新发起请求，从而实现准实时的双向通信。 ❌ 但最坏情况是：  前端在 t&#x3D;0s 发起请求 新">
+    <meta name="description" content="🕰️ 什么是长轮询（Long Polling）？ 长轮询 是一种在 没有 WebSocket 或 Server-Sent Events（SSE） 的环境下，模拟“服务器推送” 的技术。 客户端发起 HTTP 请求后，服务器不会立即响应，而是挂起连接，直到有新数据可返回或超时才发送响应；客户端收到响应后立即重新发起请求，从而实现准实时的双向通信。 ❌ 但最坏情况是：  前端在 t&#x3D;">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Websockets">
 <meta property="og:url" content="http://example.com/2025/10/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/Websockets/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="🕰️ 什么是长轮询（Long Polling）？长轮询 是一种在 没有 WebSocket 或 Server-Sent Events（SSE） 的环境下，模拟“服务器推送” 的技术。 客户端发起 HTTP 请求后，服务器不会立即响应，而是挂起连接，直到有新数据可返回或超时才发送响应；客户端收到响应后立即重新发起请求，从而实现准实时的双向通信。 ❌ 但最坏情况是：  前端在 t&#x3D;0s 发起请求 新">
+<meta property="og:description" content="🕰️ 什么是长轮询（Long Polling）？ 长轮询 是一种在 没有 WebSocket 或 Server-Sent Events（SSE） 的环境下，模拟“服务器推送” 的技术。 客户端发起 HTTP 请求后，服务器不会立即响应，而是挂起连接，直到有新数据可返回或超时才发送响应；客户端收到响应后立即重新发起请求，从而实现准实时的双向通信。 ❌ 但最坏情况是：  前端在 t&#x3D;">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-10-24T16:00:00.000Z">
 <meta property="article:modified_time" content="2025-10-26T09:50:18.508Z">
@@ -144,7 +144,8 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%95%B0%EF%B8%8F-%E4%BB%80%E4%B9%88%E6%98%AF%E9%95%BF%E8%BD%AE%E8%AF%A2%EF%BC%88Long-Polling%EF%BC%89%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">🕰️ 什么是长轮询（Long Polling）？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%8C%90-%E4%BB%80%E4%B9%88%E6%98%AF-WebSocket%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">🌐 什么是 WebSocket？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%94%81-WebSocket-vs-HTTP-%E8%BD%AE%E8%AF%A2%EF%BC%88%E4%B8%BE%E4%BE%8B%E8%AF%B4%E6%98%8E%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">🔁 WebSocket vs HTTP 轮询（举例说明）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%A7%B1-WebSocket-%E9%80%9A%E4%BF%A1%E6%B5%81%E7%A8%8B%EF%BC%88%E7%AE%80%E5%8C%96%E7%89%88%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">🧱 WebSocket 通信流程（简化版）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#websocket%E9%80%9A%E4%BF%A1%E5%9B%BE%E8%A7%A3"><span class="nav-number">5.</span> <span class="nav-text">websocket通信图解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8E%E9%95%BF%E8%BD%AE%E8%AF%A2%E5%AF%B9%E6%AF%94"><span class="nav-number">6.</span> <span class="nav-text">与长轮询对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">7.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E9%95%BF%E8%BD%AE%E8%AF%A2long-polling"><span class="nav-number">1.</span> <span class="nav-text">🕰️ 什么是长轮询（Long Polling）？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-websocket"><span class="nav-number">2.</span> <span class="nav-text">🌐 什么是 WebSocket？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#websocket-vs-http-%E8%BD%AE%E8%AF%A2%E4%B8%BE%E4%BE%8B%E8%AF%B4%E6%98%8E"><span class="nav-number">3.</span> <span class="nav-text">🔁 WebSocket vs HTTP
+轮询（举例说明）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#websocket-%E9%80%9A%E4%BF%A1%E6%B5%81%E7%A8%8B%E7%AE%80%E5%8C%96%E7%89%88"><span class="nav-number">4.</span> <span class="nav-text">🧱 WebSocket 通信流程（简化版）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#websocket%E9%80%9A%E4%BF%A1%E5%9B%BE%E8%A7%A3"><span class="nav-number">5.</span> <span class="nav-text">websocket通信图解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8E%E9%95%BF%E8%BD%AE%E8%AF%A2%E5%AF%B9%E6%AF%94"><span class="nav-number">6.</span> <span class="nav-text">与长轮询对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">7.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -159,18 +160,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">183</span>
+          <span class="site-state-item-count">192</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-count">68</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">66</span>
+        <span class="site-state-item-count">70</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -284,8 +285,12 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h2 id="🕰️-什么是长轮询（Long-Polling）？"><a href="#🕰️-什么是长轮询（Long-Polling）？" class="headerlink" title="🕰️ 什么是长轮询（Long Polling）？"></a>🕰️ 什么是长轮询（Long Polling）？</h2><p><strong>长轮询</strong> 是一种在 <strong>没有 WebSocket 或 Server-Sent Events（SSE）</strong> 的环境下，<strong>模拟“服务器推送”</strong> 的技术。</p>
-<p>客户端发起 HTTP 请求后，<strong>服务器不会立即响应</strong>，而是<strong>挂起连接</strong>，直到<strong>有新数据可返回</strong>或<strong>超时</strong>才发送响应；客户端收到响应后立即<strong>重新发起请求</strong>，从而实现<strong>准实时的双向通信</strong>。</p>
+    <div class="post-body" itemprop="articleBody"><h2 id="什么是长轮询long-polling">🕰️ 什么是长轮询（Long Polling）？</h2>
+<p><strong>长轮询</strong> 是一种在 <strong>没有 WebSocket 或
+Server-Sent Events（SSE）</strong>
+的环境下，<strong>模拟“服务器推送”</strong> 的技术。</p>
+<p>客户端发起 HTTP
+请求后，<strong>服务器不会立即响应</strong>，而是<strong>挂起连接</strong>，直到<strong>有新数据可返回</strong>或<strong>超时</strong>才发送响应；客户端收到响应后立即<strong>重新发起请求</strong>，从而实现<strong>准实时的双向通信</strong>。</p>
 <p>❌ 但最坏情况是：</p>
 <ul>
 <li>前端在 <strong>t=0s</strong> 发起请求</li>
@@ -300,8 +305,11 @@
 <p>→ <strong>延迟 = 10.1 秒！</strong></p>
 <p>🧠 核心问题：<strong>检测粒度 + 请求对齐</strong></p>
 <p>长轮询的延迟主要来自两个地方：</p>
-<div class="table-container">
 <table>
+<colgroup>
+<col style="width: 24%">
+<col style="width: 75%">
+</colgroup>
 <thead>
 <tr>
 <th>延迟来源</th>
@@ -311,7 +319,8 @@
 <tbody>
 <tr>
 <td><strong>1. 后端检查间隔</strong></td>
-<td>如果后端每 1 秒检查一次数据，那么数据产生后最多要等 1 秒才被发现</td>
+<td>如果后端每 1 秒检查一次数据，那么数据产生后最多要等 1
+秒才被发现</td>
 </tr>
 <tr>
 <td><strong>2. 请求发起时机</strong></td>
@@ -319,30 +328,43 @@
 </tr>
 </tbody>
 </table>
-</div>
 <blockquote>
-<p>💡 即使后端“一有数据就返回”，<strong>前提是它在“当前这个请求还在挂起时”检测到了数据</strong>。</p>
+<p>💡
+即使后端“一有数据就返回”，<strong>前提是它在“当前这个请求还在挂起时”检测到了数据</strong>。</p>
 </blockquote>
-<h2 id="🌐-什么是-WebSocket？"><a href="#🌐-什么是-WebSocket？" class="headerlink" title="🌐 什么是 WebSocket？"></a>🌐 什么是 WebSocket？</h2><p><strong>WebSocket</strong> 是一种<strong>全双工通信协议</strong>，建立在 TCP 之上，允许客户端和服务器之间<strong>实时、双向</strong>地传输数据。</p>
+<h2 id="什么是-websocket">🌐 什么是 WebSocket？</h2>
+<p><strong>WebSocket</strong>
+是一种<strong>全双工通信协议</strong>，建立在 TCP
+之上，允许客户端和服务器之间<strong>实时、双向</strong>地传输数据。</p>
 <p>对比传统的 HTTP：</p>
 <ul>
-<li>HTTP 是<strong>请求-响应</strong>模式：客户端发请求，服务器响应，然后连接关闭。</li>
-<li>WebSocket 是<strong>持久连接</strong>：连接建立后，双方可以随时主动发消息，适合聊天、实时通知、在线游戏等场景。</li>
+<li>HTTP
+是<strong>请求-响应</strong>模式：客户端发请求，服务器响应，然后连接关闭。</li>
+<li>WebSocket
+是<strong>持久连接</strong>：连接建立后，双方可以随时主动发消息，适合聊天、实时通知、在线游戏等场景。</li>
 </ul>
-<h2 id="🔁-WebSocket-vs-HTTP-轮询（举例说明）"><a href="#🔁-WebSocket-vs-HTTP-轮询（举例说明）" class="headerlink" title="🔁 WebSocket vs HTTP 轮询（举例说明）"></a>🔁 WebSocket vs HTTP 轮询（举例说明）</h2><p>假设你要做一个<strong>实时股票价格更新</strong>页面：</p>
+<h2 id="websocket-vs-http-轮询举例说明">🔁 WebSocket vs HTTP
+轮询（举例说明）</h2>
+<p>假设你要做一个<strong>实时股票价格更新</strong>页面：</p>
 <ul>
-<li><strong>HTTP 轮询</strong>：前端每 1 秒发一次请求问“价格变了吗？”，服务器回答。浪费带宽，延迟高。</li>
+<li><strong>HTTP 轮询</strong>：前端每 1
+秒发一次请求问“价格变了吗？”，服务器回答。浪费带宽，延迟高。</li>
 <li><strong>WebSocket</strong>：连接一次，服务器价格一变就主动推给前端，高效实时。</li>
 </ul>
-<h2 id="🧱-WebSocket-通信流程（简化版）"><a href="#🧱-WebSocket-通信流程（简化版）" class="headerlink" title="🧱 WebSocket 通信流程（简化版）"></a>🧱 WebSocket 通信流程（简化版）</h2><ol>
+<h2 id="websocket-通信流程简化版">🧱 WebSocket 通信流程（简化版）</h2>
+<ol type="1">
 <li>客户端发起 HTTP 请求，带 <code>Upgrade: websocket</code> 头。</li>
 <li>服务器同意升级协议，返回 <code>101 Switching Protocols</code>。</li>
-<li>连接升级为 WebSocket，之后双方通过这个连接发消息（不是 HTTP 了！）。</li>
+<li>连接升级为 WebSocket，之后双方通过这个连接发消息（不是 HTTP
+了！）。</li>
 <li>任意一方可主动关闭连接。</li>
 </ol>
-<h2 id="websocket通信图解"><a href="#websocket通信图解" class="headerlink" title="websocket通信图解"></a>websocket通信图解</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant Client as 客户端 (React)</span><br><span class="line">    participant Server as 服务器 (FastAPI)</span><br><span class="line"></span><br><span class="line">    Note over Client,Server: 1. 建立 WebSocket 连接</span><br><span class="line">    Client-&gt;&gt;Server: GET /ws + Upgrade: websocket</span><br><span class="line">    Server--&gt;&gt;Client: 101 Switching Protocols</span><br><span class="line"></span><br><span class="line">    Note over Client,Server: 2. 双向通信阶段</span><br><span class="line">    Client-&gt;&gt;Server: send(&quot;Hello&quot;)</span><br><span class="line">    Server--&gt;&gt;Client: send(&quot;服务器回声: Hello&quot;)</span><br><span class="line">    Server-&gt;&gt;Client: send(&quot;主动推送: 2秒过去了！&quot;)</span><br><span class="line">    Client--&gt;&gt;Server: send(&quot;收到推送，谢谢！&quot;)</span><br><span class="line"></span><br><span class="line">    Note over Client,Server: 3. 任意一方可关闭连接</span><br><span class="line">    Client-&gt;&gt;Server: close()</span><br><span class="line">    Server--&gt;&gt;Client: 连接关闭</span><br></pre></td></tr></table></figure>
-<h2 id="与长轮询对比"><a href="#与长轮询对比" class="headerlink" title="与长轮询对比"></a>与长轮询对比</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant C as 客户端</span><br><span class="line">    participant S as 服务器</span><br><span class="line"></span><br><span class="line">    Note over C,S: WebSocket（高效）</span><br><span class="line">    C-&gt;&gt;S: 握手 (HTTP Upgrade)</span><br><span class="line">    S--&gt;&gt;C: 101 Switching</span><br><span class="line">    loop 实时通信</span><br><span class="line">        S-&gt;&gt;C: 数据 (任意时刻)</span><br><span class="line">        C-&gt;&gt;S: 数据 (任意时刻)</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    Note over C,S: 长轮询（低效）</span><br><span class="line">    loop 每次都要新建请求</span><br><span class="line">        C-&gt;&gt;S: GET /poll</span><br><span class="line">        S--&gt;&gt;C: 等待...（最多30秒）</span><br><span class="line">        S-&gt;&gt;C: 响应（有/无数据）</span><br><span class="line">        C-&gt;&gt;S: GET /poll （立刻重发）</span><br><span class="line">    end</span><br></pre></td></tr></table></figure>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1n3411u7uf?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">WebSockets原理，握手和代码实现！用Socket.io制作实时聊天室_哔哩哔哩_bilibili</a></p>
+<h2 id="websocket通信图解">websocket通信图解</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant Client as 客户端 (React)</span><br><span class="line">    participant Server as 服务器 (FastAPI)</span><br><span class="line"></span><br><span class="line">    Note over Client,Server: 1. 建立 WebSocket 连接</span><br><span class="line">    Client-&gt;&gt;Server: GET /ws + Upgrade: websocket</span><br><span class="line">    Server--&gt;&gt;Client: 101 Switching Protocols</span><br><span class="line"></span><br><span class="line">    Note over Client,Server: 2. 双向通信阶段</span><br><span class="line">    Client-&gt;&gt;Server: send(&quot;Hello&quot;)</span><br><span class="line">    Server--&gt;&gt;Client: send(&quot;服务器回声: Hello&quot;)</span><br><span class="line">    Server-&gt;&gt;Client: send(&quot;主动推送: 2秒过去了！&quot;)</span><br><span class="line">    Client--&gt;&gt;Server: send(&quot;收到推送，谢谢！&quot;)</span><br><span class="line"></span><br><span class="line">    Note over Client,Server: 3. 任意一方可关闭连接</span><br><span class="line">    Client-&gt;&gt;Server: close()</span><br><span class="line">    Server--&gt;&gt;Client: 连接关闭</span><br></pre></td></tr></table></figure>
+<h2 id="与长轮询对比">与长轮询对比</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant C as 客户端</span><br><span class="line">    participant S as 服务器</span><br><span class="line"></span><br><span class="line">    Note over C,S: WebSocket（高效）</span><br><span class="line">    C-&gt;&gt;S: 握手 (HTTP Upgrade)</span><br><span class="line">    S--&gt;&gt;C: 101 Switching</span><br><span class="line">    loop 实时通信</span><br><span class="line">        S-&gt;&gt;C: 数据 (任意时刻)</span><br><span class="line">        C-&gt;&gt;S: 数据 (任意时刻)</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    Note over C,S: 长轮询（低效）</span><br><span class="line">    loop 每次都要新建请求</span><br><span class="line">        C-&gt;&gt;S: GET /poll</span><br><span class="line">        S--&gt;&gt;C: 等待...（最多30秒）</span><br><span class="line">        S-&gt;&gt;C: 响应（有/无数据）</span><br><span class="line">        C-&gt;&gt;S: GET /poll （立刻重发）</span><br><span class="line">    end</span><br></pre></td></tr></table></figure>
+<h2 id="参考资料">参考资料</h2>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1n3411u7uf?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">WebSockets原理，握手和代码实现！用Socket.io制作实时聊天室_哔哩哔哩_bilibili</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Rh4y167Uh?spm_id_from=333.788.recommend_more_video.0&amp;trackid=web_related_0.router-related-2206146-q9d4h.1761464810537.403&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">为什么有http还要有websocket（上）_哔哩哔哩_bilibili</a></p>
 
     </div>
@@ -379,8 +401,8 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2025/10/23/%E5%AD%A6%E4%B9%A0/python-web/redis/redis/" rel="prev" title="redis">
-                  <i class="fa fa-angle-left"></i> redis
+                <a href="/2025/10/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/REST%20%20GraphQL%20%20gRPC%20%20tRPC/" rel="prev" title="REST | GraphQL | gRPC | tRPC">
+                  <i class="fa fa-angle-left"></i> REST | GraphQL | gRPC | tRPC
                 </a>
             </div>
             <div class="post-nav-item">
