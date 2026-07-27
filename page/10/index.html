@@ -155,7 +155,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">195</span>
+          <span class="site-state-item-count">196</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -206,6 +206,337 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/27/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/MCP%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/07/27/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/MCP%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">MCP 学习笔记</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-07-27 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-27T00:00:00+08:00">2025-07-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-08-15 09:25:54" itemprop="dateModified" datetime="2025-08-15T09:25:54+08:00">2025-08-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/mcp/" itemprop="url" rel="index"><span itemprop="name">mcp</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="什么是-mcp">什么是 MCP？</h3>
+<ul>
+<li><strong>全称</strong>：Model Context Protocol</li>
+<li><strong>作用</strong>：让 AI 助手（如 Claude、Cline
+等）在对话过程中，动态调用外部工具（Tool）完成复杂任务（读写文件、查询数据库、调用
+API 等）。</li>
+<li><strong>组成</strong>：
+<ol type="1">
+<li><strong>MCP Host</strong>（宿主，如 Cline、Claude Desktop）</li>
+<li><strong>MCP Server</strong>（提供 Tool 的后台服务）</li>
+<li><strong>Tool</strong>（具体功能单元，如 <code>read_file</code>,
+<code>exec_command</code> 等）</li>
+</ol></li>
+</ul>
+<h3 id="核心概念速记">核心概念速记</h3>
+<ul>
+<li><strong>MCP Server</strong>
+<ul>
+<li>一个独立进程，提供 1-N 个 Tool。</li>
+<li>可以用任何语言编写，只要暴露标准 MCP 接口。</li>
+</ul></li>
+<li><strong>Tool</strong>
+<ul>
+<li>最小执行单元，必须包含：
+<ul>
+<li>name（唯一）</li>
+<li>description（让 LLM 理解何时调用）</li>
+<li>input schema（参数结构，JSON Schema）</li>
+</ul></li>
+</ul></li>
+<li><strong>交互流程（重点）</strong>
+<ul>
+<li>在启动mcp server时，server将tool信息传送给host</li>
+<li>用户在 Host 输入自然语言需求。</li>
+<li>Host 将需求 + 可用 Tool 列表发给 LLM。</li>
+<li>LLM 判断调用哪个 Tool，并填充参数。</li>
+<li>Host 通过 MCP 协议向对应 Server 发送请求。</li>
+<li>Server 执行 Tool 并返回结果。</li>
+<li>Host 将结果合并上下文，继续对话。</li>
+</ul></li>
+</ul>
+<h3 id="mcp和fuction-calling的区别">mcp和fuction calling的区别</h3>
+<table>
+<colgroup>
+<col style="width: 7%">
+<col style="width: 46%">
+<col style="width: 46%">
+</colgroup>
+<thead>
+<tr>
+<th>维度</th>
+<th>Function Calling（FC）</th>
+<th>MCP（Model Context Protocol）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>本质</td>
+<td><strong>能力</strong> ——
+某个大模型原生就带的一种「调用函数」功能</td>
+<td><strong>协议</strong> —— 定义 AI
+与外部世界如何长期、标准、可复用地交互</td>
+</tr>
+<tr>
+<td>工作方式</td>
+<td>模型在一次推理里<strong>主动</strong>决定要调用哪个函数，并吐出结构化参数</td>
+<td>通过「客户端-服务器」架构，由 MCP Server
+<strong>被动</strong>等待模型或 Agent 的请求</td>
+</tr>
+<tr>
+<td>是否标准化</td>
+<td>否。OpenAI、Anthropic、百度等各家接口格式不同</td>
+<td>是。统一 JSON-RPC 2.0 协议，跨模型通用</td>
+</tr>
+<tr>
+<td>上下文管理</td>
+<td>单次调用，无状态；复杂多轮任务需自己维护</td>
+<td>协议层面支持会话、状态、长链路任务</td>
+</tr>
+<tr>
+<td>复用/共享</td>
+<td>函数代码往往紧耦合在项目里，换模型就得重写</td>
+<td>一次写成 MCP Server，可被任何支持 MCP 的模型/IDE/Agent 直接插用</td>
+</tr>
+</tbody>
+</table>
+<p>一句话总结： <strong>Function Calling
+是「某个模型自带的快捷指令」，MCP
+是「让任何模型都能统一插拔工具的工业标准」。</strong> 二者并非互斥——MCP
+的实现里仍然可以用 Function Calling
+去触发具体函数，但它把「怎么描述工具、怎么发现工具、怎么保持会话」这些事都标准化了，从而解决了
+FC 带来的碎片化、难维护、难共享的问题 。</p>
+<h3 id="安装mcp">安装mcp</h3>
+<p>在mcp server市场查找自己想用的mcp服务，如<a target="_blank" rel="noopener" href="https://mcp.so/server/fetch/modelcontextprotocol?tab=content">Fetch
+MCP Server</a></p>
+<p>复制mcp配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;mcpServers&quot;: &#123;</span><br><span class="line">    &quot;fetch&quot;: &#123;</span><br><span class="line">      &quot;command&quot;: &quot;uvx&quot;,</span><br><span class="line">      &quot;args&quot;: [</span><br><span class="line">        &quot;mcp-server-fetch&quot;</span><br><span class="line">      ]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在mcp host 中安装，如trae</p>
+<p>host会自动完成对mcp的配置</p>
+<h3 id="创建一个mcp-server">创建一个mcp server</h3>
+<p>初始化项目</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">uv init weather</span><br><span class="line"></span><br><span class="line">uv sync</span><br><span class="line"></span><br><span class="line">source .venv/bin/activate </span><br><span class="line"></span><br><span class="line">#添加依赖</span><br><span class="line">uv add &quot;mcp[cli]&quot; httpx</span><br></pre></td></tr></table></figure>
+<p>创建weather.py</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br></pre></td><td class="code"><pre><span class="line"># 导入类型提示模块，用于类型注解</span><br><span class="line">from typing import Any</span><br><span class="line"></span><br><span class="line"># 导入httpx库，用于发送HTTP请求</span><br><span class="line">import httpx</span><br><span class="line"></span><br><span class="line"># 从mcp.server.fastmcp模块导入FastMCP类</span><br><span class="line"># FastMCP是一个快速构建MCP（Model Control Protocol）服务器的框架</span><br><span class="line">from mcp.server.fastmcp import FastMCP</span><br><span class="line"></span><br><span class="line"># 创建FastMCP实例，命名为&quot;weather&quot;，日志级别设置为ERROR（只显示错误信息）</span><br><span class="line">mcp = FastMCP(&quot;weather&quot;, log_level=&quot;ERROR&quot;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 常量定义</span><br><span class="line"># NWS（National Weather Service）API的基础URL</span><br><span class="line">NWS_API_BASE = &quot;https://api.weather.gov&quot;</span><br><span class="line"># 用户代理字符串，用于标识应用程序</span><br><span class="line">USER_AGENT = &quot;weather-app/1.0&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">async def make_nws_request(url: str) -&gt; dict[str, Any] | None:</span><br><span class="line">    &quot;&quot;&quot;向NWS API发起请求并处理错误。</span><br><span class="line">    </span><br><span class="line">    Args:</span><br><span class="line">        url: 要请求的API URL</span><br><span class="line">        </span><br><span class="line">    Returns:</span><br><span class="line">        成功时返回解析后的JSON数据字典，失败时返回None</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    # 设置请求头信息</span><br><span class="line">    headers = &#123;</span><br><span class="line">        &quot;User-Agent&quot;: USER_AGENT,           # 用户代理标识</span><br><span class="line">        &quot;Accept&quot;: &quot;application/geo+json&quot;    # 接受的数据格式</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    # 创建异步HTTP客户端</span><br><span class="line">    async with httpx.AsyncClient() as client:</span><br><span class="line">        try:</span><br><span class="line">            # 发起GET请求，设置超时时间为30秒</span><br><span class="line">            response = await client.get(url, headers=headers, timeout=30.0)</span><br><span class="line">            # 如果响应状态码不是2xx，抛出异常</span><br><span class="line">            response.raise_for_status()</span><br><span class="line">            # 返回解析后的JSON数据</span><br><span class="line">            return response.json()</span><br><span class="line">        except Exception:</span><br><span class="line">            # 捕获所有异常，返回None表示请求失败</span><br><span class="line">            return None</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def format_alert(feature: dict) -&gt; str:</span><br><span class="line">    &quot;&quot;&quot;将警报数据格式化为可读的字符串。</span><br><span class="line">    </span><br><span class="line">    Args:</span><br><span class="line">        feature: 包含警报信息的字典</span><br><span class="line">        </span><br><span class="line">    Returns:</span><br><span class="line">        格式化后的警报字符串</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    # 获取警报属性</span><br><span class="line">    props = feature[&quot;properties&quot;]</span><br><span class="line">    # 格式化警报信息，使用get方法提供默认值防止键不存在</span><br><span class="line">    return f&quot;&quot;&quot;</span><br><span class="line">事件: &#123;props.get(&#x27;event&#x27;, &#x27;未知&#x27;)&#125;</span><br><span class="line">区域: &#123;props.get(&#x27;areaDesc&#x27;, &#x27;未知&#x27;)&#125;</span><br><span class="line">严重程度: &#123;props.get(&#x27;severity&#x27;, &#x27;未知&#x27;)&#125;</span><br><span class="line">描述: &#123;props.get(&#x27;description&#x27;, &#x27;无描述信息&#x27;)&#125;</span><br><span class="line">指示: &#123;props.get(&#x27;instruction&#x27;, &#x27;无具体指示&#x27;)&#125;</span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 使用@mcp.tool()装饰器将函数注册为MCP工具</span><br><span class="line">@mcp.tool()</span><br><span class="line">async def get_alerts(state: str) -&gt; str:</span><br><span class="line">    &quot;&quot;&quot;获取指定美国州的天气警报。</span><br><span class="line">    </span><br><span class="line">    Args:</span><br><span class="line">        state: 两个字母的美国州代码（例如：CA, NY）</span><br><span class="line">        </span><br><span class="line">    Returns:</span><br><span class="line">        格式化后的警报信息字符串</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    # 构建获取州警报的URL</span><br><span class="line">    url = f&quot;&#123;NWS_API_BASE&#125;/alerts/active/area/&#123;state&#125;&quot;</span><br><span class="line">    # 发起API请求获取数据</span><br><span class="line">    data = await make_nws_request(url)</span><br><span class="line"></span><br><span class="line">    # 检查数据是否有效</span><br><span class="line">    if not data or &quot;features&quot; not in data:</span><br><span class="line">        return &quot;无法获取警报或未找到警报。&quot;</span><br><span class="line"></span><br><span class="line">    # 检查是否有警报</span><br><span class="line">    if not data[&quot;features&quot;]:</span><br><span class="line">        return &quot;该州无活动警报。&quot;</span><br><span class="line"></span><br><span class="line">    # 格式化所有警报</span><br><span class="line">    alerts = [format_alert(feature) for feature in data[&quot;features&quot;]]</span><br><span class="line">    # 用分隔符连接所有警报</span><br><span class="line">    return &quot;\n---\n&quot;.join(alerts)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 注册为MCP工具的天气预报函数</span><br><span class="line">@mcp.tool()</span><br><span class="line">async def get_forecast(latitude: float, longitude: float) -&gt; str:</span><br><span class="line">    &quot;&quot;&quot;获取指定位置的天气预报。</span><br><span class="line">    </span><br><span class="line">    Args:</span><br><span class="line">        latitude: 位置的纬度</span><br><span class="line">        longitude: 位置的经度</span><br><span class="line">        </span><br><span class="line">    Returns:</span><br><span class="line">        格式化后的天气预报字符串</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    # 首先获取预报网格端点</span><br><span class="line">    points_url = f&quot;&#123;NWS_API_BASE&#125;/points/&#123;latitude&#125;,&#123;longitude&#125;&quot;</span><br><span class="line">    points_data = await make_nws_request(points_url)</span><br><span class="line"></span><br><span class="line">    # 检查点数据是否获取成功</span><br><span class="line">    if not points_data:</span><br><span class="line">        return &quot;无法获取此位置的预报数据。&quot;</span><br><span class="line"></span><br><span class="line">    # 从点响应中获取预报URL</span><br><span class="line">    forecast_url = points_data[&quot;properties&quot;][&quot;forecast&quot;]</span><br><span class="line">    forecast_data = await make_nws_request(forecast_url)</span><br><span class="line"></span><br><span class="line">    # 检查预报数据是否获取成功</span><br><span class="line">    if not forecast_data:</span><br><span class="line">        return &quot;无法获取详细预报。&quot;</span><br><span class="line"></span><br><span class="line">    # 将时间段格式化为可读的预报</span><br><span class="line">    periods = forecast_data[&quot;properties&quot;][&quot;periods&quot;]</span><br><span class="line">    forecasts = []</span><br><span class="line">    # 只显示接下来的5个时间段</span><br><span class="line">    for period in periods[:5]:</span><br><span class="line">        forecast = f&quot;&quot;&quot;</span><br><span class="line">&#123;period[&#x27;name&#x27;]&#125;:</span><br><span class="line">温度: &#123;period[&#x27;temperature&#x27;]&#125;°&#123;period[&#x27;temperatureUnit&#x27;]&#125;</span><br><span class="line">风力: &#123;period[&#x27;windSpeed&#x27;]&#125; &#123;period[&#x27;windDirection&#x27;]&#125;</span><br><span class="line">预报: &#123;period[&#x27;detailedForecast&#x27;]&#125;</span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line">        forecasts.append(forecast)</span><br><span class="line"></span><br><span class="line">    # 用分隔符连接所有预报</span><br><span class="line">    return &quot;\n---\n&quot;.join(forecasts)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 程序入口点</span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    # 初始化并运行服务器，使用stdio传输方式</span><br><span class="line">    mcp.run(transport=&#x27;stdio&#x27;)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><span class="citation" data-cites="mcp.tool">@mcp.tool</span>()可以将函数内的字符串，参数类型等信息传给大模型，以供大模型决定何时调用这个tool</p>
+<p>mcp.run(transport=‘stdio’)说明mcp
+server和host的传输方式是输入和输出</p>
+</blockquote>
+<p>mcp server 配置信息</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&quot;weather&quot;: &#123;</span><br><span class="line">    &quot;disabled&quot;: false,</span><br><span class="line">    &quot;timeout&quot;: 60,</span><br><span class="line">    &quot;command&quot;: &quot;uv&quot;,</span><br><span class="line">    &quot;args&quot;: [</span><br><span class="line">      &quot;--directory&quot;,</span><br><span class="line">      &quot;/Users/joeygreen/PycharmProjects/weather&quot;,</span><br><span class="line">      &quot;run&quot;,</span><br><span class="line">      &quot;weather.py&quot;</span><br><span class="line">    ],</span><br><span class="line">    &quot;transportType&quot;: &quot;stdio&quot;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>“disabled”: false表示该服务是否被禁用。<code>false</code>
+表示该服务是启用状态，可以正常运行。</p>
+<p>“timeout”: 60设置该服务的超时时间，单位为秒。</p>
+<p>“command”: “uv”指定执行该服务时使用的命令。</p>
+<p>“args”出了执行 <code>command</code> 时需要传递的参数。</p>
+<p>“transportType”: “stdio”指定服务的通信方式。<code>stdio</code>
+表示标准输入输出流（Standard Input Output），通常用于进程间通信。</p>
+</blockquote>
+<h3 id="解析mcp-server与host的通信">解析mcp server与host的通信</h3>
+<figure>
+<img src="/2025/07/27/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/MCP%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20250727154739013.png" alt="image-20250727154739013">
+<figcaption aria-hidden="true">image-20250727154739013</figcaption>
+</figure>
+<p>输入为host对server发送，输出为server对host发送，以下将列举几个重要的说明</p>
+<p>输入中：<code>method</code>字段为host告诉server接下来要干什么，如<strong>初始化
+(Initialization)</strong>，<strong>通知已初始化
+(Notification)</strong>，<strong>查询可用工具 (Listing
+Tools)</strong>，<strong>调用工具 (Calling a Tool)</strong></p>
+<p><code>protocolVersion</code>说明了mcp使用的协议版本</p>
+<p>以下见server返回的tool信息，其中的一个参数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;: &quot;get_forecast&quot;,</span><br><span class="line">    &quot;description&quot;: &quot;Get weather forecast for a location.\n\nArgs:\n    latitude: Latitude of the location\n    longitude: Longitude of the location\n&quot;,</span><br><span class="line">    &quot;inputSchema&quot;: &#123;</span><br><span class="line">        &quot;properties&quot;: &#123;</span><br><span class="line">            &quot;latitude&quot;: &#123;</span><br><span class="line">                &quot;title&quot;: &quot;Latitude&quot;,</span><br><span class="line">                &quot;type&quot;: &quot;number&quot;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;longitude&quot;: &#123;</span><br><span class="line">                &quot;title&quot;: &quot;Longitude&quot;,</span><br><span class="line">                &quot;type&quot;: &quot;number&quot;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &quot;required&quot;: [</span><br><span class="line">            &quot;latitude&quot;,</span><br><span class="line">            &quot;longitude&quot;</span><br><span class="line">        ],</span><br><span class="line">        &quot;title&quot;: &quot;get_forecastArguments&quot;,</span><br><span class="line">        &quot;type&quot;: &quot;object&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以和定义的函数对比学习</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"># 注册为MCP工具的天气预报函数</span><br><span class="line">@mcp.tool()</span><br><span class="line">async def get_forecast(latitude: float, longitude: float) -&gt; str:</span><br><span class="line">    &quot;&quot;&quot;获取指定位置的天气预报。</span><br><span class="line">    </span><br><span class="line">    Args:</span><br><span class="line">        latitude: 位置的纬度</span><br><span class="line">        longitude: 位置的经度</span><br><span class="line">        </span><br><span class="line">    Returns:</span><br><span class="line">        格式化后的天气预报字符串</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    # 首先获取预报网格端点</span><br><span class="line">    points_url = f&quot;&#123;NWS_API_BASE&#125;/points/&#123;latitude&#125;,&#123;longitude&#125;&quot;</span><br><span class="line">    points_data = await make_nws_request(points_url)</span><br><span class="line"></span><br><span class="line">    # 检查点数据是否获取成功</span><br><span class="line">    if not points_data:</span><br><span class="line">        return &quot;无法获取此位置的预报数据。&quot;</span><br><span class="line"></span><br><span class="line">    # 从点响应中获取预报URL</span><br><span class="line">    forecast_url = points_data[&quot;properties&quot;][&quot;forecast&quot;]</span><br><span class="line">    forecast_data = await make_nws_request(forecast_url)</span><br><span class="line"></span><br><span class="line">    # 检查预报数据是否获取成功</span><br><span class="line">    if not forecast_data:</span><br><span class="line">        return &quot;无法获取详细预报。&quot;</span><br><span class="line"></span><br><span class="line">    # 将时间段格式化为可读的预报</span><br><span class="line">    periods = forecast_data[&quot;properties&quot;][&quot;periods&quot;]</span><br><span class="line">    forecasts = []</span><br><span class="line">    # 只显示接下来的5个时间段</span><br><span class="line">    for period in periods[:5]:</span><br><span class="line">        forecast = f&quot;&quot;&quot;</span><br><span class="line">&#123;period[&#x27;name&#x27;]&#125;:</span><br><span class="line">温度: &#123;period[&#x27;temperature&#x27;]&#125;°&#123;period[&#x27;temperatureUnit&#x27;]&#125;</span><br><span class="line">风力: &#123;period[&#x27;windSpeed&#x27;]&#125; &#123;period[&#x27;windDirection&#x27;]&#125;</span><br><span class="line">预报: &#123;period[&#x27;detailedForecast&#x27;]&#125;</span><br><span class="line">&quot;&quot;&quot;</span><br><span class="line">        forecasts.append(forecast)</span><br><span class="line"></span><br><span class="line">    # 用分隔符连接所有预报</span><br><span class="line">    return &quot;\n---\n&quot;.join(forecasts)</span><br></pre></td></tr></table></figure>
+<p><code>description</code>内容即为我们在定义这个tool的时候写的<strong>文档字符串</strong>（Documentation
+String），通常简称为 <strong>docstring</strong></p>
+<p><code>inputSchema</code> 是在MCP（Model Control
+Protocol）中用来<strong>描述工具（tool）所需参数的结构和类型的规范</strong>。它本质上是一个JSON
+Schema。</p>
+<blockquote>
+<p>JSON Schema 是一个用于<strong>描述和验证 JSON
+数据结构的规范</strong>。你可以把它理解为 JSON
+数据的“蓝图”或“模板”。</p>
+</blockquote>
+<p><code>required</code>指明哪些参数是必需的，哪些是可选的。</p>
+<h3 id="理解mcp的本质">理解mcp的本质</h3>
+<p>以上内容皆是server与host直接的交互，本质上可以理解成host对server提供的工具进行注册与使用。这其中并不涉及到host与大模型的交互，也就是大模型是如何使用host提供的信息。实际上不同的mcp
+host与模型的交互协议也不同，如cline使用的是xml格式；cherry
+studio使用的则是fuction calling</p>
+<p>再看mcp的全称Model Context
+Protocol，模型上下文协议，也就是mcp增加模型的扩展性，使他可以获取更多信息，而server就是为模型提供更多信息的工具</p>
+<h3 id="mcp-host与模型的交互">mcp host与模型的交互</h3>
+<p>使用中转服务器截获日志</p>
+<figure>
+<img src="/2025/07/27/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/MCP%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20250727163811531-1753605912284-1.png" alt="image-20250727163811531">
+<figcaption aria-hidden="true">image-20250727163811531</figcaption>
+</figure>
+<p>以下为cline发送给模型的请求</p>
+<figure>
+<img src="/2025/07/27/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/MCP%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20250727164527797.png" alt="image-20250727164527797">
+<figcaption aria-hidden="true">image-20250727164527797</figcaption>
+</figure>
+<p><code>messages</code>包含了系统提示词与用户输入</p>
+<p>先来看系统提示词，cline提供的提示词包括工具使用格式，工具信息，工具使用方法等。这里重点说一下，cline的工具使用格式xml</p>
+<p>结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;tool_name&gt;</span><br><span class="line">&lt;parameter1_name&gt;value1&lt;/parameter1_name&gt;</span><br><span class="line">&lt;parameter2_name&gt;value2&lt;/parameter2_name&gt;</span><br><span class="line">...</span><br><span class="line">&lt;/tool_name&gt;</span><br></pre></td></tr></table></figure>
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;read_file&gt;</span><br><span class="line">src/main.js</span><br><span class="line">&lt;/read_file&gt;</span><br></pre></td></tr></table></figure>
+<p>再举个例子</p>
+<p>use_mcp_tool 描述：请求使用由连接的 MCP 服务器提供的工具。每个 MCP
+服务器可以提供具有不同功能的多个工具。工具有定义的输入模式，用于指定必需和可选参数。
+参数：</p>
+<p>server_name: (必需) 提供该工具的 MCP 服务器的名称 tool_name: (必需)
+要执行的工具的名称 arguments: (必需) 一个 JSON
+对象，包含工具的输入参数，遵循工具的输入模式 用法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;use_mcp_tool&gt;</span><br><span class="line">&lt;server_name&gt;服务器名称在此&lt;/server_name&gt;</span><br><span class="line">&lt;tool_name&gt;工具名称在此&lt;/tool_name&gt;</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">&quot;param1&quot;: &quot;value1&quot;,</span><br><span class="line">&quot;param2&quot;: &quot;value2&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&lt;/use_mcp_tool&gt;</span><br></pre></td></tr></table></figure>
+<p>模型返回响应如下</p>
+<figure>
+<img src="/2025/07/27/%E5%AD%A6%E4%B9%A0/ai%E7%9B%B8%E5%85%B3/mcp%E5%AD%A6%E4%B9%A0/MCP%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/image-20250727174504506.png" alt="image-20250727174504506">
+<figcaption aria-hidden="true">image-20250727174504506</figcaption>
+</figure>
+<p>sse连接，流式输出</p>
+<blockquote>
+<p>SSE 是一种<strong>基于标准
+HTTP</strong>、<strong>只允许服务器向客户端单向推送文本流</strong>的实时通信技术，浏览器原生支持，自动重连，常用于<strong>AI
+流式回答</strong>、<strong>实时日志</strong>、<strong>股价/监控推送</strong>等场景。</p>
+<p>即客户端发送一次请求，连续接受多次响应直到结束</p>
+</blockquote>
+<h3 id="mcp的三种传输协议">mcp的三种传输协议</h3>
+<table>
+<colgroup>
+<col style="width: 16%">
+<col style="width: 29%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 19%">
+</colgroup>
+<thead>
+<tr>
+<th>协议名称</th>
+<th>通信方式</th>
+<th>适用场景</th>
+<th>优势</th>
+<th>局限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Stdio</strong>（标准输入输出）</td>
+<td>使用进程的标准输入（stdin）和标准输出（stdout）进行本地通信，基于
+JSON-RPC 2.0 格式</td>
+<td>本地开发、调试、IDE插件、命令行工具</td>
+<td>简单易实现、跨平台、低延迟</td>
+<td>仅支持本地通信，无法跨网络，低并发</td>
+</tr>
+<tr>
+<td><strong>SSE</strong>（Server-Sent Events）</td>
+<td>客户端通过 HTTP POST 发送请求，服务器通过 SSE 单向推送流式响应</td>
+<td>实时监控、新闻推送、远程服务调用</td>
+<td>基于 HTTP，浏览器友好，支持流式数据</td>
+<td>仅支持单向通信，MCP官方已标记为“即将废弃”</td>
+</tr>
+<tr>
+<td><strong>Streamable HTTP</strong>（新型流式HTTP）</td>
+<td>支持双向流式通信的现代 HTTP 协议，替代 SSE，支持会话恢复、OAuth
+认证等</td>
+<td>分布式系统、高并发、双向实时交互</td>
+<td>双向通信、高性能、企业级安全机制</td>
+<td>实现较复杂，生态仍在发展中</td>
+</tr>
+</tbody>
+</table>
+<h3 id="react">ReAct</h3>
+<p>ReAct
+是一种用于增强大型语言模型（LLMs）推理和行动能力的技术框架，它通过结合“推理”（Reasoning）和“行动”（Acting）来提升模型处理复杂任务的能力。</p>
+<p>其工作流程通常包括以下几个步骤：</p>
+<ol type="1">
+<li><strong>思考（Reasoning）</strong>：模型对当前问题进行分析，思考下一步需要采取的行动。</li>
+<li><strong>行动（Acting）</strong>：模型决定调用哪些工具或函数，并提供必要的参数。</li>
+<li><strong>观察（Observation）</strong>：工具执行后返回结果，模型对结果进行观察。</li>
+<li><strong>响应（Response）</strong>：根据观察结果，模型生成最终的用户响应。</li>
+</ol>
+<p>实际应用上就是告诉大模型用ReAct这种模式来思考</p>
+<h3 id="参考资料">参考资料</h3>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1uronYREWR?spm_id_from=333.788.player.switch&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">MCP终极指南
+- 从原理到实战，带你深入掌握MCP（基础篇）_哔哩哔哩_bilibili</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1273,232 +1604,6 @@ pd.read_excel(‘docs_new.xlsx’)，从excel加载url并进行数据处理，�
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/18/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/libreoffice/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/07/18/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/libreoffice/" class="post-title-link" itemprop="url">Libreoffice</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-07-18 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-18T00:00:00+08:00">2025-07-18</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-08-20 16:31:32" itemprop="dateModified" datetime="2025-08-20T16:31:32+08:00">2025-08-20</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%AE%9E%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">实习</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/" itemprop="url" rel="index"><span itemprop="name">晨晟智控</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="libreoffice部署">libreoffice部署</h3>
-<h4 id="查看linux发行版">查看Linux发行版</h4>
-<figure>
-<img src="/2025/07/18/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/libreoffice/image-20250718095931232.png" alt="image-20250718095931232">
-<figcaption aria-hidden="true">image-20250718095931232</figcaption>
-</figure>
-<p>系统是 <strong>银河麒麟高级服务器操作系统 V10（Kylin Linux Advanced
-Server V10）</strong>，属于 <strong>中国国产、兼容 CentOS/RHEL
-生态</strong> 的 Linux 发行版。</p>
-<p>因此它使用 <strong>RPM
-包管理</strong>（<code>dnf</code>/<code>yum</code>），而不是
-<code>.deb</code>。</p>
-<h4 id="查看cpu-处理器架构">查看<strong>CPU 处理器架构</strong></h4>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uname -m</span><br></pre></td></tr></table></figure>
-<p>是<strong>x86_64</strong></p>
-<h4 id="不用部署了镜像里有直接用了">不用部署了，镜像里有，直接用了</h4>
-<h4 id="使用libreoffice处理doc文件转成pdf">使用libreoffice处理doc文件，转成pdf</h4>
-<p>将当前目录下所有 <code>.doc</code> 和 <code>.docx</code> 转为
-PDF：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">libreoffice --headless --convert-to pdf *.doc *.docx --outdir ./pdf_output/</span><br><span class="line"></span><br><span class="line"># 检查是否有残留进程</span><br><span class="line">ps aux | grep libreoffice</span><br><span class="line"></span><br><span class="line"># 如果有残留进程，杀死它们</span><br><span class="line">killall soffice.bin 2&gt;/dev/null</span><br></pre></td></tr></table></figure>
-<h4 id="python">python</h4>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">import os</span><br><span class="line">import subprocess</span><br><span class="line">import argparse</span><br><span class="line">import glob</span><br><span class="line">from pathlib import Path</span><br><span class="line">def batch_convert_documents(input_path, output_dir):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    批量转换文档的函数版本</span><br><span class="line">    </span><br><span class="line">    Args:</span><br><span class="line">        input_path (str): 输入路径（文件、目录或通配符）</span><br><span class="line">        output_dir (str): 输出目录</span><br><span class="line">    </span><br><span class="line">    Returns:</span><br><span class="line">        bool: 转换是否成功</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    </span><br><span class="line">    # 确保输出目录存在</span><br><span class="line">    Path(output_dir).mkdir(parents=True, exist_ok=True)</span><br><span class="line">    </span><br><span class="line">    # 收集所有要转换的文件</span><br><span class="line">    files_to_convert = []</span><br><span class="line">    </span><br><span class="line">    if os.path.isfile(input_path):</span><br><span class="line">        # 单个文件</span><br><span class="line">        if input_path.lower().endswith((&#x27;.doc&#x27;, &#x27;.docx&#x27;)):</span><br><span class="line">            files_to_convert.append(input_path)</span><br><span class="line">    elif os.path.isdir(input_path):</span><br><span class="line">        # 目录中的所有doc/docx文件</span><br><span class="line">        for pattern in [&#x27;*.doc&#x27;, &#x27;*.docx&#x27;]:</span><br><span class="line">            files_to_convert.extend(glob.glob(os.path.join(input_path, pattern)))</span><br><span class="line">    else:</span><br><span class="line">        # 通配符模式</span><br><span class="line">        files_to_convert = glob.glob(input_path)</span><br><span class="line">        # 过滤出doc和docx文件</span><br><span class="line">        files_to_convert = [f for f in files_to_convert if f.lower().endswith((&#x27;.doc&#x27;, &#x27;.docx&#x27;))]</span><br><span class="line">    </span><br><span class="line">    if not files_to_convert:</span><br><span class="line">        print(&quot;未找到要转换的文档文件&quot;)</span><br><span class="line">        return False</span><br><span class="line">    </span><br><span class="line">    print(f&quot;找到 &#123;len(files_to_convert)&#125; 个文件需要转换&quot;)</span><br><span class="line">    </span><br><span class="line">    # 构建命令</span><br><span class="line">    cmd = [</span><br><span class="line">        &#x27;libreoffice&#x27;,</span><br><span class="line">        &#x27;--headless&#x27;,</span><br><span class="line">        &#x27;--convert-to&#x27;, &#x27;pdf&#x27;,</span><br><span class="line">        &#x27;--outdir&#x27;, output_dir</span><br><span class="line">    ] + files_to_convert</span><br><span class="line">    </span><br><span class="line">    try:</span><br><span class="line">        print(&quot;正在转换文件...&quot;)</span><br><span class="line">        result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)</span><br><span class="line">        </span><br><span class="line">        if result.returncode == 0:</span><br><span class="line">            print(f&quot;成功转换 &#123;len(files_to_convert)&#125; 个文件&quot;)</span><br><span class="line">            return True</span><br><span class="line">        else:</span><br><span class="line">            print(f&quot;转换失败: &#123;result.stderr&#125;&quot;)</span><br><span class="line">            return False</span><br><span class="line">            </span><br><span class="line">    except Exception as e:</span><br><span class="line">        print(f&quot;转换过程中发生错误: &#123;e&#125;&quot;)</span><br><span class="line">        return False</span><br><span class="line"></span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    success = batch_convert_documents(&quot;./docs&quot;, &quot;./pdf_output&quot;)</span><br></pre></td></tr></table></figure>
-<h3 id="linux扫盲">Linux扫盲</h3>
-<h4 id="发行版">发行版</h4>
-<p>像Ubuntu，CentOS都属于Linux的发行版，就像Windows11属于Windows的关系</p>
-<p>常见发行版分类：</p>
-<table>
-<colgroup>
-<col style="width: 14%">
-<col style="width: 46%">
-<col style="width: 14%">
-<col style="width: 23%">
-</colgroup>
-<thead>
-<tr>
-<th>系列</th>
-<th>代表发行版</th>
-<th>包格式</th>
-<th>特点</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Debian 系</strong></td>
-<td>Debian、Ubuntu、Kali、Linux Mint</td>
-<td><code>.deb</code></td>
-<td>包多、社区大、教程多</td>
-</tr>
-<tr>
-<td><strong>Red Hat 系</strong></td>
-<td>CentOS、RHEL、Rocky、Alma、Fedora</td>
-<td><code>.rpm</code></td>
-<td>企业级稳定、官方支持长</td>
-</tr>
-<tr>
-<td><strong>SUSE 系</strong></td>
-<td>openSUSE Leap / Tumbleweed</td>
-<td><code>.rpm</code></td>
-<td>YaST 管理工具、欧洲流行</td>
-</tr>
-<tr>
-<td><strong>Arch 系</strong></td>
-<td>Arch Linux、Manjaro</td>
-<td><code>.pkg.tar.zst</code></td>
-<td>滚动更新、极客向</td>
-</tr>
-<tr>
-<td><strong>轻量/最小</strong></td>
-<td>Alpine、Debian netinst、CentOS Stream Minimal</td>
-<td>任意</td>
-<td>镜像小、资源占用低</td>
-</tr>
-</tbody>
-</table>
-<p>如何查看Linux发行版</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/os-release</span><br></pre></td></tr></table></figure>
-<h4 id="deb和rpm">deb和rpm</h4>
-<p><code>.deb</code> 和 <code>.rpm</code> 想象成 <strong>“Linux
-世界里的安装程序”</strong>，就像 Windows 的 <code>.exe</code> /
-<code>.msi</code></p>
-<table>
-<colgroup>
-<col style="width: 8%">
-<col style="width: 40%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr>
-<th>格式</th>
-<th>适用系统</th>
-<th>安装命令</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong><code>.deb</code></strong></td>
-<td>Debian、Ubuntu、Linux Mint、Kali 等</td>
-<td><code>sudo dpkg -i xxx.deb</code> 或
-<code>sudo apt install ./xxx.deb</code></td>
-</tr>
-<tr>
-<td><strong><code>.rpm</code></strong></td>
-<td>CentOS、RHEL、Fedora、openSUSE、Rocky、Alma 等</td>
-<td><code>sudo rpm -ivh xxx.rpm</code> 或
-<code>sudo dnf/yum install xxx.rpm</code></td>
-</tr>
-</tbody>
-</table>
-<h4 id="cpu处理器架构">cpu处理器架构</h4>
-<table>
-<colgroup>
-<col style="width: 12%">
-<col style="width: 21%">
-<col style="width: 66%">
-</colgroup>
-<thead>
-<tr>
-<th>目录名</th>
-<th>代表架构</th>
-<th>适用场景</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>x86_64</strong></td>
-<td><strong>Intel/AMD 64 位</strong></td>
-<td>绝大多数台式机、服务器（如 Xeon、EPYC、Core、Ryzen）</td>
-</tr>
-<tr>
-<td><strong>aarch64</strong></td>
-<td><strong>ARM 64 位</strong></td>
-<td>树莓派 4/5、苹果 M 系列（Asahi Linux）、鲲鹏、飞腾、Ampere ARM
-服务器等</td>
-</tr>
-</tbody>
-</table>
-<p>查看处理器架构：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uname -m</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/18/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/langgraph-agent/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2142,6 +2247,232 @@ Calling”或“Tool Calling”功能的核心。其结构通常包含：
 相对应。这使得模型能够准确地将结果与请求匹配起来。</li>
 <li>type (str): 固定为字符串 ‘tool’ 。</li>
 </ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/18/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/libreoffice/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/07/18/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/libreoffice/" class="post-title-link" itemprop="url">Libreoffice</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-07-18 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-18T00:00:00+08:00">2025-07-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-08-20 16:31:32" itemprop="dateModified" datetime="2025-08-20T16:31:32+08:00">2025-08-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AE%9E%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">实习</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/" itemprop="url" rel="index"><span itemprop="name">晨晟智控</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="libreoffice部署">libreoffice部署</h3>
+<h4 id="查看linux发行版">查看Linux发行版</h4>
+<figure>
+<img src="/2025/07/18/%E5%AE%9E%E4%B9%A0/%E6%99%A8%E6%99%9F%E6%99%BA%E6%8E%A7/libreoffice/image-20250718095931232.png" alt="image-20250718095931232">
+<figcaption aria-hidden="true">image-20250718095931232</figcaption>
+</figure>
+<p>系统是 <strong>银河麒麟高级服务器操作系统 V10（Kylin Linux Advanced
+Server V10）</strong>，属于 <strong>中国国产、兼容 CentOS/RHEL
+生态</strong> 的 Linux 发行版。</p>
+<p>因此它使用 <strong>RPM
+包管理</strong>（<code>dnf</code>/<code>yum</code>），而不是
+<code>.deb</code>。</p>
+<h4 id="查看cpu-处理器架构">查看<strong>CPU 处理器架构</strong></h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uname -m</span><br></pre></td></tr></table></figure>
+<p>是<strong>x86_64</strong></p>
+<h4 id="不用部署了镜像里有直接用了">不用部署了，镜像里有，直接用了</h4>
+<h4 id="使用libreoffice处理doc文件转成pdf">使用libreoffice处理doc文件，转成pdf</h4>
+<p>将当前目录下所有 <code>.doc</code> 和 <code>.docx</code> 转为
+PDF：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">libreoffice --headless --convert-to pdf *.doc *.docx --outdir ./pdf_output/</span><br><span class="line"></span><br><span class="line"># 检查是否有残留进程</span><br><span class="line">ps aux | grep libreoffice</span><br><span class="line"></span><br><span class="line"># 如果有残留进程，杀死它们</span><br><span class="line">killall soffice.bin 2&gt;/dev/null</span><br></pre></td></tr></table></figure>
+<h4 id="python">python</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">import os</span><br><span class="line">import subprocess</span><br><span class="line">import argparse</span><br><span class="line">import glob</span><br><span class="line">from pathlib import Path</span><br><span class="line">def batch_convert_documents(input_path, output_dir):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    批量转换文档的函数版本</span><br><span class="line">    </span><br><span class="line">    Args:</span><br><span class="line">        input_path (str): 输入路径（文件、目录或通配符）</span><br><span class="line">        output_dir (str): 输出目录</span><br><span class="line">    </span><br><span class="line">    Returns:</span><br><span class="line">        bool: 转换是否成功</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    </span><br><span class="line">    # 确保输出目录存在</span><br><span class="line">    Path(output_dir).mkdir(parents=True, exist_ok=True)</span><br><span class="line">    </span><br><span class="line">    # 收集所有要转换的文件</span><br><span class="line">    files_to_convert = []</span><br><span class="line">    </span><br><span class="line">    if os.path.isfile(input_path):</span><br><span class="line">        # 单个文件</span><br><span class="line">        if input_path.lower().endswith((&#x27;.doc&#x27;, &#x27;.docx&#x27;)):</span><br><span class="line">            files_to_convert.append(input_path)</span><br><span class="line">    elif os.path.isdir(input_path):</span><br><span class="line">        # 目录中的所有doc/docx文件</span><br><span class="line">        for pattern in [&#x27;*.doc&#x27;, &#x27;*.docx&#x27;]:</span><br><span class="line">            files_to_convert.extend(glob.glob(os.path.join(input_path, pattern)))</span><br><span class="line">    else:</span><br><span class="line">        # 通配符模式</span><br><span class="line">        files_to_convert = glob.glob(input_path)</span><br><span class="line">        # 过滤出doc和docx文件</span><br><span class="line">        files_to_convert = [f for f in files_to_convert if f.lower().endswith((&#x27;.doc&#x27;, &#x27;.docx&#x27;))]</span><br><span class="line">    </span><br><span class="line">    if not files_to_convert:</span><br><span class="line">        print(&quot;未找到要转换的文档文件&quot;)</span><br><span class="line">        return False</span><br><span class="line">    </span><br><span class="line">    print(f&quot;找到 &#123;len(files_to_convert)&#125; 个文件需要转换&quot;)</span><br><span class="line">    </span><br><span class="line">    # 构建命令</span><br><span class="line">    cmd = [</span><br><span class="line">        &#x27;libreoffice&#x27;,</span><br><span class="line">        &#x27;--headless&#x27;,</span><br><span class="line">        &#x27;--convert-to&#x27;, &#x27;pdf&#x27;,</span><br><span class="line">        &#x27;--outdir&#x27;, output_dir</span><br><span class="line">    ] + files_to_convert</span><br><span class="line">    </span><br><span class="line">    try:</span><br><span class="line">        print(&quot;正在转换文件...&quot;)</span><br><span class="line">        result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)</span><br><span class="line">        </span><br><span class="line">        if result.returncode == 0:</span><br><span class="line">            print(f&quot;成功转换 &#123;len(files_to_convert)&#125; 个文件&quot;)</span><br><span class="line">            return True</span><br><span class="line">        else:</span><br><span class="line">            print(f&quot;转换失败: &#123;result.stderr&#125;&quot;)</span><br><span class="line">            return False</span><br><span class="line">            </span><br><span class="line">    except Exception as e:</span><br><span class="line">        print(f&quot;转换过程中发生错误: &#123;e&#125;&quot;)</span><br><span class="line">        return False</span><br><span class="line"></span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    success = batch_convert_documents(&quot;./docs&quot;, &quot;./pdf_output&quot;)</span><br></pre></td></tr></table></figure>
+<h3 id="linux扫盲">Linux扫盲</h3>
+<h4 id="发行版">发行版</h4>
+<p>像Ubuntu，CentOS都属于Linux的发行版，就像Windows11属于Windows的关系</p>
+<p>常见发行版分类：</p>
+<table>
+<colgroup>
+<col style="width: 14%">
+<col style="width: 46%">
+<col style="width: 14%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr>
+<th>系列</th>
+<th>代表发行版</th>
+<th>包格式</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Debian 系</strong></td>
+<td>Debian、Ubuntu、Kali、Linux Mint</td>
+<td><code>.deb</code></td>
+<td>包多、社区大、教程多</td>
+</tr>
+<tr>
+<td><strong>Red Hat 系</strong></td>
+<td>CentOS、RHEL、Rocky、Alma、Fedora</td>
+<td><code>.rpm</code></td>
+<td>企业级稳定、官方支持长</td>
+</tr>
+<tr>
+<td><strong>SUSE 系</strong></td>
+<td>openSUSE Leap / Tumbleweed</td>
+<td><code>.rpm</code></td>
+<td>YaST 管理工具、欧洲流行</td>
+</tr>
+<tr>
+<td><strong>Arch 系</strong></td>
+<td>Arch Linux、Manjaro</td>
+<td><code>.pkg.tar.zst</code></td>
+<td>滚动更新、极客向</td>
+</tr>
+<tr>
+<td><strong>轻量/最小</strong></td>
+<td>Alpine、Debian netinst、CentOS Stream Minimal</td>
+<td>任意</td>
+<td>镜像小、资源占用低</td>
+</tr>
+</tbody>
+</table>
+<p>如何查看Linux发行版</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/os-release</span><br></pre></td></tr></table></figure>
+<h4 id="deb和rpm">deb和rpm</h4>
+<p><code>.deb</code> 和 <code>.rpm</code> 想象成 <strong>“Linux
+世界里的安装程序”</strong>，就像 Windows 的 <code>.exe</code> /
+<code>.msi</code></p>
+<table>
+<colgroup>
+<col style="width: 8%">
+<col style="width: 40%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr>
+<th>格式</th>
+<th>适用系统</th>
+<th>安装命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>.deb</code></strong></td>
+<td>Debian、Ubuntu、Linux Mint、Kali 等</td>
+<td><code>sudo dpkg -i xxx.deb</code> 或
+<code>sudo apt install ./xxx.deb</code></td>
+</tr>
+<tr>
+<td><strong><code>.rpm</code></strong></td>
+<td>CentOS、RHEL、Fedora、openSUSE、Rocky、Alma 等</td>
+<td><code>sudo rpm -ivh xxx.rpm</code> 或
+<code>sudo dnf/yum install xxx.rpm</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="cpu处理器架构">cpu处理器架构</h4>
+<table>
+<colgroup>
+<col style="width: 12%">
+<col style="width: 21%">
+<col style="width: 66%">
+</colgroup>
+<thead>
+<tr>
+<th>目录名</th>
+<th>代表架构</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>x86_64</strong></td>
+<td><strong>Intel/AMD 64 位</strong></td>
+<td>绝大多数台式机、服务器（如 Xeon、EPYC、Core、Ryzen）</td>
+</tr>
+<tr>
+<td><strong>aarch64</strong></td>
+<td><strong>ARM 64 位</strong></td>
+<td>树莓派 4/5、苹果 M 系列（Asahi Linux）、鲲鹏、飞腾、Ampere ARM
+服务器等</td>
+</tr>
+</tbody>
+</table>
+<p>查看处理器架构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uname -m</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -3035,135 +3366,6 @@ Web）</td>
 🦜️🛠️ LangSmith 文档</a></p>
 <p><a target="_blank" rel="noopener" href="https://docs.smith.langchain.com/">Get started with
 LangSmith | 🦜️🛠️ LangSmith</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/07/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/LangGraphChatBot/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/07/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/LangGraphChatBot/" class="post-title-link" itemprop="url">LangGraphChatBot</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-07-14 00:00:00" itemprop="dateCreated datePublished" datetime="2025-07-14T00:00:00+08:00">2025-07-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-07-15 17:54:50" itemprop="dateModified" datetime="2025-07-15T17:54:50+08:00">2025-07-15</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/ai%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index"><span itemprop="name">ai框架</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/ai%E6%A1%86%E6%9E%B6/langgraph/" itemprop="url" rel="index"><span itemprop="name">langgraph</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="环境配置">环境配置</h3>
-<p>python虚拟环境构建</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m venv .venv</span><br></pre></td></tr></table></figure>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pip install langgraph==0.2.74                  </span><br><span class="line">pip install langchain-openai==0.3.6            </span><br><span class="line">pip install fastapi==0.115.8                         </span><br><span class="line">pip install uvicorn==0.34.0                          </span><br><span class="line">pip install gradio==5.18.0</span><br></pre></td></tr></table></figure>
-<p>查看包<code>pip list</code></p>
-<h3 id="构建一个基本的fastapilanggraph应用">构建一个基本的fastapi+langgraph应用</h3>
-<h4 id="llm示例的构建利用chatopenai">llm示例的构建（利用ChatOpenAI）</h4>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 创建LLM实例</span><br><span class="line">llm = ChatOpenAI(</span><br><span class="line">    base_url=config[&quot;base_url&quot;],</span><br><span class="line">    api_key=config[&quot;api_key&quot;],</span><br><span class="line">    model=config[&quot;model&quot;],</span><br><span class="line">    temperature=DEFAULT_TEMPERATURE,</span><br><span class="line">    timeout=30,  # 添加超时配置（秒）</span><br><span class="line">    max_retries=2  # 添加重试次数</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<h4 id="数据类型的构建">数据类型的构建</h4>
-<p>继承于pydantic</p>
-<p>规范化 API 请求和响应的数据结构</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义消息类，用于封装API接口返回数据</span></span><br><span class="line"><span class="comment">#基于 Pydantic 的数据模型</span></span><br><span class="line"><span class="comment"># 定义Message类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Message</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    role (角色): 这是一个字符串，表示消息的发送者。常见的角色包括：</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">- user (用户): 表示用户输入的消息。</span></span><br><span class="line"><span class="string">- assistant (助手): 表示聊天机器人或模型生成的消息。</span></span><br><span class="line"><span class="string">- system (系统): 表示为模型提供上下文或指令的系统消息。</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    role: <span class="built_in">str</span></span><br><span class="line">    content: <span class="built_in">str</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义ChatCompletionRequest类</span></span><br><span class="line"><span class="comment">#聊天 API 请求</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ChatCompletionRequest</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    messages: <span class="type">List</span>[Message]</span><br><span class="line">    stream: <span class="type">Optional</span>[<span class="built_in">bool</span>] = <span class="literal">False</span><span class="comment">#是否流式方式响应</span></span><br><span class="line">    userId: <span class="type">Optional</span>[<span class="built_in">str</span>] = <span class="literal">None</span><span class="comment">#用于标识发起请求的用户</span></span><br><span class="line">    conversationId: <span class="type">Optional</span>[<span class="built_in">str</span>] = <span class="literal">None</span><span class="comment">#用于标识特定的对话会话，这对于管理对话上下文或历史记录非常有用</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义ChatCompletionResponseChoice类</span></span><br><span class="line"><span class="comment">#聊天完成响应中的一个“选择”或一个生成的回复</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ChatCompletionResponseChoice</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    index: <span class="built_in">int</span></span><br><span class="line">    message: Message</span><br><span class="line">    finish_reason: <span class="type">Optional</span>[<span class="built_in">str</span>] = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义ChatCompletionResponse类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ChatCompletionResponse</span>(<span class="title class_ inherited__">BaseModel</span>):</span><br><span class="line">    <span class="built_in">id</span>: <span class="built_in">str</span> = Field(default_factory=<span class="keyword">lambda</span>: <span class="string">f&quot;chatcmpl-<span class="subst">&#123;uuid.uuid4().<span class="built_in">hex</span>&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">object</span>: <span class="built_in">str</span> = <span class="string">&quot;chat.completion&quot;</span></span><br><span class="line">    created: <span class="built_in">int</span> = Field(default_factory=<span class="keyword">lambda</span>: <span class="built_in">int</span>(time.time()))</span><br><span class="line">    choices: <span class="type">List</span>[ChatCompletionResponseChoice]<span class="comment">#模型生成的所有可能的回复选项</span></span><br><span class="line">    system_fingerprint: <span class="type">Optional</span>[<span class="built_in">str</span>] = <span class="literal">None</span></span><br></pre></td></tr></table></figure>
-<h4 id="定义fastapi应用并管理应用的生命周期">定义fastapi应用并管理应用的生命周期</h4>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义了一个异步函数lifespan，它接收一个FastAPI应用实例app作为参数。这个函数将管理应用的生命周期，包括启动和关闭时的操作</span></span><br><span class="line"><span class="comment"># 函数在应用启动时执行一些初始化操作，如加载上下文数据、以及初始化问题生成器</span></span><br><span class="line"><span class="comment"># 函数在应用关闭时执行一些清理操作</span></span><br><span class="line"><span class="comment"># @asynccontextmanager 装饰器用于创建一个异步上下文管理器，它允许你在 yield 之前和之后执行特定的代码块，分别表示启动和关闭时的操作</span></span><br><span class="line"><span class="meta">@asynccontextmanager</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">lifespan</span>(<span class="params">app: FastAPI</span>):</span><br><span class="line">    <span class="comment"># 启动时执行</span></span><br><span class="line">    <span class="comment"># 申明引用全局变量，在函数中被初始化，并在整个应用中使用</span></span><br><span class="line">    <span class="keyword">global</span> graph</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        logger.info(<span class="string">&quot;正在初始化模型、定义Graph...&quot;</span>)</span><br><span class="line">        <span class="comment">#（1）初始化LLM</span></span><br><span class="line">        llm = get_llm(llm_type)</span><br><span class="line">        <span class="comment">#（2）定义Graph</span></span><br><span class="line">        graph = create_graph(llm)</span><br><span class="line">        <span class="comment">#（3）将Graph可视化图保存</span></span><br><span class="line">        save_graph_visualization(graph)</span><br><span class="line">        logger.info(<span class="string">&quot;初始化完成&quot;</span>)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        logger.error(<span class="string">f&quot;初始化过程中出错: <span class="subst">&#123;<span class="built_in">str</span>(e)&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="comment"># raise 关键字重新抛出异常，以确保程序不会在错误状态下继续运行</span></span><br><span class="line">        <span class="keyword">raise</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># yield 关键字将控制权交还给FastAPI框架，使应用开始运行</span></span><br><span class="line">    <span class="comment"># 分隔了启动和关闭的逻辑。在yield 之前的代码在应用启动时运行，yield 之后的代码在应用关闭时运行</span></span><br><span class="line">    <span class="keyword">yield</span></span><br><span class="line">    <span class="comment"># 关闭时执行</span></span><br><span class="line">    logger.info(<span class="string">&quot;正在关闭...&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># lifespan参数用于在应用程序生命周期的开始和结束时执行一些初始化或清理工作</span></span><br><span class="line">app = FastAPI(lifespan=lifespan)</span><br></pre></td></tr></table></figure>
-<h4 id="langgraph核心逻辑">langgraph核心逻辑</h4>
-<p>创建langgraph</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义chatbot的状态</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">State</span>(<span class="title class_ inherited__">TypedDict</span>):</span><br><span class="line">    messages: Annotated[<span class="built_in">list</span>, add_messages]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建和配置chatbot的状态图</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">create_graph</span>(<span class="params">llm</span>) -&gt; StateGraph:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment"># 构建graph</span></span><br><span class="line">        <span class="comment">#创建一个 StateGraph 的实例，并将其配置为使用 State 类作为其状态管理的数据模型</span></span><br><span class="line">        graph_builder = StateGraph(State)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 定义chatbot的node</span></span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">chatbot</span>(<span class="params">state: State</span>) -&gt; <span class="built_in">dict</span>:</span><br><span class="line">            <span class="comment"># 处理当前状态并返回 LLM 响应</span></span><br><span class="line">            <span class="keyword">return</span> &#123;<span class="string">&quot;messages&quot;</span>: [llm.invoke(state[<span class="string">&quot;messages&quot;</span>])]&#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 配置graph</span></span><br><span class="line">        <span class="comment">#第二个参数 chatbot ：这是一个可调用对象（通常是一个函数或方法），它定义了当执行流程到达这个名为 &quot;chatbot&quot; 的节点时，应该执行什么操作。</span></span><br><span class="line">        graph_builder.add_node(<span class="string">&quot;chatbot&quot;</span>, chatbot)</span><br><span class="line">        graph_builder.add_edge(START, <span class="string">&quot;chatbot&quot;</span>)</span><br><span class="line">        graph_builder.add_edge(<span class="string">&quot;chatbot&quot;</span>, END)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 这里使用内存存储 也可以持久化到数据库</span></span><br><span class="line">        memory = MemorySaver()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 编译生成graph并返回</span></span><br><span class="line">        <span class="comment">#checkpointer 参数将 memory 实例传递给编译过程，使得图能够管理其状态的保存和加载。编译后的图对象被返回，这个对象可以被调用来运行聊天机器人。</span></span><br><span class="line">        <span class="keyword">return</span> graph_builder.<span class="built_in">compile</span>(checkpointer=memory)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="keyword">raise</span> RuntimeError(<span class="string">f&quot;Failed to create graph: <span class="subst">&#123;<span class="built_in">str</span>(e)&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
-<p>可视化langgraph节点</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 将构建的graph可视化保存为 PNG 文件</span><br><span class="line">def save_graph_visualization(graph: StateGraph, filename: str = &quot;graph.png&quot;) -&gt; None:</span><br><span class="line">    try:</span><br><span class="line">        with open(filename, &quot;wb&quot;) as f:</span><br><span class="line">            f.write(graph.get_graph().draw_mermaid_png())</span><br><span class="line">        logger.info(f&quot;Graph visualization saved as &#123;filename&#125;&quot;)</span><br><span class="line">    except IOError as e:</span><br><span class="line">        logger.info(f&quot;Warning: Failed to save graph visualization: &#123;str(e)&#125;&quot;)</span><br></pre></td></tr></table></figure>
-<h4 id="封装接口">封装接口</h4>
-<p>包含流式输出与非流式输出的处理</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 封装POST请求接口，与大模型进行问答</span></span><br><span class="line"><span class="meta">@app.post(<span class="params"><span class="string">&quot;/v1/chat/completions&quot;</span></span>)</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">chat_completions</span>(<span class="params">request: ChatCompletionRequest</span>):</span><br><span class="line">    <span class="comment"># 判断初始化是否完成</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> graph:</span><br><span class="line">        logger.error(<span class="string">&quot;服务未初始化&quot;</span>)</span><br><span class="line">        <span class="keyword">raise</span> HTTPException(status_code=<span class="number">500</span>, detail=<span class="string">&quot;服务未初始化&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        logger.info(<span class="string">f&quot;收到聊天完成请求: <span class="subst">&#123;request&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">        query_prompt = request.messages[-<span class="number">1</span>].content</span><br><span class="line">        logger.info(<span class="string">f&quot;用户问题是: <span class="subst">&#123;query_prompt&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">        config = &#123;<span class="string">&quot;configurable&quot;</span>: &#123;<span class="string">&quot;thread_id&quot;</span>: request.userId+<span class="string">&quot;@@&quot;</span>+request.conversationId&#125;&#125;</span><br><span class="line">        logger.info(<span class="string">f&quot;用户当前会话信息: <span class="subst">&#123;config&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">        prompt_template_system = PromptTemplate.from_file(PROMPT_TEMPLATE_TXT_SYS)</span><br><span class="line">        prompt_template_user = PromptTemplate.from_file(PROMPT_TEMPLATE_TXT_USER)</span><br><span class="line">        prompt = [</span><br><span class="line">            &#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;system&quot;</span>, <span class="string">&quot;content&quot;</span>: prompt_template_system.template&#125;,</span><br><span class="line">            &#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: prompt_template_user.template.<span class="built_in">format</span>(query=query_prompt)&#125;</span><br><span class="line">        ]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 处理流式响应</span></span><br><span class="line">        <span class="keyword">if</span> request.stream:</span><br><span class="line">            <span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">generate_stream</span>():</span><br><span class="line">                chunk_id = <span class="string">f&quot;chatcmpl-<span class="subst">&#123;uuid.uuid4().<span class="built_in">hex</span>&#125;</span>&quot;</span></span><br><span class="line">                <span class="keyword">async</span> <span class="keyword">for</span> message_chunk, metadata <span class="keyword">in</span> graph.astream(&#123;<span class="string">&quot;messages&quot;</span>: prompt&#125;, config, stream_mode=<span class="string">&quot;messages&quot;</span>):</span><br><span class="line">                    chunk = message_chunk.content</span><br><span class="line">                    logger.info(<span class="string">f&quot;chunk: <span class="subst">&#123;chunk&#125;</span>&quot;</span>)</span><br><span class="line">                    <span class="comment"># 在处理过程中产生每个块</span></span><br><span class="line">                    <span class="keyword">yield</span> <span class="string">f&quot;data: <span class="subst">&#123;json.dumps(&#123;<span class="string">&#x27;id&#x27;</span>: chunk_id,<span class="string">&#x27;object&#x27;</span>: <span class="string">&#x27;chat.completion.chunk&#x27;</span>,<span class="string">&#x27;created&#x27;</span>: <span class="built_in">int</span>(time.time()),<span class="string">&#x27;choices&#x27;</span>: [&#123;<span class="string">&#x27;index&#x27;</span>: <span class="number">0</span>,<span class="string">&#x27;delta&#x27;</span>: &#123;<span class="string">&#x27;content&#x27;</span>: chunk&#125;</span>,&#x27;finish_reason&#x27;: None&#125;]&#125;)&#125;\n\n&quot;</span></span><br><span class="line">                <span class="comment"># 流结束的最后一块</span></span><br><span class="line">                <span class="keyword">yield</span> <span class="string">f&quot;data: <span class="subst">&#123;json.dumps(&#123;<span class="string">&#x27;id&#x27;</span>: chunk_id,<span class="string">&#x27;object&#x27;</span>: <span class="string">&#x27;chat.completion.chunk&#x27;</span>,<span class="string">&#x27;created&#x27;</span>: <span class="built_in">int</span>(time.time()),<span class="string">&#x27;choices&#x27;</span>: [&#123;<span class="string">&#x27;index&#x27;</span>: <span class="number">0</span>,<span class="string">&#x27;delta&#x27;</span>: &#123;&#125;</span>,&#x27;finish_reason&#x27;: &#x27;stop&#x27;&#125;]&#125;)&#125;\n\n&quot;</span></span><br><span class="line">            <span class="comment"># 返回fastapi.responses中StreamingResponse对象</span></span><br><span class="line">            <span class="keyword">return</span> StreamingResponse(generate_stream(), media_type=<span class="string">&quot;text/event-stream&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 处理非流式响应处理</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                events = graph.stream(&#123;<span class="string">&quot;messages&quot;</span>: prompt&#125;, config)</span><br><span class="line">                <span class="keyword">for</span> event <span class="keyword">in</span> events:</span><br><span class="line">                    <span class="keyword">for</span> value <span class="keyword">in</span> event.values():</span><br><span class="line">                        result = value[<span class="string">&quot;messages&quot;</span>][-<span class="number">1</span>].content</span><br><span class="line">            <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">                logger.info(<span class="string">f&quot;Error processing response: <span class="subst">&#123;<span class="built_in">str</span>(e)&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">            formatted_response = <span class="built_in">str</span>(format_response(result))</span><br><span class="line">            logger.info(<span class="string">f&quot;格式化的搜索结果: <span class="subst">&#123;formatted_response&#125;</span>&quot;</span>)</span><br><span class="line">			<span class="comment">#封装响应</span></span><br><span class="line">            response = ChatCompletionResponse(</span><br><span class="line">                choices=[</span><br><span class="line">                    ChatCompletionResponseChoice(</span><br><span class="line">                        index=<span class="number">0</span>,</span><br><span class="line">                        message=Message(role=<span class="string">&quot;assistant&quot;</span>, content=formatted_response),</span><br><span class="line">                        finish_reason=<span class="string">&quot;stop&quot;</span></span><br><span class="line">                    )</span><br><span class="line">                ]</span><br><span class="line">            )</span><br><span class="line">            logger.info(<span class="string">f&quot;发送响应内容: \n<span class="subst">&#123;response&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="comment"># 返回fastapi.responses中JSONResponse对象</span></span><br><span class="line">            <span class="comment"># model_dump()方法通常用于将Pydantic模型实例的内容转换为一个标准的Python字典，以便进行序列化</span></span><br><span class="line">            <span class="keyword">return</span> JSONResponse(content=response.model_dump())</span><br><span class="line"></span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        logger.error(<span class="string">f&quot;处理聊天完成时出错:\n\n <span class="subst">&#123;<span class="built_in">str</span>(e)&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="keyword">raise</span> HTTPException(status_code=<span class="number">500</span>, detail=<span class="built_in">str</span>(e))</span><br></pre></td></tr></table></figure>
-<h3 id="langgraph的短期记忆与长期记忆">langgraph的短期记忆与长期记忆</h3>
-<p>LangGraph支持两种对于构建对话代理至关重要的内存类型：</p>
-<ul>
-<li><strong><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langgraph/agents/memory/#short-term-memory">短期内存</a></strong>：通过在会话中维护消息历史来跟踪正在进行的对话。</li>
-<li><strong><a target="_blank" rel="noopener" href="https://github.langchain.ac.cn/langgraph/agents/memory/#long-term-memory">长期内存</a></strong>：在不同会话之间存储用户特定或应用程序级别的数据。</li>
-</ul>
-<figure>
-<img src="/2025/07/14/%E5%AD%A6%E4%B9%A0/ai%E6%A1%86%E6%9E%B6/LangGraphChatBot/image-20250715094855646.png" alt="image-20250715094855646">
-<figcaption aria-hidden="true">image-20250715094855646</figcaption>
-</figure>
-<p>在LangGraph中</p>
-<ul>
-<li><em>短期内存</em>也称为<strong>线程级内存</strong>。</li>
-<li><em>长期内存</em>也称为<strong>跨线程内存</strong>。</li>
-</ul>
-<h3 id="教程地址">教程地址</h3>
-<p><a target="_blank" rel="noopener" href="https://github.com/NanGePlus/LangGraphChatBot">NanGePlus/LangGraphChatBot:
-使用LangGraph+DeepSeek-R1+FastAPI+Gradio实现一个带有记忆功能的流量包推荐智能客服web端用例,同时也支持gpt大模型、国产大模型(OneApi方式)、Ollama本地开源大模型、阿里通义千问大模型</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1m89NYKE2J/?vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">LangGraph+deepseek-r1+FastAPI+Gradio实现拥有记忆的流量包推荐智能客服web端用例,同时也支持gpt、国产大模型、Ollama_哔哩哔哩_bilibili</a></p>
 
       
     </div>
