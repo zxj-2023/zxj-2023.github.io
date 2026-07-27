@@ -972,6 +972,156 @@ Property）</strong>：任意节点的值都大于或等于（或小于或等于
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/05/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/kvcache/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/kvcache/" class="post-title-link" itemprop="url">kvcache</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-05-28 00:00:00 / 修改时间：13:15:41" itemprop="dateCreated datePublished" datetime="2026-05-28T00:00:00+08:00">2026-05-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">大模型算法</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="简单回顾attention流程">简单回顾attention流程</h1>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">【输入向量 X】(来自上一层或Embedding)</span><br><span class="line">       │</span><br><span class="line">       ├─── 步骤①：解耦分裂 ───&gt; 动态乘以 Wq, Wk, Wv 权重，生成 Q, K, V 矩阵</span><br><span class="line">       │                          (此时 V 矩阵诞生了，和 FFN 还毫无关系)</span><br><span class="line">       │</span><br><span class="line">       ├─── 步骤②：注意力对齐 ─&gt; 计算 Q 乘以 K 的转置 (Q·K^T)，得到亲疏得分矩阵</span><br><span class="line">       │                          </span><br><span class="line">       ├─── 步骤③：归一化 ─────&gt; 经过 Softmax 激活，把得分变成加起来等于 1 的权重</span><br><span class="line">       │                          </span><br><span class="line">       ├─── 步骤④：财富提取 ─────&gt; 用 Softmax 的权重去乘以 V 矩阵 (Softmax·V)</span><br><span class="line">       │                          </span><br><span class="line">       ▼</span><br><span class="line">【Attention 层的最终输出】 ───&gt; 这时，一次完整的 Attention 计算宣告结束！</span><br></pre></td></tr></table></figure>
+<h1 id="qkv矩阵的含义是怎样的">qkv矩阵的含义是怎样的</h1>
+<p>我觉得可以从他们本身的名字入手</p>
+<h2 id="q-query---查询">1. Q (Query - 查询)</h2>
+<ul>
+<li><strong>含义</strong>：当前词“试图去关注（或询问）其他词”的向量表示。</li>
+<li><strong>角色</strong>：它是主动方。在 Self-Attention
+中，每个词都会轮流作为 <span class="math inline"><em>Q</em></span>，去询问句子里的所有词（包括它自己）：“你们谁和我有关系？关系有多大？”</li>
+</ul>
+<h2 id="k-key---键">2. K (Key - 键)</h2>
+<ul>
+<li><strong>含义</strong>：当前词“被其他词关注时的特征（或身份标签）”的向量表示。</li>
+<li><strong>角色</strong>：它是被动方。它存在的意义就是和 <span class="math inline"><em>Q</em></span> 做点积（Dot
+Product），来计算两个词之间的相关性或相似度。</li>
+</ul>
+<h2 id="v-value---值">3. V (Value - 值)</h2>
+<ul>
+<li><strong>含义</strong>：当前词“本身所包含的、最核心的内容信息”。</li>
+<li><strong>角色</strong>：一旦 <span class="math inline"><em>Q</em></span> 和 <span class="math inline"><em>K</em></span>
+算出了注意力权重（即谁和谁更相关），这些权重就会乘到对应的 <span class="math inline"><em>V</em></span> 上。最终把这些加权后的 <span class="math inline"><em>V</em></span>
+累加起来，就得到了该词融合了上下文信息后的新表示。</li>
+</ul>
+<p>我的理解：</p>
+<p>q可以理解成新词关注历史字符的向量，也就是query，k则是历史字符被关注时的向量，两者相乘可以获得关联度</p>
+<p>v可以代表每一个词在进入这一层时，通过与权重矩阵相乘，提取出了它最核心的、未经污染的<strong>语义特征</strong>（比如“苹果”包含了：水果、甜的、红的、科技公司、iPhone
+等属性）。这个 <strong>V</strong> 就是这个词的“属性本体”。</p>
+<h1 id="kvcache是什么">kvcache是什么</h1>
+<p>在多次对话的过程中，前面的历史字完全没变，它们算出来的 <span class="math inline"><em>K</em></span>（身份标签）和 <span class="math inline"><em>V</em></span>（词本身的属性）也就是固定不变的。那<strong>算过一次之后，直接把它们存在内存（显存）里，后面就可以直接拿来用</strong>，因此降低了计算量，提高了响应的速度</p>
+<h1 id="那为什么不存q矩阵呢">那为什么不存q矩阵呢</h1>
+<p>这个问题的关键还是要理解qkv矩阵的含义和kvcache的流程</p>
+<p>q矩阵代表着<strong>最新字符</strong>对于历史字符关注的向量，而新字符是不对吐出来实时变化的，所以存储q矩阵没有意义</p>
+<p>而这里要区分一下大模型生成的两个阶段：</p>
+<h2 id="阶段一prefill预填充阶段-读懂你的-prompt">阶段一：Prefill（预填充阶段
+—— 读懂你的 Prompt）</h2>
+<p>当你把一句话（比如“请问什么是Attention”）发给模型时，模型会<strong>一次性</strong>把这几个字全部输入进去。</p>
+<ul>
+<li>这个时候，所有词都要互相看。所以<strong>每个词的 <span class="math inline"><em>Q</em>、<em>K</em>、<em>V</em></span>
+全都要计算</strong>，以此来捕捉整个句子的上下文语义。</li>
+<li>计算完后，模型会把这些历史词的 <span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span> 老老实实地存进内存里。这就是
+<strong>KV Cache 的初始化</strong>。</li>
+</ul>
+<h2 id="阶段二decoding解码阶段-逐字生成">阶段二：Decoding（解码阶段 ——
+逐字生成）</h2>
+<p>这就是你刚才描述的绝妙场景。假设模型现在吐出了一个新词：<strong>“它”</strong>。</p>
+<ul>
+<li><p><strong><span class="math inline"><em>Q</em></span>
+是实时的、一次性的</strong>：</p>
+<p>“它”这个新词作为当前的唯一主角，会产生一个崭新的 <span class="math inline"><em>Q</em><sub><em>它</em></sub></span>。它需要拿着这个
+<span class="math inline"><em>Q</em><sub><em>它</em></sub></span>
+去跟前面所有的历史词进行比对。</p>
+<blockquote>
+<p>💡 <strong>为什么不用缓存 <span class="math inline"><em>Q</em></span>？</strong>
+因为当“它”这个词处理完、吐出下一个词（比如“是”）之后，主导权就交给了“是”的
+<span class="math inline"><em>Q</em></span>。旧的 <span class="math inline"><em>Q</em><sub><em>它</em></sub></span>
+在未来的生成中<strong>永远都不会再被用到</strong>了。它是一次性的消耗品。</p>
+</blockquote></li>
+<li><p><strong><span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span> 必须死死存住</strong>：</p>
+<p>为了算出“它”和历史词的关联度，你需要历史词的 <span class="math inline"><em>K</em></span>；为了融合出“它”的新向量，你需要历史词的
+<span class="math inline"><em>V</em></span>。</p>
+<ul>
+<li>如果我们<strong>不缓存</strong> <span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span>，每生成一个新词，模型就得把前面所有的历史词重新做一遍矩阵乘法，去重新算一遍它们的
+<span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span>。</li>
+<li>随着生成的句子越来越长，这种重复计算会呈爆炸式增长（计算量 <span class="math inline"><em>O</em>(<em>N</em><sup>2</sup>)</span>），模型会越写越卡。</li>
+<li><strong>有了 KV Cache</strong>：历史词的 <span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span>
+已经在内存里躺着了。新词“它”算完自己的 <span class="math inline"><em>Q</em>、<em>K</em>、<em>V</em></span>
+后，拿自己的 <span class="math inline"><em>Q</em></span>
+去和内存里的一大推历史 <span class="math inline"><em>K</em></span>
+做乘法，算完后，再顺手把自己的 <span class="math inline"><em>K</em><sub><em>它</em></sub></span> 和 <span class="math inline"><em>V</em><sub><em>它</em></sub></span>
+也追加到缓存的末尾，供下一个词使用。</li>
+</ul></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="http://example.com/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E5%A4%9A%E6%A8%A1%E6%80%81%E6%A8%A1%E5%9E%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3066,7 +3216,7 @@ CODE）和多步搜索方法（OPERA）。</p>
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2026/05/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/kvcache/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/05/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/SSE(Server-send%20events)%E7%9A%84%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E7%8E%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/zxjavatar.gif">
@@ -3084,7 +3234,7 @@ CODE）和多步搜索方法（OPERA）。</p>
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/kvcache/" class="post-title-link" itemprop="url">kvcache</a>
+          <a href="/2026/05/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/SSE(Server-send%20events)%E7%9A%84%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">SSE(Server-send events)的原理及实现</a>
         </h2>
 
         <div class="post-meta-container">
@@ -3094,9 +3244,15 @@ CODE）和多步搜索方法（OPERA）。</p>
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2026-05-28 00:00:00 / 修改时间：13:15:41" itemprop="dateCreated datePublished" datetime="2026-05-28T00:00:00+08:00">2026-05-28</time>
+      <time title="创建时间：2026-05-25 00:00:00" itemprop="dateCreated datePublished" datetime="2026-05-25T00:00:00+08:00">2026-05-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-05-27 19:10:49" itemprop="dateModified" datetime="2026-05-27T19:10:49+08:00">2026-05-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -3104,7 +3260,7 @@ CODE）和多步搜索方法（OPERA）。</p>
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">大模型算法</span></a>
+          <a href="/categories/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/" itemprop="url" rel="index"><span itemprop="name">后端相关</span></a>
         </span>
     </span>
 
@@ -3118,77 +3274,46 @@ CODE）和多步搜索方法（OPERA）。</p>
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="简单回顾attention流程">简单回顾attention流程</h1>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">【输入向量 X】(来自上一层或Embedding)</span><br><span class="line">       │</span><br><span class="line">       ├─── 步骤①：解耦分裂 ───&gt; 动态乘以 Wq, Wk, Wv 权重，生成 Q, K, V 矩阵</span><br><span class="line">       │                          (此时 V 矩阵诞生了，和 FFN 还毫无关系)</span><br><span class="line">       │</span><br><span class="line">       ├─── 步骤②：注意力对齐 ─&gt; 计算 Q 乘以 K 的转置 (Q·K^T)，得到亲疏得分矩阵</span><br><span class="line">       │                          </span><br><span class="line">       ├─── 步骤③：归一化 ─────&gt; 经过 Softmax 激活，把得分变成加起来等于 1 的权重</span><br><span class="line">       │                          </span><br><span class="line">       ├─── 步骤④：财富提取 ─────&gt; 用 Softmax 的权重去乘以 V 矩阵 (Softmax·V)</span><br><span class="line">       │                          </span><br><span class="line">       ▼</span><br><span class="line">【Attention 层的最终输出】 ───&gt; 这时，一次完整的 Attention 计算宣告结束！</span><br></pre></td></tr></table></figure>
-<h1 id="qkv矩阵的含义是怎样的">qkv矩阵的含义是怎样的</h1>
-<p>我觉得可以从他们本身的名字入手</p>
-<h2 id="q-query---查询">1. Q (Query - 查询)</h2>
+          <h1 id="sseserver-send-events">SSE(Server-send events)</h1>
+<p>SSE
+是一种<strong>单向通信</strong>技术，允许服务器主动向客户端（通常是浏览器）推送实时数据。</p>
+<p>在过去，网页想要获取服务器的实时数据，要么用<strong>短轮询</strong>（每隔几秒发一次
+HTTP 请求，低效且浪费资源），要么用
+<strong>WebSocket</strong>（双向奔赴，但协议较重，开发成本高）。而 SSE
+则是介于两者之间的一个轻量级极佳方案。</p>
+<h1 id="核心工作原理">核心工作原理</h1>
+<figure>
+<img src="/2026/05/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/SSE(Server-send%20events)%E7%9A%84%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E7%8E%B0/image-20260527185951958.png" alt="image-20260527185951958">
+<figcaption aria-hidden="true">image-20260527185951958</figcaption>
+</figure>
+<h3 id="建立长连接keep-alive">1. 建立长连接（Keep-Alive）</h3>
+<p>普通的 HTTP 请求是“一问一答”，服务器说完话连接就立刻断开。而 SSE
+在客户端发起请求后，服务器会返回特殊的响应头，告诉浏览器：“这个连接别挂断，后面还有货！”</p>
+<p>这组特殊的响应头通常是：</p>
 <ul>
-<li><strong>含义</strong>：当前词“试图去关注（或询问）其他词”的向量表示。</li>
-<li><strong>角色</strong>：它是主动方。在 Self-Attention
-中，每个词都会轮流作为 <span class="math inline"><em>Q</em></span>，去询问句子里的所有词（包括它自己）：“你们谁和我有关系？关系有多大？”</li>
+<li><code>Content-Type: text/event-stream</code>：告诉浏览器，这是一个流式的数据流。</li>
+<li><code>Cache-Control: no-cache</code>：禁止缓存，确保数据的实时性。</li>
+<li><code>Connection: keep-alive</code>：保持长连接。</li>
 </ul>
-<h2 id="k-key---键">2. K (Key - 键)</h2>
-<ul>
-<li><strong>含义</strong>：当前词“被其他词关注时的特征（或身份标签）”的向量表示。</li>
-<li><strong>角色</strong>：它是被动方。它存在的意义就是和 <span class="math inline"><em>Q</em></span> 做点积（Dot
-Product），来计算两个词之间的相关性或相似度。</li>
-</ul>
-<h2 id="v-value---值">3. V (Value - 值)</h2>
-<ul>
-<li><strong>含义</strong>：当前词“本身所包含的、最核心的内容信息”。</li>
-<li><strong>角色</strong>：一旦 <span class="math inline"><em>Q</em></span> 和 <span class="math inline"><em>K</em></span>
-算出了注意力权重（即谁和谁更相关），这些权重就会乘到对应的 <span class="math inline"><em>V</em></span> 上。最终把这些加权后的 <span class="math inline"><em>V</em></span>
-累加起来，就得到了该词融合了上下文信息后的新表示。</li>
-</ul>
-<p>我的理解：</p>
-<p>q可以理解成新词关注历史字符的向量，也就是query，k则是历史字符被关注时的向量，两者相乘可以获得关联度</p>
-<p>v可以代表每一个词在进入这一层时，通过与权重矩阵相乘，提取出了它最核心的、未经污染的<strong>语义特征</strong>（比如“苹果”包含了：水果、甜的、红的、科技公司、iPhone
-等属性）。这个 <strong>V</strong> 就是这个词的“属性本体”。</p>
-<h1 id="kvcache是什么">kvcache是什么</h1>
-<p>在多次对话的过程中，前面的历史字完全没变，它们算出来的 <span class="math inline"><em>K</em></span>（身份标签）和 <span class="math inline"><em>V</em></span>（词本身的属性）也就是固定不变的。那<strong>算过一次之后，直接把它们存在内存（显存）里，后面就可以直接拿来用</strong>，因此降低了计算量，提高了响应的速度</p>
-<h1 id="那为什么不存q矩阵呢">那为什么不存q矩阵呢</h1>
-<p>这个问题的关键还是要理解qkv矩阵的含义和kvcache的流程</p>
-<p>q矩阵代表着<strong>最新字符</strong>对于历史字符关注的向量，而新字符是不对吐出来实时变化的，所以存储q矩阵没有意义</p>
-<p>而这里要区分一下大模型生成的两个阶段：</p>
-<h2 id="阶段一prefill预填充阶段-读懂你的-prompt">阶段一：Prefill（预填充阶段
-—— 读懂你的 Prompt）</h2>
-<p>当你把一句话（比如“请问什么是Attention”）发给模型时，模型会<strong>一次性</strong>把这几个字全部输入进去。</p>
-<ul>
-<li>这个时候，所有词都要互相看。所以<strong>每个词的 <span class="math inline"><em>Q</em>、<em>K</em>、<em>V</em></span>
-全都要计算</strong>，以此来捕捉整个句子的上下文语义。</li>
-<li>计算完后，模型会把这些历史词的 <span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span> 老老实实地存进内存里。这就是
-<strong>KV Cache 的初始化</strong>。</li>
-</ul>
-<h2 id="阶段二decoding解码阶段-逐字生成">阶段二：Decoding（解码阶段 ——
-逐字生成）</h2>
-<p>这就是你刚才描述的绝妙场景。假设模型现在吐出了一个新词：<strong>“它”</strong>。</p>
-<ul>
-<li><p><strong><span class="math inline"><em>Q</em></span>
-是实时的、一次性的</strong>：</p>
-<p>“它”这个新词作为当前的唯一主角，会产生一个崭新的 <span class="math inline"><em>Q</em><sub><em>它</em></sub></span>。它需要拿着这个
-<span class="math inline"><em>Q</em><sub><em>它</em></sub></span>
-去跟前面所有的历史词进行比对。</p>
+<h3 id="文本流数据格式">2. 文本流数据格式</h3>
+<p>连接建立后，服务器就可以通过这个通道持续发送文本数据。SSE
+对发送的数据格式有严格的要求，它是由多条消息组成的文本流，每条消息内部用换行符
+<code>\n</code> 分隔，消息之间用两个换行符 <code>\n\n</code> 分隔。</p>
+<p>最基本的结构如下：</p>
 <blockquote>
-<p>💡 <strong>为什么不用缓存 <span class="math inline"><em>Q</em></span>？</strong>
-因为当“它”这个词处理完、吐出下一个词（比如“是”）之后，主导权就交给了“是”的
-<span class="math inline"><em>Q</em></span>。旧的 <span class="math inline"><em>Q</em><sub><em>它</em></sub></span>
-在未来的生成中<strong>永远都不会再被用到</strong>了。它是一次性的消耗品。</p>
-</blockquote></li>
-<li><p><strong><span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span> 必须死死存住</strong>：</p>
-<p>为了算出“它”和历史词的关联度，你需要历史词的 <span class="math inline"><em>K</em></span>；为了融合出“它”的新向量，你需要历史词的
-<span class="math inline"><em>V</em></span>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data: 这是第一条消息\n\n</span><br></pre></td></tr></table></figure>
+<p><code>id: 1\n</code> <code>event: chat\n</code>
+<code>data: 这是第二条带事件类型和ID的消息\n\n</code></p>
+</blockquote>
+<h3 id="自带断线重连基因">3. 自带“断线重连”基因</h3>
+<p>在网络不稳定的现实世界中，连接断开是常有的事。SSE
+的高级之处在于，浏览器的原生
+API（<code>EventSource</code>）内置了<strong>自动重连机制</strong>：</p>
 <ul>
-<li>如果我们<strong>不缓存</strong> <span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span>，每生成一个新词，模型就得把前面所有的历史词重新做一遍矩阵乘法，去重新算一遍它们的
-<span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span>。</li>
-<li>随着生成的句子越来越长，这种重复计算会呈爆炸式增长（计算量 <span class="math inline"><em>O</em>(<em>N</em><sup>2</sup>)</span>），模型会越写越卡。</li>
-<li><strong>有了 KV Cache</strong>：历史词的 <span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span>
-已经在内存里躺着了。新词“它”算完自己的 <span class="math inline"><em>Q</em>、<em>K</em>、<em>V</em></span>
-后，拿自己的 <span class="math inline"><em>Q</em></span>
-去和内存里的一大推历史 <span class="math inline"><em>K</em></span>
-做乘法，算完后，再顺手把自己的 <span class="math inline"><em>K</em><sub><em>它</em></sub></span> 和 <span class="math inline"><em>V</em><sub><em>它</em></sub></span>
-也追加到缓存的末尾，供下一个词使用。</li>
-</ul></li>
+<li>如果网络断开，浏览器会自动尝试重新连接服务器（默认每隔 3 秒）。</li>
+<li>服务器在发送数据时可以附带一个 <code>id</code>
+字段。断线重连时，浏览器会自动在 HTTP 请求头中带上
+<code>Last-Event-ID: [上次收到的ID]</code>。服务器看到后就能心领神会，把客户端错过的消息补发给它。</li>
 </ul>
 
       
@@ -3550,131 +3675,6 @@ API
 controls in the OpenAI platform</a></p>
 <p><a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/prompt-caching#prompt-cache-retention">Prompt
 caching | OpenAI API</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2026/05/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/SSE(Server-send%20events)%E7%9A%84%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E7%8E%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/05/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/SSE(Server-send%20events)%E7%9A%84%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">SSE(Server-send events)的原理及实现</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2026-05-25 00:00:00" itemprop="dateCreated datePublished" datetime="2026-05-25T00:00:00+08:00">2026-05-25</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-05-27 19:10:49" itemprop="dateModified" datetime="2026-05-27T19:10:49+08:00">2026-05-27</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/" itemprop="url" rel="index"><span itemprop="name">后端相关</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="sseserver-send-events">SSE(Server-send events)</h1>
-<p>SSE
-是一种<strong>单向通信</strong>技术，允许服务器主动向客户端（通常是浏览器）推送实时数据。</p>
-<p>在过去，网页想要获取服务器的实时数据，要么用<strong>短轮询</strong>（每隔几秒发一次
-HTTP 请求，低效且浪费资源），要么用
-<strong>WebSocket</strong>（双向奔赴，但协议较重，开发成本高）。而 SSE
-则是介于两者之间的一个轻量级极佳方案。</p>
-<h1 id="核心工作原理">核心工作原理</h1>
-<figure>
-<img src="/2026/05/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/SSE(Server-send%20events)%E7%9A%84%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E7%8E%B0/image-20260527185951958.png" alt="image-20260527185951958">
-<figcaption aria-hidden="true">image-20260527185951958</figcaption>
-</figure>
-<h3 id="建立长连接keep-alive">1. 建立长连接（Keep-Alive）</h3>
-<p>普通的 HTTP 请求是“一问一答”，服务器说完话连接就立刻断开。而 SSE
-在客户端发起请求后，服务器会返回特殊的响应头，告诉浏览器：“这个连接别挂断，后面还有货！”</p>
-<p>这组特殊的响应头通常是：</p>
-<ul>
-<li><code>Content-Type: text/event-stream</code>：告诉浏览器，这是一个流式的数据流。</li>
-<li><code>Cache-Control: no-cache</code>：禁止缓存，确保数据的实时性。</li>
-<li><code>Connection: keep-alive</code>：保持长连接。</li>
-</ul>
-<h3 id="文本流数据格式">2. 文本流数据格式</h3>
-<p>连接建立后，服务器就可以通过这个通道持续发送文本数据。SSE
-对发送的数据格式有严格的要求，它是由多条消息组成的文本流，每条消息内部用换行符
-<code>\n</code> 分隔，消息之间用两个换行符 <code>\n\n</code> 分隔。</p>
-<p>最基本的结构如下：</p>
-<blockquote>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data: 这是第一条消息\n\n</span><br></pre></td></tr></table></figure>
-<p><code>id: 1\n</code> <code>event: chat\n</code>
-<code>data: 这是第二条带事件类型和ID的消息\n\n</code></p>
-</blockquote>
-<h3 id="自带断线重连基因">3. 自带“断线重连”基因</h3>
-<p>在网络不稳定的现实世界中，连接断开是常有的事。SSE
-的高级之处在于，浏览器的原生
-API（<code>EventSource</code>）内置了<strong>自动重连机制</strong>：</p>
-<ul>
-<li>如果网络断开，浏览器会自动尝试重新连接服务器（默认每隔 3 秒）。</li>
-<li>服务器在发送数据时可以附带一个 <code>id</code>
-字段。断线重连时，浏览器会自动在 HTTP 请求头中带上
-<code>Last-Event-ID: [上次收到的ID]</code>。服务器看到后就能心领神会，把客户端错过的消息补发给它。</li>
-</ul>
 
       
     </div>

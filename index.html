@@ -215,7 +215,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/Untitled/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/zxjavatar.gif">
@@ -233,7 +233,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/Untitled/" class="post-title-link" itemprop="url">论文阅读——抗幻觉多智能体框架MA-CF</a>
+          <a href="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/" class="post-title-link" itemprop="url">论文阅读——抗幻觉多智能体框架MA-CF</a>
         </h2>
 
         <div class="post-meta-container">
@@ -245,7 +245,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2026-07-27 00:00:00 / 修改时间：13:59:28" itemprop="dateCreated datePublished" datetime="2026-07-27T00:00:00+08:00">2026-07-27</time>
+      <time title="创建时间：2026-07-27 00:00:00 / 修改时间：19:18:49" itemprop="dateCreated datePublished" datetime="2026-07-27T00:00:00+08:00">2026-07-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -274,6 +274,589 @@ response quality）与<strong>减少事实性幻觉</strong>（Mitigating factua
 hallucinations）之间的矛盾</p>
 <p>既要追求<strong>生成质量</strong>（语言丰富、有文采、答复详尽），又要追求<strong>事实精确</strong>（严格受限、不乱编）。这两个目标在参数层面会产生梯度干扰（Gradient
 interference），对事实的过度约束往往会损害语言的表达力与实用性。</p>
+<h1 id="related-works">related works</h1>
+<h2 id="大模型幻觉的定义与分类">大模型幻觉的定义与分类</h2>
+<p><strong>现代分类（无源/自由问答场景）</strong>：</p>
+<p><strong>事实性幻觉（Factual
+Hallucinations）</strong>：生成内容与现实世界的客观事实发生矛盾（例如说“牛顿提出了相对论”）。</p>
+<p><strong>忠实性幻觉（Faithfulness
+Hallucinations）</strong>：生成内容不符合用户的指令要求或上文语境逻辑（例如答非所问、前后矛盾）。</p>
+<p><strong>MA-CF 的针对性设计</strong>： 框架中的 <strong>幻觉分析
+Agent（<span class="math inline">𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub></span>）</strong>
+专门把关“事实性幻觉”，而 <strong>质量分析 Agent（<span class="math inline">𝒜<sub><em>q</em><em>u</em><em>a</em><em>l</em></sub></span>）</strong>
+专门审查“忠实性幻觉”（指令对齐与逻辑一致），实现了分类施策。</p>
+<h2 id="单智能体缓解方案">单智能体缓解方案</h2>
+<table>
+<colgroup>
+<col style="width: 31%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr>
+<th><strong>范式分类</strong></th>
+<th><strong>典型技术方法</strong></th>
+<th><strong>核心思路</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. 推理时干预</strong> <em>(Inference-Time
+Intervention)</em></td>
+<td>Prompt 工程、思维链（CoT）、上下文感知解码（CAD）</td>
+<td>在不改变模型参数的情况下，通过约束提示词或优化解码概率引导生成。</td>
+</tr>
+<tr>
+<td><strong>2. 架构与知识增强</strong> <em>(External Knowledge
+Integration)</em></td>
+<td>检索增强生成（RAG）</td>
+<td>引入外部知识库，让模型动态查询实时/真实数据，打破静态参数限制。</td>
+</tr>
+<tr>
+<td><strong>3. 事后参数精炼</strong> <em>(Post-Hoc Parameter
+Refinement)</em></td>
+<td>领域监督微调（SFT）、参数编辑（Parameter
+Editing）、嵌入空间修剪</td>
+<td>重新训练或定位修改模型内部权重神经元，纠正错误记忆。</td>
+</tr>
+</tbody>
+</table>
+<p><strong>单智能体的致命缺陷：“自环问题（Self-loop
+Problem）”</strong>：</p>
+<p>单模型方法让<strong>同一个 Agent
+同时担任生成者（Generator）、评估者（Evaluator）和纠错者（Corrector）</strong>。这会导致：</p>
+<ul>
+<li><strong>认知盲区与自我确认偏误</strong>：当模型尝试自我检查（Self-reflection）时，其评估过程依然受限于<strong>最初产生错误的同一套内部知识与启发式偏见</strong>，无法实现客观诊断。<br>
+</li>
+<li><strong>优化冲突（Trade-off）</strong>：事实精准度与语言流畅度在单一模型内互相拉扯，过度限制事实会损害回答的丰富度。</li>
+</ul>
+<h2 id="多智能体系统">多智能体系统</h2>
+<table>
+<colgroup>
+<col style="width: 22%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr>
+<th><strong>方案范式</strong></th>
+<th><strong>代表性框架 / 文献</strong></th>
+<th><strong>核心机制与思路</strong></th>
+<th><strong>论文指出的内在局限性</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. 迭代辩论范式</strong> <em>(Iterative Debate)</em></td>
+<td><strong>ChatEval</strong> (Chan et al., 2023/2024)</td>
+<td>多个 Agent
+针对同一话题开展<strong>多轮交叉辩论与质询</strong>，通过多视角沟通逐步修正错误并达成共识。</td>
+<td>❶ <strong>共识偏误（Consensus Bias）</strong>：Agent
+为了强行达成一致，常互相妥协，反而“稀释”了高质量输出或强化了表面合理的错误；
+❷ <strong>职责混杂</strong>：将事实核查与质量评估掺杂在辩论中； ❸
+<strong>高延迟与高 Token 消耗</strong>。</td>
+</tr>
+<tr>
+<td><strong>2. 协作过滤范式</strong> <em>(Collaborative
+Filtering)</em></td>
+<td><strong>AgentVerse</strong> (Chen et al., 2024)</td>
+<td>多个 Agent
+组成审查阵营，通过<strong>筛选与抑制异常离群值（Outliers）</strong>，减少复杂推理中的幻觉。</td>
+<td>❶ <strong>盲目依赖“数量堆叠”</strong>：主要靠增加 Agent
+数量来干预错误，缺乏精细的职能解耦； ❷
+<strong>重降幻、轻质量</strong>：只关注消除错误，忽视了回答的语篇表达与完整性。</td>
+</tr>
+<tr>
+<td><strong>3. 动态网络与角色分配</strong> <em>(Dynamic Agent
+Networks)</em></td>
+<td><strong>DyLAN</strong> (Liu et al., 2023) <strong>MRBalance</strong>
+(Zou et al., 2025)</td>
+<td>根据任务<strong>动态挑选/组建 Agent
+团队</strong>或指定特定角色（如数据库转换、因果识别），优化特定业务流程。</td>
+<td>❶ <strong>缺少关注分离（Separation of
+Concerns）</strong>：绝大多数框架依然将“事实核查”与“质量评估”混在同一个决策节点中；
+❷ <strong>无法同时兼顾</strong>事实精准度与语言表达力。</td>
+</tr>
+</tbody>
+</table>
+<p>现有多 Agent 系统的<strong>三大缺陷</strong>：</p>
+<ol type="1">
+<li><strong>盲目依赖“数量堆叠（Agent
+Multiplicity）”</strong>：许多系统仅仅依靠增加 Agent
+数量来投票减少错误，缺乏精细的职能分工。<br>
+</li>
+<li><strong>职责混杂导致“共识偏误（Consensus
+Bias）”</strong>：传统辩论（Debate）方法将“查证事实”与“评估表达”混在同一讨论中。Agent
+们为了达成一致共识，往往会<strong>互相妥协，最终输出被“稀释”的平庸内容</strong>，甚至强化了表面合理的错误。<br>
+</li>
+<li><strong>重“降幻”轻“表达”</strong>：现有多 Agent
+论文绝大多数只关注如何降低错误率，忽略了回答的语言质量与完整性。</li>
+</ol>
+<h1 id="methodology">Methodology</h1>
+<h2 id="核心变量">核心变量</h2>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727150801684.png" alt="image-20260727150801684">
+<figcaption aria-hidden="true">image-20260727150801684</figcaption>
+</figure>
+<h2 id="核心目标">核心目标</h2>
+<p>将“生成一个好回答”抽象为一个寻找<strong>最优解 <span class="math inline"><em>A</em><sub><em>f</em></sub></span></strong>
+的优化问题。</p>
+<p>给定用户查询 <span class="math inline"><em>Q</em></span>，目标是找到一个回答 <span class="math inline"><em>A</em></span>，使得<strong>联合效用函数（Joint
+Utility Function）<span class="math inline"><em>U</em>(<em>A</em>|<em>Q</em>)</span></strong>
+最大化：</p>
+<p><span class="math display"><em>A</em><sub><em>f</em></sub> = arg max<sub><em>A</em></sub><em>U</em>(<em>A</em>|<em>Q</em>) = arg max<sub><em>A</em></sub>[<em>w</em><sub>1</sub> ⋅ <em>F</em>(<em>A</em>, <em>Q</em>) + <em>w</em><sub>2</sub> ⋅ <em>Q</em>(<em>A</em>, <em>Q</em>)]</span></p>
+<ul>
+<li><strong><span class="math inline"><em>F</em>(<em>A</em>, <em>Q</em>)</span>（Factuality
+/ 事实性）</strong>：回答在多大程度上符合真实的客观事实。<br>
+</li>
+<li><strong><span class="math inline"><em>Q</em>(<em>A</em>, <em>Q</em>)</span>（Quality /
+质量）</strong>：回答在语言丰富度、相关性、逻辑完整性上的表现。<br>
+</li>
+<li><strong><span class="math inline"><em>w</em><sub>1</sub>, <em>w</em><sub>2</sub></span></strong>：事实性与质量之间的潜在权重（在实际决策中由合成
+Agent 动态平衡）。</li>
+</ul>
+<h2 id="ma-cf-framework">MA-CF framework</h2>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727152908189.png" alt="image-20260727152908189">
+<figcaption aria-hidden="true">image-20260727152908189</figcaption>
+</figure>
+<h3 id="阶段-1候选生成phase-1-candidate-generation">阶段
+1：候选生成（Phase 1: Candidate Generation）</h3>
+<ul>
+<li><strong>输入</strong>：用户的原始提问 <span class="math inline"><em>Q</em></span>（包含文本与上下文环境）。<br>
+</li>
+<li><strong>执行角色</strong>：<strong>初稿生成 Agent（<span class="math inline">𝒜<sub><em>g</em><em>e</em><em>n</em></sub></span>）</strong>。<br>
+</li>
+<li><strong>处理逻辑</strong>： Agent 根据输入 <span class="math inline"><em>Q</em></span>
+直接生成一份未经自我修正的初始回答草稿 <span class="math inline"><em>A</em><sub><em>c</em></sub></span>（<span class="math inline"><em>f</em>(<em>Q</em>) → <em>A</em><sub><em>c</em></sub></span>）。<br>
+</li>
+<li><strong>设计用意</strong>： 故意不让初稿 Agent
+进行过度自我审查，目的是保留一个无偏见的原始底板，将其暴露给后续的专业审查角色，避免模型在早期通过模糊表述掩盖自己的知识盲区。</li>
+</ul>
+<h3 id="阶段-2并行评审phase-2-parallelized-critique">阶段
+2：并行评审（Phase 2: Parallelized Critique）</h3>
+<p>初稿 <span class="math inline"><em>A</em><sub><em>c</em></sub></span>
+和原始问题 <span class="math inline"><em>Q</em></span>
+会同时被分发给两个<strong>互相独立、并行运行</strong>的诊断分支：</p>
+<h4 id="质量分析分支quality-analysis-branch绿色框">1.
+质量分析分支（Quality Analysis Branch，绿色框）</h4>
+<ul>
+<li><strong>执行角色</strong>：<strong>响应质量分析 Agent（<span class="math inline">𝒜<sub><em>q</em><em>u</em><em>a</em><em>l</em></sub></span>）</strong>。<br>
+</li>
+<li><strong>核心指标</strong>：完整度（Completeness）、逻辑性（Logic）、缺陷分析（Deficiency）。<br>
+</li>
+<li><strong>产出</strong>：<strong>质量报告 <span class="math inline"><em>R</em><sub><em>q</em></sub> = 𝒜<sub><em>q</em><em>u</em><em>a</em><em>l</em></sub>(<em>I</em><sub><em>q</em><em>u</em><em>a</em><em>l</em></sub>, <em>Q</em>, <em>A</em><sub><em>c</em></sub>)</span></strong>。<br>
+</li>
+<li><strong>职责</strong>：评估回答是否全面回答了用户问题、逻辑是否顺畅，并提取出“好的观点（<span class="math inline"><em>S</em><sub><em>p</em><em>r</em><em>o</em></sub></span>）”与“逻辑缺陷（<span class="math inline"><em>S</em><sub><em>c</em><em>o</em><em>n</em></sub></span>）”。</li>
+</ul>
+<h4 id="事实性分析分支factuality-analysis-branch橙色框">2.
+事实性分析分支（Factuality Analysis Branch，橙色框）</h4>
+<ul>
+<li><strong>执行角色</strong>：<strong>幻觉分析 Agent（<span class="math inline">𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub></span>）</strong>。<br>
+</li>
+<li><strong>核心指标</strong>：事实准确度（Factual
+Accuracy）、一致性（Consistency）。<br>
+</li>
+<li><strong>产出</strong>：<strong>事实报告 <span class="math inline"><em>R</em><sub><em>h</em></sub> = 𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub>(<em>I</em><sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub>, <em>Q</em>, <em>A</em><sub><em>c</em></sub>)</span></strong>。<br>
+</li>
+<li><strong>职责</strong>：像“查事实的校对员”一样，严格审查草稿中是否存在瞎编、错漏或不符事实的内容，并输出具体的错误切片与修正说明（<span class="math inline"><em>h</em><sub><em>i</em></sub>, <em>j</em><sub><em>i</em></sub></span>）。</li>
+</ul>
+<blockquote>
+<p><strong>💡 架构亮点</strong>： 这个阶段的 keypoint
+是<strong>并行（Parallelized）与解耦（Decoupled）</strong>。<span class="math inline">𝒜<sub><em>q</em><em>u</em><em>a</em><em>l</em></sub></span>
+专注看“文采与逻辑”，<span class="math inline">𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub></span>
+专注查“真伪”，两者互不干扰，避免了单个 Agent
+既想写好文章又想扣事实细节时的“梯度干扰”与妥协折中。</p>
+</blockquote>
+<h3 id="阶段-3合成精炼phase-3-synthesized-refinement">阶段
+3：合成精炼（Phase 3: Synthesized Refinement）</h3>
+<ul>
+<li><p><strong>输入</strong>：汇总四个关键要素——<strong>原始问题 <span class="math inline"><em>Q</em></span> + 初始草稿 <span class="math inline"><em>A</em><sub><em>c</em></sub></span> + 质量报告
+<span class="math inline"><em>R</em><sub><em>q</em></sub></span> +
+事实报告 <span class="math inline"><em>R</em><sub><em>h</em></sub></span></strong>。</p></li>
+<li><p><strong>执行角色</strong>：<strong>最终分析与合成 Agent（<span class="math inline">𝒜<sub><em>s</em><em>y</em><em>n</em><em>t</em><em>h</em></sub></span>）</strong>（扮演主编/元推理者角色）。</p></li>
+<li><p><strong>处理逻辑</strong>：</p>
+<p>Agent 根据输入的完整上下文，执行三项精炼操作：</p>
+<ol type="1">
+<li><strong>保留</strong>：保留草稿 <span class="math inline"><em>A</em><sub><em>c</em></sub></span>
+中被质量报告认可且未被事实报告打掉的高质量内容。<br>
+</li>
+<li><strong>修正</strong>：根据事实报告 <span class="math inline"><em>R</em><sub><em>h</em></sub></span>
+的批注，对错漏切片进行精准重写与定点替换。<br>
+</li>
+<li><strong>补充</strong>：根据质量报告 <span class="math inline"><em>R</em><sub><em>q</em></sub></span>
+指出的逻辑漏洞或未尽事宜，补全上下文。</li>
+</ol></li>
+<li><p><strong>产出</strong>：<strong>最终优质回答 <span class="math inline"><em>A</em><sub><em>f</em></sub> = 𝒜<sub><em>s</em><em>y</em><em>n</em><em>t</em><em>h</em></sub>(<em>I</em><sub><em>s</em><em>y</em><em>n</em><em>t</em><em>h</em></sub>, <em>Q</em>, <em>A</em><sub><em>c</em></sub>, <em>R</em><sub><em>q</em></sub>, <em>R</em><sub><em>h</em></sub>)</span></strong>。</p></li>
+</ul>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727165550928.png" alt="image-20260727165550928">
+<figcaption aria-hidden="true">image-20260727165550928</figcaption>
+</figure>
+<h1 id="experiments">Experiments</h1>
+<h2 id="dataset">dataset</h2>
+<h3 id="precisewiki短文本-精准事实问答">1. PreciseWiki（短文本 /
+精准事实问答）</h3>
+<ul>
+<li><strong>评估目标</strong>：评估模型在短答案场景下的<strong>显性事实准确性（Explicit
+factual accuracy）</strong>。<br>
+</li>
+<li><strong>主要应对幻觉</strong>：外在幻觉（Extrinsic
+Hallucinations），即生成内容与现实世界的客观知识或可核实事实直接冲突（如错乱的日期、实体名称、概念定义）。<br>
+</li>
+<li><strong>数据集来源与规模</strong>：源自维基百科条目，并按难度进行了分层，随机采样了
+<span class="math inline"><em>N</em> = 2000</span> 个样本。<br>
+</li>
+<li><strong>核心价值</strong>：作为无噪声的 Ground-truth
+标准，用于评估模型的“已知与未知边界”，特别是测试模型在内部知识不足时拒绝回答不可答问题（Knowledge-aware
+refusal）的能力。</li>
+</ul>
+<h3 id="longwiki长文本生成-篇章级问答">2. LongWiki（长文本生成 /
+篇章级问答）</h3>
+<ul>
+<li><strong>评估目标</strong>：评估模型在长文本生成中维持长序列记忆、信息整合以及<strong>长距离语义连贯性与忠实度</strong>的能力。<br>
+</li>
+<li><strong>主要应对幻觉</strong>：隐性幻觉（Implicit
+Hallucinations），即模型在生成段落级长文时，为了桥接逻辑断层或补全上下文而编造细节、产生前后矛盾。<br>
+</li>
+<li><strong>数据集来源与规模</strong>：要求模型围绕复杂维基百科实体生成段落级内容，随机抽取了
+<span class="math inline"><em>N</em> = 250</span> 个复杂实体。<br>
+</li>
+<li><strong>核心价值</strong>：突破了传统二元（对/错）短问答的局限，测试
+MA-CF 在长文展开过程中是否能稳住事实密度，避免“越写越瞎编”。</li>
+</ul>
+<h3 id="halueval-2.0跨领域综合基准">3. HaluEval
+2.0（跨领域综合基准）</h3>
+<ul>
+<li><strong>评估目标</strong>：评估框架在不同语义领域和多元任务场景下的<strong>鲁棒性与泛化能力</strong>。<br>
+</li>
+<li><strong>数据构成</strong>：HaluEval 2.0 是一个大型高质量基准（包含
+3.5
+万个生成与人工标注样本），覆盖三大常见任务：<strong>问答（QA）、基于知识的对话（Knowledge-Grounded
+Dialogue）和文本摘要（Text Summarization）</strong>。<br>
+</li>
+<li><strong>采样规模</strong>：作者构建了一个分层测试集，包含跨 5
+个不同领域的平衡样本 <span class="math inline"><em>N</em> = 800</span>。<br>
+</li>
+<li><strong>核心价值</strong>：包含大量“看似合理但实际错误（Plausible
+but
+incorrect）”的微妙幻觉样本，专门用来检验模型区分似是而非的虚构内容与真实事实的边界感知能力。</li>
+</ul>
+<h2 id="指标">指标</h2>
+<h3 id="precisewiki短文本精准问答">1. PreciseWiki（短文本精准问答）</h3>
+<p>将模型输出划分为三个互斥集合：正确（Correct, <span class="math inline"><em>C</em></span>）、幻觉（Hallucinated, <span class="math inline"><em>H</em></span>）、拒绝回答（Rejected, <span class="math inline"><em>R</em></span>）。</p>
+<ul>
+<li><p><strong>正确率（Correct Rate）</strong>：<span class="math inline">$\frac{\vert{}C\vert{}}{N}$</span>，评估整体答对比例。</p></li>
+<li><p><strong>幻觉率（Hallucination Rate）</strong>：<span class="math inline">$\frac{\vert{}H\vert{}}{N -
+\vert{}R\vert{}}$</span>，在未拒绝的回答中出现事实错误的比例（核心安全指标）。</p></li>
+<li><p><strong>拒答率（Rejection Rate）</strong>：<span class="math inline">$\frac{\vert{}R\vert{}}{N}$</span>，评估模型在知识不足时果断“弃答”的安全边界意识。</p></li>
+<li><p><strong>F1 分数（F1 Score）</strong>：正确率与回答意愿（<span class="math inline">1 − Rejection
+Rate</span>）的调和平均数，防止模型为了追求高正确率而盲目弃答或为了高回答率而胡乱猜答：</p>
+<p><span class="math display">$$\text{F1} = 2 \cdot \frac{\text{Correct
+Rate} \cdot (1 - \text{Rejection Rate})}{\text{Correct Rate} + (1 -
+\text{Rejection Rate})}$$</span></p></li>
+</ul>
+<h3 id="longwiki长文本篇章问答">2. LongWiki（长文本篇章问答）</h3>
+<p>长文本不能简单套用“对/错”二元分类，作者采用了<strong>原子断言抽取协议（Atomic
+claim extraction protocol, 设置上限 <span class="math inline"><em>k</em> = 32</span>）</strong>。设 <span class="math inline"><em>S</em><sub><em>r</em><em>e</em><em>f</em></sub></span>
+为标准答案的断言集，<span class="math inline"><em>S</em><sub><em>o</em><em>u</em><em>t</em></sub></span>
+为模型输出抽取的断言集：</p>
+<ul>
+<li><strong>Recall@32（召回率）</strong>：<span class="math inline">$\frac{\vert{}\text{输出中得到支持的断言}\vert{}}{\vert{}S_{ref}\vert{}}$</span>，评估模型捕获关键细节的全面性。<br>
+</li>
+<li><strong>Precision（精准率）</strong>：<span class="math inline">$\frac{\vert{}\text{输出中得到支持的断言}\vert{}}{\vert{}S_{out}\vert{}}$</span>，评估输出内容中每一个断言的事实准确性。<br>
+</li>
+<li><strong>F1@32</strong>：Precision 与 Recall@32
+的调和平均数，综合惩罚信息遗漏与虚构断言。</li>
+</ul>
+<h3 id="halueval-2.0跨领域综合评估">3. HaluEval
+2.0（跨领域综合评估）</h3>
+<ul>
+<li><strong>Macro Factual
+Rate（宏观事实率）</strong>：样本级的二元评估，<strong>仅当某个样本中的所有断言都完全正确时，该样本才算事实正确</strong>。<br>
+</li>
+<li><strong>Micro Factual
+Rate（微观事实率）</strong>：单个样本内部得到事实支持的断言比例（捕获样本内部的事实一致性）。<br>
+</li>
+<li><strong>Average Factual
+Rate（平均事实率）</strong>：全数据集所有样本微观事实率的平均值，代表系统的整体<strong>事实密度（Factual
+density）</strong>。</li>
+</ul>
+<h2 id="main-results">Main results</h2>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727162153476.png" alt="image-20260727162153476">
+<figcaption aria-hidden="true">image-20260727162153476</figcaption>
+</figure>
+<h2 id="消融实验">消融实验</h2>
+<table>
+<colgroup>
+<col style="width: 18%">
+<col style="width: 33%">
+<col style="width: 48%">
+</colgroup>
+<thead>
+<tr>
+<th><strong>变体名称</strong></th>
+<th><strong>对应 Fig. A.3 模板</strong></th>
+<th><strong>实验设计与假设</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. 简单增强单 Agent</strong></td>
+<td>图 (e) <code>Simple Answer Without Halu</code></td>
+<td>不搞多
+Agent，只在单个提示词里强行要求“不胡编乱造、拒绝不懂的问题”。</td>
+</tr>
+<tr>
+<td><strong>2. 质量与幻觉合并</strong></td>
+<td>图 (b) <code>Response Merge Agent</code></td>
+<td>把“查事实”和“评质量”合并到一个通用 Agent 里。</td>
+</tr>
+<tr>
+<td><strong>3. 质量分析细拆分</strong></td>
+<td>图 (a) <code>Separate Quality Analysis</code></td>
+<td>把质量分析 Agent 再拆成“评语 Agent”和“正反论点 Agent”。</td>
+</tr>
+<tr>
+<td><strong>4. 仅保留质量分析</strong></td>
+<td>图 (c) <code>Final Only Quality Decision</code></td>
+<td>砍掉幻觉核查 Agent，只看质量分析报告。</td>
+</tr>
+<tr>
+<td><strong>5. 仅保留幻觉分析</strong></td>
+<td>图 (d) <code>Final Only Hallucination Decision</code></td>
+<td>砍掉质量分析 Agent，只看幻觉核查报告。</td>
+</tr>
+</tbody>
+</table>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727165501810.png" alt="image-20260727165501810">
+<figcaption aria-hidden="true">image-20260727165501810</figcaption>
+</figure>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727164147033.png" alt="image-20260727164147033">
+<figcaption aria-hidden="true">image-20260727164147033</figcaption>
+</figure>
+<h2 id="agent-功能性分析">Agent 功能性分析</h2>
+<p>在 Section 4.5 中，作者做了一件更精细的事：<strong>保留 4 个 Agent
+的完整架构不变，但故意“剥夺/弱化”某个 Agent Prompt
+里的核心功能指令</strong>，以此观察系统的性能变化。</p>
+<p>以 <code>Llama3.1-8B-instruct</code> 为基座，作者设计了 3 组 targeted
+Prompt 弱化配置（具体 Prompt 见附录 Fig. A.2）：</p>
+<ol type="1">
+<li><strong>弱化质量分析（Weaken Quality Analysis）</strong>：
+<ul>
+<li><strong>改动</strong>：简化质量 Agent 的
+Prompt，删除了要求其“<strong>权衡正反方论点（<span class="math inline"><em>S</em><sub><em>p</em><em>r</em><em>o</em></sub>, <em>S</em><sub><em>c</em><em>o</em><em>n</em></sub></span>）</strong>”和“<strong>检查逻辑一致性</strong>”的具体指令，仅保留句式简陋的通用质量评估要求。<br>
+</li>
+</ul></li>
+<li><strong>弱化幻觉分析（Weaken Hallucination Analysis）</strong>：
+<ul>
+<li><strong>改动</strong>：简化幻觉 Agent 的
+Prompt，仅让其查找浅层事实错误，删除了“<strong>深挖推理过程中幻觉根源/错误归因</strong>”的高阶指令。<br>
+</li>
+</ul></li>
+<li><strong>弱化决策（Weaken Decision）</strong>：
+<ul>
+<li><strong>改动</strong>：修改合成 Agent 的 Prompt，减少其对前两个
+Agent
+提交的评估报告的依赖，鼓励其做出更多自主（但缺乏依据）的独立判断。</li>
+</ul></li>
+</ol>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727170347009.png" alt="image-20260727170347009">
+<figcaption aria-hidden="true">image-20260727170347009</figcaption>
+</figure>
+<h2 id="中间报告一致性验证">中间报告一致性验证</h2>
+<p><strong>为了验证中间的质量分析 Agent（<span class="math inline">𝒜<sub><em>q</em><em>u</em><em>a</em><em>l</em></sub></span>）和幻觉分析
+Agent（<span class="math inline">𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub></span>）出具的诊断报告到底靠不靠谱？它们自己会不会产生二次幻觉？</strong></p>
+<p>如果中间环节的 Agent 生成的是毫无关联的废话或错误批判（False
+Criticism），那么最后一步的合成 Agent 就成了“垃圾进，垃圾出”（Garbage
+in, Garbage out）。为了验证这两个中间 Agent
+的实效性与可靠性，作者设计了一套严谨的<strong>自动化中间报告相关性评估实验</strong>。</p>
+<p><strong>数据集抽样</strong>：
+从三个数据集（PreciseWiki、LongWiki、HaluEval 2.0）中各随机抽取
+<strong>20% 的样本</strong>（样本量分别为 <span class="math inline"><em>n</em> = 400</span>、<span class="math inline"><em>n</em> = 50</span>、<span class="math inline"><em>n</em> = 160</span>）。</p>
+<p><strong>自动化“裁判”模型</strong>： 引入超大规模强推理模型
+<strong>DeepSeek-R1-671B</strong> 作为自动化评估员（Evaluator）。</p>
+<p><strong>评估维度与标尺</strong>： 裁判模型对比 <strong>问题 <span class="math inline"><em>Q</em></span>、真实标准答案（Ground
+Truth）、初始草稿 <span class="math inline"><em>A</em><sub><em>c</em></sub></span></strong> 与
+<strong>Agent 生成的报告（<span class="math inline"><em>R</em><sub><em>q</em></sub></span> 或 <span class="math inline"><em>R</em><sub><em>h</em></sub></span>）</strong>，测量报告的<strong>上下文相关性与一致性（Contextual
+Relevance）</strong>，并将得分按连续标尺划分为 3 个区间：</p>
+<ul>
+<li><strong>不一致（Not Consistent，<span class="math inline"><em>S</em><em>c</em><em>o</em><em>r</em><em>e</em> &lt; 0.3</span>）</strong>：报告偏离主题、分析错误或产生二次幻觉。<br>
+</li>
+<li><strong>部分一致（Partially Consistent，<span class="math inline">0.3 ≤ <em>S</em><em>c</em><em>o</em><em>r</em><em>e</em> ≤ 0.7</span>）</strong>：报告捕捉到了关键信息，但粒度或严谨度与裁判标准存在微小差异。<br>
+</li>
+<li><strong>高度一致（Highly Consistent，<span class="math inline"><em>S</em><em>c</em><em>o</em><em>r</em><em>e</em> &gt; 0.7</span>）</strong>：报告分析极其精准，完全符合裁判模型的参考标准。</li>
+</ul>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727180711102.png" alt="image-20260727180711102">
+<figcaption aria-hidden="true">image-20260727180711102</figcaption>
+</figure>
+<h2 id="样例和错误分析">样例和错误分析</h2>
+<h3 id="成功纠错案例">成功纠错案例</h3>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727181316288.png" alt="image-20260727181316288">
+<figcaption aria-hidden="true">image-20260727181316288</figcaption>
+</figure>
+<h4 id="长文本案例长尾神话知识纠偏美索不达米亚神话中的-udug">1.
+长文本案例：长尾神话知识纠偏（美索不达米亚神话中的 Udug）</h4>
+<ul>
+<li><strong>初始草稿（<span class="math inline"><em>A</em><sub><em>c</em></sub></span>）</strong>：片面地将
+Udug 描述为一种纯粹邪恶的恶魔（暗影、毒药、刺耳的声音）。<br>
+</li>
+<li><strong>质量 Agent（<span class="math inline">𝒜<sub><em>q</em><em>u</em><em>a</em><em>l</em></sub></span>）诊断</strong>：指出回答是片面的，相关文献中
+Udug 也具有“善良与同情”的含义，信息利用不充分。<br>
+</li>
+<li><strong>幻觉 Agent（<span class="math inline">𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub></span>）诊断</strong>：将其归类为“部分幻觉（Partial
+Hallucination）”，缺乏对事物二象性（Duality）的探讨。<br>
+</li>
+<li><strong>合成 Agent（<span class="math inline">𝒜<sub><em>s</em><em>y</em><em>n</em><em>t</em><em>h</em></sub></span>）精炼</strong>：保留了其与混沌黑暗相关的记载，同时补充了
+Udug 善良的一面以及与女神 Ereshkigal
+的联系，生成了全面且准确的最终回答。</li>
+</ul>
+<h4 id="短文本案例历史事实精确更正三明湾号航母援救拉菲号驱逐舰">2.
+短文本案例：历史事实精确更正（三明湾号航母援救拉菲号驱逐舰）</h4>
+<ul>
+<li><strong>问题</strong>：4月16日，USS Shamrock Bay
+派遣了什么型号的战斗机协助 USS Laffey？<br>
+</li>
+<li><strong>初始草稿（<span class="math inline"><em>A</em><sub><em>c</em></sub></span>）</strong>：错误地回答为
+<code>"F4U Corsair"</code>（海盗式战斗机）。<br>
+</li>
+<li><strong>质量 Agent（<span class="math inline">𝒜<sub><em>q</em><em>u</em><em>a</em><em>l</em></sub></span>）诊断</strong>：查证历史记录指出，当时派出的实际上是
+4 架 FM-2 战斗机。<br>
+</li>
+<li><strong>幻觉 Agent（<span class="math inline">𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub></span>）诊断</strong>：识别为“事实性幻觉”，澄清
+F4U 确实参与了对 Laffey 的救援（陆战队 12 架 F4U 战斗轰炸机），但
+Shamrock Bay 当时具体派出的战斗机是 FM-2。<br>
+</li>
+<li><strong>合成 Agent（<span class="math inline">𝒜<sub><em>s</em><em>y</em><em>n</em><em>t</em><em>h</em></sub></span>）精炼</strong>：定点更正，最终仅输出准确的答案
+<code>"FM-2"</code>。</li>
+</ul>
+<h2 id="失败案例">失败案例</h2>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727181357176.png" alt="image-20260727181357176">
+<figcaption aria-hidden="true">image-20260727181357176</figcaption>
+</figure>
+<h4 id="失败案例-1生物学知识漏诊带状糖蚁的繁殖行为">1. 失败案例
+1：生物学知识漏诊（带状糖蚁的繁殖行为）</h4>
+<ul>
+<li><strong>问题</strong>：带状糖蚁的生命周期、交配模式与蚁群结构。<br>
+</li>
+<li><strong>初始草稿</strong>：错误地称带状糖蚁“与多个雄性交配（实际上一生只交配一次，即单雄交配
+monandrous）”，蚁群通常是单后制。<br>
+</li>
+<li><strong>诊断过程</strong>：
+<ul>
+<li>幻觉 Agent（<span class="math inline">𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub></span>）成功指出了蚁群结构遗漏了“多后制（polygyny，多只蚁后共存）”的可能性。<br>
+</li>
+<li>质量 Agent（<span class="math inline">𝒜<sub><em>q</em><em>u</em><em>a</em><em>l</em></sub></span>）<strong>漏诊</strong>了，未能挑战草稿中“与多个雄性交配”这一错误的繁殖行为描述。<br>
+</li>
+</ul></li>
+<li><strong>最终结果</strong>：合成 Agent
+成功补充了多后制蚁群的知识，但<strong>完好地保留了关于交配模式的原始幻觉</strong>。</li>
+</ul>
+<h4 id="失败案例-2统计数据虚高足球运动员-aleksandar-đurić-的生涯数据">2.
+失败案例 2：统计数据虚高（足球运动员 Aleksandar Đurić 的生涯数据）</h4>
+<ul>
+<li><strong>问题</strong>：Đurić 为新加坡国家队取得的显著成就。<br>
+</li>
+<li><strong>初始草稿</strong>：称其出场 128 次打入 50
+球（严重虚高，实际数据为 53 场打入 24 球）。<br>
+</li>
+<li><strong>诊断过程</strong>：
+<ul>
+<li>质量 Agent（<span class="math inline">𝒜<sub><em>q</em><em>u</em><em>a</em><em>l</em></sub></span>）准确指出了草稿遗漏了
+Đurić 的个人荣誉（如 AFF 最佳射手、年度最佳球员）。<br>
+</li>
+<li>幻觉 Agent（<span class="math inline">𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub></span>）<strong>漏诊</strong>了，它误以为
+50 球/128 场的数据已经得到验证，未能识别出这一严重的数值幻觉。<br>
+</li>
+</ul></li>
+<li><strong>最终结果</strong>：合成 Agent
+补充了完整的个人荣誉，但<strong>原封不动地保留了 50 球/128
+场的严重统计数据幻觉</strong>。</li>
+</ul>
+<hr>
+<p>作者归纳出了 MA-CF 的<strong>核心瓶颈</strong>：</p>
+<ol type="1">
+<li><strong>“木桶效应”与能力上限</strong>：
+系统的抗幻觉上限，严格取决于<strong>单个诊断 Agent
+的触发敏感度（Sensitivity）</strong>。合成 Agent（<span class="math inline">𝒜<sub><em>s</em><em>y</em><em>n</em><em>t</em><em>h</em></sub></span>）扮演的是“整合者”而非“全知者”，如果
+<span class="math inline">𝒜<sub><em>q</em><em>u</em><em>a</em><em>l</em></sub></span>
+或 <span class="math inline">𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub></span>
+没有把错误标注出来，合成 Agent 就无法凭空发现并纠正该遗留幻觉。<br>
+</li>
+<li><strong>错漏传递风险</strong>：
+<ul>
+<li>幻觉 Agent 漏诊 <span class="math inline">→</span>
+数值/事实错误被带入最终回答；<br>
+</li>
+<li>质量 Agent 漏诊 <span class="math inline">→</span>
+逻辑漏洞或片面观点被带入最终回答。</li>
+</ul></li>
+</ol>
+<p>这为未来的改进指明了方向：要提升 MA-CF
+的上限，重点在于<strong>增强中间诊断 Agent
+在特定领域（如精准统计数据、复杂生物学）的核查敏感度</strong>。</p>
+<h2 id="对比实验">对比实验</h2>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727182014086.png" alt="image-20260727182014086">
+<figcaption aria-hidden="true">image-20260727182014086</figcaption>
+</figure>
+<p>论文挑选了两种最具代表性的多智能体协作范式（均采用 Llama3.1-8B 和
+Qwen3-8B 作为基座）：</p>
+<ol type="1">
+<li><strong>标准智能体辩论框架（Standard Agent Debate, SAD /
+ChatEval）</strong>：让多个 Agent
+针对问题进行多轮顺序迭代辩论（Iterative Debate），直到达成共识。<br>
+</li>
+<li><strong>动态大模型 Agent 网络（Dynamic LLM-Agent Network,
+DyLAN）</strong>：配置了 3 个初始 Agent 和 2
+层网络结构，通过分层剪枝与早期停止机制来筛选 Agent</li>
+</ol>
+<h1 id="工程启示">工程启示</h1>
+<p>实际部署与计算效率（Efficiency and Deployment Considerations）</p>
+<p>虽然 MA-CF 性能出众，但调用 4 个 Agent
+无疑会增加计算开销。作者从工程落地角度提出了极具实用价值的部署策略：</p>
+<ul>
+<li><strong>成本与延迟权衡（Trade-off）</strong>：
+<ul>
+<li><strong>相比单模型</strong>：MA-CF
+调用了多次模型，成本和延迟确实高于单次生成。<br>
+</li>
+<li><strong>相比多轮辩论（Debate）</strong>：由于采用了<strong>并行诊断（Parallelized
+Critique）</strong>，MA-CF 的 Token 消耗和推理延迟比多轮辩论框架降低了
+<strong>50% 以上</strong>。<br>
+</li>
+</ul></li>
+<li><strong>小模型集成的硬件门槛优势</strong>：
+<ul>
+<li>部署多个 8B 参数的小模型（如 Llama3.1-8B）所需的 GPU
+显存和硬件基础设施开销，<strong>远低于</strong>运行单体 100B+ 或
+671B（如 DeepSeek-V3）超大模型。<br>
+</li>
+</ul></li>
+<li><strong>动态条件路由策略（Conditional Routing Strategy）</strong>：
+<ul>
+<li>作者强调：<strong>没必要让每一个简单的提问都走一遍 MA-CF
+管线</strong>！<br>
+</li>
+<li><strong>工程建议</strong>：在入口处加入轻量级的“置信度评估器”或分类器。简单/低风险问题直接由基座单模型回答；只有遇到复杂、高风险或容易产生幻觉的问题，才路由到
+MA-CF 多 Agent 管线中。<br>
+</li>
+</ul></li>
+<li><strong>模块化即插即用（Plug-and-Play Modularity）</strong>：
+<ul>
+<li>框架具备极强的可拓展性。例如在医疗、法律、金融等专业领域，可以在不修改生成
+Agent 和合成 Agent 的前提下，直接将幻觉分析 Agent（<span class="math inline">𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub></span>）替换为<strong>领域专精微调模型</strong>或<strong>外挂
+RAG 检索模块</strong>。</li>
+</ul></li>
+</ul>
 
       
     </div>
@@ -2684,6 +3267,265 @@ Attention）中有一个全局的输出投影矩阵，写作 <span class="math i
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/11/%E5%AD%A6%E4%B9%A0/%E8%BF%90%E7%BB%B4%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%99%A8/%E6%9C%8D%E5%8A%A1%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E8%BF%90%E7%BB%B4%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%99%A8/%E6%9C%8D%E5%8A%A1%E5%99%A8/" class="post-title-link" itemprop="url">阿里云服务器</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-06-11 00:00:00" itemprop="dateCreated datePublished" datetime="2026-06-11T00:00:00+08:00">2026-06-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-06-12 12:30:13" itemprop="dateModified" datetime="2026-06-12T12:30:13+08:00">2026-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%BF%90%E7%BB%B4/" itemprop="url" rel="index"><span itemprop="name">运维</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="宝塔面板bt-panel"><strong>宝塔面板（BT Panel）</strong></h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget -O install.sh https://download.bt.cn/install/install-ubuntu_6.0.sh &amp;&amp; sudo bash install.sh ed8484bec</span><br><span class="line">bt default</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E8%BF%90%E7%BB%B4%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%99%A8/%E6%9C%8D%E5%8A%A1%E5%99%A8/image-20260611130146198.png" alt="image-20260611130146198">
+<figcaption aria-hidden="true">image-20260611130146198</figcaption>
+</figure>
+<h2 id="为宝塔面板配置安全组">为宝塔面板配置安全组</h2>
+<figure>
+<img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E8%BF%90%E7%BB%B4%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%99%A8/%E6%9C%8D%E5%8A%A1%E5%99%A8/image-20260611125654475.png" alt="image-20260611125654475">
+<figcaption aria-hidden="true">image-20260611125654475</figcaption>
+</figure>
+<h3 id="安全组是什么">安全组是什么</h3>
+<p><strong>安全组就是阿里云为你服务器配备的“虚拟防火墙”。</strong></p>
+<h4 id="它是白名单机制默认拒绝所有人">1.
+它是“白名单”机制（默认拒绝所有人）</h4>
+<p>保安的默认原则是：<strong>只要我没在名单上看到你的名字，你就绝对不准进。</strong></p>
+<ul>
+<li>如果你什么都不配置，你的服务器就是一座孤岛，谁也访问不了（网站打不开，你也连不上）。</li>
+<li>你必须主动给保安下发“通行证”（配置规则），比如“允许访问 80
+端口（网站）的人进来”。</li>
+</ul>
+<h4 id="它控制进出两个方向">2. 它控制“进出”两个方向</h4>
+<ul>
+<li><strong>入方向（别人访问你）：</strong>
+保安严查！必须看通行证。比如网友访问你的网站（80端口），或者你登录宝塔面板（8888端口），都需要在安全组里提前开放对应端口。</li>
+<li><strong>出方向（你访问别人）：</strong>
+保安很宽容！默认允许你的服务器主动去外网下载软件、更新系统。</li>
+</ul>
+<h4 id="它是虚拟的且极其靠近你的服务器">3.
+它是“虚拟”的，且极其靠近你的服务器</h4>
+<p>在传统的机房里，防火墙是一台独立的硬件机器。但在阿里云，安全组是直接<strong>绑定在你的服务器虚拟网卡上</strong>的。</p>
+<ul>
+<li><strong>好处：</strong>
+恶意流量在到达你的操作系统（Ubuntu）之前，在底层就被保安直接拦截丢弃了。你的系统根本感觉不到黑客的攻击，极其安全。</li>
+</ul>
+<h3 id="安全组到底部署在哪里">安全组到底部署在哪里？</h3>
+<p>在物理机房，防火墙是一台独立的硬件盒子（网关）。但在阿里云，你的服务器是一台<strong>虚拟机（VM）</strong>。</p>
+<ul>
+<li><strong>物理位置</strong>：安全组代码运行在<strong>宿主机（物理机）的
+Hypervisor（虚拟机监视器）层</strong>。</li>
+<li><strong>逻辑位置</strong>：它直接绑定在你的<strong>虚拟网卡（vNIC）</strong>
+上。</li>
+<li><strong>数据流向</strong>：外部数据包 -&gt; 物理网卡 -&gt;
+虚拟交换机 -&gt; <strong>安全组拦截检查</strong> -&gt; 虚拟网卡 -&gt;
+你的 Ubuntu 操作系统。</li>
+<li><strong>结论</strong>：如果安全组拒绝了数据包，这个包在到达你的
+Ubuntu
+系统之前，<strong>就已经在内核底层被丢弃（Drop）了</strong>。你的系统根本不知道有人试图访问你，这就极大地降低了被攻击的风险。</li>
+</ul>
+<h3 id="五元组匹配packet-filtering">五元组匹配（Packet Filtering）</h3>
+<p>当数据包到达安全组时，安全组会剥离数据链路层的帧头，查看
+<strong>网络层（IP）</strong> 和 <strong>传输层（TCP/UDP）</strong>
+的头部信息。它会提取出<strong>五元组（5-Tuple）</strong>：</p>
+<table>
+<colgroup>
+<col style="width: 24%">
+<col style="width: 16%">
+<col style="width: 26%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">五元组</th>
+<th style="text-align: left;">所在协议层</th>
+<th style="text-align: left;">作用</th>
+<th style="text-align: left;">示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>源 IP (Source IP)</strong></td>
+<td style="text-align: left;">网络层 (IP)</td>
+<td style="text-align: left;">标识发送方是谁</td>
+<td style="text-align: left;"><code>114.24.56.78</code> (你的电脑)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>目的 IP (Dest IP)</strong></td>
+<td style="text-align: left;">网络层 (IP)</td>
+<td style="text-align: left;">标识接收方是谁</td>
+<td style="text-align: left;"><code>139.196.213.60</code>
+(你的服务器)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>源端口 (Source Port)</strong></td>
+<td style="text-align: left;">传输层 (TCP/UDP)</td>
+<td style="text-align: left;">标识发送方用的哪个程序</td>
+<td style="text-align: left;"><code>54321</code>
+(浏览器随机生成的临时端口)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>目的端口 (Dest Port)</strong></td>
+<td style="text-align: left;">传输层 (TCP/UDP)</td>
+<td style="text-align: left;">标识想访问服务器的哪个服务</td>
+<td style="text-align: left;"><code>8888</code> (宝塔面板)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>协议 (Protocol)</strong></td>
+<td style="text-align: left;">网络层/传输层</td>
+<td style="text-align: left;">标识使用的传输协议</td>
+<td style="text-align: left;"><code>TCP</code> 或 <code>UDP</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>匹配过程</strong>：安全组内存里有一张
+ACL（访问控制列表）表。数据包来了，提取五元组，从上到下逐条比对。匹配到“允许”就放行，匹配到“拒绝”就丢弃。如果到最后都没匹配到，执行<strong>默认策略（拒绝）</strong>。</p>
+<h3 id="最核心的技术状态检测stateful-inspection">最核心的技术：状态检测（Stateful
+Inspection）</h3>
+<p>这是新手最容易困惑的地方：<strong>“我只配了入方向的
+8888，为什么服务器返回给我的数据能顺利通过？”</strong></p>
+<p><strong>解答：因为安全组是“有状态”的。</strong></p>
+<ul>
+<li><strong>无状态防火墙（如老式路由器
+ACL）</strong>：只认死理。去程包符合规则就放，回程包必须也有一条明确的规则才放。</li>
+<li><strong>有状态防火墙（安全组）</strong>：它内部维护了一张<strong>连接追踪表（Connection
+Tracking Table）</strong>。</li>
+</ul>
+<p><strong>TCP 三次握手在安全组中的微观过程：</strong></p>
+<ol type="1">
+<li><strong>第一次握手 (SYN)</strong>：你的浏览器向服务器
+<code>8888</code> 端口发送 SYN 包。
+<ul>
+<li>安全组检查入方向规则 -&gt; 发现允许 <code>8888</code> -&gt;
+<strong>放行</strong>。</li>
+<li><strong>关键动作</strong>：安全组在内存的“状态表”中记下一笔：<code>[源IP:源端口] &lt;-&gt; [目的IP:8888] 状态:新建</code>。</li>
+</ul></li>
+<li><strong>第二次握手 (SYN-ACK)</strong>：服务器的宝塔面板回复 SYN-ACK
+包（源端口 8888，目的端口 54321）。
+<ul>
+<li>安全组检查出方向规则（通常全放行） -&gt;
+<strong>放行</strong>。</li>
+<li><strong>关键动作</strong>：更新状态表：<code>状态:已建立</code>。</li>
+</ul></li>
+<li><strong>第三次握手及后续数据传输 (ACK/PSH)</strong>：
+<ul>
+<li>当后续的数据包到达时，安全组<strong>首先检查状态表</strong>。</li>
+<li>发现这个包属于“已建立”的连接 -&gt; <strong>直接放行，根本不去查 ACL
+规则表！</strong></li>
+</ul></li>
+</ol>
+<p><strong>总结</strong>：有状态检测让安全组变得极其聪明，它知道“谁先发起的对话”，从而自动放行合法的回应流量，省去了配置复杂回程规则的麻烦。</p>
+<h2 id="部署sub2api">部署sub2api</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 1. 创建部署目录并进入</span><br><span class="line">mkdir -p /www/sub2api &amp;&amp; cd /www/sub2api</span><br><span class="line"></span><br><span class="line"># 2. 下载部署脚本并执行</span><br><span class="line">curl -sSL https://raw.githubusercontent.com/Wei-Shaw/sub2api/main/deploy/docker-deploy.sh | bash</span><br><span class="line"></span><br><span class="line"># 3. 查看生成的配置（重要！）</span><br><span class="line">cat .env</span><br></pre></td></tr></table></figure>
+<p>使用ping测试连通性</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping raw.githubusercontent.com</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong><code>ping</code> 命令不能用来测试网址（URL）！</strong></p>
+<ul>
+<li><strong><code>ping</code> 的原理</strong>：<code>ping</code>
+使用的是 <strong>ICMP
+协议</strong>（网络层），它只能测试<strong>域名</strong>（如
+<code>baidu.com</code>）或 <strong>IP 地址</strong>（如
+<code>139.196.213.60</code>）是否连通。</li>
+<li><strong>URL
+是什么</strong>：<code>https://raw.githubusercontent.com/...</code>
+是一个完整的 <strong>HTTP
+网址</strong>（应用层），包含了协议头（<code>https://</code>）和路径（<code>/Wei-Shaw/...</code>）。<code>ping</code>
+根本不认识 <code>https://</code>
+这种东西，所以它报错“未知的名称或服务”。</li>
+</ul>
+</blockquote>
+<h3 id="ssh连接">ssh连接</h3>
+<p>步骤1：修改 SSH 配置文件 在 Workbench
+的黑框框里，复制粘贴以下命令并回车（这会打开一个文本编辑器）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nano /etc/ssh/sshd_config</span><br></pre></td></tr></table></figure>
+<p>步骤2：修改关键配置</p>
+<p>降 <code>PasswordAuthentication no</code> 改成yes</p>
+<p>步骤3：保存并退出</p>
+<p>按 <code>Ctrl + X</code> 退出编辑器。</p>
+<p>步骤4：重启 SSH 服务让配置生效</p>
+<p>在黑框框里输入以下命令并回车： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart ssh</span><br></pre></td></tr></table></figure></p>
+<p>步骤5：再次尝试本地连接</p>
+<p>回到你的 Windows PowerShell，再次输入： <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh root@<span class="number">139.196</span>.<span class="number">213.60</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="docker部署">docker部署</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 1. 进入之前创建的项目目录</span><br><span class="line">cd /www/sub2api</span><br><span class="line"></span><br><span class="line"># 2. 启动所有服务（包括数据库、Redis和主程序）</span><br><span class="line"># 第一次启动需要下载 Docker 镜像，可能需要几分钟，请耐心等待</span><br><span class="line">docker compose up -d</span><br></pre></td></tr></table></figure>
+<p>然后记得配置安全组</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -3040,170 +3882,6 @@ Query）。</li>
 大部分时间没有在做高强度的计算，而是在干苦力活：不停地把显存（HBM）里巨大的
 KV Cache 搬运到片上缓存（SRAM）里，去和那一行小小的 <span class="math inline"><em>Q</em></span>
 做乘法。这也是大模型生成速度（Tokens/s）会遇到瓶颈的根本原因。</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%A1%A8%E5%BE%81%E5%B7%A5%E7%A8%8B%E4%B8%8E%E6%BF%80%E6%B4%BB%E5%BC%95%E5%AF%BC/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%A1%A8%E5%BE%81%E5%B7%A5%E7%A8%8B%E4%B8%8E%E6%BF%80%E6%B4%BB%E5%BC%95%E5%AF%BC/" class="post-title-link" itemprop="url">表征工程与激活引导</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2026-06-11 00:00:00" itemprop="dateCreated datePublished" datetime="2026-06-11T00:00:00+08:00">2026-06-11</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-06-16 13:25:28" itemprop="dateModified" datetime="2026-06-16T13:25:28+08:00">2026-06-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E7%A7%91%E7%A0%94/" itemprop="url" rel="index"><span itemprop="name">科研</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="激活导向activation-steering">激活导向（Activation
-Steering）</h1>
-<h2 id="提取转向向量steering-vector-extraction">1.
-提取转向向量（Steering Vector Extraction）</h2>
-<p>首先，研究者会设计多组<strong>对比提示词对（Contrastive
-Pairs）</strong>。例如，为了让模型表现得更诚实或减少幻觉，可以构建：</p>
-<ul>
-<li><strong>正向提示词 (<span class="math inline"><em>P</em><sup>+</sup></span>)：</strong>
-“请基于事实，诚实、准确地回答以下问题：……”</li>
-<li><strong>反向提示词 (<span class="math inline"><em>P</em><sup>−</sup></span>)：</strong>
-“请胡编乱造，充满错误地回答以下问题：……”</li>
-</ul>
-<p>将这些提示词分别输入大模型，记录特定中间层（Layer <span class="math inline"><em>l</em></span>）的隐状态激活值，然后计算它们的平均差值（即常见的
-<strong>ActAdd / Contrastive Activation Addition</strong> 方法）：</p>
-<p><span class="math display"><em>v</em> = mean(<em>h</em><sub>+</sub>) − mean(<em>h</em><sub>−</sub>)</span></p>
-<p>这个差值向量 <span class="math inline"><em>v</em></span>
-就是<strong>转向向量（Steering Vector）</strong>，它代表了该空间中“诚实
-vs 虚假”的几何方向。</p>
-<h2 id="推理期干预inference-intervention">2. 推理期干预（Inference
-Intervention）</h2>
-<p>在实际推理生成新文本时，当模型计算到指定的层数 <span class="math inline"><em>l</em></span> 时，我们直接将这个向量加上去：</p>
-<p><span class="math display"><em>h</em><sup>′</sup> = <em>h</em> + <em>α</em> ⋅ <em>v</em></span></p>
-<ul>
-<li><span class="math inline"><em>h</em></span>
-是模型原本算出来的隐状态。</li>
-<li><span class="math inline"><em>v</em></span>
-是前面提取的转向向量。</li>
-<li><span class="math inline"><em>α</em></span>
-是控制力度的<strong>缩放因子（Steering Strength）</strong>。</li>
-</ul>
-<p>如果 <span class="math inline"><em>α</em> &gt; 0</span>，模型就会往正向特征（如诚实、不幻觉）靠拢；如果
-<span class="math inline"><em>α</em> &lt; 0</span>，则会引发反向特征。</p>
-<h3 id="为什么这个方法现在很火">🚀 为什么这个方法现在很火？</h3>
-<p>相比传统的微调或提示词工程，激活导向有几个极其明显的黑科技优势：</p>
-<ul>
-<li><strong>零显存训练成本：</strong> 它不需要做反向传播（Backward
-Pass），不需要更新几十亿的参数，纯粹是推理时的一行代码矩阵加法。</li>
-<li><strong>动态解耦与连续控制：</strong>
-提示词控制往往比较玄学，而激活导向可以通过调节 <span class="math inline"><em>α</em></span>
-的大小，丝滑地控制“介入程度”。你甚至可以在生成的第 5 个 token
-开启它，在第 10 个 token 关闭它。</li>
-<li><strong>模块化可组合：</strong>
-你可以同时注入一个“增强事实性”的向量和一个“语气更幽默”的向量，它们在空间中可以线性叠加，互不干扰。</li>
-</ul>
-<h1 id="论文">论文</h1>
-<p>[<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2602.21704">2602.21704] Dynamic
-Multimodal Activation Steering for Hallucination Mitigation in Large
-Vision-Language Models</a></p>
-<p>多模态大模型幻觉缓解的动态多模态激活引导</p>
-<h2 id="摘要">摘要</h2>
-<h3 id="核心发现">核心发现</h3>
-<p><strong>发现 ①</strong>
-模型架构内部的“真实性（Truthfulness）”能力<strong>与</strong>“视觉感知（Visual
-Perception）”能力，主要由不同子集的注意力头（Attention Heads）来主导
-。</p>
-<p><strong>发现 ②</strong> 用于控制模型真实性的“引导向量（Steering
-Vectors）”，在<strong>不同的语义上下文（Semantic
-Contexts）中存在显著差异</strong> 。</p>
-<h3 id="解决方案">解决方案</h3>
-<p>提出了一种无需训练（Training-free）的幻觉缓解方法——<strong>动态多模态激活引导（Dynamic
-Multimodal Activation Steering, DMAS）</strong> 。</p>
-<p><strong>具体运作机制</strong>：</p>
-<ol type="1">
-<li>我们的方法构建了一个<strong>基于语义的真实性引导向量数据库</strong>，并计算出<strong>视觉感知引导向量</strong>
-。<br>
-</li>
-<li>在推理（生成文本）时，通过计算输入提示词的语义相似度，<strong>动态选择最相关的引导向量</strong>，从而实现上下文感知（Context-aware）的微创干涉
-。<br>
-</li>
-<li>最终，将这些选出的向量<strong>施加到最具有影响力的注意力头</strong>上
-。</li>
-</ol>
-<h3 id="对比工作">对比工作</h3>
-<p><strong>ICT 方法</strong>：通过给图像和物体加噪声来增强视觉关注
-。<em>但它只盯着视觉层面的干预，忽略了多模态的复杂特性</em> 。</p>
-<p><strong>VTI
-方法</strong>：预先计算好引导向量，强行介入视觉和语言的隐藏层
-。<strong>（划重点，这是本文的核心突破口）</strong> *VTI
-使用的是固定不变（Fixed）**的引导向量！它完全忽略了输入上下文的变化以及其中微妙的语义差异*
-。</p>
 
       
     </div>
@@ -3850,7 +4528,7 @@ Agent 执行恶意操作。</p>
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/11/%E5%AD%A6%E4%B9%A0/%E8%BF%90%E7%BB%B4%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%99%A8/%E6%9C%8D%E5%8A%A1%E5%99%A8/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%A1%A8%E5%BE%81%E5%B7%A5%E7%A8%8B%E4%B8%8E%E6%BF%80%E6%B4%BB%E5%BC%95%E5%AF%BC/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/zxjavatar.gif">
@@ -3868,7 +4546,7 @@ Agent 执行恶意操作。</p>
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E8%BF%90%E7%BB%B4%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%99%A8/%E6%9C%8D%E5%8A%A1%E5%99%A8/" class="post-title-link" itemprop="url">阿里云服务器</a>
+          <a href="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%A1%A8%E5%BE%81%E5%B7%A5%E7%A8%8B%E4%B8%8E%E6%BF%80%E6%B4%BB%E5%BC%95%E5%AF%BC/" class="post-title-link" itemprop="url">表征工程与激活引导</a>
         </h2>
 
         <div class="post-meta-container">
@@ -3886,7 +4564,7 @@ Agent 执行恶意操作。</p>
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-06-12 12:30:13" itemprop="dateModified" datetime="2026-06-12T12:30:13+08:00">2026-06-12</time>
+      <time title="修改时间：2026-06-16 13:25:28" itemprop="dateModified" datetime="2026-06-16T13:25:28+08:00">2026-06-16</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -3894,7 +4572,7 @@ Agent 执行恶意操作。</p>
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E8%BF%90%E7%BB%B4/" itemprop="url" rel="index"><span itemprop="name">运维</span></a>
+          <a href="/categories/%E7%A7%91%E7%A0%94/" itemprop="url" rel="index"><span itemprop="name">科研</span></a>
         </span>
     </span>
 
@@ -3908,181 +4586,86 @@ Agent 执行恶意操作。</p>
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="宝塔面板bt-panel"><strong>宝塔面板（BT Panel）</strong></h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget -O install.sh https://download.bt.cn/install/install-ubuntu_6.0.sh &amp;&amp; sudo bash install.sh ed8484bec</span><br><span class="line">bt default</span><br></pre></td></tr></table></figure>
-<figure>
-<img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E8%BF%90%E7%BB%B4%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%99%A8/%E6%9C%8D%E5%8A%A1%E5%99%A8/image-20260611130146198.png" alt="image-20260611130146198">
-<figcaption aria-hidden="true">image-20260611130146198</figcaption>
-</figure>
-<h2 id="为宝塔面板配置安全组">为宝塔面板配置安全组</h2>
-<figure>
-<img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E8%BF%90%E7%BB%B4%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%99%A8/%E6%9C%8D%E5%8A%A1%E5%99%A8/image-20260611125654475.png" alt="image-20260611125654475">
-<figcaption aria-hidden="true">image-20260611125654475</figcaption>
-</figure>
-<h3 id="安全组是什么">安全组是什么</h3>
-<p><strong>安全组就是阿里云为你服务器配备的“虚拟防火墙”。</strong></p>
-<h4 id="它是白名单机制默认拒绝所有人">1.
-它是“白名单”机制（默认拒绝所有人）</h4>
-<p>保安的默认原则是：<strong>只要我没在名单上看到你的名字，你就绝对不准进。</strong></p>
+          <h1 id="激活导向activation-steering">激活导向（Activation
+Steering）</h1>
+<h2 id="提取转向向量steering-vector-extraction">1.
+提取转向向量（Steering Vector Extraction）</h2>
+<p>首先，研究者会设计多组<strong>对比提示词对（Contrastive
+Pairs）</strong>。例如，为了让模型表现得更诚实或减少幻觉，可以构建：</p>
 <ul>
-<li>如果你什么都不配置，你的服务器就是一座孤岛，谁也访问不了（网站打不开，你也连不上）。</li>
-<li>你必须主动给保安下发“通行证”（配置规则），比如“允许访问 80
-端口（网站）的人进来”。</li>
+<li><strong>正向提示词 (<span class="math inline"><em>P</em><sup>+</sup></span>)：</strong>
+“请基于事实，诚实、准确地回答以下问题：……”</li>
+<li><strong>反向提示词 (<span class="math inline"><em>P</em><sup>−</sup></span>)：</strong>
+“请胡编乱造，充满错误地回答以下问题：……”</li>
 </ul>
-<h4 id="它控制进出两个方向">2. 它控制“进出”两个方向</h4>
+<p>将这些提示词分别输入大模型，记录特定中间层（Layer <span class="math inline"><em>l</em></span>）的隐状态激活值，然后计算它们的平均差值（即常见的
+<strong>ActAdd / Contrastive Activation Addition</strong> 方法）：</p>
+<p><span class="math display"><em>v</em> = mean(<em>h</em><sub>+</sub>) − mean(<em>h</em><sub>−</sub>)</span></p>
+<p>这个差值向量 <span class="math inline"><em>v</em></span>
+就是<strong>转向向量（Steering Vector）</strong>，它代表了该空间中“诚实
+vs 虚假”的几何方向。</p>
+<h2 id="推理期干预inference-intervention">2. 推理期干预（Inference
+Intervention）</h2>
+<p>在实际推理生成新文本时，当模型计算到指定的层数 <span class="math inline"><em>l</em></span> 时，我们直接将这个向量加上去：</p>
+<p><span class="math display"><em>h</em><sup>′</sup> = <em>h</em> + <em>α</em> ⋅ <em>v</em></span></p>
 <ul>
-<li><strong>入方向（别人访问你）：</strong>
-保安严查！必须看通行证。比如网友访问你的网站（80端口），或者你登录宝塔面板（8888端口），都需要在安全组里提前开放对应端口。</li>
-<li><strong>出方向（你访问别人）：</strong>
-保安很宽容！默认允许你的服务器主动去外网下载软件、更新系统。</li>
+<li><span class="math inline"><em>h</em></span>
+是模型原本算出来的隐状态。</li>
+<li><span class="math inline"><em>v</em></span>
+是前面提取的转向向量。</li>
+<li><span class="math inline"><em>α</em></span>
+是控制力度的<strong>缩放因子（Steering Strength）</strong>。</li>
 </ul>
-<h4 id="它是虚拟的且极其靠近你的服务器">3.
-它是“虚拟”的，且极其靠近你的服务器</h4>
-<p>在传统的机房里，防火墙是一台独立的硬件机器。但在阿里云，安全组是直接<strong>绑定在你的服务器虚拟网卡上</strong>的。</p>
+<p>如果 <span class="math inline"><em>α</em> &gt; 0</span>，模型就会往正向特征（如诚实、不幻觉）靠拢；如果
+<span class="math inline"><em>α</em> &lt; 0</span>，则会引发反向特征。</p>
+<h3 id="为什么这个方法现在很火">🚀 为什么这个方法现在很火？</h3>
+<p>相比传统的微调或提示词工程，激活导向有几个极其明显的黑科技优势：</p>
 <ul>
-<li><strong>好处：</strong>
-恶意流量在到达你的操作系统（Ubuntu）之前，在底层就被保安直接拦截丢弃了。你的系统根本感觉不到黑客的攻击，极其安全。</li>
+<li><strong>零显存训练成本：</strong> 它不需要做反向传播（Backward
+Pass），不需要更新几十亿的参数，纯粹是推理时的一行代码矩阵加法。</li>
+<li><strong>动态解耦与连续控制：</strong>
+提示词控制往往比较玄学，而激活导向可以通过调节 <span class="math inline"><em>α</em></span>
+的大小，丝滑地控制“介入程度”。你甚至可以在生成的第 5 个 token
+开启它，在第 10 个 token 关闭它。</li>
+<li><strong>模块化可组合：</strong>
+你可以同时注入一个“增强事实性”的向量和一个“语气更幽默”的向量，它们在空间中可以线性叠加，互不干扰。</li>
 </ul>
-<h3 id="安全组到底部署在哪里">安全组到底部署在哪里？</h3>
-<p>在物理机房，防火墙是一台独立的硬件盒子（网关）。但在阿里云，你的服务器是一台<strong>虚拟机（VM）</strong>。</p>
-<ul>
-<li><strong>物理位置</strong>：安全组代码运行在<strong>宿主机（物理机）的
-Hypervisor（虚拟机监视器）层</strong>。</li>
-<li><strong>逻辑位置</strong>：它直接绑定在你的<strong>虚拟网卡（vNIC）</strong>
-上。</li>
-<li><strong>数据流向</strong>：外部数据包 -&gt; 物理网卡 -&gt;
-虚拟交换机 -&gt; <strong>安全组拦截检查</strong> -&gt; 虚拟网卡 -&gt;
-你的 Ubuntu 操作系统。</li>
-<li><strong>结论</strong>：如果安全组拒绝了数据包，这个包在到达你的
-Ubuntu
-系统之前，<strong>就已经在内核底层被丢弃（Drop）了</strong>。你的系统根本不知道有人试图访问你，这就极大地降低了被攻击的风险。</li>
-</ul>
-<h3 id="五元组匹配packet-filtering">五元组匹配（Packet Filtering）</h3>
-<p>当数据包到达安全组时，安全组会剥离数据链路层的帧头，查看
-<strong>网络层（IP）</strong> 和 <strong>传输层（TCP/UDP）</strong>
-的头部信息。它会提取出<strong>五元组（5-Tuple）</strong>：</p>
-<table>
-<colgroup>
-<col style="width: 24%">
-<col style="width: 16%">
-<col style="width: 26%">
-<col style="width: 34%">
-</colgroup>
-<thead>
-<tr>
-<th style="text-align: left;">五元组</th>
-<th style="text-align: left;">所在协议层</th>
-<th style="text-align: left;">作用</th>
-<th style="text-align: left;">示例</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong>源 IP (Source IP)</strong></td>
-<td style="text-align: left;">网络层 (IP)</td>
-<td style="text-align: left;">标识发送方是谁</td>
-<td style="text-align: left;"><code>114.24.56.78</code> (你的电脑)</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>目的 IP (Dest IP)</strong></td>
-<td style="text-align: left;">网络层 (IP)</td>
-<td style="text-align: left;">标识接收方是谁</td>
-<td style="text-align: left;"><code>139.196.213.60</code>
-(你的服务器)</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>源端口 (Source Port)</strong></td>
-<td style="text-align: left;">传输层 (TCP/UDP)</td>
-<td style="text-align: left;">标识发送方用的哪个程序</td>
-<td style="text-align: left;"><code>54321</code>
-(浏览器随机生成的临时端口)</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>目的端口 (Dest Port)</strong></td>
-<td style="text-align: left;">传输层 (TCP/UDP)</td>
-<td style="text-align: left;">标识想访问服务器的哪个服务</td>
-<td style="text-align: left;"><code>8888</code> (宝塔面板)</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>协议 (Protocol)</strong></td>
-<td style="text-align: left;">网络层/传输层</td>
-<td style="text-align: left;">标识使用的传输协议</td>
-<td style="text-align: left;"><code>TCP</code> 或 <code>UDP</code></td>
-</tr>
-</tbody>
-</table>
-<p><strong>匹配过程</strong>：安全组内存里有一张
-ACL（访问控制列表）表。数据包来了，提取五元组，从上到下逐条比对。匹配到“允许”就放行，匹配到“拒绝”就丢弃。如果到最后都没匹配到，执行<strong>默认策略（拒绝）</strong>。</p>
-<h3 id="最核心的技术状态检测stateful-inspection">最核心的技术：状态检测（Stateful
-Inspection）</h3>
-<p>这是新手最容易困惑的地方：<strong>“我只配了入方向的
-8888，为什么服务器返回给我的数据能顺利通过？”</strong></p>
-<p><strong>解答：因为安全组是“有状态”的。</strong></p>
-<ul>
-<li><strong>无状态防火墙（如老式路由器
-ACL）</strong>：只认死理。去程包符合规则就放，回程包必须也有一条明确的规则才放。</li>
-<li><strong>有状态防火墙（安全组）</strong>：它内部维护了一张<strong>连接追踪表（Connection
-Tracking Table）</strong>。</li>
-</ul>
-<p><strong>TCP 三次握手在安全组中的微观过程：</strong></p>
+<h1 id="论文">论文</h1>
+<p>[<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2602.21704">2602.21704] Dynamic
+Multimodal Activation Steering for Hallucination Mitigation in Large
+Vision-Language Models</a></p>
+<p>多模态大模型幻觉缓解的动态多模态激活引导</p>
+<h2 id="摘要">摘要</h2>
+<h3 id="核心发现">核心发现</h3>
+<p><strong>发现 ①</strong>
+模型架构内部的“真实性（Truthfulness）”能力<strong>与</strong>“视觉感知（Visual
+Perception）”能力，主要由不同子集的注意力头（Attention Heads）来主导
+。</p>
+<p><strong>发现 ②</strong> 用于控制模型真实性的“引导向量（Steering
+Vectors）”，在<strong>不同的语义上下文（Semantic
+Contexts）中存在显著差异</strong> 。</p>
+<h3 id="解决方案">解决方案</h3>
+<p>提出了一种无需训练（Training-free）的幻觉缓解方法——<strong>动态多模态激活引导（Dynamic
+Multimodal Activation Steering, DMAS）</strong> 。</p>
+<p><strong>具体运作机制</strong>：</p>
 <ol type="1">
-<li><strong>第一次握手 (SYN)</strong>：你的浏览器向服务器
-<code>8888</code> 端口发送 SYN 包。
-<ul>
-<li>安全组检查入方向规则 -&gt; 发现允许 <code>8888</code> -&gt;
-<strong>放行</strong>。</li>
-<li><strong>关键动作</strong>：安全组在内存的“状态表”中记下一笔：<code>[源IP:源端口] &lt;-&gt; [目的IP:8888] 状态:新建</code>。</li>
-</ul></li>
-<li><strong>第二次握手 (SYN-ACK)</strong>：服务器的宝塔面板回复 SYN-ACK
-包（源端口 8888，目的端口 54321）。
-<ul>
-<li>安全组检查出方向规则（通常全放行） -&gt;
-<strong>放行</strong>。</li>
-<li><strong>关键动作</strong>：更新状态表：<code>状态:已建立</code>。</li>
-</ul></li>
-<li><strong>第三次握手及后续数据传输 (ACK/PSH)</strong>：
-<ul>
-<li>当后续的数据包到达时，安全组<strong>首先检查状态表</strong>。</li>
-<li>发现这个包属于“已建立”的连接 -&gt; <strong>直接放行，根本不去查 ACL
-规则表！</strong></li>
-</ul></li>
+<li>我们的方法构建了一个<strong>基于语义的真实性引导向量数据库</strong>，并计算出<strong>视觉感知引导向量</strong>
+。<br>
+</li>
+<li>在推理（生成文本）时，通过计算输入提示词的语义相似度，<strong>动态选择最相关的引导向量</strong>，从而实现上下文感知（Context-aware）的微创干涉
+。<br>
+</li>
+<li>最终，将这些选出的向量<strong>施加到最具有影响力的注意力头</strong>上
+。</li>
 </ol>
-<p><strong>总结</strong>：有状态检测让安全组变得极其聪明，它知道“谁先发起的对话”，从而自动放行合法的回应流量，省去了配置复杂回程规则的麻烦。</p>
-<h2 id="部署sub2api">部署sub2api</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 1. 创建部署目录并进入</span><br><span class="line">mkdir -p /www/sub2api &amp;&amp; cd /www/sub2api</span><br><span class="line"></span><br><span class="line"># 2. 下载部署脚本并执行</span><br><span class="line">curl -sSL https://raw.githubusercontent.com/Wei-Shaw/sub2api/main/deploy/docker-deploy.sh | bash</span><br><span class="line"></span><br><span class="line"># 3. 查看生成的配置（重要！）</span><br><span class="line">cat .env</span><br></pre></td></tr></table></figure>
-<p>使用ping测试连通性</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping raw.githubusercontent.com</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong><code>ping</code> 命令不能用来测试网址（URL）！</strong></p>
-<ul>
-<li><strong><code>ping</code> 的原理</strong>：<code>ping</code>
-使用的是 <strong>ICMP
-协议</strong>（网络层），它只能测试<strong>域名</strong>（如
-<code>baidu.com</code>）或 <strong>IP 地址</strong>（如
-<code>139.196.213.60</code>）是否连通。</li>
-<li><strong>URL
-是什么</strong>：<code>https://raw.githubusercontent.com/...</code>
-是一个完整的 <strong>HTTP
-网址</strong>（应用层），包含了协议头（<code>https://</code>）和路径（<code>/Wei-Shaw/...</code>）。<code>ping</code>
-根本不认识 <code>https://</code>
-这种东西，所以它报错“未知的名称或服务”。</li>
-</ul>
-</blockquote>
-<h3 id="ssh连接">ssh连接</h3>
-<p>步骤1：修改 SSH 配置文件 在 Workbench
-的黑框框里，复制粘贴以下命令并回车（这会打开一个文本编辑器）：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nano /etc/ssh/sshd_config</span><br></pre></td></tr></table></figure>
-<p>步骤2：修改关键配置</p>
-<p>降 <code>PasswordAuthentication no</code> 改成yes</p>
-<p>步骤3：保存并退出</p>
-<p>按 <code>Ctrl + X</code> 退出编辑器。</p>
-<p>步骤4：重启 SSH 服务让配置生效</p>
-<p>在黑框框里输入以下命令并回车： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart ssh</span><br></pre></td></tr></table></figure></p>
-<p>步骤5：再次尝试本地连接</p>
-<p>回到你的 Windows PowerShell，再次输入： <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh root@<span class="number">139.196</span>.<span class="number">213.60</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="docker部署">docker部署</h3>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 1. 进入之前创建的项目目录</span><br><span class="line">cd /www/sub2api</span><br><span class="line"></span><br><span class="line"># 2. 启动所有服务（包括数据库、Redis和主程序）</span><br><span class="line"># 第一次启动需要下载 Docker 镜像，可能需要几分钟，请耐心等待</span><br><span class="line">docker compose up -d</span><br></pre></td></tr></table></figure>
-<p>然后记得配置安全组</p>
+<h3 id="对比工作">对比工作</h3>
+<p><strong>ICT 方法</strong>：通过给图像和物体加噪声来增强视觉关注
+。<em>但它只盯着视觉层面的干预，忽略了多模态的复杂特性</em> 。</p>
+<p><strong>VTI
+方法</strong>：预先计算好引导向量，强行介入视觉和语言的隐藏层
+。<strong>（划重点，这是本文的核心突破口）</strong> *VTI
+使用的是固定不变（Fixed）**的引导向量！它完全忽略了输入上下文的变化以及其中微妙的语义差异*
+。</p>
 
       
     </div>
