@@ -155,18 +155,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">192</span>
+          <span class="site-state-item-count">195</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-count">69</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-count">71</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -206,6 +206,156 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/05/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/kvcache/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/kvcache/" class="post-title-link" itemprop="url">kvcache</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-05-28 00:00:00 / 修改时间：13:15:41" itemprop="dateCreated datePublished" datetime="2026-05-28T00:00:00+08:00">2026-05-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">大模型算法</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="简单回顾attention流程">简单回顾attention流程</h1>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">【输入向量 X】(来自上一层或Embedding)</span><br><span class="line">       │</span><br><span class="line">       ├─── 步骤①：解耦分裂 ───&gt; 动态乘以 Wq, Wk, Wv 权重，生成 Q, K, V 矩阵</span><br><span class="line">       │                          (此时 V 矩阵诞生了，和 FFN 还毫无关系)</span><br><span class="line">       │</span><br><span class="line">       ├─── 步骤②：注意力对齐 ─&gt; 计算 Q 乘以 K 的转置 (Q·K^T)，得到亲疏得分矩阵</span><br><span class="line">       │                          </span><br><span class="line">       ├─── 步骤③：归一化 ─────&gt; 经过 Softmax 激活，把得分变成加起来等于 1 的权重</span><br><span class="line">       │                          </span><br><span class="line">       ├─── 步骤④：财富提取 ─────&gt; 用 Softmax 的权重去乘以 V 矩阵 (Softmax·V)</span><br><span class="line">       │                          </span><br><span class="line">       ▼</span><br><span class="line">【Attention 层的最终输出】 ───&gt; 这时，一次完整的 Attention 计算宣告结束！</span><br></pre></td></tr></table></figure>
+<h1 id="qkv矩阵的含义是怎样的">qkv矩阵的含义是怎样的</h1>
+<p>我觉得可以从他们本身的名字入手</p>
+<h2 id="q-query---查询">1. Q (Query - 查询)</h2>
+<ul>
+<li><strong>含义</strong>：当前词“试图去关注（或询问）其他词”的向量表示。</li>
+<li><strong>角色</strong>：它是主动方。在 Self-Attention
+中，每个词都会轮流作为 <span class="math inline"><em>Q</em></span>，去询问句子里的所有词（包括它自己）：“你们谁和我有关系？关系有多大？”</li>
+</ul>
+<h2 id="k-key---键">2. K (Key - 键)</h2>
+<ul>
+<li><strong>含义</strong>：当前词“被其他词关注时的特征（或身份标签）”的向量表示。</li>
+<li><strong>角色</strong>：它是被动方。它存在的意义就是和 <span class="math inline"><em>Q</em></span> 做点积（Dot
+Product），来计算两个词之间的相关性或相似度。</li>
+</ul>
+<h2 id="v-value---值">3. V (Value - 值)</h2>
+<ul>
+<li><strong>含义</strong>：当前词“本身所包含的、最核心的内容信息”。</li>
+<li><strong>角色</strong>：一旦 <span class="math inline"><em>Q</em></span> 和 <span class="math inline"><em>K</em></span>
+算出了注意力权重（即谁和谁更相关），这些权重就会乘到对应的 <span class="math inline"><em>V</em></span> 上。最终把这些加权后的 <span class="math inline"><em>V</em></span>
+累加起来，就得到了该词融合了上下文信息后的新表示。</li>
+</ul>
+<p>我的理解：</p>
+<p>q可以理解成新词关注历史字符的向量，也就是query，k则是历史字符被关注时的向量，两者相乘可以获得关联度</p>
+<p>v可以代表每一个词在进入这一层时，通过与权重矩阵相乘，提取出了它最核心的、未经污染的<strong>语义特征</strong>（比如“苹果”包含了：水果、甜的、红的、科技公司、iPhone
+等属性）。这个 <strong>V</strong> 就是这个词的“属性本体”。</p>
+<h1 id="kvcache是什么">kvcache是什么</h1>
+<p>在多次对话的过程中，前面的历史字完全没变，它们算出来的 <span class="math inline"><em>K</em></span>（身份标签）和 <span class="math inline"><em>V</em></span>（词本身的属性）也就是固定不变的。那<strong>算过一次之后，直接把它们存在内存（显存）里，后面就可以直接拿来用</strong>，因此降低了计算量，提高了响应的速度</p>
+<h1 id="那为什么不存q矩阵呢">那为什么不存q矩阵呢</h1>
+<p>这个问题的关键还是要理解qkv矩阵的含义和kvcache的流程</p>
+<p>q矩阵代表着<strong>最新字符</strong>对于历史字符关注的向量，而新字符是不对吐出来实时变化的，所以存储q矩阵没有意义</p>
+<p>而这里要区分一下大模型生成的两个阶段：</p>
+<h2 id="阶段一prefill预填充阶段-读懂你的-prompt">阶段一：Prefill（预填充阶段
+—— 读懂你的 Prompt）</h2>
+<p>当你把一句话（比如“请问什么是Attention”）发给模型时，模型会<strong>一次性</strong>把这几个字全部输入进去。</p>
+<ul>
+<li>这个时候，所有词都要互相看。所以<strong>每个词的 <span class="math inline"><em>Q</em>、<em>K</em>、<em>V</em></span>
+全都要计算</strong>，以此来捕捉整个句子的上下文语义。</li>
+<li>计算完后，模型会把这些历史词的 <span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span> 老老实实地存进内存里。这就是
+<strong>KV Cache 的初始化</strong>。</li>
+</ul>
+<h2 id="阶段二decoding解码阶段-逐字生成">阶段二：Decoding（解码阶段 ——
+逐字生成）</h2>
+<p>这就是你刚才描述的绝妙场景。假设模型现在吐出了一个新词：<strong>“它”</strong>。</p>
+<ul>
+<li><p><strong><span class="math inline"><em>Q</em></span>
+是实时的、一次性的</strong>：</p>
+<p>“它”这个新词作为当前的唯一主角，会产生一个崭新的 <span class="math inline"><em>Q</em><sub><em>它</em></sub></span>。它需要拿着这个
+<span class="math inline"><em>Q</em><sub><em>它</em></sub></span>
+去跟前面所有的历史词进行比对。</p>
+<blockquote>
+<p>💡 <strong>为什么不用缓存 <span class="math inline"><em>Q</em></span>？</strong>
+因为当“它”这个词处理完、吐出下一个词（比如“是”）之后，主导权就交给了“是”的
+<span class="math inline"><em>Q</em></span>。旧的 <span class="math inline"><em>Q</em><sub><em>它</em></sub></span>
+在未来的生成中<strong>永远都不会再被用到</strong>了。它是一次性的消耗品。</p>
+</blockquote></li>
+<li><p><strong><span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span> 必须死死存住</strong>：</p>
+<p>为了算出“它”和历史词的关联度，你需要历史词的 <span class="math inline"><em>K</em></span>；为了融合出“它”的新向量，你需要历史词的
+<span class="math inline"><em>V</em></span>。</p>
+<ul>
+<li>如果我们<strong>不缓存</strong> <span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span>，每生成一个新词，模型就得把前面所有的历史词重新做一遍矩阵乘法，去重新算一遍它们的
+<span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span>。</li>
+<li>随着生成的句子越来越长，这种重复计算会呈爆炸式增长（计算量 <span class="math inline"><em>O</em>(<em>N</em><sup>2</sup>)</span>），模型会越写越卡。</li>
+<li><strong>有了 KV Cache</strong>：历史词的 <span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span>
+已经在内存里躺着了。新词“它”算完自己的 <span class="math inline"><em>Q</em>、<em>K</em>、<em>V</em></span>
+后，拿自己的 <span class="math inline"><em>Q</em></span>
+去和内存里的一大推历史 <span class="math inline"><em>K</em></span>
+做乘法，算完后，再顺手把自己的 <span class="math inline"><em>K</em><sub><em>它</em></sub></span> 和 <span class="math inline"><em>V</em><sub><em>它</em></sub></span>
+也追加到缓存的末尾，供下一个词使用。</li>
+</ul></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -514,6 +664,1900 @@ Reasoning)：因为底层表示是统一的，Gemini可以进行更复杂的推�
 <img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E5%A4%9A%E6%A8%A1%E6%80%81%E6%A8%A1%E5%9E%8B/image-20260528153603649.png" alt="image-20260528153603649">
 <figcaption aria-hidden="true">image-20260528153603649</figcaption>
 </figure>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" class="post-title-link" itemprop="url">强化学习概念扫盲</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-05-28 00:00:00" itemprop="dateCreated datePublished" datetime="2026-05-28T00:00:00+08:00">2026-05-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-05-29 13:45:49" itemprop="dateModified" datetime="2026-05-29T13:45:49+08:00">2026-05-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A7%91%E7%A0%94/" itemprop="url" rel="index"><span itemprop="name">科研</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="对齐阶段">对齐阶段</h1>
+<p>对齐阶段（Alignment
+Stage）<strong>是指在大语言模型（LLM）或多模态大模型（MLLM）的完整训练管线（Training
+Pipeline）中，紧随预训练（Pre-training）和监督微调（SFT）之后，旨在</strong>引导模型行为、使其输出符合人类意图、社会价值观、偏好及事实真实性（Factuality）的特定网络微调阶段。</p>
+<h2 id="对齐阶段在模型生命周期中的位置">对齐阶段在模型生命周期中的位置</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. 预训练阶段 (Pre-training) ──&gt; 2. 监督微调阶段 (SFT) ──&gt; 3. 对齐阶段 (Alignment)</span><br><span class="line">     (海量数据, 学会语言规律)         (高质量问答, 学会听懂指令)      (偏好数据, 学会安全与诚实)</span><br></pre></td></tr></table></figure>
+<p><strong>预训练（Pre-training）：</strong>
+模型通过无监督学习，在数万亿 Token
+上最大化下一个词的预测概率。此时模型是一个功能强大的“续写机器”，但其输出不可控，极易产生幻觉、脏话或危险言论。</p>
+<p><strong>监督微调（SFT, Supervised Fine-Tuning）：</strong>
+通过成千上万条高质量的“人工标准指令-回答”对，训练模型学会以“AI
+助手”的身份规范回答问题。</p>
+<p><strong>对齐（Alignment）：</strong> 在 SFT
+之后，模型虽然会说人话了，但依然存在顽固的“肌肉记忆”（例如前面提到的<strong>语言先验偏置</strong>，导致闭眼瞎编）。对齐阶段则是通过引入“好”与“坏”的对比信号，进一步修剪模型的概率空间，约束其行为。</p>
+<h2 id="对齐阶段的核心对齐指标">对齐阶段的核心对齐指标</h2>
+<p>在学术定义中（由 Anthropic
+等机构确立），对齐阶段主要围绕以下三个维度（3Hs）进行行为约束：</p>
+<ul>
+<li><strong>Helpfulness（有用性）：</strong>
+模型的回答是否切中用户意图，不废话，具备实质性帮助。</li>
+<li><strong>Harmlessness（无害性）：</strong>
+模型是否拒绝回答涉及暴力、偏见、违法等敏感或危险的指令。</li>
+<li><strong>Honesty（诚实性/事实性）：</strong>
+<strong>这正是你目前阅读的抗幻觉论文的核心靶点。</strong>
+诚实性要求模型“知之为知之，不知为不知”，在多模态场景下，必须严格忠实于输入的视觉上下文，不编造不存在的物体。</li>
+</ul>
+<h2 id="对齐阶段的数学与工程实现技术">对齐阶段的数学与工程实现技术</h2>
+<p>对齐阶段的核心不是通过传统的“给正确答案（SFT）”来实现的，而是通过“偏好学习（Preference
+Learning）”。其主流技术路径有两条：</p>
+<h3 id="强化学习路径基于奖励模型的在线对齐">❶
+强化学习路径（基于奖励模型的在线对齐）</h3>
+<ul>
+<li><strong>代表技术：</strong>
+<strong>RLHF</strong>（基于人类反馈的强化学习）。</li>
+<li><strong>机制：</strong> 训练一个独立的“奖励模型（Reward
+Model）”充当裁判，只要模型吐出的词包含幻觉或不安全信息，奖励模型就扣分；反之给高分。模型通过
+PPO 算法更新参数，在奖惩中自适应地调整输出策略。</li>
+</ul>
+<h3 id="监督偏好优化路径基于对比损失的离线对齐">❷
+监督偏好优化路径（基于对比损失的离线对齐）</h3>
+<ul>
+<li><strong>代表技术：</strong>
+<strong>DPO</strong>（直接偏好优化）、DenseDPO。</li>
+<li><strong>机制：</strong> 放弃强化学习环境，直接给模型喂入偏好对数据
+<span class="math inline">𝒟 = {(<em>x</em>, <em>y</em><sub>chosen</sub>, <em>y</em><sub>rejected</sub>)}</span>。通过最大化优选回答
+<span class="math inline"><em>y</em><sub>chosen</sub></span>
+的条件概率、同时最小化弃选回答 <span class="math inline"><em>y</em><sub>rejected</sub></span>
+的条件概率，直接一步到位地调整模型权重。</li>
+</ul>
+<h1 id="ppo-proximal-policy-optimization近端策略优化"><strong>PPO
+(Proximal Policy Optimization，近端策略优化)</strong></h1>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1B5yUBVEXm/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">【PPO算法】强化学习头牌，学大模型必懂_哔哩哔哩_bilibili</a></p>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/image-20260529125515081.png" alt="image-20260529125515081">
+<figcaption aria-hidden="true">image-20260529125515081</figcaption>
+</figure>
+<p>PPO 是 OpenAI 在 2017
+年提出的一种<strong>强化学习（RL）算法</strong>。在大模型火爆之前，它就已经在让
+AI 玩 Dota
+2、控制机械臂等领域名声大噪。在大模型对齐中，它的核心任务是：<strong>如何在保证大模型不“学崩”的前提下，尽可能地迎合裁判（奖励模型）的口味？</strong></p>
+<h2 id="为什么叫近端它解决了什么痛点">1.
+为什么叫“近端”？它解决了什么痛点？</h2>
+<p>在 PPO 之前，强化学习最经典的算法是<strong>策略梯度（Policy
+Gradient）</strong>。它的逻辑很简单：AI
+做出一个行为，如果得到好评，就通过梯度上升调高这个行为的概率。</p>
+<p>但它有一个致命缺陷：<strong>步子迈得太大，容易扯到蛋</strong>。
+强化学习是“边收集数据边学习”的（On-policy）。如果某一次参数更新幅度过大，导致模型的策略发生了剧烈变形（比如从“温和的助手”变成了“满嘴脏话的喷子”），那么它接下来收集到的交互数据就会全部变成垃圾。模型一旦掉进这个“毒化”的悬崖，就再也爬不回来了。</p>
+<p>为了解决这个问题，PPO 强调
+<strong>“Proximal（近端/邻近）”</strong>：<strong>限制每次参数更新的幅度，确保新策略（更新后的模型）和旧策略（更新前的模型）拉开的距离不要太大。</strong></p>
+<h2 id="ppo-的核心武器截断目标函数-clipped-surrogate-objective">2. PPO
+的核心武器：截断目标函数 (Clipped Surrogate Objective)</h2>
+<p>PPO
+实现“步子不迈太大”的方式非常简单粗暴且优雅，它在损失函数中引入了<strong>截断（Clipping）机制</strong>。</p>
+<p>首先，我们定义一个重要性采样比率（Probability
+Ratio）rt(θ)，它表示<strong>新策略和旧策略输出某个动作的概率比值</strong>：</p>
+<p><span class="math display">$$r_t(\theta) =
+\frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}$$</span></p>
+<ul>
+<li>如果 rt&gt;1，说明新策略中这个动作的出现概率变大了。</li>
+<li>如果 rt&lt;1，说明新策略中这个动作的出现概率变小了。</li>
+</ul>
+<p>PPO 的目标损失函数如下：</p>
+<p><span class="math display">$$L^{CLIP}(\theta) = \hat{\mathbb{E}}_t
+\left[ \min\left(r_t(\theta)\hat{A}_t, \, \text{clip}(r_t(\theta),
+1-\epsilon, 1+\epsilon)\hat{A}_t\right) \right]$$</span></p>
+<p>这里的 A^t 是<strong>优势函数（Advantage
+Function）</strong>，用来衡量当前的动作是比平均表现更好（A&gt;0）还是更差（A&lt;0）。ϵ
+是一个超参数（通常设为 0.1 或 0.2）。</p>
+<p>我们可以通过下面的经典原理图来直观理解这个公式的运作逻辑：</p>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/image-20260529130338112.png" alt="image-20260529130338112">
+<figcaption aria-hidden="true">image-20260529130338112</figcaption>
+</figure>
+<p>结合上图，这个公式的妙处在于“悲观主义剪裁”：</p>
+<ul>
+<li><strong>当动作是好动作时 (A^t&gt;0)</strong>：模型想继续增大
+rt。但只要 rt 超过了 1+ϵ（比如 1.2），<code>clip</code>
+函数就会把好评给“卡死”在
+1+ϵ。这意味着<strong>就算你再怎么讨好裁判，梯度也不会再更新了，防止模型用力过猛。</strong></li>
+<li><strong>当动作是坏动作时 (A^t&lt;0)</strong>：模型想减小 rt。如果 rt
+跌破了 1−ϵ（比如
+0.8），说明模型已经充分吸取了教训，大幅度降低了该动作的概率。此时通过
+min
+取值，允许继续惩罚那些比旧策略还要糟糕极多的行为（如左侧深跌区域），但在常规区间内限制波动。</li>
+</ul>
+<h1 id="rlhf-reinforcement-learning-from-human-feedback基于人类反馈的强化学习"><strong>RLHF
+(Reinforcement Learning from Human
+Feedback，基于人类反馈的强化学习)</strong></h1>
+<p>在基础的预训练（Pre-training）阶段，模型的核心任务只是预测下一个词。这导致它虽然博古通今，但非常“毒舌”、喜欢胡说八道（幻觉），或者给出无法直接执行的废话。</p>
+<p>RLHF
+的核心目的就是“驯服”大模型，通过引入人类的真实反馈，建立一套奖惩机制，让模型的回答符合人类的价值观和使用习惯，即满足
+<strong>3H 原则</strong>：</p>
+<ul>
+<li><strong>Helpful</strong>（有用性）</li>
+<li><strong>Honest</strong>（诚实性）</li>
+<li><strong>Harmless</strong>（无害性）</li>
+</ul>
+<h2 id="rlhf-的三大核心步骤">RLHF 的三大核心步骤</h2>
+<p>经典的 RLHF 流程由 OpenAI
+确立，是一个环环相扣的<strong>三阶段流水线</strong>：</p>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/image-20260529130627194.png" alt="image-20260529130627194">
+<figcaption aria-hidden="true">image-20260529130627194</figcaption>
+</figure>
+<p><strong>1.步骤 1：监督微调 (SFT)：</strong>基础建设。</p>
+<p>挑选高质量的“提示词-标准回答”对（通常由专业人类写手撰写），让预训练模型进行模仿训练。这一步是为了让模型脱离“续写模式”，学会像一个<strong>AI助手</strong>一样去组织语言和回答问题。此时的模型被称为
+<strong>SFT 模型</strong>。</p>
+<p><strong>2.步骤 2：训练奖励模型 (RM)：</strong>培养裁判。</p>
+<p>让 SFT 模型针对同一个提示词生成多个不同的回答（比如 A 和
+B）。然后让人类标注员对这些回答进行排序或打分（例如：A 比 B 更好）。</p>
+<p>利用这些偏好数据，训练一个<strong>奖励模型（Reward
+Model）</strong>。这个模型的目标是像一个裁判一样，输入任意一个回答，就能自动输出一个质量得分。</p>
+<p><strong>3.步骤 3：强化学习优化 (PPO)：</strong>闭环演练。</p>
+<p>这是最核心、也是最复杂的阶段。让初始模型作为一个“演员”（Actor
+策略模型），不断接收新的提示词并生成回答。</p>
+<p>将回答送入上一步训练好的<strong>奖励模型</strong>打分。强化学习算法（通常是
+<strong>PPO</strong>）根据分数的高低来更新 Actor
+模型的参数——拿高分的行为被强化，拿低分的行为被抑制。</p>
+<h2 id="繁华背后的代价rlhf-的痛点">繁华背后的代价：RLHF 的痛点</h2>
+<p>虽然 RLHF 效果惊人，但它在工程上是一场“灾难”：</p>
+<ul>
+<li><strong>资源无底洞</strong>：在步骤 3 训练时，显存里要同时挂载 4
+个模型：Actor 模型（正在训练的）、Reference 模型（冻结的，用来算 KL
+散度约束，防止模型彻底放飞自我）、Reward 模型（打分的裁判）和 Critic
+模型（强化学习估算价值的）。</li>
+<li><strong>奖励作弊（Reward
+Hacking）</strong>：模型在强化学习过程中极其狡猾。它如果发现某种特定的句式（比如句尾多说谢谢，或者故意迎合人类的偏见）能让裁判模型打高分，它就会疯狂刷这种句式，导致回答的真实质量反而下降。</li>
+</ul>
+<blockquote>
+<p>正是因为步骤 3 的 PPO
+框架过于臃肿、极其难调（超参数极度敏感），业界才迫切需要一种更简洁的方案。这就直接催生了上一轮为你介绍的
+<strong>DPO（直接偏好优化）</strong>——直接把步骤 2 和步骤 3
+合二为一，用纯数学推导干掉了显式的强化学习循环。</p>
+</blockquote>
+<h1 id="dpo-direct-preference-optimization-直接偏好优化"><strong>DPO
+(Direct Preference Optimization, 直接偏好优化)</strong></h1>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1jNQJBGEuY/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">【DPO
+算法】大模型主流训练方法，大部分人可能并没有真正弄懂…_哔哩哔哩_bilibili</a></p>
+<h2 id="为什么需要-dpo痛点所在">1. 为什么需要 DPO？（痛点所在）</h2>
+<p>在 DPO 出现之前，主流的对齐方法是 OpenAI 走通的经典
+<strong>RLHF（基于人类反馈的强化学习）</strong>，通常采用 <strong>PPO
+(Proximal Policy Optimization)</strong> 算法。</p>
+<p><strong>PPO 的致命缺点就是：太难调了。</strong> 它同时需要维护 4
+个模型（Actor, Critic, Reference,
+Reward），显存开销巨大；而且强化学习在离散的文本空间中极不稳定，超参数稍有变动就会导致训练崩溃。</p>
+<h2 id="dpo-的核心思路数学上的降维打击">2. DPO
+的核心思路：数学上的“降维打击”</h2>
+<p>DPO
+的伟大之处在于，它通过严谨的数学推导，证明了<strong>奖励模型（Reward
+Model）可以被策略模型（Policy
+Model）本身的条件概率完全表示出来</strong>。</p>
+<p>既然奖励函数可以隐式地包含在策略模型里，那为什么还要单独训练一个裁判模型呢？DPO
+直接绕过了“训练奖励模型”和“强化学习”这两个最痛苦的步骤，将整个管线缩短：</p>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/images-1780033446088-4.png" alt="DPO 的训练管线（对比传统 RLHF 移除了显式的奖励模型和 PPO 循环）">
+<figcaption aria-hidden="true">DPO 的训练管线（对比传统 RLHF
+移除了显式的奖励模型和 PPO 循环）</figcaption>
+</figure>
+<p>如上图所示，在经过基础的 SFT 得到参考模型<span class="math inline"><em>π</em><sub><em>r</em><em>e</em><em>f</em></sub></span>
+后，DPO 直接输入三元组偏好数据 <span class="math inline">(<em>x</em>, <em>y</em><sub><em>w</em></sub>, <em>y</em><sub><em>l</em></sub>)</span>
+进行优化：</p>
+<ul>
+<li><span class="math inline"><em>x</em></span>：提示词（Prompt）</li>
+<li><span class="math inline"><em>y</em><sub><em>w</em></sub></span>：人类更偏好的回答（Chosen
+/ Winner）</li>
+<li><span class="math inline"><em>y</em><sub><em>l</em></sub></span>：人类不喜欢的回答（Rejected
+/ Loser）</li>
+</ul>
+<h2 id="dpo-的优缺点对比">DPO 的优缺点对比</h2>
+<p>目前，Llama 3、Mistral 等绝大多数开源顶尖大模型的对齐阶段，都有 DPO
+或其变体（如 IPO、KTO）的身影。</p>
+<table>
+<colgroup>
+<col style="width: 10%">
+<col style="width: 44%">
+<col style="width: 44%">
+</colgroup>
+<thead>
+<tr>
+<th><strong>特性</strong></th>
+<th><strong>优势</strong></th>
+<th><strong>局限性</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>工程实现</strong></td>
+<td><strong>极度简单</strong>。不需要复杂的强化学习框架，直接写个标准的监督训练
+Loss 就能跑。</td>
+<td><strong>容易过拟合</strong>。由于缺少 PPO 的在线探索，DPO
+极度依赖离线数据的质量，容易把偏好数据榨得太干导致泛化性变差。</td>
+</tr>
+<tr>
+<td><strong>资源消耗</strong></td>
+<td><strong>省显存</strong>。训练时只需要常驻当前模型 <span class="math inline"><em>π</em><sub><em>θ</em></sub></span> 和参考模型
+<span class="math inline"><em>π</em><sub><em>r</em><em>e</em><em>f</em></sub></span>（甚至可以用合并或冻结技术进一步压缩），不需要多余的
+Reward 和 Critic 模型。</td>
+<td><strong>对噪声敏感</strong>。如果标注数据里有混淆（比如把坏回答误标成好回答），DPO
+强行拉大差距会导致模型概率分布扭曲。</td>
+</tr>
+<tr>
+<td><strong>训练稳定性</strong></td>
+<td><strong>极其稳定</strong>。本质是凸优化，不会出现 PPO
+那种训练到一半指标突然崩塌、无法收敛的情况。</td>
+<td><strong>缺乏分布外探索</strong>。它只能在给定的数据范围内做选择，无法像在线
+RL 那样通过“探索新文本”发现更好的生成策略。</td>
+</tr>
+</tbody>
+</table>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/" class="post-title-link" itemprop="url">论文阅读——Steering via Context-Preference</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-05-28 00:00:00" itemprop="dateCreated datePublished" datetime="2026-05-28T00:00:00+08:00">2026-05-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-07-11 12:33:45" itemprop="dateModified" datetime="2026-07-11T12:33:45+08:00">2026-07-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A7%91%E7%A0%94/" itemprop="url" rel="index"><span itemprop="name">科研</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="介绍">介绍</h1>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2605.27993">2605.27993
+重新思考视觉忽视：通过情境引导——MLLM幻觉缓解的偏好</a></p>
+<p>本文为这篇论文的阅读学习笔记</p>
+<p>挑战以往工作中“增强视觉依赖即可降低幻觉”的单一假设，通过系统性干预实验发现，图像会同时与模型参数化知识和历史文本上下文产生竞争关系。基于这一观察，提出训练无关的
+Context-Preference Activation Steering（CAS）推理期干预方法，将 MLLM
+的视觉依赖解耦为两类上下文偏好。</p>
+<p>设计两组冲突样本来提取 Context Preference Vectors：基于反事实图像构造
+Visual Fidelity Vector（VFV），刻画模型在“外部视觉证据 vs
+内部常识先验”之间的偏好；基于对称图文冲突对构造 Modality Reliance
+Vector（MRV），刻画模型在“视觉上下文 vs 文本上下文”之间的模态依赖。</p>
+<p>在 LLaVA-1.5、Qwen-VL、Shikra 等主流 MLLM
+上的实验表明，不同模型对视觉信息、参数化知识和文本上下文的依赖存在显著异质性，并提出带符号的激活引导干预：在推理阶段根据模型自身的偏好方向选择正向或负向干预，在
+MLP 层输出处进行带符号的残差注入。</p>
+<p>实验结果显示，CAS在多个模型评测中，平均 CHAIR_S 从 55.5 降至
+38.5，下降 30.7%，在显著降低物体幻觉的同时保持生成质量稳定。在 AMBER
+生成式评测中，平均 Hal 从 36.1 降至 25.9，下降 28.2%，验证了 CAS
+在多模型、多基准任务上的稳定泛化能力。推理延迟为
+28.09ms/token，与原模型基本同量级，几乎不引入额外推理开销。</p>
+<h1 id="幻觉现象">幻觉现象</h1>
+<h2 id="强大的语言刻板印象language-prior-statistical-bias">1.强大的“语言刻板印象”（Language
+Prior / Statistical Bias）</h2>
+<p>大模型在纯文本预训练阶段，读了上万亿字的人类书籍。在它的记忆里，某些词是<strong>高度绑定、经常一起出现</strong>的（即
+Co-occurrence 统计偏见）。</p>
+<p>大模型的参数量通常比视觉部分大得多，会出现即使视觉部分看清了，但是还是被语言部分影响，因此出现幻觉</p>
+<h2 id="长文本中的文本惯性或过度信赖text-inertia-over-trust">2.长文本中的文本惯性或过度信赖（Text
+Inertia / Over-trust）</h2>
+<p>前者指多模态模型在自回归解码中，由于文本特征流的权重压倒了视觉特征流，导致后续
+Token
+的生成完全受历史文本指令支配，模型输出退化为无条件语言建模（Unconditional
+Language Modeling）的行为。</p>
+<p>后者指在 Transformer 的自回归解码阶段，自注意力矩阵（Self-Attention
+Matrix）的权重在已生成的文本 Token
+上形成了异常密集的局部聚集，形成“注意力黑洞”，从而阻断了来自图像（Vision
+Tokens）的信息流。</p>
+<h1 id="评测指标">评测指标</h1>
+<h2 id="chair-评测流程基于文本解析的名词物体验证">CHAIR
+评测流程：基于文本解析的“名词物体验证”</h2>
+<p>CHAIR 的评测本质是一个“生成-提取-比对”的流水线，通常建立在 MSCOCO
+数据集上（因为该数据集有极度详尽的人工物体标注）。</p>
+<h3 id="模型生成caption-generation">1. 模型生成（Caption
+Generation）</h3>
+<ul>
+<li>给大模型输入一张测试图片，并配合标准的生成提示词（例如：<code>"Describe this image in detail."</code>）。</li>
+<li>模型自回归生成一段完整的描述性文本（Caption）。</li>
+</ul>
+<h3 id="文本解析与名词提取pos-tagging-parsing">2.
+文本解析与名词提取（POS Tagging &amp; Parsing）</h3>
+<ul>
+<li>评测脚本调用自然语言处理工具包（如 SpaCy 或
+NLTK）对模型生成的文本进行<strong>词性标注（POS
+Tagging）</strong>。</li>
+<li>过滤并提取出所有的<strong>名词和名词短语</strong>（例如：“cat”、“table”、“apple”），这些代表模型认为图片里存在的物体。</li>
+</ul>
+<h3 id="同义词与类别映射synonym-mapping">3. 同义词与类别映射（Synonym
+Mapping）</h3>
+<ul>
+<li>大模型输出的词汇可能五花八门（如 “kitty”），而 MSCOCO
+固定的物体标签只有 80 类（如 “cat”）。</li>
+<li>评测系统使用预设的同义词词典，将模型生成的名词全部归一化映射到官方的物体类别中。</li>
+</ul>
+<h3 id="真实标签比对ground-truth-matching">4. 真实标签比对（Ground-Truth
+Matching）</h3>
+<ul>
+<li>将映射后的物体名词，与该图片在数据集里自带的人工标注物体列表（Ground-Truth
+Objects）进行逐一比对：
+<ul>
+<li>如果模型说了 “dog”，而人工标注里有
+“dog”，则计为<strong>正确物体</strong>。</li>
+<li>如果模型说了 “sofa”，但人工标注里完全没有
+“sofa”，则计为<strong>幻觉物体（Hallucinated Object）</strong>。</li>
+</ul></li>
+</ul>
+<h3 id="指标结算">5. 指标结算</h3>
+<p>根据全量测试集的结果，带入公式计算：</p>
+<ul>
+<li><strong><span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em><sub><em>I</em></sub></span>
+(Instance-level)</strong>：<span class="math inline">$\frac{\text{幻觉物体词出现的总次数}}{\text{所有生成的物体词总次数}}$</span></li>
+<li><strong><span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em><sub><em>S</em></sub></span>
+(Sentence-level)</strong>：<span class="math inline">$\frac{\text{包含至少一个幻觉物体的句子数量}}{\text{总生成句子数量}}$</span></li>
+</ul>
+<h2 id="pope-评测流程基于非对称采样的是非题盲测">POPE
+评测流程：基于非对称采样的“是非题盲测”</h2>
+<p>POPE
+彻底抛弃了自由文本生成的复杂性，直接将幻觉转变为<strong>二分类（Yes/No）*<em>的问答流程。其核心灵魂在于*</em>如何向模型提问（即负样本采样策略）</strong>。</p>
+<h3 id="构建智能问答库question-construction">1. 构建智能问答库（Question
+Construction）</h3>
+<p>评测集针对每一张图片，构建大量的“图片中是否有 [物体]
+？”的标准问题。问题分为两大家族：</p>
+<ul>
+<li><strong>正样本问题（表中确实有）</strong>：根据
+Ground-Truth，直接问图片里存在的物体（预期回答：Yes）。</li>
+<li><strong>负样本问题（表中其实没有，专门用来钓鱼）</strong>：这是 POPE
+的核心，分为三种模式：
+<ul>
+<li><strong>Random（随机）</strong>：从整个数据集的物体库中，随机挑一个这张图没有的物体（如：图里是厨房，随机问有没有“斑马”）。<strong>太简单，模型容易识破。</strong></li>
+<li><strong>Popular（高频）</strong>：挑选整个数据集里出现频次最高的物体（如“人”、“包”），哪怕这张图里没有。<strong>考验模型是否对高频词有盲目偏见。</strong></li>
+<li><strong>Adversarial（对抗式）</strong>：根据协同过滤原理，挑选那些经常与图中物体<strong>共同出现、但这张图里恰好没有</strong>的物体（如：图里有“马路、汽车”，偏问有没有“红绿灯”）。<strong>极具误导性，最容易诱发幻觉。</strong></li>
+</ul></li>
+</ul>
+<h3 id="模型推理inference">2. 模型推理（Inference）</h3>
+<ul>
+<li>将（图片 + 每一个 Yes/No 问题）成对喂给模型。</li>
+<li>强制模型输出，或者提取模型输出的第一个有效 Token（锁定为
+<code>"Yes"</code> 或 <code>"No"</code>）。</li>
+</ul>
+<h3 id="混淆矩阵判定confusion-matrix">3. 混淆矩阵判定（Confusion
+Matrix）</h3>
+<p>将模型的回答与真实答案对比，塞进经典的二分类评测矩阵：</p>
+<ul>
+<li>图有且模型说 Yes <span class="math inline">→</span> <strong>True
+Positive (TP)</strong></li>
+<li>图无但模型说 Yes <span class="math inline">→</span> <strong>False
+Positive (FP) 【判定为幻觉】</strong></li>
+<li>图有但模型说 No <span class="math inline">→</span> <strong>False
+Negative (FN)</strong></li>
+<li>图无且模型说 No <span class="math inline">→</span> <strong>True
+Negative (TN)</strong></li>
+</ul>
+<h3 id="指标结算-1">4. 指标结算</h3>
+<p>计算全集下的
+<strong>Accuracy（准确率）</strong>、<strong>Precision（精确率）</strong>、<strong>Recall（召回率）</strong>
+以及 <strong>F1-Score</strong>。如果 F1 和 Precision
+很低，说明模型是个“Yes Man”（不管看到啥都只会盲目说 Yes）。</p>
+<h2 id="amber-评测流程无需大模型的双轨交织矩阵">AMBER
+评测流程：无需大模型的“双轨交织矩阵”</h2>
+<p>AMBER 结合了 CHAIR 的自由表达验证和 POPE
+的严苛抗噪能力，并且实现了多维度的纯自动化流水线。</p>
+<h3 id="数据分流启动双轨测试dual-path-input">1.
+数据分流：启动双轨测试（Dual-Path Input）</h3>
+<p>同一张图片进入 AMBER
+评测集后，会被同时分流到两个完全不同的测试轨道：</p>
+<h4 id="轨道-aamber-g生成式轨道">轨道 A：AMBER-G（生成式轨道）</h4>
+<ul>
+<li><strong>流程</strong>：向模型发送开放式指令（如描述图像）。</li>
+<li><strong>提取</strong>：模型吐出长文本。AMBER 并不调用 GPT-4
+这种昂贵的外部裁判，而是使用内置的经过优化的<strong>自动化关键词匹配正则引擎</strong>。</li>
+<li><strong>比对</strong>：提取出名词后，直接与图片对应集成的 Object
+字典匹配。</li>
+<li><strong>结算</strong>：输出
+<strong>CHAIR</strong>、<strong>Cover（模型提及了多少比例的真实物体）</strong>
+以及 <strong>Hal（整体句级幻觉率）</strong>。</li>
+</ul>
+<h4 id="轨道-bamber-d判别式轨道">轨道 B：AMBER-D（判别式轨道）</h4>
+<ul>
+<li><strong>流程</strong>：向模型发送定制的是非题（Yes/No），但这些问题被精细地打上了<strong>维度标签</strong>。</li>
+<li><strong>多维度设陷</strong>：
+<ul>
+<li><em>存在性问答</em>：“图里有xx吗？”（验证模型是否凭空造物）</li>
+<li><em>属性问答</em>：“图里的那辆车是<strong>红色</strong>的吗？”（实际是蓝色的，验证状态幻觉）/“图里有<strong>三只</strong>猫吗？”（实际只有一只，验证数量幻觉）</li>
+<li><em>关系问答</em>：“笔记本电脑是在桌子的<strong>下面</strong>吗？”（实际在上面，验证空间关系幻觉）</li>
+</ul></li>
+<li><strong>结算</strong>：模型回答 Yes/No
+后，系统分别计算出<strong>存在、属性、关系</strong>三大独立维度的
+Accuracy 和 F1-score。</li>
+</ul>
+<h3 id="全局综合得分汇算final-aggregation">2. 全局综合得分汇算（Final
+Aggregation）</h3>
+<p>AMBER
+会把生成式轨道和判别式轨道的得分加权汇总，输出一份最终的<strong>综合雷达图评分</strong>。</p>
+<p>这套双轨流程确保了：任何通过“牺牲生成能力、只一味回答
+No”来刷判别式高分的作弊手段，都会在生成式轨道的 Cover
+指标上暴雷；反之，胡言乱语的模型也会在判别式轨道上大比分落后。这也是为什么前沿工作非常喜欢用它来做最终全方位验证的原因。</p>
+<h1 id="解决的主要路线">解决的主要路线</h1>
+<p>通常，要解决大模型的幻觉或错误，有两种主要路线：</p>
+<ol type="1">
+<li><strong>训练阶段方法（Training-time methods）：</strong>
+重新收集高质量数据，对模型进行对齐训练（如结合人类反馈的强化学习
+RLHF、监督微调 SFT）。<strong>缺点：</strong>
+耗费巨大的计算资源、时间和金钱，且一旦模型训练完，固有的错误很难再改。</li>
+<li><strong>推理阶段方法（Inference-time methods）：</strong>
+<strong>不需要重新训练或微调模型</strong>（Training-free），直接在模型吐出字（Token）的过程中进行实时干预。<strong>优点：</strong>
+成本极低（甚至接近零额外成本），即插即用，非常灵活。</li>
+</ol>
+<h1 id="相关工作">相关工作</h1>
+<h2 id="基于训练的幻觉缓解-training-based-hallucination-mitigation">基于训练的幻觉缓解
+(Training-based Hallucination Mitigation)</h2>
+<h3 id="核心方法与代表性技术">核心方法与代表性技术</h3>
+<p>根据目前的研究进展，基于训练的缓解方案主要演化出以下几种代表性路径：</p>
+<ul>
+<li><strong>基于 DPO
+的基础对齐</strong>：这类方法通常在忠实（<em>faithful</em>）的响应与包含幻觉（<em>hallucinated</em>）的响应之间构建显式的偏好关系，通过直接偏好优化（DPO）来让模型学会拒绝幻觉。</li>
+<li><strong>感知增强的 DPO
+变体</strong>：近期的研究进一步将“幻觉感知的偏好构造”与“多模态感知先验”纳入其中，专门面向物体感知和感知增强进行扩展。</li>
+<li><strong>Re-Align (Xing et al.,
+2025)</strong>：该方法通过图像检索技术来构造双重的“文本-视觉偏好对”，并使用检索增强的
+DPO 技术对视觉语言模型（VLM）进行微调。</li>
+<li><strong>RLHF-V (Yu et al.,
+2024)</strong>：将人类反馈强化学习（RLHF）的思想引入多模态幻觉抑制中。它通过收集片段级（segment-level）的细粒度纠错反馈，并利用
+Dense DPO 进行精准的行为对齐。</li>
+</ul>
+<h3 id="该路线的优势与局限性">该路线的优势与局限性</h3>
+<p>虽然基于训练的方法能够为模型带来<strong>稳定的收益</strong>，但它在实际落地时也存在明显的瓶颈：</p>
+<table>
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr>
+<th><strong>优势 (Pros)</strong></th>
+<th><strong>局限与挑战 (Cons)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>稳定性高</strong>：能够带来相对持久和稳定的幻觉抑制收益。</td>
+<td><strong>资源消耗高昂</strong>：极度依赖大规模的偏好数据以及大量的计算训练资源。</td>
+</tr>
+<tr>
+<td><strong>针对性强</strong>：可以通过引入细粒度的片段纠错或检索增强，提升对特定物体的感知精确度。</td>
+<td><strong>通用能力受损</strong>：对齐后的模型在通用任务上的表现，有时反而会弱于原始的
+VLM 基座。</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>行为退化风险</strong>：标准的 RLHF
+采用粗粒度偏好，容易引发“奖励黑客”（<em>reward
+hacking</em>）和“行为退化”（<em>behavior degeneration</em>）。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="training-free">Training-free</h2>
+<h3 id="先检测后修正的流程detect-then-correct-workﬂows">先检测后修正的流程Detect-then-Correct
+Workﬂows</h3>
+<p>根据您提供的文献资料，以下为您详细介绍无需训练的“先检测后修正”流程（Training-free
+Detect-then-Correct Workflows）：</p>
+<h4 id="核心逻辑与工作原理">核心逻辑与工作原理</h4>
+<p>这类方法并不直接干预模型的单次解码生成过程，而是构建一个<strong>后处理流程（Post-processing
+Pipeline）</strong>。它们会对大模型已经生成的原始文本结果进行<strong>多阶段的审查与重写</strong>，通过定位并纠正其中的错误，从而达到抑制物体幻觉的目的。</p>
+<h4 id="代表性技术与方法">代表性技术与方法</h4>
+<p>根据文献，这类工作主要有以下几种典型的技术实现：</p>
+<ul>
+<li><strong>LURE (Zhou et al.,
+2024)</strong>：训练一个专门的“幻觉修订器”。该修订器以模型生成的原始描述作为输入，在文本中精准定位幻觉物体，并将其重写为与视觉内容忠实的描述。</li>
+<li><strong>Woodpecker (Yin et al.,
+2024)</strong>：将整个检测与修正过程标准化地拆分为<strong>五个阶段</strong>。它在运行中需要依次调用外部的
+VLM
+来分别完成“关键概念抽取”、“视觉声明验证”以及“文本重写”等子任务。</li>
+<li><strong>Generate-then-verify 变体 (Wu et al.,
+2025)</strong>：这类近期的方法引入了<strong>回溯验证</strong>（Backtracking
+Verification）和<strong>重采样</strong>（Resampling）机制，通过在生成后进行验证循环，来减少缺乏图像证据支撑的文本生成。</li>
+</ul>
+<h4 id="该路线的优缺点分析">该路线的优缺点分析</h4>
+<table>
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr>
+<th><strong>优势 (Pros)</strong></th>
+<th><strong>局限与挑战 (Cons)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>即插即用
+(Plug-and-play)</strong>：不需要修改或重新训练多模态基准模型的原生参数，具有很强的通用适配性。</td>
+<td><strong>推理延迟显著 (High
+Latency)</strong>：由于采用流水线设计，每个样本的深度检查通常需要 3–5
+次顺序的模型调用，无法满足流式实时输出的需求。</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>计算开销高昂 (High
+Overhead)</strong>：这类方法高度依赖外部的
+VLM、检测器或密集的重采样过程，带来了不可忽视的额外计算资源消耗。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="回溯与层对比解码-retrospection-and-layer-contrastive-decoding">回溯与层对比解码
+(Retrospection and Layer-Contrastive Decoding)</h3>
+<h4 id="核心假设与原理">1. 核心假设与原理</h4>
+<p>这类方法建立在一个共同的隐含假设之上：<strong>模型在生成文本时，其内部其实已经隐式地编码了关于“相对忠实度”（Relative
+Faithfulness）的信号</strong>。因此，不需要修改模型参数，也不需要调用外部工具，只需在解码（Decoding）阶段设计特定的机制去检测并放大这些正面信号，就能在输出端抑制幻觉。</p>
+<h4 id="代表性方法与技术实现">2. 代表性方法与技术实现</h4>
+<p>根据技术路径的不同，该路线主要衍生出“回溯机制”与“跨层对比”两种方案：</p>
+<ul>
+<li><strong>回溯机制（以 OPERA 为代表）</strong>：
+<ul>
+<li><strong>工作原理</strong>：OPERA (Huang et al., 2024)
+在模型的束搜索（Beam Search）过程中，会实时监测注意力权重的分布。</li>
+<li><strong>关键操作</strong>：一旦在某些 token
+上检测到“过度信任”（Over-trust）的异常注意力模式（这通常是幻觉累积的信号），就会触发<strong>回溯重新选择机制</strong>，强行让模型退回上一步并重新选择更可靠的
+token。</li>
+</ul></li>
+<li><strong>层对比解码（以 DoLa 和 DeCo 为代表）</strong>：
+<ul>
+<li><strong>工作原理</strong>：DoLa (Chuang et al., 2024)
+及其在多模态领域的扩展工作 DeCo (Wang et al., 2025a)
+试图在模型的层级（Layer Level）上捕捉忠实度信号。</li>
+<li><strong>关键操作</strong>：它们会将模型较高层和较低层的隐层状态同时通过语言头投影到词表上，计算各自的输出
+Logits，并让二者进行<strong>对比（Contrast）</strong>。</li>
+<li><strong>筛选策略</strong>：在解码时，模型会优先保留那些在跨层对比中“一致性更高”的
+token，从而过滤掉低层中残留的幻觉噪声。</li>
+</ul></li>
+</ul>
+<h4 id="该路线的局限性与痛点">3. 该路线的局限性与痛点</h4>
+<p>虽然这类方法善于发掘模型的“内在潜能”，但在实际流式部署中存在以下技术瓶颈：</p>
+<ul>
+<li><strong>高昂的推理开销，破坏流式输出</strong>：回溯方法（如
+OPERA）需要频繁维护和执行多次“束回退”（Beam
+Fallbacks），这会导致模型生成的文本无法像常规大模型那样顺畅地流式逐字输出，并带来了明显的额外推理延迟。</li>
+<li><strong>加剧重复退化（Repetitive
+Degeneration）</strong>：层对比解码类方法在放大特定跨层一致性信号的同时，往往会破坏语言模型的自然流利度，极其容易引发文本的<strong>死循环和无意义重复</strong>。</li>
+<li><strong>对调参极其敏感</strong>：这类方法的效果高度依赖于<strong>层选择（Layer
+Selection）</strong>。在不同的基座模型上，究竟对比哪几层才能精准抑制幻觉，需要进行极其繁琐且敏感的超参数微调。</li>
+</ul>
+<h3 id="基于视觉忽略假设的方法methods-under-the-visual-neglect-hypothesis">基于视觉忽略假设的方法（Methods
+under the Visual-Neglect Hypothesis）</h3>
+<h4 id="核心假设">核心假设</h4>
+<p>这一类工作建立在一个共同的隐含共识之上：多模态大模型（MLLM）的物体幻觉主要源于模型的“视觉忽略”（Visual
+Neglect）<strong>以及对文本先验的过度依赖。因此，无论是哪种具体的基座模型，这些方法都会通过不同的推理期干预手段，促使模型</strong>“把更多注意力放在图像上”（Pay
+more attention to the image），以此来抑制幻觉。</p>
+<h4 id="四种代表性技术实现">四种代表性技术实现</h4>
+<p>在具体的技术路径上，这四种方法分别在模型的解码端（Decoding
+side）<strong>和</strong>前向传播端（Forward-pass
+side）展开了不同的干预：</p>
+<h5 id="vcd-visual-contrastive-decoding">1. VCD (Visual Contrastive
+Decoding)</h5>
+<ul>
+<li><strong>干预位置</strong>：解码端（Decoding side）。</li>
+<li><strong>技术核心</strong>：在推理时，对比原始图像与高斯噪声图像所对应的输出
+Logits。</li>
+<li><strong>主要目的</strong>：通过两者的差值对比，强行抑制在视觉信号退化（加入高斯噪声）后，模型内部依然残留的盲目语言先验。</li>
+</ul>
+<h5 id="pai-paying-more-attention-to-image">2. PAI (Paying More
+Attention to Image)</h5>
+<ul>
+<li><strong>干预位置</strong>：前向传播端（Forward-pass side）。</li>
+<li><strong>技术核心</strong>：直接强行放大图像 Token
+在计算时的自注意力权重。</li>
+<li><strong>辅助手段</strong>：在生成过程中，会进一步结合来自纯文本输入（无图输入）的对比
+Logits，以此来削弱语言偏见。</li>
+</ul>
+<h5 id="attnreal-attention-reallocation">3. AttnReal (Attention
+Reallocation)</h5>
+<ul>
+<li><strong>干预位置</strong>：前向传播端（Forward-pass side）。</li>
+<li><strong>技术核心</strong>：实施<strong>注意力重分配</strong>机制。</li>
+<li><strong>具体操作</strong>：随着文本越写越长，模型往往会在历史生成的
+Token 上过度累积注意力；AttnReal
+会实时检测这一现象，并将这些被文本截留的注意力额度重新分配给视觉
+Token，强迫模型回头看图。</li>
+</ul>
+<h5 id="ssl-steering-lvlms-via-sparse-autoencoder">4. SSL (Steering
+LVLMs via Sparse Autoencoder)</h5>
+<ul>
+<li><strong>干预位置</strong>：前向传播端（Forward-pass side）/
+激活导向。</li>
+<li><strong>技术核心</strong>：引入预训练的<strong>稀疏自编码器（Sparse
+Autoencoder, SAE）</strong>。</li>
+<li><strong>具体操作</strong>：在模型的隐层中，将预先定义和提取好的“忠实特征向量”和“幻觉特征向量”，直接施加（Steer/注入）到对应的视觉
+Token 与输出 Token 上，从认知底层的概念向量层面完成纠偏。</li>
+</ul>
+<h5 id="该假设与方案的局限性">该假设与方案的局限性</h5>
+<p>虽然上述方法在特定场景下取得了一定成功，但本文作者通过系统性的重新审视，指出了“视觉忽略假设”存在的<strong>三大致命局限</strong>：</p>
+<ol type="1">
+<li><strong>完全忽略了模型的异质性</strong>：“只要放大视觉信号就足以降低幻觉”的假设是不完整的。作者通过实验发现，不同基座模型对视觉偏好的响应具有强烈的异质性；<strong>对某些模型而言，强行推动其更强地依赖视觉信息反而可能加剧幻觉</strong>。</li>
+<li><strong>易引发重复退化</strong>：由于这类方法属于硬性增强或强力抑制，往往会破坏模型原生的生成流形（Generation
+Manifold），导致模型在生成文本时极易陷入死循环，引发重复退化（Repetitive
+Degeneration）问题。</li>
+<li><strong>提取成本高昂</strong>：以 SSL
+为代表的激活导向方法，其导向信号（特征向量）的提取过程往往高度依赖于外部模型或繁重的预训练资源，无法做到真正的轻量自适应。</li>
+</ol>
+<h1 id="pai与attnreal-缺点">pai与AttnReal 缺点</h1>
+<p>“在推理阶段通过修改注意力矩阵来放大视觉词元（Image
+Tokens）权重”的方法（例如 PAI、AttnReal
+等算法），<strong>无法直接应用在原生多模态模型中，而且这样做不仅没有必要，反而会导致模型崩溃。</strong></p>
+<h2 id="物理边界消失无法在自注意力矩阵中精准定位">1.
+物理边界消失，无法在自注意力矩阵中精准定位</h2>
+<p>在 LLaVA 等拼接多模态模型中，图像由独立的视觉编码器处理，生成的“图像
+Token”与提示词的“文本 Token”在序列中的位置和界限是非常清晰的。PAI 或
+AttnReal 算法正是利用这一点，直接去自注意力矩阵（Self-Attention
+Matrix）中锁定属于图像 Token 的行和列，然后进行乘法放大。</p>
+<p>然而，在原生多模态模型中，图片和文本在最底层通过统一分词器（Unified
+Tokenizer）被转化为同等地位的交织词元（Interleaved Tokens）。进入统一的
+Transformer
+主干网络后，各模态的特征空间在计算图内部高度融合，模态之间的物理边界已经模糊。在注意力矩阵中，你无法画出一个干净的边界去单独剥离并放大所谓的“视觉部分”。</p>
+<h2 id="强行干预会破坏联合概率分布导致语义崩溃输出乱码">2.
+强行干预会破坏联合概率分布，导致语义崩溃（输出乱码）</h2>
+<p>原生多模态模型（如
+GPT-4o、Gemini）的参数在训练时，已经让文本、图像等多种模态达到了联合概率分布的最优均衡。</p>
+<p>如果你在推理阶段，强行对自注意力层中某些你认为是图像位置的词元施加巨大的数学惩罚或奖励，这种粗暴的外力干预会立刻破坏模型长序列建模的上下文连贯性。其后果不是缓解幻觉，而是直接破坏模型的解码逻辑，导致模型退化，直接<strong>输出乱码或产生逻辑断层（即语义崩溃）</strong>。</p>
+<h1 id="核心动机motivation与核心实验发现findings">核心动机（Motivation）与核心实验发现（Findings）</h1>
+<h3 id="external-vs-internal-竞争">❶ External-vs-Internal 竞争</h3>
+<ul>
+<li><strong>本质：</strong> 实时输入的外部视觉条件约束（External Visual
+Context）<strong>与模型参数权重中固化的</strong>内部先验知识（Internal
+Parametric Knowledge）之间的抗衡。</li>
+<li><strong>现象：</strong>
+模型眼前面临一张“蓝色香蕉”的图，其体内的参数化知识却强烈倾向于预测“黄色”。</li>
+</ul>
+<h3 id="cross-modal-竞争">❷ Cross-Modal 竞争</h3>
+<ul>
+<li><strong>本质：</strong> 视觉上下文（Visual
+Context）<strong>与</strong>历史文本上下文（Textual
+Context）之间的支配权拉扯。</li>
+<li><strong>现象：</strong>
+提示词文本中包含强烈的诱导性或错误历史（如“前文说树上有一个橘子”），导致模型在生成后续
+Token
+时，注意力矩阵的能量偏向文本端而忽略视觉端（即退化为无条件文本建模）。</li>
+</ul>
+<h1 id="上下文偏好向量cpvs的解耦与提取">上下文偏好向量（CPVs）的解耦与提取</h1>
+<p>为了定量化表征上述两种竞争在隐空间（Latent
+Space）中所处的多维几何方向，论文设计了两种冲突激发实验（Conflict-based
+Probing），从而在不改动模型参数的前提下，逆向提取出两个<strong>上下文偏好向量（Context
+Preference Vectors, CPVs）</strong>：</p>
+<h3 id="视觉保真向量visual-fidelity-vector-mathbfv_textvfv">❶
+视觉保真向量（Visual Fidelity Vector, <span class="math inline"><strong>V</strong><sub>VFV</sub></span>）</h3>
+<ul>
+<li><strong>提取手段：</strong> 利用 <strong>反事实图片（Counterfactual
+Images）</strong>。</li>
+<li><strong>机理：</strong>
+强行制造外部视觉与内部常识的极端冲突。捕获模型在此冲突下的隐层激活状态（Hidden
+States），通过差分计算剥离出纯粹掌管“外部真实视觉信任度”的特征方向。</li>
+</ul>
+<h3 id="模态依赖向量modality-reliance-vector-mathbfv_textmrv">❷
+模态依赖向量（Modality Reliance Vector, <span class="math inline"><strong>V</strong><sub>MRV</sub></span>）</h3>
+<ul>
+<li><strong>提取手段：</strong> 利用 <strong>对称图文冲突对（Symmetric
+Image-Text Conflict Pairs）</strong>。</li>
+<li><strong>机理：</strong>
+固定视觉输入，在文本端施加偏置（或反之）。通过测量模型在多模态对齐平衡被破坏时的空间轨迹，提取出控制“该听图的还是该听文的”模态天平方向。</li>
+</ul>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260603081542984.png" alt="image-20260603081542984">
+<figcaption aria-hidden="true">image-20260603081542984</figcaption>
+</figure>
+<h1 id="提取上下文偏好向量">提取上下文偏好向量</h1>
+<p>论文指出，图像作为一种多模态上下文，在模型内部其实面临着<strong>双重语义竞争</strong>：一是与模型预训练获得的<strong>参数化知识</strong>竞争；二是与指令和生成历史构成的<strong>文本上下文</strong>竞争。基于这一全新视角，CAS
+框架将视觉偏好解耦为两个独立的轴，并在离线（Offline）阶段通过精妙的样本设计来提取两个<strong>上下文偏好向量（Context
+Preference Vectors, CPVs）</strong>。</p>
+<p>以下为您梳理其核心的构造与提取机制：</p>
+<h2 id="一-视觉保真向量vfv解决外部视觉与内部常识的冲突">一、
+视觉保真向量（VFV）：解决“外部视觉”与“内部常识”的冲突</h2>
+<ul>
+<li><strong>概念定位</strong>：捕获的是 <em>external-vs-internal</em>
+的竞争偏好，即模型在面对外界看到的图像与内心固有的常识发生冲突时，究竟选择相信谁。</li>
+<li><strong>构造方法（设定 I：反事实图像构造）</strong>：
+<ul>
+<li>CAS 构造了一组违反常识的<strong>反事实图像（Counterfactual
+Images）</strong>。</li>
+<li>每个冲突样本的数学形式为：<span class="math inline"><strong>(</strong><strong>I</strong><sub><strong>c</strong><strong>f</strong></sub><strong>,</strong> <strong>q</strong><strong>,</strong> <strong>y</strong><sup><strong>+</strong></sup><strong>,</strong> <strong>y</strong><sup><strong>−</strong></sup><strong>)</strong></span>。</li>
+<li><strong>结合图2的经典示例</strong>：
+<ul>
+<li><span class="math inline"><em>I</em><sub><em>c</em><em>f</em></sub></span>（反事实图像）：一根被整条涂成<strong>蓝色</strong>的香蕉图片。</li>
+<li><span class="math inline"><em>q</em></span>（提示词问题）：<em>“What
+color is the banana in this image? Answer with one
+word.”</em>（图像中的香蕉是什么颜色？用一个词回答。）</li>
+<li><span class="math inline"><em>y</em><sup>+</sup></span>（忠于图像的正确答案）：<code>blue</code>（蓝色）。</li>
+<li><span class="math inline"><em>y</em><sup>−</sup></span>（依赖常识的幻觉答案）：<code>yellow</code>（黄色，因为常识中香蕉是黄色的）。</li>
+</ul></li>
+</ul></li>
+<li><strong>提取原理</strong>：当这个样本输入给多模态大模型时，模型在
+<span class="math inline"><em>y</em><sup>+</sup></span>（视觉）和 <span class="math inline"><em>y</em><sup>−</sup></span>（常识）之间的概率倾斜和最终选择，直接反映了它在“外部视觉上下文”与“内部参数化知识”之间的相对偏好。通过捕获模型在这一冲突下的隐层激活状态，即可提取出
+<strong>视觉保真向量（Visual Fidelity Vector, VFV）</strong>。</li>
+</ul>
+<h2 id="二-模态依赖向量mrv解决视觉上下文与文本上下文的冲突">二、
+模态依赖向量（MRV）：解决“视觉上下文”与“文本上下文”的冲突</h2>
+<ul>
+<li><strong>概念定位</strong>：捕获的是
+<em>cross-modal</em>（跨模态）的竞争偏好，即当“眼睛看到的”和“耳朵听到的（前文提示）”发生矛盾时，模型更依赖哪种模态。</li>
+<li><strong>构造方法（设定 II：对称图文冲突对）</strong>：
+<ul>
+<li>首先选取一对权重相当但语义不同的候选答案 <span class="math inline">(<em>A</em>, <em>B</em>)</span>，例如（<em>apple</em>
+vs. <em>orange</em>）。</li>
+<li>为了彻底消除模型对某个具体词汇的固有偏好（即排除参数化知识的干扰），CAS
+采用了极其巧妙的<strong>对称设计</strong>，将样本拆分为两个子集：
+<ul>
+<li><strong>子集 <span class="math inline"><em>S</em><sub><em>a</em></sub></span></strong>：<span class="math inline">{(<em>I</em><sub><em>A</em></sub>, <em>q</em><sub><em>B</em></sub>, <em>y</em><sup>+</sup> = <em>A</em>, <em>y</em><sup>−</sup> = <em>B</em>)}</span>。
+<ul>
+<li><em>示例</em>：图像里是一棵结满<strong>苹果</strong>的树（<span class="math inline"><em>I</em><sub><em>A</em></sub></span>），但文本提示词（<span class="math inline"><em>q</em><sub><em>B</em></sub></span>）里故意误导它说：“之前的描述说树上长了橘子。请问这棵树上长了什么水果？”
+此时，听眼睛的答案 <span class="math inline"><em>y</em><sup>+</sup></span> 是
+<code>apple</code>，顺从文本误导的答案 <span class="math inline"><em>y</em><sup>−</sup></span> 是
+<code>orange</code>。</li>
+</ul></li>
+<li><strong>子集 <span class="math inline"><em>S</em><sub><em>b</em></sub></span></strong>：<span class="math inline">{(<em>I</em><sub><em>B</em></sub>, <em>q</em><sub><em>A</em></sub>, <em>y</em><sup>+</sup> = <em>B</em>, <em>y</em><sup>−</sup> = <em>A</em>)}</span>。
+<ul>
+<li><em>示例</em>：把图文完全反过来。图像里是<strong>橘子树</strong>（<span class="math inline"><em>I</em><sub><em>B</em></sub></span>），文本提示词（<span class="math inline"><em>q</em><sub><em>A</em></sub></span>）里却睁眼说瞎话：“之前的描述说树上长了苹果。请问这棵树上长了什么水果？”
+此时偏向视觉的答案变成了 <code>orange</code>，偏向文本的答案变成了
+<code>apple</code>。</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><strong>提取原理（为什么要对称设计？）</strong>：
+<ul>
+<li>在普通的文本生成中，不同 Token
+在词表里的原生出现频率是不一样的，这会带来严重的词表频率噪声。</li>
+<li>而在 CAS 的对称设计中，偏向视觉证据的答案和偏向文本先验的答案在
+<span class="math inline"><em>S</em><sub><em>a</em></sub></span> 与
+<span class="math inline"><em>S</em><sub><em>b</em></sub></span>
+之间<strong>完全翻转</strong>。</li>
+<li>当把这两部分数据联合起来让模型进行拟合时，<strong>与特定 token
+频率相关的偏差在数学上会相互抵消</strong>。这确保了最终提取出的
+<strong>模态依赖向量（Modality Reliance Vector, MRV）</strong>
+捕获的是纯粹的跨模态偏好，而不会夹杂任何词表噪声。</li>
+</ul></li>
+</ul>
+<h1 id="如何提取cpvs">如何提取CPVs</h1>
+<h2 id="为什么选择-mlp-层作为提取位置">1. 为什么选择 MLP
+层作为提取位置？</h2>
+<p>在线下提取偏好向量时，无论是针对“反事实图像（VFV）”还是“对称图文冲突（MRV）”的样本设定，它们都共享完全相同的提取流程
+。 作者团队<strong>选择 Transformer 中的
+MLP（Feed-Forward）层作为提取和注入的基点</strong>
+。这背后的理论支撑在于：现有的前沿研究已经证实，MLP
+层是大模型中<strong>存储事实知识的关键模块</strong>，并且对模型的最终输出起到了<strong>因果决定性作用</strong>
+。</p>
+<h2 id="定位关键-token-位置tstar">2. 定位关键 Token 位置（<span class="math inline"><em>t</em><sup>⋆</sup></span>）</h2>
+<p>为了捕获模型在面对冲突（例如：视觉看到的与文本暗示的不一致）时的内心真实“纠结”状态，提取算法进行了精细的时间步定位：</p>
+<ul>
+<li>模型首先自回归地生成答案 。<br>
+</li>
+<li>算法会定位到与视觉对齐的答案（<span class="math inline"><em>y</em><sup>+</sup></span>）或与常识/文本对齐的答案（<span class="math inline"><em>y</em><sup>−</sup></span>）在序列中<strong>最早出现的位置</strong>，并将其首个
+Token 的位置标记为 <span class="math inline"><em>t</em><sup>⋆</sup></span> 。</li>
+</ul>
+<h2 id="计算连续偏好信号pref">3. 计算连续偏好信号（<span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span>）</h2>
+<p>在定位到 <span class="math inline"><em>t</em><sup>⋆</sup></span>
+之后，算法会回退一步，在<strong>前一个位置 <span class="math inline"><em>t</em><sup>⋆</sup> − 1</span></strong>
+处读取模型预测下一个 Token 的概率对数（Logits），记为 <span class="math inline"><em>ℓ</em></span>
+。接着，通过以下公式定义一个连续的<strong>偏好信号 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span></strong>
+：</p>
+<p><span class="math display"><em>p</em><em>r</em><em>e</em><em>f</em> = max<sub><em>i</em> ∈ <em>T</em><sup>+</sup></sub><em>ℓ</em><sub><em>i</em></sub> − max<sub><em>j</em> ∈ <em>T</em><sup>−</sup></sub><em>ℓ</em><sub><em>j</em></sub></span></p>
+<p><span class="math inline"><em>T</em><sup>+</sup></span>：代表与视觉上下文一致的答案
+<span class="math inline"><em>y</em><sup>+</sup></span> 的首 Token
+候选集（包含各种大小写和空格变体） 。</p>
+<p><span class="math inline"><em>T</em><sup>−</sup></span>：代表与对立上下文（参数化知识或文本上下文）一致的答案
+<span class="math inline"><em>y</em><sup>−</sup></span> 的首 Token
+候选集 。</p>
+<p><strong>物理意义</strong>：<span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span>
+的数值正负和大小，直接反映了模型在这一步更偏向于信任视觉（正值）还是更偏向于信任先验/文本（负值）
+。</p>
+<blockquote>
+<p><span class="math inline"><em>T</em><sup>+</sup></span>和<span class="math inline"><em>T</em><sup>−</sup></span>是<strong>随着数据集的构建，针对每一个样本提前定义好的候选
+Token 集合</strong>。</p>
+<p>当你设计好一个样本（比如：图片是绿草莓，问题是“什么颜色”）时，你就已经明确知道了这个样本的
+<span class="math inline"><em>y</em><sup>+</sup></span> 是“绿色”，<span class="math inline"><em>y</em><sup>−</sup></span> 是“红色”。</p>
+<p>只要Token <strong>第一次</strong>掉进了 <span class="math inline"><em>T</em><sup>+</sup></span> 或者 <span class="math inline"><em>T</em><sup>−</sup></span>
+的名单里，便可以开始计算pref</p>
+<p>这一个 <code>logits</code> 向量里，包含了词表里所有 Token
+的得分，它们绝对是在<strong>同一个</strong> <code>logits</code>
+向量里抽取的</p>
+</blockquote>
+<h2 id="逐层岭回归ridge-regression拟合">4. 逐层岭回归（Ridge
+Regression）拟合</h2>
+<p>同样在 <span class="math inline"><em>t</em><sup>⋆</sup> − 1</span>
+这一位置，算法会导出每一层 <span class="math inline"><em>l</em></span>
+的 MLP 输出隐藏状态 <span class="math inline"><em>h</em><sub><em>l</em></sub></span>
+。为了把隐藏状态（高维空间向量）和模型的行为表现（偏好信号 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span>）建立映射，作者采用了
+<span class="math inline"><em>ℓ</em><sub>2</sub></span>
+正则化的<strong>岭回归</strong>进行闭式求解 ：</p>
+<p><span class="math display">min<sub><em>w</em><sub><em>l</em></sub>, <em>b</em><sub><em>l</em></sub></sub>∑<sub><em>s</em></sub>(<em>p</em><em>r</em><em>e</em><em>f</em><sub><em>s</em></sub> − <em>w</em><sub><em>l</em></sub><sup>⊤</sup><em>h</em><sub><em>l</em></sub><sup>(<em>s</em>)</sup> − <em>b</em><sub><em>l</em></sub>)<sup>2</sup> + <em>λ</em>∥<em>w</em><sub><em>l</em></sub>∥<sub>2</sub><sup>2</sup></span></p>
+<p>在实际拟合前，为了保证高信噪比，算法会<strong>统一过滤掉行为信号过弱的样本</strong>（即
+<span class="math inline">|<em>p</em><em>r</em><em>e</em><em>f</em>|[<em>c</em><em>i</em><em>t</em><em>e</em><sub><em>s</em></sub><em>t</em><em>a</em><em>r</em><em>t</em>] &lt; <em>ϵ</em></span>，数据过小说明模型本身没形成明显偏好）
+。</p>
+<p>最终，每层独立求解得到的权重向量 <span class="math inline"><em>w</em><sub><em>l</em></sub></span>
+就是我们需要的<strong>上下文偏好向量（CPV）</strong> ：</p>
+<ul>
+<li>在设定 I（反事实图像）上拟合得到的权重，称为
+<strong>VFV（视觉保真向量）</strong> 。<br>
+</li>
+<li>在设定 II（对称图文冲突对 <span class="math inline"><em>S</em><sub><em>a</em></sub> ∪ <em>S</em><sub><em>b</em></sub></span>）上联合拟合得到的权重，称为
+<strong>MRV（模态依赖向量）</strong> 。</li>
+</ul>
+<blockquote>
+<p>在 MLP 的某一层，我们把海量样本的隐状态 <span class="math inline"><em>h</em></span>
+聚在一起。利用岭回归，我们求解出一个最优的方向向量 <span class="math inline"><em>w</em></span>（这个 <span class="math inline"><em>w</em></span> 就是该层专属的
+CPV）。它满足：任何一个样本的 <span class="math inline"><em>h</em></span> 只要与 <span class="math inline"><em>w</em></span> 做点积（即 <span class="math inline"><em>h</em></span> 投影到 <span class="math inline"><em>w</em></span>
+方向上的长度），其结果都最接近该样本真实表现出的偏好行为特征 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span>。</p>
+</blockquote>
+<h2 id="层定位layer-localization">5. 层定位（Layer Localization）</h2>
+<p>最后，关于“<strong>到底在模型的哪一层进行干预最有效</strong>”的问题，作者通过逐层归因实验进行了定位
+：</p>
+<p><strong>最终选定区域</strong>：模型的<strong>中前部 MLP 层，即 L11–14
+这一层带</strong> 。</p>
+<p><strong>原因分析</strong>：根据后续的层消融实验（表 4），中前层
+L11–14 是唯一既能显著缓解幻觉、表现又十分稳定的干预窗口
+；如果选在更浅的层（如
+L1–9）会导致模型严重的文本生成退化和失控重复，而选在更深的层（如 L16
+之后）干预则基本失效，回到原生（Vanilla）模型的水平 。因此，CPV
+的提取和线上推理时的残差注入，都固定在 L11–14 层完成 。</p>
+<h1 id="计算pref的含义是什么">计算<span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span>的含义是什么</h1>
+<h2 id="一-什么是读取模型预测下一个-token-的概率对数logits">一、
+什么是“读取模型预测下一个 Token 的概率对数（Logits）”？</h2>
+<p>在自回归大模型中，当输入前一个位置 <span class="math inline"><em>t</em><sup>⋆</sup> − 1</span>
+的内容后，模型的最后一层（Linear
+头）会给词表里的每一个词（Token）都打一个原始分数。</p>
+<ul>
+<li><strong>这个原始分数向量，就叫做 Logits（记为 <span class="math inline"><em>ℓ</em></span>）</strong>。它还没有经过 Softmax
+归一化，所以不是 0 到 1 之间的概率，而是有正有负的实数。</li>
+<li><strong>分数越高，代表模型内心越想在下一步吐出这个词。</strong></li>
+</ul>
+<p>假设模型的词表里有几万个词，在 <span class="math inline"><em>t</em><sup>⋆</sup> − 1</span> 这一步，模型输出的
+Logits 分数向量 <span class="math inline"><em>ℓ</em></span>
+看起来可能长这样：</p>
+<table>
+<colgroup>
+<col style="width: 28%">
+<col style="width: 30%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr>
+<th><strong>词表里的 Token (k)</strong></th>
+<th><strong>原始分数 Logit (ℓk)</strong></th>
+<th><strong>含义</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>"黄"</code></td>
+<td><code>12.5</code></td>
+<td>视觉派（偏向 <span class="math inline"><em>y</em><sup>+</sup></span>）</td>
+</tr>
+<tr>
+<td><code>"Yellow"</code></td>
+<td><code>11.8</code></td>
+<td>视觉派（偏向 <span class="math inline"><em>y</em><sup>+</sup></span>
+的英文变体）</td>
+</tr>
+<tr>
+<td><code>"红"</code></td>
+<td><code>14.2</code></td>
+<td>偏见派（偏向 <span class="math inline"><em>y</em><sup>−</sup></span>）</td>
+</tr>
+<tr>
+<td><code>"的"</code></td>
+<td><code>3.1</code></td>
+<td>酱油角色</td>
+</tr>
+<tr>
+<td><code>"苹果"</code></td>
+<td><code>-5.2</code></td>
+<td>无关词</td>
+</tr>
+</tbody>
+</table>
+<h2 id="二-为什么有-t-和-t-还要取-max">二、 为什么有 <span class="math inline"><em>T</em><sup>+</sup></span> 和 <span class="math inline"><em>T</em><sup>−</sup></span>，还要取 <span class="math inline">max </span> ？</h2>
+<p>因为在实际的 Tokenizer（分词器）中，同一个意思的词可能会被切成不同的
+Token。比如“黄色”，模型可能想说中文的<code>"黄"</code>，也可能想说英文的<code>"Yellow"</code>或者带空格的<code>" Yellow"</code>。</p>
+<p>为了公平起见，作者设立了两个“阵营”：</p>
+<ul>
+<li><strong><span class="math inline"><em>T</em><sup>+</sup></span>（视觉阵营候选集）</strong>：所有能代表正确视觉答案开头的
+Token，比如 <code>["黄", "Yellow", "yellow"]</code>。</li>
+<li><strong><span class="math inline"><em>T</em><sup>−</sup></span>（文本/常识偏见阵营候选集）</strong>：所有能代表常识错误答案开头的
+Token，比如 <code>["红", "Red", "red"]</code>。</li>
+</ul>
+<p>公式里的 <span class="math inline">max<sub><em>i</em> ∈ <em>T</em><sup>+</sup></sub><em>ℓ</em><sub><em>i</em></sub></span>
+的意思就是：<strong>从视觉阵营里，挑出一个大模型最想说的词（分数最高的那个）。</strong></p>
+<p>在上面的表格中，视觉阵营里 <code>"黄"</code>
+的分数最高（<code>12.5</code>），所以 <span class="math inline">max<sub><em>i</em> ∈ <em>T</em><sup>+</sup></sub><em>ℓ</em><sub><em>i</em></sub> = 12.5</span>。</p>
+<p>同理，偏见阵营里 <code>"红"</code>
+的分数最高（<code>14.2</code>），所以 <span class="math inline">max<sub><em>j</em> ∈ <em>T</em><sup>−</sup></sub><em>ℓ</em><sub><em>j</em></sub> = 14.2</span>。</p>
+<h2 id="三-这个-pref-为什么这么算它的物理意义是什么">三、 这个 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span>
+为什么这么算？它的物理意义是什么？</h2>
+<p>现在把两个阵营的“最强战力”拉出来作差，就得到了连续偏好信号 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span>：</p>
+<p><span class="math display"><em>p</em><em>r</em><em>e</em><em>f</em> = 视觉阵营最高分 − 偏见阵营最高分</span></p>
+<p>带入上面的例子：<span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em> = 12.5 − 14.2 = −1.7</span>。</p>
+<p>这个减法做完后，得到的 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span>
+数值具有非常完美的物理意义，能够定量反映大模型在这一时刻的<strong>内心偏向和纠结程度</strong>：</p>
+<ul>
+<li><strong>当 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em> &gt; 0</span>
+时（正数）</strong>：说明视觉阵营胜出。分数值越大，说明模型越坚信自己眼睛看到的（视觉上下文），受常识或文本的干扰越小。</li>
+<li><strong>当 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em> &lt; 0</span>
+时（负数）</strong>：说明偏见阵营胜出。分数值越负（比如 <span class="math inline">−5.0</span>），说明模型越迷失在文本偏见或常识里，睁眼说瞎话。</li>
+<li><strong>当 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em> ≈ 0</span>
+时</strong>：说明两派分数旗鼓相当，大模型此时极度纠结，不知道该信眼睛还是信常识。</li>
+</ul>
+<h2 id="总结">总结</h2>
+<p>作者大费周章算这个 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span>，就是为了把它当成<strong>标签（Label）</strong>。</p>
+<p>在下一步的岭回归中，我们要寻找一个高维方向（即 CPV 向量 <span class="math inline"><em>w</em><sub><em>l</em></sub></span>），使得中间
+MLP 层的隐藏状态 <span class="math inline"><em>h</em><sub><em>l</em></sub></span>
+在这个方向上的投影，正好等于这个 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span>。</p>
+<h1 id="mrv的提取">MRV的提取</h1>
+<h2 id="一-mrv-的数据集设计对称图文冲突setup-ii">一、 MRV
+的数据集设计：对称图文冲突（Setup II）</h2>
+<p>为了提取出纯粹的跨模态偏好，而又不引入特定词汇的频次偏见，论文设计了成对出现的对称冲突数据集，包含两个子集
+<span class="math inline"><em>S</em><sub><em>a</em></sub></span> 和
+<span class="math inline"><em>S</em><sub><em>b</em></sub></span>：</p>
+<p><span class="math display"><em>S</em><sub><em>a</em></sub> = {(<em>I</em><sub><em>A</em></sub>, <em>q</em><sub><em>B</em></sub>, <em>y</em><sup>+</sup> = <em>A</em>, <em>y</em><sup>−</sup> = <em>B</em>)}</span></p>
+<p><span class="math display"><em>S</em><sub><em>b</em></sub> = {(<em>I</em><sub><em>B</em></sub>, <em>q</em><sub><em>A</em></sub>, <em>y</em><sup>+</sup> = <em>B</em>, <em>y</em><sup>−</sup> = <em>A</em>)}</span></p>
+<p>其中：</p>
+<ul>
+<li><span class="math inline"><em>I</em><sub><em>X</em></sub></span>：包含物体
+<span class="math inline"><em>X</em></span> 的图像。</li>
+<li><span class="math inline"><em>q</em><sub><em>X</em></sub></span>：故意引导、暗示物体是
+<span class="math inline"><em>X</em></span> 的文本提示词。</li>
+</ul>
+<h2 id="二-用具体案例拆解这两个子集">二、 用具体案例拆解这两个子集</h2>
+<p>我们假设物体 <span class="math inline"><em>A</em></span>
+是<strong>猫（Cat）</strong>，物体 <span class="math inline"><em>B</em></span> 是<strong>狗（Dog）</strong>。</p>
+<h3 id="样本子集-s_a图是猫文本说是狗">1. 样本子集 <span class="math inline"><em>S</em><sub><em>a</em></sub></span>（图是猫，文本说是狗）</h3>
+<ul>
+<li><strong>输入图像 (<span class="math inline"><em>I</em><sub><em>A</em></sub></span>)</strong>：一张<strong>猫</strong>的图片。</li>
+<li><strong>输入提示词 (<span class="math inline"><em>q</em><sub><em>B</em></sub></span>)</strong>：<code>"文本提示：图里有一只狗。请问图片里到底是什么动物？答："</code>
+（故意用文本误导模型）。</li>
+<li><strong>阵营划分</strong>：
+<ul>
+<li><span class="math inline"><em>T</em><sup>+</sup></span>（视觉阵营）=
+<code>["猫", "Cat"]</code> （对应 <span class="math inline"><em>y</em><sup>+</sup> = <em>A</em></span>）</li>
+<li><span class="math inline"><em>T</em><sup>−</sup></span>（文本阵营）=
+<code>["狗", "Dog"]</code> （对应 <span class="math inline"><em>y</em><sup>−</sup> = <em>B</em></span>）</li>
+</ul></li>
+</ul>
+<h3 id="对称样本子集-s_b图是狗文本说是猫">2. 对称样本子集 <span class="math inline"><em>S</em><sub><em>b</em></sub></span>（图是狗，文本说是猫）</h3>
+<ul>
+<li><strong>输入图像 (<span class="math inline"><em>I</em><sub><em>B</em></sub></span>)</strong>：一张<strong>狗</strong>的图片。</li>
+<li><strong>输入提示词 (<span class="math inline"><em>q</em><sub><em>A</em></sub></span>)</strong>：<code>"文本提示：图里有一只猫。请问图片里到底是什么动物？答："</code>
+（同样用文本误导）。</li>
+<li><strong>阵营划分</strong>：
+<ul>
+<li><span class="math inline"><em>T</em><sup>+</sup></span>（视觉阵营）=
+<code>["狗", "Dog"]</code> （对应 <span class="math inline"><em>y</em><sup>+</sup> = <em>B</em></span>）</li>
+<li><span class="math inline"><em>T</em><sup>−</sup></span>（文本阵营）=
+<code>["猫", "Cat"]</code> （对应 <span class="math inline"><em>y</em><sup>−</sup> = <em>A</em></span>）</li>
+</ul></li>
+</ul>
+<h2 id="三-为什么要大费周章做对称设计">三、
+为什么要大费周章做“对称设计”？</h2>
+<p>大模型对不同的 Token
+本身就存在先验的“偏心”。比如，有的模型在预训练时见过无数次“猫”，它天然就更喜欢吐出“猫”这个
+Token。</p>
+<ul>
+<li>如果我们只用 <span class="math inline"><em>S</em><sub><em>a</em></sub></span>（图猫文狗）去解回归，解出来的向量
+<span class="math inline"><em>w</em></span>
+可能会混入“模型对‘猫’这个字本身的偏好”，导致提取出来的方向不够纯净。</li>
+<li>采用了对称设计后，在 <span class="math inline"><em>S</em><sub><em>a</em></sub></span> 中，“猫”是
+<span class="math inline"><em>T</em><sup>+</sup></span>（视觉）；而在
+<span class="math inline"><em>S</em><sub><em>b</em></sub></span>
+中，“猫”变成了 <span class="math inline"><em>T</em><sup>−</sup></span>（文本）。</li>
+</ul>
+<p>这样一来，<strong>通过联合在这两个子集上运行提取流程，Token
+自身的频率噪声会在数学上被相互抵消。</strong>
+回归方程被迫只能去寻找那个与“视觉 vs
+文本”博弈逻辑强相关的隐状态维度。</p>
+<h2 id="四-mrv-的最终提取">四、 MRV 的最终提取</h2>
+<p>当这批对称冲突的样本准备好之后，接下来的流水线动作就回归到了我们熟悉的节奏：</p>
+<ol type="1">
+<li><p><strong>过模型算 <code>pref</code></strong>：</p>
+<p>每个样本进模型，在关键位置 <span class="math inline"><em>t</em><sup>⋆</sup> − 1</span> 抓取
+<code>logits</code>：</p>
+<ul>
+<li>在 <span class="math inline"><em>S</em><sub><em>a</em></sub></span>
+里：<span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em> = max ("猫") − max ("狗")</span></li>
+<li>在 <span class="math inline"><em>S</em><sub><em>b</em></sub></span>
+里：<span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em> = max ("狗") − max ("猫")</span></li>
+</ul></li>
+<li><p><strong>存下隐状态 <span class="math inline"><em>h</em></span></strong>：收集对应的中前层 MLP
+隐藏状态。</p></li>
+<li><p><strong>岭回归拟合</strong>：</p>
+<p>将所有样本的 <span class="math inline">(<em>h</em>, <em>p</em><em>r</em><em>e</em><em>f</em>)</span>
+倒进岭回归公式中一步解出权重。</p></li>
+</ol>
+<p>最终解出来的这个 <span class="math inline"><em>w</em><sub>MRV</sub></span>，就是<strong>模态依赖向量</strong>。</p>
+<blockquote>
+<p>岭回归时就是把 <span class="math inline"><em>S</em><sub><em>a</em></sub></span> 和 <span class="math inline"><em>S</em><sub><em>b</em></sub></span>
+两个集合里所有的样本<strong>打包合并在一起（取并集 <span class="math inline"><em>S</em><sub><em>a</em></sub> ∪ <em>S</em><sub><em>b</em></sub></span>）</strong>，作为一整个训练集扔进岭回归里去求解
+<span class="math inline"><em>w</em></span>。</p>
+<p>在论文的数学表述里，这也正是用 <span class="math inline"><em>S</em><sub><em>a</em></sub> ∪ <em>S</em><sub><em>b</em></sub></span>
+来表示的原因。</p>
+</blockquote>
+<h1 id="signed-activation-steering-有符号激活导向">Signed Activation
+Steering (有符号激活导向)</h1>
+<h2 id="什么是-signed-activation-steering-有符号激活导向">什么是 Signed
+Activation Steering (有符号激活导向)？</h2>
+<p>完成了前期的线下提取（Offline
+Extraction）后，你手里已经握着两组核心的“指南针向量”：VFV（视觉保真向量）和
+<strong>MRV（模态依赖向量）</strong>。</p>
+<p><strong>Signed Activation Steering (SAS)</strong> 正是 CAS
+框架在线上推理（Inference-time）阶段发起总攻的核心机制。它的任务非常纯粹：在模型生成文本的单次前向传播中，直接在特定层（L11-14）把这两个向量作为残差“拍”进隐藏状态里，强行修正模型的认知偏差。</p>
+<h2 id="核心干预公式拆解">核心干预公式拆解</h2>
+<p>在推理生成第 <span class="math inline"><em>t</em></span> 个 Token
+时，对于目标干预层 <span class="math inline"><em>l</em> ∈ {11, 12, 13, 14}</span>，SAS
+通过以下公式对 MLP 的输出进行动态拦截和修改：</p>
+<p><span class="math display">$$\hat{h}_l^{(t)} =
+\underbrace{h_l^{(t)}}_{\text{原生的残差流输出}} + \underbrace{\gamma(t)
+\cdot (\alpha v_{\text{vfv}}^{(l)} + \beta
+v_{\text{mrv}}^{(l)})}_{\text{SAS 强行注入的残差}}$$</span></p>
+<p>我们把这个公式里的每一个变量拆开来看，它们各司其职：</p>
+<ul>
+<li><span class="math inline"><em>h</em><sub><em>l</em></sub><sup>(<em>t</em>)</sup></span>：<strong>原生隐状态</strong>。模型在当前生成步、当前层
+MLP 原本吐出来的隐藏状态向量。</li>
+<li><span class="math inline"><em>v</em><sub>vfv</sub><sup>(<em>l</em>)</sup></span>
+和 <span class="math inline"><em>v</em><sub>mrv</sub><sup>(<em>l</em>)</sup></span>：<strong>黄金方向轴</strong>。也就是前几步利用岭回归从该层提纯出来的
+VFV 和 MRV 向量（即前面讨论的权重 <span class="math inline"><em>w</em><sub><em>l</em></sub></span>）。</li>
+<li><span class="math inline"><em>γ</em>(<em>t</em>)</span>：<strong>步长调节因子</strong>。一个与生成时间步或
+Token
+相关的动态系数，用来在生成过程中微调干预的节奏，防止过度干预导致文本质量塌陷。</li>
+<li><span class="math inline"><em>α</em></span> 和 <span class="math inline"><em>β</em></span>：<strong>全场的灵魂——有符号的强度系数（Signed
+Strength
+Coefficients）</strong>。它们不仅决定了干预的<strong>力度</strong>，更决定了干预的<strong>方向（正负号）</strong>。</li>
+</ul>
+<blockquote>
+<h3 id="使用残差链接注入的巨大优势">使用残差链接（注入）的巨大优势</h3>
+<p>论文之所以选择残差注入，而不是直接去替换（Replace）隐藏状态，原因有三：</p>
+<ul>
+<li><strong>保证模型的“保真度”</strong>：隐藏状态包含 4096
+个维度，里面大部分空间都在维持模型的语法、标点、上下文连贯性。如果我们用完全覆盖（Overwrite）的方式改写
+<span class="math inline"><em>h</em></span>，大模型瞬间就会变成傻子，话都说不利索。而残差连接是<strong>向量加法</strong>，它只是在高维空间里把当前状态“推偏”了一点点，保留了绝大部分原生的生成能力。</li>
+<li><strong>计算极其轻量（Zero
+Latency）</strong>：不需要做复杂的矩阵乘法或注意力重计算，只是在 GPU
+里做一次一维的
+<code>Element-wise Add</code>，对推理速度完全没有任何负面影响。</li>
+<li><strong>物理意义纯粹</strong>：因为我们在前一步提取 VFV 和 MRV
+时，用的就是 MLP
+层的输出隐藏状态。现在原路加回去，在数学上构成了完美的因果闭环。</li>
+</ul>
+</blockquote>
+<h2 id="为什么起名叫-signed有符号这背后有什么物理发现">为什么起名叫
+“Signed”（有符号）？这背后有什么物理发现？</h2>
+<p>这背后承载了这篇论文<strong>最颠覆、最反直觉</strong>的核心发现。</p>
+<p>在多模态大模型（MLLM）幻觉控制领域，以前的经典方法（如 VCD、MESA
+等）都建立在一个朴素的假设上：<strong>模型之所以瞎编（幻觉），是因为它“视觉忽略”了，也就是看图看漏了。所以大家之前的做法全部是一味地“增强”视觉信号（类似于在残差流里永远用加号
+<code>+</code>）。</strong></p>
+<p>但作者团队在对 LLaVA-1.5、Shikra、Qwen-VL、InstructBLIP
+等多款主流模型进行系统性探针实验时，发现了明显的<strong>模型异质性（Heterogeneity）</strong>：</p>
+<table>
+<colgroup>
+<col style="width: 13%">
+<col style="width: 44%">
+<col style="width: 41%">
+</colgroup>
+<thead>
+<tr>
+<th><strong>模型表现分类</strong></th>
+<th><strong>模型的内部认知特点</strong></th>
+<th><strong>对 α 或 β 的符号要求</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>视觉过度疏忽型</strong></td>
+<td>天生对图像视而不见，极度依赖历史文本或语言先验。</td>
+<td>需要<strong>正向引导（<span class="math inline">+</span>）</strong>：强行拉高视觉依赖。</td>
+</tr>
+<tr>
+<td><strong>视觉过度敏感型</strong></td>
+<td>容易过度解读视觉碎片中的非核心或不相关噪声，导致捕风捉影。</td>
+<td>需要<strong>负向拉回（<span class="math inline">−</span>）</strong>：适度压制视觉，反倒能缓解幻觉！</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>关键认知</strong></p>
+<p>每一个模型由于架构设计（如是否用了 Perceiver Resampler、Linear
+Projector）和指令微调数据的不同，其面对冲突时的偏好反应完全不同。有些模型需要“推一把”，有些模型需要“拉一把”。</p>
+<p>这就是为什么系数 <span class="math inline"><em>α</em></span> 和 <span class="math inline"><em>β</em></span>
+必须是<strong>带正负号的（Signed）</strong>。通过在线下小样本验证集上快速搜索出每个模型专属的<strong>有效符号（Effective
+Sign）</strong>，SAS
+实现了“因材施教”，这也是它能显著击败传统一刀切（Always
+positive）方法的核心密码。</p>
+</blockquote>
+<h1 id="tempered-position-prior-tpp调和位置先验">Tempered Position Prior
+(TPP调和位置先验)</h1>
+<p>在上一节谈到 Signed Activation Steering (SAS)
+的公式时，我们留了一个精妙的伏笔——<strong>步长调节因子 <span class="math inline"><em>γ</em>(<em>t</em>)</span></strong>。</p>
+<p><strong>Tempered Position Prior (TPP，温和位置先验 /
+调和位置先验)</strong> 正是决定这个 <span class="math inline"><em>γ</em>(<em>t</em>)</span>
+应该如何演变的底层核心机制。它优雅地解决了大模型激活导向（Activation
+Steering）中一个致命的隐痛：<strong>“干预过度导致的语言崩塌”</strong>。</p>
+<p>为了让你轻松彻底地理解
+TPP，我们从大模型的致命弱点聊起，看看它是如何给干预机制戴上“紧箍咒”的。</p>
+<h2 id="一-为什么需要-tpp原生的位置先验陷阱">一、 为什么需要
+TPP？（原生的位置先验陷阱）</h2>
+<p>自回归大模型（LLM/MLLM）在生成文本时，对Token
+的生成位置（Position）有着极度强烈的依赖。这就是原生的“位置先验”。</p>
+<p>在做表征干预时，如果我们<strong>一刀切</strong>地在每一个位置 <span class="math inline"><em>t</em></span> 都加上相同强度的偏好向量（即 <span class="math inline"><em>γ</em>(<em>t</em>) = 1</span>
+恒定不变），会引发极其严重的灾难：</p>
+<ol type="1">
+<li><strong>表征漂移（Representation Drift）</strong>：MLP
+层的残差流就像一条平稳流淌的河。如果你在每一个时间步都往里扔一块一模一样的石头（注入向量），整条河的生态会彻底失衡。隐状态会被强行推离模型原本的合理流形（Manifold）。</li>
+<li><strong>文本退化（Text
+Degeneration）</strong>：在实验中表现为模型突然变成“复读机”（比如无限重复“黄色黄色黄色……”），或者语法彻底混乱，逻辑直接崩塌。</li>
+</ol>
+<h2 id="二-tpp-的核心逻辑什么是tempered温和调和">二、 TPP
+的核心逻辑：什么是“Tempered（温和/调和）”？</h2>
+<p>TPP 的核心思想是：<strong>干预的强度，必须随着生成位置 <span class="math inline"><em>t</em></span> 与关键冲突位置 <span class="math inline"><em>t</em><sup>⋆</sup></span>
+的距离，进行“温和的衰减（Tempering）”。</strong></p>
+<p>它给干预强度设置了一个动态的、基于位置先验的保护罩。最常见的 TPP
+表现形式（即 <span class="math inline"><em>γ</em>(<em>t</em>)</span>
+的计算方式）通常遵循<strong>指数衰减</strong>或者<strong>阶梯窗口衰减</strong>。</p>
+<p>以最经典的指数衰减为例：</p>
+<p><span class="math display">$$\gamma(t) =  \begin{cases}  0, &amp; t
+&lt; t^\star - 1 \\ \exp(-\tau \cdot (t - (t^\star - 1))), &amp; t \ge
+t^\star - 1  \end{cases}$$</span></p>
+<p>这里面的设计极其讲究：</p>
+<ul>
+<li><strong>关键点前（<span class="math inline"><em>t</em> &lt; <em>t</em><sup>⋆</sup> − 1</span>）</strong>：<span class="math inline"><em>γ</em>(<em>t</em>) = 0</span>。模型在念前面的引言（比如“图片里的西瓜瓤是”）时，完全不进行任何干预，让模型保持
+100% 的原生语言流畅度。</li>
+<li><strong>爆发点（<span class="math inline"><em>t</em> = <em>t</em><sup>⋆</sup> − 1</span>）</strong>：干预强度达到巅峰（<span class="math inline"><em>γ</em> = 1</span>）。在模型即将吐出关键颜色/物体字眼的前一刹那，全力一击，强行把模型的思维拉回视觉通路。</li>
+<li><strong>调和衰减期（<span class="math inline"><em>t</em> &gt; <em>t</em><sup>⋆</sup> − 1</span>）</strong>：随着模型不断往后生成
+Token，<span class="math inline"><em>t</em></span> 越来越大，<span class="math inline"><em>γ</em>(<em>t</em>)</span> 呈指数级迅速衰减趋近于
+0（<span class="math inline"><em>τ</em></span>
+是控制衰减快慢的超参数）。</li>
+</ul>
+<h1 id="流程图">流程图</h1>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601120555879.png" alt="image-20260601120555879">
+<figcaption aria-hidden="true">image-20260601120555879</figcaption>
+</figure>
+<h2 id="左半部分离线提取阶段offline-extraction">1.
+左半部分：离线提取阶段（Offline Extraction）</h2>
+<p>这张图的左侧展示了如何从模型内部“提炼”出我们需要的控制工具。</p>
+<ul>
+<li><strong>步骤 A：构造两类上下文冲突（Two Setups）</strong>
+<ul>
+<li>图里会画出两条独立的数据流，分别对应两种不同的“挖坑”设定：
+<ul>
+<li><strong>设定
+I（反事实图像）</strong>：喂入类似“蓝色香蕉”的图，诱导模型在“视觉”与“参数化常识知识”之间打架，用于提炼
+<strong>VFV（视觉保真向量，<span class="math inline"><em>v</em><sub><em>v</em><em>f</em><em>v</em></sub></span>）</strong>。</li>
+<li><strong>设定
+II（对称图文冲突对）</strong>：喂入图猫文狗、图狗文猫的成对数据，诱导模型在“视觉输入”与“提示词误导文本”之间打架，用于提炼
+<strong>MRV（模态依赖向量，<span class="math inline"><em>v</em><sub><em>m</em><em>r</em><em>v</em></sub></span>）</strong>。</li>
+</ul></li>
+</ul></li>
+<li><strong>步骤 B：在临界点实施数据抓取（Data Probing）</strong>
+<ul>
+<li>图上会标识出一个关键点：当模型即将输出核心词（位置 <span class="math inline"><em>t</em><sup>⋆</sup></span>）时，算法会回退一步（在位置
+<span class="math inline"><em>t</em><sup>⋆</sup> − 1</span>）去拦截两样东西：
+<ol type="1">
+<li>最后一层输出全词表的分数差值：即由两派最强 Token
+分数作差得到的行为标签 <strong><span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span></strong>。</li>
+<li>目标干预层 <span class="math inline"><em>l</em></span> 的 MLP
+输出的隐藏状态向量 <strong><span class="math inline"><em>h</em><sub><em>l</em></sub></span></strong>。</li>
+</ol></li>
+</ul></li>
+<li><strong>步骤 C：逐层岭回归（Layer-wise Ridge Regression）</strong>
+<ul>
+<li>图的中间会画一个回归拟合的图标，代表把收集到的海量对齐数据 <span class="math inline">(<em>h</em><sub><em>l</em></sub>, <em>p</em><em>r</em><em>e</em><em>f</em>)</span>
+倒进 <span class="math inline"><em>ℓ</em><sub>2</sub></span>
+正则化的线性方程里去求解。</li>
+<li><strong>最终产物</strong>：解出来的权重矩阵，就是图里画的两个专属一维黄金方向向量：<span class="math inline"><em>v</em><sub>vfv</sub><sup>(<em>l</em>)</sup></span>
+和 <span class="math inline"><em>v</em><sub>mrv</sub><sup>(<em>l</em>)</sup></span>。</li>
+</ul></li>
+</ul>
+<h2 id="右半部分在线推理中的激活导向online-inference-strategy">2.
+右半部分：在线推理中的激活导向（Online Inference Strategy）</h2>
+<p>这张图的右侧展示了当模型在实际应用（如回答用户的开放式提问）时，我们如何动态拦截并修复幻觉。</p>
+<ul>
+<li><strong>步骤 A：单阶段正常前向传播（Single-pass Forward）</strong>
+<ul>
+<li>与对比解码（VCD
+等方法）需要跑两遍前向传播（一遍正常，一遍变焦/模糊图）不同，右侧图展示的是标准的、唯一的自回归生成路径。用户输入一张新图和
+Prompt，模型正常向前计算。</li>
+</ul></li>
+<li><strong>步骤 B：中前层 MLP 拦截与插桩（MLP Hooking）</strong>
+<ul>
+<li>右图会特意放大模型的 <strong>L11–L14
+这一层带</strong>。当残差流传导到这四个特定的中前层 MLP
+输出端时，SAS（有符号激活导向）机制像微创手术一样横插一脚，对原生的隐状态
+<span class="math inline"><em>h</em><sub><em>l</em></sub><sup>(<em>t</em>)</sup></span>
+施加一个<strong>加性残差（Additive Residual）</strong>。</li>
+</ul></li>
+<li><strong>步骤 C：动态残差公式的在线组装</strong>
+<ul>
+<li>图上会标出注入的完整项：<span class="math inline"><em>γ</em>(<em>t</em>) ⋅ (<em>α</em><em>v</em><sub>vfv</sub><sup>(<em>l</em>)</sup> + <em>β</em><em>v</em><sub>mrv</sub><sup>(<em>l</em>)</sup>)</span>。</li>
+<li><strong><span class="math inline"><em>α</em>, <em>β</em></span>（有符号强度调节）</strong>：根据具体模型的“性格”（是视而不见，还是捕风捉影），赋予正号或负号，决定是把模型往视觉方向推，还是从视觉噪声里拉回来。</li>
+<li><strong><span class="math inline"><em>γ</em>(<em>t</em>)</span>（TPP
+位置门控）</strong>：它像一个动态阀门。在图上通常会用一个<strong>由高到低的衰减曲线</strong>来表达。在即将吐出关键词的那一瞬间，阀门全开（<span class="math inline"><em>γ</em> = 1</span>）；随着文本往后生成，阀门快速关闭趋近于0（<span class="math inline"><em>γ</em> → 0</span>），防止污染后面正常的语法。</li>
+</ul></li>
+</ul>
+<h1 id="实验设置-experimental-setup"><strong>实验设置 (Experimental
+Setup)</strong></h1>
+<h2 id="评估模型-models-覆盖四大主流架构">1. 评估模型 (Models) ——
+覆盖四大主流架构</h2>
+<p>为了证明 CAS
+框架具有<strong>跨架构的普适性</strong>，实验并没有局限于单一模型，而是挑选了四个最具代表性的开源多模态大模型（MLLM）
+：</p>
+<p><strong>LLaVA-1.5</strong></p>
+<p><strong>Shikra</strong></p>
+<p><strong>Qwen-VL</strong></p>
+<p><strong>InstructBLIP</strong></p>
+<blockquote>
+<p><strong>学术亮点</strong>：这四个模型在<strong>跨模态融合设计（如线性投影
+Linear Projector、交叉注意力 Cross-Attention、Perceiver
+等）</strong>上存在显著差异 。CAS
+能在这些迥异的架构上同时生效，有力证明了其在模型隐藏空间实施“表征微创手术”的通用性
+。</p>
+</blockquote>
+<h2 id="评估基准-benchmarks-自由生成与是非判别双轨制">2. 评估基准
+(Benchmarks) —— 自由生成与是非判别双轨制</h2>
+<p>评测任务全面覆盖了生成式（Generative）<strong>和</strong>判别式（Discriminative）两大家族，不给任何作弊手段留死角
+：</p>
+<ul>
+<li><strong>生成式任务 (Generative Task)</strong>：
+<ol type="1">
+<li><strong>CHAIR</strong>：在 500 张 COCO 图像上运行详细描述任务，报告
+<span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em><sub><em>S</em></sub></span>（句级幻觉率）、<span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em><sub><em>I</em></sub></span>（词级幻觉率）和
+F1 分数 。<br>
+</li>
+<li><strong>AMBER (生成式划分)</strong>：包含 1,004 张图像，报告
+Hal（整体幻觉率）、CHAIR、Cog 和 Cover（物体覆盖率） 。<br>
+</li>
+</ol></li>
+<li><strong>判别式任务 (Discriminative Task)</strong>：
+<ol type="1">
+<li><strong>POPE</strong>：包含
+Random（随机）、Popular（高频）、Adversarial（对抗）三个子集，每个子集包含
+3,000 个问答对 。最终报告 Acc（准确率）和 F1 分数 。</li>
+</ol></li>
+</ul>
+<h2 id="对比基线-baselines-八大强劲对手大围剿">3. 对比基线 (Baselines)
+—— 八大强劲对手大围剿</h2>
+<p>实验将原生模型（Vanilla）与近年来发表在顶会上的 <strong>8
+种主流的、无需训练（Training-free）的抗幻觉方法</strong>进行了全面横向对比，按发表时间排序
+：</p>
+<p><strong>DoLa</strong> (2024)</p>
+<p><strong>VCD</strong> (2024)</p>
+<p><strong>OPERA</strong> (2024)</p>
+<p><strong>PAI</strong> (2024)</p>
+<p><strong>Code</strong> (2024)</p>
+<p><strong>DeCo</strong> (2025)</p>
+<p><strong>AttnReal</strong> (2025)</p>
+<p><strong>SSL</strong> (2025)</p>
+<h2 id="引入新文本质量指标-堵住复读机漏洞">4. 引入新文本质量指标 ——
+堵住“复读机”漏洞</h2>
+<p>作者在实验中发现了一个行业痛点：部分基线方法（如 DoLa、OPERA、PAI
+等）虽然降低了幻觉，但代价是破坏了语言模型的能力，导致模型在推理时陷入<strong>严重的重复生成（复读机退化）</strong>
+。</p>
+<ul>
+<li>更糟糕的是，传统的 CHAIR
+评估由于不进行去重计数，<strong>重复喷出正确的物体反而会稀释幻觉率（人为刷低幻觉指标）</strong>
+。<br>
+</li>
+<li>为此，作者额外引入了 <strong><span class="math inline"><em>R</em><em>e</em><em>p</em></span>（n-gram
+重复率）</strong> 指标
+。在最终的结果表里，凡是导致模型重复退化的数据，都会被<strong>红色</strong>标出
+。</li>
+</ul>
+<h2 id="cas-的专属硬编码配置-cas-configuration">5. CAS 的专属硬编码配置
+(CAS Configuration)</h2>
+<p>在线上干预时，CAS 的策略保持了高度的简洁和克制 ：</p>
+<ul>
+<li><strong>干预位置</strong>：固定为模型的<strong>中前层，即 L11–L14
+层的 MLP 输出</strong> 。<br>
+</li>
+<li><strong>干预方式</strong>：执行<strong>单次有符号残差注入</strong>（即利用前面通过岭回归解出的
+<span class="math inline"><em>α</em></span> 和 <span class="math inline"><em>β</em></span> 有符号系数进行向量加法） 。</li>
+</ul>
+<h2 id="解码策略与硬件环境-decoding-hardware">6. 解码策略与硬件环境
+(Decoding &amp; Hardware)</h2>
+<p>为了确保学术评测的可复现性和严谨性，实验排除了随机采样（Sampling）带来的方差影响
+：</p>
+<ul>
+<li><strong>解码策略</strong>：所有方法一律使用 <strong>贪心解码 (Greedy
+Decoding)</strong> 。<br>
+</li>
+<li><strong>长度限制</strong>：CHAIR / AMBER 任务设置
+<code>max_new_tokens = 512</code>（长文本生成）；POPE 任务设置
+<code>max_new_tokens = 64</code>（短文本是非问答） 。<br>
+</li>
+<li><strong>算力消耗</strong>：所有实验均在<strong>单张 NVIDIA RTX
+3090</strong> 上完成，充分体现了无需训练方法的低算力成本优势 。</li>
+</ul>
+<h1 id="贪心解码greedy-decoding">贪心解码（Greedy Decoding）</h1>
+<h2 id="一-核心逻辑与工作原理">一、 核心逻辑与工作原理</h2>
+<p>在大模型生成文本时，它是逐个
+Token（字/词碎片）自回归生成的。在每一个时间步，模型会为词表里的所有
+Token 算出对应的概率分布（即我们之前提到的 Logits） 。</p>
+<p><strong>贪心解码的规则非常简单、粗暴：它在每一步只挑选概率最高（或者得分最高）的那一个
+Token，绝对不考虑其他任何人选。</strong></p>
+<p><strong>具体的数学表达：</strong></p>
+<p><span class="math display">Next Token = arg max (Logits)</span></p>
+<p><strong>举个例子（模型正在回答“草莓是什么颜色”）：</strong></p>
+<p>在预测下一个字时，词表张榜：</p>
+<ul>
+<li><code>"红"</code>：概率 60%</li>
+<li><code>"绿"</code>：概率 15%</li>
+<li><code>"粉"</code>：概率 10%</li>
+<li>……</li>
+</ul>
+<p>如果是<strong>贪心解码</strong>，模型会毫不犹豫地直接选择
+<strong><code>"红"</code></strong>。因为它的概率最大。选完
+<code>"红"</code> 之后，再把 <code>"红"</code>
+拼进输入里，去预测再下一个字，以此类推。</p>
+<h2 id="二-贪心解码在论文中的关键作用">二、
+贪心解码在论文中的关键作用</h2>
+<p>在你上传的《TSAI：面向多模态大语言模型幻觉缓解的时序-语义注意力干预》论文中，作者在
+<strong>4.1 实验设置（Experimental Setup）</strong>
+里特别强调了他们<strong>统一采用贪心解码</strong>作为所有模型和方法的基准，这背后有非常严谨的学术考量：</p>
+<p><strong>隔离随机干扰（确保公平）</strong>：普通的文本生成往往会加入随机采样（如
+Nucleus Sampling /
+Top-p），这会导致模型每次运行吐出的词都不一样。论文指出，采用贪心解码可以“隔离随机采样算法引入的性能差异，确保严格公平的比较”
+。</p>
+<p><strong>提供最稳定的基线（Baseline）</strong>：论文强调，对于评估抗幻觉能力的确定性评测（如是非题
+POPE 或描述题
+CHAIR），<strong>“贪心解码通常能产生最稳定且具有竞争力的基线性能”</strong>
+。所以表 1、表 3、表 4
+中，最基础的对照组（Vanilla）数据就是原生模型在贪心解码下的表现 。</p>
+<h2 id="三-贪心解码的优缺点横向对比">三、 贪心解码的优缺点横向对比</h2>
+<p>为了让你的概念体系更完整，我们可以把它与<strong>束搜索（Beam
+Search）</strong>、核采样（Nucleus / Top-p Sampling）进行横向对比：</p>
+<table>
+<colgroup>
+<col style="width: 16%">
+<col style="width: 25%">
+<col style="width: 22%">
+<col style="width: 35%">
+</colgroup>
+<thead>
+<tr>
+<th><strong>解码策略</strong></th>
+<th><strong>核心机制</strong></th>
+<th><strong>优点</strong></th>
+<th><strong>缺点 / 在抗幻觉中的表现</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>贪心解码 (Greedy)</strong></td>
+<td>每一步无脑选 <span class="math inline">max </span>。</td>
+<td>速度极快、100% 可复现、结果极其稳定。</td>
+<td>缺乏创造力。在长文本生成中，极其容易陷入<strong>“语言退化”</strong>（表现为变成复读机，不断循环一句话）
+。</td>
+</tr>
+<tr>
+<td><strong>束搜索 (Beam Search)</strong></td>
+<td>每一步保留 Top-k 个最优路径，全局综合评分。</td>
+<td>逻辑严谨、生成文本质量高。</td>
+<td>容易产生<strong>“过度信任（Over-Trust）”</strong>，即模型太相信前面自己编过的话，从而容易导致幻觉滚雪球
+。</td>
+</tr>
+<tr>
+<td><strong>核采样 (Top-p / Nucleus)</strong></td>
+<td>在累计概率前 p% 的候选词里随机抽。</td>
+<td>文本丰富、拟人度高。</td>
+<td>带有随机性，不方便做严谨的抗幻觉算法效能消融实验。</td>
+</tr>
+</tbody>
+</table>
+<h1 id="generative-hallucination生成式幻觉评估">Generative
+Hallucination（生成式幻觉评估）</h1>
+<h2 id="table-1chair-评测结果物体幻觉的硬核较量">Table 1：CHAIR
+评测结果（物体幻觉的硬核较量）</h2>
+<p>Table 1 通常是整篇论文的“主战场”，它展示了 Vanilla（原生模型）、CAS
+框架以及 8 种顶会 Baseline 在 <strong>LLaVA-1.5、Shikra、Qwen-VL 和
+InstructBLIP</strong> 这四大模型上的全面横向对比。</p>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601130346429.png" alt="image-20260601130346429">
+<figcaption aria-hidden="true">image-20260601130346429</figcaption>
+</figure>
+<h3 id="核心指标解读">1. 核心指标解读</h3>
+<p>在这个表里，你会看到以下几个核心列：</p>
+<ul>
+<li><strong><span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em><sub><em>S</em></sub></span>（句级幻觉率）</strong>
+与 <strong><span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em><sub><em>I</em></sub></span>（词级幻觉率）</strong>：这两个指标<strong>越低越好</strong>。CAS
+的核心卖点就是在这两项上拿到了显著的最低值（Bold 粗体标注）。</li>
+<li><strong><span class="math inline"><em>R</em><em>e</em><em>p</em></span>（n-gram
+重复率）</strong>：这是作者为了<strong>打假</strong>而引入的创新指标，<strong>越低越好</strong>。它统计了模型生成文本中出现“复读机”现象的严重程度。</li>
+</ul>
+<h3 id="揭露-baseline-的作弊现象学术亮点">2. 揭露 Baseline
+的“作弊”现象（学术亮点）</h3>
+<p>在 Table 1 中，你会注意到许多传统方法（如 DoLa、OPERA、PAI
+等）在某些模型上的 <span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em></span>
+指标看似很低，但它们的 <strong><span class="math inline"><em>R</em><em>e</em><em>p</em></span>（重复率）数值却高得离谱，在表中被作者用红色（Red）刺眼地标出</strong>。</p>
+<ul>
+<li><strong>背后的黑幕</strong>：因为 CHAIR 的计算公式是 <span class="math inline">$\frac{\text{幻觉词数}}{\text{总词数}}$</span>。一些对比方法因为破坏了语言模型的能力，导致模型在推理时不断重复一句话（例如：“There
+is a cup, a cup, a
+cup…”）。由于“cup”是图里真实存在的正确物体，<strong>这种无限复读正确词汇的行为人为地扩大了分母，从而恶意稀释了幻觉率</strong>。</li>
+<li><strong>CAS 的降维打击</strong>：CAS 在大幅降低 <span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em><sub><em>S</em></sub></span>
+和 <span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em><sub><em>I</em></sub></span>
+的同时，保持了极低的 <span class="math inline"><em>R</em><em>e</em><em>p</em></span>（与 Vanilla
+原生模型几乎一致）。这有力地证明了 <strong>TPP（温和位置先验）</strong>
+机制的成功——干预向量在关键 Token
+处精准纠偏后迅速退场，绝不污染后面的正常文本生成。</li>
+</ul>
+<h2 id="table-2amber-g生成式幻觉评测结果分析">Table
+2：AMBER-G（生成式幻觉）评测结果分析</h2>
+<p>在这一部分中，评测完全聚焦于<strong>长文本自由描述</strong>场景。大模型在没有是非题“喂饭”的情况下，自己主动看图说话。Table
+2 展现的核心价值在于：<strong>CAS
+在“盲考”状态下对复杂生成任务的统治力。</strong></p>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601130400358.png" alt="image-20260601130400358">
+<figcaption aria-hidden="true">image-20260601130400358</figcaption>
+</figure>
+<h3 id="核心指标矩阵">1. 核心指标矩阵</h3>
+<p>在 Table 2 中，你需要重点记录这三个核心指标的黄金三角关系：</p>
+<ul>
+<li><strong><span class="math inline"><em>H</em><em>a</em><em>l</em>↓</span>（整体句级幻觉率）</strong>：评估生成文本中，包含存在、属性、关系等各类综合幻觉的句子比例。数值越低，说明整体越诚实。</li>
+<li><strong><span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em><sub><em>S</em></sub>/<em>C</em><em>H</em><em>A</em><em>I</em><em>R</em><sub><em>I</em></sub>↓</span>（物体级幻觉）</strong>：精准定位到名词层面的捏造比例。</li>
+<li><strong><span class="math inline"><em>C</em><em>o</em><em>v</em><em>e</em><em>r</em>↑</span>（物体覆盖率
+/
+召回率）</strong>：<strong>全场含金量最高的指标</strong>。它统计了大模型到底把图片里真正存在的物体认出来了多少。</li>
+</ul>
+<h3 id="为什么-amber-g-的数据能对-baseline-形成降维打击">2. 为什么
+AMBER-G 的数据能对 Baseline 形成降维打击？</h3>
+<p>在自由生成任务中，最容易出现的两个学术大坑是“因噎废食”<strong>和</strong>“语言塌陷”。Table
+2 的数据直接自证了 CAS 是如何完美避开这两个坑的：</p>
+<ul>
+<li><p><strong>打破“说得越少，错得越少”的作弊死循环</strong>：</p>
+<p>很多对比方法（比如传统对比解码）为了追求极低的幻觉率（<span class="math inline"><em>H</em><em>a</em><em>l</em></span> 或 <span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em></span>），干预力度过大，直接导致模型变得极度保守、不敢说话。反映在数据上，就是它们的
+<span class="math inline"><em>C</em><em>o</em><em>v</em><em>e</em><em>r</em></span>（物体覆盖率）会出现断崖式下跌。</p>
+<ul>
+<li><strong>CAS 的优势</strong>：CAS 在把 <span class="math inline"><em>H</em><em>a</em><em>l</em></span> 和 <span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em></span>
+砸到最低的同时，<strong><span class="math inline"><em>C</em><em>o</em><em>v</em><em>e</em><em>r</em></span>
+指标依然能够保持高位，甚至超越
+Vanilla（原生模型）</strong>。这证明“有符号激活导向”不是简单地给模型贴封条，而是真正提升了模型对底层视觉特征的有效提取和正面感知。</li>
+</ul></li>
+<li><p><strong>证明 TPP（温和位置先验）的不可或缺性</strong>：</p>
+<p>自由生成长文本对隐空间的扰动极其敏感。CAS 能够完美跑通 AMBER-G
+的长文本 Captioning 任务，并在综合得分上拿到
+SOTA，在图表层面上直接宣告了 TPP 衰减机制的胜利——干预向量在 <span class="math inline"><em>t</em><sup>⋆</sup> − 1</span>
+位置精准爆发，修正了关键物体的倾向后<strong>优雅退场</strong>，将后半句的语法和叙事主导权还给语言模型，从而保证了长文本的顺畅。</p></li>
+</ul>
+<h1 id="判别式幻觉discriminative-hallucination">判别式幻觉（Discriminative
+Hallucination）</h1>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601132110896.png" alt="image-20260601132110896">
+<figcaption aria-hidden="true">image-20260601132110896</figcaption>
+</figure>
+<h2 id="table-3-的纵纵横横结构与核心指标">Table 3
+的纵纵横横：结构与核心指标</h2>
+<p>在论文的 Table 3 中，数据矩阵通常按照以下维度展开：</p>
+<ul>
+<li><strong>纵轴（Rows）</strong>：四大主流多模态模型（LLaVA-1.5、Shikra
+等）作为大组，每个大组内横向对比 Vanilla（原生模型）以及各大主流
+Baseline，最后以 <strong>CAS（Our）</strong> 收尾。</li>
+<li><strong>横轴（Columns）</strong>：划分出 POPE
+的三个经典子集：<strong>Random（随机）</strong>、<strong>Popular（高频）</strong>、<strong>Adversarial（对抗）</strong>。每个子集下报告两个核心指标：
+<ol type="1">
+<li><strong>Accuracy (Acc，准确率 <span class="math inline">↑</span>)</strong>：整体答对的比例。</li>
+<li><strong>F1-score (<span class="math inline">↑</span>)</strong>：平衡了精确率和召回率的综合指标（全场最重要的评判依据）。</li>
+</ol></li>
+</ul>
+<h1 id="per-model-response-to-vfv-and-mrv">Per-model response to VFV and
+MRV</h1>
+<p>这一部分聚焦于 CAS
+框架中最核心的实证发现：<strong>不同模型对“视觉保真向量（VFV）”和“模态依赖向量（MRV）”的异质性反应（Per-model
+response）</strong>。</p>
+<h2 id="核心发现模型异质性model-heterogeneity与符号搜索">核心发现：模型异质性（Model
+Heterogeneity）与符号搜索</h2>
+<p>在表征工程（Representation
+Engineering）中，最理想的状态是“一个黄金向量包治百病”。但 CAS
+论文在这里揭示了一个残酷的现实：<strong>即使提取流程完全一样，同一个偏好向量对不同模型而言，其最佳干预方向（正号
+<span class="math inline">+</span> 还是负号 <span class="math inline">−</span>）和干预力度（模长大小）是完全相反且割裂的。</strong></p>
+<p>作者将这种现象称为<strong>模型异质性</strong>。它直接决定了为什么线上注入残差时，强度系数
+<span class="math inline"><em>α</em></span> 和 <span class="math inline"><em>β</em></span>
+必须是<strong>有符号的（Signed）</strong>。</p>
+<h2 id="figure-3-深度解码符号与强度的全面吞吐流grid-search-趋势">Figure
+3 深度解码：符号与强度的全面吞吐流（Grid Search 趋势）</h2>
+<p>Figure 3 在论文中通常是一组<strong>折线图（Line
+Charts）或热力图（Heatmaps）</strong>。它展示了当干预系数 <span class="math inline"><em>α</em></span>（控制 VFV）和 <span class="math inline"><em>β</em></span>（控制 MRV）在区间（例如 <span class="math inline">[−3.0, +3.0]</span>）内连续滑动时，各大模型在抗幻觉指标（如
+POPE 准确率、CHAIR 幻觉率）上的<strong>动态性能表现曲线</strong>。</p>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601134337395.png" alt="image-20260601134337395">
+<figcaption aria-hidden="true">image-20260601134337395</figcaption>
+</figure>
+<h3 id="性能曲线的单峰特性与零点跨越">1.
+性能曲线的“单峰特性”与零点跨越</h3>
+<ul>
+<li>如果你观察图 3
+的曲线，会发现绝大多数模型的性能并不会随着干预强度的增大而无限变好，而是呈现出完美的<strong>单峰（Single-peak）结构</strong>。</li>
+<li>关键在于，这个<strong>性能巅峰（Peak）落在零点（Vanilla
+原生模型）的左边还是右边</strong>。
+<ul>
+<li>如果巅峰在右边（正值区间），代表该模型属于“视觉疏忽型”，越补正向视觉信号越聪明。</li>
+<li>如果巅峰在左边（负值区间），代表该模型属于“捕风捉影型”，加了负号（压制视觉噪声）反而能刷新
+Acc 分数。</li>
+</ul></li>
+</ul>
+<h3 id="悬崖效应cliff-effect过度干预的语言崩塌">2. 悬崖效应（Cliff
+Effect）：过度干预的语言崩塌</h3>
+<ul>
+<li>无论模型的最佳符号是正还是负，一旦干预强度（绝对值）越过了那个最佳的“甜点区（Sweet
+Spot）”，图 3
+中的性能曲线会展现出恐怖的<strong>断崖式下跌</strong>。</li>
+<li><strong>学术本质</strong>：这是因为过大的残差向量注入直接干扰了语言模型（LLM）底层基座的指令遵循与语法概率流，导致隐状态彻底偏离了合理的表征流形（Representation
+Manifold），模型开始在生成端胡言乱语。</li>
+</ul>
+<h2 id="table-6-table-7-深度解码超参数图谱与稳健性验证">Table 6 &amp;
+Table 7 深度解码：超参数图谱与稳健性验证</h2>
+<p>如果说 Figure 3 是连续的宏观大势，那么被放在附录或实验深入分析部分的
+<strong>Table 6 和 Table 7</strong> 则是 CAS
+团队留下的<strong>硬核工程账本</strong>。它们通常分别记录了<strong>最优符号与强度的全局搜索结果</strong>，以及<strong>跨任务/跨层干预的消融边界</strong>。</p>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601142307660.png" alt="image-20260601142307660">
+<figcaption aria-hidden="true">image-20260601142307660</figcaption>
+</figure>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601142336909.png" alt="image-20260601142336909">
+<figcaption aria-hidden="true">image-20260601142336909</figcaption>
+</figure>
+<h1 id="layer-analysis层消融实验">Layer Analysis层消融实验</h1>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601142809876.png" alt="image-20260601142809876">
+<figcaption aria-hidden="true">image-20260601142809876</figcaption>
+</figure>
+<p>为了验证干预层的选择，我们将相同的CPV置于LLaVA-CHAIR的不同四层窗口中。为了放大窗口间的差异，我们使用了更强的固定强度（MRV
+β=+2，VFV
+α=−2）。如表4所示，两种CPV在不同窗口中表现出一致的模式：在我们扫描的窗口中，中早期层L11–14是唯一有效且稳定的层；从L16开始，效果恢复到原始水平，基本为零；在浅层L1–4和L6–9，MRV和VFV都会引发严重的退化并导致失控的重复。因此，我们在所有实验中将干预固定在L11–14层。</p>
+<h1 id="conclusion和limitations">Conclusion和Limitations</h1>
+<h2 id="一-结论部分-conclusion">一、 结论部分 (Conclusion)</h2>
+<p>结论部分对 CAS
+框架的成效给出了最终定性，核心成果可以概括为以下三点：</p>
+<ul>
+<li><strong>开创了表征层面的“因材施教”范式</strong>：论文成功打破了传统“一刀切增强视觉”的思维定势，首次证明了
+MLLM
+内部隐空间存在<strong>模型异质性</strong>。通过首创的<strong>有符号激活导向（SAS）</strong>，实现了对不同缺陷型模型（视觉疏忽型
+vs 视觉敏感型）的精准对症下药。</li>
+<li><strong>抗幻觉与流畅度的帕累托最优（Pareto-optimal）</strong>：在三大硬核基准（CHAIR、POPE、AMBER-G）上，CAS
+在大幅刷新最低幻觉率的同时，完美保护了模型的生成流畅度（<span class="math inline"><em>R</em><em>e</em><em>p</em>↓</span>）与细节丰富度（<span class="math inline"><em>C</em><em>o</em><em>v</em><em>e</em><em>r</em>↑</span>）。这宣告了
+<strong>Tempered Position Prior (TPP)</strong>
+位置门控机制的全面胜利。</li>
+<li><strong>兼顾极高部署性价比</strong>：作为一种无需训练（Training-free）的方法，CAS
+仅在单次前向传播中进行极其轻量级的加性残差操作，<strong>不引入任何额外的解码延迟（Zero
+extra decoding latency）</strong>，彻底解决了对比解码（VCD、CODE
+等）推理速度翻倍的工程痛点。</li>
+</ul>
+<h2 id="二-局限性部分-limitations">二、 局限性部分 (Limitations)</h2>
+<p>作者非常坦诚地分析了 CAS
+框架在现阶段的局限性与改进空间，这也是未来开展研究生工作或后续大创项目的绝佳发力点：</p>
+<h3 id="严重依赖离线网格搜索hyperparameter-dependency">1.
+严重依赖离线网格搜索（Hyperparameter Dependency）</h3>
+<p>虽然 CAS
+推理时是零开销，但在正式上线前，它必须依赖一个小规模的冲突验证集，通过网格搜索（Grid
+Search）去试出该模型专属的最佳符号和强度系数（<span class="math inline"><em>α</em></span> 和 <span class="math inline"><em>β</em></span>）。</p>
+<ul>
+<li><strong>痛点</strong>：这种“调参”过程是离线的（Offline）。如果换了一个全新的、完全没见过的微调模型，用户无法盲打注入残差，必须先跑一次快速的离线校准。</li>
+</ul>
+<h3 id="幻觉防御的范畴边界scope-limitations">2.
+幻觉防御的范畴边界（Scope Limitations）</h3>
+<p>CAS 提取的黄金方向向量（VFV 和
+MRV），其核心对齐逻辑建立在“物体存在性”<strong>和</strong>“模态冲突”上。</p>
+<ul>
+<li><strong>痛点</strong>：多模态幻觉的成因极度复杂。如果模型发生的不是物体层面的幻觉，而是高级的<strong>多步跨模态推理错误（Reasoning
+Error）</strong>、复杂的空间几何倒错，或者是在长视频理解（Long-form
+Video）中产生的时序颠倒，现有的 VFV 和 MRV
+向量可能无法提供足够强大的因果纠偏能力。</li>
+</ul>
+<h3 id="静态语义轴与动态生成上下文的脱节static-cpv-vector">3.
+静态语义轴与动态生成上下文的脱节（Static CPV Vector）</h3>
+<p>岭回归解出来的
+CPV（上下文偏好向量）在训练集拟合完成后，其高维方向就<strong>完全固定</strong>了。</p>
+<ul>
+<li><strong>痛点</strong>：在实际生成长文本时，虽然有 TPP
+门控在时序上让它衰减，但这个向量本身并不会根据模型当前吐出的<strong>具体词汇语境</strong>发生动态的形状自适应变化。它主管的是大方向上的“认知站队”（信眼睛还是信常识），缺乏例级自适应（Instance-specific
+Adaptive Steering）的细粒度微调。</li>
+</ul>
+<h3 id="超大尺度模型ultra-large-models的层定位成本">4.
+超大尺度模型（Ultra-Large Models）的层定位成本</h3>
+<p>实验虽然在 7B/8B
+尺度上的四大主流架构上表现得极为稳健（最优干预层均收敛在
+L11–L14），但如果未来基座模型扩展到 14B、32B 甚至 70B
+时，知识存储的中枢层带必然会发生漂移。</p>
+<ul>
+<li><strong>痛点</strong>：这意味着在面对超大模型时，研究人员必须重新做一遍
+4.5 章节那套高成本的“层消融实验（Layer
+Analysis）”，才能重新定位到新模型的“黄金干预窗口”。</li>
+</ul>
+<h1 id="附录">附录</h1>
+<p>超参数设置</p>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601144400758.png" alt="image-20260601144400758">
+<figcaption aria-hidden="true">image-20260601144400758</figcaption>
+</figure>
+<p>推理延迟</p>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601144445230.png" alt="image-20260601144445230">
+<figcaption aria-hidden="true">image-20260601144445230</figcaption>
+</figure>
+<p>我们在 LLaVA-1.5 上测量了每种方法的每 token 解码延迟，结果如表 5
+所示。CAS 在单次前向传播中仅对四个中早期层的 MLP
+输出进行加性残差操作，没有额外的前向传播，也没有对比解码。因此，其每
+token 延迟接近于 vanilla 方法，且远低于双前向方法（PAI / VCD /
+CODE）和多步搜索方法（OPERA）。</p>
+<h1 id="问题">问题</h1>
+<p>怎么想到提取这两个向量的</p>
+<p>为什么作用在mlp层，是类比lora吗</p>
+<p>TPP真的巧妙</p>
+<p>训练干预模型？</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/05/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/SSE(Server-send%20events)%E7%9A%84%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/05/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/SSE(Server-send%20events)%E7%9A%84%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">SSE(Server-send events)的原理及实现</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-05-25 00:00:00" itemprop="dateCreated datePublished" datetime="2026-05-25T00:00:00+08:00">2026-05-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-05-27 19:10:49" itemprop="dateModified" datetime="2026-05-27T19:10:49+08:00">2026-05-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/" itemprop="url" rel="index"><span itemprop="name">后端相关</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="sseserver-send-events">SSE(Server-send events)</h1>
+<p>SSE
+是一种<strong>单向通信</strong>技术，允许服务器主动向客户端（通常是浏览器）推送实时数据。</p>
+<p>在过去，网页想要获取服务器的实时数据，要么用<strong>短轮询</strong>（每隔几秒发一次
+HTTP 请求，低效且浪费资源），要么用
+<strong>WebSocket</strong>（双向奔赴，但协议较重，开发成本高）。而 SSE
+则是介于两者之间的一个轻量级极佳方案。</p>
+<h1 id="核心工作原理">核心工作原理</h1>
+<figure>
+<img src="/2026/05/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/SSE(Server-send%20events)%E7%9A%84%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E7%8E%B0/image-20260527185951958.png" alt="image-20260527185951958">
+<figcaption aria-hidden="true">image-20260527185951958</figcaption>
+</figure>
+<h3 id="建立长连接keep-alive">1. 建立长连接（Keep-Alive）</h3>
+<p>普通的 HTTP 请求是“一问一答”，服务器说完话连接就立刻断开。而 SSE
+在客户端发起请求后，服务器会返回特殊的响应头，告诉浏览器：“这个连接别挂断，后面还有货！”</p>
+<p>这组特殊的响应头通常是：</p>
+<ul>
+<li><code>Content-Type: text/event-stream</code>：告诉浏览器，这是一个流式的数据流。</li>
+<li><code>Cache-Control: no-cache</code>：禁止缓存，确保数据的实时性。</li>
+<li><code>Connection: keep-alive</code>：保持长连接。</li>
+</ul>
+<h3 id="文本流数据格式">2. 文本流数据格式</h3>
+<p>连接建立后，服务器就可以通过这个通道持续发送文本数据。SSE
+对发送的数据格式有严格的要求，它是由多条消息组成的文本流，每条消息内部用换行符
+<code>\n</code> 分隔，消息之间用两个换行符 <code>\n\n</code> 分隔。</p>
+<p>最基本的结构如下：</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data: 这是第一条消息\n\n</span><br></pre></td></tr></table></figure>
+<p><code>id: 1\n</code> <code>event: chat\n</code>
+<code>data: 这是第二条带事件类型和ID的消息\n\n</code></p>
+</blockquote>
+<h3 id="自带断线重连基因">3. 自带“断线重连”基因</h3>
+<p>在网络不稳定的现实世界中，连接断开是常有的事。SSE
+的高级之处在于，浏览器的原生
+API（<code>EventSource</code>）内置了<strong>自动重连机制</strong>：</p>
+<ul>
+<li>如果网络断开，浏览器会自动尝试重新连接服务器（默认每隔 3 秒）。</li>
+<li>服务器在发送数据时可以附带一个 <code>id</code>
+字段。断线重连时，浏览器会自动在 HTTP 请求头中带上
+<code>Last-Event-ID: [上次收到的ID]</code>。服务器看到后就能心领神会，把客户端错过的消息补发给它。</li>
+</ul>
 
       
     </div>
@@ -874,131 +2918,6 @@ API
 controls in the OpenAI platform</a></p>
 <p><a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/prompt-caching#prompt-cache-retention">Prompt
 caching | OpenAI API</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2026/05/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/SSE(Server-send%20events)%E7%9A%84%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E7%8E%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/05/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/SSE(Server-send%20events)%E7%9A%84%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">SSE(Server-send events)的原理及实现</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2026-05-25 00:00:00" itemprop="dateCreated datePublished" datetime="2026-05-25T00:00:00+08:00">2026-05-25</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-05-27 19:10:49" itemprop="dateModified" datetime="2026-05-27T19:10:49+08:00">2026-05-27</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/" itemprop="url" rel="index"><span itemprop="name">后端相关</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="sseserver-send-events">SSE(Server-send events)</h1>
-<p>SSE
-是一种<strong>单向通信</strong>技术，允许服务器主动向客户端（通常是浏览器）推送实时数据。</p>
-<p>在过去，网页想要获取服务器的实时数据，要么用<strong>短轮询</strong>（每隔几秒发一次
-HTTP 请求，低效且浪费资源），要么用
-<strong>WebSocket</strong>（双向奔赴，但协议较重，开发成本高）。而 SSE
-则是介于两者之间的一个轻量级极佳方案。</p>
-<h1 id="核心工作原理">核心工作原理</h1>
-<figure>
-<img src="/2026/05/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/SSE(Server-send%20events)%E7%9A%84%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E7%8E%B0/image-20260527185951958.png" alt="image-20260527185951958">
-<figcaption aria-hidden="true">image-20260527185951958</figcaption>
-</figure>
-<h3 id="建立长连接keep-alive">1. 建立长连接（Keep-Alive）</h3>
-<p>普通的 HTTP 请求是“一问一答”，服务器说完话连接就立刻断开。而 SSE
-在客户端发起请求后，服务器会返回特殊的响应头，告诉浏览器：“这个连接别挂断，后面还有货！”</p>
-<p>这组特殊的响应头通常是：</p>
-<ul>
-<li><code>Content-Type: text/event-stream</code>：告诉浏览器，这是一个流式的数据流。</li>
-<li><code>Cache-Control: no-cache</code>：禁止缓存，确保数据的实时性。</li>
-<li><code>Connection: keep-alive</code>：保持长连接。</li>
-</ul>
-<h3 id="文本流数据格式">2. 文本流数据格式</h3>
-<p>连接建立后，服务器就可以通过这个通道持续发送文本数据。SSE
-对发送的数据格式有严格的要求，它是由多条消息组成的文本流，每条消息内部用换行符
-<code>\n</code> 分隔，消息之间用两个换行符 <code>\n\n</code> 分隔。</p>
-<p>最基本的结构如下：</p>
-<blockquote>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data: 这是第一条消息\n\n</span><br></pre></td></tr></table></figure>
-<p><code>id: 1\n</code> <code>event: chat\n</code>
-<code>data: 这是第二条带事件类型和ID的消息\n\n</code></p>
-</blockquote>
-<h3 id="自带断线重连基因">3. 自带“断线重连”基因</h3>
-<p>在网络不稳定的现实世界中，连接断开是常有的事。SSE
-的高级之处在于，浏览器的原生
-API（<code>EventSource</code>）内置了<strong>自动重连机制</strong>：</p>
-<ul>
-<li>如果网络断开，浏览器会自动尝试重新连接服务器（默认每隔 3 秒）。</li>
-<li>服务器在发送数据时可以附带一个 <code>id</code>
-字段。断线重连时，浏览器会自动在 HTTP 请求头中带上
-<code>Last-Event-ID: [上次收到的ID]</code>。服务器看到后就能心领神会，把客户端错过的消息补发给它。</li>
-</ul>
 
       
     </div>
@@ -1422,7 +3341,7 @@ Engine）</strong>。</p>
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-06-05 13:59:30" itemprop="dateModified" datetime="2026-06-05T13:59:30+08:00">2026-06-05</time>
+      <time title="修改时间：2026-07-26 16:43:16" itemprop="dateModified" datetime="2026-07-26T16:43:16+08:00">2026-07-26</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1510,6 +3429,47 @@ target，答案就是 <code>n</code>）。</li>
 </ul>
 <p>2.1 标准版模板（容易死循环，需小心）</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">binary_search_2_standard</span>(<span class="params">nums, target</span>):</span><br><span class="line">    left, right = <span class="number">0</span>, <span class="built_in">len</span>(nums)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> left &lt; right:           <span class="comment"># 注意是 &lt;</span></span><br><span class="line">        <span class="comment"># 【防死循环核心】：如果后面有 left = mid，这里必须 +1 向上取整！</span></span><br><span class="line">        mid = (left + right + <span class="number">1</span>) // <span class="number">2</span> </span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> check(mid):            <span class="comment"># 假设满足条件时，答案在 mid 左边或就是 mid</span></span><br><span class="line">            right = mid           <span class="comment"># mid 可能是答案，保留它，缩小区间</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            left = mid + <span class="number">1</span>        <span class="comment"># mid 确定不是答案，踢掉</span></span><br></pre></td></tr></table></figure>
+<h1 id="dfs">dfs</h1>
+<p>给新手的回溯法总结：
+1）当组合中允许元素重复：则迭代的起始值就是i，每次递增
+2）当组合中不允许重复：迭代的起始值是i + 1，每次递增
+3）当这是排列不是组合：迭代的起始值是传进去的start（初始位），每次都从头开始遍历所有元素</p>
+<h2 id="组合">组合</h2>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/combinations/?envType=study-plan-v2&amp;envId=top-interview-150">77.
+组合 - 力扣（LeetCode）</a></p>
+<p>从 <span class="math inline"><em>n</em></span> 个不同的元素中取出
+<span class="math inline"><em>k</em></span>
+个元素，<strong>不考虑选出的顺序</strong>，只关心“<strong>最终选到了哪些元素</strong></p>
+<figure>
+<img src="/2026/05/21/%E7%AE%97%E6%B3%95/%E6%9D%BF%E5%AD%90/image-20260726142117371.png" alt="image-20260726142117371">
+<figcaption aria-hidden="true">image-20260726142117371</figcaption>
+</figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    vector&lt;vector&lt;int&gt;&gt; ans;</span><br><span class="line">    vector&lt;int&gt; path;</span><br><span class="line">    void dfs(int n, int k,int cur)&#123;</span><br><span class="line">        if(path.size()+n-cur+1&lt;k) return;</span><br><span class="line">        if(path.size()==k)&#123;</span><br><span class="line">            ans.push_back(path);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        for(int i=cur;i&lt;=n;i++)&#123;</span><br><span class="line">            path.push_back(i);</span><br><span class="line">            dfs(n,k,i+1);</span><br><span class="line">            path.pop_back();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    vector&lt;vector&lt;int&gt;&gt; combine(int n, int k) &#123;</span><br><span class="line">        dfs(n,k,1);</span><br><span class="line">        return ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="排列">排列</h2>
+<p>从 <span class="math inline"><em>n</em></span> 个不同的元素中取出
+<span class="math inline"><em>k</em></span>
+个元素，<strong>严格考虑选出的顺序</strong>。相同的元素，只要顺序不同，就是不同的排列。</p>
+<p>https://leetcode.cn/problems/permutations?envType=study-plan-v2&amp;envId=top-interview-150</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    vector&lt;vector&lt;int&gt;&gt; ans;</span><br><span class="line">    vector&lt;int&gt; path;</span><br><span class="line">    vector&lt;int&gt; visited;</span><br><span class="line">    void dfs(int n,vector&lt;int&gt; &amp;nums)&#123;</span><br><span class="line">        if(n==nums.size())&#123;</span><br><span class="line">            ans.push_back(path);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        for(int i=0;i&lt;nums.size();i++)&#123;</span><br><span class="line">            if(visited[i]) continue;</span><br><span class="line">            path.push_back(nums[i]);</span><br><span class="line">            visited[i]=1;</span><br><span class="line">            dfs(n+1,nums);</span><br><span class="line">            path.pop_back();</span><br><span class="line">            visited[i]=0;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    vector&lt;vector&lt;int&gt;&gt; permute(vector&lt;int&gt;&amp; nums) &#123;</span><br><span class="line">        visited = vector&lt;int&gt;(nums.size(), 0);</span><br><span class="line">        dfs(0,nums);</span><br><span class="line">        return ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="图">图</h1>
+<h2 id="邻接表建图bfs">邻接表建图+bfs</h2>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/evaluate-division/description/?envType=study-plan-v2&amp;envId=top-interview-150">399.
+除法求值 - 力扣（LeetCode）</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;bits/stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    double bfs(string src,string dst,unordered_map&lt;string,unordered_map&lt;string,double&gt;&gt; &amp;mp)&#123;</span><br><span class="line">        if(!mp.count(src))return -1;</span><br><span class="line">        queue&lt;pair&lt;string,double&gt;&gt; q;</span><br><span class="line">        q.push(&#123;src,1.0&#125;);</span><br><span class="line">        unordered_set&lt;string&gt; visited;</span><br><span class="line">        visited.insert(src);</span><br><span class="line">        while (!q.empty())</span><br><span class="line">        &#123;</span><br><span class="line">            pair&lt;string,double&gt; node=q.front();</span><br><span class="line">            q.pop();</span><br><span class="line">            string a=node.first;</span><br><span class="line">            double val=node.second;</span><br><span class="line">            if(a==dst)&#123;</span><br><span class="line">                return val;</span><br><span class="line">            &#125;</span><br><span class="line">            for(auto &amp;[neighbour,weight]:mp[a])&#123;</span><br><span class="line">                if(!visited.count(neighbour))&#123;</span><br><span class="line">                    visited.insert(neighbour);</span><br><span class="line">                    q.push(&#123;neighbour,weight*val&#125;);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return -1.0;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    vector&lt;double&gt; calcEquation(vector&lt;vector&lt;string&gt;&gt;&amp; equations, vector&lt;double&gt;&amp; values, vector&lt;vector&lt;string&gt;&gt;&amp; queries) &#123;</span><br><span class="line">        unordered_map&lt;string,unordered_map&lt;string,double&gt;&gt; mp;</span><br><span class="line">        int i=0;</span><br><span class="line">        for(auto &amp;equation:equations)&#123;</span><br><span class="line">            string a=equation[0],b=equation[1];</span><br><span class="line">            mp[a][b]=values[i];</span><br><span class="line">            mp[b][a]=1.0/values[i];</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">        vector&lt;double&gt; ans;</span><br><span class="line">        for(auto &amp;query:queries)&#123;</span><br><span class="line">            ans.push_back(bfs(query[0],query[1],mp));</span><br><span class="line">        &#125;</span><br><span class="line">        return ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="拓扑排序判断有向图是否存在环">拓扑排序：判断有向图是否存在环</h2>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1XV411X7T7/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">图-拓扑排序_哔哩哔哩_bilibili</a></p>
+<p>Kahn 算法（基于“入度”的 BFS 拓扑排序）</p>
+<p><strong>入度（In-degree）</strong>：一个节点被多少条有向边指向（即这门课需要多少门先修课）。</p>
+<p>如果一门课的<strong>入度为
+0</strong>，说明它<strong>不需要任何先修课</strong>，可以直接修读！</p>
+<p>我们把所有入度为 0
+的课放入队列。修完一门课后，把它指向的后继课程的“先修要求”去掉（<strong>后继课程的入度
+-1</strong>）。</p>
+<p>如果某门后继课程的入度减到了 0，说明它的先修课全修完了，也入队。</p>
+<p><strong>终局判断</strong>：最后统计修完的课程总数。如果等于 <span class="math inline"><em>V</em></span>，说明无环；否则说明图中存在互相依赖的“死锁环”。</p>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/course-schedule/description/?envType=study-plan-v2&amp;envId=top-interview-150">207.
+课程表 - 力扣（LeetCode）</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool canFinish(int numCourses, vector&lt;vector&lt;int&gt;&gt;&amp; prerequisites) &#123;</span><br><span class="line">        vector&lt;vector&lt;int&gt;&gt; graph(numCourses);</span><br><span class="line">        vector&lt;int&gt; inDegree(numCourses, 0);</span><br><span class="line"></span><br><span class="line">        for(auto &amp;pre : prerequisites)&#123;</span><br><span class="line">            int a = pre[0];</span><br><span class="line">            int b = pre[1];</span><br><span class="line">            graph[b].push_back(a);</span><br><span class="line">            inDegree[a]++;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        queue&lt;int&gt; q;</span><br><span class="line">        for(int i = 0; i &lt; numCourses; i++)&#123;</span><br><span class="line">            if(inDegree[i] == 0)&#123;</span><br><span class="line">                q.push(i);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        int count = 0;</span><br><span class="line">        while(!q.empty())&#123;</span><br><span class="line">            int cur = q.front();</span><br><span class="line">            q.pop();</span><br><span class="line">            count++;</span><br><span class="line"></span><br><span class="line">            for(int neighbour : graph[cur])&#123;</span><br><span class="line">                inDegree[neighbour]--;</span><br><span class="line">                if(inDegree[neighbour] == 0)&#123;</span><br><span class="line">                    q.push(neighbour);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return count == numCourses;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <h1 id="排序">排序</h1>
 <figure>
 <img src="/2026/05/21/%E7%AE%97%E6%B3%95/%E6%9D%BF%E5%AD%90/image-20260604103056976.png" alt="image-20260604103056976">
@@ -1578,6 +3538,48 @@ O(log n)，时间复杂度 O(n log n)。</p>
 </ol>
 <p>空间复杂度 <strong>O(n)</strong>，时间复杂度 O(n log n)，稳定。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">from typing import List</span><br><span class="line">import random</span><br><span class="line">def sortArray(nums: List[int]) -&gt; List[int]:</span><br><span class="line">    ans=[0]*len(nums)</span><br><span class="line">    def merge_sort(nums,left,right):</span><br><span class="line">        if left&gt;=right:return</span><br><span class="line">        </span><br><span class="line">        mid=(left+right)//2</span><br><span class="line">        merge_sort(nums,left,mid)</span><br><span class="line">        merge_sort(nums,mid+1,right)</span><br><span class="line">        index=left</span><br><span class="line">        i,j=left,mid+1</span><br><span class="line">        while i&lt;=mid and j&lt;=right:</span><br><span class="line">            if nums[i]&gt;nums[j]:</span><br><span class="line">                ans[index]=nums[j]</span><br><span class="line">                index+=1</span><br><span class="line">                j+=1</span><br><span class="line">            else:</span><br><span class="line">                ans[index]=nums[i]</span><br><span class="line">                index+=1</span><br><span class="line">                i+=1</span><br><span class="line">        if i&lt;=mid:</span><br><span class="line">            ans[index:right+1]=nums[i:mid+1]</span><br><span class="line">        else:</span><br><span class="line">            ans[index:right+1]=nums[j:right+1]</span><br><span class="line">        nums[left:right+1]=ans[left:right+1]</span><br><span class="line">    merge_sort(nums,0,len(nums)-1)</span><br><span class="line">        </span><br><span class="line">    return ans</span><br></pre></td></tr></table></figure>
+<p>问：代码中的 nums[i] &lt; pivot 和 nums[i] &gt; pivot 能否改成
+nums[i] &lt;= pivot 和 nums[i] &gt;= pivot？</p>
+<p>答：这个做法会在子数组所有元素相同时，划分后的 j
+是子数组最后一个元素的下标，是最不均匀划分，算法会退化至 O(n**2)。</p>
+<p>问：代码中的 i &lt;= j 能否改成 i &lt; j？</p>
+<p>答：这会算错。来看一个例子 nums=[2,1,3]，pivot=2。左指针 i=1 移动到
+i=2，右指针 j=2 因为不满足 i &lt; j 的条件，无法移动。此时我们交换 2 和
+nums[j]=3，得到 [3,1,2]，返回 j=2。然而 j=2 左侧有大于 pivot=2
+的元素，划分失败。</p>
+<p>如果写成 i &lt;= j，那么最终 i=2，j=1。此时我们交换 2 和
+nums[j]=1，得到 [1,2,3]，返回 j=1。这样的划分就是正确的。</p>
+<h2 id="堆排序">堆排序</h2>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1HYtseiEQ8/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">数据结构合集
+- 堆与堆排序(算法过程, 效率分析, 稳定性分析)_哔哩哔哩_bilibili</a></p>
+<figure>
+<img src="/2026/05/21/%E7%AE%97%E6%B3%95/%E6%9D%BF%E5%AD%90/image-20260623120621616.png" alt="image-20260623120621616">
+<figcaption aria-hidden="true">image-20260623120621616</figcaption>
+</figure>
+<figure>
+<img src="/2026/05/21/%E7%AE%97%E6%B3%95/%E6%9D%BF%E5%AD%90/image-20260623121353399.png" alt="image-20260623121353399">
+<figcaption aria-hidden="true">image-20260623121353399</figcaption>
+</figure>
+<p>不稳定</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def sortArray(self, nums: List[int]) -&gt; List[int]:</span><br><span class="line"></span><br><span class="line">        def heap(index,nums,n):</span><br><span class="line">            #维护操作，比较左右节点是否都小于根节点，然后递归</span><br><span class="line">            left=index*2+1</span><br><span class="line">            right=index*2+2</span><br><span class="line">            maxindex=index</span><br><span class="line"></span><br><span class="line">            # if left&lt;n and nums[left]&gt;nums[index]:</span><br><span class="line">            #     nums[left],nums[index]=nums[index],nums[left]</span><br><span class="line">            #     heap(left,nums)</span><br><span class="line">            # 先找左右节点哪个最大</span><br><span class="line">            if left&lt;n and nums[left]&gt;nums[maxindex]:</span><br><span class="line">                maxindex=left</span><br><span class="line">            if right&lt;n and nums[right]&gt;nums[maxindex]:</span><br><span class="line">                maxindex=right</span><br><span class="line">            if maxindex!=index:</span><br><span class="line">                #说明有变化，换位置，然后递归</span><br><span class="line">                nums[maxindex],nums[index]=nums[index],nums[maxindex]</span><br><span class="line">                heap(maxindex,nums,n)</span><br><span class="line">        def heap_sort(nums):</span><br><span class="line">            n=len(nums)</span><br><span class="line">            #建堆,从最后一个非叶子节点开始，往下维护大根堆</span><br><span class="line">            for i in range(n//2-1,-1,-1):</span><br><span class="line">                heap(i,nums,n)</span><br><span class="line">            #排序，建堆后，第一个位置一定最大，移动到最后，然后再对第一个建堆维护</span><br><span class="line">            for i in range(n-1,0,-1):</span><br><span class="line">                nums[0],nums[i]=nums[i],nums[0]</span><br><span class="line">                heap(0,nums,i)</span><br><span class="line">            return nums</span><br><span class="line">        </span><br><span class="line">        return heap_sort(nums)</span><br></pre></td></tr></table></figure>
+<p>堆排序就是反复建堆的过程是吗，但是最小堆的数据结构，不需要维护数组有序，只要保证第一个元素是最小的就行，大根堆就是维护第一个元素最大</p>
+<ul>
+<li><strong>堆的性质</strong>：你理解得很对，局部有序，全局无序，只保堆顶。</li>
+<li><strong>堆排序的本质</strong>：<strong>建一次堆（O(N)） +
+反复调整堆（N次 O(log N)）</strong> = 总时间复杂度 <strong>O(N log
+N)</strong>。</li>
+</ul>
+<p>堆的方法</p>
+<ul>
+<li><strong>上浮 (Sift Up)</strong> 专门用于：<strong>插入新元素
+(<code>heappush</code>)</strong></li>
+<li><strong>下沉 (Sift Down)</strong> 专门用于：<strong>删除堆顶
+(<code>heappop</code>)</strong> 和 <strong>批量建堆
+(<code>heapify</code>)</strong></li>
+</ul>
+<p>heappush是在列表后面新加一个元素，也就是加一个叶子节点，这个叶子节点要以此查看自己的父亲节点，维护堆的性质，称之为上浮</p>
+<p>heappop是弹出最大/最小元素，其实是弹出arr[0]，，但左右子树依旧是保持着堆的性质，那其实思路就是和最后一个叶子节点交换位置，然后利用数组的pop弹出，再进行一次下沉操作</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">class minheap:</span><br><span class="line">    def __init__(self,arr=None):</span><br><span class="line">        self.heap=[]</span><br><span class="line">        if arr:</span><br><span class="line">            self.heapify(arr)</span><br><span class="line"></span><br><span class="line">    def __heapdown(self,index:int,n:int):</span><br><span class="line">        left=index*2+1</span><br><span class="line">        right=index*2+2</span><br><span class="line">        minindex=index</span><br><span class="line">        if right&lt;n and self.heap[right]&lt;self.heap[minindex]:</span><br><span class="line">            minindex=right</span><br><span class="line">        if left&lt;n and self.heap[left]&lt;self.heap[minindex]:</span><br><span class="line">            minindex=left</span><br><span class="line">        if minindex!=index:</span><br><span class="line">            self.heap[minindex],self.heap[index]=self.heap[index],self.heap[minindex]</span><br><span class="line">            self.__heapdown(minindex,n)</span><br><span class="line">    </span><br><span class="line">    def heapify(self,arr:list):</span><br><span class="line">        self.heap=arr[:]</span><br><span class="line">        n = len(self.heap)</span><br><span class="line">        # 从最后一个非叶子节点开始，逆序遍历，依次下沉</span><br><span class="line">        for i in range(n // 2 - 1, -1, -1):</span><br><span class="line">            self.__heapdown(i, n)</span><br><span class="line"></span><br><span class="line">    def heappop(self):</span><br><span class="line">        if not self.heap:  # ✅ 添加空堆检查</span><br><span class="line">            return None</span><br><span class="line">            </span><br><span class="line">        if len(self.heap) == 1:  # ✅ 只有一个元素时直接弹出</span><br><span class="line">            return self.heap.pop()</span><br><span class="line">        #先和最后一个元素交换，然后pop，再下沉操作</span><br><span class="line">        n=len(self.heap)-1</span><br><span class="line">        self.heap[0],self.heap[n]=self.heap[n],self.heap[0]</span><br><span class="line">        #下沉操作</span><br><span class="line">        self.__heapdown(0,n)# ✅ 修正：传入 n 而不是 n-1，这个n是数量，不是下标</span><br><span class="line"></span><br><span class="line">        #返回最大值并弹出</span><br><span class="line">        return self.heap.pop()</span><br><span class="line">    def heappush(self,num:int):</span><br><span class="line">        self.heap.append(num)</span><br><span class="line">        #进行上浮操作，以此比较父亲节点</span><br><span class="line">        index=len(self.heap)-1</span><br><span class="line">        while index&gt;0:</span><br><span class="line">            parent=(index-1)//2</span><br><span class="line">            if self.heap[index]&lt;self.heap[parent]:</span><br><span class="line">                self.heap[index],self.heap[parent]=self.heap[parent],self.heap[index]</span><br><span class="line">                index=parent</span><br><span class="line">            else:</span><br><span class="line">                break</span><br><span class="line">        </span><br></pre></td></tr></table></figure>
 <h1 id="二叉树">二叉树</h1>
 <h2 id="前中后序遍历">前中后序遍历</h2>
 <table>
@@ -1642,9 +3644,11 @@ O(log n)，时间复杂度 O(n log n)。</p>
 </ul>
 <p>前序遍历</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">class TreeNode:</span><br><span class="line">    def __init__(self, val=0, left=None, right=None):</span><br><span class="line">        self.val = val</span><br><span class="line">        self.left = left</span><br><span class="line">        self.right = right</span><br><span class="line">class Solution:</span><br><span class="line">	#递归版</span><br><span class="line">    def preorderTraversal(root: Optional[TreeNode]) -&gt; List[int]:</span><br><span class="line">        ans=[]</span><br><span class="line">        def dfs(node:TreeNode):</span><br><span class="line">            if not node:</span><br><span class="line">                return</span><br><span class="line">            ans.append(node.val)</span><br><span class="line">            if node.left:dfs(node.left)</span><br><span class="line">            if node.right:dfs(node.right)</span><br><span class="line">        dfs(root)</span><br><span class="line">        return ans</span><br><span class="line">    #栈</span><br><span class="line">    def preorderTraversal_stack(root: Optional[TreeNode]) -&gt; List[int]:</span><br><span class="line">        ans=[]</span><br><span class="line">        stack=[]</span><br><span class="line">        stack.append(root)</span><br><span class="line">        while stack:</span><br><span class="line">            node:TreeNode=stack.pop()</span><br><span class="line">            if not node:</span><br><span class="line">                continue</span><br><span class="line">            ans.append(node.val)</span><br><span class="line">            if node.right:stack.append(node.right)#注意和dfs的差别</span><br><span class="line">            if node.left:stack.append(node.left)</span><br><span class="line">        return ans</span><br></pre></td></tr></table></figure>
+<p>中序遍历栈的写法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    vector&lt;int&gt; inorderTraversal(TreeNode* root) &#123;</span><br><span class="line">        vector&lt;int&gt; result;</span><br><span class="line">        stack&lt;TreeNode*&gt; st;</span><br><span class="line">        TreeNode* curr = root;</span><br><span class="line">        </span><br><span class="line">        // 当 curr 不为空 或 栈不为空 时继续</span><br><span class="line">        while (curr != nullptr || !st.empty()) &#123;</span><br><span class="line">            </span><br><span class="line">            // 第1步：一路向左，全部压栈</span><br><span class="line">            while (curr != nullptr) &#123;</span><br><span class="line">                st.push(curr);</span><br><span class="line">                curr = curr-&gt;left;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            // 第2步：弹出栈顶（最左节点），访问它</span><br><span class="line">            curr = st.top();</span><br><span class="line">            st.pop();</span><br><span class="line">            result.push_back(curr-&gt;val);  // 访问节点</span><br><span class="line">            </span><br><span class="line">            // 第3步：转向右子树</span><br><span class="line">            curr = curr-&gt;right;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>层序遍历</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def levelOrder(root: Optional[TreeNode]) -&gt; List[List[int]]:</span><br><span class="line">        ans=[]</span><br><span class="line">        queue=deque()</span><br><span class="line">        if not root:return ans</span><br><span class="line">        queue.append(root)</span><br><span class="line">        while queue:</span><br><span class="line">            n=len(queue)</span><br><span class="line">            temp=[]</span><br><span class="line">            for _ in range(n):</span><br><span class="line">                node:TreeNode=queue.popleft()</span><br><span class="line">                if not node:continue</span><br><span class="line">                temp.append(node.val)</span><br><span class="line">                if node.left:queue.append(node.left)</span><br><span class="line">                if node.right:queue.append(node.right)</span><br><span class="line">            ans.append(temp)</span><br><span class="line">        return ans</span><br></pre></td></tr></table></figure>
-<h1 id="二叉树的构造前序中序后序中序层序中序构造二叉树">二叉树的构造(前序中序、后序中序、层序中序构造二叉树)</h1>
+<h2 id="二叉树的构造前序中序后序中序层序中序构造二叉树">二叉树的构造(前序中序、后序中序、层序中序构造二叉树)</h2>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1RtezzTEz9?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">数据结构合集
 -
 二叉树的构造(前序中序、后序中序、层序中序构造二叉树)_哔哩哔哩_bilibili</a></p>
@@ -1657,6 +3661,210 @@ O(log n)，时间复杂度 O(n log n)。</p>
 <figcaption aria-hidden="true">image-20260605130441466</figcaption>
 </figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">class Solution:</span><br><span class="line">    def buildTree(preorder: List[int], inorder: List[int]) -&gt; Optional[TreeNode]:</span><br><span class="line">        if not preorder and not inorder:</span><br><span class="line">            return None</span><br><span class="line">        hashmap=&#123;&#125;</span><br><span class="line">        for index,val in enumerate(inorder):</span><br><span class="line">            hashmap[val]=index</span><br><span class="line">        n=len(preorder)</span><br><span class="line">        def dfs(in_left,in_right,pre_left,pre_right):</span><br><span class="line">            if in_right-in_left&lt;0:</span><br><span class="line">                return None</span><br><span class="line">            pivot_index=hashmap[preorder[pre_left]]</span><br><span class="line">            node=TreeNode()</span><br><span class="line">            node.val=preorder[pre_left]</span><br><span class="line">            size=pivot_index-in_left</span><br><span class="line">            node.left=dfs(in_left,pivot_index-1,pre_left+1,pre_left+size)</span><br><span class="line">            node.right=dfs(pivot_index+1,in_right,pre_left+size+1,pre_right)</span><br><span class="line"></span><br><span class="line">            return node</span><br><span class="line">        root:TreeNode=dfs(0,n-1,0,n-1)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        return root</span><br></pre></td></tr></table></figure>
+<h2 id="二叉搜索树">二叉搜索树</h2>
+<p>对于树中的<strong>任意一个节点</strong>，必须同时满足以下三个条件：</p>
+<ol type="1">
+<li><strong>左小</strong>：它<strong>左子树</strong>上的所有节点值，都<strong>严格小于</strong>它自己的值。</li>
+<li><strong>右大</strong>：它<strong>右子树</strong>上的所有节点值，都<strong>严格大于</strong>它自己的值。</li>
+<li><strong>递归</strong>：它的左子树和右子树，也必须分别是二叉搜索树。</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">    8</span><br><span class="line">   / \</span><br><span class="line">  3   10</span><br><span class="line"> / \    \</span><br><span class="line">1   6    14</span><br><span class="line">   / \   /</span><br><span class="line">  4   7 13</span><br></pre></td></tr></table></figure>
+<p>考点 1：中序遍历 = 升序数组（最重要！）</p>
+<p>对 BST 进行<strong>中序遍历</strong>（左 -&gt; 根 -&gt;
+右），得到的结果<strong>一定是一个从小到大排好序的数组</strong>！ *
+上面那棵树的中序遍历：<code>1, 3, 4, 6, 7, 8, 10, 13, 14</code>。 *
+<strong>应用</strong>：很多题目让你找 BST 的第 K 小元素、验证是不是
+BST、找两个节点的差值最小，<strong>全部用中序遍历解决</strong>。</p>
+<p>考点 2：查找/插入/删除不需要遍历全树</p>
+<p>普通二叉树找东西要遍历所有节点（<span class="math inline"><em>O</em>(<em>N</em>)</span>），但 BST
+只需要顺着“左小右大”的路径走，<strong>不需要回溯</strong>，一路走下去就行（<span class="math inline"><em>O</em>(<em>H</em>)</span>，H是树高）。</p>
+<p>考点 3：警惕“退化成链表”</p>
+<p>如果插入的数据本来就是有序的（比如 1, 2, 3, 4, 5），BST 会变成这样：
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1</span><br><span class="line"> \</span><br><span class="line">  2</span><br><span class="line">   \</span><br><span class="line">    3</span><br><span class="line">     \</span><br><span class="line">      4</span><br></pre></td></tr></table></figure> 这时候它退化成了链表，查找速度变成了 <span class="math inline"><em>O</em>(<em>N</em>)</span>。
+<em>(为了解决这个问题，大佬们发明了“平衡二叉搜索树”，如
+AVL树、红黑树。C++ 里的 <code>set</code> 和 <code>map</code>
+底层就是红黑树。)</em></p>
+<h2 id="完全二叉树">完全二叉树</h2>
+<table>
+<colgroup>
+<col style="width: 20%">
+<col style="width: 34%">
+<col style="width: 13%">
+<col style="width: 32%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">类型</th>
+<th style="text-align: left;">定义</th>
+<th style="text-align: left;">形状</th>
+<th style="text-align: left;">节点数公式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>满二叉树</strong>
+(Full/Perfect)</td>
+<td style="text-align: left;">每一层都填满了，<strong>最后一层也是满的</strong>。</td>
+<td style="text-align: left;">完美的三角形</td>
+<td style="text-align: left;"><span class="math inline">2<sup><em>h</em></sup> − 1</span></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>完全二叉树</strong>
+(Complete)</td>
+<td style="text-align: left;">上面都满了，<strong>最后一层可以不满，但必须靠左</strong>。</td>
+<td style="text-align: left;">缺了右下角的三角形</td>
+<td style="text-align: left;">无固定公式，但在 <span class="math inline">2<sup><em>h</em> − 1</sup></span> 到 <span class="math inline">2<sup><em>h</em></sup> − 1</span> 之间</td>
+</tr>
+</tbody>
+</table>
+<p>C++ 里的
+<code>priority_queue</code>（优先队列），底层就是用<strong>完全二叉树</strong>实现的，而且它通常<strong>不用指针（TreeNode*）来存，而是用数组（vector）来存</strong>！</p>
+<p><strong>数组下标的魔法公式</strong>（假设根节点下标为
+<code>i</code>）：</p>
+<ul>
+<li><strong>左孩子</strong>的下标是：<code>2 * i + 1</code></li>
+<li><strong>右孩子</strong>的下标是：<code>2 * i + 2</code></li>
+<li><strong>父节点</strong>的下标是：<code>(i - 1) / 2</code></li>
+</ul>
+<figure>
+<img src="/2026/05/21/%E7%AE%97%E6%B3%95/%E6%9D%BF%E5%AD%90/image-20260627113832645.png" alt="image-20260627113832645">
+<figcaption aria-hidden="true">image-20260627113832645</figcaption>
+</figure>
+<h1 id="模式匹配">模式匹配</h1>
+<h2 id="kmp">kmp</h2>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1AY4y157yL/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">最浅显易懂的
+KMP 算法讲解_哔哩哔哩_bilibili</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1PD4y1o7nd/?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">帮你把KMP算法学个通透！（理论篇）_哔哩哔哩_bilibili</a></p>
+<p><code>nextval</code> 数组是 KMP
+算法的究极优化体。它通过在预处理时加入一步判断，<strong>消除了模式串中连续重复字符导致的无意义回溯</strong>。当字符发生错配时，<code>nextval</code>
+能让指针<strong>一步跳跃到真正有效的下一个截然不同的待匹配字符</strong>，将最坏情况下的回溯开销降到了极致。”</p>
+<h1 id="python">python</h1>
+<h2 id="字符串">字符串</h2>
+<h3 id="split">split()</h3>
+<p><strong>将字符串按照指定的分隔符“切割”，并返回一个列表（List）</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">str.split(sep=None, maxsplit=-1)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong><code>sep</code></strong>：分隔符（字符串）。如果不传，默认按<strong>空白字符</strong>（空格、换行符
+<code>\n</code>、制表符 <code>\t</code> 等）分割。</li>
+<li><strong><code>maxsplit</code></strong>：最大分割次数。如果不传，默认
+<code>-1</code>（表示不限制次数，有多少切多少）。</li>
+</ul>
+<h3 id="join"><strong>join() </strong></h3>
+<p><strong>是把列表（或任何可迭代对象）“拼”成字符串</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">chars = [&#x27;H&#x27;, &#x27;e&#x27;, &#x27;l&#x27;, &#x27;l&#x27;, &#x27;o&#x27;]</span><br><span class="line">word = &quot;&quot;.join(chars)</span><br><span class="line">print(word)  </span><br><span class="line"># 输出: Hello</span><br></pre></td></tr></table></figure>
+<h3 id="isdigit">isdigit()</h3>
+<p><strong>判断一个字符串是否“完全由数字字符组成”。</strong>
+如果是，返回
+<code>True</code>；只要包含一个非数字字符（或者字符串为空），就返回
+<code>False</code>。</p>
+<h2 id="栈队列">栈，队列</h2>
+<h3 id="deque">deque</h3>
+<p><code>deque</code> 是 <strong>double-ended
+queue</strong>（双端队列）的缩写</p>
+<p><code>deque</code>
+专门为<strong>两端</strong>的高效操作进行了优化，<strong>在头部和尾部添加、删除元素的速度都非常快，都是
+O(1) 的时间复杂度</strong>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from collections import deque</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>append(x)</code>：从<strong>右边（尾部）</strong>
+添加元素。</li>
+<li><code>appendleft(x)</code>：从<strong>左边（头部）</strong>
+添加元素。</li>
+<li><code>pop()</code>：从<strong>右边（尾部）</strong>
+移除并返回元素。</li>
+<li><code>popleft()</code>：从<strong>左边（头部）</strong>
+移除并返回元素。</li>
+</ul>
+<h2 id="random-模块"><strong><code>random</code></strong> 模块</h2>
+<p><strong><code>random.randint(a, b)</code></strong>：生成一个
+<code>[a, b]</code> 范围内的随机整数（<strong>包含 a 和
+b</strong>）。</p>
+<h2 id="堆">堆</h2>
+<p><code>heapq</code> 是 Python
+的内置标准库模块，用于实现<strong>堆（Heap）*<em>数据结构，特别适合做*</em>优先队列</strong>。</p>
+<ol type="1">
+<li><strong>默认是最小堆</strong>（Min Heap）：堆顶永远是最小元素</li>
+<li><strong>基于列表实现</strong>：直接在普通 list 上操作</li>
+<li><strong>时间复杂度</strong>：插入和删除都是 O(log n)</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">import heapq</span><br><span class="line"># 方法1：空列表 + heappush</span><br><span class="line">heap = []</span><br><span class="line">heapq.heappush(heap, 3)</span><br><span class="line">heapq.heappush(heap, 1)</span><br><span class="line">heapq.heappush(heap, 4)</span><br><span class="line">print(heap)  # 输出: [1, 3, 4]  堆顶是最小值 1</span><br><span class="line"></span><br><span class="line"># 方法2：heapify 快速建堆</span><br><span class="line">nums = [3, 1, 4, 1, 5, 9, 2, 6]</span><br><span class="line">heapq.heapify(nums)  # 原地转换，O(n)</span><br><span class="line"></span><br><span class="line"># 弹出最小值 O(log n)</span><br><span class="line">min_val = heapq.heappop(heap)</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>说明</th>
+<th>时间复杂度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>heappush(heap, item)</code></td>
+<td>插入元素</td>
+<td>O(log n)</td>
+</tr>
+<tr>
+<td><code>heappop(heap)</code></td>
+<td>弹出最小值</td>
+<td>O(log n)</td>
+</tr>
+</tbody>
+</table>
+<h1 id="cpp">cpp</h1>
+<h2 id="堆-1">堆</h2>
+<p>在 C++ 中，建立最小堆（Min-Heap）最常用的工具是标准库
+<code>&lt;queue&gt;</code> 中的
+<code>priority_queue</code>（优先队列）。</p>
+<p>默认情况下，<code>priority_queue</code>
+是<strong>最大堆</strong>（大的元素在顶端）。要变成<strong>最小堆</strong>，你需要修改它的模板参数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;queue&gt;</span><br><span class="line">#include &lt;vector&gt;</span><br><span class="line">#include &lt;functional&gt; // 包含 greater</span><br><span class="line"></span><br><span class="line">// 语法：priority_queue&lt;数据类型, 容器类型, 比较方式&gt;</span><br><span class="line">priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt; minHeap;</span><br><span class="line"></span><br><span class="line">// 1. 定义一个比较结构体</span><br><span class="line">struct cmp &#123;</span><br><span class="line">    // 注意：这里的参数类型要和堆里存的一样，是 ListNode*</span><br><span class="line">    // 返回 true 表示 a 的优先级比 b 低（a 应该沉下去，b 浮上来）</span><br><span class="line">    bool operator()(ListNode* a, ListNode* b) &#123;</span><br><span class="line">        return a-&gt;val &gt; b-&gt;val; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">// 2. 声明最小堆</span><br><span class="line">// 参数1: 存的数据类型 (ListNode*)</span><br><span class="line">// 参数2: 底层容器 (vector&lt;ListNode*&gt;)</span><br><span class="line">// 参数3: 刚才写的比较规则 (cmp)</span><br><span class="line">priority_queue&lt;ListNode*, vector&lt;ListNode*&gt;, cmp&gt; minHeap;</span><br></pre></td></tr></table></figure>
+<h2 id="万能头文件">万能头文件</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;bits/stdc++.h&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="结构体">结构体</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">struct node</span><br><span class="line">        &#123;</span><br><span class="line">            int val;</span><br><span class="line">            int index1;</span><br><span class="line">            int index2;</span><br><span class="line">            node(int v,int i1,int i2):val(v),index1(i1),index2(i2)&#123;&#125;</span><br><span class="line">        &#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="的用法初始化对象-容器函数传参上下文推导">{}的用法：初始化对象 /
+容器；函数传参（上下文推导）</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// 1. 容器</span><br><span class="line">vector&lt;int&gt; v = &#123;1, 2, 3&#125;;          // 列表初始化</span><br><span class="line">map&lt;string, int&gt; m = &#123;&#123;&quot;A&quot;, 1&#125;&#125;;    // 嵌套花括号初始化键值对</span><br><span class="line"></span><br><span class="line">// 2. 结构体 / 聚合类（所有成员 public）</span><br><span class="line">struct Point &#123; int x; int y; &#125;;</span><br><span class="line">Point p = &#123;10, 20&#125;;                 // ✅ 完美匹配</span><br><span class="line"></span><br><span class="line">// 3. std::pair / std::tuple</span><br><span class="line">pair&lt;int, string&gt; p = &#123;1, &quot;hello&quot;&#125;; // ✅ 合法，编译器自动转成 pair</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">queue&lt;pair&lt;TreeNode*, int&gt;&gt; q;</span><br><span class="line"></span><br><span class="line">// ❌ 错误：不能直接 auto 接收</span><br><span class="line">auto temp = &#123;root, root-&gt;val&#125;; </span><br><span class="line"></span><br><span class="line">// ✅ 正确：push 函数要求 pair，编译器看到目标类型，自动把 &#123;&#125; 转换成 pair</span><br><span class="line">q.push(&#123;root, root-&gt;val&#125;); </span><br><span class="line"></span><br><span class="line">// ✅ 正确：make_pair 明确要求返回 pair</span><br><span class="line">auto temp = make_pair(root, root-&gt;val);</span><br></pre></td></tr></table></figure>
+<h2 id="auto用法">auto用法</h2>
+<p>拯救冗长的 STL 类型</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">priority_queue&lt;pair&lt;int, pair&lt;int, int&gt;&gt;, vector&lt;...&gt;, cmp&gt; pq;</span><br><span class="line"></span><br><span class="line">// 不用 auto（折磨）：</span><br><span class="line">pair&lt;int, pair&lt;int, int&gt;&gt; top_element = pq.top(); </span><br><span class="line"></span><br><span class="line">// 用 auto（清爽）：</span><br><span class="line">auto top_element = pq.top(); // 编译器自动推导</span><br></pre></td></tr></table></figure>
+<p>遍历容器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;string&gt; names = &#123;&quot;Alice&quot;, &quot;Bob&quot;&#125;;</span><br><span class="line"></span><br><span class="line">// 爽！直接遍历</span><br><span class="line">for (auto name : names) &#123;</span><br><span class="line">    cout &lt;&lt; name &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结构化绑定</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">queue&lt;pair&lt;TreeNode*, int&gt;&gt; q;</span><br><span class="line">q.push(&#123;root, root-&gt;val&#125;);</span><br><span class="line"></span><br><span class="line">// 爽！直接解包（注意这里是方括号 []，不是花括号 &#123;&#125;）</span><br><span class="line">auto [node, current_sum] = q.front(); </span><br></pre></td></tr></table></figure>
+<h2 id="哈希表">哈希表</h2>
+<p><code>unordered_map</code>（键值对哈希表）</p>
+<p><strong>相当于 Python 的 <code>dict</code></strong>。用来存
+<code>Key -&gt; Value</code> 的映射。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;unordered_map&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">// 语法：unordered_map&lt;键的类型, 值的类型&gt; 变量名;</span><br><span class="line">unordered_map&lt;int, string&gt; myMap;       // 键是 int，值是 string</span><br><span class="line">unordered_map&lt;string, int&gt; wordCount;   // 键是 string，值是 int</span><br><span class="line">unordered_map&lt;char, vector&lt;int&gt;&gt; charMap; // 键是 char，值是 vector</span><br></pre></td></tr></table></figure>
+<h3 id="增-改最常用">增 &amp; 改（最常用）</h3>
+<p>使用 <code>[]</code> 运算符是最简单直接的方式。 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">unordered_map&lt;<span class="type">int</span>, <span class="type">int</span>&gt; map;</span><br><span class="line"></span><br><span class="line">map[<span class="number">1</span>] = <span class="number">100</span>;  <span class="comment">// 新增：键为 1，值为 100</span></span><br><span class="line">map[<span class="number">2</span>] = <span class="number">200</span>;  <span class="comment">// 新增：键为 2，值为 200</span></span><br><span class="line">map[<span class="number">1</span>] = <span class="number">999</span>;  <span class="comment">// 修改：键 1 已存在，值被覆盖为 999</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="查判断键是否存在">查（判断键是否存在）</h3>
+<p>这是刷题时<strong>最高频</strong>的操作，主要有两种写法：</p>
+<p><strong>写法 A：使用
+<code>count()</code>（最推荐，简单直观）</strong>
+<code>count(key)</code> 会返回 <code>1</code>（存在）或
+<code>0</code>（不存在）。 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (map.<span class="built_in">count</span>(<span class="number">1</span>)) &#123;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;键 1 存在！&quot;</span> &lt;&lt; endl;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;键 1 不存在！&quot;</span> &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>写法 B：使用 <code>find()</code>（返回迭代器）</strong>
+<code>find(key)</code> 会返回一个迭代器。如果找不到，它会返回
+<code>map.end()</code>。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (map.<span class="built_in">find</span>(<span class="number">1</span>) != map.<span class="built_in">end</span>()) &#123;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;键 1 存在！&quot;</span> &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="删">删</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">map.<span class="built_in">erase</span>(<span class="number">1</span>); <span class="comment">// 删除键为 1 的键值对</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="遍历操作">遍历操作</h3>
+<p>在 C++ 中，遍历 <code>unordered_map</code> 通常使用<strong>范围 for
+循环</strong>（配合 <code>auto</code>）。 遍历时，每一个元素都是一个
+<code>pair</code>（键值对），可以通过 <code>.first</code>
+获取键，<code>.second</code> 获取值。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">unordered_map&lt;string, <span class="type">int</span>&gt; scores = &#123;&#123;<span class="string">&quot;Alice&quot;</span>, <span class="number">90</span>&#125;, &#123;<span class="string">&quot;Bob&quot;</span>, <span class="number">85</span>&#125;, &#123;<span class="string">&quot;Charlie&quot;</span>, <span class="number">95</span>&#125;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 推荐写法：使用 const auto&amp; 避免拷贝，提高效率</span></span><br><span class="line"><span class="keyword">for</span> (<span class="type">const</span> <span class="keyword">auto</span>&amp; pair : scores) &#123;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;姓名: &quot;</span> &lt;&lt; pair.first &lt;&lt; <span class="string">&quot;, 分数: &quot;</span> &lt;&lt; pair.second &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><em>(注意：<code>unordered_map</code>
+是<strong>无序</strong>的，遍历出来的顺序<strong>不一定</strong>是你插入的顺序！)</em></p>
+<h2 id="vector">vector</h2>
+<h3 id="insert">insert()</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vec.insert(插入位置的迭代器, 插入的数量, 要插入的值);</span><br></pre></td></tr></table></figure>
+<h3 id="初始化">初始化</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;类型&gt; 变量名(元素个数, 初始值);</span><br><span class="line">vector&lt;int&gt; v(10, 0); </span><br><span class="line"></span><br><span class="line">vector&lt;int&gt; v = &#123;1, 2, 3, 4, 5&#125;;</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -8041,656 +10249,6 @@ SSH 隧道回到本地电脑的 <code>127.0.0.1:3000</code>。</li>
 <li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1gNcUzMEKs?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">SSH隧道的原理和实操
 | 本地隧道、远程隧道、动态隧道_哔哩哔哩_bilibili</a></li>
 </ul>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2026/03/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/03/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" class="post-title-link" itemprop="url">服务器内网穿透（ssh远程隧道）</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2026-03-17 00:00:00" itemprop="dateCreated datePublished" datetime="2026-03-17T00:00:00+08:00">2026-03-17</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-06-03 17:14:26" itemprop="dateModified" datetime="2026-06-03T17:14:26+08:00">2026-06-03</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/" itemprop="url" rel="index"><span itemprop="name">后端相关</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>没问题，这个方法叫 <strong>SSH 远程端口转发（SSH Remote Port
-Forwarding）</strong>。它是绕过校园网/公司内网限制、借用本地网络最安全且最高效的“基操”。</p>
-<p>以下是为你整理的完整流程手册，你可以直接收藏：</p>
-<hr>
-<h2 id="学校服务器借网出海手册">🛠️ 学校服务器“借网”出海手册</h2>
-<h3 id="第一步在本地电脑开启隧道">第一步：在本地电脑开启隧道</h3>
-<p>在<strong>你自己电脑</strong>的终端（Windows PowerShell 或 Mac
-Terminal）中运行，不要在 VS Code 的内置终端里运行。</p>
-<p>Bash</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 命令格式：ssh -R [远程端口]:127.0.0.1:[本地代理端口] [用户名]@[服务器IP]</span><br><span class="line">ssh -R 7890:127.0.0.1:7890 wjw@223.2.18.229</span><br><span class="line">wjw19230415</span><br><span class="line">ssh -R 7890:127.0.0.1:7890 zxj@223.2.18.229</span><br><span class="line">cd MLLM_pre </span><br><span class="line">npx @anthropic-ai/claude-code</span><br><span class="line">export ANTHROPIC_MODEL=deepseek-v4-pro[1m]</span><br><span class="line">export ANTHROPIC_DEFAULT_OPUS_MODEL=deepseek-v4-pro[1m]</span><br><span class="line">export ANTHROPIC_DEFAULT_SONNET_MODEL=deepseek-v4-pro[1m]</span><br><span class="line">export ANTHROPIC_DEFAULT_HAIKU_MODEL=deepseek-v4-flash</span><br><span class="line">export CLAUDE_CODE_SUBAGENT_MODEL=deepseek-v4-flash</span><br><span class="line">export CLAUDE_CODE_EFFORT_LEVEL=max</span><br></pre></td></tr></table></figure>
-<ul>
-<li><strong><code>-R</code></strong>: 开启远程转发模式。</li>
-<li><strong><code>7890</code></strong>:
-这里的两个数字必须对应。前一个是服务器上开启的口子，后一个是你本地梯子的监听端口。</li>
-</ul>
-<hr>
-<h3 id="第二步在服务器终端挂载代理">第二步：在服务器终端挂载代理</h3>
-<p>连接成功进入服务器后，在弹出的黑色窗口中输入以下命令，告诉系统“指路牌”：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export https_proxy=http://127.0.0.1:7890</span><br><span class="line">export http_proxy=http://127.0.0.1:7890</span><br><span class="line">export all_proxy=http://127.0.0.1:7890</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>注意</strong>：这几行命令只对<strong>当前</strong>这个窗口有效。如果你关掉窗口重新连，需要重新输入。</p>
-</blockquote>
-<hr>
-<h3 id="第三步验证联网状态">第三步：验证联网状态</h3>
-<p>输入测试命令，观察是否返回 <code>HTTP/2 200</code>：</p>
-<p>Bash</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -I https://www.google.com</span><br></pre></td></tr></table></figure>
-<hr>
-<h3 id="第四步启动-copilot-cli">第四步：启动 Copilot CLI</h3>
-<p>联网成功后，直接运行你安装好的工具：</p>
-<p>Bash</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx @github/copilot /login</span><br></pre></td></tr></table></figure>
-<hr>
-<h3 id="避坑指南如果失败请检查这里">⚠️
-避坑指南（如果失败请检查这里）</h3>
-<ol type="1">
-<li><p><strong>本地梯子设置</strong>：</p>
-<p>必须打开梯子软件（Clash/v2ray/Surfboard 等）中的
-<strong>“允许局域网连接 (Allow LAN)”</strong>
-开关。即使是在同一台电脑通过隧道回传，软件有时也会拦截非本地请求。</p></li>
-<li><p><strong>端口匹配</strong>：</p>
-<p>如果你的梯子端口不是 <code>7890</code>（比如是 <code>10809</code> 或
-<code>1080</code>），请把上面所有步骤中的 <code>7890</code>
-替换成你的实际端口。</p></li>
-<li><p><strong>VS Code 侧边栏同步</strong>：</p>
-<p>如果你想让 VS Code 的 Chat 插件也通，请在 VS Code 的
-<code>settings.json</code> 中添加：</p>
-<p><code>"http.proxy": "http://127.0.0.1:7890"</code>。</p>
-<p>由于你已经开了 SSH 隧道，此时远程服务器会认为
-<code>127.0.0.1:7890</code> 就是它的出口。</p></li>
-</ol>
-<hr>
-<h3 id="进阶如何不用每次都打-export">💡 进阶：如何不用每次都打
-<code>export</code>？</h3>
-<p>你可以把代理命令写入服务器的个人配置文件中：</p>
-<ol type="1">
-<li><p>输入 <code>vim ~/.bashrc</code>。</p></li>
-<li><p>在文件最后添加：</p>
-<p><code>alias proxyon="export https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 all_proxy=http://127.0.0.1:7890"</code></p></li>
-<li><p>保存退出后，下次连上服务器只需输入 <code>proxyon</code>
-即可一键开启。</p></li>
-</ol>
-<p><strong>这个流程存好了吗？如果你准备好尝试在服务器上直接安装一个永久“梯子”（不需要本地电脑一直开着），我们可以开始讲解
-Tailscale 的方案。</strong></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/tailscale/tailscale">tailscale/tailscale:
-The easiest, most secure way to use WireGuard and 2FA.</a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/search?q=singbox&amp;type=repositories">Repository
-search results</a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/MetaCubeX/mihomo/releases">Releases ·
-MetaCubeX/mihomo</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1gNcUzMEKs?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">SSH隧道的原理和实操
-| 本地隧道、远程隧道、动态隧道_哔哩哔哩_bilibili</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/" class="post-title-link" itemprop="url">openclaw——记忆</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2026-02-04 00:00:00 / 修改时间：17:28:08" itemprop="dateCreated datePublished" datetime="2026-02-04T00:00:00+08:00">2026-02-04</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E4%BA%A7%E5%93%81/" itemprop="url" rel="index"><span itemprop="name">产品</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E4%BA%A7%E5%93%81/openclaw/" itemprop="url" rel="index"><span itemprop="name">openclaw</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="常用命令">常用命令</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">openclaw gateway restart</span><br><span class="line">openclaw gateway start</span><br><span class="line">openclaw gateway stop</span><br><span class="line"></span><br><span class="line">openclaw dashboard</span><br><span class="line">openclaw onboard</span><br><span class="line">openclaw gateway status</span><br><span class="line">openclaw models auth login --provider openai-codex</span><br></pre></td></tr></table></figure>
-<h2 id="长期记忆">长期记忆</h2>
-<h3 id="方式">方式</h3>
-<p>OpenClaw 记忆是<strong>智能体工作空间中的纯 Markdown
-文件</strong>。这些文件是唯一的事实来源；模型只”记住”写入磁盘的内容。</p>
-<p>这里面的记忆又分为两种，分别是用户级的记忆和日志记忆，memory文件夹中存放的是日志记忆，记录每天对话的需要长期存储的内容</p>
-<p><strong>新对话长期记忆的读取：</strong>1.读取<strong>日志记忆中</strong>今天和昨天的内容。2.读取<strong>用户级记忆</strong></p>
-<figure>
-<img src="/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/image-20260204150129994.png" alt="image-20260204150129994">
-<figcaption aria-hidden="true">image-20260204150129994</figcaption>
-</figure>
-<p>还可以通过配置，设定额外的记忆空间</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">agents: &#123;</span><br><span class="line">  defaults: &#123;</span><br><span class="line">    memorySearch: &#123;</span><br><span class="line">      extraPaths: [&quot;../team-docs&quot;, &quot;/srv/shared-notes/overview.md&quot;]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>除了对话和用户的记忆，openclaw本身的功能文件也是markdown存储</p>
-<ol type="1">
-<li><strong>本地文档路径</strong>：<code>C:\Users\ASUS\AppData\Roaming\npm\node_modules\openclaw\docs</code></li>
-<li><strong>技能（skills）路径：</strong><code>C:\Users\ASUS\AppData\Roaming\npm\node_modules\openclaw\skills\</code></li>
-</ol>
-<figure>
-<img src="/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/image-20260204153018870.png" alt="image-20260204153018870">
-<figcaption aria-hidden="true">image-20260204153018870</figcaption>
-</figure>
-<h3 id="何时写入记忆">何时写入记忆</h3>
-<p>对于何时写入记忆分为两种：</p>
-<p>1.当用户谈及决策、偏好和持久性事实，写入 <code>MEMORY.md</code>。</p>
-<p>2.日常笔记和运行上下文写入
-<code>memory/YYYY-MM-DD.md</code>。当会话达到上下文限制时，会触发压缩，将当前会话记忆存储于<code>memory/YYYY-MM-DD.md</code></p>
-<p>用户同样可以通过对话进行记忆的存储</p>
-<figure>
-<img src="/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/image-20260204151029801.png" alt="image-20260204151029801">
-<figcaption aria-hidden="true">image-20260204151029801</figcaption>
-</figure>
-<h3 id="记忆的压缩">记忆的压缩</h3>
-<p>当会话<strong>接近自动压缩</strong>时，OpenClaw
-会询问agent是否需要型在上下文被压缩<strong>之前</strong>写入持久记忆。</p>
-<p>这由 <code>agents.defaults.compaction.memoryFlush</code> 控制：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  agents: &#123;</span><br><span class="line">    defaults: &#123;</span><br><span class="line">      compaction: &#123;</span><br><span class="line">        reserveTokensFloor: 20000,</span><br><span class="line">        memoryFlush: &#123;</span><br><span class="line">          enabled: true,</span><br><span class="line">          softThresholdTokens: 4000,</span><br><span class="line">          systemPrompt: &quot;Session nearing compaction. Store durable memories now.&quot;,</span><br><span class="line">          prompt: &quot;Write any lasting notes to memory/YYYY-MM-DD.md; reply with NO_REPLY if nothing to store.&quot;,</span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><code>reserveTokensFloor: 20000</code>代表必须要在还剩20000tokens前进行压缩（最后底线）</p>
-<p><code>softThresholdTokens: 4000</code>代表一个缓冲空间，当会话 token
-估计超过
-<code>contextWindow - reserveTokensFloor - softThresholdTokens</code>
-时触发压缩提醒</p>
-<h3 id="记忆的搜索">记忆的搜索</h3>
-<p>openclaw分为两种记忆搜索的方式</p>
-<p>1.使用向量索引构建小型的rag，需要配置向量模型的api或本地部署向量模型（默认方式）</p>
-<p>2.如果没有配置向量模型，openclaw会选择直接遍历查看markdown文件进行记忆搜索</p>
-<h4 id="向量搜索">向量搜索</h4>
-<p>OpenClaw 可以在 <code>MEMORY.md</code> 和
-<code>memory/*.md</code>上构建小型向量索引，以便语义查询可以找到相关笔记</p>
-<p>流程如下：</p>
-<ul>
-<li>默认使用远程嵌入。如果未设置
-<code>memorySearch.provider</code>，OpenClaw 自动选择：
-<ol type="1">
-<li>如果配置了 <code>memorySearch.local.modelPath</code>
-且文件存在，则使用 <code>local</code>。</li>
-<li>如果可以解析 OpenAI 密钥，则使用 <code>openai</code>。</li>
-<li>如果可以解析 Gemini 密钥，则使用 <code>gemini</code>。</li>
-<li>否则记忆搜索保持禁用状态直到配置完成。</li>
-</ol></li>
-<li>本地模式使用 node-llama-cpp，可能需要运行
-<code>pnpm approve-builds</code>。</li>
-<li>使用 sqlite-vec（如果可用）在 SQLite 中加速向量搜索。</li>
-</ul>
-<p><strong>为什么 OpenAI 批处理快速又便宜：</strong></p>
-<ul>
-<li>对于大型回填，OpenAI
-通常是我们支持的最快选项，因为我们可以在单个批处理作业中提交许多嵌入请求，让
-OpenAI 异步处理它们。</li>
-<li>OpenAI 为 Batch API
-工作负载提供折扣定价，因此大型索引运行通常比同步发送相同请求更便宜。</li>
-<li>详情参见 OpenAI Batch API 文档和定价：
-<ul>
-<li>https://platform.openai.com/docs/api-reference/batch</li>
-<li>https://platform.openai.com/pricing</li>
-</ul></li>
-</ul>
-<blockquote>
-<p><strong>批处理模式
-(Batch)</strong>：你把几千个、几万个请求打包成一个文件塞给
-OpenAI，并告诉它：“我不急，你 <strong>24 小时内</strong>给我就行。”</p>
-<p><strong>原理</strong>：OpenAI
-会利用服务器的<strong>闲置时段</strong>（比如凌晨）来处理这些任务。因为你帮它平摊了服务器压力，所以它给你
-<strong>50% 甚至更多的折扣</strong>。</p>
-</blockquote>
-<h3 id="记忆工具">记忆工具</h3>
-<p>openclaw提供了两种记忆工具</p>
-<p><code>memory_search</code> 从 <code>MEMORY.md</code> +
-<code>memory/**/*.md</code> <strong>语义搜索 Markdown
-块</strong>。它<strong>返回片段文本、文件路径、行范围、分数</strong>，以及我们是否从本地回退到远程嵌入。<strong>不返回完整文件内容</strong>。</p>
-<p><code>memory_get</code> <strong>读取特定的记忆 Markdown
-文件（工作空间相对路径）</strong>，可选从起始行开始读取 N 行。</p>
-<p>两个工具仅在智能体的 <code>memorySearch.enabled</code> 解析为 true
-时启用。</p>
-<figure>
-<img src="/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/image-20260204155222237.png" alt="image-20260204155222237">
-<figcaption aria-hidden="true">image-20260204155222237</figcaption>
-</figure>
-<h3 id="搜索方式">搜索方式</h3>
-<p>OpenClaw 结合：</p>
-<ul>
-<li><strong>向量相似度</strong>（语义匹配，措辞可以不同）</li>
-<li><strong>BM25 关键词相关性</strong>（精确令牌如
-ID、环境变量、代码符号）</li>
-</ul>
-<h3 id="构建索引">构建索引</h3>
-<p>索引存储：每个智能体的 SQLite 位于
-<code>~/.openclaw/memory/&lt;agentId&gt;.sqlite</code></p>
-<p>配置向量模型</p>
-<figure>
-<img src="/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/image-20260204160814962.png" alt="image-20260204160814962">
-<figcaption aria-hidden="true">image-20260204160814962</figcaption>
-</figure>
-<p>查看构建结果</p>
-<figure>
-<img src="/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/image-20260204161159014.png" alt="image-20260204161159014">
-<figcaption aria-hidden="true">image-20260204161159014</figcaption>
-</figure>
-<figure>
-<img src="/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/image-20260204161150230.png" alt="image-20260204161150230">
-<figcaption aria-hidden="true">image-20260204161150230</figcaption>
-</figure>
-<h2 id="会话记忆">会话记忆</h2>
-<ul>
-<li>在 <strong>Gateway 网关主机</strong>上：
-<ul>
-<li>存储文件：<code>~/.openclaw/agents/&lt;agentId&gt;/sessions/sessions.json</code>（每个智能体）。</li>
-</ul></li>
-<li>对话记录：<code>~/.openclaw/agents/&lt;agentId&gt;/sessions/&lt;SessionId&gt;.jsonl</code>（Telegram
-话题会话使用
-<code>.../&lt;SessionId&gt;-topic-&lt;threadId&gt;.jsonl</code>）。</li>
-</ul>
-<figure>
-<img src="/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/image-20260204162005555.png" alt="image-20260204162005555">
-<figcaption aria-hidden="true">image-20260204162005555</figcaption>
-</figure>
-<figure>
-<img src="/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/image-20260204161956796.png" alt="image-20260204161956796">
-<figcaption aria-hidden="true">image-20260204161956796</figcaption>
-</figure>
-<h2 id="参考资料">参考资料</h2>
-<p><a target="_blank" rel="noopener" href="https://github.com/openclaw/openclaw">openclaw/openclaw:
-Your own personal AI assistant. Any OS. Any Platform. The lobster way.
-🦞</a></p>
-<p><a target="_blank" rel="noopener" href="https://docs.openclaw.ai/concepts/memory">Gateway Runbook -
-OpenClaw</a></p>
-<p>【Clawdbot为什么能记住你说过的话? AI记忆系统拆解】
-https://www.bilibili.com/video/BV1fv61B4EQ5/?share_source=copy_web&amp;vd_source=5e54f7845fd2cf2828efb1bae2286590</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/" class="post-title-link" itemprop="url">tcp协议</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2026-01-24 00:00:00" itemprop="dateCreated datePublished" datetime="2026-01-24T00:00:00+08:00">2026-01-24</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-01-26 15:19:19" itemprop="dateModified" datetime="2026-01-26T15:19:19+08:00">2026-01-26</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%A4%A7%E4%B8%89%E4%B8%8A/" itemprop="url" rel="index"><span itemprop="name">大三上</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="tcp和udp协议的核心原理和区别">TCP和UDP协议的核心原理和区别</h1>
-<p><strong>TCP</strong>：全称是 <strong>Transmission Control
-Protocol</strong>，中文翻译为<strong>传输控制协议</strong>。</p>
-<p><strong>UDP</strong>：全称是 <strong>User Datagram
-Protocol</strong>，中文翻译为<strong>用户数据报协议</strong>。</p>
-<h2 id="连接类型和服务对象">1. 连接类型和服务对象</h2>
-<p>这决定了通信双方在“开聊”之前要做什么，以及能和谁聊。</p>
-<ul>
-<li><strong>TCP（面向连接）</strong>：
-<ul>
-<li><strong>连接类型</strong>：必须通过“三次握手”建立逻辑连接。通信结束后，还需“四次挥手”断开。</li>
-<li><strong>服务对象</strong>：它是<strong>端到端</strong>的，即点对点通信。一旦连接建立，就是两个特定
-IP/端口之间的独占通道。</li>
-</ul></li>
-<li><strong>UDP（无连接）</strong>：
-<ul>
-<li><strong>连接类型</strong>：完全无连接。想发就发，不需要预先建立任何关系。</li>
-<li><strong>服务对象</strong>：支持<strong>一对一、一对多（广播）、多对一和多对多（组播）</strong>。它更像是一个大喇叭，谁都能听，谁都能喊。</li>
-</ul></li>
-</ul>
-<hr>
-<h2 id="首部header">2. 首部（Header）</h2>
-<figure>
-<img src="/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/image-20260126145037525.png" alt="image-20260126145037525">
-<figcaption aria-hidden="true">image-20260126145037525</figcaption>
-</figure>
-<p>这决定了协议的“管理成本”和传输效率。</p>
-<ul>
-<li><strong>TCP（臃肿但功能全）</strong>：
-<ul>
-<li><strong>长度</strong>：最小 <strong>20
-字节</strong>，如果包含选项字段会更长。</li>
-<li><strong>内容</strong>：包含序列号、确认号、各种标志位（SYN/ACK/FIN）、窗口大小等。这些复杂的字段都是为了确保“可靠传输”。</li>
-</ul></li>
-<li><strong>UDP（简洁精悍）</strong>：
-<ul>
-<li><strong>长度</strong>：固定为 <strong>8 字节</strong>。</li>
-<li><strong>内容</strong>：只包含四个字段：源端口、目的端口、长度和校验和。这让它的处理速度极快，开销极低。</li>
-</ul></li>
-</ul>
-<hr>
-<h2 id="可靠性与传输方式">3. 可靠性与传输方式</h2>
-<figure>
-<img src="/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/image-20260126145256624.png" alt="image-20260126145256624">
-<figcaption aria-hidden="true">image-20260126145256624</figcaption>
-</figure>
-<p>这是两者最本质的区别。</p>
-<ul>
-<li><strong>TCP（可靠的字节流）</strong>：
-<ul>
-<li><strong>可靠性</strong>：通过确认应答（ACK）、超时重传、丢包检测来保证数据<strong>不丢失、不重复、且按序到达</strong>。</li>
-<li><strong>传输方式</strong>：<strong>面向字节流</strong>。TCP
-不管你应用层发的是什么，它把数据看成一串流。它可能会把你的大报文拆开，也可能把几个小报文合并。</li>
-</ul></li>
-<li><strong>UDP（不可靠的报文）</strong>：
-<ul>
-<li><strong>可靠性</strong>：<strong>尽力而为</strong>。不保证送达，也不保证顺序。丢了就丢了，UDP
-本身不负责重传。</li>
-<li><strong>传输方式</strong>：<strong>面向报文</strong>。你给它一个 500
-字节的包，它就原封不动打上头发出去，保留了报文的边界，不会进行拆分或合并。</li>
-</ul></li>
-</ul>
-<hr>
-<h2 id="流量控制和拥塞控制">4. 流量控制和拥塞控制</h2>
-<p>这决定了协议如何应对网络环境的变化。</p>
-<ul>
-<li><strong>TCP（智能管家）</strong>：
-<ul>
-<li><strong>流量控制</strong>：通过“滑动窗口”机制，根据接收方的处理能力动态调整发送速度，防止把对方“淹没”。</li>
-<li><strong>拥塞控制</strong>：当网络出现拥堵时，TCP
-会通过慢启动、拥塞避免等算法主动降低发送速率。它有很强的<strong>自我约束和适应能力</strong>。</li>
-</ul></li>
-<li><strong>UDP（热血青年）</strong>：
-<ul>
-<li><strong>控制机制</strong>：<strong>完全没有</strong>。网络堵不堵、对方收不收得下，UDP
-全然不理。它只会按应用层要求的速度拼命发。这种特性在网络差时可能导致严重的丢包，但也保证了实时性。</li>
-</ul></li>
-</ul>
-<hr>
-<h2 id="应用场景">5. 应用场景</h2>
-<p>基于上述特性，它们的应用领域泾渭分明。</p>
-<table>
-<colgroup>
-<col style="width: 8%">
-<col style="width: 29%">
-<col style="width: 61%">
-</colgroup>
-<thead>
-<tr>
-<th><strong>协议</strong></th>
-<th><strong>适用核心需求</strong></th>
-<th><strong>典型应用</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>TCP</strong></td>
-<td>准确性第一，宁慢勿错</td>
-<td><strong>浏览器(HTTP/HTTPS)</strong>、<strong>文件传输(FTP)</strong>、<strong>邮件(SMTP)</strong>、<strong>远程登录(SSH)</strong></td>
-</tr>
-<tr>
-<td><strong>UDP</strong></td>
-<td>速度/实时性第一，允许少量错误</td>
-<td><strong>视频会议(Zoom/WeChat)</strong>、<strong>在线直播</strong>、<strong>实时竞技游戏</strong>、<strong>域名解析(DNS)</strong></td>
-</tr>
-</tbody>
-</table>
-<h1 id="tcp三次握手和四次挥手">TCP三次握手和四次挥手</h1>
-<p>理解 TCP
-的“三次握手”和“四次挥手”，本质上是理解两个终端如何在不可靠的网络环境下，建立并优雅地释放一个<strong>可靠的</strong>双工（双向）通道。</p>
-<hr>
-<h2 id="三次握手建立连接">1. 三次握手（建立连接）</h2>
-<figure>
-<img src="/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/image-20260126145536691.png" alt="image-20260126145536691">
-<figcaption aria-hidden="true">image-20260126145536691</figcaption>
-</figure>
-<p>目的是确认双方的<strong>收发能力</strong>都正常，并交换初始序列号（ISN）。</p>
-<ol type="1">
-<li><strong>第一次握手 (SYN)</strong>：客户端发送一个 <code>SYN</code>
-包（序列号为 <span class="math inline"><em>x</em></span>）给服务端。
-<ul>
-<li><em>潜台词</em>：客户端说：“我想和你建连，这是我的初始序列号。”</li>
-</ul></li>
-<li><strong>第二次握手 (SYN + ACK)</strong>：服务端收到后，回传一个
-<code>SYN</code> 包（序列号为 <span class="math inline"><em>y</em></span>）和 <code>ACK</code> 包（确认号为
-<span class="math inline"><em>x</em> + 1</span>）。
-<ul>
-<li><em>潜台词</em>：服务端说：“收到！我同意建连，这是我的序列号，我也确认收到你的了。”</li>
-</ul></li>
-<li><strong>第三次握手 (ACK)</strong>：客户端再回传一个 <code>ACK</code>
-包（确认号为 <span class="math inline"><em>y</em> + 1</span>）。
-<ul>
-<li><em>潜台词</em>：客户端说：“收到！那我们正式开始传数据吧。”</li>
-</ul></li>
-</ol>
-<blockquote>
-<p><strong>为什么要三次？</strong></p>
-<p>为了防止“已失效的连接请求报文”突然又传到了服务端。如果只有两次握手，服务端一响应就建立连接，那么旧的重复请求会导致服务端浪费资源去维持一个根本不存在的连接。</p>
-</blockquote>
-<hr>
-<h2 id="四次挥手释放连接">2. 四次挥手（释放连接）</h2>
-<figure>
-<img src="/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/image-20260126151050859.png" alt="image-20260126151050859">
-<figcaption aria-hidden="true">image-20260126151050859</figcaption>
-</figure>
-<p>由于 TCP
-是<strong>全双工</strong>的，断开连接时需要双方都确认“我没数据要发了”。</p>
-<ol type="1">
-<li><strong>第一次挥手 (FIN)</strong>：客户端发一个 <code>FIN</code>
-包给服务端。
-<ul>
-<li><em>状态</em>：客户端进入
-<code>FIN_WAIT_1</code>，表示客户端不再发数据了。</li>
-</ul></li>
-<li><strong>第二次挥手 (ACK)</strong>：服务端回一个 <code>ACK</code>。
-<ul>
-<li><em>状态</em>：服务端进入
-<code>CLOSE_WAIT</code>。此时连接处于<strong>半关闭</strong>状态，服务端可能还有没发完的数据。</li>
-</ul></li>
-<li><strong>第三次挥手 (FIN)</strong>：服务端发完最后的数据，发送
-<code>FIN</code> 包给客户端。
-<ul>
-<li><em>状态</em>：服务端进入 <code>LAST_ACK</code>。</li>
-</ul></li>
-<li><strong>第四次挥手 (ACK)</strong>：客户端收到后，回一个
-<code>ACK</code>，然后进入 <code>TIME_WAIT</code> 状态。
-<ul>
-<li><em>状态</em>：经过 <span class="math inline">2<em>M</em><em>S</em><em>L</em></span>（最长报文段寿命）时间后，客户端正式关闭。</li>
-</ul></li>
-</ol>
-<h1 id="参考资料">参考资料</h1>
-<p>【神奇的滑动窗口 | TCP流量控制】
-https://www.bilibili.com/video/BV1sQXDYREwP/?share_source=copy_web&amp;vd_source=5e54f7845fd2cf2828efb1bae2286590</p>
-<p>【“我为人人，人人为我”的TCP拥塞控制】
-https://www.bilibili.com/video/BV1jWS7BeEX5/?share_source=copy_web&amp;vd_source=5e54f7845fd2cf2828efb1bae2286590</p>
 
       
     </div>

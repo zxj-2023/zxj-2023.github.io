@@ -155,18 +155,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">192</span>
+          <span class="site-state-item-count">195</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">68</span>
+        <span class="site-state-item-count">69</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-count">71</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -206,6 +206,656 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/03/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/03/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" class="post-title-link" itemprop="url">服务器内网穿透（ssh远程隧道）</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-03-17 00:00:00" itemprop="dateCreated datePublished" datetime="2026-03-17T00:00:00+08:00">2026-03-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-07-11 21:25:09" itemprop="dateModified" datetime="2026-07-11T21:25:09+08:00">2026-07-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/" itemprop="url" rel="index"><span itemprop="name">后端相关</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>没问题，这个方法叫 <strong>SSH 远程端口转发（SSH Remote Port
+Forwarding）</strong>。它是绕过校园网/公司内网限制、借用本地网络最安全且最高效的“基操”。</p>
+<p>以下是为你整理的完整流程手册，你可以直接收藏：</p>
+<hr>
+<h2 id="学校服务器借网出海手册">🛠️ 学校服务器“借网”出海手册</h2>
+<h3 id="第一步在本地电脑开启隧道">第一步：在本地电脑开启隧道</h3>
+<p>在<strong>你自己电脑</strong>的终端（Windows PowerShell 或 Mac
+Terminal）中运行，不要在 VS Code 的内置终端里运行。</p>
+<p>Bash</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 命令格式：ssh -R [远程端口]:127.0.0.1:[本地代理端口] [用户名]@[服务器IP]</span><br><span class="line">ssh -R 7897:127.0.0.1:7897 wjw@223.2.18.229</span><br><span class="line">wjw19230415</span><br><span class="line">ssh -R 7890:127.0.0.1:7890 zxj@223.2.18.229</span><br><span class="line">cd MLLM_pre </span><br><span class="line">npx @anthropic-ai/claude-code</span><br><span class="line">export ANTHROPIC_MODEL=deepseek-v4-pro[1m]</span><br><span class="line">export ANTHROPIC_DEFAULT_OPUS_MODEL=deepseek-v4-pro[1m]</span><br><span class="line">export ANTHROPIC_DEFAULT_SONNET_MODEL=deepseek-v4-pro[1m]</span><br><span class="line">export ANTHROPIC_DEFAULT_HAIKU_MODEL=deepseek-v4-flash</span><br><span class="line">export CLAUDE_CODE_SUBAGENT_MODEL=deepseek-v4-flash</span><br><span class="line">export CLAUDE_CODE_EFFORT_LEVEL=max</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong><code>-R</code></strong>: 开启远程转发模式。</li>
+<li><strong><code>7890</code></strong>:
+这里的两个数字必须对应。前一个是服务器上开启的口子，后一个是你本地梯子的监听端口。</li>
+</ul>
+<hr>
+<h3 id="第二步在服务器终端挂载代理">第二步：在服务器终端挂载代理</h3>
+<p>连接成功进入服务器后，在弹出的黑色窗口中输入以下命令，告诉系统“指路牌”：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export https_proxy=http://127.0.0.1:7897</span><br><span class="line">export http_proxy=http://127.0.0.1:7897</span><br><span class="line">export all_proxy=http://127.0.0.1:7897</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>注意</strong>：这几行命令只对<strong>当前</strong>这个窗口有效。如果你关掉窗口重新连，需要重新输入。</p>
+</blockquote>
+<hr>
+<h3 id="第三步验证联网状态">第三步：验证联网状态</h3>
+<p>输入测试命令，观察是否返回 <code>HTTP/2 200</code>：</p>
+<p>Bash</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -I https://www.google.com</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="第四步启动-copilot-cli">第四步：启动 Copilot CLI</h3>
+<p>联网成功后，直接运行你安装好的工具：</p>
+<p>Bash</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx @github/copilot /login</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="避坑指南如果失败请检查这里">⚠️
+避坑指南（如果失败请检查这里）</h3>
+<ol type="1">
+<li><p><strong>本地梯子设置</strong>：</p>
+<p>必须打开梯子软件（Clash/v2ray/Surfboard 等）中的
+<strong>“允许局域网连接 (Allow LAN)”</strong>
+开关。即使是在同一台电脑通过隧道回传，软件有时也会拦截非本地请求。</p></li>
+<li><p><strong>端口匹配</strong>：</p>
+<p>如果你的梯子端口不是 <code>7890</code>（比如是 <code>10809</code> 或
+<code>1080</code>），请把上面所有步骤中的 <code>7890</code>
+替换成你的实际端口。</p></li>
+<li><p><strong>VS Code 侧边栏同步</strong>：</p>
+<p>如果你想让 VS Code 的 Chat 插件也通，请在 VS Code 的
+<code>settings.json</code> 中添加：</p>
+<p><code>"http.proxy": "http://127.0.0.1:7890"</code>。</p>
+<p>由于你已经开了 SSH 隧道，此时远程服务器会认为
+<code>127.0.0.1:7890</code> 就是它的出口。</p></li>
+</ol>
+<hr>
+<h3 id="进阶如何不用每次都打-export">💡 进阶：如何不用每次都打
+<code>export</code>？</h3>
+<p>你可以把代理命令写入服务器的个人配置文件中：</p>
+<ol type="1">
+<li><p>输入 <code>vim ~/.bashrc</code>。</p></li>
+<li><p>在文件最后添加：</p>
+<p><code>alias proxyon="export https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 all_proxy=http://127.0.0.1:7890"</code></p></li>
+<li><p>保存退出后，下次连上服务器只需输入 <code>proxyon</code>
+即可一键开启。</p></li>
+</ol>
+<p><strong>这个流程存好了吗？如果你准备好尝试在服务器上直接安装一个永久“梯子”（不需要本地电脑一直开着），我们可以开始讲解
+Tailscale 的方案。</strong></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/tailscale/tailscale">tailscale/tailscale:
+The easiest, most secure way to use WireGuard and 2FA.</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/search?q=singbox&amp;type=repositories">Repository
+search results</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/MetaCubeX/mihomo/releases">Releases ·
+MetaCubeX/mihomo</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1gNcUzMEKs?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">SSH隧道的原理和实操
+| 本地隧道、远程隧道、动态隧道_哔哩哔哩_bilibili</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/" class="post-title-link" itemprop="url">openclaw——记忆</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-02-04 00:00:00 / 修改时间：17:28:08" itemprop="dateCreated datePublished" datetime="2026-02-04T00:00:00+08:00">2026-02-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E4%BA%A7%E5%93%81/" itemprop="url" rel="index"><span itemprop="name">产品</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E4%BA%A7%E5%93%81/openclaw/" itemprop="url" rel="index"><span itemprop="name">openclaw</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="常用命令">常用命令</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">openclaw gateway restart</span><br><span class="line">openclaw gateway start</span><br><span class="line">openclaw gateway stop</span><br><span class="line"></span><br><span class="line">openclaw dashboard</span><br><span class="line">openclaw onboard</span><br><span class="line">openclaw gateway status</span><br><span class="line">openclaw models auth login --provider openai-codex</span><br></pre></td></tr></table></figure>
+<h2 id="长期记忆">长期记忆</h2>
+<h3 id="方式">方式</h3>
+<p>OpenClaw 记忆是<strong>智能体工作空间中的纯 Markdown
+文件</strong>。这些文件是唯一的事实来源；模型只”记住”写入磁盘的内容。</p>
+<p>这里面的记忆又分为两种，分别是用户级的记忆和日志记忆，memory文件夹中存放的是日志记忆，记录每天对话的需要长期存储的内容</p>
+<p><strong>新对话长期记忆的读取：</strong>1.读取<strong>日志记忆中</strong>今天和昨天的内容。2.读取<strong>用户级记忆</strong></p>
+<figure>
+<img src="/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/image-20260204150129994.png" alt="image-20260204150129994">
+<figcaption aria-hidden="true">image-20260204150129994</figcaption>
+</figure>
+<p>还可以通过配置，设定额外的记忆空间</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">agents: &#123;</span><br><span class="line">  defaults: &#123;</span><br><span class="line">    memorySearch: &#123;</span><br><span class="line">      extraPaths: [&quot;../team-docs&quot;, &quot;/srv/shared-notes/overview.md&quot;]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>除了对话和用户的记忆，openclaw本身的功能文件也是markdown存储</p>
+<ol type="1">
+<li><strong>本地文档路径</strong>：<code>C:\Users\ASUS\AppData\Roaming\npm\node_modules\openclaw\docs</code></li>
+<li><strong>技能（skills）路径：</strong><code>C:\Users\ASUS\AppData\Roaming\npm\node_modules\openclaw\skills\</code></li>
+</ol>
+<figure>
+<img src="/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/image-20260204153018870.png" alt="image-20260204153018870">
+<figcaption aria-hidden="true">image-20260204153018870</figcaption>
+</figure>
+<h3 id="何时写入记忆">何时写入记忆</h3>
+<p>对于何时写入记忆分为两种：</p>
+<p>1.当用户谈及决策、偏好和持久性事实，写入 <code>MEMORY.md</code>。</p>
+<p>2.日常笔记和运行上下文写入
+<code>memory/YYYY-MM-DD.md</code>。当会话达到上下文限制时，会触发压缩，将当前会话记忆存储于<code>memory/YYYY-MM-DD.md</code></p>
+<p>用户同样可以通过对话进行记忆的存储</p>
+<figure>
+<img src="/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/image-20260204151029801.png" alt="image-20260204151029801">
+<figcaption aria-hidden="true">image-20260204151029801</figcaption>
+</figure>
+<h3 id="记忆的压缩">记忆的压缩</h3>
+<p>当会话<strong>接近自动压缩</strong>时，OpenClaw
+会询问agent是否需要型在上下文被压缩<strong>之前</strong>写入持久记忆。</p>
+<p>这由 <code>agents.defaults.compaction.memoryFlush</code> 控制：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  agents: &#123;</span><br><span class="line">    defaults: &#123;</span><br><span class="line">      compaction: &#123;</span><br><span class="line">        reserveTokensFloor: 20000,</span><br><span class="line">        memoryFlush: &#123;</span><br><span class="line">          enabled: true,</span><br><span class="line">          softThresholdTokens: 4000,</span><br><span class="line">          systemPrompt: &quot;Session nearing compaction. Store durable memories now.&quot;,</span><br><span class="line">          prompt: &quot;Write any lasting notes to memory/YYYY-MM-DD.md; reply with NO_REPLY if nothing to store.&quot;,</span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>reserveTokensFloor: 20000</code>代表必须要在还剩20000tokens前进行压缩（最后底线）</p>
+<p><code>softThresholdTokens: 4000</code>代表一个缓冲空间，当会话 token
+估计超过
+<code>contextWindow - reserveTokensFloor - softThresholdTokens</code>
+时触发压缩提醒</p>
+<h3 id="记忆的搜索">记忆的搜索</h3>
+<p>openclaw分为两种记忆搜索的方式</p>
+<p>1.使用向量索引构建小型的rag，需要配置向量模型的api或本地部署向量模型（默认方式）</p>
+<p>2.如果没有配置向量模型，openclaw会选择直接遍历查看markdown文件进行记忆搜索</p>
+<h4 id="向量搜索">向量搜索</h4>
+<p>OpenClaw 可以在 <code>MEMORY.md</code> 和
+<code>memory/*.md</code>上构建小型向量索引，以便语义查询可以找到相关笔记</p>
+<p>流程如下：</p>
+<ul>
+<li>默认使用远程嵌入。如果未设置
+<code>memorySearch.provider</code>，OpenClaw 自动选择：
+<ol type="1">
+<li>如果配置了 <code>memorySearch.local.modelPath</code>
+且文件存在，则使用 <code>local</code>。</li>
+<li>如果可以解析 OpenAI 密钥，则使用 <code>openai</code>。</li>
+<li>如果可以解析 Gemini 密钥，则使用 <code>gemini</code>。</li>
+<li>否则记忆搜索保持禁用状态直到配置完成。</li>
+</ol></li>
+<li>本地模式使用 node-llama-cpp，可能需要运行
+<code>pnpm approve-builds</code>。</li>
+<li>使用 sqlite-vec（如果可用）在 SQLite 中加速向量搜索。</li>
+</ul>
+<p><strong>为什么 OpenAI 批处理快速又便宜：</strong></p>
+<ul>
+<li>对于大型回填，OpenAI
+通常是我们支持的最快选项，因为我们可以在单个批处理作业中提交许多嵌入请求，让
+OpenAI 异步处理它们。</li>
+<li>OpenAI 为 Batch API
+工作负载提供折扣定价，因此大型索引运行通常比同步发送相同请求更便宜。</li>
+<li>详情参见 OpenAI Batch API 文档和定价：
+<ul>
+<li>https://platform.openai.com/docs/api-reference/batch</li>
+<li>https://platform.openai.com/pricing</li>
+</ul></li>
+</ul>
+<blockquote>
+<p><strong>批处理模式
+(Batch)</strong>：你把几千个、几万个请求打包成一个文件塞给
+OpenAI，并告诉它：“我不急，你 <strong>24 小时内</strong>给我就行。”</p>
+<p><strong>原理</strong>：OpenAI
+会利用服务器的<strong>闲置时段</strong>（比如凌晨）来处理这些任务。因为你帮它平摊了服务器压力，所以它给你
+<strong>50% 甚至更多的折扣</strong>。</p>
+</blockquote>
+<h3 id="记忆工具">记忆工具</h3>
+<p>openclaw提供了两种记忆工具</p>
+<p><code>memory_search</code> 从 <code>MEMORY.md</code> +
+<code>memory/**/*.md</code> <strong>语义搜索 Markdown
+块</strong>。它<strong>返回片段文本、文件路径、行范围、分数</strong>，以及我们是否从本地回退到远程嵌入。<strong>不返回完整文件内容</strong>。</p>
+<p><code>memory_get</code> <strong>读取特定的记忆 Markdown
+文件（工作空间相对路径）</strong>，可选从起始行开始读取 N 行。</p>
+<p>两个工具仅在智能体的 <code>memorySearch.enabled</code> 解析为 true
+时启用。</p>
+<figure>
+<img src="/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/image-20260204155222237.png" alt="image-20260204155222237">
+<figcaption aria-hidden="true">image-20260204155222237</figcaption>
+</figure>
+<h3 id="搜索方式">搜索方式</h3>
+<p>OpenClaw 结合：</p>
+<ul>
+<li><strong>向量相似度</strong>（语义匹配，措辞可以不同）</li>
+<li><strong>BM25 关键词相关性</strong>（精确令牌如
+ID、环境变量、代码符号）</li>
+</ul>
+<h3 id="构建索引">构建索引</h3>
+<p>索引存储：每个智能体的 SQLite 位于
+<code>~/.openclaw/memory/&lt;agentId&gt;.sqlite</code></p>
+<p>配置向量模型</p>
+<figure>
+<img src="/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/image-20260204160814962.png" alt="image-20260204160814962">
+<figcaption aria-hidden="true">image-20260204160814962</figcaption>
+</figure>
+<p>查看构建结果</p>
+<figure>
+<img src="/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/image-20260204161159014.png" alt="image-20260204161159014">
+<figcaption aria-hidden="true">image-20260204161159014</figcaption>
+</figure>
+<figure>
+<img src="/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/image-20260204161150230.png" alt="image-20260204161150230">
+<figcaption aria-hidden="true">image-20260204161150230</figcaption>
+</figure>
+<h2 id="会话记忆">会话记忆</h2>
+<ul>
+<li>在 <strong>Gateway 网关主机</strong>上：
+<ul>
+<li>存储文件：<code>~/.openclaw/agents/&lt;agentId&gt;/sessions/sessions.json</code>（每个智能体）。</li>
+</ul></li>
+<li>对话记录：<code>~/.openclaw/agents/&lt;agentId&gt;/sessions/&lt;SessionId&gt;.jsonl</code>（Telegram
+话题会话使用
+<code>.../&lt;SessionId&gt;-topic-&lt;threadId&gt;.jsonl</code>）。</li>
+</ul>
+<figure>
+<img src="/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/image-20260204162005555.png" alt="image-20260204162005555">
+<figcaption aria-hidden="true">image-20260204162005555</figcaption>
+</figure>
+<figure>
+<img src="/2026/02/04/%E5%AD%A6%E4%B9%A0/%E4%BA%A7%E5%93%81%E4%BD%93%E9%AA%8C/openclaw/image-20260204161956796.png" alt="image-20260204161956796">
+<figcaption aria-hidden="true">image-20260204161956796</figcaption>
+</figure>
+<h2 id="参考资料">参考资料</h2>
+<p><a target="_blank" rel="noopener" href="https://github.com/openclaw/openclaw">openclaw/openclaw:
+Your own personal AI assistant. Any OS. Any Platform. The lobster way.
+🦞</a></p>
+<p><a target="_blank" rel="noopener" href="https://docs.openclaw.ai/concepts/memory">Gateway Runbook -
+OpenClaw</a></p>
+<p>【Clawdbot为什么能记住你说过的话? AI记忆系统拆解】
+https://www.bilibili.com/video/BV1fv61B4EQ5/?share_source=copy_web&amp;vd_source=5e54f7845fd2cf2828efb1bae2286590</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/" class="post-title-link" itemprop="url">tcp协议</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-01-24 00:00:00" itemprop="dateCreated datePublished" datetime="2026-01-24T00:00:00+08:00">2026-01-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-01-26 15:19:19" itemprop="dateModified" datetime="2026-01-26T15:19:19+08:00">2026-01-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%B8%89%E4%B8%8A/" itemprop="url" rel="index"><span itemprop="name">大三上</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="tcp和udp协议的核心原理和区别">TCP和UDP协议的核心原理和区别</h1>
+<p><strong>TCP</strong>：全称是 <strong>Transmission Control
+Protocol</strong>，中文翻译为<strong>传输控制协议</strong>。</p>
+<p><strong>UDP</strong>：全称是 <strong>User Datagram
+Protocol</strong>，中文翻译为<strong>用户数据报协议</strong>。</p>
+<h2 id="连接类型和服务对象">1. 连接类型和服务对象</h2>
+<p>这决定了通信双方在“开聊”之前要做什么，以及能和谁聊。</p>
+<ul>
+<li><strong>TCP（面向连接）</strong>：
+<ul>
+<li><strong>连接类型</strong>：必须通过“三次握手”建立逻辑连接。通信结束后，还需“四次挥手”断开。</li>
+<li><strong>服务对象</strong>：它是<strong>端到端</strong>的，即点对点通信。一旦连接建立，就是两个特定
+IP/端口之间的独占通道。</li>
+</ul></li>
+<li><strong>UDP（无连接）</strong>：
+<ul>
+<li><strong>连接类型</strong>：完全无连接。想发就发，不需要预先建立任何关系。</li>
+<li><strong>服务对象</strong>：支持<strong>一对一、一对多（广播）、多对一和多对多（组播）</strong>。它更像是一个大喇叭，谁都能听，谁都能喊。</li>
+</ul></li>
+</ul>
+<hr>
+<h2 id="首部header">2. 首部（Header）</h2>
+<figure>
+<img src="/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/image-20260126145037525.png" alt="image-20260126145037525">
+<figcaption aria-hidden="true">image-20260126145037525</figcaption>
+</figure>
+<p>这决定了协议的“管理成本”和传输效率。</p>
+<ul>
+<li><strong>TCP（臃肿但功能全）</strong>：
+<ul>
+<li><strong>长度</strong>：最小 <strong>20
+字节</strong>，如果包含选项字段会更长。</li>
+<li><strong>内容</strong>：包含序列号、确认号、各种标志位（SYN/ACK/FIN）、窗口大小等。这些复杂的字段都是为了确保“可靠传输”。</li>
+</ul></li>
+<li><strong>UDP（简洁精悍）</strong>：
+<ul>
+<li><strong>长度</strong>：固定为 <strong>8 字节</strong>。</li>
+<li><strong>内容</strong>：只包含四个字段：源端口、目的端口、长度和校验和。这让它的处理速度极快，开销极低。</li>
+</ul></li>
+</ul>
+<hr>
+<h2 id="可靠性与传输方式">3. 可靠性与传输方式</h2>
+<figure>
+<img src="/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/image-20260126145256624.png" alt="image-20260126145256624">
+<figcaption aria-hidden="true">image-20260126145256624</figcaption>
+</figure>
+<p>这是两者最本质的区别。</p>
+<ul>
+<li><strong>TCP（可靠的字节流）</strong>：
+<ul>
+<li><strong>可靠性</strong>：通过确认应答（ACK）、超时重传、丢包检测来保证数据<strong>不丢失、不重复、且按序到达</strong>。</li>
+<li><strong>传输方式</strong>：<strong>面向字节流</strong>。TCP
+不管你应用层发的是什么，它把数据看成一串流。它可能会把你的大报文拆开，也可能把几个小报文合并。</li>
+</ul></li>
+<li><strong>UDP（不可靠的报文）</strong>：
+<ul>
+<li><strong>可靠性</strong>：<strong>尽力而为</strong>。不保证送达，也不保证顺序。丢了就丢了，UDP
+本身不负责重传。</li>
+<li><strong>传输方式</strong>：<strong>面向报文</strong>。你给它一个 500
+字节的包，它就原封不动打上头发出去，保留了报文的边界，不会进行拆分或合并。</li>
+</ul></li>
+</ul>
+<hr>
+<h2 id="流量控制和拥塞控制">4. 流量控制和拥塞控制</h2>
+<p>这决定了协议如何应对网络环境的变化。</p>
+<ul>
+<li><strong>TCP（智能管家）</strong>：
+<ul>
+<li><strong>流量控制</strong>：通过“滑动窗口”机制，根据接收方的处理能力动态调整发送速度，防止把对方“淹没”。</li>
+<li><strong>拥塞控制</strong>：当网络出现拥堵时，TCP
+会通过慢启动、拥塞避免等算法主动降低发送速率。它有很强的<strong>自我约束和适应能力</strong>。</li>
+</ul></li>
+<li><strong>UDP（热血青年）</strong>：
+<ul>
+<li><strong>控制机制</strong>：<strong>完全没有</strong>。网络堵不堵、对方收不收得下，UDP
+全然不理。它只会按应用层要求的速度拼命发。这种特性在网络差时可能导致严重的丢包，但也保证了实时性。</li>
+</ul></li>
+</ul>
+<hr>
+<h2 id="应用场景">5. 应用场景</h2>
+<p>基于上述特性，它们的应用领域泾渭分明。</p>
+<table>
+<colgroup>
+<col style="width: 8%">
+<col style="width: 29%">
+<col style="width: 61%">
+</colgroup>
+<thead>
+<tr>
+<th><strong>协议</strong></th>
+<th><strong>适用核心需求</strong></th>
+<th><strong>典型应用</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>TCP</strong></td>
+<td>准确性第一，宁慢勿错</td>
+<td><strong>浏览器(HTTP/HTTPS)</strong>、<strong>文件传输(FTP)</strong>、<strong>邮件(SMTP)</strong>、<strong>远程登录(SSH)</strong></td>
+</tr>
+<tr>
+<td><strong>UDP</strong></td>
+<td>速度/实时性第一，允许少量错误</td>
+<td><strong>视频会议(Zoom/WeChat)</strong>、<strong>在线直播</strong>、<strong>实时竞技游戏</strong>、<strong>域名解析(DNS)</strong></td>
+</tr>
+</tbody>
+</table>
+<h1 id="tcp三次握手和四次挥手">TCP三次握手和四次挥手</h1>
+<p>理解 TCP
+的“三次握手”和“四次挥手”，本质上是理解两个终端如何在不可靠的网络环境下，建立并优雅地释放一个<strong>可靠的</strong>双工（双向）通道。</p>
+<hr>
+<h2 id="三次握手建立连接">1. 三次握手（建立连接）</h2>
+<figure>
+<img src="/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/image-20260126145536691.png" alt="image-20260126145536691">
+<figcaption aria-hidden="true">image-20260126145536691</figcaption>
+</figure>
+<p>目的是确认双方的<strong>收发能力</strong>都正常，并交换初始序列号（ISN）。</p>
+<ol type="1">
+<li><strong>第一次握手 (SYN)</strong>：客户端发送一个 <code>SYN</code>
+包（序列号为 <span class="math inline"><em>x</em></span>）给服务端。
+<ul>
+<li><em>潜台词</em>：客户端说：“我想和你建连，这是我的初始序列号。”</li>
+</ul></li>
+<li><strong>第二次握手 (SYN + ACK)</strong>：服务端收到后，回传一个
+<code>SYN</code> 包（序列号为 <span class="math inline"><em>y</em></span>）和 <code>ACK</code> 包（确认号为
+<span class="math inline"><em>x</em> + 1</span>）。
+<ul>
+<li><em>潜台词</em>：服务端说：“收到！我同意建连，这是我的序列号，我也确认收到你的了。”</li>
+</ul></li>
+<li><strong>第三次握手 (ACK)</strong>：客户端再回传一个 <code>ACK</code>
+包（确认号为 <span class="math inline"><em>y</em> + 1</span>）。
+<ul>
+<li><em>潜台词</em>：客户端说：“收到！那我们正式开始传数据吧。”</li>
+</ul></li>
+</ol>
+<blockquote>
+<p><strong>为什么要三次？</strong></p>
+<p>为了防止“已失效的连接请求报文”突然又传到了服务端。如果只有两次握手，服务端一响应就建立连接，那么旧的重复请求会导致服务端浪费资源去维持一个根本不存在的连接。</p>
+</blockquote>
+<hr>
+<h2 id="四次挥手释放连接">2. 四次挥手（释放连接）</h2>
+<figure>
+<img src="/2026/01/24/college/%E5%A4%A7%E4%B8%89%E4%B8%8B/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/tcp/image-20260126151050859.png" alt="image-20260126151050859">
+<figcaption aria-hidden="true">image-20260126151050859</figcaption>
+</figure>
+<p>由于 TCP
+是<strong>全双工</strong>的，断开连接时需要双方都确认“我没数据要发了”。</p>
+<ol type="1">
+<li><strong>第一次挥手 (FIN)</strong>：客户端发一个 <code>FIN</code>
+包给服务端。
+<ul>
+<li><em>状态</em>：客户端进入
+<code>FIN_WAIT_1</code>，表示客户端不再发数据了。</li>
+</ul></li>
+<li><strong>第二次挥手 (ACK)</strong>：服务端回一个 <code>ACK</code>。
+<ul>
+<li><em>状态</em>：服务端进入
+<code>CLOSE_WAIT</code>。此时连接处于<strong>半关闭</strong>状态，服务端可能还有没发完的数据。</li>
+</ul></li>
+<li><strong>第三次挥手 (FIN)</strong>：服务端发完最后的数据，发送
+<code>FIN</code> 包给客户端。
+<ul>
+<li><em>状态</em>：服务端进入 <code>LAST_ACK</code>。</li>
+</ul></li>
+<li><strong>第四次挥手 (ACK)</strong>：客户端收到后，回一个
+<code>ACK</code>，然后进入 <code>TIME_WAIT</code> 状态。
+<ul>
+<li><em>状态</em>：经过 <span class="math inline">2<em>M</em><em>S</em><em>L</em></span>（最长报文段寿命）时间后，客户端正式关闭。</li>
+</ul></li>
+</ol>
+<h1 id="参考资料">参考资料</h1>
+<p>【神奇的滑动窗口 | TCP流量控制】
+https://www.bilibili.com/video/BV1sQXDYREwP/?share_source=copy_web&amp;vd_source=5e54f7845fd2cf2828efb1bae2286590</p>
+<p>【“我为人人，人人为我”的TCP拥塞控制】
+https://www.bilibili.com/video/BV1jWS7BeEX5/?share_source=copy_web&amp;vd_source=5e54f7845fd2cf2828efb1bae2286590</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -5934,915 +6584,6 @@ Skills - Claude Docs</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills">用
 Agent Skills 为代理赋能  Anthropic — Equipping agents for the real world
 with Agent Skills  Anthropic</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/12/16/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E5%AE%9E%E7%94%A8%E7%BD%91%E9%A1%B5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/12/16/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E5%AE%9E%E7%94%A8%E7%BD%91%E9%A1%B5/" class="post-title-link" itemprop="url">开发实用网页记录</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2025-12-16 00:00:00 / 修改时间：17:20:57" itemprop="dateCreated datePublished" datetime="2025-12-16T00:00:00+08:00">2025-12-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/python-web/" itemprop="url" rel="index"><span itemprop="name">python-web</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="前端设计网站">前端设计网站</h2>
-<p><a target="_blank" rel="noopener" href="https://dribbble.com/">Dribbble - Discover the World’s Top
-Designers &amp; Creative Professionals</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.supahero.io/">Supahero - Website hero section
-library</a></p>
-<p>组件网站</p>
-<p><a target="_blank" rel="noopener" href="https://ui.shadcn.com/docs">Introduction - shadcn/ui</a></p>
-<p><a target="_blank" rel="noopener" href="https://mobbin.com/discover/apps/web/latest">Discover Web
-apps | Mobbin</a></p>
-<p><a target="_blank" rel="noopener" href="https://collectui.com/">Collect UI - Daily inspiration
-collected from daily ui archive and beyond. Based on Dribbble shots,
-hand picked, updating daily.</a></p>
-<p>交互设计</p>
-<p><a target="_blank" rel="noopener" href="https://www.webinteractions.gallery/">Web Animations &amp;
-UI Interactions Gallery – Best Website Animation Examples</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/12/12/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E8%AE%A1%E7%BB%84%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/12/12/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E8%AE%A1%E7%BB%84%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA/" class="post-title-link" itemprop="url">计算机组成原理查漏补缺</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-12-12 00:00:00" itemprop="dateCreated datePublished" datetime="2025-12-12T00:00:00+08:00">2025-12-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-12-24 09:03:27" itemprop="dateModified" datetime="2025-12-24T09:03:27+08:00">2025-12-24</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%A4%A7%E4%B8%89%E4%B8%8A/" itemprop="url" rel="index"><span itemprop="name">大三上</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">计算机组成原理</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="三种指令类型-r-i-j">三种指令类型 (R, I, J)</h2>
-<p>MIPS 指令集的设计非常整齐，所有的指令都是
-<strong>32位（bits）</strong> 长。但是，这 32
-个格子怎么分配，取决于指令的类型。</p>
-<h4 id="r-type-register-type-寄存器型">(1) R-type (Register type,
-寄存器型)</h4>
-<ul>
-<li><strong>用途</strong>：纯粹的数学运算。</li>
-<li><strong>特点</strong>：所有的操作数都在寄存器里。</li>
-<li><strong>例子</strong>：<code>add $t0, $t1, $t2</code> (把 t1 和 t2
-里的数拿出来相加，结果存到 t0)。</li>
-<li><strong>格局</strong>：因为它需要 3
-个寄存器（2个源，1个目标），所以它的空间被切得很细，最后剩下了 6 位给
-<code>func</code>。</li>
-</ul>
-<h4 id="i-type-immediate-type-立即数型">(2) I-type (Immediate type,
-立即数型)</h4>
-<ul>
-<li><strong>用途</strong>：涉及常数运算，或者读写内存。</li>
-<li><strong>特点</strong>：操作数里包含一个具体的数字（立即数）。</li>
-<li><strong>例子</strong>：
-<ul>
-<li><code>ori $t0, $t1, 100</code> (把 t1 和数字 100 做或运算)。</li>
-<li><code>lw $t0, 4($t1)</code> (去内存取数，地址是 t1 + 4)。</li>
-</ul></li>
-<li><strong>格局</strong>：为了放那个数字（比如 100），它牺牲了
-<code>rd</code> 和 <code>func</code> 的位置，腾出了
-<strong>16位</strong> 的空间来存这个数。</li>
-</ul>
-<h4 id="j-type-jump-type-跳转型">(3) J-type (Jump type, 跳转型)</h4>
-<ul>
-<li><strong>用途</strong>：程序跳转（就像代码里的
-<code>goto</code>）。</li>
-<li><strong>特点</strong>：跳得很远。</li>
-<li><strong>例子</strong>：<code>j 1000</code> (直接跳到地址 1000
-去执行)。</li>
-<li><strong>格局</strong>：除了开头的 op，剩下的 <strong>26位</strong>
-全用来存目标地址，保证能跳得足够远。</li>
-</ul>
-<table>
-<colgroup>
-<col style="width: 5%">
-<col style="width: 11%">
-<col style="width: 27%">
-<col style="width: 27%">
-<col style="width: 27%">
-</colgroup>
-<thead>
-<tr>
-<th><strong>指令类型</strong></th>
-<th><strong>全称 (中文名)</strong></th>
-<th><strong>包含的常见指令 (加粗为你课件中的)</strong></th>
-<th><strong>核心特征</strong></th>
-<th><strong>指令格式结构 (32位)</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>R-Type</strong></td>
-<td>Register Type (寄存器型)</td>
-<td><strong>add</strong> (加法) <strong>sub</strong> (减法) and, or,
-slt, nor</td>
-<td><strong>纯运算</strong>。
-操作数全在寄存器里，不做数据传输，不涉及立即数。</td>
-<td><code>op(6)</code> <code>rs(5)</code> <code>rt(5)</code>
-<code>rd(5)</code> <code>shamt(5)</code> <code>func(6)</code>
-<em>(特点：op全为0，靠 func 区分)</em></td>
-</tr>
-<tr>
-<td><strong>I-Type</strong></td>
-<td>Immediate Type (立即数型)</td>
-<td><strong>ori</strong> (或立即数) <strong>lw</strong> (加载字)
-<strong>sw</strong> (存储字) <strong>beq</strong> (相等分支) addi, andi,
-bne</td>
-<td><strong>带常数/地址偏移</strong>。
-计算或访存时，需要用到一个具体的数字（16位）。</td>
-<td><code>op(6)</code> <code>rs(5)</code> <code>rt(5)</code>
-<code>immediate(16)</code> <em>(特点：最后16位是常数/地址)</em></td>
-</tr>
-<tr>
-<td><strong>J-Type</strong></td>
-<td>Jump Type (跳转型)</td>
-<td><strong>jump</strong> (无条件跳转) jal (跳转并链接)</td>
-<td><strong>长距离跑路</strong>。
-不需要计算，直接跳到程序代码的另一个位置。</td>
-<td><code>op(6)</code> <code>address(26)</code>
-<em>(特点：后面26位全是目标地址)</em></td>
-</tr>
-</tbody>
-</table>
-<h2 id="op-和-func-是什么"><code>op</code> 和 <code>func</code>
-是什么？</h2>
-<p>这两个是指令的<strong>身份证</strong>。</p>
-<ul>
-<li><strong><code>op</code> (Opcode, 操作码)</strong>：指令的<strong>高
-6 位</strong> (31-26 bit)。
-<ul>
-<li><strong>作用</strong>：它决定了这到底是一条什么指令（大类）。</li>
-<li><strong>比喻</strong>：就像身份证上的“省份”。控制器一看
-<code>op</code>，就知道你是 <code>lw</code> 还是 <code>sw</code> 还是
-<code>beq</code>。</li>
-<li><strong>特殊情况</strong>：对于所有的 <strong>R-type</strong>
-指令，它们的 <code>op</code> 都是
-<code>000000</code>。这就尴尬了，控制器光看 <code>op</code>
-分不清你是加法还是减法。</li>
-</ul></li>
-<li><strong><code>func</code> (Function code,
-功能码)</strong>：指令的<strong>低 6 位</strong> (5-0 bit)。
-<ul>
-<li><strong>作用</strong>：专门用来区分 R-type 指令的具体操作。</li>
-<li><strong>比喻</strong>：就像身份证上的“名字”。</li>
-<li><strong>逻辑</strong>：当 <code>op</code> 是 <code>000000</code>
-时，控制器就会去查 <code>func</code>。
-<ul>
-<li><code>func = 100000</code> -&gt; 做加法 (add)</li>
-<li><code>func = 100010</code> -&gt; 做减法 (sub)</li>
-</ul></li>
-<li><strong>注意</strong>：只有 R-type 有 <code>func</code>。I-type 和
-J-type 的这最后 6
-位已经被那个常数或者地址占用了，所以它们<strong>没有</strong> func
-字段。</li>
-</ul></li>
-</ul>
-<figure>
-<img src="/2025/12/12/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/%E8%AE%A1%E7%BB%84%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA/image-20251212164727970.png" alt="image-20251212164727970">
-<figcaption aria-hidden="true">image-20251212164727970</figcaption>
-</figure>
-<h3 id="为什么对于所有的-r-type-指令它们的-op-都是-000000">为什么对于所有的
-R-type 指令，它们的 op 都是 000000</h3>
-<p>设计者回头看了一眼 <strong>R-type</strong>
-指令的格式。他们发现了一个惊喜：</p>
-<p>R-type 指令只需要存 3 个寄存器编号（<code>rs</code>, <code>rt</code>,
-<code>rd</code>）和 1 个移位量（<code>shamt</code>）。</p>
-<ul>
-<li><code>op</code>: 6位</li>
-<li><code>rs</code>: 5位</li>
-<li><code>rt</code>: 5位</li>
-<li><code>rd</code>: 5位</li>
-<li><code>shamt</code>: 5位</li>
-<li><strong>总共使用</strong>：<span class="math inline">6 + 5 + 5 + 5 + 5 = 26</span> 位。</li>
-</ul>
-<p>32 - 26 = 6 位！</p>
-<p>R-type 指令的末尾，正好空出了 6位 没地方用。</p>
-<p>天才的设计思路来了：</p>
-<p>既然 R-type 指令末尾空着 6 位，那为什么不把 Opcode 统一设为
-000000（意思是：这是一条运算指令），然后利用末尾这空闲的 6 位（也就是
-func 字段）来具体区分是加法还是减法呢？</p>
-<ul>
-<li>这样一来，<code>add</code>, <code>sub</code>, <code>and</code>,
-<code>or</code>, <code>slt</code> 等几十条运算指令，在 Opcode
-表里<strong>只占用 1 个位置</strong>（就是 000000）。</li>
-<li>这就把剩下的 63 个 Opcode 宝贵名额，留给了那些没有空闲位置的 I-type
-和 J-type 指令（因为它们后面被立即数填满了，没有 <code>func</code>
-字段可用）。</li>
-</ul>
-<h2 id="控制信号的含义都有哪些">控制信号的含义都有哪些</h2>
-<p>这些信号就是控制器发出的“命令”，控制数据通路里的<strong>多路选择器
-(Mux)</strong> 和 <strong>使能开关 (Enable)</strong>。</p>
-<p>我们把它们分为三类来记：</p>
-<h4 id="第一类选路信号mux-selectors">第一类：选路信号（Mux
-Selectors）</h4>
-<p>这些信号决定数据走哪条路。你可以理解为火车轨道的<strong>道岔</strong>。如果是
-<code>0</code> 走左边，<code>1</code> 走右边。</p>
-<ol type="1">
-<li><strong><code>RegDst</code> (Register Destination)</strong>
-<ul>
-<li><strong>含义</strong>：<strong>运算结果存到哪个寄存器编号里？</strong></li>
-<li><strong>背景</strong>：
-<ul>
-<li>R-type 的目标寄存器编号在指令的第 15-11 位 (<code>rd</code>
-字段)。</li>
-<li>I-type (如 lw) 的目标寄存器编号在指令的第 20-16 位 (<code>rt</code>
-字段)。</li>
-</ul></li>
-<li><strong>值</strong>：
-<ul>
-<li><code>1</code>: 选 <code>rd</code> (R-type)。</li>
-<li><code>0</code>: 选 <code>rt</code> (I-type)。</li>
-</ul></li>
-</ul></li>
-<li><strong><code>ALUSrc</code> (ALU Source)</strong>
-<ul>
-<li><strong>含义</strong>：<strong>ALU
-的第二个操作数来自哪里？</strong></li>
-<li><strong>值</strong>：
-<ul>
-<li><code>0</code>: 来自寄存器堆的读出数据（两个寄存器做运算，如
-R-type）。</li>
-<li><code>1</code>: 来自指令里的立即数（寄存器和数字做运算，如
-<code>ori</code>, <code>lw</code>, <code>sw</code>）。</li>
-</ul></li>
-</ul></li>
-<li><strong><code>MemtoReg</code> (Memory to Register)</strong>
-<ul>
-<li><strong>含义</strong>：<strong>写回寄存器的数据来源是谁？</strong></li>
-<li><strong>值</strong>：
-<ul>
-<li><code>1</code>: 来自内存的数据（只有 <code>lw</code>
-指令是这样，把数据从仓库搬回寄存器）。</li>
-<li><code>0</code>: 来自 ALU 的计算结果（绝大多数指令，如
-<code>add</code>, <code>ori</code>）。</li>
-</ul></li>
-</ul></li>
-</ol>
-<h4 id="第二类开关信号enables">第二类：开关信号（Enables）</h4>
-<p>这些信号是<strong>安全锁</strong>。只有设为
-<code>1</code>，才允许动作。</p>
-<ol type="1">
-<li><strong><code>RegWr</code> (Register Write)</strong>
-<ul>
-<li><strong>含义</strong>：<strong>允不允许修改寄存器的值？</strong></li>
-<li><strong>值</strong>：
-<ul>
-<li><code>1</code>: 允许写。像 <code>add</code>, <code>lw</code>,
-<code>ori</code> 这种需要保存结果的指令。</li>
-<li><code>0</code>: 禁止写。像 <code>sw</code>
-(只是往内存存数)，<code>beq</code> (只是比较)，<code>j</code>
-(只是跳转)，绝对不能改写寄存器里的数据。</li>
-</ul></li>
-</ul></li>
-<li><strong><code>MemWr</code> (Memory Write)</strong>
-<ul>
-<li><strong>含义</strong>：<strong>允不允许修改内存的值？</strong></li>
-<li><strong>值</strong>：
-<ul>
-<li><code>1</code>: 允许写。<strong>只有 <code>sw</code> (Store Word)
-指令是 1</strong>。</li>
-<li><code>0</code>: 禁止写。其他所有指令。</li>
-</ul></li>
-</ul></li>
-</ol>
-<h4 id="第三类功能控制信号">第三类：功能控制信号</h4>
-<ol type="1">
-<li><strong><code>ExtOp</code> (Extension Operation)</strong>
-<ul>
-<li><strong>含义</strong>：<strong>16位的立即数怎么变成32位？</strong></li>
-<li><strong>背景</strong>：指令里的数字只有16位，但计算器是32位的。</li>
-<li><strong>值</strong>：
-<ul>
-<li><code>1</code> (Signed):
-<strong>符号扩展</strong>。保持正负号不变（比如 -2 扩展后还是 -2）。用于
-<code>lw</code>, <code>sw</code>,
-<code>beq</code>（算地址偏移量）。</li>
-<li><code>0</code> (Unsigned):
-<strong>零扩展</strong>。高位直接补0。用于逻辑运算如
-<code>ori</code>。</li>
-</ul></li>
-</ul></li>
-<li><strong><code>Branch</code></strong>
-<ul>
-<li><strong>含义</strong>：<strong>这是一个条件分支指令吗？</strong></li>
-<li><strong>值</strong>：如果是 <code>beq</code> 指令，这个信号是
-<code>1</code>。它会结合 ALU 的“零标志位”来决定要不要跳。</li>
-</ul></li>
-<li><strong><code>Jump</code></strong>
-<ul>
-<li><strong>含义</strong>：<strong>这是一个无条件跳转指令吗？</strong></li>
-<li><strong>值</strong>：如果是 <code>j</code> 指令，这个信号是
-<code>1</code>。直接强行修改 PC 指针。</li>
-</ul></li>
-<li><strong><code>ALUctr</code> (ALU Control)</strong>
-<ul>
-<li><strong>含义</strong>：<strong>ALU 到底做什么数学题？</strong></li>
-<li><strong>值</strong>：这是个多位信号（通常3位或4位）。
-<ul>
-<li><code>Add</code>: 加法 (用于 <code>add</code>, <code>lw</code>,
-<code>sw</code>)</li>
-<li><code>Sub</code>: 减法 (用于 <code>sub</code>, <code>beq</code>
-比较是否相等)</li>
-<li><code>Or</code>: 逻辑或 (用于 <code>ori</code>)</li>
-</ul></li>
-</ul></li>
-</ol>
-<h2 id="什么是控制器-controller">什么是控制器 (Controller)？</h2>
-<p>在 CPU 这个“大工厂”里，主要分两部分：</p>
-<ol type="1">
-<li><strong>数据通路
-(Datapath)</strong>：这是<strong>干活的工人</strong>和<strong>机器</strong>。包括寄存器（用来记账的小本子）、ALU（算盘/计算器）、内存（大仓库）。它们负责搬运数据、做加减法。</li>
-<li><strong>控制器
-(Controller)</strong>：这是<strong>工厂的指挥官</strong>。</li>
-</ol>
-<p><strong>控制器的作用：</strong>
-它不直接干活（不存数、不算数），它的任务是<strong>看懂指令</strong>，然后对着数据通路里的各种开关“发号施令”。</p>
-<ul>
-<li><strong>输入</strong>：它看的是指令（Instruction）。比如指令说“把 A
-和 B 加起来”，这串 0101 的机器码传给控制器。</li>
-<li><strong>输出</strong>：控制器根据指令，把相应的控制信号线拉高（置1）或拉低（置0）。</li>
-</ul>
-<blockquote>
-<p><strong>一句话总结</strong>：控制器就是 CPU
-的大脑，它通过查表（真值表）来告诉身体的各个部位（ALU、寄存器、内存）在当前这一刻该干什么。</p>
-</blockquote>
-<h2 id="什么是数据通路-datapath">什么是数据通路 (Datapath)？</h2>
-<p><strong>它的任务</strong>：根据指挥官（控制器）的命令，把数据从仓库（寄存器/内存）里搬出来，送到加工车间（ALU）算一下，再搬回去。</p>
-<p><strong>核心组成</strong>：</p>
-<ol type="1">
-<li><strong>仓库</strong>：寄存器堆 (Registers)、数据存储器 (Data
-Memory)。</li>
-<li><strong>车间</strong>：算术逻辑单元 (ALU)、加法器 (Adder)。</li>
-<li><strong>交通枢纽</strong>：多路选择器 (Mux)、扩展器 (Ext)。</li>
-</ol>
-<h2 id="什么是单周期处理器-single-cycle-processor">什么是单周期处理器
-(Single-Cycle Processor)？</h2>
-<p><strong>核心定义</strong>：CPI (Cycles Per Instruction) = 1。</p>
-<p><strong>通俗解释</strong>：</p>
-<ul>
-<li>时钟信号<strong>“哒”</strong>（上升沿）一下，CPU 开始取指令。</li>
-<li>在时钟<strong>“哒”</strong>下一响之前，CPU
-必须把这条指令的所有工作（取指、翻译、运算、读写内存、写回结果）全部做完。</li>
-</ul>
-<h2 id="单周期处理器包含哪些功能">单周期处理器包含哪些功能？</h2>
-<p>为了让程序能跑起来，处理器通常需要支持三大类功能（指令）：</p>
-<h4 id="a.-算术逻辑运算-r-type">A. 算术逻辑运算 (R-Type)</h4>
-<ul>
-<li><strong>功能</strong>：做数学题。</li>
-<li><strong>指令例子</strong>：<code>add</code> (加), <code>sub</code>
-(减), <code>and</code> (与), <code>or</code> (或), <code>slt</code>
-(比较大小)。</li>
-<li><strong>流程</strong>：读寄存器 -&gt; ALU 算 -&gt; 写回寄存器。</li>
-</ul>
-<h4 id="b.-数据传输访存-i-type">B. 数据传输/访存 (I-Type)</h4>
-<ul>
-<li><strong>功能</strong>：搬运数据。CPU
-的寄存器太小，数据多了要放内存里。</li>
-<li><strong>指令例子</strong>：
-<ul>
-<li><code>lw</code> (Load Word)：从内存搬到寄存器。</li>
-<li><code>sw</code> (Store Word)：从寄存器搬到内存。</li>
-</ul></li>
-<li><strong>流程</strong>：算地址 -&gt; 读/写内存 -&gt;
-(如果是读)写回寄存器。</li>
-</ul>
-<h4 id="c.-条件分支与跳转-branch-jump">C. 条件分支与跳转 (Branch &amp;
-Jump)</h4>
-<ul>
-<li><strong>功能</strong>：改变程序执行顺序（也就是改变 PC 的值）。</li>
-<li><strong>指令例子</strong>：
-<ul>
-<li><code>beq</code> (Branch if
-Equal)：如果两个数相等，就跳到某处去。</li>
-<li><code>j</code> (Jump)：无条件直接飞到某处。</li>
-</ul></li>
-<li><strong>流程</strong>：比较 -&gt; 计算新地址 -&gt; 修改 PC。</li>
-</ul>
-<h2 id="单周期处理器包含哪些组成部分">单周期处理器包含哪些组成部分？</h2>
-<p>我们可以把它分为<strong>“肉体”</strong>（数据通路）和<strong>“灵魂”</strong>（控制单元）两大部分。</p>
-<h4 id="第一部分数据通路-datapath-干活的">第一部分：数据通路 (Datapath)
-—— “干活的”</h4>
-<p>这部分你之前的实验已经做了一大半了，现在需要补全：</p>
-<ol type="1">
-<li><strong>取指单元 (Instruction Fetch)</strong> ——
-<strong>这是新面孔</strong>
-<ul>
-<li><strong>PC (Program Counter)</strong>：一个 32
-位的寄存器，存着“现在执行到哪一行代码了”。</li>
-<li><strong>指令存储器 (Instruction
-Memory)</strong>：存放你写的机器码的大仓库。</li>
-<li><strong>加法器 (+4)</strong>：让 PC 自动加 4，指向下一条指令。</li>
-</ul></li>
-<li><strong>寄存器堆 (Register File)</strong>
-<ul>
-<li>CPU 的“口袋”，这里有 32 个格子 ($0 - $31)，用来存放临时数据。</li>
-</ul></li>
-<li><strong>算术逻辑单元 (ALU)</strong>
-<ul>
-<li>CPU 的“计算器”，负责算加减法、逻辑运算。</li>
-</ul></li>
-<li><strong>数据存储器 (Data Memory)</strong>
-<ul>
-<li>CPU 的“大仓库”，用来做 <code>lw</code> 和 <code>sw</code>。</li>
-</ul></li>
-<li><strong>扩展单元 (Extender)</strong>
-<ul>
-<li>把 16 位的立即数变成 32 位。</li>
-</ul></li>
-<li><strong>多路选择器 (Mux)</strong> —— <strong>交通警察</strong>
-<ul>
-<li>关键组件！比如 <code>ALUSrc</code> 这个 Mux，决定了 ALU
-的输入是来自寄存器还是立即数。</li>
-</ul></li>
-</ol>
-<h4 id="第二部分控制单元-control-unit-发号施令的">第二部分：控制单元
-(Control Unit) —— “发号施令的”</h4>
-<p>在你上一个实验里，<strong>“你”</strong>就是控制器（手动在波形里设 0
-或 1）。现在要写一个模块来替代你。</p>
-<ol type="1">
-<li><strong>主控制器 (Main Control)</strong>
-<ul>
-<li><strong>输入</strong>：指令的高 6 位 (Opcode)。</li>
-<li><strong>输出</strong>：所有的控制信号 (<code>RegDst</code>,
-<code>ALUSrc</code>, <code>MemWr</code> 等)。</li>
-<li><strong>作用</strong>：看到 <code>lw</code> 指令，它就自动把
-<code>MemtoReg</code> 拉高，把 <code>RegWr</code> 拉高。</li>
-</ul></li>
-<li><strong>ALU 控制器 (ALU Control)</strong>
-<ul>
-<li><strong>输入</strong>：主控制器的信号 + 指令的低 6 位 (Funct)。</li>
-<li><strong>输出</strong>：给 ALU 的 <code>ALUctr</code>
-(3位或4位)。</li>
-<li><strong>作用</strong>：专门告诉 ALU 该做加法还是减法。</li>
-</ul></li>
-</ol>
-<h2 id="mips是什么">MIPS是什么</h2>
-<h3 id="一种经典的-cpu-架构-mips-architecture">1. <strong>一种经典的 CPU
-架构 (MIPS Architecture)</strong></h3>
-<p>全称是 <strong>M</strong>icroprocessor without
-<strong>I</strong>nterlocked <strong>P</strong>ipeline
-<strong>S</strong>tages（无互锁流水线阶段微处理器）。</p>
-<ul>
-<li><strong>这是什么：</strong> 它是一种基于
-<strong>RISC</strong>（精简指令集计算机）原则设计的 CPU 架构。</li>
-<li><strong>地位与影响：</strong> MIPS
-是计算机体系结构教科书中的“标准模版”（著名的《计算机组成与设计》一书就主要使用
-MIPS 教学）。它的设计非常简洁、优雅，对后来的 CPU 设计（包括 ARM 和
-RISC-V）产生了深远影响。</li>
-<li><strong>应用场景：</strong>
-<ul>
-<li><strong>曾经的辉煌：</strong> 索尼 PlayStation (PS1, PS2)、任天堂
-N64 等游戏机都使用 MIPS 处理器。</li>
-<li><strong>现在的应用：</strong> 依然广泛用于路由器（如部分 TP-Link,
-Ubiquiti 设备）、嵌入式设备和部分龙芯处理器（早期的龙芯基于 MIPS
-指令集）。</li>
-</ul></li>
-<li><strong>现状：</strong> 虽然曾经辉煌，但在移动端被 ARM
-击败，在开源领域受到 RISC-V 的强烈冲击。MIPS
-公司后来宣布将架构开源，随后又经历了多次收购和转型，目前已不再开发新的
-MIPS 架构，转投 RISC-V 阵营。</li>
-</ul>
-<h3 id="一种性能指标-million-instructions-per-second">2.
-<strong>一种性能指标 (Million Instructions Per Second)</strong></h3>
-<p>全称是 <strong>M</strong>illion <strong>I</strong>nstructions
-<strong>P</strong>er <strong>S</strong>econd（每秒百万条指令）。</p>
-<ul>
-<li><p><strong>这是什么：</strong> 它是衡量计算机 CPU
-运算速度的一个老式指标。</p></li>
-<li><p>计算公式：</p>
-<p><span class="math display">$$\text{MIPS} =
-\frac{\text{指令总数}}{\text{执行时间} \times 10^6}$$</span></p></li>
-<li><p><strong>缺点：</strong>
-这个指标在现代对比中往往被认为<strong>不准确</strong>，因此有时候被戏称为
-“<em>Meaningless Indication of Processor
-Speed</em>”（处理器速度的无意义指标）。</p>
-<ul>
-<li><strong>原因：</strong> 不同的 CPU
-执行一条指令所做的事情不同。例如，CISC（如 Intel
-x86）的一条复杂指令可能相当于 RISC（如 ARM）的 5
-条简单指令。仅仅比较“每秒执行多少条指令”并不能真实反映两台不同架构电脑的快慢。</li>
-</ul></li>
-</ul>
-<h2 id="isa是什么"><strong>ISA</strong>是什么</h2>
-<p><strong>ISA</strong> 是 <strong>Instruction Set
-Architecture</strong>（指令集架构）的缩写。</p>
-<p>它是计算机体系结构中<strong>最重要的抽象层</strong>，可以理解为<strong>软件（程序员/编译器）和硬件（CPU）之间的“合同”或“接口”</strong>。</p>
-<h3 id="核心概念它是什么">1. 核心概念：它是什么？</h3>
-<p>想象一下驾驶汽车：</p>
-<ul>
-<li><strong>ISA 就像是驾驶舱的设计标准：</strong>
-它规定了“方向盘是用来转弯的”、“右边的踏板是油门”、“仪表盘显示速度”。只要懂这个标准，你就能开福特，也能开丰田。</li>
-<li><strong>硬件（微架构）就像是引擎的设计：</strong> 它是 V6 还是 V8
-引擎，是燃油还是电动，这属于内部实现。</li>
-</ul>
-<p>在计算机中：</p>
-<ul>
-<li><strong>软件</strong>（操作系统、编译器）只看 ISA，它只需知道“发送
-<code>ADD</code> 指令能做加法”，不需要知道 CPU
-内部是有几亿个晶体管怎么连线的。</li>
-<li><strong>硬件</strong>（CPU 设计师）必须实现 ISA
-规定的所有功能，至于怎么实现（用多少级流水线、多大的缓存），那是硬件的事。</li>
-</ul>
-<h3 id="isa-规定了什么-cpu-的词汇表">2. ISA 规定了什么？ (CPU
-的“词汇表”)</h3>
-<p>ISA 定义了程序员在汇编层面能看到的所有东西：</p>
-<ol type="1">
-<li><strong>指令集 (Instructions)：</strong> CPU
-能干什么？（如：加法、减法、从内存读取数据、跳转）。</li>
-<li><strong>数据类型 (Data Types)：</strong> 它是怎么理解 0 和 1
-的？（如：这是个 32 位整数，还是个 64 位浮点数？）。</li>
-<li><strong>寄存器 (Registers)：</strong>
-程序员能直接控制哪些“临时存储格”？（比如 MIPS 里的 <code>$t0</code> -
-<code>$t9</code>，x86 里的 <code>RAX</code>, <code>RBX</code>）。</li>
-<li><strong>寻址模式 (Addressing Modes)：</strong>
-怎么找到内存里的数据？（是直接给地址，还是通过寄存器加偏移量？）。</li>
-<li><strong>内存管理与异常处理：</strong>
-程序崩溃了怎么办？如何和操作系统配合？</li>
-</ol>
-<h2 id="mips-指令集架构-isa"><strong>MIPS 指令集架构 (ISA)</strong></h2>
-<p><strong>MIPS 指令集架构 (ISA)</strong>
-是计算机体系结构中最经典的“教科书级”设计。它基于
-<strong>RISC</strong>（精简指令集计算机）理念，主打简洁、高效和规整。</p>
-<p>以下是 MIPS 指令集的核心要素拆解：</p>
-<h3 id="核心设计理念">核心设计理念</h3>
-<ul>
-<li><strong>固定长度：</strong> 所有的指令都是
-<strong>32位</strong>（4字节）长。这使得 CPU 解码非常容易。</li>
-<li><strong>Load/Store 架构：</strong> 只有 <code>load</code>（读取）和
-<code>store</code>（写入）指令可以访问内存。其他的算术逻辑运算（如加法、减法）必须在<strong>寄存器</strong>之间进行。</li>
-<li><strong>三操作数格式：</strong>
-大多数运算指令需要三个操作数（例如：<code>add a, b, c</code> 意思是
-<code>a = b + c</code>），非常直观。</li>
-</ul>
-<h2 id="register-transfer-language寄存器传输语言"><strong>Register
-Transfer Language</strong>（寄存器传输语言）</h2>
-<p><strong>Register Transfer Language
-(RTL)</strong>，有时在教科书中也称为 <strong>RTN (Register Transfer
-Notation)</strong>，是一种用于描述计算机内部<strong>微操作
-(Micro-operations)</strong> 的符号系统。</p>
-<p>如果说汇编语言是给程序员看的，那么 RTL
-就是<strong>给计算机架构师用来推导和设计电路逻辑的“数学公式”</strong>。它比汇编更底层，因为它描述的是数据在硬件连线上的具体流动。</p>
-<p>以下是关于它的详细介绍：</p>
-<h3 id="核心符号-the-vocabulary">核心符号 (The Vocabulary)</h3>
-<p>RTL
-使用一套简洁的数学符号来表示硬件动作。掌握这些符号就能读懂各种架构图：</p>
-<table>
-<colgroup>
-<col style="width: 14%">
-<col style="width: 15%">
-<col style="width: 33%">
-<col style="width: 36%">
-</colgroup>
-<thead>
-<tr>
-<th><strong>符号</strong></th>
-<th><strong>含义</strong></th>
-<th><strong>例子</strong></th>
-<th><strong>解释</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong><span class="math inline">←</span></strong></td>
-<td><strong>传输 / 赋值</strong></td>
-<td><span class="math inline"><em>R</em>1 ← <em>R</em>2</span></td>
-<td>把寄存器 R2 的内容复制给 R1</td>
-</tr>
-<tr>
-<td><strong>[ ]</strong></td>
-<td><strong>寻址 / 内容</strong></td>
-<td><span class="math inline"><em>M</em>[100]</span></td>
-<td>内存地址为 100 的存储单元里的数据</td>
-</tr>
-<tr>
-<td><strong>M</strong></td>
-<td><strong>内存 (Memory)</strong></td>
-<td><span class="math inline"><em>M</em>[<em>P</em><em>C</em>]</span></td>
-<td>PC 指向的内存地址里的内容</td>
-</tr>
-<tr>
-<td><strong>,</strong></td>
-<td><strong>并行执行</strong></td>
-<td><span class="math inline"><em>R</em>1 ← <em>R</em>2, <em>R</em>2 ← <em>R</em>1</span></td>
-<td>这两个操作在<strong>同一个时钟周期内</strong>同时发生</td>
-</tr>
-<tr>
-<td><strong>()</strong></td>
-<td><strong>部分位</strong></td>
-<td><span class="math inline"><em>R</em>1(0 − 7)</span></td>
-<td>仅操作 R1 寄存器的低 8 位</td>
-</tr>
-</tbody>
-</table>
-<h3 id="section"></h3>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/12/11/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E8%AE%B0%E5%BD%95%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/12/11/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E8%AE%B0%E5%BD%95%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">记录开发过程中遇到的问题</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2025-12-11 00:00:00 / 修改时间：16:48:12" itemprop="dateCreated datePublished" datetime="2025-12-11T00:00:00+08:00">2025-12-11</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/python-web/" itemprop="url" rel="index"><span itemprop="name">python-web</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="浏览器的跨域预检">浏览器的跨域预检</h2>
-<blockquote>
-<p>INFO: 127.0.0.1:54365 - “OPTIONS /usersrole=admin HTTP/1.1” 200 OK
-INFO: 127.0.0.1:54365 - “GET /usersrole=admin HTTP/1.1” 200 OK
-为什么每次调用这个接口会有两个</p>
-</blockquote>
-<p>• 这是浏览器的跨域预检 + 实际请求各一次：</p>
-<ul>
-<li>前端带 Authorization 头、跨域调用 /users?role=admin 时，浏览器会先发
-OPTIONS 预检，看服务器是否允许该方法 头。你启用了 CORS，所以预检返回
-200。</li>
-<li>预检通过后才发真正的 GET
-/users?role=admin，所以日志里看到两条。</li>
-</ul>
-<p>这是正常行为；非浏览器（如
-curl/postman）或同源、无自定义头的请求则不会有预检。</p>
-<h2 id="如何解决跨源的问题">如何解决跨源的问题</h2>
-<p>我们推导出了两套针对不同环境的最佳实践方案，核心逻辑都是<strong>“利用中间人（代理）实现同源”</strong>。</p>
-<h4 id="开发环境-development">💻 开发环境 (Development)</h4>
-<ul>
-<li><strong>工具：</strong> Vite (<code>server.proxy</code>)</li>
-<li><strong>原理：</strong> 利用 Vite 启动的 Node.js 服务转发请求。</li>
-<li><strong>效果：</strong> 浏览器只跟 Vite 打交道（同源），Vite
-跟后端打交道（服务器间无 CORS
-限制）。<strong>完美消除预检和跨域报错。</strong></li>
-</ul>
-<h4 id="生产环境-production">🚀 生产环境 (Production)</h4>
-<ul>
-<li><strong>工具：</strong> Nginx (反向代理)</li>
-<li><strong>原理：</strong> 浏览器所有请求（页面 + 接口）统一发给
-Nginx（比如 80 端口）。
-<ul>
-<li><code>/</code> -&gt; Nginx 返回静态 HTML/JS 文件。</li>
-<li><code>/api</code> -&gt; Nginx 转发给后端服务（8000 端口）。</li>
-</ul></li>
-<li><strong>效果：</strong>
-在浏览器看来，它始终只访问了一个域名（同源），因此<strong>不需要 CORS
-配置，也没有预检请求，性能最高</strong>。</li>
-</ul>
-<h2 id="authorization-头是什么">Authorization 头是什么</h2>
-<p><code>Authorization</code> 头（Header）是 HTTP
-协议中用来<strong>验证用户身份</strong>的一个标准字段。</p>
-<h3 id="标准格式">1. 标准格式</h3>
-<p><code>Authorization</code>
-头的值并不是随便填写的，它遵循一个严格的语法结构：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Authorization: &lt;认证类型&gt; &lt;凭证数据&gt;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><strong>认证类型 (Schema)：</strong>
-说明后面跟的是哪种类型的凭证（比如是“密码”还是“令牌”）。常见的有
-<code>Bearer</code> 和 <code>Basic</code>。</li>
-<li><strong>空格：</strong> 中间必须有一个空格分隔。</li>
-<li><strong>凭证数据 (Credentials)：</strong> 具体的加密字符串或
-Token。</li>
-</ul>
-<hr>
-<h3 id="最常用的两种类型">2. 最常用的两种类型</h3>
-<h4 id="a.-bearer-最常见用于-jwt">A. Bearer (最常见，用于 JWT)</h4>
-<p>这是目前现代 Web 应用和 API 最主流的方式，通常配合 <strong>JWT (JSON
-Web Token)</strong> 使用。</p>
-<ul>
-<li><p><strong>含义：</strong> “Bearer”
-的意思是“持有者”。意思是：“谁持有这个令牌，谁就有权限。”</p></li>
-<li><p><strong>场景：</strong> 用户登录后，服务器发给用户一个
-JWT。用户下次请求时，把这个 JWT 放在这里。</p></li>
-<li><p><strong>HTTP 请求示例：</strong></p>
-<p>HTTP</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GET /api/user/profile HTTP/1.1</span><br><span class="line">Host: example.com</span><br><span class="line">Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong>注意：</strong> 这里的乱码字符串 <code>eyJ...</code>
-就是上一条回答中提到的 JWT。</p>
-</blockquote></li>
-</ul>
-<h4 id="b.-basic-最基础用于用户名密码">B. Basic
-(最基础，用于用户名密码)</h4>
-<p>这是 HTTP 协议内置的最古老的认证方式。</p>
-<ul>
-<li><p><strong>含义：</strong> 直接把“用户名:密码”拼接，然后进行 Base64
-编码传给服务器。</p></li>
-<li><p><strong>场景：</strong>
-内部系统、简单的测试环境、或者某些传统的网关认证。</p></li>
-<li><p><strong>原理：</strong></p>
-<ol type="1">
-<li>用户名 <code>admin</code>，密码 <code>123456</code>。</li>
-<li>拼接：<code>admin:123456</code>。</li>
-<li>Base64 编码：<code>YWRtaW46MTIzNDU2</code>。</li>
-</ol></li>
-<li><p><strong>HTTP 请求示例：</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">POST /api/login HTTP/1.1</span><br><span class="line">Authorization: Basic YWRtaW46MTIzNDU2</span><br></pre></td></tr></table></figure></li>
-</ul>
 
       
     </div>
