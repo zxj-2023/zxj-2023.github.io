@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="深度学习大作业实验报告 zxj-2023&#x2F;deeplearing-homework RAG 的现状与瓶颈 1. 朴素 RAG (Naive RAG) 的现状与瓶颈  现状：通过外部知识库增强 LLM，是目前处理知识密集型任务的标准做法,。其核心操作是将文档切分为小块（Chunks）并进行语义索引,。 瓶颈：  上下文丢失：简单的分块策略会导致关键上下文细节的丢失，损害检索精度。">
+    <meta name="description" content="深度学习大作业实验报告zxj-2023&#x2F;deeplearing-homework RAG 的现状与瓶颈1. 朴素 RAG (Naive RAG) 的现状与瓶颈 现状：通过外部知识库增强 LLM，是目前处理知识密集型任务的标准做法,。其核心操作是将文档切分为小块（Chunks）并进行语义索引,。 瓶颈： 上下文丢失：简单的分块策略会导致关键上下文细节的丢失，损害检索精度。 难以处理复杂推理：在面对大">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LinearRAG论文阅读">
 <meta property="og:url" content="http://example.com/2026/01/02/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LinearRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="深度学习大作业实验报告 zxj-2023&#x2F;deeplearing-homework RAG 的现状与瓶颈 1. 朴素 RAG (Naive RAG) 的现状与瓶颈  现状：通过外部知识库增强 LLM，是目前处理知识密集型任务的标准做法,。其核心操作是将文档切分为小块（Chunks）并进行语义索引,。 瓶颈：  上下文丢失：简单的分块策略会导致关键上下文细节的丢失，损害检索精度。">
+<meta property="og:description" content="深度学习大作业实验报告zxj-2023&#x2F;deeplearing-homework RAG 的现状与瓶颈1. 朴素 RAG (Naive RAG) 的现状与瓶颈 现状：通过外部知识库增强 LLM，是目前处理知识密集型任务的标准做法,。其核心操作是将文档切分为小块（Chunks）并进行语义索引,。 瓶颈： 上下文丢失：简单的分块策略会导致关键上下文细节的丢失，损害检索精度。 难以处理复杂推理：在面对大">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2026/01/02/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LinearRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/image-20260104081804747.png">
 <meta property="og:image" content="http://example.com/2026/01/02/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LinearRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/image-20260104081743448.png">
@@ -152,43 +152,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%A4%A7%E4%BD%9C%E4%B8%9A%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A"><span class="nav-number">1.</span> <span class="nav-text">深度学习大作业实验报告</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rag-%E7%9A%84%E7%8E%B0%E7%8A%B6%E4%B8%8E%E7%93%B6%E9%A2%88"><span class="nav-number">2.</span> <span class="nav-text">RAG 的现状与瓶颈</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%B4%E7%B4%A0-rag-naive-rag-%E7%9A%84%E7%8E%B0%E7%8A%B6%E4%B8%8E%E7%93%B6%E9%A2%88"><span class="nav-number">2.1.</span> <span class="nav-text">1. 朴素 RAG (Naive RAG)
-的现状与瓶颈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE-rag-graphrag-%E7%9A%84%E5%85%B4%E8%B5%B7%E4%B8%8E%E5%B1%80%E9%99%90"><span class="nav-number">2.2.</span> <span class="nav-text">2. 图 RAG (GraphRAG)
-的兴起与局限</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B1%80%E9%83%A8%E4%B8%8D%E5%87%86%E7%A1%AE%E5%92%8C%E5%85%A8%E5%B1%80%E4%B8%8D%E4%B8%80%E8%87%B4"><span class="nav-number">3.</span> <span class="nav-text">局部不准确和全局不一致</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%80%E9%83%A8%E4%B8%8D%E5%87%86%E7%A1%AE-local-inaccuracy"><span class="nav-number">3.1.</span> <span class="nav-text">1. 局部不准确 (Local
-Inaccuracy)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E4%B8%8D%E4%B8%80%E8%87%B4-global-inconsistency"><span class="nav-number">3.2.</span> <span class="nav-text">2. 全局不一致 (Global
-Inconsistency)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%E4%B8%8E%E5%BD%B1%E5%93%8D"><span class="nav-number">3.3.</span> <span class="nav-text">总结与影响</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A6%E5%9B%BE-a%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94%E7%90%86%E6%83%B3%E4%B8%8E%E7%8E%B0%E5%AE%9E%E7%9A%84%E5%B7%AE%E8%B7%9D"><span class="nav-number">3.4.</span> <span class="nav-text">左图
-(a)：性能对比——理想与现实的差距</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%B3%E5%9B%BE-b%E9%94%99%E8%AF%AF%E5%88%86%E7%B1%BB%E4%B8%BA%E4%BB%80%E4%B9%88%E5%9B%BE%E8%B0%B1%E4%BC%9A%E5%A4%B1%E6%95%88"><span class="nav-number">3.5.</span> <span class="nav-text">右图
-(b)：错误分类——为什么图谱会失效？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B1%80%E9%83%A8%E4%B8%8D%E5%87%86%E7%A1%AE-local-inaccuracy-1"><span class="nav-number">3.5.1.</span> <span class="nav-text">1. 局部不准确 (Local
-Inaccuracy)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E4%B8%8D%E4%B8%80%E8%87%B4-global-inconsistency-1"><span class="nav-number">3.5.2.</span> <span class="nav-text">2. 全局不一致 (Global
-Inconsistency)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linearrag%E6%A1%86%E6%9E%B6%E7%9A%84%E6%80%BB%E4%BD%93%E6%B5%81%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">LinearRAG框架的总体流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80-%E7%A6%BB%E7%BA%BF%E5%9B%BE%E6%9E%84%E5%BB%BA-i.-offline-construction"><span class="nav-number">4.1.</span> <span class="nav-text">一、 离线图构建 (I.
-Offline Construction)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C-%E5%9C%A8%E7%BA%BF%E6%A3%80%E7%B4%A2-ii.-online-retrieval"><span class="nav-number">4.2.</span> <span class="nav-text">二、 在线检索 (II. Online
-Retrieval)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5%E9%80%9A%E8%BF%87%E8%AF%AD%E4%B9%89%E6%A1%A5%E6%8E%A5%E6%BF%80%E6%B4%BB%E5%AE%9E%E4%BD%93-stage-1-entity-activation"><span class="nav-number">4.2.1.</span> <span class="nav-text">第一阶段：通过语义桥接激活实体
-(Stage 1: Entity Activation)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E9%98%B6%E6%AE%B5%E9%80%9A%E8%BF%87%E5%85%A8%E5%B1%80%E9%87%8D%E8%A6%81%E6%80%A7%E8%81%9A%E5%90%88%E6%A3%80%E7%B4%A2%E7%AF%87%E7%AB%A0-stage-2-passage-retrieval"><span class="nav-number">4.2.2.</span> <span class="nav-text">第二阶段：通过全局重要性聚合检索篇章
-(Stage 2: Passage Retrieval)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89-%E7%94%9F%E6%88%90%E9%98%B6%E6%AE%B5-generation"><span class="nav-number">4.3.</span> <span class="nav-text">三、 生成阶段 (Generation)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%A0%E7%BB%9F%E7%9A%84-graphrag%E7%9B%AE%E5%89%8D%E9%97%AE%E9%A2%98"><span class="nav-number">5.</span> <span class="nav-text">传统的
-GraphRAG目前问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E4%B9%89%E8%A1%A8%E8%BE%BE%E7%9A%84%E5%8E%9F%E5%AD%90%E5%8C%96%E5%9B%B0%E5%A2%83"><span class="nav-number">5.1.</span> <span class="nav-text">1. 语义表达的“原子化”困境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%90%E6%9C%AC%E4%B8%8E%E6%95%88%E7%8E%87%E7%9A%84token-%E9%99%B7%E9%98%B1"><span class="nav-number">5.2.</span> <span class="nav-text">2. 成本与效率的“Token 陷阱”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A3%80%E7%B4%A2%E6%97%B6%E7%9A%84%E5%99%AA%E5%A3%B0%E5%B9%B2%E6%89%B0"><span class="nav-number">5.3.</span> <span class="nav-text">3. 检索时的“噪声干扰”</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linearrag%E7%9A%84%E4%BC%98%E5%8A%BF%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E4%BC%A0%E7%BB%9F%E7%9A%84graphrag%E7%9B%AE%E5%89%8D%E9%97%AE%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">LinearRAG的优势，如何解决传统的GraphRAG目前问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E8%AF%AD%E4%B9%89%E4%B8%A2%E5%A4%B1%E9%97%AE%E9%A2%98%E9%87%87%E7%94%A8%E5%8E%9F%E5%A7%8B%E6%96%87%E6%9C%AC%E4%BD%9C%E4%B8%BA%E7%9F%A5%E8%AF%86%E8%BD%BD%E4%BD%93"><span class="nav-number">6.1.</span> <span class="nav-text">1.
-解决语义丢失问题：采用“原始文本”作为知识载体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E9%AB%98%E6%98%82%E6%88%90%E6%9C%AC%E9%97%AE%E9%A2%98%E5%AE%9E%E7%8E%B0%E9%9B%B6-token%E7%B4%A2%E5%BC%95%E4%B8%8E%E5%85%A8%E9%98%B6%E6%AE%B5%E7%BA%BF%E6%80%A7%E6%89%A9%E5%B1%95"><span class="nav-number">6.2.</span> <span class="nav-text">2.
-解决高昂成本问题：实现“零 Token”索引与全阶段线性扩展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%A3%80%E7%B4%A2%E5%99%AA%E5%A3%B0%E9%97%AE%E9%A2%98%E4%B8%A4%E9%98%B6%E6%AE%B5%E7%B2%BE%E5%87%86%E6%A3%80%E7%B4%A2%E6%9C%BA%E5%88%B6"><span class="nav-number">6.3.</span> <span class="nav-text">3.
-解决检索噪声问题：两阶段精准检索机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#token-free-graph-construction%E9%9B%B6-token-%E5%9B%BE%E6%9E%84%E5%BB%BA"><span class="nav-number">7.</span> <span class="nav-text">Token-free
-Graph Construction（零 Token 图构建）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84%E4%B8%89%E5%B1%82%E5%9B%BEtri-graph"><span class="nav-number">7.1.</span> <span class="nav-text">1. 核心架构：三层图（Tri-Graph）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%B9%E6%9E%84%E5%BB%BA%E8%A7%84%E5%88%99%E4%B8%8E%E6%95%B0%E5%AD%A6%E5%AE%9A%E4%B9%89"><span class="nav-number">7.2.</span> <span class="nav-text">2. 边构建规则与数学定义</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a.-%E5%8C%85%E5%90%AB%E7%9F%A9%E9%98%B5-contain-matrix-c"><span class="nav-number">7.2.1.</span> <span class="nav-text">A. 包含矩阵 (Contain Matrix, C)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b.-%E6%8F%90%E5%8F%8A%E7%9F%A9%E9%98%B5-mention-matrix-m"><span class="nav-number">7.2.2.</span> <span class="nav-text">B. 提及矩阵 (Mention Matrix, M)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#token-free%E7%9A%84%E6%8A%80%E6%9C%AF%E4%BC%98%E5%8A%BF"><span class="nav-number">7.3.</span> <span class="nav-text">3. “Token-free”的技术优势</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E7%BB%B4%E6%8A%A4%E4%B8%8E%E6%9B%B4%E6%96%B0"><span class="nav-number">7.4.</span> <span class="nav-text">4. 动态维护与更新</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E5%90%8D%E5%AE%9E%E4%BD%93%E8%AF%86%E5%88%ABnamed-entity-recognition"><span class="nav-number">8.</span> <span class="nav-text">命名实体识别（Named
-Entity Recognition）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ner-%E5%9C%A8%E6%A1%86%E6%9E%B6%E4%B8%AD%E7%9A%84%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%B7%A5%E5%85%B7"><span class="nav-number">8.1.</span> <span class="nav-text">NER 在框架中的定义与工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5%E9%80%9A%E8%BF%87%E8%AF%AD%E4%B9%89%E6%A1%A5%E6%8E%A5%E6%BF%80%E6%B4%BB%E7%9B%B8%E5%85%B3%E5%AE%9E%E4%BD%93relevant-entity-activation-via-semantic-bridging"><span class="nav-number">9.</span> <span class="nav-text">第一阶段：通过语义桥接激活相关实体（Relevant
-Entity Activation via Semantic Bridging）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%AE%9E%E4%BD%93%E6%BF%80%E6%B4%BB-initial-entity-activation"><span class="nav-number">9.1.</span> <span class="nav-text">1. 初始实体激活 (Initial
-Entity Activation)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2-%E5%8F%A5%E5%AD%90%E7%9B%B8%E5%85%B3%E6%80%A7%E5%88%86%E5%B8%83-query-sentence-relevance-distribution"><span class="nav-number">9.2.</span> <span class="nav-text">2.
-查询-句子相关性分布 (Query-Sentence Relevance Distribution)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E4%B9%89%E4%BC%A0%E6%92%AD-semantic-propagation"><span class="nav-number">9.3.</span> <span class="nav-text">3. 语义传播 (Semantic
-Propagation)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%85%AC%E5%BC%8F%E6%8B%86%E8%A7%A3"><span class="nav-number">9.3.1.</span> <span class="nav-text">核心公式拆解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%8F%AB%E8%AF%AD%E4%B9%89%E6%A1%A5%E6%8E%A5"><span class="nav-number">9.3.2.</span> <span class="nav-text">为什么叫“语义桥接”？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E7%89%B9%E6%80%A7"><span class="nav-number">9.3.3.</span> <span class="nav-text">关键特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E8%AF%81%E6%98%8E%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">9.3.4.</span> <span class="nav-text">实验证明的作用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E5%89%AA%E6%9E%9D-dynamic-pruning"><span class="nav-number">9.4.</span> <span class="nav-text">4. 动态剪枝 (Dynamic Pruning)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6"><span class="nav-number">9.4.1.</span> <span class="nav-text">核心运行机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E7%9A%84%E4%B8%A4%E5%A4%A7%E7%97%9B%E7%82%B9"><span class="nav-number">9.4.2.</span> <span class="nav-text">解决的两大痛点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%88%E5%80%BC-delta-%E7%9A%84%E5%BD%B1%E5%93%8D%E4%B8%8E%E8%AE%BE%E7%BD%AE"><span class="nav-number">9.4.3.</span> <span class="nav-text">阈值 δ 的影响与设置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E9%98%B6%E6%AE%B5%E9%80%9A%E8%BF%87%E5%85%A8%E5%B1%80%E9%87%8D%E8%A6%81%E6%80%A7%E8%81%9A%E5%90%88%E8%BF%9B%E8%A1%8C%E7%AF%87%E7%AB%A0%E6%A3%80%E7%B4%A2passage-retrieval-via-global-importance-aggregation"><span class="nav-number">10.</span> <span class="nav-text">第二阶段：通过全局重要性聚合进行篇章检索（Passage
-Retrieval via Global Importance Aggregation）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%88%86%E6%95%B0%E5%88%86%E9%85%8D%E6%B7%B7%E5%90%88%E5%88%9D%E5%A7%8B%E5%8C%96hybrid-initialization"><span class="nav-number">10.1.</span> <span class="nav-text">1.
-初始分数分配：混合初始化（Hybrid Initialization）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E9%87%8D%E8%A6%81%E6%80%A7%E8%81%9A%E5%90%88%E4%B8%AA%E6%80%A7%E5%8C%96-pagerank-ppr"><span class="nav-number">10.2.</span> <span class="nav-text">2. 全局重要性聚合：个性化
-PageRank (PPR)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E4%B8%8E%E8%BE%93%E5%87%BA-ranking"><span class="nav-number">10.3.</span> <span class="nav-text">3. 排序与输出 (Ranking)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AF%87%E7%AB%A0%E8%8A%82%E7%82%B9%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96passage-node-initialization"><span class="nav-number">11.</span> <span class="nav-text">篇章节点的初始化（Passage
-Node Initialization）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AF%87%E7%AB%A0%E8%8A%82%E7%82%B9%E5%88%9D%E5%A7%8B%E5%8C%96%E5%85%AC%E5%BC%8F"><span class="nav-number">11.1.</span> <span class="nav-text">1. 篇章节点初始化公式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AC%E5%BC%8F%E5%8F%82%E6%95%B0%E8%AF%A6%E7%BB%86%E6%8B%86%E8%A7%A3"><span class="nav-number">11.2.</span> <span class="nav-text">2. 公式参数详细拆解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%99%E4%B8%AA%E5%85%AC%E5%BC%8F%E8%A7%A3%E5%86%B3%E7%9A%84%E6%A0%B8%E5%BF%83%E9%97%AE%E9%A2%98"><span class="nav-number">11.3.</span> <span class="nav-text">3. 这个公式解决的核心问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AC%E5%BC%8F%E7%9A%84%E6%9C%80%E7%BB%88%E4%BA%A7%E5%87%BA"><span class="nav-number">11.4.</span> <span class="nav-text">4. 公式的最终产出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E9%87%8D%E8%A6%81%E6%80%A7%E8%81%9A%E5%90%88global-importance-aggregation"><span class="nav-number">12.</span> <span class="nav-text">全局重要性聚合（Global
-Importance Aggregation）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E7%AF%87%E7%AB%A0-%E5%AE%9E%E4%BD%93%E4%BA%8C%E9%83%A8%E5%9B%BE"><span class="nav-number">12.1.</span> <span class="nav-text">1. 运行环境：篇章-实体二部图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F%E4%B8%AA%E6%80%A7%E5%8C%96-pagerank-ppr"><span class="nav-number">12.2.</span> <span class="nav-text">2. 核心计算公式：个性化
-PageRank (PPR)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E6%A0%B7%E8%AE%A1%E7%AE%97%E6%9B%B4%E6%9C%89%E6%95%88"><span class="nav-number">12.3.</span> <span class="nav-text">3. 为什么这样计算更有效？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E7%BB%88%E4%BA%A7%E5%87%BAtop-k-%E6%8E%92%E5%BA%8F"><span class="nav-number">12.4.</span> <span class="nav-text">4. 最终产出：Top-k 排序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%AF%E5%88%B0%E7%AB%AF%E6%80%A7%E8%83%BD%E7%9A%84%E4%B8%BB%E8%A6%81%E7%BB%93%E6%9E%9C"><span class="nav-number">13.</span> <span class="nav-text">端到端性能的主要结果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%8E%E8%AF%84%E4%BC%B0%E6%8C%87%E6%A0%87"><span class="nav-number">13.1.</span> <span class="nav-text">1. 数据集与评估指标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94%E7%9A%84%E4%B8%89%E5%A4%A7%E7%B1%BB%E6%A8%A1%E5%9E%8B"><span class="nav-number">13.2.</span> <span class="nav-text">2. 对比的三大类模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#linearrag-%E7%9A%84%E8%A1%A8%E7%8E%B0%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%BB%93%E8%AE%BA"><span class="nav-number">13.3.</span> <span class="nav-text">3. LinearRAG 的表现与核心结论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E8%83%8C%E5%90%8E%E7%9A%84%E8%A7%82%E5%AF%9F-observations"><span class="nav-number">13.4.</span> <span class="nav-text">4. 实验背后的观察
-(Observations)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E8%AE%BE%E7%BD%AEexperimental-setting"><span class="nav-number">14.</span> <span class="nav-text">实验设置（Experimental
-Setting）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%E9%9B%86-datasets"><span class="nav-number">14.1.</span> <span class="nav-text">1. 测试数据集 (Datasets)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94%E5%9F%BA%E5%87%86-baselines"><span class="nav-number">14.2.</span> <span class="nav-text">2. 对比基准 (Baselines)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%84%E4%BC%B0%E6%8C%87%E6%A0%87-evaluation-metrics"><span class="nav-number">14.3.</span> <span class="nav-text">3. 评估指标 (Evaluation
-Metrics)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%96%BD%E7%BB%86%E8%8A%82-implementations"><span class="nav-number">14.4.</span> <span class="nav-text">4. 实施细节 (Implementations)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%88%E7%8E%87%E4%B8%8E%E6%80%A7%E8%83%BD%E6%AF%94%E8%BE%83"><span class="nav-number">15.</span> <span class="nav-text">效率与性能比较</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E9%98%B6%E6%AE%B5%E9%9B%B6-token-%E6%B6%88%E8%80%97%E4%B8%8E%E9%AB%98%E9%80%9F%E6%9E%84%E5%BB%BA"><span class="nav-number">15.1.</span> <span class="nav-text">1. 索引阶段：零 Token
-消耗与高速构建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A3%80%E7%B4%A2%E9%98%B6%E6%AE%B5%E6%9E%81%E4%BD%8E%E5%BB%B6%E8%BF%9F%E4%B8%8E%E9%AB%98%E6%95%88%E7%AE%97%E6%B3%95"><span class="nav-number">15.2.</span> <span class="nav-text">2. 检索阶段：极低延迟与高效算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A7%E8%A7%84%E6%A8%A1%E8%AF%AD%E6%96%99%E5%BA%93%E4%B8%8B%E7%9A%84%E6%89%A9%E5%B1%95%E6%80%A7-large-scale-analysis"><span class="nav-number">15.3.</span> <span class="nav-text">3.
-大规模语料库下的扩展性 (Large-scale Analysis)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B6%88%E8%9E%8D%E5%AE%9E%E9%AA%8C-ablation-study"><span class="nav-number">16.</span> <span class="nav-text">消融实验 Ablation
-Study</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%80%83%E5%AF%9F%E7%9A%84%E4%B8%A4%E4%B8%AA%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97"><span class="nav-number">16.1.</span> <span class="nav-text">1. 考察的两个核心模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E5%AE%9E%E9%AA%8C%E5%8F%91%E7%8E%B0observation-7"><span class="nav-number">16.2.</span> <span class="nav-text">2. 主要实验发现（Observation 7）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%8F%8D%E6%98%A0%E7%9A%84%E8%B6%8B%E5%8A%BF"><span class="nav-number">16.3.</span> <span class="nav-text">3. 数据反映的趋势</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#medical%E5%8C%BB%E7%96%97%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%8A%E7%9A%84%E6%A3%80%E7%B4%A2%E8%B4%A8%E9%87%8F%E8%AF%84%E4%BC%B0%E7%BB%93%E6%9E%9C"><span class="nav-number">17.</span> <span class="nav-text">Medical（医疗）数据集上的检索质量评估结果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%8C%87%E6%A0%87%E7%9A%84%E5%90%AB%E4%B9%89"><span class="nav-number">17.1.</span> <span class="nav-text">1. 核心指标的含义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#linearrag-%E7%9A%84%E5%8D%93%E8%B6%8A%E8%A1%A8%E7%8E%B0-obs.-9"><span class="nav-number">17.2.</span> <span class="nav-text">2. LinearRAG 的卓越表现 (Obs.
-9)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%A0%E7%BB%9F-graphrag-%E7%9A%84%E5%99%AA%E5%A3%B0%E7%93%B6%E9%A2%88-obs.-8"><span class="nav-number">17.3.</span> <span class="nav-text">3. 传统 GraphRAG 的“噪声瓶颈”
-(Obs. 8)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">18.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%A4%A7%E4%BD%9C%E4%B8%9A%E5%AE%9E%E9%AA%8C%E6%8A%A5%E5%91%8A"><span class="nav-number">1.</span> <span class="nav-text">深度学习大作业实验报告</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RAG-%E7%9A%84%E7%8E%B0%E7%8A%B6%E4%B8%8E%E7%93%B6%E9%A2%88"><span class="nav-number">2.</span> <span class="nav-text">RAG 的现状与瓶颈</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%9C%B4%E7%B4%A0-RAG-Naive-RAG-%E7%9A%84%E7%8E%B0%E7%8A%B6%E4%B8%8E%E7%93%B6%E9%A2%88"><span class="nav-number">2.1.</span> <span class="nav-text">1. 朴素 RAG (Naive RAG) 的现状与瓶颈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%9B%BE-RAG-GraphRAG-%E7%9A%84%E5%85%B4%E8%B5%B7%E4%B8%8E%E5%B1%80%E9%99%90"><span class="nav-number">2.2.</span> <span class="nav-text">2. 图 RAG (GraphRAG) 的兴起与局限</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B1%80%E9%83%A8%E4%B8%8D%E5%87%86%E7%A1%AE%E5%92%8C%E5%85%A8%E5%B1%80%E4%B8%8D%E4%B8%80%E8%87%B4"><span class="nav-number">3.</span> <span class="nav-text">局部不准确和全局不一致</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%B1%80%E9%83%A8%E4%B8%8D%E5%87%86%E7%A1%AE-Local-Inaccuracy"><span class="nav-number">3.1.</span> <span class="nav-text">1. 局部不准确 (Local Inaccuracy)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%85%A8%E5%B1%80%E4%B8%8D%E4%B8%80%E8%87%B4-Global-Inconsistency"><span class="nav-number">3.2.</span> <span class="nav-text">2. 全局不一致 (Global Inconsistency)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%E4%B8%8E%E5%BD%B1%E5%93%8D"><span class="nav-number">3.3.</span> <span class="nav-text">总结与影响</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A6%E5%9B%BE-a-%EF%BC%9A%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94%E2%80%94%E2%80%94%E7%90%86%E6%83%B3%E4%B8%8E%E7%8E%B0%E5%AE%9E%E7%9A%84%E5%B7%AE%E8%B7%9D"><span class="nav-number">3.4.</span> <span class="nav-text">左图 (a)：性能对比——理想与现实的差距</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%B3%E5%9B%BE-b-%EF%BC%9A%E9%94%99%E8%AF%AF%E5%88%86%E7%B1%BB%E2%80%94%E2%80%94%E4%B8%BA%E4%BB%80%E4%B9%88%E5%9B%BE%E8%B0%B1%E4%BC%9A%E5%A4%B1%E6%95%88%EF%BC%9F"><span class="nav-number">3.5.</span> <span class="nav-text">右图 (b)：错误分类——为什么图谱会失效？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%B1%80%E9%83%A8%E4%B8%8D%E5%87%86%E7%A1%AE-Local-Inaccuracy-1"><span class="nav-number">3.5.1.</span> <span class="nav-text">1. 局部不准确 (Local Inaccuracy)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%85%A8%E5%B1%80%E4%B8%8D%E4%B8%80%E8%87%B4-Global-Inconsistency-1"><span class="nav-number">3.5.2.</span> <span class="nav-text">2. 全局不一致 (Global Inconsistency)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%A4%8D%E6%9D%82%E5%A4%9A%E8%B7%B3%EF%BC%88multi-hop%EF%BC%89%E6%8E%A8%E7%90%86%E4%BB%BB%E5%8A%A1"><span class="nav-number">4.</span> <span class="nav-text">什么是复杂多跳（multi-hop）推理任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LinearRAG%E6%A1%86%E6%9E%B6%E7%9A%84%E6%80%BB%E4%BD%93%E6%B5%81%E7%A8%8B"><span class="nav-number">5.</span> <span class="nav-text">LinearRAG框架的总体流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81-%E7%A6%BB%E7%BA%BF%E5%9B%BE%E6%9E%84%E5%BB%BA-I-Offline-Construction"><span class="nav-number">5.1.</span> <span class="nav-text">一、 离线图构建 (I. Offline Construction)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81-%E5%9C%A8%E7%BA%BF%E6%A3%80%E7%B4%A2-II-Online-Retrieval"><span class="nav-number">5.2.</span> <span class="nav-text">二、 在线检索 (II. Online Retrieval)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5%EF%BC%9A%E9%80%9A%E8%BF%87%E8%AF%AD%E4%B9%89%E6%A1%A5%E6%8E%A5%E6%BF%80%E6%B4%BB%E5%AE%9E%E4%BD%93-Stage-1-Entity-Activation"><span class="nav-number">5.2.1.</span> <span class="nav-text">第一阶段：通过语义桥接激活实体 (Stage 1: Entity Activation)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E9%98%B6%E6%AE%B5%EF%BC%9A%E9%80%9A%E8%BF%87%E5%85%A8%E5%B1%80%E9%87%8D%E8%A6%81%E6%80%A7%E8%81%9A%E5%90%88%E6%A3%80%E7%B4%A2%E7%AF%87%E7%AB%A0-Stage-2-Passage-Retrieval"><span class="nav-number">5.2.2.</span> <span class="nav-text">第二阶段：通过全局重要性聚合检索篇章 (Stage 2: Passage Retrieval)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81-%E7%94%9F%E6%88%90%E9%98%B6%E6%AE%B5-Generation"><span class="nav-number">5.3.</span> <span class="nav-text">三、 生成阶段 (Generation)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%A0%E7%BB%9F%E7%9A%84-GraphRAG%E7%9B%AE%E5%89%8D%E9%97%AE%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">传统的 GraphRAG目前问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%AF%AD%E4%B9%89%E8%A1%A8%E8%BE%BE%E7%9A%84%E2%80%9C%E5%8E%9F%E5%AD%90%E5%8C%96%E2%80%9D%E5%9B%B0%E5%A2%83"><span class="nav-number">6.1.</span> <span class="nav-text">1. 语义表达的“原子化”困境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%88%90%E6%9C%AC%E4%B8%8E%E6%95%88%E7%8E%87%E7%9A%84%E2%80%9CToken-%E9%99%B7%E9%98%B1%E2%80%9D"><span class="nav-number">6.2.</span> <span class="nav-text">2. 成本与效率的“Token 陷阱”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%A3%80%E7%B4%A2%E6%97%B6%E7%9A%84%E2%80%9C%E5%99%AA%E5%A3%B0%E5%B9%B2%E6%89%B0%E2%80%9D"><span class="nav-number">6.3.</span> <span class="nav-text">3. 检索时的“噪声干扰”</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LinearRAG%E7%9A%84%E4%BC%98%E5%8A%BF%EF%BC%8C%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E4%BC%A0%E7%BB%9F%E7%9A%84GraphRAG%E7%9B%AE%E5%89%8D%E9%97%AE%E9%A2%98"><span class="nav-number">7.</span> <span class="nav-text">LinearRAG的优势，如何解决传统的GraphRAG目前问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%A7%A3%E5%86%B3%E8%AF%AD%E4%B9%89%E4%B8%A2%E5%A4%B1%E9%97%AE%E9%A2%98%EF%BC%9A%E9%87%87%E7%94%A8%E2%80%9C%E5%8E%9F%E5%A7%8B%E6%96%87%E6%9C%AC%E2%80%9D%E4%BD%9C%E4%B8%BA%E7%9F%A5%E8%AF%86%E8%BD%BD%E4%BD%93"><span class="nav-number">7.1.</span> <span class="nav-text">1. 解决语义丢失问题：采用“原始文本”作为知识载体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%A3%E5%86%B3%E9%AB%98%E6%98%82%E6%88%90%E6%9C%AC%E9%97%AE%E9%A2%98%EF%BC%9A%E5%AE%9E%E7%8E%B0%E2%80%9C%E9%9B%B6-Token%E2%80%9D%E7%B4%A2%E5%BC%95%E4%B8%8E%E5%85%A8%E9%98%B6%E6%AE%B5%E7%BA%BF%E6%80%A7%E6%89%A9%E5%B1%95"><span class="nav-number">7.2.</span> <span class="nav-text">2. 解决高昂成本问题：实现“零 Token”索引与全阶段线性扩展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E8%A7%A3%E5%86%B3%E6%A3%80%E7%B4%A2%E5%99%AA%E5%A3%B0%E9%97%AE%E9%A2%98%EF%BC%9A%E4%B8%A4%E9%98%B6%E6%AE%B5%E7%B2%BE%E5%87%86%E6%A3%80%E7%B4%A2%E6%9C%BA%E5%88%B6"><span class="nav-number">7.3.</span> <span class="nav-text">3. 解决检索噪声问题：两阶段精准检索机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Token-free-Graph-Construction%EF%BC%88%E9%9B%B6-Token-%E5%9B%BE%E6%9E%84%E5%BB%BA%EF%BC%89"><span class="nav-number">8.</span> <span class="nav-text">Token-free Graph Construction（零 Token 图构建）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84%EF%BC%9A%E4%B8%89%E5%B1%82%E5%9B%BE%EF%BC%88Tri-Graph%EF%BC%89"><span class="nav-number">8.1.</span> <span class="nav-text">1. 核心架构：三层图（Tri-Graph）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%BE%B9%E6%9E%84%E5%BB%BA%E8%A7%84%E5%88%99%E4%B8%8E%E6%95%B0%E5%AD%A6%E5%AE%9A%E4%B9%89"><span class="nav-number">8.2.</span> <span class="nav-text">2. 边构建规则与数学定义</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#A-%E5%8C%85%E5%90%AB%E7%9F%A9%E9%98%B5-Contain-Matrix-C"><span class="nav-number">8.2.1.</span> <span class="nav-text">A. 包含矩阵 (Contain Matrix, $C$)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#B-%E6%8F%90%E5%8F%8A%E7%9F%A9%E9%98%B5-Mention-Matrix-M"><span class="nav-number">8.2.2.</span> <span class="nav-text">B. 提及矩阵 (Mention Matrix, $M$)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E2%80%9CToken-free%E2%80%9D%E7%9A%84%E6%8A%80%E6%9C%AF%E4%BC%98%E5%8A%BF"><span class="nav-number">8.3.</span> <span class="nav-text">3. “Token-free”的技术优势</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%8A%A8%E6%80%81%E7%BB%B4%E6%8A%A4%E4%B8%8E%E6%9B%B4%E6%96%B0"><span class="nav-number">8.4.</span> <span class="nav-text">4. 动态维护与更新</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E5%90%8D%E5%AE%9E%E4%BD%93%E8%AF%86%E5%88%AB%EF%BC%88Named-Entity-Recognition%EF%BC%89"><span class="nav-number">9.</span> <span class="nav-text">命名实体识别（Named Entity Recognition）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NER-%E5%9C%A8%E6%A1%86%E6%9E%B6%E4%B8%AD%E7%9A%84%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%B7%A5%E5%85%B7"><span class="nav-number">9.1.</span> <span class="nav-text">NER 在框架中的定义与工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5%EF%BC%9A%E9%80%9A%E8%BF%87%E8%AF%AD%E4%B9%89%E6%A1%A5%E6%8E%A5%E6%BF%80%E6%B4%BB%E7%9B%B8%E5%85%B3%E5%AE%9E%E4%BD%93%EF%BC%88Relevant-Entity-Activation-via-Semantic-Bridging%EF%BC%89"><span class="nav-number">10.</span> <span class="nav-text">第一阶段：通过语义桥接激活相关实体（Relevant Entity Activation via Semantic Bridging）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%88%9D%E5%A7%8B%E5%AE%9E%E4%BD%93%E6%BF%80%E6%B4%BB-Initial-Entity-Activation"><span class="nav-number">10.1.</span> <span class="nav-text">1. 初始实体激活 (Initial Entity Activation)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%9F%A5%E8%AF%A2-%E5%8F%A5%E5%AD%90%E7%9B%B8%E5%85%B3%E6%80%A7%E5%88%86%E5%B8%83-Query-Sentence-Relevance-Distribution"><span class="nav-number">10.2.</span> <span class="nav-text">2. 查询-句子相关性分布 (Query-Sentence Relevance Distribution)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E8%AF%AD%E4%B9%89%E4%BC%A0%E6%92%AD-Semantic-Propagation"><span class="nav-number">10.3.</span> <span class="nav-text">3. 语义传播 (Semantic Propagation)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%85%AC%E5%BC%8F%E6%8B%86%E8%A7%A3"><span class="nav-number">10.3.1.</span> <span class="nav-text">核心公式拆解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%8F%AB%E2%80%9C%E8%AF%AD%E4%B9%89%E6%A1%A5%E6%8E%A5%E2%80%9D%EF%BC%9F"><span class="nav-number">10.3.2.</span> <span class="nav-text">为什么叫“语义桥接”？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E7%89%B9%E6%80%A7"><span class="nav-number">10.3.3.</span> <span class="nav-text">关键特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E8%AF%81%E6%98%8E%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">10.3.4.</span> <span class="nav-text">实验证明的作用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%8A%A8%E6%80%81%E5%89%AA%E6%9E%9D-Dynamic-Pruning"><span class="nav-number">10.4.</span> <span class="nav-text">4. 动态剪枝 (Dynamic Pruning)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6"><span class="nav-number">10.4.1.</span> <span class="nav-text">核心运行机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E7%9A%84%E4%B8%A4%E5%A4%A7%E7%97%9B%E7%82%B9"><span class="nav-number">10.4.2.</span> <span class="nav-text">解决的两大痛点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%88%E5%80%BC-delta-%E7%9A%84%E5%BD%B1%E5%93%8D%E4%B8%8E%E8%AE%BE%E7%BD%AE"><span class="nav-number">10.4.3.</span> <span class="nav-text">阈值 $\delta$ 的影响与设置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E9%98%B6%E6%AE%B5%EF%BC%9A%E9%80%9A%E8%BF%87%E5%85%A8%E5%B1%80%E9%87%8D%E8%A6%81%E6%80%A7%E8%81%9A%E5%90%88%E8%BF%9B%E8%A1%8C%E7%AF%87%E7%AB%A0%E6%A3%80%E7%B4%A2%EF%BC%88Passage-Retrieval-via-Global-Importance-Aggregation%EF%BC%89"><span class="nav-number">11.</span> <span class="nav-text">第二阶段：通过全局重要性聚合进行篇章检索（Passage Retrieval via Global Importance Aggregation）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%88%9D%E5%A7%8B%E5%88%86%E6%95%B0%E5%88%86%E9%85%8D%EF%BC%9A%E6%B7%B7%E5%90%88%E5%88%9D%E5%A7%8B%E5%8C%96%EF%BC%88Hybrid-Initialization%EF%BC%89"><span class="nav-number">11.1.</span> <span class="nav-text">1. 初始分数分配：混合初始化（Hybrid Initialization）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%85%A8%E5%B1%80%E9%87%8D%E8%A6%81%E6%80%A7%E8%81%9A%E5%90%88%EF%BC%9A%E4%B8%AA%E6%80%A7%E5%8C%96-PageRank-PPR"><span class="nav-number">11.2.</span> <span class="nav-text">2. 全局重要性聚合：个性化 PageRank (PPR)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%8E%92%E5%BA%8F%E4%B8%8E%E8%BE%93%E5%87%BA-Ranking"><span class="nav-number">11.3.</span> <span class="nav-text">3. 排序与输出 (Ranking)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AF%87%E7%AB%A0%E8%8A%82%E7%82%B9%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%EF%BC%88Passage-Node-Initialization%EF%BC%89"><span class="nav-number">12.</span> <span class="nav-text">篇章节点的初始化（Passage Node Initialization）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%AF%87%E7%AB%A0%E8%8A%82%E7%82%B9%E5%88%9D%E5%A7%8B%E5%8C%96%E5%85%AC%E5%BC%8F"><span class="nav-number">12.1.</span> <span class="nav-text">1. 篇章节点初始化公式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%85%AC%E5%BC%8F%E5%8F%82%E6%95%B0%E8%AF%A6%E7%BB%86%E6%8B%86%E8%A7%A3"><span class="nav-number">12.2.</span> <span class="nav-text">2. 公式参数详细拆解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E8%BF%99%E4%B8%AA%E5%85%AC%E5%BC%8F%E8%A7%A3%E5%86%B3%E7%9A%84%E6%A0%B8%E5%BF%83%E9%97%AE%E9%A2%98"><span class="nav-number">12.3.</span> <span class="nav-text">3. 这个公式解决的核心问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%85%AC%E5%BC%8F%E7%9A%84%E6%9C%80%E7%BB%88%E4%BA%A7%E5%87%BA"><span class="nav-number">12.4.</span> <span class="nav-text">4. 公式的最终产出</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E9%87%8D%E8%A6%81%E6%80%A7%E8%81%9A%E5%90%88%EF%BC%88Global-Importance-Aggregation%EF%BC%89"><span class="nav-number">13.</span> <span class="nav-text">全局重要性聚合（Global Importance Aggregation）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%EF%BC%9A%E7%AF%87%E7%AB%A0-%E5%AE%9E%E4%BD%93%E4%BA%8C%E9%83%A8%E5%9B%BE"><span class="nav-number">13.1.</span> <span class="nav-text">1. 运行环境：篇章-实体二部图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%A0%B8%E5%BF%83%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F%EF%BC%9A%E4%B8%AA%E6%80%A7%E5%8C%96-PageRank-PPR"><span class="nav-number">13.2.</span> <span class="nav-text">2. 核心计算公式：个性化 PageRank (PPR)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E6%A0%B7%E8%AE%A1%E7%AE%97%E6%9B%B4%E6%9C%89%E6%95%88%EF%BC%9F"><span class="nav-number">13.3.</span> <span class="nav-text">3. 为什么这样计算更有效？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%9C%80%E7%BB%88%E4%BA%A7%E5%87%BA%EF%BC%9ATop-k-%E6%8E%92%E5%BA%8F"><span class="nav-number">13.4.</span> <span class="nav-text">4. 最终产出：Top-k 排序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%AF%E5%88%B0%E7%AB%AF%E6%80%A7%E8%83%BD%E7%9A%84%E4%B8%BB%E8%A6%81%E7%BB%93%E6%9E%9C"><span class="nav-number">14.</span> <span class="nav-text">端到端性能的主要结果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%8E%E8%AF%84%E4%BC%B0%E6%8C%87%E6%A0%87"><span class="nav-number">14.1.</span> <span class="nav-text">1. 数据集与评估指标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%AF%B9%E6%AF%94%E7%9A%84%E4%B8%89%E5%A4%A7%E7%B1%BB%E6%A8%A1%E5%9E%8B"><span class="nav-number">14.2.</span> <span class="nav-text">2. 对比的三大类模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-LinearRAG-%E7%9A%84%E8%A1%A8%E7%8E%B0%E4%B8%8E%E6%A0%B8%E5%BF%83%E7%BB%93%E8%AE%BA"><span class="nav-number">14.3.</span> <span class="nav-text">3. LinearRAG 的表现与核心结论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%AE%9E%E9%AA%8C%E8%83%8C%E5%90%8E%E7%9A%84%E8%A7%82%E5%AF%9F-Observations"><span class="nav-number">14.4.</span> <span class="nav-text">4. 实验背后的观察 (Observations)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E8%AE%BE%E7%BD%AE%EF%BC%88Experimental-Setting%EF%BC%89"><span class="nav-number">15.</span> <span class="nav-text">实验设置（Experimental Setting）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%E9%9B%86-Datasets"><span class="nav-number">15.1.</span> <span class="nav-text">1. 测试数据集 (Datasets)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%AF%B9%E6%AF%94%E5%9F%BA%E5%87%86-Baselines"><span class="nav-number">15.2.</span> <span class="nav-text">2. 对比基准 (Baselines)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E8%AF%84%E4%BC%B0%E6%8C%87%E6%A0%87-Evaluation-Metrics"><span class="nav-number">15.3.</span> <span class="nav-text">3. 评估指标 (Evaluation Metrics)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%AE%9E%E6%96%BD%E7%BB%86%E8%8A%82-Implementations"><span class="nav-number">15.4.</span> <span class="nav-text">4. 实施细节 (Implementations)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%88%E7%8E%87%E4%B8%8E%E6%80%A7%E8%83%BD%E6%AF%94%E8%BE%83"><span class="nav-number">16.</span> <span class="nav-text">效率与性能比较</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%B4%A2%E5%BC%95%E9%98%B6%E6%AE%B5%EF%BC%9A%E9%9B%B6-Token-%E6%B6%88%E8%80%97%E4%B8%8E%E9%AB%98%E9%80%9F%E6%9E%84%E5%BB%BA"><span class="nav-number">16.1.</span> <span class="nav-text">1. 索引阶段：零 Token 消耗与高速构建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%A3%80%E7%B4%A2%E9%98%B6%E6%AE%B5%EF%BC%9A%E6%9E%81%E4%BD%8E%E5%BB%B6%E8%BF%9F%E4%B8%8E%E9%AB%98%E6%95%88%E7%AE%97%E6%B3%95"><span class="nav-number">16.2.</span> <span class="nav-text">2. 检索阶段：极低延迟与高效算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%A4%A7%E8%A7%84%E6%A8%A1%E8%AF%AD%E6%96%99%E5%BA%93%E4%B8%8B%E7%9A%84%E6%89%A9%E5%B1%95%E6%80%A7-Large-scale-Analysis"><span class="nav-number">16.3.</span> <span class="nav-text">3. 大规模语料库下的扩展性 (Large-scale Analysis)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B6%88%E8%9E%8D%E5%AE%9E%E9%AA%8C-Ablation-Study"><span class="nav-number">17.</span> <span class="nav-text">消融实验 Ablation Study</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%80%83%E5%AF%9F%E7%9A%84%E4%B8%A4%E4%B8%AA%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97"><span class="nav-number">17.1.</span> <span class="nav-text">1. 考察的两个核心模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%B8%BB%E8%A6%81%E5%AE%9E%E9%AA%8C%E5%8F%91%E7%8E%B0%EF%BC%88Observation-7%EF%BC%89"><span class="nav-number">17.2.</span> <span class="nav-text">2. 主要实验发现（Observation 7）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%95%B0%E6%8D%AE%E5%8F%8D%E6%98%A0%E7%9A%84%E8%B6%8B%E5%8A%BF"><span class="nav-number">17.3.</span> <span class="nav-text">3. 数据反映的趋势</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Medical%EF%BC%88%E5%8C%BB%E7%96%97%EF%BC%89%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%8A%E7%9A%84%E6%A3%80%E7%B4%A2%E8%B4%A8%E9%87%8F%E8%AF%84%E4%BC%B0%E7%BB%93%E6%9E%9C"><span class="nav-number">18.</span> <span class="nav-text">Medical（医疗）数据集上的检索质量评估结果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%A0%B8%E5%BF%83%E6%8C%87%E6%A0%87%E7%9A%84%E5%90%AB%E4%B9%89"><span class="nav-number">18.1.</span> <span class="nav-text">1. 核心指标的含义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-LinearRAG-%E7%9A%84%E5%8D%93%E8%B6%8A%E8%A1%A8%E7%8E%B0-Obs-9"><span class="nav-number">18.2.</span> <span class="nav-text">2. LinearRAG 的卓越表现 (Obs. 9)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E4%BC%A0%E7%BB%9F-GraphRAG-%E7%9A%84%E2%80%9C%E5%99%AA%E5%A3%B0%E7%93%B6%E9%A2%88%E2%80%9D-Obs-8"><span class="nav-number">18.3.</span> <span class="nav-text">3. 传统 GraphRAG 的“噪声瓶颈” (Obs. 8)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">19.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -203,7 +167,7 @@ Study</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class=
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">196</span>
+          <span class="site-state-item-count">199</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -332,897 +296,435 @@ Study</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class=
     
     
     
-    <div class="post-body" itemprop="articleBody"><h2 id="深度学习大作业实验报告">深度学习大作业实验报告</h2>
-<p><a target="_blank" rel="noopener" href="https://github.com/zxj-2023/deeplearing-homework/blob/main/1.pdf">zxj-2023/deeplearing-homework</a></p>
-<h2 id="rag-的现状与瓶颈">RAG 的现状与瓶颈</h2>
-<h3 id="朴素-rag-naive-rag-的现状与瓶颈">1. 朴素 RAG (Naive RAG)
-的现状与瓶颈</h3>
-<ul>
-<li><strong>现状</strong>：通过外部知识库增强
-LLM，是目前处理知识密集型任务的标准做法,。其核心操作是将文档切分为小块（Chunks）并进行语义索引,。</li>
-<li><strong>瓶颈</strong>：
-<ul>
+    <div class="post-body" itemprop="articleBody"><h2 id="深度学习大作业实验报告"><a href="#深度学习大作业实验报告" class="headerlink" title="深度学习大作业实验报告"></a>深度学习大作业实验报告</h2><p><a target="_blank" rel="noopener" href="https://github.com/zxj-2023/deeplearing-homework/blob/main/1.pdf">zxj-2023/deeplearing-homework</a></p>
+<h2 id="RAG-的现状与瓶颈"><a href="#RAG-的现状与瓶颈" class="headerlink" title="RAG 的现状与瓶颈"></a>RAG 的现状与瓶颈</h2><h3 id="1-朴素-RAG-Naive-RAG-的现状与瓶颈"><a href="#1-朴素-RAG-Naive-RAG-的现状与瓶颈" class="headerlink" title="1. 朴素 RAG (Naive RAG) 的现状与瓶颈"></a>1. 朴素 RAG (Naive RAG) 的现状与瓶颈</h3><ul>
+<li><strong>现状</strong>：通过外部知识库增强 LLM，是目前处理知识密集型任务的标准做法,。其核心操作是将文档切分为小块（Chunks）并进行语义索引,。</li>
+<li><strong>瓶颈</strong>：<ul>
 <li><strong>上下文丢失</strong>：简单的分块策略会导致关键上下文细节的丢失，损害检索精度。</li>
-<li><strong>难以处理复杂推理</strong>：在面对大规模、非结构化语料库时，相关信息往往分散在不同文档中。朴素
-RAG
-往往只关注关键词匹配，容易遗漏多跳推理链条中必不可少的逻辑相关文档,。</li>
+<li><strong>难以处理复杂推理</strong>：在面对大规模、非结构化语料库时，相关信息往往分散在不同文档中。朴素 RAG 往往只关注关键词匹配，容易遗漏多跳推理链条中必不可少的逻辑相关文档,。</li>
 <li><strong>组织混乱</strong>：检索到的内容往往冗长、复杂且缺乏清晰的组织，导致生成结果的一致性和准确性存在波动。</li>
-</ul></li>
 </ul>
-<h3 id="图-rag-graphrag-的兴起与局限">2. 图 RAG (GraphRAG)
-的兴起与局限</h3>
-<ul>
-<li><strong>现状</strong>：为了解决多跳推理问题，GraphRAG（如 Microsoft
-GraphRAG, LightRAG
-等）通过构建外部结构化图来建模背景知识的层次结构，以提升检索的广度与深度。</li>
-<li><strong>瓶颈</strong>：
-<ul>
-<li><strong>关系提取的不稳定性</strong>：现有的 GraphRAG
-极度依赖大语言模型进行“关系提取”，但这个过程不稳定且容易产生幻觉。
-<ul>
+</li>
+</ul>
+<h3 id="2-图-RAG-GraphRAG-的兴起与局限"><a href="#2-图-RAG-GraphRAG-的兴起与局限" class="headerlink" title="2. 图 RAG (GraphRAG) 的兴起与局限"></a>2. 图 RAG (GraphRAG) 的兴起与局限</h3><ul>
+<li><strong>现状</strong>：为了解决多跳推理问题，GraphRAG（如 Microsoft GraphRAG, LightRAG 等）通过构建外部结构化图来建模背景知识的层次结构，以提升检索的广度与深度。</li>
+<li><strong>瓶颈</strong>：<ul>
+<li><strong>关系提取的不稳定性</strong>：现有的 GraphRAG 极度依赖大语言模型进行“关系提取”，但这个过程不稳定且容易产生幻觉。<ul>
 <li><strong>局部不准确</strong>：关系提取模型常产生错误的事实三元组（例如将“没得奖”误认为“得奖”）,。</li>
 <li><strong>全局不一致</strong>：由于缺乏全局协调机制，构建出的图结构往往是破碎、连接性差且充满结构性冲突的,。</li>
-</ul></li>
-<li><strong>成本与效率低下</strong>：构建复杂的知识图谱需要调用大量 LLM
-Token，过程极其昂贵且耗时，难以随语料库规模线性扩展,。</li>
-<li><strong>噪声引入</strong>：虽然图检索能提高召回率（Recall），但由于图中存在大量错误连接，会引入严重噪声，导致其在现实应用中的表现有时甚至不如朴素
-RAG,。</li>
-</ul></li>
 </ul>
-<figure>
-<img src="/2026/01/02/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LinearRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/image-20260104081804747.png" alt="image-20260104081804747">
-<figcaption aria-hidden="true">image-20260104081804747</figcaption>
-</figure>
-<h2 id="局部不准确和全局不一致">局部不准确和全局不一致</h2>
-<p>根据源代码，<strong>局部不准确（Local
-Inaccuracy）</strong>和<strong>全局不一致（Global
-Inconsistency）</strong>是传统 GraphRAG
-系统由于过度依赖大语言模型（LLM）进行“关系提取”而产生的两大核心缺陷,。</p>
-<h3 id="局部不准确-local-inaccuracy">1. 局部不准确 (Local
-Inaccuracy)</h3>
-<p>这指的是在<strong>单个三元组（Triple）</strong>层面的知识质量问题。</p>
+</li>
+<li><strong>成本与效率低下</strong>：构建复杂的知识图谱需要调用大量 LLM Token，过程极其昂贵且耗时，难以随语料库规模线性扩展,。</li>
+<li><strong>噪声引入</strong>：虽然图检索能提高召回率（Recall），但由于图中存在大量错误连接，会引入严重噪声，导致其在现实应用中的表现有时甚至不如朴素 RAG,。</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2026/01/02/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LinearRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/image-20260104081804747.png" alt="image-20260104081804747"></p>
+<h2 id="局部不准确和全局不一致"><a href="#局部不准确和全局不一致" class="headerlink" title="局部不准确和全局不一致"></a>局部不准确和全局不一致</h2><p>根据源代码，<strong>局部不准确（Local Inaccuracy）</strong>和<strong>全局不一致（Global Inconsistency）</strong>是传统 GraphRAG 系统由于过度依赖大语言模型（LLM）进行“关系提取”而产生的两大核心缺陷,。</p>
+<h3 id="1-局部不准确-Local-Inaccuracy"><a href="#1-局部不准确-Local-Inaccuracy" class="headerlink" title="1. 局部不准确 (Local Inaccuracy)"></a>1. 局部不准确 (Local Inaccuracy)</h3><p>这指的是在<strong>单个三元组（Triple）</strong>层面的知识质量问题。</p>
 <ul>
 <li><strong>核心定义</strong>：关系提取模型在处理单个文本段落时，经常会产生<strong>事实错误</strong>的三元组，导致实体之间的语义关系被歪曲,。</li>
-<li><strong>具体案例</strong>：源代码中举了一个生动的例子：原始句子是“爱因斯坦<strong>没有</strong>因为相对论获得诺贝尔奖”，但关系提取模型可能会将其错误地提取为
-<code>(爱因斯坦, 获得了诺贝尔奖, 相对论)</code>。</li>
+<li><strong>具体案例</strong>：源代码中举了一个生动的例子：原始句子是“爱因斯坦<strong>没有</strong>因为相对论获得诺贝尔奖”，但关系提取模型可能会将其错误地提取为 <code>(爱因斯坦, 获得了诺贝尔奖, 相对论)</code>。</li>
 <li><strong>后果</strong>：这种从根本上改变事实意义的错误会直接导致图谱中充斥着虚假信息（Noise），从而误导后续的检索和生成过程,。</li>
 </ul>
-<h3 id="全局不一致-global-inconsistency">2. 全局不一致 (Global
-Inconsistency)</h3>
-<p>这指的是在<strong>整个图谱结构/跨三元组</strong>层面的逻辑冲突问题。</p>
+<h3 id="2-全局不一致-Global-Inconsistency"><a href="#2-全局不一致-Global-Inconsistency" class="headerlink" title="2. 全局不一致 (Global Inconsistency)"></a>2. 全局不一致 (Global Inconsistency)</h3><p>这指的是在<strong>整个图谱结构/跨三元组</strong>层面的逻辑冲突问题。</p>
 <ul>
 <li><strong>核心定义</strong>：由于关系提取通常是在单个文档片段上局部进行的，缺乏一个全局机制来验证或协调整个语料库中的连接，导致构建出的图谱在结构上是碎片化的，且连接性极差,。</li>
-<li><strong>具体案例</strong>：源代码提到，在构建关于“AI”的图谱时，系统可能会将“自然语言处理（NLP）”、“计算机视觉（CV）”和“无监督学习（UL）”都链接为
-AI 的并行子类别,。然而在逻辑上，NLP 和 CV 是 AI 的子领域，而 UL
-是其中的一种技术手段。这种<strong>缺乏层次一致性</strong>的表达会导致结构性冲突。</li>
+<li><strong>具体案例</strong>：源代码提到，在构建关于“AI”的图谱时，系统可能会将“自然语言处理（NLP）”、“计算机视觉（CV）”和“无监督学习（UL）”都链接为 AI 的并行子类别,。然而在逻辑上，NLP 和 CV 是 AI 的子领域，而 UL 是其中的一种技术手段。这种<strong>缺乏层次一致性</strong>的表达会导致结构性冲突。</li>
 <li><strong>后果</strong>：这种结构上的模糊性和不连贯性会导致检索路径断裂，使模型在处理需要跨篇章整合信息的复杂查询时，无法找到正确的逻辑链条,。</li>
 </ul>
-<h3 id="总结与影响">总结与影响</h3>
-<p>这两大缺陷共同导致了 GraphRAG
-的<strong>性能退化</strong>。虽然图结构本意是提高召回率，但由于图中存在大量错误事实（局部不准确）和逻辑冲突（全局不一致），系统会引入严重的<strong>语义噪声</strong>,。实验表明，这使得传统
-GraphRAG 在现实应用中的准确性和一致性有时甚至不如朴素的 RAG</p>
-<figure>
-<img src="/2026/01/02/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LinearRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/image-20260104081743448.png" alt="image-20260104081743448">
-<figcaption aria-hidden="true">image-20260104081743448</figcaption>
-</figure>
-<h3 id="左图-a性能对比理想与现实的差距">左图
-(a)：性能对比——理想与现实的差距</h3>
-<p>这张柱状图展示了传统 RAG（Vanilla RAG）与几种主流 GraphRAG
-基准模型（RAPTOR, LightRAG, HippoRAG）在三个关键指标上的表现：</p>
+<h3 id="总结与影响"><a href="#总结与影响" class="headerlink" title="总结与影响"></a>总结与影响</h3><p>这两大缺陷共同导致了 GraphRAG 的<strong>性能退化</strong>。虽然图结构本意是提高召回率，但由于图中存在大量错误事实（局部不准确）和逻辑冲突（全局不一致），系统会引入严重的<strong>语义噪声</strong>,。实验表明，这使得传统 GraphRAG 在现实应用中的准确性和一致性有时甚至不如朴素的 RAG</p>
+<p><img src="/2026/01/02/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LinearRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/image-20260104081743448.png" alt="image-20260104081743448"></p>
+<h3 id="左图-a-：性能对比——理想与现实的差距"><a href="#左图-a-：性能对比——理想与现实的差距" class="headerlink" title="左图 (a)：性能对比——理想与现实的差距"></a>左图 (a)：性能对比——理想与现实的差距</h3><p>这张柱状图展示了传统 RAG（Vanilla RAG）与几种主流 GraphRAG 基准模型（RAPTOR, LightRAG, HippoRAG）在三个关键指标上的表现：</p>
 <ul>
-<li><strong>Evidence Recall（证据召回率 -
-深蓝色）</strong>：衡量系统能否把包含答案的原文找回来。</li>
-<li><strong>Context Relevance（上下文相关性 -
-浅蓝色）</strong>：衡量找回来的东西是不是废话，与问题的匹配度如何。</li>
-<li><strong>Accuracy（准确率 -
-灰色）</strong>：最终生成答案的正确率。</li>
+<li><strong>Evidence Recall（证据召回率 - 深蓝色）</strong>：衡量系统能否把包含答案的原文找回来。</li>
+<li><strong>Context Relevance（上下文相关性 - 浅蓝色）</strong>：衡量找回来的东西是不是废话，与问题的匹配度如何。</li>
+<li><strong>Accuracy（准确率 - 灰色）</strong>：最终生成答案的正确率。</li>
 </ul>
 <p><strong>图表传达的核心信息：</strong></p>
-<ol type="1">
-<li><strong>GraphRAG 不一定比 Vanilla RAG
-强</strong>：你会发现，在很多指标上（尤其是准确率 Accuracy），Vanilla
-RAG 甚至优于一些复杂的图模型。</li>
-<li><strong>“副作用”明显</strong>：许多 GraphRAG
-为了追求召回率（Recall），召回了大量噪音，导致<strong>上下文相关性（Context
-Relevance）显著下降</strong>。例如 LightRAG
-的浅蓝色柱子非常短，说明它召回了很多无关信息，干扰了大模型的判断。</li>
-<li><strong>LinearRAG
-的出发点</strong>：这组数据有力地反击了“只要加了图谱效果就一定好”的迷思。它暗示现有的图构建方法（依赖三元组提取）可能引入了负面影响。</li>
+<ol>
+<li><strong>GraphRAG 不一定比 Vanilla RAG 强</strong>：你会发现，在很多指标上（尤其是准确率 Accuracy），Vanilla RAG 甚至优于一些复杂的图模型。</li>
+<li><strong>“副作用”明显</strong>：许多 GraphRAG 为了追求召回率（Recall），召回了大量噪音，导致<strong>上下文相关性（Context Relevance）显著下降</strong>。例如 LightRAG 的浅蓝色柱子非常短，说明它召回了很多无关信息，干扰了大模型的判断。</li>
+<li><strong>LinearRAG 的出发点</strong>：这组数据有力地反击了“只要加了图谱效果就一定好”的迷思。它暗示现有的图构建方法（依赖三元组提取）可能引入了负面影响。</li>
 </ol>
 <hr>
-<h3 id="右图-b错误分类为什么图谱会失效">右图
-(b)：错误分类——为什么图谱会失效？</h3>
-<p>这张图深入探讨了导致左图数据不佳的根源，即<strong>不完美的“关系提取（Relation
-Extraction）”</strong>带来的两种致命错误：</p>
-<h4 id="局部不准确-local-inaccuracy-1">1. 局部不准确 (Local
-Inaccuracy)</h4>
-<ul>
+<h3 id="右图-b-：错误分类——为什么图谱会失效？"><a href="#右图-b-：错误分类——为什么图谱会失效？" class="headerlink" title="右图 (b)：错误分类——为什么图谱会失效？"></a>右图 (b)：错误分类——为什么图谱会失效？</h3><p>这张图深入探讨了导致左图数据不佳的根源，即<strong>不完美的“关系提取（Relation Extraction）”</strong>带来的两种致命错误：</p>
+<h4 id="1-局部不准确-Local-Inaccuracy-1"><a href="#1-局部不准确-Local-Inaccuracy-1" class="headerlink" title="1. 局部不准确 (Local Inaccuracy)"></a>1. 局部不准确 (Local Inaccuracy)</h4><ul>
 <li><strong>案例</strong>：原文说“爱因斯坦<strong>没有</strong>因为相对论获得诺贝尔奖”。</li>
-<li><strong>错误提取</strong>：大模型在提取三元组时，忽略了否定词，强行提取出
-<code>(爱因斯坦, 获得诺贝尔奖, 相对论)</code>。</li>
-<li><strong>后果</strong>：知识图谱里存入了<strong>错误的事实</strong>。一旦存入，后续无论检索算法多强，答案必然是错的。这就是“垃圾进，垃圾出”（Garbage
-In, Garbage Out）。</li>
+<li><strong>错误提取</strong>：大模型在提取三元组时，忽略了否定词，强行提取出 <code>(爱因斯坦, 获得诺贝尔奖, 相对论)</code>。</li>
+<li><strong>后果</strong>：知识图谱里存入了<strong>错误的事实</strong>。一旦存入，后续无论检索算法多强，答案必然是错的。这就是“垃圾进，垃圾出”（Garbage In, Garbage Out）。</li>
 </ul>
-<h4 id="全局不一致-global-inconsistency-1">2. 全局不一致 (Global
-Inconsistency)</h4>
-<ul>
-<li><strong>案例</strong>：
-<ul>
+<h4 id="2-全局不一致-Global-Inconsistency-1"><a href="#2-全局不一致-Global-Inconsistency-1" class="headerlink" title="2. 全局不一致 (Global Inconsistency)"></a>2. 全局不一致 (Global Inconsistency)</h4><ul>
+<li><strong>案例</strong>：<ul>
 <li>片段 A 提取出：<code>AI 的子类别包含 UL（无监督学习）</code>。</li>
 <li>片段 B 提取出：<code>AI 的主要子类别包含 NLP 和 CV</code>。</li>
-</ul></li>
-<li><strong>错误表现</strong>：这些三元组之间缺乏<strong>逻辑内聚性</strong>。在全局视图下，系统无法理清这些子类别之间的并列、包含或权重关系。</li>
-<li><strong>后果</strong>：当用户问“AI
-有哪些主要分支？”时，系统可能会因为图谱节点间的孤立或冲突，给出碎片化或逻辑混乱的回答。</li>
 </ul>
-<p>## 什么是复杂多跳（multi-hop）推理任务</p>
+</li>
+<li><strong>错误表现</strong>：这些三元组之间缺乏<strong>逻辑内聚性</strong>。在全局视图下，系统无法理清这些子类别之间的并列、包含或权重关系。</li>
+<li><p><strong>后果</strong>：当用户问“AI 有哪些主要分支？”时，系统可能会因为图谱节点间的孤立或冲突，给出碎片化或逻辑混乱的回答。</p>
+<h2 id="什么是复杂多跳（multi-hop）推理任务"><a href="#什么是复杂多跳（multi-hop）推理任务" class="headerlink" title="什么是复杂多跳（multi-hop）推理任务"></a>什么是复杂多跳（multi-hop）推理任务</h2></li>
+</ul>
 <p><strong>复杂多跳（multi-hop）推理任务</strong>是指那些无法通过检索单一文档或事实来完成，而必须跨越多个异构文档、整合碎片化信息并进行多步逻辑推导才能解决的任务</p>
 <p><strong>核心特征</strong></p>
-<p>•
-<strong>跨文档合成</strong>：这类任务要求模型从多个文档中合成信息，并进行有效的跨文档推导和证据选择。</p>
-<p>• <strong>序列化推理步骤</strong>：多跳任务通常需要 2 到 4
-个连续的推理步骤，要求模型在推理过程中保持上下文的一致性。</p>
-<p>•
-<strong>信息分散性</strong>：在现实场景中，相关信息往往不均匀地分布在不同的文档中，这使得仅靠关键词匹配的传统检索方法难以奏效,。</p>
-<h2 id="linearrag框架的总体流程">LinearRAG框架的总体流程</h2>
-<figure>
-<img src="/2026/01/02/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LinearRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/image-20260109123451147.png" alt="image-20260109123451147">
-<figcaption aria-hidden="true">image-20260109123451147</figcaption>
-</figure>
-<p>根据源代码中的 <strong>Figure 3</strong>
-以及相关章节的描述，<strong>LinearRAG</strong>
-框架的总体流程可以清晰地划分为两个核心阶段：<strong>离线图构建</strong>（Offline
-Construction）和<strong>在线检索与生成</strong>（Online Retrieval &amp;
-Generation）。</p>
+<p>• <strong>跨文档合成</strong>：这类任务要求模型从多个文档中合成信息，并进行有效的跨文档推导和证据选择。</p>
+<p>• <strong>序列化推理步骤</strong>：多跳任务通常需要 2 到 4 个连续的推理步骤，要求模型在推理过程中保持上下文的一致性。</p>
+<p>• <strong>信息分散性</strong>：在现实场景中，相关信息往往不均匀地分布在不同的文档中，这使得仅靠关键词匹配的传统检索方法难以奏效,。</p>
+<h2 id="LinearRAG框架的总体流程"><a href="#LinearRAG框架的总体流程" class="headerlink" title="LinearRAG框架的总体流程"></a>LinearRAG框架的总体流程</h2><p><img src="/2026/01/02/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LinearRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/image-20260109123451147.png" alt="image-20260109123451147"></p>
+<p>根据源代码中的 <strong>Figure 3</strong> 以及相关章节的描述，<strong>LinearRAG</strong> 框架的总体流程可以清晰地划分为两个核心阶段：<strong>离线图构建</strong>（Offline Construction）和<strong>在线检索与生成</strong>（Online Retrieval &amp; Generation）。</p>
 <p>以下是结合框架图的详细步骤解析：</p>
-<h3 id="一-离线图构建-i.-offline-construction">一、 离线图构建 (I.
-Offline Construction)</h3>
-<p>这一阶段的目标是将原始语料库转化为一个轻量级、无关系的层次化结构，即
-<strong>Tri-Graph</strong>。</p>
-<ol type="1">
+<h3 id="一、-离线图构建-I-Offline-Construction"><a href="#一、-离线图构建-I-Offline-Construction" class="headerlink" title="一、 离线图构建 (I. Offline Construction)"></a>一、 离线图构建 (I. Offline Construction)</h3><p>这一阶段的目标是将原始语料库转化为一个轻量级、无关系的层次化结构，即 <strong>Tri-Graph</strong>。</p>
+<ol>
 <li><strong>文本处理与分段</strong>：首先将语料库（Corpus）切分为<strong>篇章节点</strong>（Passage），并进一步细分为<strong>句子节点</strong>（Sentence）。</li>
-<li><strong>实体提取 (NER)</strong>：使用轻量级的工具（如
-SpaCy）识别文本中的<strong>实体节点</strong>（Entity），这一步完全不消耗大模型的
-Token。</li>
-<li><strong>建立连接 (Tri-Graph 构建)</strong>：
-<ul>
-<li><strong>包含矩阵 <span class="math inline"><em>C</em></span></strong>：连接实体与篇章节点（记录哪个篇章包含哪些实体）。</li>
-<li><strong>提及矩阵 <span class="math inline"><em>M</em></span></strong>：连接实体与句子节点（记录哪个句子提到了哪些实体）。</li>
-</ul></li>
+<li><strong>实体提取 (NER)</strong>：使用轻量级的工具（如 SpaCy）识别文本中的<strong>实体节点</strong>（Entity），这一步完全不消耗大模型的 Token。</li>
+<li><strong>建立连接 (Tri-Graph 构建)</strong>：<ul>
+<li><strong>包含矩阵 $C$</strong>：连接实体与篇章节点（记录哪个篇章包含哪些实体）。</li>
+<li><strong>提及矩阵 $M$</strong>：连接实体与句子节点（记录哪个句子提到了哪些实体）。</li>
+</ul>
+</li>
 </ol>
 <ul>
-<li><strong>核心优势</strong>：该过程具有线性扩展性，且保留了原始文本的完整语义，避免了传统
-GraphRAG 在关系提取中产生的幻觉和事实错误。</li>
+<li><strong>核心优势</strong>：该过程具有线性扩展性，且保留了原始文本的完整语义，避免了传统 GraphRAG 在关系提取中产生的幻觉和事实错误。</li>
 </ul>
-<h3 id="二-在线检索-ii.-online-retrieval">二、 在线检索 (II. Online
-Retrieval)</h3>
-<p>当系统接收到查询（Query）时，会通过两个互补的阶段在 Tri-Graph
-上进行检索：</p>
-<h4 id="第一阶段通过语义桥接激活实体-stage-1-entity-activation">第一阶段：通过语义桥接激活实体
-(Stage 1: Entity Activation)</h4>
-<ul>
+<h3 id="二、-在线检索-II-Online-Retrieval"><a href="#二、-在线检索-II-Online-Retrieval" class="headerlink" title="二、 在线检索 (II. Online Retrieval)"></a>二、 在线检索 (II. Online Retrieval)</h3><p>当系统接收到查询（Query）时，会通过两个互补的阶段在 Tri-Graph 上进行检索：</p>
+<h4 id="第一阶段：通过语义桥接激活实体-Stage-1-Entity-Activation"><a href="#第一阶段：通过语义桥接激活实体-Stage-1-Entity-Activation" class="headerlink" title="第一阶段：通过语义桥接激活实体 (Stage 1: Entity Activation)"></a>第一阶段：通过语义桥接激活实体 (Stage 1: Entity Activation)</h4><ul>
 <li><strong>初始激活</strong>：从查询中提取实体，并根据语义相似度在图中找到对应的初始实体节点。</li>
-<li><strong>局部语义传播 (Semantic
-Propagation)</strong>：计算查询与各句子的语义相关性，并利用句子-实体子图进行传播，从而发现那些虽然没被查询提及、但在逻辑上起到桥梁作用的<strong>隐藏中间实体</strong>。</li>
-<li><strong>动态剪枝 (Dynamic Pruning)</strong>：通过设定阈值 <span class="math inline"><em>δ</em></span>
-过滤掉低相关的实体，防止搜索空间爆炸，确保检索聚焦在高质量的语义路径上。</li>
+<li><strong>局部语义传播 (Semantic Propagation)</strong>：计算查询与各句子的语义相关性，并利用句子-实体子图进行传播，从而发现那些虽然没被查询提及、但在逻辑上起到桥梁作用的<strong>隐藏中间实体</strong>。</li>
+<li><strong>动态剪枝 (Dynamic Pruning)</strong>：通过设定阈值 $\delta$ 过滤掉低相关的实体，防止搜索空间爆炸，确保检索聚焦在高质量的语义路径上。</li>
 </ul>
-<h4 id="第二阶段通过全局重要性聚合检索篇章-stage-2-passage-retrieval">第二阶段：通过全局重要性聚合检索篇章
-(Stage 2: Passage Retrieval)</h4>
-<ul>
+<h4 id="第二阶段：通过全局重要性聚合检索篇章-Stage-2-Passage-Retrieval"><a href="#第二阶段：通过全局重要性聚合检索篇章-Stage-2-Passage-Retrieval" class="headerlink" title="第二阶段：通过全局重要性聚合检索篇章 (Stage 2: Passage Retrieval)"></a>第二阶段：通过全局重要性聚合检索篇章 (Stage 2: Passage Retrieval)</h4><ul>
 <li><strong>混合初始化</strong>：结合第一阶段激活的实体得分与查询-篇章的直接相似度，为图节点赋予初始重要性分数。</li>
-<li><strong>个性化 PageRank (PPR)</strong>：在实体-篇章子图上运行 PPR
-算法，通过图结构进行<strong>全局重要性聚合</strong>，评估每个篇章的综合贡献。</li>
-<li><strong>获取 Top-K</strong>：最终根据 PPR 得分选取最相关的 Top-K
-个篇章作为背景知识。</li>
+<li><strong>个性化 PageRank (PPR)</strong>：在实体-篇章子图上运行 PPR 算法，通过图结构进行<strong>全局重要性聚合</strong>，评估每个篇章的综合贡献。</li>
+<li><strong>获取 Top-K</strong>：最终根据 PPR 得分选取最相关的 Top-K 个篇章作为背景知识。</li>
 </ul>
-<h3 id="三-生成阶段-generation">三、 生成阶段 (Generation)</h3>
-<p>系统将检索到的 Top-K 篇章与原始查询一同输入大语言模型（如
-GPT-4o-mini），模型基于这些高质量、逻辑连贯的上下文生成最终答案</p>
-<h2 id="传统的-graphrag目前问题">传统的
-<strong>GraphRAG</strong>目前问题</h2>
-<h3 id="语义表达的原子化困境">1. 语义表达的“原子化”困境</h3>
-<p>你提到的“三元组无法传达正确含义”在来源中被描述为<strong>语义细节的丢失</strong>。</p>
+<h3 id="三、-生成阶段-Generation"><a href="#三、-生成阶段-Generation" class="headerlink" title="三、 生成阶段 (Generation)"></a>三、 生成阶段 (Generation)</h3><p>系统将检索到的 Top-K 篇章与原始查询一同输入大语言模型（如 GPT-4o-mini），模型基于这些高质量、逻辑连贯的上下文生成最终答案</p>
+<h2 id="传统的-GraphRAG目前问题"><a href="#传统的-GraphRAG目前问题" class="headerlink" title="传统的 GraphRAG目前问题"></a>传统的 <strong>GraphRAG</strong>目前问题</h2><h3 id="1-语义表达的“原子化”困境"><a href="#1-语义表达的“原子化”困境" class="headerlink" title="1. 语义表达的“原子化”困境"></a>1. 语义表达的“原子化”困境</h3><p>你提到的“三元组无法传达正确含义”在来源中被描述为<strong>语义细节的丢失</strong>。</p>
 <ul>
 <li><strong>复杂性难以压缩</strong>：自然语言中的关系往往是复杂、依赖上下文且具有组合性的。来源指出，像“瑞秋<strong>不情愿地</strong>同意和菲比一起去跑步”这样的句子，很难被干净地简化为原子三元组而不丢失关键的语义细微差别。</li>
-<li><strong>原始文本才是最佳载体</strong>：LinearRAG
-的核心主张之一就是<strong>原始文本完整保留了所有上下文关系</strong>。通过强行提取关系，反而可能产生“局部不准确”，导致事实被歪曲（例如漏掉否定词）。</li>
+<li><strong>原始文本才是最佳载体</strong>：LinearRAG 的核心主张之一就是<strong>原始文本完整保留了所有上下文关系</strong>。通过强行提取关系，反而可能产生“局部不准确”，导致事实被歪曲（例如漏掉否定词）。</li>
 </ul>
-<h3 id="成本与效率的token-陷阱">2. 成本与效率的“Token 陷阱”</h3>
-<p>你提到的“构建过程极度依赖大模型导致高成本”是阻碍 GraphRAG
-大规模应用的最大障碍。</p>
+<h3 id="2-成本与效率的“Token-陷阱”"><a href="#2-成本与效率的“Token-陷阱”" class="headerlink" title="2. 成本与效率的“Token 陷阱”"></a>2. 成本与效率的“Token 陷阱”</h3><p>你提到的“构建过程极度依赖大模型导致高成本”是阻碍 GraphRAG 大规模应用的最大障碍。</p>
 <ul>
-<li><strong>昂贵的索引阶段</strong>：传统的 GraphRAG
-在构建索引时需要调用 LLM
-进行大量的三元组提取或摘要生成，这会产生<strong>海量的 Token
-消耗</strong>。</li>
-<li><strong>线性扩展性差</strong>：来源中的实验显示，像 LightRAG
-这种模型在索引 2Wiki 数据集时需要消耗约 35.52M 的 Token，耗时近 5000
-秒。相比之下，LinearRAG 采用轻量级的实体提取，实现了<strong>零 Token
-消耗</strong>，且索引速度提升了 77% 以上。</li>
+<li><strong>昂贵的索引阶段</strong>：传统的 GraphRAG 在构建索引时需要调用 LLM 进行大量的三元组提取或摘要生成，这会产生<strong>海量的 Token 消耗</strong>。</li>
+<li><strong>线性扩展性差</strong>：来源中的实验显示，像 LightRAG 这种模型在索引 2Wiki 数据集时需要消耗约 35.52M 的 Token，耗时近 5000 秒。相比之下，LinearRAG 采用轻量级的实体提取，实现了<strong>零 Token 消耗</strong>，且索引速度提升了 77% 以上。</li>
 </ul>
-<h3 id="检索时的噪声干扰">3. 检索时的“噪声干扰”</h3>
-<p>你提到的“杂乱错误的关系误导检索”对应了来源中发现的<strong>“高召回、低相关”</strong>现象。</p>
+<h3 id="3-检索时的“噪声干扰”"><a href="#3-检索时的“噪声干扰”" class="headerlink" title="3. 检索时的“噪声干扰”"></a>3. 检索时的“噪声干扰”</h3><p>你提到的“杂乱错误的关系误导检索”对应了来源中发现的<strong>“高召回、低相关”</strong>现象。</p>
 <ul>
 <li><strong>召回与相关的矛盾</strong>：虽然图结构能通过多跳连接帮模型“找得更多”（高召回率），但由于图中充满了错误提取的事实（局部不准确）和逻辑冲突（全局不一致），这些“脏数据”引入了巨大的<strong>语义噪声</strong>。</li>
-<li><strong>性能倒退</strong>：实验证明，很多 GraphRAG
-模型在“上下文相关性”指标上表现惨淡（仅
-36.86%~54.61%），甚至不如简单的朴素 RAG（62.87%），正是因为 LLM
-被检索出来的错误关联信息给带偏了</li>
+<li><strong>性能倒退</strong>：实验证明，很多 GraphRAG 模型在“上下文相关性”指标上表现惨淡（仅 36.86%~54.61%），甚至不如简单的朴素 RAG（62.87%），正是因为 LLM 被检索出来的错误关联信息给带偏了</li>
 </ul>
-<h2 id="linearrag的优势如何解决传统的graphrag目前问题">LinearRAG的优势，如何解决传统的<strong>GraphRAG</strong>目前问题</h2>
-<p>根据源代码和我们的讨论，<strong>LinearRAG</strong>
-框架通过一种全新的“线性”范式，针对性地解决了传统 GraphRAG
-的三大痛点。以下是其核心优势及解决方案的总结：</p>
-<h3 id="解决语义丢失问题采用原始文本作为知识载体">1.
-解决语义丢失问题：采用“原始文本”作为知识载体</h3>
-<p>传统三元组由于过于简练，往往无法捕捉自然语言中细微、复杂的语义细节。</p>
+<h2 id="LinearRAG的优势，如何解决传统的GraphRAG目前问题"><a href="#LinearRAG的优势，如何解决传统的GraphRAG目前问题" class="headerlink" title="LinearRAG的优势，如何解决传统的GraphRAG目前问题"></a>LinearRAG的优势，如何解决传统的<strong>GraphRAG</strong>目前问题</h2><p>根据源代码和我们的讨论，<strong>LinearRAG</strong> 框架通过一种全新的“线性”范式，针对性地解决了传统 GraphRAG 的三大痛点。以下是其核心优势及解决方案的总结：</p>
+<h3 id="1-解决语义丢失问题：采用“原始文本”作为知识载体"><a href="#1-解决语义丢失问题：采用“原始文本”作为知识载体" class="headerlink" title="1. 解决语义丢失问题：采用“原始文本”作为知识载体"></a>1. 解决语义丢失问题：采用“原始文本”作为知识载体</h3><p>传统三元组由于过于简练，往往无法捕捉自然语言中细微、复杂的语义细节。</p>
 <ul>
-<li><strong>无关系图谱（Relation-free Tri-Graph）</strong>：LinearRAG
-不再强行将文本摘要成“主-谓-宾”三元组，而是构建了一个包含<strong>实体、句子和篇章</strong>三层节点的层级图。</li>
-<li><strong>信息无损化</strong>：该框架主张<strong>原始文本才是关系的完整保留者</strong>。它通过实体对齐将分散的篇章连接起来，但在推理时直接检索并提供原始篇章给大模型，确保所有上下文细节（如语气、否定词）得到
-100% 保留，从而避免了“二次创作”带来的事实歪曲。</li>
+<li><strong>无关系图谱（Relation-free Tri-Graph）</strong>：LinearRAG 不再强行将文本摘要成“主-谓-宾”三元组，而是构建了一个包含<strong>实体、句子和篇章</strong>三层节点的层级图。</li>
+<li><strong>信息无损化</strong>：该框架主张<strong>原始文本才是关系的完整保留者</strong>。它通过实体对齐将分散的篇章连接起来，但在推理时直接检索并提供原始篇章给大模型，确保所有上下文细节（如语气、否定词）得到 100% 保留，从而避免了“二次创作”带来的事实歪曲。</li>
 </ul>
-<h3 id="解决高昂成本问题实现零-token索引与全阶段线性扩展">2.
-解决高昂成本问题：实现“零 Token”索引与全阶段线性扩展</h3>
-<p>构建传统知识图谱极其依赖大模型进行关系抽取，这导致了惊人的 Token
-消耗和时间成本。</p>
+<h3 id="2-解决高昂成本问题：实现“零-Token”索引与全阶段线性扩展"><a href="#2-解决高昂成本问题：实现“零-Token”索引与全阶段线性扩展" class="headerlink" title="2. 解决高昂成本问题：实现“零 Token”索引与全阶段线性扩展"></a>2. 解决高昂成本问题：实现“零 Token”索引与全阶段线性扩展</h3><p>构建传统知识图谱极其依赖大模型进行关系抽取，这导致了惊人的 Token 消耗和时间成本。</p>
 <ul>
-<li><strong>Token-free 索引构建</strong>：LinearRAG
-使用轻量级的<strong>命名实体识别（NER，如
-spaCy）</strong>和语义链接技术来构建图谱，而非调用昂贵的大模型。这使得其在索引阶段产生的
-<strong>LLM Token 消耗为零</strong>。</li>
-<li><strong>效率极大幅度提升</strong>：由于其算法复杂度随语料库规模呈<strong>线性增长</strong>（Linear
-Scalability），索引构建时间比传统方法<strong>缩短了 77%
-以上</strong>。在处理大规模数据集（如 10M
-Token）时，其速度比现有领先方法（如 RAPTOR）快 <strong>15.1
-倍</strong>。</li>
+<li><strong>Token-free 索引构建</strong>：LinearRAG 使用轻量级的<strong>命名实体识别（NER，如 spaCy）</strong>和语义链接技术来构建图谱，而非调用昂贵的大模型。这使得其在索引阶段产生的 <strong>LLM Token 消耗为零</strong>。</li>
+<li><strong>效率极大幅度提升</strong>：由于其算法复杂度随语料库规模呈<strong>线性增长</strong>（Linear Scalability），索引构建时间比传统方法<strong>缩短了 77% 以上</strong>。在处理大规模数据集（如 10M Token）时，其速度比现有领先方法（如 RAPTOR）快 <strong>15.1 倍</strong>。</li>
 </ul>
-<h3 id="解决检索噪声问题两阶段精准检索机制">3.
-解决检索噪声问题：两阶段精准检索机制</h3>
-<p>传统的图检索常因为错误的边或碎片化的结构引入大量无关的背景信息（噪声），导致“找得多但找得乱”。</p>
+<h3 id="3-解决检索噪声问题：两阶段精准检索机制"><a href="#3-解决检索噪声问题：两阶段精准检索机制" class="headerlink" title="3. 解决检索噪声问题：两阶段精准检索机制"></a>3. 解决检索噪声问题：两阶段精准检索机制</h3><p>传统的图检索常因为错误的边或碎片化的结构引入大量无关的背景信息（噪声），导致“找得多但找得乱”。</p>
 <ul>
-<li><strong>局部语义桥接（Entity
-Activation）</strong>：在第一阶段，它不依赖显式关系，而是通过<strong>语义传播</strong>（Semantic
-Propagation）来激活那些没在查询中直接出现、但在逻辑链条中起桥梁作用的“隐藏实体”。同时，通过<strong>动态剪枝</strong>（Dynamic
-Pruning）剔除无关路径，从源头封堵噪声。</li>
-<li><strong>全局重要性聚合（Global Importance
-Aggregation）</strong>：在第二阶段，利用<strong>个性化
-PageRank（PPR）</strong>算法，从全局视角对篇章的重要性进行评分。这确保了检索到的
-Top-K 篇章不仅与问题相关，而且在逻辑结构上具有核心价值。</li>
-<li><strong>突破性能瓶颈</strong>：实验证明，LinearRAG
-成功克服了“高召回率必然导致低相关性”的难题，在保持极高证据召回率的同时，<strong>上下文相关性得分显著优于
-HippoRAG 和 GFM-RAG 等模型</strong>。</li>
+<li><strong>局部语义桥接（Entity Activation）</strong>：在第一阶段，它不依赖显式关系，而是通过<strong>语义传播</strong>（Semantic Propagation）来激活那些没在查询中直接出现、但在逻辑链条中起桥梁作用的“隐藏实体”。同时，通过<strong>动态剪枝</strong>（Dynamic Pruning）剔除无关路径，从源头封堵噪声。</li>
+<li><strong>全局重要性聚合（Global Importance Aggregation）</strong>：在第二阶段，利用<strong>个性化 PageRank（PPR）</strong>算法，从全局视角对篇章的重要性进行评分。这确保了检索到的 Top-K 篇章不仅与问题相关，而且在逻辑结构上具有核心价值。</li>
+<li><strong>突破性能瓶颈</strong>：实验证明，LinearRAG 成功克服了“高召回率必然导致低相关性”的难题，在保持极高证据召回率的同时，<strong>上下文相关性得分显著优于 HippoRAG 和 GFM-RAG 等模型</strong>。</li>
 </ul>
-<h2 id="token-free-graph-construction零-token-图构建"><strong>Token-free
-Graph Construction</strong>（零 Token 图构建）</h2>
-<p><strong>Token-free Graph Construction</strong>（零 Token 图构建）是
-LinearRAG 框架的核心创新之一，旨在通过构建一个名为
-<strong>Tri-Graph</strong> 的层次化图结构，彻底解决传统 GraphRAG
-在索引阶段由于依赖大模型（LLM）进行关系抽取而导致的<strong>高昂成本、事实错误和扩展性差</strong>的问题。</p>
+<h2 id="Token-free-Graph-Construction（零-Token-图构建）"><a href="#Token-free-Graph-Construction（零-Token-图构建）" class="headerlink" title="Token-free Graph Construction（零 Token 图构建）"></a><strong>Token-free Graph Construction</strong>（零 Token 图构建）</h2><p><strong>Token-free Graph Construction</strong>（零 Token 图构建）是 LinearRAG 框架的核心创新之一，旨在通过构建一个名为 <strong>Tri-Graph</strong> 的层次化图结构，彻底解决传统 GraphRAG 在索引阶段由于依赖大模型（LLM）进行关系抽取而导致的<strong>高昂成本、事实错误和扩展性差</strong>的问题。</p>
 <p>以下是该技术的详细讲解及其数学公式：</p>
-<h3 id="核心架构三层图tri-graph">1. 核心架构：三层图（Tri-Graph）</h3>
-<p>LinearRAG
-并不提取复杂的“实体-关系-实体”三元组，而是建立一个包含三种粒度节点的层级结构：</p>
+<h3 id="1-核心架构：三层图（Tri-Graph）"><a href="#1-核心架构：三层图（Tri-Graph）" class="headerlink" title="1. 核心架构：三层图（Tri-Graph）"></a>1. 核心架构：三层图（Tri-Graph）</h3><p>LinearRAG 并不提取复杂的“实体-关系-实体”三元组，而是建立一个包含三种粒度节点的层级结构：</p>
 <ul>
-<li><strong>篇章节点 (<span class="math inline"><em>V</em><sub><em>p</em></sub></span>)</strong>：语料库中的原始文本段落集合
-<span class="math inline"><em>P</em></span>。</li>
-<li><strong>句子节点 (<span class="math inline"><em>V</em><sub><em>s</em></sub></span>)</strong>：通过标点符号（如句号、感叹号）将篇章进一步切分得到的句子集合
-<span class="math inline"><em>S</em></span>。</li>
-<li><strong>实体节点 (<span class="math inline"><em>V</em><sub><em>e</em></sub></span>)</strong>：使用轻量级模型（如
-spaCy 的 BERT 基础模型）从文本中识别出的命名实体集合 <span class="math inline"><em>E</em></span>。</li>
+<li><strong>篇章节点 ($V_p$)</strong>：语料库中的原始文本段落集合 $P$。</li>
+<li><strong>句子节点 ($V_s$)</strong>：通过标点符号（如句号、感叹号）将篇章进一步切分得到的句子集合 $S$。</li>
+<li><strong>实体节点 ($V_e$)</strong>：使用轻量级模型（如 spaCy 的 BERT 基础模型）从文本中识别出的命名实体集合 $E$。</li>
 </ul>
-<h3 id="边构建规则与数学定义">2. 边构建规则与数学定义</h3>
-<p>该框架通过两个关键的<strong>邻接矩阵</strong>来捕捉节点间的关联，这些边仅基于“包含”或“提及”关系，而非不稳定的语义关系建模：</p>
-<h4 id="a.-包含矩阵-contain-matrix-c">A. 包含矩阵 (Contain Matrix, <span class="math inline"><em>C</em></span>)</h4>
-<p>该矩阵描述了<strong>篇章与实体</strong>之间的从属关系。如果篇章 <span class="math inline"><em>p</em><sub><em>i</em></sub></span> 包含实体
-<span class="math inline"><em>e</em><sub><em>j</em></sub></span>，则在对应的节点间建立一条边。其形式化定义为：
-<span class="math display"><em>C</em> = [<em>C</em><sub><em>i</em><em>j</em></sub>] * |<em>V</em><sub><em>p</em></sub>|×|<em>V</em><sub><em>e</em></sub>|, 
-其中
-<em>C</em> * <em>i</em><em>j</em> = 𝟙<em>p</em><sub><em>i</em></sub>
-contains <em>e</em><sub><em>j</em></sub>  (1)</span> 这里 <span class="math inline">𝟙</span> 是指示函数，若包含则 <span class="math inline"><em>C</em><sub><em>i</em><em>j</em></sub> = 1</span>，否则为
-<span class="math inline">0</span>。</p>
-<h4 id="b.-提及矩阵-mention-matrix-m">B. 提及矩阵 (Mention Matrix, <span class="math inline"><em>M</em></span>)</h4>
-<p>该矩阵描述了<strong>句子与实体</strong>之间的显式提及关系。如果句子
-<span class="math inline"><em>s</em><sub><em>i</em></sub></span>
-提到了实体 <span class="math inline"><em>e</em><sub><em>j</em></sub></span>，则建立连接。其形式化定义为：
-<span class="math display"><em>M</em> = [<em>M</em><sub><em>i</em><em>j</em></sub>] * |<em>V</em><sub><em>s</em></sub>|×|<em>V</em><sub><em>e</em></sub>|, 
-其中
-<em>M</em> * <em>i</em><em>j</em> = 𝟙<em>s</em><sub><em>i</em></sub>
-mentions <em>e</em><sub><em>j</em></sub>  (2)</span> 同样地，<span class="math inline"><em>M</em><sub><em>i</em><em>j</em></sub></span>
-的值仅取决于句子中是否出现了该实体的字面量。</p>
-<h3 id="token-free的技术优势">3. “Token-free”的技术优势</h3>
-<p>之所以称之为“Token-free”，是因为其构建过程完全<strong>不消耗 LLM
-Token</strong>，具有极高的经济性：</p>
+<h3 id="2-边构建规则与数学定义"><a href="#2-边构建规则与数学定义" class="headerlink" title="2. 边构建规则与数学定义"></a>2. 边构建规则与数学定义</h3><p>该框架通过两个关键的<strong>邻接矩阵</strong>来捕捉节点间的关联，这些边仅基于“包含”或“提及”关系，而非不稳定的语义关系建模：</p>
+<h4 id="A-包含矩阵-Contain-Matrix-C"><a href="#A-包含矩阵-Contain-Matrix-C" class="headerlink" title="A. 包含矩阵 (Contain Matrix, $C$)"></a>A. 包含矩阵 (Contain Matrix, $C$)</h4><p>该矩阵描述了<strong>篇章与实体</strong>之间的从属关系。如果篇章 $p<em>i$ 包含实体 $e_j$，则在对应的节点间建立一条边。其形式化定义为： $$C = [C</em>{ij}]<em>{|V_p| \times |V_e|}, \text{ 其中 } C</em>{ij} = \mathbb{1}{p<em>i \text{ contains } e_j} \quad (1)$$ 这里 $\mathbb{1}$ 是指示函数，若包含则 $C</em>{ij}=1$，否则为 $0$。</p>
+<h4 id="B-提及矩阵-Mention-Matrix-M"><a href="#B-提及矩阵-Mention-Matrix-M" class="headerlink" title="B. 提及矩阵 (Mention Matrix, $M$)"></a>B. 提及矩阵 (Mention Matrix, $M$)</h4><p>该矩阵描述了<strong>句子与实体</strong>之间的显式提及关系。如果句子 $s<em>i$ 提到了实体 $e_j$，则建立连接。其形式化定义为： $$M = [M</em>{ij}]<em>{|V_s| \times |V_e|}, \text{ 其中 } M</em>{ij} = \mathbb{1}{s<em>i \text{ mentions } e_j} \quad (2)$$ 同样地，$M</em>{ij}$ 的值仅取决于句子中是否出现了该实体的字面量。</p>
+<h3 id="3-“Token-free”的技术优势"><a href="#3-“Token-free”的技术优势" class="headerlink" title="3. “Token-free”的技术优势"></a>3. “Token-free”的技术优势</h3><p>之所以称之为“Token-free”，是因为其构建过程完全<strong>不消耗 LLM Token</strong>，具有极高的经济性：</p>
 <ul>
-<li><strong>轻量级提取</strong>：使用 <strong>spaCy</strong>
-等非大模型工具进行命名实体识别（NER），比大模型驱动的开放域信息抽取（OpenIE）更精准且效率更高。</li>
-<li><strong>线性扩展性</strong>：计算复杂度为 <span class="math inline"><em>O</em>(|<em>P</em>|⋅<em>T</em>)</span>（其中
-<span class="math inline"><em>T</em></span>
-是篇章平均长度），这意味着处理速度随语料库规模呈<strong>线性增长</strong>。</li>
-<li><strong>稀疏存储</strong>：由于每个句子通常只包含少量实体（约4个），矩阵
-<span class="math inline"><em>C</em></span> 和 <span class="math inline"><em>M</em></span>
-在实现上采用<strong>稀疏格式</strong>，极大地降低了内存占用。</li>
-<li><strong>信息无损（Lossless）</strong>：传统三元组会丢失文本中的语气和微妙细节（如“不情愿地同意”），而
-LinearRAG
-<strong>保留原始篇章作为知识载体</strong>，确保了语义的完整性。</li>
+<li><strong>轻量级提取</strong>：使用 <strong>spaCy</strong> 等非大模型工具进行命名实体识别（NER），比大模型驱动的开放域信息抽取（OpenIE）更精准且效率更高。</li>
+<li><strong>线性扩展性</strong>：计算复杂度为 $O(|P| \cdot T)$（其中 $T$ 是篇章平均长度），这意味着处理速度随语料库规模呈<strong>线性增长</strong>。</li>
+<li><strong>稀疏存储</strong>：由于每个句子通常只包含少量实体（约4个），矩阵 $C$ 和 $M$ 在实现上采用<strong>稀疏格式</strong>，极大地降低了内存占用。</li>
+<li><strong>信息无损（Lossless）</strong>：传统三元组会丢失文本中的语气和微妙细节（如“不情愿地同意”），而 LinearRAG <strong>保留原始篇章作为知识载体</strong>，确保了语义的完整性。</li>
 </ul>
-<h3 id="动态维护与更新">4. 动态维护与更新</h3>
-<p>当新文档加入语料库时，系统只需对新篇章进行句子切分、NER
-提取并更新邻接矩阵中的对应条目，<strong>无需重新计算或校对全局的图结构</strong>，这使其非常适合大规模且快速增长的工业级应用</p>
-<h2 id="命名实体识别named-entity-recognition"><strong>命名实体识别（Named
-Entity Recognition）</strong></h2>
-<p>根据提供的来源和我们之前的对话，<strong>NER</strong>
-的全称是<strong>命名实体识别（Named Entity Recognition）</strong>。</p>
-<p>在这些源代码中，NER 是 <strong>LinearRAG</strong>
-框架实现高效知识索引的核心技术。以下是关于 NER 的详细讲解：</p>
-<h3 id="ner-在框架中的定义与工具">NER 在框架中的定义与工具</h3>
-<ul>
-<li><strong>基本定义</strong>：NER
-是一种从文本中识别并提取特定类别实体（如人名、组织、地点等）的技术。在
-LinearRAG 中，NER 被用来生成“实体集合（Entity Set）”，这些实体构成了
-Tri-Graph（三层图）中的<strong>实体节点 (<span class="math inline"><em>V</em><sub><em>e</em></sub></span>)</strong>。</li>
-<li><strong>具体工具</strong>：来源多次提到使用 <strong>spaCy</strong>
-等轻量级模型来执行 NER。这些工具通常基于 <strong>BERT
-等基础模型</strong>，而不是昂贵的大语言模型（LLM）。</li>
+<h3 id="4-动态维护与更新"><a href="#4-动态维护与更新" class="headerlink" title="4. 动态维护与更新"></a>4. 动态维护与更新</h3><p>当新文档加入语料库时，系统只需对新篇章进行句子切分、NER 提取并更新邻接矩阵中的对应条目，<strong>无需重新计算或校对全局的图结构</strong>，这使其非常适合大规模且快速增长的工业级应用</p>
+<h2 id="命名实体识别（Named-Entity-Recognition）"><a href="#命名实体识别（Named-Entity-Recognition）" class="headerlink" title="命名实体识别（Named Entity Recognition）"></a><strong>命名实体识别（Named Entity Recognition）</strong></h2><p>根据提供的来源和我们之前的对话，<strong>NER</strong> 的全称是<strong>命名实体识别（Named Entity Recognition）</strong>。</p>
+<p>在这些源代码中，NER 是 <strong>LinearRAG</strong> 框架实现高效知识索引的核心技术。以下是关于 NER 的详细讲解：</p>
+<h3 id="NER-在框架中的定义与工具"><a href="#NER-在框架中的定义与工具" class="headerlink" title="NER 在框架中的定义与工具"></a>NER 在框架中的定义与工具</h3><ul>
+<li><strong>基本定义</strong>：NER 是一种从文本中识别并提取特定类别实体（如人名、组织、地点等）的技术。在 LinearRAG 中，NER 被用来生成“实体集合（Entity Set）”，这些实体构成了 Tri-Graph（三层图）中的<strong>实体节点 ($V_e$)</strong>。</li>
+<li><strong>具体工具</strong>：来源多次提到使用 <strong>spaCy</strong> 等轻量级模型来执行 NER。这些工具通常基于 <strong>BERT 等基础模型</strong>，而不是昂贵的大语言模型（LLM）。</li>
 </ul>
-<h2 id="第一阶段通过语义桥接激活相关实体relevant-entity-activation-via-semantic-bridging">第一阶段：通过语义桥接激活相关实体（Relevant
-Entity Activation via Semantic Bridging）</h2>
-<p>在 LinearRAG
-框架中，<strong>第一阶段：通过语义桥接激活相关实体（Relevant Entity
-Activation via Semantic Bridging）</strong>
-是其精准检索多跳信息的关键。</p>
-<p>这一阶段的核心逻辑是在
-<strong>“实体-句子”子图</strong>上操作，旨在识别那些在查询中未被直接提及、但在逻辑链条中起桥梁作用的<strong>中间实体</strong>。以下是该阶段的详细步骤与公式解析：</p>
-<h3 id="初始实体激活-initial-entity-activation">1. 初始实体激活 (Initial
-Entity Activation)</h3>
-<p>首先，系统需要将自然语言查询转化为图谱中的初始状态。</p>
+<h2 id="第一阶段：通过语义桥接激活相关实体（Relevant-Entity-Activation-via-Semantic-Bridging）"><a href="#第一阶段：通过语义桥接激活相关实体（Relevant-Entity-Activation-via-Semantic-Bridging）" class="headerlink" title="第一阶段：通过语义桥接激活相关实体（Relevant Entity Activation via Semantic Bridging）"></a>第一阶段：通过语义桥接激活相关实体（Relevant Entity Activation via Semantic Bridging）</h2><p>在 LinearRAG 框架中，<strong>第一阶段：通过语义桥接激活相关实体（Relevant Entity Activation via Semantic Bridging）</strong> 是其精准检索多跳信息的关键。</p>
+<p>这一阶段的核心逻辑是在 <strong>“实体-句子”子图</strong>上操作，旨在识别那些在查询中未被直接提及、但在逻辑链条中起桥梁作用的<strong>中间实体</strong>。以下是该阶段的详细步骤与公式解析：</p>
+<h3 id="1-初始实体激活-Initial-Entity-Activation"><a href="#1-初始实体激活-Initial-Entity-Activation" class="headerlink" title="1. 初始实体激活 (Initial Entity Activation)"></a>1. 初始实体激活 (Initial Entity Activation)</h3><p>首先，系统需要将自然语言查询转化为图谱中的初始状态。</p>
 <ul>
-<li><strong>提取与匹配</strong>：使用 <strong>spaCy</strong> 从查询
-<span class="math inline"><em>q</em></span> 中提取实体集合 <span class="math inline"><em>E</em><sub><em>q</em></sub></span>。对于 <span class="math inline"><em>E</em><sub><em>q</em></sub></span>
-中的每个实体，在 Tri-Graph 的实体库 <span class="math inline"><em>V</em><sub><em>e</em></sub></span>
-中寻找语义最相似的节点。</li>
-<li><strong>公式定义</strong>：生成一个稀疏的初始激活向量 <span class="math inline"><em>a</em><sub><em>q</em></sub></span>： <span class="math display"><em>a</em><sub><em>q</em></sub> = [<em>a</em><sub><em>q</em>, <em>i</em></sub>] * |<em>V</em><sub><em>e</em></sub>|×1, 
-其中
-<em>a</em> * <em>q</em>, <em>i</em> = 𝟙 * <em>i</em> = <em>a</em><em>r</em><em>g</em><em>m</em><em>a</em><em>x</em> * <em>e</em><sub><em>j</em></sub> ∈ <em>V</em><sub><em>e</em></sub><em>s</em><em>i</em><em>m</em>(<em>e</em><sub><em>q</em></sub>, <em>e</em><sub><em>j</em></sub>) ⋅ <em>s</em><em>i</em><em>m</em>(<em>e</em><sub><em>q</em></sub>, <em>e</em><sub><em>i</em></sub>)  (3)</span>
-这里 <span class="math inline"><em>a</em><sub><em>q</em>, <em>i</em></sub></span>
-代表实体节点 <span class="math inline"><em>i</em></span>
-的初始激活分值，由其与查询实体的相似度决定。</li>
+<li><strong>提取与匹配</strong>：使用 <strong>spaCy</strong> 从查询 $q$ 中提取实体集合 $E_q$。对于 $E_q$ 中的每个实体，在 Tri-Graph 的实体库 $V_e$ 中寻找语义最相似的节点。</li>
+<li><strong>公式定义</strong>：生成一个稀疏的初始激活向量 $a<em>q$： $$a_q = [a</em>{q,i}]<em>{|V_e| \times 1}, \text{ 其中 } a</em>{q,i} = \mathbb{1}<em>{i=argmax</em>{e<em>j \in V_e} sim(e_q, e_j)} \cdot sim(e_q, e_i) \quad (3)$$ 这里 $a</em>{q,i}$ 代表实体节点 $i$ 的初始激活分值，由其与查询实体的相似度决定。</li>
 </ul>
 <blockquote>
 <p>计算查询问题中实体和知识图谱所有实体的相似度</p>
 </blockquote>
-<h3 id="查询-句子相关性分布-query-sentence-relevance-distribution">2.
-查询-句子相关性分布 (Query-Sentence Relevance Distribution)</h3>
-<p>为了引导激活分数的传播方向，系统需衡量查询与语料库中每个句子的关联度。</p>
+<h3 id="2-查询-句子相关性分布-Query-Sentence-Relevance-Distribution"><a href="#2-查询-句子相关性分布-Query-Sentence-Relevance-Distribution" class="headerlink" title="2. 查询-句子相关性分布 (Query-Sentence Relevance Distribution)"></a>2. 查询-句子相关性分布 (Query-Sentence Relevance Distribution)</h3><p>为了引导激活分数的传播方向，系统需衡量查询与语料库中每个句子的关联度。</p>
 <ul>
-<li><strong>计算相似度</strong>：计算查询问题 <span class="math inline"><em>q</em></span> 与句集 <span class="math inline"><em>S</em></span> 中每个句子 <span class="math inline"><em>s</em><sub><em>i</em></sub></span>
-的语义关联，生成相关性向量 <span class="math inline"><em>σ</em><sub><em>q</em></sub></span>。</li>
-<li><strong>公式定义</strong>： <span class="math display"><em>σ</em><sub><em>q</em></sub> = [<em>σ</em><sub><em>q</em>, <em>i</em></sub>] * |<em>S</em>|×1, 
-其中
-<em>σ</em> * <em>q</em>, <em>i</em> = <em>s</em><em>i</em><em>m</em>(<em>q</em>, <em>s</em><sub><em>i</em></sub>)  (4)</span>
-该向量确保了传播过程会向<strong>语义相关性更高</strong>的上下文区域倾斜。</li>
+<li><strong>计算相似度</strong>：计算查询问题 $q$ 与句集 $S$ 中每个句子 $s_i$ 的语义关联，生成相关性向量 $\sigma_q$。</li>
+<li><strong>公式定义</strong>： <script type="math/tex">\sigma_q = [\sigma_{q,i}]*{|S| \times 1}, \text{ 其中 } \sigma*{q,i} = sim(q, s_i) \quad (4)</script> 该向量确保了传播过程会向<strong>语义相关性更高</strong>的上下文区域倾斜。</li>
 </ul>
 <blockquote>
 <p>计算查询问题和知识图谱中所有句子的相似度</p>
 </blockquote>
-<h3 id="语义传播-semantic-propagation">3. 语义传播 (Semantic
-Propagation)</h3>
-<p>在 LinearRAG 框架中，<strong>语义传播（Semantic
-Propagation）*<em>是第一阶段“通过语义桥接激活相关实体”的核心逻辑,。它的主要任务是通过*</em>“实体-句子-实体”*<em>的路径，在图中“顺藤摸瓜”，发掘出那些查询问题中没有直接提到、但在逻辑链条中至关重要的*</em>中间实体</strong>,。</p>
+<h3 id="3-语义传播-Semantic-Propagation"><a href="#3-语义传播-Semantic-Propagation" class="headerlink" title="3. 语义传播 (Semantic Propagation)"></a>3. 语义传播 (Semantic Propagation)</h3><p>在 LinearRAG 框架中，<strong>语义传播（Semantic Propagation）\</strong>是第一阶段“通过语义桥接激活相关实体”的核心逻辑,。它的主要任务是通过*<em>“实体-句子-实体”*<em>的路径，在图中“顺藤摸瓜”，发掘出那些查询问题中没有直接提到、但在逻辑链条中至关重要的**中间实体</em></em>,。</p>
 <p>以下是基于源代码公式 (5) 的具体解析：</p>
-<h4 id="核心公式拆解">核心公式拆解</h4>
-<p>语义传播通过以下迭代公式更新实体的激活分数向量 <span class="math inline"><em>a</em><sub><em>q</em></sub></span>： <span class="math display"><em>a</em><sub><em>q</em></sub><sup><em>t</em></sup> = MAX(<em>M</em><sup><em>T</em></sup>(<em>σ</em><sub><em>q</em></sub> ⊙ (<em>M</em><em>a</em><sub><em>q</em></sub><sup><em>t</em> − 1</sup>)), <em>a</em><sub><em>q</em></sub><sup><em>t</em> − 1</sup>)</span></p>
+<h4 id="核心公式拆解"><a href="#核心公式拆解" class="headerlink" title="核心公式拆解"></a>核心公式拆解</h4><p>语义传播通过以下迭代公式更新实体的激活分数向量 $a_q$： <script type="math/tex">a_q^t = \text{MAX}(M^T (\sigma_q \odot (M a_q^{t-1})), a_q^{t-1})</script></p>
 <p>我们可以将这个复杂的数学过程拆解为三个直观的物理动作：</p>
 <ul>
-<li><strong>第一步：从点到线 (<span class="math inline"><em>M</em><em>a</em><sub><em>q</em></sub><sup><em>t</em> − 1</sup></span>)</strong>
-<ul>
-<li>激活分数从上一轮已知的“种子实体”（<span class="math inline"><em>a</em><sub><em>q</em></sub><sup><em>t</em> − 1</sup></span>）出发，沿着<strong>提及矩阵
-<span class="math inline"><em>M</em></span></strong>（记录了哪个句子提到了哪个实体）流向包含它们的<strong>句子</strong>。</li>
+<li><strong>第一步：从点到线 ($M a_q^{t-1}$)</strong><ul>
+<li>激活分数从上一轮已知的“种子实体”（$a_q^{t-1}$）出发，沿着<strong>提及矩阵 $M$</strong>（记录了哪个句子提到了哪个实体）流向包含它们的<strong>句子</strong>。</li>
 <li>这相当于在问：“有哪些句子提到了当前的这些关键人物？”</li>
-</ul></li>
-<li><strong>第二步：加权过滤 (<span class="math inline"><em>σ</em><sub><em>q</em></sub> ⊙ ...</span>)</strong>
-<ul>
-<li>流向句子的分数会与<strong>查询-句子相关性向量 <span class="math inline"><em>σ</em><sub><em>q</em></sub></span></strong>
-进行逐元素相乘。</li>
+</ul>
+</li>
+<li><strong>第二步：加权过滤 ($\sigma_q \odot …$)</strong><ul>
+<li>流向句子的分数会与<strong>查询-句子相关性向量 $\sigma_q$</strong> 进行逐元素相乘。</li>
 <li>这相当于在筛选：“在这些提到的句子中，哪些句子跟我的问题最匹配？”只有语义高度相关的句子，分数才会被放大，无关的句子分数则被抑制。</li>
-</ul></li>
-<li><strong>第三步：从线到点 (<span class="math inline"><em>M</em><sup><em>T</em></sup>...</span>)</strong>
-<ul>
-<li>经过筛选的分数再沿着矩阵的转置 <span class="math inline"><em>M</em><sup><em>T</em></sup></span>
-流回到这些句子中出现的<strong>所有实体</strong>。</li>
+</ul>
+</li>
+<li><strong>第三步：从线到点 ($M^T …$)</strong><ul>
+<li>经过筛选的分数再沿着矩阵的转置 $M^T$ 流回到这些句子中出现的<strong>所有实体</strong>。</li>
 <li>这步最关键：即使某个实体没在问题里出现，但只要它出现在了一个高相关性的句子里，它就会被“激活”。</li>
-</ul></li>
-<li><strong>第四步：保留最优 (<span class="math inline">MAX(..., <em>a</em><sub><em>q</em></sub><sup><em>t</em> − 1</sup>)</span>)</strong>
-<ul>
+</ul>
+</li>
+<li><strong>第四步：保留最优 ($\text{MAX}(…, a_q^{t-1})$)</strong><ul>
 <li>取当前计算出的新分数与历史最高分的极大值，确保实体的激活程度是累积且最优的。</li>
-</ul></li>
 </ul>
-<h4 id="为什么叫语义桥接">为什么叫“语义桥接”？</h4>
-<p>这种机制建立了一种<strong>隐式关系匹配（Implicit Relation
-Matching）</strong>。 传统的 GraphRAG
-需要通过大模型提取显式的关系三元组（如“A 是 B
-的丈夫”），这既贵又容易出错,。而 LinearRAG
-的语义传播认为：<strong>如果两个实体出现在同一个与查询相关的句子里，它们之间就存在某种潜在的语义关联（即桥梁）</strong>,。</p>
-<h4 id="关键特性">关键特性</h4>
-<ul>
-<li><strong>多跳推理（Multi-hop
-Reasoning）</strong>：每进行一次迭代，搜索范围就向外扩展一“跳”。源代码指出，通常只需要
-<strong>4
-次以内</strong>的迭代，就能覆盖绝大多数复杂的多跳推理路径。</li>
-<li><strong>计算极其高效</strong>：整个过程被简化为<strong>稀疏矩阵相乘（SpMM）</strong>和极大值运算，不涉及大模型的
-API 调用（Token-free），且可以利用硬件进行并行加速,。</li>
-<li><strong>动态剪枝保护</strong>：在传播过程中，系统会配合阈值 <span class="math inline"><em>δ</em></span>
-进行动态剪枝。如果一个实体被传播到的分数太低，它就会被果断舍弃，防止搜索范围像滚雪球一样扩散到无关的语义区域。</li>
+</li>
 </ul>
-<h4 id="实验证明的作用">实验证明的作用</h4>
-<p>在消融实验中，如果去掉“语义传播”这一步（即只使用问题里直接提取的实体），系统在处理复杂问题（如
-HotpotQA）时的准确率会显著下降,。这证明了语义传播是捕捉<strong>隐藏逻辑链条</strong>的功臣</p>
-<h3 id="动态剪枝-dynamic-pruning">4. 动态剪枝 (Dynamic Pruning)</h3>
-<p>在 LinearRAG 框架中，<strong>Dynamic Pruning（动态剪枝）</strong>
-是第一阶段“语义桥接”检索中至关重要的<strong>质量控制机制</strong>,。</p>
-<p>在语义传播（Semantic
-Propagation）过程中，激活分数会不断向外扩散。如果没有约束，搜索空间将随传播深度的增加呈<strong>指数级增长</strong>。动态剪枝的作用就是确保搜索始终聚焦在高质量的语义路径上。以下是其具体讲解：</p>
-<h4 id="核心运行机制">核心运行机制</h4>
-<p>动态剪枝通过引入一个<strong>激活阈值 <span class="math inline"><em>δ</em></span></strong>（Threshold）来过滤节点：</p>
-<ul>
-<li><strong>评分过滤</strong>：在每一轮迭代传播中，系统会计算新实体的相关性得分。只有当实体的分数<strong>超过阈值
-<span class="math inline"><em>δ</em></span></strong>
-时，它才会被保留并允许作为下一轮传播的“种子”。</li>
-<li><strong>舍弃噪声</strong>：得分低于 <span class="math inline"><em>δ</em></span>
-的实体会被视为无关噪声或弱相关干扰，直接从激活向量中移除（分值归零）。</li>
-<li><strong>自适应终止</strong>：当某一轮迭代后，没有任何新实体的得分能超过
-<span class="math inline"><em>δ</em></span>
-时，传播过程会自动停止。这意味着系统能根据问题的复杂程度，<strong>动态调整搜索深度</strong>。</li>
+<h4 id="为什么叫“语义桥接”？"><a href="#为什么叫“语义桥接”？" class="headerlink" title="为什么叫“语义桥接”？"></a>为什么叫“语义桥接”？</h4><p>这种机制建立了一种<strong>隐式关系匹配（Implicit Relation Matching）</strong>。 传统的 GraphRAG 需要通过大模型提取显式的关系三元组（如“A 是 B 的丈夫”），这既贵又容易出错,。而 LinearRAG 的语义传播认为：<strong>如果两个实体出现在同一个与查询相关的句子里，它们之间就存在某种潜在的语义关联（即桥梁）</strong>,。</p>
+<h4 id="关键特性"><a href="#关键特性" class="headerlink" title="关键特性"></a>关键特性</h4><ul>
+<li><strong>多跳推理（Multi-hop Reasoning）</strong>：每进行一次迭代，搜索范围就向外扩展一“跳”。源代码指出，通常只需要 <strong>4 次以内</strong>的迭代，就能覆盖绝大多数复杂的多跳推理路径。</li>
+<li><strong>计算极其高效</strong>：整个过程被简化为<strong>稀疏矩阵相乘（SpMM）</strong>和极大值运算，不涉及大模型的 API 调用（Token-free），且可以利用硬件进行并行加速,。</li>
+<li><strong>动态剪枝保护</strong>：在传播过程中，系统会配合阈值 $\delta$ 进行动态剪枝。如果一个实体被传播到的分数太低，它就会被果断舍弃，防止搜索范围像滚雪球一样扩散到无关的语义区域。</li>
 </ul>
-<h4 id="解决的两大痛点">解决的两大痛点</h4>
+<h4 id="实验证明的作用"><a href="#实验证明的作用" class="headerlink" title="实验证明的作用"></a>实验证明的作用</h4><p>在消融实验中，如果去掉“语义传播”这一步（即只使用问题里直接提取的实体），系统在处理复杂问题（如 HotpotQA）时的准确率会显著下降,。这证明了语义传播是捕捉<strong>隐藏逻辑链条</strong>的功臣</p>
+<h3 id="4-动态剪枝-Dynamic-Pruning"><a href="#4-动态剪枝-Dynamic-Pruning" class="headerlink" title="4. 动态剪枝 (Dynamic Pruning)"></a>4. 动态剪枝 (Dynamic Pruning)</h3><p>在 LinearRAG 框架中，<strong>Dynamic Pruning（动态剪枝）</strong> 是第一阶段“语义桥接”检索中至关重要的<strong>质量控制机制</strong>,。</p>
+<p>在语义传播（Semantic Propagation）过程中，激活分数会不断向外扩散。如果没有约束，搜索空间将随传播深度的增加呈<strong>指数级增长</strong>。动态剪枝的作用就是确保搜索始终聚焦在高质量的语义路径上。以下是其具体讲解：</p>
+<h4 id="核心运行机制"><a href="#核心运行机制" class="headerlink" title="核心运行机制"></a>核心运行机制</h4><p>动态剪枝通过引入一个<strong>激活阈值 $\delta$</strong>（Threshold）来过滤节点：</p>
 <ul>
-<li><strong>防止语义漂移（Semantic
-Drift）</strong>：如果没有剪枝，不相关的实体可能会反复充当新的种子，导致搜索过程偏离原本的查询意图，进入完全无关的语义区域。例如，查询“气候变化”时，如果没有剪枝，可能会顺着微弱的联系跳跃到无关的“经济政策”篇章。</li>
+<li><strong>评分过滤</strong>：在每一轮迭代传播中，系统会计算新实体的相关性得分。只有当实体的分数<strong>超过阈值 $\delta$</strong> 时，它才会被保留并允许作为下一轮传播的“种子”。</li>
+<li><strong>舍弃噪声</strong>：得分低于 $\delta$ 的实体会被视为无关噪声或弱相关干扰，直接从激活向量中移除（分值归零）。</li>
+<li><strong>自适应终止</strong>：当某一轮迭代后，没有任何新实体的得分能超过 $\delta$ 时，传播过程会自动停止。这意味着系统能根据问题的复杂程度，<strong>动态调整搜索深度</strong>。</li>
+</ul>
+<h4 id="解决的两大痛点"><a href="#解决的两大痛点" class="headerlink" title="解决的两大痛点"></a>解决的两大痛点</h4><ul>
+<li><strong>防止语义漂移（Semantic Drift）</strong>：如果没有剪枝，不相关的实体可能会反复充当新的种子，导致搜索过程偏离原本的查询意图，进入完全无关的语义区域。例如，查询“气候变化”时，如果没有剪枝，可能会顺着微弱的联系跳跃到无关的“经济政策”篇章。</li>
 <li><strong>控制计算复杂度</strong>：通过过滤低质量路径，系统将搜索限制在一个规模可控且精准的子图中，避免了计算量的爆炸式扩张。</li>
 </ul>
-<h4 id="阈值-delta-的影响与设置">阈值 <span class="math inline"><em>δ</em></span> 的影响与设置</h4>
-<p>根据来源中的参数敏感性实验，<span class="math inline"><em>δ</em></span> 的选取对性能有显著影响,：</p>
+<h4 id="阈值-delta-的影响与设置"><a href="#阈值-delta-的影响与设置" class="headerlink" title="阈值 $\delta$ 的影响与设置"></a>阈值 $\delta$ 的影响与设置</h4><p>根据来源中的参数敏感性实验，$\delta$ 的选取对性能有显著影响,：</p>
 <ul>
-<li><strong><span class="math inline"><em>δ</em></span>
-太小</strong>：会导致引入过多的<strong>背景噪声</strong>，降低检索效率和精准度。</li>
-<li><strong><span class="math inline"><em>δ</em></span>
-太大</strong>：会过于严格，导致系统<strong>丢失关键的中间证据实体</strong>，限制了捕捉完整上下文的能力。</li>
-<li><strong>推荐设置</strong>：在 LinearRAG 的实验中，设置 <strong><span class="math inline"><em>δ</em> = 0.4</span></strong>
-通常能达到检索质量与计算效率的最佳平衡。</li>
+<li><strong>$\delta$ 太小</strong>：会导致引入过多的<strong>背景噪声</strong>，降低检索效率和精准度。</li>
+<li><strong>$\delta$ 太大</strong>：会过于严格，导致系统<strong>丢失关键的中间证据实体</strong>，限制了捕捉完整上下文的能力。</li>
+<li><strong>推荐设置</strong>：在 LinearRAG 的实验中，设置 <strong>$\delta = 0.4$</strong> 通常能达到检索质量与计算效率的最佳平衡。</li>
 </ul>
-<h2 id="第二阶段通过全局重要性聚合进行篇章检索passage-retrieval-via-global-importance-aggregation"><strong>第二阶段：通过全局重要性聚合进行篇章检索（Passage
-Retrieval via Global Importance Aggregation）</strong></h2>
-<p>在完成第一阶段的实体激活后，LinearRAG
-进入<strong>第二阶段：通过全局重要性聚合进行篇章检索（Passage Retrieval
-via Global Importance Aggregation）</strong>。</p>
+<h2 id="第二阶段：通过全局重要性聚合进行篇章检索（Passage-Retrieval-via-Global-Importance-Aggregation）"><a href="#第二阶段：通过全局重要性聚合进行篇章检索（Passage-Retrieval-via-Global-Importance-Aggregation）" class="headerlink" title="第二阶段：通过全局重要性聚合进行篇章检索（Passage Retrieval via Global Importance Aggregation）"></a><strong>第二阶段：通过全局重要性聚合进行篇章检索（Passage Retrieval via Global Importance Aggregation）</strong></h2><p>在完成第一阶段的实体激活后，LinearRAG 进入<strong>第二阶段：通过全局重要性聚合进行篇章检索（Passage Retrieval via Global Importance Aggregation）</strong>。</p>
 <p>这一阶段的任务是利用第一阶段识别出的“种子”实体，在<strong>“实体-篇章”子图</strong>上衡量每个篇章的全局重要性，从而锁定最终的检索结果。以下是该阶段的详细解析与核心公式：</p>
-<h3 id="初始分数分配混合初始化hybrid-initialization">1.
-初始分数分配：混合初始化（Hybrid Initialization）</h3>
-<p>在开始全局聚合之前，系统需要为图中的节点赋予初始重要性分数。</p>
+<h3 id="1-初始分数分配：混合初始化（Hybrid-Initialization）"><a href="#1-初始分数分配：混合初始化（Hybrid-Initialization）" class="headerlink" title="1. 初始分数分配：混合初始化（Hybrid Initialization）"></a>1. 初始分数分配：混合初始化（Hybrid Initialization）</h3><p>在开始全局聚合之前，系统需要为图中的节点赋予初始重要性分数。</p>
 <ul>
-<li><strong>实体节点的初始化</strong>： 实体节点 <span class="math inline"><em>v</em><sub><em>i</em></sub> ∈ <em>V</em><sub><em>e</em></sub></span>
-的初始分数直接采用第一阶段计算得到的激活分数 <span class="math inline"><em>a</em><sub><em>q</em></sub></span>。 <span class="math display"><em>I</em>(<em>v</em><sub><em>i</em></sub>|<em>v</em><sub><em>i</em></sub> ∈ <em>V</em><sub><em>e</em></sub>) = <em>a</em><sub><em>q</em>, <em>i</em></sub>  </span></li>
-<li><strong>篇章节点的初始化</strong>： 篇章节点 <span class="math inline"><em>v</em> ∈ <em>V</em><sub><em>p</em></sub></span>
-的初始分数采用<strong>混合评分机制</strong>。它结合了篇章与查询的直接语义相似度，以及该篇章所包含的已激活实体的贡献。公式如下（公式
-7）： <span class="math display">$$I(v|v \in V_p) = \left( \lambda \cdot
-sim(q, v) + \ln \left( 1 + \sum_{e_i \in E_a} \frac{a_{q,i} \cdot \ln(1
-+ N_{ei})}{L_{ei}} \right) \right) \cdot W_p \quad$$</span></li>
+<li><strong>实体节点的初始化</strong>： 实体节点 $v<em>i \in V_e$ 的初始分数直接采用第一阶段计算得到的激活分数 $a_q$。 $$I(v_i|v_i \in V_e) = a</em>{q,i} \quad$$</li>
+<li><strong>篇章节点的初始化</strong>： 篇章节点 $v \in V<em>p$ 的初始分数采用<strong>混合评分机制</strong>。它结合了篇章与查询的直接语义相似度，以及该篇章所包含的已激活实体的贡献。公式如下（公式 7）： $$I(v|v \in V_p) = \left( \lambda \cdot sim(q, v) + \ln \left( 1 + \sum</em>{e<em>i \in E_a} \frac{a</em>{q,i} \cdot \ln(1 + N<em>{ei})}{L</em>{ei}} \right) \right) \cdot W_p \quad$$</li>
 </ul>
-<h3 id="全局重要性聚合个性化-pagerank-ppr">2. 全局重要性聚合：个性化
-PageRank (PPR)</h3>
-<p>有了初始分值后，系统通过<strong>个性化 PageRank
-算法</strong>在实体与篇章组成的二部图上进行分数迭代传播。这一步能从全局视角聚合信息，识别出那些通过多个关键实体连接起来的核心篇章。</p>
-<p>聚合公式如下（公式 6）： <span class="math display">$$I(v_i) = (1 -
-d) + d \cdot \sum_{v_j \in B(v_i)} \frac{I(v_j)}{deg(v_j)}
-\quad$$</span></p>
+<h3 id="2-全局重要性聚合：个性化-PageRank-PPR"><a href="#2-全局重要性聚合：个性化-PageRank-PPR" class="headerlink" title="2. 全局重要性聚合：个性化 PageRank (PPR)"></a>2. 全局重要性聚合：个性化 PageRank (PPR)</h3><p>有了初始分值后，系统通过<strong>个性化 PageRank 算法</strong>在实体与篇章组成的二部图上进行分数迭代传播。这一步能从全局视角聚合信息，识别出那些通过多个关键实体连接起来的核心篇章。</p>
+<p>聚合公式如下（公式 6）： <script type="math/tex">I(v_i) = (1 - d) + d \cdot \sum_{v_j \in B(v_i)} \frac{I(v_j)}{deg(v_j)} \quad</script></p>
 <ul>
-<li><strong><span class="math inline"><em>d</em></span></strong>：阻尼因子，通常设为
-0.85。</li>
-<li><strong><span class="math inline"><em>B</em>(<em>v</em><sub><em>i</em></sub>)</span></strong>：指向节点
-<span class="math inline"><em>v</em><sub><em>i</em></sub></span>
-的邻居节点集合。</li>
-<li><strong><span class="math inline"><em>d</em><em>e</em><em>g</em>(<em>v</em><sub><em>j</em></sub>)</span></strong>：节点
-<span class="math inline"><em>v</em><sub><em>j</em></sub></span>
-的出度（连接数）。</li>
+<li><strong>$d$</strong>：阻尼因子，通常设为 0.85。</li>
+<li><strong>$B(v_i)$</strong>：指向节点 $v_i$ 的邻居节点集合。</li>
+<li><strong>$deg(v_j)$</strong>：节点 $v_j$ 的出度（连接数）。</li>
 </ul>
 <p>通过这种方式，重要性分数在实体和篇章之间反复流动：一个包含多个“高分实体”的篇章会获得更高的评分；反之，一个被多个“重要篇章”共同提及的实体也会被进一步强化。</p>
-<h3 id="排序与输出-ranking">3. 排序与输出 (Ranking)</h3>
-<p>完成 PPR 迭代后，系统根据每个篇章节点最终获得的全局重要性分数 <span class="math inline"><em>I</em>(<em>v</em>|<em>v</em> ∈ <em>V</em><sub><em>p</em></sub>)</span>
-进行降序排列，并选取<strong>前 <span class="math inline"><em>k</em></span>
-个（Top-k）</strong>得分最高的篇章作为检索结果，交给大模型（LLM）生成答案。</p>
-<h2 id="篇章节点的初始化passage-node-initialization">篇章节点的初始化（Passage
-Node Initialization）</h2>
-<p>在 LinearRAG
-的第二阶段（篇章检索阶段），<strong>篇章节点的初始化（Passage Node
-Initialization）</strong>
-是通过混合评分机制为语料库中的篇章赋予初始重要性分数的关键步骤,。这一过程将第一阶段发现的“逻辑线索”（激活实体）与传统的语义相似度相结合，从而识别出那些对回答多跳问题至关重要的篇章,。</p>
+<h3 id="3-排序与输出-Ranking"><a href="#3-排序与输出-Ranking" class="headerlink" title="3. 排序与输出 (Ranking)"></a>3. 排序与输出 (Ranking)</h3><p>完成 PPR 迭代后，系统根据每个篇章节点最终获得的全局重要性分数 $I(v|v \in V_p)$ 进行降序排列，并选取<strong>前 $k$ 个（Top-k）</strong>得分最高的篇章作为检索结果，交给大模型（LLM）生成答案。</p>
+<h2 id="篇章节点的初始化（Passage-Node-Initialization）"><a href="#篇章节点的初始化（Passage-Node-Initialization）" class="headerlink" title="篇章节点的初始化（Passage Node Initialization）"></a>篇章节点的初始化（Passage Node Initialization）</h2><p>在 LinearRAG 的第二阶段（篇章检索阶段），<strong>篇章节点的初始化（Passage Node Initialization）</strong> 是通过混合评分机制为语料库中的篇章赋予初始重要性分数的关键步骤,。这一过程将第一阶段发现的“逻辑线索”（激活实体）与传统的语义相似度相结合，从而识别出那些对回答多跳问题至关重要的篇章,。</p>
 <p>以下是其详细解释和数学公式：</p>
-<h3 id="篇章节点初始化公式">1. 篇章节点初始化公式</h3>
-<p>根据来源中的公式 (7)，篇章节点 <span class="math inline"><em>v</em> ∈ <em>V</em><sub><em>p</em></sub></span>
-的初始重要性分数 <span class="math inline"><em>I</em>(<em>v</em>)</span>
-计算如下：</p>
-<p><span class="math display">$$I(v|v \in V_p) = \left( \lambda \cdot
-sim(q, v) + \ln \left( 1 + \sum_{e_i \in E_a} \frac{a_{q,i} \cdot \ln(1
-+ N_{ei})}{L_{ei}} \right) \right) \cdot W_p \quad$$</span></p>
-<h3 id="公式参数详细拆解">2. 公式参数详细拆解</h3>
-<p>该公式通过两个核心模块的加权聚合来定义篇章的重要性：</p>
+<h3 id="1-篇章节点初始化公式"><a href="#1-篇章节点初始化公式" class="headerlink" title="1. 篇章节点初始化公式"></a>1. 篇章节点初始化公式</h3><p>根据来源中的公式 (7)，篇章节点 $v \in V_p$ 的初始重要性分数 $I(v)$ 计算如下：</p>
+<script type="math/tex; mode=display">I(v|v \in V_p) = \left( \lambda \cdot sim(q, v) + \ln \left( 1 + \sum_{e_i \in E_a} \frac{a_{q,i} \cdot \ln(1 + N_{ei})}{L_{ei}} \right) \right) \cdot W_p \quad</script><h3 id="2-公式参数详细拆解"><a href="#2-公式参数详细拆解" class="headerlink" title="2. 公式参数详细拆解"></a>2. 公式参数详细拆解</h3><p>该公式通过两个核心模块的加权聚合来定义篇章的重要性：</p>
 <ul>
-<li><strong>直接语义相关性部分 (<span class="math inline"><em>λ</em> ⋅ <em>s</em><em>i</em><em>m</em>(<em>q</em>, <em>v</em>)</span>)</strong>：
-<ul>
-<li><strong><span class="math inline"><em>s</em><em>i</em><em>m</em>(<em>q</em>, <em>v</em>)</span></strong>：表示查询问题
-<span class="math inline"><em>q</em></span> 与整个篇章 <span class="math inline"><em>v</em></span>
-之间的语义相似度，通常使用嵌入模型（如
-<code>all-mpnet-base-v2</code>）计算余弦得分,。</li>
-<li><strong><span class="math inline"><em>λ</em></span>（折衷系数）</strong>：用于调节相似度得分的权重。实验表明，当
-<span class="math inline"><em>λ</em></span> 设为较小值（如
-<strong>0.05</strong>）时性能最优。这说明
-<strong>实体信息是核心贡献者</strong>，而直接的语义相似度仅作为辅助增强。</li>
-</ul></li>
-<li><strong>实体逻辑贡献部分 (<span class="math inline">ln (1 + ∑...)</span>)</strong>：
-这一项衡量篇章中包含的“激活实体”对其重要性的贡献：
-<ul>
-<li><strong><span class="math inline"><em>E</em><sub><em>a</em></sub></span></strong>：是在第一阶段通过语义传播被成功激活的所有实体集合。</li>
-<li><strong><span class="math inline"><em>a</em><sub><em>q</em>, <em>i</em></sub></span></strong>：实体
-<span class="math inline"><em>e</em><sub><em>i</em></sub></span>
-的激活分数。如果这个实体在逻辑链条中越关键，它的分数就越高,。</li>
-<li><strong><span class="math inline"><em>N</em><sub><em>e</em><em>i</em></sub></span></strong>：实体
-<span class="math inline"><em>e</em><sub><em>i</em></sub></span>
-在该篇章 <span class="math inline"><em>v</em></span>
-中出现的次数。出现次数越多，该篇章与该实体的关联越强。</li>
-<li><strong><span class="math inline"><em>L</em><sub><em>e</em><em>i</em></sub></span></strong>：实体的层级水平（Hierarchical
-Level），用于调节不同层级实体的影响力。</li>
-</ul></li>
-<li><strong>全局调节项 (<span class="math inline"><em>W</em><sub><em>p</em></sub></span>)</strong>：
-<ul>
-<li><strong><span class="math inline"><em>W</em><sub><em>p</em></sub></span></strong>：篇章节点权重系数。它作为一个全局缩放因子，决定了篇章节点在进入后续图算法（个性化
-PageRank）之前所携带的总体能量量级。</li>
-</ul></li>
+<li><strong>直接语义相关性部分 ($\lambda \cdot sim(q, v)$)</strong>：<ul>
+<li><strong>$sim(q, v)$</strong>：表示查询问题 $q$ 与整个篇章 $v$ 之间的语义相似度，通常使用嵌入模型（如 <code>all-mpnet-base-v2</code>）计算余弦得分,。</li>
+<li><strong>$\lambda$（折衷系数）</strong>：用于调节相似度得分的权重。实验表明，当 $\lambda$ 设为较小值（如 <strong>0.05</strong>）时性能最优。这说明 <strong>实体信息是核心贡献者</strong>，而直接的语义相似度仅作为辅助增强。</li>
 </ul>
-<h3 id="这个公式解决的核心问题">3. 这个公式解决的核心问题</h3>
-<ul>
-<li><p><strong>弥补传统检索的“多跳”盲区</strong>： 传统的相似度检索（即
-*s**im<em>(</em>q<em>,</em>v*)）往往只关注关键词匹配，容易错过那些<strong>虽然没有关键词、但包含关键推理线索</strong>的篇章。这个公式通过引入第一阶段激活的实体信息，强制系统关注那些处于逻辑链条上的篇章。</p></li>
-<li><p><strong>确定“实体”与“内容”的权重
-(</strong><em>λ</em><strong>)</strong>： 实验发现，当 <em>λ</em>
-设置得很小（如 0.05）时，效果最好。</p>
-<p>◦
-<strong>洞察</strong>：这说明在复杂的推理任务中，<strong>篇章里包含哪些“正确实体”</strong>（即第一阶段挖出的线索）比<strong>篇章整体看起来像不像问题</strong>要重要得多。</p></li>
+</li>
+<li><strong>实体逻辑贡献部分 ($\ln(1 + \sum …)$)</strong>： 这一项衡量篇章中包含的“激活实体”对其重要性的贡献：<ul>
+<li><strong>$E_a$</strong>：是在第一阶段通过语义传播被成功激活的所有实体集合。</li>
+<li><strong>$a_{q,i}$</strong>：实体 $e_i$ 的激活分数。如果这个实体在逻辑链条中越关键，它的分数就越高,。</li>
+<li><strong>$N_{ei}$</strong>：实体 $e_i$ 在该篇章 $v$ 中出现的次数。出现次数越多，该篇章与该实体的关联越强。</li>
+<li><strong>$L_{ei}$</strong>：实体的层级水平（Hierarchical Level），用于调节不同层级实体的影响力。</li>
 </ul>
-<h3 id="公式的最终产出">4. 公式的最终产出</h3>
-<p>计算出的这个初始分数 <em>I</em>(<em>v</em>) 将作为 <strong>个性化
-PageRank (PPR)</strong>
-算法的“种子”。在接下来的全局聚合中，分数会从这些高分篇章出发，在“实体-篇章”二部图上反复流动，最终识别出那些<strong>在全球视角下最能支撑推理链条</strong>的
-Top-k 篇章。</p>
-<h2 id="全局重要性聚合global-importance-aggregation">全局重要性聚合（Global
-Importance Aggregation）</h2>
-<p>在 LinearRAG 框架中，<strong>全局重要性聚合（Global Importance
-Aggregation）</strong>是检索的第二阶段，其核心目标是利用第一阶段激活的“线索实体”，通过图算法在全局范围内锁定最关键的篇章。</p>
+</li>
+<li><strong>全局调节项 ($W_p$)</strong>：<ul>
+<li><strong>$W_p$</strong>：篇章节点权重系数。它作为一个全局缩放因子，决定了篇章节点在进入后续图算法（个性化 PageRank）之前所携带的总体能量量级。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-这个公式解决的核心问题"><a href="#3-这个公式解决的核心问题" class="headerlink" title="3. 这个公式解决的核心问题"></a>3. 这个公式解决的核心问题</h3><ul>
+<li><p><strong>弥补传统检索的“多跳”盲区</strong>： 传统的相似度检索（即 <em>s**im</em>(<em>q</em>,<em>v</em>)）往往只关注关键词匹配，容易错过那些<strong>虽然没有关键词、但包含关键推理线索</strong>的篇章。这个公式通过引入第一阶段激活的实体信息，强制系统关注那些处于逻辑链条上的篇章。</p>
+</li>
+<li><p><strong>确定“实体”与“内容”的权重 (*</strong>λ<strong>*)</strong>： 实验发现，当 <em>λ</em> 设置得很小（如 0.05）时，效果最好。</p>
+<p>  ◦ <strong>洞察</strong>：这说明在复杂的推理任务中，<strong>篇章里包含哪些“正确实体”</strong>（即第一阶段挖出的线索）比<strong>篇章整体看起来像不像问题</strong>要重要得多。</p>
+</li>
+</ul>
+<h3 id="4-公式的最终产出"><a href="#4-公式的最终产出" class="headerlink" title="4. 公式的最终产出"></a>4. 公式的最终产出</h3><p>计算出的这个初始分数 <em>I</em>(<em>v</em>) 将作为 <strong>个性化 PageRank (PPR)</strong> 算法的“种子”。在接下来的全局聚合中，分数会从这些高分篇章出发，在“实体-篇章”二部图上反复流动，最终识别出那些<strong>在全球视角下最能支撑推理链条</strong>的 Top-k 篇章。</p>
+<h2 id="全局重要性聚合（Global-Importance-Aggregation）"><a href="#全局重要性聚合（Global-Importance-Aggregation）" class="headerlink" title="全局重要性聚合（Global Importance Aggregation）"></a>全局重要性聚合（Global Importance Aggregation）</h2><p>在 LinearRAG 框架中，<strong>全局重要性聚合（Global Importance Aggregation）</strong>是检索的第二阶段，其核心目标是利用第一阶段激活的“线索实体”，通过图算法在全局范围内锁定最关键的篇章。</p>
 <p>以下是该阶段计算逻辑的详细拆解：</p>
-<h3 id="运行环境篇章-实体二部图">1. 运行环境：篇章-实体二部图</h3>
-<p>在这一阶段，系统会暂时“忽略”句子节点，转而在<strong>篇章节点 (<span class="math inline"><em>V</em><sub><em>p</em></sub></span>)*<em>与*</em>实体节点
-(<span class="math inline"><em>V</em><sub><em>e</em></sub></span>)</strong>
-构成的二部图上进行计算。如果某个篇章包含某个实体，则它们之间存在连接边。</p>
-<h3 id="核心计算公式个性化-pagerank-ppr">2. 核心计算公式：个性化
-PageRank (PPR)</h3>
-<p>LinearRAG 采用 PPR
-算法来评估图中每个节点（包括实体和篇章）的最终全局重要性得分 <span class="math inline"><em>I</em>(<em>v</em><sub><em>i</em></sub>)</span>：</p>
-<p><span class="math display">$$I(v_i) = (1 - d) + d \cdot \sum_{v_j \in
-B(v_i)} \frac{I(v_j)}{deg(v_j)}$$</span></p>
-<ul>
-<li><strong><span class="math inline"><em>d</em></span>
-(阻尼因子)</strong>：通常设置为
-<strong>0.85</strong>。它代表了分数在图中流动的比例。</li>
-<li><strong><span class="math inline"><em>B</em>(<em>v</em><sub><em>i</em></sub>)</span></strong>：指向当前节点
-<span class="math inline"><em>v</em><sub><em>i</em></sub></span>
-的邻居节点集合。
-<ul>
-<li>若 <span class="math inline"><em>v</em><sub><em>i</em></sub></span>
-是篇章，则其邻居是该篇章包含的实体。</li>
-<li>若 <span class="math inline"><em>v</em><sub><em>i</em></sub></span>
-是实体，则其邻居是提到该实体的所有篇章。</li>
-</ul></li>
-<li><strong><span class="math inline"><em>d</em><em>e</em><em>g</em>(<em>v</em><sub><em>j</em></sub>)</span></strong>：邻居节点
-<span class="math inline"><em>v</em><sub><em>j</em></sub></span>
-的出度（即与其连接的边的数量）。</li>
-<li><strong><span class="math inline"><em>I</em>(<em>v</em><sub><em>j</em></sub>)</span></strong>：邻居节点在当前轮次的重要性分数。</li>
+<h3 id="1-运行环境：篇章-实体二部图"><a href="#1-运行环境：篇章-实体二部图" class="headerlink" title="1. 运行环境：篇章-实体二部图"></a>1. 运行环境：篇章-实体二部图</h3><p>在这一阶段，系统会暂时“忽略”句子节点，转而在<strong>篇章节点 ($V_p$)\</strong>与*<em>实体节点 ($V_e$)*</em> 构成的二部图上进行计算。如果某个篇章包含某个实体，则它们之间存在连接边。</p>
+<h3 id="2-核心计算公式：个性化-PageRank-PPR"><a href="#2-核心计算公式：个性化-PageRank-PPR" class="headerlink" title="2. 核心计算公式：个性化 PageRank (PPR)"></a>2. 核心计算公式：个性化 PageRank (PPR)</h3><p>LinearRAG 采用 PPR 算法来评估图中每个节点（包括实体和篇章）的最终全局重要性得分 $I(v_i)$：</p>
+<script type="math/tex; mode=display">I(v_i) = (1 - d) + d \cdot \sum_{v_j \in B(v_i)} \frac{I(v_j)}{deg(v_j)}</script><ul>
+<li><strong>$d$ (阻尼因子)</strong>：通常设置为 <strong>0.85</strong>。它代表了分数在图中流动的比例。</li>
+<li><strong>$B(v_i)$</strong>：指向当前节点 $v_i$ 的邻居节点集合。<ul>
+<li>若 $v_i$ 是篇章，则其邻居是该篇章包含的实体。</li>
+<li>若 $v_i$ 是实体，则其邻居是提到该实体的所有篇章。</li>
+</ul>
+</li>
+<li><strong>$deg(v_j)$</strong>：邻居节点 $v_j$ 的出度（即与其连接的边的数量）。</li>
+<li><strong>$I(v_j)$</strong>：邻居节点在当前轮次的重要性分数。</li>
 </ul>
 <p><strong>逻辑</strong>：一个节点的重要性取决于它的邻居。如果一个篇章包含了很多“高分实体”，那么这个篇章的分数就会提高；反之，如果一个实体出现在很多“高分篇章”里，它的地位也会上升。</p>
-<h3 id="为什么这样计算更有效">3. 为什么这样计算更有效？</h3>
-<ul>
-<li><strong>全局视角（Holistic
-Perspective）</strong>：第一阶段的语义传播侧重于局部的语义联想（即“这个词能联想到那个词”），而第二阶段的
-PPR
-则是从<strong>图结构</strong>出发，识别出那些在整个逻辑网格中被最多关键线索“背书”的篇章。</li>
-<li><strong>抗噪声与单次推理</strong>：通过这种全局聚合，系统可以有效过滤掉虽然包含某些关键词但处于逻辑边缘的噪声篇章，并实现更精准的<strong>单次多跳检索（Single-pass
-Multi-hop Retrieval）</strong>。</li>
-<li><strong>线性扩展性</strong>：在稀疏的二部图上执行 PPR
-迭代，其计算复杂度与篇章数量呈<strong>线性关系 (<span class="math inline"><em>O</em>(|<em>P</em>|)</span>)</strong>，这保证了在大规模语料库上的极高效率。</li>
+<h3 id="3-为什么这样计算更有效？"><a href="#3-为什么这样计算更有效？" class="headerlink" title="3. 为什么这样计算更有效？"></a>3. 为什么这样计算更有效？</h3><ul>
+<li><strong>全局视角（Holistic Perspective）</strong>：第一阶段的语义传播侧重于局部的语义联想（即“这个词能联想到那个词”），而第二阶段的 PPR 则是从<strong>图结构</strong>出发，识别出那些在整个逻辑网格中被最多关键线索“背书”的篇章。</li>
+<li><strong>抗噪声与单次推理</strong>：通过这种全局聚合，系统可以有效过滤掉虽然包含某些关键词但处于逻辑边缘的噪声篇章，并实现更精准的<strong>单次多跳检索（Single-pass Multi-hop Retrieval）</strong>。</li>
+<li><strong>线性扩展性</strong>：在稀疏的二部图上执行 PPR 迭代，其计算复杂度与篇章数量呈<strong>线性关系 ($O(|P|)$)</strong>，这保证了在大规模语料库上的极高效率。</li>
 </ul>
-<h3 id="最终产出top-k-排序">4. 最终产出：Top-k 排序</h3>
-<p>当 PPR 迭代稳定后，系统提取所有<strong>篇章节点</strong>的得分 <span class="math inline"><em>I</em>(<em>v</em>|<em>v</em> ∈ <em>V</em><sub><em>p</em></sub>)</span>，进行降序排列，并选出<strong>得分最高的前
-<span class="math inline"><em>k</em></span>
-个篇章</strong>作为最终的检索结果提供给大模型生成答案。</p>
-<h2 id="端到端性能的主要结果"><strong>端到端性能的主要结果</strong></h2>
-<figure>
-<img src="/2026/01/02/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LinearRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/image-20260109164039743.png" alt="image-20260109164039743">
-<figcaption aria-hidden="true">image-20260109164039743</figcaption>
-</figure>
-<p>表 1 是 LinearRAG 论文中的核心实验结果表，展示了 <strong>LinearRAG
-与各类基准模型在四个基准数据集上的性能对比</strong>。它从生成准确性的角度证明了
-LinearRAG 在处理复杂、多跳（multi-hop）问题时的卓越能力。</p>
+<h3 id="4-最终产出：Top-k-排序"><a href="#4-最终产出：Top-k-排序" class="headerlink" title="4. 最终产出：Top-k 排序"></a>4. 最终产出：Top-k 排序</h3><p>当 PPR 迭代稳定后，系统提取所有<strong>篇章节点</strong>的得分 $I(v|v \in V_p)$，进行降序排列，并选出<strong>得分最高的前 $k$ 个篇章</strong>作为最终的检索结果提供给大模型生成答案。</p>
+<h2 id="端到端性能的主要结果"><a href="#端到端性能的主要结果" class="headerlink" title="端到端性能的主要结果"></a><strong>端到端性能的主要结果</strong></h2><p><img src="/2026/01/02/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LinearRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/image-20260109164039743.png" alt="image-20260109164039743"></p>
+<p>表 1 是 LinearRAG 论文中的核心实验结果表，展示了 <strong>LinearRAG 与各类基准模型在四个基准数据集上的性能对比</strong>。它从生成准确性的角度证明了 LinearRAG 在处理复杂、多跳（multi-hop）问题时的卓越能力。</p>
 <p>以下是对该表的详细讲解：</p>
-<h3 id="数据集与评估指标">1. 数据集与评估指标</h3>
-<p>该实验在四种具有挑战性的数据集上进行，主要考察模型的多跳推理能力：</p>
+<h3 id="1-数据集与评估指标"><a href="#1-数据集与评估指标" class="headerlink" title="1. 数据集与评估指标"></a>1. 数据集与评估指标</h3><p>该实验在四种具有挑战性的数据集上进行，主要考察模型的多跳推理能力：</p>
 <ul>
-<li><strong>数据集</strong>：包括三个通用的多跳问答数据集（<strong>HotpotQA、2Wiki、MuSiQue</strong>）和一个领域特定的
-<strong>Medical（医疗）</strong> 数据集。</li>
-<li><strong>指标 1：Contain-Match Accuracy
-(Contain-Acc.)</strong>：检查生成的回答中是否包含正确答案。</li>
-<li><strong>指标 2：GPT-Evaluation Accuracy
-(GPT-Acc.)</strong>：利用大模型（如
-GPT-4o-mini）来判断生成的答案是否在语义上与标准答案一致。对于答案较长的
-Medical 数据集，仅使用此指标。</li>
+<li><strong>数据集</strong>：包括三个通用的多跳问答数据集（<strong>HotpotQA、2Wiki、MuSiQue</strong>）和一个领域特定的 <strong>Medical（医疗）</strong> 数据集。</li>
+<li><strong>指标 1：Contain-Match Accuracy (Contain-Acc.)</strong>：检查生成的回答中是否包含正确答案。</li>
+<li><strong>指标 2：GPT-Evaluation Accuracy (GPT-Acc.)</strong>：利用大模型（如 GPT-4o-mini）来判断生成的答案是否在语义上与标准答案一致。对于答案较长的 Medical 数据集，仅使用此指标。</li>
 </ul>
-<h3 id="对比的三大类模型">2. 对比的三大类模型</h3>
-<p>表 1 将所有方法分为三类，以便观察性能梯度的变化：</p>
+<h3 id="2-对比的三大类模型"><a href="#2-对比的三大类模型" class="headerlink" title="2. 对比的三大类模型"></a>2. 对比的三大类模型</h3><p>表 1 将所有方法分为三类，以便观察性能梯度的变化：</p>
 <ul>
-<li><strong>直接零样本 LLM 推理（Direct Zero-shot）</strong>：如
-Llama-3、GPT-3.5
-等模型在不引用任何外部知识的情况下直接回答。实验证明其表现最差，例如
-GPT-4o-mini 在 MuSiQue 上仅有 15.80% 的准确率。</li>
-<li><strong>传统 RAG（Vanilla RAG）</strong>：使用简单的向量相似度检索
-Top-k
-个篇章。虽然比零样本强，但在多跳任务中容易由于只关注关键词匹配而丢失关键的逻辑链条。</li>
-<li><strong>图 RAG 方法（Graph-based RAG）</strong>：包括
-HippoRAG、LightRAG、HippoRAG2
-等。这些方法通过建模结构化信息来增强推理。其中，<strong>HippoRAG2</strong>
-在 LinearRAG 出现之前通常表现最佳。</li>
+<li><strong>直接零样本 LLM 推理（Direct Zero-shot）</strong>：如 Llama-3、GPT-3.5 等模型在不引用任何外部知识的情况下直接回答。实验证明其表现最差，例如 GPT-4o-mini 在 MuSiQue 上仅有 15.80% 的准确率。</li>
+<li><strong>传统 RAG（Vanilla RAG）</strong>：使用简单的向量相似度检索 Top-k 个篇章。虽然比零样本强，但在多跳任务中容易由于只关注关键词匹配而丢失关键的逻辑链条。</li>
+<li><strong>图 RAG 方法（Graph-based RAG）</strong>：包括 HippoRAG、LightRAG、HippoRAG2 等。这些方法通过建模结构化信息来增强推理。其中，<strong>HippoRAG2</strong> 在 LinearRAG 出现之前通常表现最佳。</li>
 </ul>
-<h3 id="linearrag-的表现与核心结论">3. LinearRAG 的表现与核心结论</h3>
-<p>在表中，<strong>加粗（Bold）</strong>表示最优结果，<strong>下划线（Underline）</strong>表示次优结果。</p>
+<h3 id="3-LinearRAG-的表现与核心结论"><a href="#3-LinearRAG-的表现与核心结论" class="headerlink" title="3. LinearRAG 的表现与核心结论"></a>3. LinearRAG 的表现与核心结论</h3><p>在表中，<strong>加粗（Bold）</strong>表示最优结果，<strong>下划线（Underline）</strong>表示次优结果。</p>
 <ul>
-<li><strong>全面领先</strong>：LinearRAG
-在所有数据集的所有指标上都取得了<strong>最优（加粗）</strong>的成绩，显著超过了现有的最强图
-RAG 模型。</li>
-<li><strong>显著提升</strong>：在 2Wiki 数据集上，LinearRAG 的 GPT
-评估准确率达到了 <strong>63.70%</strong>，比排名第二的基准模型高出约
-<strong>3.80%</strong>。</li>
-<li><strong>性能稳健</strong>：与其他依赖“关系抽取（Relation
-Extraction）”的 GraphRAG 方法不同，LinearRAG
-通过简化图结构（Tri-Graph）避免了错误关系引入的噪声，从而在不同难度的任务中表现更加稳健。</li>
+<li><strong>全面领先</strong>：LinearRAG 在所有数据集的所有指标上都取得了<strong>最优（加粗）</strong>的成绩，显著超过了现有的最强图 RAG 模型。</li>
+<li><strong>显著提升</strong>：在 2Wiki 数据集上，LinearRAG 的 GPT 评估准确率达到了 <strong>63.70%</strong>，比排名第二的基准模型高出约 <strong>3.80%</strong>。</li>
+<li><strong>性能稳健</strong>：与其他依赖“关系抽取（Relation Extraction）”的 GraphRAG 方法不同，LinearRAG 通过简化图结构（Tri-Graph）避免了错误关系引入的噪声，从而在不同难度的任务中表现更加稳健。</li>
 </ul>
-<h3 id="实验背后的观察-observations">4. 实验背后的观察
-(Observations)</h3>
-<p>作者通过表 1 得出了三个关键结论：</p>
-<ol type="1">
-<li><strong>RAG 是必须的</strong>：外部知识的引入能成倍提升 LLM
-的回答准确性。</li>
+<h3 id="4-实验背后的观察-Observations"><a href="#4-实验背后的观察-Observations" class="headerlink" title="4. 实验背后的观察 (Observations)"></a>4. 实验背后的观察 (Observations)</h3><p>作者通过表 1 得出了三个关键结论：</p>
+<ol>
+<li><strong>RAG 是必须的</strong>：外部知识的引入能成倍提升 LLM 的回答准确性。</li>
 <li><strong>结构信息对多跳推理至关重要</strong>：建模文档间的结构依赖（图结构）可以捕捉到传统向量检索遗漏的逻辑关联。</li>
-<li><strong>图的质量决定上限</strong>：现有的 GraphRAG
-方法受限于不稳定的关系抽取，而 LinearRAG
-通过“语义桥接”和“全局聚合”实现了更精准、抗噪的检索。</li>
+<li><strong>图的质量决定上限</strong>：现有的 GraphRAG 方法受限于不稳定的关系抽取，而 LinearRAG 通过“语义桥接”和“全局聚合”实现了更精准、抗噪的检索。</li>
 </ol>
-<h2 id="实验设置experimental-setting"><strong>实验设置（Experimental
-Setting）</strong></h2>
-<p>在 LinearRAG 的研究中，<strong>实验设置（Experimental
-Setting）</strong>
-的设计旨在全面验证该框架在处理复杂、多跳查询时的有效性、效率和扩展性。以下是根据来源对实验设置进行的详细解析：</p>
-<h3 id="测试数据集-datasets">1. 测试数据集 (Datasets)</h3>
-<p>实验选择了四个具有代表性且极具挑战性的数据集，涵盖了通用多跳推理和特定领域知识：</p>
+<h2 id="实验设置（Experimental-Setting）"><a href="#实验设置（Experimental-Setting）" class="headerlink" title="实验设置（Experimental Setting）"></a><strong>实验设置（Experimental Setting）</strong></h2><p>在 LinearRAG 的研究中，<strong>实验设置（Experimental Setting）</strong> 的设计旨在全面验证该框架在处理复杂、多跳查询时的有效性、效率和扩展性。以下是根据来源对实验设置进行的详细解析：</p>
+<h3 id="1-测试数据集-Datasets"><a href="#1-测试数据集-Datasets" class="headerlink" title="1. 测试数据集 (Datasets)"></a>1. 测试数据集 (Datasets)</h3><p>实验选择了四个具有代表性且极具挑战性的数据集，涵盖了通用多跳推理和特定领域知识：</p>
 <ul>
-<li><strong>通用多跳问答数据集</strong>：
-<ul>
-<li><strong>HotpotQA</strong>：包含约 9.7
-万个问答实例，要求模型从多个文档中合成信息。</li>
-<li><strong>2WikiMultiHopQA (2Wiki)</strong>：包含 19.2
-万个问题，测试模型在多篇维基百科文章间进行结构化推理的能力。</li>
-<li><strong>MuSiQue</strong>：包含 2.5 万个问答对，要求进行 2-4
-步的连续逻辑推理。</li>
-</ul></li>
-<li><strong>领域特定数据集</strong>：
-<ul>
-<li><strong>Medical</strong>：从结构化临床数据（NCCN
-指南）中构建，涵盖事实检索、复杂推理、上下文总结和创意生成四类任务，共
-4,076 个问题。</li>
-</ul></li>
-<li><strong>评估规模</strong>：为了公平对比，实验从每个数据集的验证集中随机抽取
-<strong>1,000 个问题</strong> 进行测试。</li>
+<li><strong>通用多跳问答数据集</strong>：<ul>
+<li><strong>HotpotQA</strong>：包含约 9.7 万个问答实例，要求模型从多个文档中合成信息。</li>
+<li><strong>2WikiMultiHopQA (2Wiki)</strong>：包含 19.2 万个问题，测试模型在多篇维基百科文章间进行结构化推理的能力。</li>
+<li><strong>MuSiQue</strong>：包含 2.5 万个问答对，要求进行 2-4 步的连续逻辑推理。</li>
 </ul>
-<h3 id="对比基准-baselines">2. 对比基准 (Baselines)</h3>
-<p>为了证明 LinearRAG 的优越性，实验将其与三类模型进行了对比：</p>
-<ul>
-<li><strong>零样本 LLM 推断 (Zero-shot)</strong>：直接使用基础模型（如
-<strong>LLaMA3-8B/13B</strong>、<strong>GPT-3.5-turbo</strong> 和
-<strong>GPT-4o-mini</strong>）在没有外部知识的情况下回答问题。</li>
-<li><strong>传统 RAG (Vanilla
-RAG)</strong>：采用基于语义相似度的文档检索（取 Top-1, 3,
-5），并结合思维链（CoT）提示词。</li>
-<li><strong>前沿图 RAG 系统 (GraphRAG)</strong>：包括构建层级树结构的
-<strong>RAPTOR</strong>、提取三元组构建图的
-<strong>LightRAG</strong>、<strong>HippoRAG</strong>、<strong>HippoRAG2</strong>、<strong>GFM-RAG</strong>，以及结合多种策略的
-<strong>E2GraphRAG</strong>。</li>
+</li>
+<li><strong>领域特定数据集</strong>：<ul>
+<li><strong>Medical</strong>：从结构化临床数据（NCCN 指南）中构建，涵盖事实检索、复杂推理、上下文总结和创意生成四类任务，共 4,076 个问题。</li>
 </ul>
-<h3 id="评估指标-evaluation-metrics">3. 评估指标 (Evaluation
-Metrics)</h3>
-<p>实验从两个维度评估模型性能：</p>
-<ul>
-<li><strong>端到端问答性能 (End-to-end QA)</strong>：
-<ul>
-<li><strong>包含匹配准确率
-(Contain-Acc.)</strong>：检查生成的回答中是否包含正确答案。</li>
-<li><strong>GPT 评估准确率 (GPT-Acc.)</strong>：利用 LLM
-判断预测答案与标准答案在语义上是否一致（医疗数据集仅使用此项）。</li>
-</ul></li>
-<li><strong>检索质量 (Retrieval Quality)</strong>：
-<ul>
-<li><strong>上下文相关性 (Context
-Relevance)</strong>：衡量问题与检索出的篇章之间的语义对齐程度。</li>
-<li><strong>证据召回率 (Evidence
-Recall)</strong>：评估检索内容是否包含了回答问题所需的全部关键信息。</li>
-</ul></li>
+</li>
+<li><strong>评估规模</strong>：为了公平对比，实验从每个数据集的验证集中随机抽取 <strong>1,000 个问题</strong> 进行测试。</li>
 </ul>
-<h3 id="实施细节-implementations">4. 实施细节 (Implementations)</h3>
-<p>为了确保对比的严谨性，所有实验均遵循以下统一标准：</p>
+<h3 id="2-对比基准-Baselines"><a href="#2-对比基准-Baselines" class="headerlink" title="2. 对比基准 (Baselines)"></a>2. 对比基准 (Baselines)</h3><p>为了证明 LinearRAG 的优越性，实验将其与三类模型进行了对比：</p>
 <ul>
-<li><strong>嵌入模型</strong>：所有算法均使用
-<strong><code>all-mpnet-base-v2</code></strong>
-作为统一的向量嵌入模型。</li>
-<li><strong>生成模型</strong>：所有 RAG 方法均采用
-<strong><code>GPT-4o-mini</code></strong> 进行答案生成和结果评估。</li>
-<li><strong>检索参数</strong>：检索结果统一取
-<strong>Top-5</strong>。</li>
-<li><strong>硬件配置</strong>：实验在配备 <strong>NVIDIA GeForce RTX
-4090 D (24GB VRAM)</strong> 和 Intel Xeon Gold 6426Y
-处理器的服务器上运行。</li>
+<li><strong>零样本 LLM 推断 (Zero-shot)</strong>：直接使用基础模型（如 <strong>LLaMA3-8B/13B</strong>、<strong>GPT-3.5-turbo</strong> 和 <strong>GPT-4o-mini</strong>）在没有外部知识的情况下回答问题。</li>
+<li><strong>传统 RAG (Vanilla RAG)</strong>：采用基于语义相似度的文档检索（取 Top-1, 3, 5），并结合思维链（CoT）提示词。</li>
+<li><strong>前沿图 RAG 系统 (GraphRAG)</strong>：包括构建层级树结构的 <strong>RAPTOR</strong>、提取三元组构建图的 <strong>LightRAG</strong>、<strong>HippoRAG</strong>、<strong>HippoRAG2</strong>、<strong>GFM-RAG</strong>，以及结合多种策略的 <strong>E2GraphRAG</strong>。</li>
 </ul>
-<h2 id="效率与性能比较">效率与性能比较</h2>
-<figure>
-<img src="/2026/01/02/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LinearRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/image-20260109171414610.png" alt="image-20260109171414610">
-<figcaption aria-hidden="true">image-20260109171414610</figcaption>
-</figure>
-<p>在 LinearRAG 的实验部分，<strong>效率分析（Efficiency
-Analysis，即实验问题 Q2）</strong>
-是该框架的核心亮点之一。研究团队通过对比不同 GraphRAG 模型在
-<strong>2WikiMultiHopQA</strong> 数据集上的 <strong>运行时间</strong> 和
-<strong>Token 消耗</strong>，证明了 LinearRAG
-在成本控制和速度上的压倒性优势。</p>
+<h3 id="3-评估指标-Evaluation-Metrics"><a href="#3-评估指标-Evaluation-Metrics" class="headerlink" title="3. 评估指标 (Evaluation Metrics)"></a>3. 评估指标 (Evaluation Metrics)</h3><p>实验从两个维度评估模型性能：</p>
+<ul>
+<li><strong>端到端问答性能 (End-to-end QA)</strong>：<ul>
+<li><strong>包含匹配准确率 (Contain-Acc.)</strong>：检查生成的回答中是否包含正确答案。</li>
+<li><strong>GPT 评估准确率 (GPT-Acc.)</strong>：利用 LLM 判断预测答案与标准答案在语义上是否一致（医疗数据集仅使用此项）。</li>
+</ul>
+</li>
+<li><strong>检索质量 (Retrieval Quality)</strong>：<ul>
+<li><strong>上下文相关性 (Context Relevance)</strong>：衡量问题与检索出的篇章之间的语义对齐程度。</li>
+<li><strong>证据召回率 (Evidence Recall)</strong>：评估检索内容是否包含了回答问题所需的全部关键信息。</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-实施细节-Implementations"><a href="#4-实施细节-Implementations" class="headerlink" title="4. 实施细节 (Implementations)"></a>4. 实施细节 (Implementations)</h3><p>为了确保对比的严谨性，所有实验均遵循以下统一标准：</p>
+<ul>
+<li><strong>嵌入模型</strong>：所有算法均使用 <strong><code>all-mpnet-base-v2</code></strong> 作为统一的向量嵌入模型。</li>
+<li><strong>生成模型</strong>：所有 RAG 方法均采用 <strong><code>GPT-4o-mini</code></strong> 进行答案生成和结果评估。</li>
+<li><strong>检索参数</strong>：检索结果统一取 <strong>Top-5</strong>。</li>
+<li><strong>硬件配置</strong>：实验在配备 <strong>NVIDIA GeForce RTX 4090 D (24GB VRAM)</strong> 和 Intel Xeon Gold 6426Y 处理器的服务器上运行。</li>
+</ul>
+<h2 id="效率与性能比较"><a href="#效率与性能比较" class="headerlink" title="效率与性能比较"></a>效率与性能比较</h2><p><img src="/2026/01/02/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LinearRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/image-20260109171414610.png" alt="image-20260109171414610"></p>
+<p>在 LinearRAG 的实验部分，<strong>效率分析（Efficiency Analysis，即实验问题 Q2）</strong> 是该框架的核心亮点之一。研究团队通过对比不同 GraphRAG 模型在 <strong>2WikiMultiHopQA</strong> 数据集上的 <strong>运行时间</strong> 和 <strong>Token 消耗</strong>，证明了 LinearRAG 在成本控制和速度上的压倒性优势。</p>
 <p>以下是效率分析部分的详细讲解：</p>
-<h3 id="索引阶段零-token-消耗与高速构建">1. 索引阶段：零 Token
-消耗与高速构建</h3>
-<p>在索引（图构建）阶段，LinearRAG 展现了极高的经济性和速度：</p>
+<h3 id="1-索引阶段：零-Token-消耗与高速构建"><a href="#1-索引阶段：零-Token-消耗与高速构建" class="headerlink" title="1. 索引阶段：零 Token 消耗与高速构建"></a>1. 索引阶段：零 Token 消耗与高速构建</h3><p>在索引（图构建）阶段，LinearRAG 展现了极高的经济性和速度：</p>
 <ul>
-<li><strong>零 Token 成本</strong>：与 LightRAG 或 G-Retriever
-等依赖大语言模型（LLM）进行关系抽取的系统不同，LinearRAG
-采用轻量级的实体提取和语义链接，<strong>整个索引过程不消耗任何 LLM
-Token</strong>。</li>
-<li><strong>极短的构建时间</strong>：在 2Wiki 数据集上，LinearRAG
-的索引时间仅为 <strong>249.78 秒</strong>，而最慢的 LightRAG 需要
-<strong>4933.22 秒</strong>。来源指出，这种设计将索引时间缩短了
-<strong>77% 以上</strong>。</li>
-<li><strong>线性可扩展性</strong>：其计算复杂度为 <span class="math inline"><em>O</em>(|<em>P</em>|⋅<em>T</em>)</span>（其中
-<span class="math inline">|<em>P</em>|</span> 为篇章数，<span class="math inline"><em>T</em></span>
-为平均长度），这意味着它能随着语料库规模的增加保持稳定的线性增长。</li>
+<li><strong>零 Token 成本</strong>：与 LightRAG 或 G-Retriever 等依赖大语言模型（LLM）进行关系抽取的系统不同，LinearRAG 采用轻量级的实体提取和语义链接，<strong>整个索引过程不消耗任何 LLM Token</strong>。</li>
+<li><strong>极短的构建时间</strong>：在 2Wiki 数据集上，LinearRAG 的索引时间仅为 <strong>249.78 秒</strong>，而最慢的 LightRAG 需要 <strong>4933.22 秒</strong>。来源指出，这种设计将索引时间缩短了 <strong>77% 以上</strong>。</li>
+<li><strong>线性可扩展性</strong>：其计算复杂度为 $O(|P| \cdot T)$（其中 $|P|$ 为篇章数，$T$ 为平均长度），这意味着它能随着语料库规模的增加保持稳定的线性增长。</li>
 </ul>
-<h3 id="检索阶段极低延迟与高效算法">2. 检索阶段：极低延迟与高效算法</h3>
-<p>在在线检索阶段，LinearRAG 同样保持了领先地位：</p>
+<h3 id="2-检索阶段：极低延迟与高效算法"><a href="#2-检索阶段：极低延迟与高效算法" class="headerlink" title="2. 检索阶段：极低延迟与高效算法"></a>2. 检索阶段：极低延迟与高效算法</h3><p>在在线检索阶段，LinearRAG 同样保持了领先地位：</p>
 <ul>
-<li><strong>平均检索时间最快</strong>：LinearRAG 的平均检索时间仅为
-<strong>0.093 秒</strong>。相比之下，LightRAG 的检索延迟高达
-<strong>10.963 秒</strong>，几乎是 LinearRAG 的 <strong>117
-倍</strong>。</li>
-<li><strong>无检索 Token 消耗</strong>：检索过程同样<strong>不依赖 LLM
-调用</strong>，避免了因处理大量检索内容而产生的额外 API
-费用和延迟。</li>
-<li><strong>算法优化</strong>：通过使用<strong>稀疏矩阵相乘（SpMM）</strong>加速语义传播，以及在线性时间内完成的
-<strong>个性化 PageRank (PPR)</strong>
-迭代，确保了在大规模图结构下的高效运行。</li>
+<li><strong>平均检索时间最快</strong>：LinearRAG 的平均检索时间仅为 <strong>0.093 秒</strong>。相比之下，LightRAG 的检索延迟高达 <strong>10.963 秒</strong>，几乎是 LinearRAG 的 <strong>117 倍</strong>。</li>
+<li><strong>无检索 Token 消耗</strong>：检索过程同样<strong>不依赖 LLM 调用</strong>，避免了因处理大量检索内容而产生的额外 API 费用和延迟。</li>
+<li><strong>算法优化</strong>：通过使用<strong>稀疏矩阵相乘（SpMM）</strong>加速语义传播，以及在线性时间内完成的 <strong>个性化 PageRank (PPR)</strong> 迭代，确保了在大规模图结构下的高效运行。</li>
 </ul>
-<h3 id="大规模语料库下的扩展性-large-scale-analysis">3.
-大规模语料库下的扩展性 (Large-scale Analysis)</h3>
-<p>为了验证其在现实世界大规模场景下的潜力，研究人员在
-<strong>ATLAS-Wiki</strong> 数据集（5M 和 10M Token
-级别）上进行了测试：</p>
+<h3 id="3-大规模语料库下的扩展性-Large-scale-Analysis"><a href="#3-大规模语料库下的扩展性-Large-scale-Analysis" class="headerlink" title="3. 大规模语料库下的扩展性 (Large-scale Analysis)"></a>3. 大规模语料库下的扩展性 (Large-scale Analysis)</h3><p>为了验证其在现实世界大规模场景下的潜力，研究人员在 <strong>ATLAS-Wiki</strong> 数据集（5M 和 10M Token 级别）上进行了测试：</p>
 <ul>
-<li><strong>倍数级加速</strong>：在 10M Token 的子集上，LinearRAG
-的索引速度比 RAPTOR 快 <strong>15.1 倍</strong>。</li>
-<li><strong>工业级应用潜力</strong>：由于完全消除了对 API 的依赖且具备
-<strong>全阶段线性可扩展性（All-stage Linear
-Scalability）</strong>，它被认为是目前最适合大规模企业级部署的方案。</li>
+<li><strong>倍数级加速</strong>：在 10M Token 的子集上，LinearRAG 的索引速度比 RAPTOR 快 <strong>15.1 倍</strong>。</li>
+<li><strong>工业级应用潜力</strong>：由于完全消除了对 API 的依赖且具备 <strong>全阶段线性可扩展性（All-stage Linear Scalability）</strong>，它被认为是目前最适合大规模企业级部署的方案。</li>
 </ul>
-<h2 id="消融实验-ablation-study"><strong>消融实验 Ablation
-Study</strong></h2>
-<figure>
-<img src="/2026/01/02/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LinearRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/image-20260109172520666.png" alt="image-20260109172520666">
-<figcaption aria-hidden="true">image-20260109172520666</figcaption>
-</figure>
-<p>在 LinearRAG 的实验部分，<strong>消融实验（Ablation Study，即问题
-Q3）</strong>
-旨在通过有针对性地移除核心组件，来验证各模块对系统整体性能的具体贡献,。研究团队在四个不同的数据集上进行了系统性测试，重点考察了两个核心阶段。</p>
+<h2 id="消融实验-Ablation-Study"><a href="#消融实验-Ablation-Study" class="headerlink" title="消融实验 Ablation Study"></a><strong>消融实验 Ablation Study</strong></h2><p><img src="/2026/01/02/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LinearRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/image-20260109172520666.png" alt="image-20260109172520666"></p>
+<p>在 LinearRAG 的实验部分，<strong>消融实验（Ablation Study，即问题 Q3）</strong> 旨在通过有针对性地移除核心组件，来验证各模块对系统整体性能的具体贡献,。研究团队在四个不同的数据集上进行了系统性测试，重点考察了两个核心阶段。</p>
 <p>以下是消融实验的详细分析：</p>
-<h3 id="考察的两个核心模块">1. 考察的两个核心模块</h3>
-<p>实验通过创建两个变体来分析性能损耗：</p>
+<h3 id="1-考察的两个核心模块"><a href="#1-考察的两个核心模块" class="headerlink" title="1. 考察的两个核心模块"></a>1. 考察的两个核心模块</h3><p>实验通过创建两个变体来分析性能损耗：</p>
 <ul>
-<li><strong>变体一：移除相关实体激活（w/o Entity Activation）</strong>：
-<ul>
+<li><strong>变体一：移除相关实体激活（w/o Entity Activation）</strong>：<ul>
 <li><strong>操作</strong>：该变体跳过了通过“局部语义桥接”传播激活分数的过程，直接使用从查询中提取的初始实体作为激活实体。</li>
 <li><strong>作用分析</strong>：第一阶段的意义在于通过语义相似度传播，识别出那些与查询没有直接字面匹配、但在推理链中起到“桥梁”作用的隐藏中间实体,。</li>
-</ul></li>
-<li><strong>变体二：移除全局重要性聚合（w/o Global Importance
-Aggregation）</strong>：
-<ul>
-<li><strong>操作</strong>：该变体跳过了个性化 PageRank (PPR)
-算法，直接根据第一阶段计算出的初始激活分数来检索文档,。</li>
+</ul>
+</li>
+<li><strong>变体二：移除全局重要性聚合（w/o Global Importance Aggregation）</strong>：<ul>
+<li><strong>操作</strong>：该变体跳过了个性化 PageRank (PPR) 算法，直接根据第一阶段计算出的初始激活分数来检索文档,。</li>
 <li><strong>作用分析</strong>：第二阶段旨在从全局视角评估文档的重要性，通过在实体-篇章图上进行迭代，过滤掉噪声并强化逻辑链核心篇章的权重,。</li>
-</ul></li>
 </ul>
-<h3 id="主要实验发现observation-7">2. 主要实验发现（Observation 7）</h3>
-<p>根据实验数据（如图 4 所示），研究团队得出了以下关键结论：</p>
+</li>
+</ul>
+<h3 id="2-主要实验发现（Observation-7）"><a href="#2-主要实验发现（Observation-7）" class="headerlink" title="2. 主要实验发现（Observation 7）"></a>2. 主要实验发现（Observation 7）</h3><p>根据实验数据（如图 4 所示），研究团队得出了以下关键结论：</p>
 <ul>
-<li><strong>模块的不可或缺性</strong>：实验结果明确显示，<strong>每一个模块对于达到最优性能都是至关重要的</strong>。在所有四个数据集（HotpotQA、2Wiki、MuSiQue、Medical）上，完整版的
-LinearRAG 性能均高于任何一个变体。</li>
+<li><strong>模块的不可或缺性</strong>：实验结果明确显示，<strong>每一个模块对于达到最优性能都是至关重要的</strong>。在所有四个数据集（HotpotQA、2Wiki、MuSiQue、Medical）上，完整版的 LinearRAG 性能均高于任何一个变体。</li>
 <li><strong>第一阶段的功能贡献</strong>：局部语义桥接通过发现隐藏的逻辑关系，解决了多跳问题中“线索中断”的问题。</li>
-<li><strong>第二阶段的功能贡献</strong>：全局重要性聚合通过 PPR
-算法，从整体结构出发评估篇章的权重，显著提升了检索的精准度。</li>
-<li><strong>互补效应</strong>：这两个模块虽然功能不同，但具有极强的互补性，共同构成了
-LinearRAG 既高效又准确的检索能力,。</li>
+<li><strong>第二阶段的功能贡献</strong>：全局重要性聚合通过 PPR 算法，从整体结构出发评估篇章的权重，显著提升了检索的精准度。</li>
+<li><strong>互补效应</strong>：这两个模块虽然功能不同，但具有极强的互补性，共同构成了 LinearRAG 既高效又准确的检索能力,。</li>
 </ul>
-<h3 id="数据反映的趋势">3. 数据反映的趋势</h3>
-<p>在消融实验的图表中可以看到：</p>
+<h3 id="3-数据反映的趋势"><a href="#3-数据反映的趋势" class="headerlink" title="3. 数据反映的趋势"></a>3. 数据反映的趋势</h3><p>在消融实验的图表中可以看到：</p>
 <ul>
-<li>当移除任何一个阶段后，模型的准确率（GPT-Acc. 与 Contain-Acc.
-的平均值）都会出现明显的下降。</li>
-<li>这种下降在处理逻辑更加复杂的 <strong>MuSiQue</strong> 和
-<strong>2Wiki</strong> 数据集时尤为显著，这证明了
-<strong>“语义桥接”和“全局聚合”是处理多跳推理任务的基石</strong>,。</li>
+<li>当移除任何一个阶段后，模型的准确率（GPT-Acc. 与 Contain-Acc. 的平均值）都会出现明显的下降。</li>
+<li>这种下降在处理逻辑更加复杂的 <strong>MuSiQue</strong> 和 <strong>2Wiki</strong> 数据集时尤为显著，这证明了 <strong>“语义桥接”和“全局聚合”是处理多跳推理任务的基石</strong>,。</li>
 </ul>
-<h2 id="medical医疗数据集上的检索质量评估结果"><strong>Medical（医疗）数据集</strong>上的<strong>检索质量评估结果</strong></h2>
-<figure>
-<img src="/2026/01/02/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LinearRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/image-20260109193346378.png" alt="image-20260109193346378">
-<figcaption aria-hidden="true">image-20260109193346378</figcaption>
-</figure>
-<p>表 4 展示了不同基准模型在
-<strong>Medical（医疗）数据集</strong>上针对四种任务维度的<strong>检索质量评估结果</strong>,。这些任务按难度递增分为：事实检索（Fact
-Retrieval）、复杂推理（Complex Reasoning）、上下文理解（Contextual
-Understanding）和创意生成（Creative Generation）,。</p>
+<h2 id="Medical（医疗）数据集上的检索质量评估结果"><a href="#Medical（医疗）数据集上的检索质量评估结果" class="headerlink" title="Medical（医疗）数据集上的检索质量评估结果"></a><strong>Medical（医疗）数据集</strong>上的<strong>检索质量评估结果</strong></h2><p><img src="/2026/01/02/college/%E5%A4%A7%E4%B8%89%E4%B8%8A/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LinearRAG%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/image-20260109193346378.png" alt="image-20260109193346378"></p>
+<p>表 4 展示了不同基准模型在 <strong>Medical（医疗）数据集</strong>上针对四种任务维度的<strong>检索质量评估结果</strong>,。这些任务按难度递增分为：事实检索（Fact Retrieval）、复杂推理（Complex Reasoning）、上下文理解（Contextual Understanding）和创意生成（Creative Generation）,。</p>
 <p>以下是对该表核心发现的详细讲解：</p>
-<h3 id="核心指标的含义">1. 核心指标的含义</h3>
-<p>评估采用了两个关键的检索指标：</p>
+<h3 id="1-核心指标的含义"><a href="#1-核心指标的含义" class="headerlink" title="1. 核心指标的含义"></a>1. 核心指标的含义</h3><p>评估采用了两个关键的检索指标：</p>
 <ul>
-<li><strong>证据召回率 (Evidence
-Recall)</strong>：衡量检索到的内容是否包含了回答问题所需的全部必要信息。</li>
-<li><strong>上下文相关性 (Context
-Relevance)</strong>：衡量问题与检索出的篇章之间的语义对齐程度，即检索结果中“杂质”的多少。</li>
+<li><strong>证据召回率 (Evidence Recall)</strong>：衡量检索到的内容是否包含了回答问题所需的全部必要信息。</li>
+<li><strong>上下文相关性 (Context Relevance)</strong>：衡量问题与检索出的篇章之间的语义对齐程度，即检索结果中“杂质”的多少。</li>
 </ul>
-<h3 id="linearrag-的卓越表现-obs.-9">2. LinearRAG 的卓越表现 (Obs.
-9)</h3>
-<p>LinearRAG
-在所有四个任务中几乎都占据了<strong>最优（加粗）或次优（下划线）</strong>的位置，展现了极强的综合能力,：</p>
+<h3 id="2-LinearRAG-的卓越表现-Obs-9"><a href="#2-LinearRAG-的卓越表现-Obs-9" class="headerlink" title="2. LinearRAG 的卓越表现 (Obs. 9)"></a>2. LinearRAG 的卓越表现 (Obs. 9)</h3><p>LinearRAG 在所有四个任务中几乎都占据了<strong>最优（加粗）或次优（下划线）</strong>的位置，展现了极强的综合能力,：</p>
 <ul>
-<li><strong>打破“召回-相关性”矛盾</strong>：通常提高召回率会引入更多无关文档（降低相关性），反之亦然。但
-LinearRAG 成功实现了<strong>高召回与高相关的并存</strong>。</li>
-<li><strong>创意生成任务的跨越</strong>：在难度最高的“创意生成”任务中，LinearRAG
-的召回率达到 <strong>89.08%</strong>，相关性达到
-<strong>72.74%</strong>，均位居第一。相比之下，传统 RAG
-虽然相关性尚可，但召回率仅为 44.88%。</li>
+<li><strong>打破“召回-相关性”矛盾</strong>：通常提高召回率会引入更多无关文档（降低相关性），反之亦然。但 LinearRAG 成功实现了<strong>高召回与高相关的并存</strong>。</li>
+<li><strong>创意生成任务的跨越</strong>：在难度最高的“创意生成”任务中，LinearRAG 的召回率达到 <strong>89.08%</strong>，相关性达到 <strong>72.74%</strong>，均位居第一。相比之下，传统 RAG 虽然相关性尚可，但召回率仅为 44.88%。</li>
 </ul>
-<h3 id="传统-graphrag-的噪声瓶颈-obs.-8">3. 传统 GraphRAG 的“噪声瓶颈”
-(Obs. 8)</h3>
-<p>观察表中其他图检索模型（如
-GFM-RAG、HippoRAG、LightRAG）可以发现一个共同问题：<strong>相关性大幅下降</strong>,。</p>
+<h3 id="3-传统-GraphRAG-的“噪声瓶颈”-Obs-8"><a href="#3-传统-GraphRAG-的“噪声瓶颈”-Obs-8" class="headerlink" title="3. 传统 GraphRAG 的“噪声瓶颈” (Obs. 8)"></a>3. 传统 GraphRAG 的“噪声瓶颈” (Obs. 8)</h3><p>观察表中其他图检索模型（如 GFM-RAG、HippoRAG、LightRAG）可以发现一个共同问题：<strong>相关性大幅下降</strong>,。</p>
 <ul>
-<li><strong>高召回的代价</strong>：这些模型通过图结构增强了信息获取范围，例如
-GFM-RAG 在创意生成任务中将召回率提升至 83.51%，但其相关性却暴跌至
-<strong>22.87%</strong>,。</li>
+<li><strong>高召回的代价</strong>：这些模型通过图结构增强了信息获取范围，例如 GFM-RAG 在创意生成任务中将召回率提升至 83.51%，但其相关性却暴跌至 <strong>22.87%</strong>,。</li>
 <li><strong>原因分析</strong>：这是因为它们依赖不稳定的关系抽取来构建图，导致图中充斥着错误的逻辑链接和冗余连接，从而在检索时带回了大量无关的干扰信息,,。</li>
 </ul>
-<h2 id="参考资料">参考资料</h2>
-<p><a target="_blank" rel="noopener" href="https://github.com/DEEP-PolyU/Awesome-GraphRAG">DEEP-PolyU/Awesome-GraphRAG:
-Awesome-GraphRAG: A curated list of resources (surveys, papers,
-benchmarks, and opensource projects) on graph-based retrieval-augmented
-generation.</a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/chensyCN/LogicRAG">chensyCN/LogicRAG:
-Source code of LogicRAG at AAAI’26.</a></p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a target="_blank" rel="noopener" href="https://github.com/DEEP-PolyU/Awesome-GraphRAG">DEEP-PolyU/Awesome-GraphRAG: Awesome-GraphRAG: A curated list of resources (surveys, papers, benchmarks, and opensource projects) on graph-based retrieval-augmented generation.</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/chensyCN/LogicRAG">chensyCN/LogicRAG: Source code of LogicRAG at AAAI’26.</a></p>
 
     </div>
 

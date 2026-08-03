@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="课题   1    2  CacheBlend 核心发现： KV 偏差（KV Deviation） 通过计算 KV 偏差（KV Deviation） ： Δkv(KVi, KVifull)[j] &#x3D; |KVi[j] − KVifull[j]| 两种编码形式产生的差异性 这个公式描述的是：同一个 Token j 在第 i 层网络中，两种完全不同的“命运轨迹”下所产生的">
+    <meta name="description" content="课题  CacheBlend核心发现： KV 偏差（KV Deviation）通过计算 KV 偏差（KV Deviation） ：   \Delta_{kv}(KV_i, KV_i^{full})[j] &#x3D; |KV_i[j] - KV_i^{full}[j]|两种编码形式产生的差异性这个公式描述的是：同一个 Token $j$ 在第 $i$ 层网络中，两种完全不同的“命运轨迹”下所产生的语义向量差">
 <meta property="og:type" content="article">
 <meta property="og:title" content="rag的kvcache问题">
 <meta property="og:url" content="http://example.com/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="课题   1    2  CacheBlend 核心发现： KV 偏差（KV Deviation） 通过计算 KV 偏差（KV Deviation） ： Δkv(KVi, KVifull)[j] &#x3D; |KVi[j] − KVifull[j]| 两种编码形式产生的差异性 这个公式描述的是：同一个 Token j 在第 i 层网络中，两种完全不同的“命运轨迹”下所产生的">
+<meta property="og:description" content="课题  CacheBlend核心发现： KV 偏差（KV Deviation）通过计算 KV 偏差（KV Deviation） ：   \Delta_{kv}(KV_i, KV_i^{full})[j] &#x3D; |KV_i[j] - KV_i^{full}[j]|两种编码形式产生的差异性这个公式描述的是：同一个 Token $j$ 在第 $i$ 层网络中，两种完全不同的“命运轨迹”下所产生的语义向量差">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/1.jpg">
 <meta property="og:image" content="http://example.com/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/2.jpg">
@@ -154,20 +154,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">课题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cacheblend"><span class="nav-number">2.</span> <span class="nav-text">CacheBlend</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%8F%91%E7%8E%B0-kv-%E5%81%8F%E5%B7%AEkv-deviation"><span class="nav-number">2.1.</span> <span class="nav-text">核心发现： KV 偏差（KV
-Deviation）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%A4%E7%A7%8D%E7%BC%96%E7%A0%81%E5%BD%A2%E5%BC%8F%E4%BA%A7%E7%94%9F%E7%9A%84%E5%B7%AE%E5%BC%82%E6%80%A7"><span class="nav-number">2.1.1.</span> <span class="nav-text">两种编码形式产生的差异性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%8F%91%E7%8E%B0"><span class="nav-number">2.1.2.</span> <span class="nav-text">核心发现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B7%A8%E5%B1%82%E7%9B%B8%E5%85%B3%E6%80%A7layer-correlation"><span class="nav-number">2.1.3.</span> <span class="nav-text">跨层相关性（Layer
-Correlation）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%90%E8%BF%9B%E5%BC%8F%E8%BF%87%E6%BB%A4%E6%9C%BA%E5%88%B6gradual-filtering-scheme"><span class="nav-number">2.2.</span> <span class="nav-text">渐进式过滤机制（Gradual
-Filtering Scheme）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E6%9C%9F%E5%AD%A6%E4%B9%A0"><span class="nav-number">4.</span> <span class="nav-text">前期学习</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8B%AC%E7%AB%8B%E7%BC%96%E7%A0%81"><span class="nav-number">4.1.</span> <span class="nav-text">独立编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-roperotary-position-embedding%E6%97%8B%E8%BD%AC%E4%BD%8D%E7%BD%AE%E7%BC%96%E7%A0%81"><span class="nav-number">4.2.</span> <span class="nav-text">什么是
-RoPE（Rotary Position Embedding，旋转位置编码）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A2%E7%84%B6%E6%9C%89%E4%BA%86%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%8E%A9%E7%A0%81attention-mask%E6%9D%A5%E9%99%90%E5%88%B6%E6%96%B9%E5%90%91%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E9%9C%80%E8%A6%81%E4%BD%8D%E7%BD%AE%E7%BC%96%E7%A0%81"><span class="nav-number">4.3.</span> <span class="nav-text">既然有了注意力掩码（Attention
-Mask）来限制方向，为什么还需要位置编码？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A9%E7%A0%81mask%E7%9A%84%E7%9C%9F%E5%AE%9E%E4%BD%9C%E7%94%A8%E5%86%B3%E5%AE%9A%E5%8F%AF%E8%A7%81%E6%80%A7"><span class="nav-number">4.3.1.</span> <span class="nav-text">1.
-掩码（Mask）的真实作用：决定“可见性”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%8D%E7%BD%AE%E7%BC%96%E7%A0%81position-encoding%E7%9A%84%E7%9C%9F%E5%AE%9E%E4%BD%9C%E7%94%A8%E5%86%B3%E5%AE%9A%E9%A1%BA%E5%BA%8F%E4%B8%8E%E8%B7%9D%E7%A6%BB"><span class="nav-number">4.3.2.</span> <span class="nav-text">2.
-位置编码（Position Encoding）的真实作用：决定“顺序与距离”</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%8D%E7%BD%AE%E7%BC%96%E7%A0%81%E4%BA%A7%E7%94%9F%E7%9A%84%E6%A0%B9%E6%9C%AC%E5%8E%9F%E5%9B%A0%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97"><span class="nav-number">4.4.</span> <span class="nav-text">位置编码产生的根本原因——并行计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#transformer%E7%9A%84%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97"><span class="nav-number">4.5.</span> <span class="nav-text">transformer的并行计算</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E4%B8%80%E7%BA%BF%E6%80%A7%E6%98%A0%E5%B0%84%E9%98%B6%E6%AE%B5qkv-%E7%9F%A9%E9%98%B5%E7%9A%84%E7%94%9F%E6%88%90"><span class="nav-number">4.5.1.</span> <span class="nav-text">阶段一：线性映射阶段（QKV
-矩阵的生成）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E4%BA%8C%E6%B3%A8%E6%84%8F%E5%8A%9B%E5%88%86%E6%95%B0%E8%AE%A1%E7%AE%97%E9%98%B6%E6%AE%B5q-times-kt"><span class="nav-number">4.5.2.</span> <span class="nav-text">阶段二：注意力分数计算阶段（Q × KT）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#transformer%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%8E%A8%E7%90%86%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97%E7%9A%84%E5%B7%AE%E5%BC%82"><span class="nav-number">4.6.</span> <span class="nav-text">transformer训练与推理并行计算的差异</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80-%E8%AE%AD%E7%BB%83%E9%98%B6%E6%AE%B5%E5%AE%8C%E7%BE%8E%E7%9A%84%E5%85%A8%E5%B9%B6%E8%A1%8C%E4%B8%8A%E5%B8%9D%E8%A7%86%E8%A7%92"><span class="nav-number">4.6.1.</span> <span class="nav-text">一、
-训练阶段：完美的“全并行”（上帝视角）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%9F%A9%E9%98%B5%E7%9A%84%E7%BB%9D%E5%AF%B9%E5%B9%B6%E8%A1%8C"><span class="nav-number">4.6.1.1.</span> <span class="nav-text">1. 矩阵的绝对并行</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%97%A2%E7%84%B6%E6%98%AF%E4%B8%80%E8%B5%B7%E7%AE%97%E7%9A%84%E6%80%8E%E4%B9%88%E4%BD%93%E7%8E%B0%E5%85%88%E5%90%8E%E9%A1%BA%E5%BA%8F"><span class="nav-number">4.6.1.2.</span> <span class="nav-text">2.
-既然是一起算的，怎么体现“先后顺序”？</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C-%E6%8E%A8%E7%90%86%E9%98%B6%E6%AE%B5%E5%89%B2%E8%A3%82%E7%9A%84%E4%B8%A4%E6%AE%B5%E5%BC%8F%E4%BB%8E%E5%B9%B6%E8%A1%8C%E8%B7%8C%E8%90%BD%E5%88%B0%E4%B8%B2%E8%A1%8C"><span class="nav-number">4.6.2.</span> <span class="nav-text">二、
-推理阶段：割裂的“两段式”（从并行跌落到串行）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5-1prefill%E9%A2%84%E7%83%AD%E4%BA%A4%E4%BA%92%E9%98%B6%E6%AE%B5-%E5%AE%83%E6%98%AF%E5%B9%B6%E8%A1%8C%E7%9A%84"><span class="nav-number">4.6.2.1.</span> <span class="nav-text">阶段
-1：Prefill（预热&#x2F;交互阶段）—— 它是并行的！</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5-2decode%E9%80%90%E5%AD%97%E7%94%9F%E6%88%90%E9%98%B6%E6%AE%B5-%E5%AE%83%E6%98%AF%E4%B8%B2%E8%A1%8C%E7%9A%84"><span class="nav-number">4.6.2.2.</span> <span class="nav-text">阶段
-2：Decode（逐字生成阶段）—— 它是串行的！</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">课题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CacheBlend"><span class="nav-number">2.</span> <span class="nav-text">CacheBlend</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%8F%91%E7%8E%B0%EF%BC%9A-KV-%E5%81%8F%E5%B7%AE%EF%BC%88KV-Deviation%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">核心发现： KV 偏差（KV Deviation）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%A4%E7%A7%8D%E7%BC%96%E7%A0%81%E5%BD%A2%E5%BC%8F%E4%BA%A7%E7%94%9F%E7%9A%84%E5%B7%AE%E5%BC%82%E6%80%A7"><span class="nav-number">2.1.1.</span> <span class="nav-text">两种编码形式产生的差异性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%8F%91%E7%8E%B0"><span class="nav-number">2.1.2.</span> <span class="nav-text">核心发现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B7%A8%E5%B1%82%E7%9B%B8%E5%85%B3%E6%80%A7%EF%BC%88Layer-Correlation%EF%BC%89"><span class="nav-number">2.1.3.</span> <span class="nav-text">跨层相关性（Layer Correlation）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%90%E8%BF%9B%E5%BC%8F%E8%BF%87%E6%BB%A4%E6%9C%BA%E5%88%B6%EF%BC%88Gradual-Filtering-Scheme%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">渐进式过滤机制（Gradual Filtering Scheme）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E6%9C%9F%E5%AD%A6%E4%B9%A0"><span class="nav-number">4.</span> <span class="nav-text">前期学习</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8B%AC%E7%AB%8B%E7%BC%96%E7%A0%81"><span class="nav-number">4.1.</span> <span class="nav-text">独立编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-RoPE%EF%BC%88Rotary-Position-Embedding%EF%BC%8C%E6%97%8B%E8%BD%AC%E4%BD%8D%E7%BD%AE%E7%BC%96%E7%A0%81%EF%BC%89"><span class="nav-number">4.2.</span> <span class="nav-text">什么是 RoPE（Rotary Position Embedding，旋转位置编码）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A2%E7%84%B6%E6%9C%89%E4%BA%86%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%8E%A9%E7%A0%81%EF%BC%88Attention-Mask%EF%BC%89%E6%9D%A5%E9%99%90%E5%88%B6%E6%96%B9%E5%90%91%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E9%9C%80%E8%A6%81%E4%BD%8D%E7%BD%AE%E7%BC%96%E7%A0%81%EF%BC%9F"><span class="nav-number">4.3.</span> <span class="nav-text">既然有了注意力掩码（Attention Mask）来限制方向，为什么还需要位置编码？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%8E%A9%E7%A0%81%EF%BC%88Mask%EF%BC%89%E7%9A%84%E7%9C%9F%E5%AE%9E%E4%BD%9C%E7%94%A8%EF%BC%9A%E5%86%B3%E5%AE%9A%E2%80%9C%E5%8F%AF%E8%A7%81%E6%80%A7%E2%80%9D"><span class="nav-number">4.3.1.</span> <span class="nav-text">1. 掩码（Mask）的真实作用：决定“可见性”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E4%BD%8D%E7%BD%AE%E7%BC%96%E7%A0%81%EF%BC%88Position-Encoding%EF%BC%89%E7%9A%84%E7%9C%9F%E5%AE%9E%E4%BD%9C%E7%94%A8%EF%BC%9A%E5%86%B3%E5%AE%9A%E2%80%9C%E9%A1%BA%E5%BA%8F%E4%B8%8E%E8%B7%9D%E7%A6%BB%E2%80%9D"><span class="nav-number">4.3.2.</span> <span class="nav-text">2. 位置编码（Position Encoding）的真实作用：决定“顺序与距离”</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%8D%E7%BD%AE%E7%BC%96%E7%A0%81%E4%BA%A7%E7%94%9F%E7%9A%84%E6%A0%B9%E6%9C%AC%E5%8E%9F%E5%9B%A0%E2%80%94%E2%80%94%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97"><span class="nav-number">4.4.</span> <span class="nav-text">位置编码产生的根本原因——并行计算</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#transformer%E7%9A%84%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97"><span class="nav-number">4.5.</span> <span class="nav-text">transformer的并行计算</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E4%B8%80%EF%BC%9A%E7%BA%BF%E6%80%A7%E6%98%A0%E5%B0%84%E9%98%B6%E6%AE%B5%EF%BC%88QKV-%E7%9F%A9%E9%98%B5%E7%9A%84%E7%94%9F%E6%88%90%EF%BC%89"><span class="nav-number">4.5.1.</span> <span class="nav-text">阶段一：线性映射阶段（QKV 矩阵的生成）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E4%BA%8C%EF%BC%9A%E6%B3%A8%E6%84%8F%E5%8A%9B%E5%88%86%E6%95%B0%E8%AE%A1%E7%AE%97%E9%98%B6%E6%AE%B5%EF%BC%88-Q-times-K-T-%EF%BC%89"><span class="nav-number">4.5.2.</span> <span class="nav-text">阶段二：注意力分数计算阶段（$Q \times K^T$）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#transformer%E8%AE%AD%E7%BB%83%E4%B8%8E%E6%8E%A8%E7%90%86%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97%E7%9A%84%E5%B7%AE%E5%BC%82"><span class="nav-number">4.6.</span> <span class="nav-text">transformer训练与推理并行计算的差异</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81-%E8%AE%AD%E7%BB%83%E9%98%B6%E6%AE%B5%EF%BC%9A%E5%AE%8C%E7%BE%8E%E7%9A%84%E2%80%9C%E5%85%A8%E5%B9%B6%E8%A1%8C%E2%80%9D%EF%BC%88%E4%B8%8A%E5%B8%9D%E8%A7%86%E8%A7%92%EF%BC%89"><span class="nav-number">4.6.1.</span> <span class="nav-text">一、 训练阶段：完美的“全并行”（上帝视角）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E7%9F%A9%E9%98%B5%E7%9A%84%E7%BB%9D%E5%AF%B9%E5%B9%B6%E8%A1%8C"><span class="nav-number">4.6.1.1.</span> <span class="nav-text">1. 矩阵的绝对并行</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E6%97%A2%E7%84%B6%E6%98%AF%E4%B8%80%E8%B5%B7%E7%AE%97%E7%9A%84%EF%BC%8C%E6%80%8E%E4%B9%88%E4%BD%93%E7%8E%B0%E2%80%9C%E5%85%88%E5%90%8E%E9%A1%BA%E5%BA%8F%E2%80%9D%EF%BC%9F"><span class="nav-number">4.6.1.2.</span> <span class="nav-text">2. 既然是一起算的，怎么体现“先后顺序”？</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81-%E6%8E%A8%E7%90%86%E9%98%B6%E6%AE%B5%EF%BC%9A%E5%89%B2%E8%A3%82%E7%9A%84%E2%80%9C%E4%B8%A4%E6%AE%B5%E5%BC%8F%E2%80%9D%EF%BC%88%E4%BB%8E%E5%B9%B6%E8%A1%8C%E8%B7%8C%E8%90%BD%E5%88%B0%E4%B8%B2%E8%A1%8C%EF%BC%89"><span class="nav-number">4.6.2.</span> <span class="nav-text">二、 推理阶段：割裂的“两段式”（从并行跌落到串行）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5-1%EF%BC%9APrefill%EF%BC%88%E9%A2%84%E7%83%AD-%E4%BA%A4%E4%BA%92%E9%98%B6%E6%AE%B5%EF%BC%89%E2%80%94%E2%80%94-%E5%AE%83%E6%98%AF%E5%B9%B6%E8%A1%8C%E7%9A%84%EF%BC%81"><span class="nav-number">4.6.2.1.</span> <span class="nav-text">阶段 1：Prefill（预热&#x2F;交互阶段）—— 它是并行的！</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5-2%EF%BC%9ADecode%EF%BC%88%E9%80%90%E5%AD%97%E7%94%9F%E6%88%90%E9%98%B6%E6%AE%B5%EF%BC%89%E2%80%94%E2%80%94-%E5%AE%83%E6%98%AF%E4%B8%B2%E8%A1%8C%E7%9A%84%EF%BC%81"><span class="nav-number">4.6.2.2.</span> <span class="nav-text">阶段 2：Decode（逐字生成阶段）—— 它是串行的！</span></a></li></ol></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -182,7 +169,7 @@ Mask）来限制方向，为什么还需要位置编码？</span></a><ol class="
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">196</span>
+          <span class="site-state-item-count">199</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -307,304 +294,115 @@ Mask）来限制方向，为什么还需要位置编码？</span></a><ol class="
     
     
     
-    <div class="post-body" itemprop="articleBody"><h2 id="课题">课题</h2>
-<figure>
-<img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/1.jpg" alt="1">
-<figcaption aria-hidden="true">1</figcaption>
-</figure>
-<figure>
-<img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/2.jpg" alt="2">
-<figcaption aria-hidden="true">2</figcaption>
-</figure>
-<h2 id="cacheblend">CacheBlend</h2>
-<h3 id="核心发现-kv-偏差kv-deviation">核心发现： KV 偏差（KV
-Deviation）</h3>
-<p>通过计算 <strong>KV 偏差（KV Deviation）</strong> ：</p>
-<p><span class="math display"><em>Δ</em><sub><em>k</em><em>v</em></sub>(<em>K</em><em>V</em><sub><em>i</em></sub>, <em>K</em><em>V</em><sub><em>i</em></sub><sup><em>f</em><em>u</em><em>l</em><em>l</em></sup>)[<em>j</em>] = |<em>K</em><em>V</em><sub><em>i</em></sub>[<em>j</em>] − <em>K</em><em>V</em><sub><em>i</em></sub><sup><em>f</em><em>u</em><em>l</em><em>l</em></sup>[<em>j</em>]|</span></p>
-<h4 id="两种编码形式产生的差异性">两种编码形式产生的差异性</h4>
-<p>这个公式描述的是：<strong>同一个 Token <span class="math inline"><em>j</em></span> 在第 <span class="math inline"><em>i</em></span>
-层网络中，两种完全不同的“命运轨迹”下所产生的语义向量差</strong> 。</p>
+    <div class="post-body" itemprop="articleBody"><h2 id="课题"><a href="#课题" class="headerlink" title="课题"></a>课题</h2><p><img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/1.jpg" alt="1"></p>
+<p><img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/2.jpg" alt="2"></p>
+<h2 id="CacheBlend"><a href="#CacheBlend" class="headerlink" title="CacheBlend"></a>CacheBlend</h2><h3 id="核心发现：-KV-偏差（KV-Deviation）"><a href="#核心发现：-KV-偏差（KV-Deviation）" class="headerlink" title="核心发现： KV 偏差（KV Deviation）"></a>核心发现： KV 偏差（KV Deviation）</h3><p>通过计算 <strong>KV 偏差（KV Deviation）</strong> ：  </p>
+<script type="math/tex; mode=display">\Delta_{kv}(KV_i, KV_i^{full})[j] = |KV_i[j] - KV_i^{full}[j]|</script><h4 id="两种编码形式产生的差异性"><a href="#两种编码形式产生的差异性" class="headerlink" title="两种编码形式产生的差异性"></a>两种编码形式产生的差异性</h4><p>这个公式描述的是：<strong>同一个 Token $j$ 在第 $i$ 层网络中，两种完全不同的“命运轨迹”下所产生的语义向量差</strong> 。  </p>
 <ul>
-<li><strong><span class="math inline"><em>K</em><em>V</em><sub><em>i</em></sub><sup><em>f</em><em>u</em><em>l</em><em>l</em></sup>[<em>j</em>]</span>：</strong>
-当我们将前文 Chunk A 和当前文 Chunk B 拼成一个整体输入模型时，Token
-<span class="math inline"><em>j</em></span> 算出来的完美全局 KV 值
-。在这个宇宙里，Token <span class="math inline"><em>j</em></span>
-从第一层开始就和前文进行了充分的眼神交流（Cross-Attention） 。<br>
-</li>
-<li><strong><span class="math inline"><em>K</em><em>V</em><sub><em>i</em></sub>[<em>j</em>]</span>：</strong>
-Chunk B 在被缓存时，完全不知道前文 Chunk A 的存在 。Token <span class="math inline"><em>j</em></span> 只能孤立地在 Chunk B
-内部做自注意力计算 。</li>
+<li><strong>$KV_i^{full}[j]$：</strong> 当我们将前文 Chunk A 和当前文 Chunk B 拼成一个整体输入模型时，Token $j$ 算出来的完美全局 KV 值 。在这个宇宙里，Token $j$ 从第一层开始就和前文进行了充分的眼神交流（Cross-Attention） 。  </li>
+<li><strong>$KV_i[j]$：</strong> Chunk B 在被缓存时，完全不知道前文 Chunk A 的存在 。Token $j$ 只能孤立地在 Chunk B 内部做自注意力计算 。  </li>
 </ul>
-<p><strong>KV 偏差（<span class="math inline"><em>Δ</em><sub><em>k</em><em>v</em></sub></span>）就是这两个
-KV 向量在多维空间中的几何距离</strong>
-。它精准地量化了一件事：由于在预计算时漏掉了前文，这个 Token
-的语义被扭曲（污染）得有多严重 。</p>
-<h4 id="核心发现">核心发现</h4>
-<p><strong>85% 的普通 Token —— <span class="math inline"><em>Δ</em><sub><em>k</em><em>v</em></sub> ≈ 0</span></strong>
-这些词在独立编码和全局编码下，算出来的 KV 向量几乎完全重合 。</p>
-<p><em>为什么？</em>
-因为根据<strong>注意力稀疏性原理</strong>，语言中绝大多数词（如代词、虚词、局部修饰词）都具有强烈的“空间局限性”，它们只需要和身边的邻居词互动就能把意思表达完整
-。没有前文，对它们没有任何影响。</p>
-<p><strong>15% 的关键 Token（HKVD） —— <span class="math inline"><em>Δ</em><sub><em>k</em><em>v</em></sub></span>
-彻底飙高</strong> 这些词的命运发生了剧烈改变，它们被论文定义为
-<strong>High-KV-Deviation（高 KV 偏差）Token</strong> 。</p>
-<p><strong>也就是说整个计算过程中，只有这 15% 的高能 Token
-需要被重新计算，而另外 85% 的普通缓存依然在发挥着作用</strong></p>
-<figure>
-<img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/image-20260611163911351.png" alt="image-20260611163911351">
-<figcaption aria-hidden="true">image-20260611163911351</figcaption>
-</figure>
-<h4 id="跨层相关性layer-correlation">跨层相关性（Layer
-Correlation）</h4>
-<figure>
-<img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/image-20260611163922833.png" alt="image-20260611163922833">
-<figcaption aria-hidden="true">image-20260611163922833</figcaption>
-</figure>
-<p><strong>Insight 2</strong> 指出：<strong>在某一层表现出最高 KV 偏差的
-Token，在它的下一层大概率依然是高 KV 偏差的。</strong></p>
-<p>也就是说，如果我们在第 1 层发现 Token 2、Token 3 和 Token 5
-因为漏掉了前文的交叉注意力，导致它们的 KV 偏差（<span class="math inline"><em>Δ</em><sub><em>k</em><em>v</em></sub></span>）飙得最高
-，那么到了第 2 层、第 3 层，<strong>这三个 Token 的 KV 偏差在所有 Token
-中的排名依然会名列前茅</strong> 。</p>
-<h3 id="渐进式过滤机制gradual-filtering-scheme">渐进式过滤机制（Gradual
-Filtering Scheme）</h3>
-<figure>
-<img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/image-20260611164629086.png" alt="image-20260611164629086">
-<figcaption aria-hidden="true">image-20260611164629086</figcaption>
-</figure>
-<p><strong>Layer 1：全量铺垫，初选候选池</strong> 在网络的第一层（Layer
-1），模型会老老实实对所有输入 Token 做一次全量计算
-。（因为第一层计算量极小且不依赖前面的缓存，开销可以忽略不计）。计算完后，直接通过两两比对，挑出第一层中偏差最大的一批
-Token，设定一个稍大一点的初始筛选比例 <span class="math inline"><em>r</em><sub>1</sub>%</span> 。</p>
-<p><strong>Layer 2：局部重算，动态微调</strong> 进入第二层时，GPU
-<strong>只针对 Layer 1 遗留下来的这 <span class="math inline"><em>r</em><sub>1</sub>%</span> 候选 Token</strong>
-计算最新 KV 值 ，并计算出它们在这一层的真实偏差
-。在这个已经缩小的候选池里，模型再次大浪淘沙，剔除掉那些偏差开始变小的
-Token，筛选出更小、更准的 <span class="math inline"><em>r</em><sub>2</sub>%</span> 核心 Token（<span class="math inline"><em>r</em><sub>2</sub> &lt; <em>r</em><sub>1</sub></span>）喂给下一层
-。</p>
-<p><strong>后续深层（Layer 3+）：维持稳定，无脑滚动</strong>
-从第三层开始，这个由 10%~15% 核心 Token
-组成的“高能池”就基本在语义和空间上收敛稳定了
-。后续的每一步，模型都只需要服侍好上一层传下来的这 15% 核心词
-，算完后立刻把它们跟显存里复用的 85%
-旧缓存进行矩阵拼接（Expand），直接交付给当前层的全局自注意力机制 。</p>
-<h2 id="总结">总结</h2>
-<p>CacheBlend 整个故事的精髓就在于对这个指标的合理利用 ：</p>
-<p>过去大家觉得，只要前面换了文档，后面的 KV
-就全脏了，只能全量重算（Full Recompute） 。 但通过 <strong>KV 偏差（KV
-Deviation）</strong> 的视角，CacheBlend 告诉我们：脏的不是全部，只有 15%
-的核心 Token 语义真正变脏了 。我们只需要像精准手术一样，把这 15% 的 HKVD
-Token 挑出来执行局部重计算，就能以超低的算力代价，完美还原 100%
-的真值质量 。</p>
-<h2 id="前期学习">前期学习</h2>
-<h3 id="独立编码">独立编码</h3>
-<p><strong>全量联合编码（传统方式）</strong>：把文档 A 和文档 B
-拼成一个超长文本 <code>[A + B]</code>，一起喂给模型做 Prefill。</p>
-<p><strong>独立编码（优化尝试）</strong>：把文档 A 和文档 B
-彻底切开。先让模型只看文档 A，算出一套 KV Cache；再让模型只看文档
-B，算出另一套 KV Cache。最后在显存里把这两块 KV Cache
-像拼积木一样<strong>硬拼接</strong>起来。</p>
-<h3 id="什么是-roperotary-position-embedding旋转位置编码">什么是
-RoPE（Rotary Position Embedding，旋转位置编码）</h3>
-<figure>
-<img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/image-20260611135204663.png" alt="image-20260611135204663">
-<figcaption aria-hidden="true">image-20260611135204663</figcaption>
-</figure>
-<p><strong>RoPE</strong>
-是在大语言模型（LLM）中被广泛使用的一种<strong>位置编码机制</strong>。</p>
+<p><strong>KV 偏差（$\Delta_{kv}$）就是这两个 KV 向量在多维空间中的几何距离</strong> 。它精准地量化了一件事：由于在预计算时漏掉了前文，这个 Token 的语义被扭曲（污染）得有多严重 。  </p>
+<h4 id="核心发现"><a href="#核心发现" class="headerlink" title="核心发现"></a>核心发现</h4><p><strong>85% 的普通 Token —— $\Delta_{kv} \approx 0$</strong> 这些词在独立编码和全局编码下，算出来的 KV 向量几乎完全重合 。  </p>
+<p><em>为什么？</em> 因为根据<strong>注意力稀疏性原理</strong>，语言中绝大多数词（如代词、虚词、局部修饰词）都具有强烈的“空间局限性”，它们只需要和身边的邻居词互动就能把意思表达完整 。没有前文，对它们没有任何影响。  </p>
+<p><strong>15% 的关键 Token（HKVD） —— $\Delta_{kv}$ 彻底飙高</strong> 这些词的命运发生了剧烈改变，它们被论文定义为 <strong>High-KV-Deviation（高 KV 偏差）Token</strong> 。  </p>
+<p><strong>也就是说整个计算过程中，只有这 15% 的高能 Token 需要被重新计算，而另外 85% 的普通缓存依然在发挥着作用</strong></p>
+<p><img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/image-20260611163911351.png" alt="image-20260611163911351"></p>
+<h4 id="跨层相关性（Layer-Correlation）"><a href="#跨层相关性（Layer-Correlation）" class="headerlink" title="跨层相关性（Layer Correlation）"></a>跨层相关性（Layer Correlation）</h4><p><img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/image-20260611163922833.png" alt="image-20260611163922833"></p>
+<p> <strong>Insight 2</strong> 指出：<strong>在某一层表现出最高 KV 偏差的 Token，在它的下一层大概率依然是高 KV 偏差的。</strong></p>
+<p>也就是说，如果我们在第 1 层发现 Token 2、Token 3 和 Token 5 因为漏掉了前文的交叉注意力，导致它们的 KV 偏差（$\Delta_{kv}$）飙得最高 ，那么到了第 2 层、第 3 层，<strong>这三个 Token 的 KV 偏差在所有 Token 中的排名依然会名列前茅</strong> 。</p>
+<h3 id="渐进式过滤机制（Gradual-Filtering-Scheme）"><a href="#渐进式过滤机制（Gradual-Filtering-Scheme）" class="headerlink" title="渐进式过滤机制（Gradual Filtering Scheme）"></a>渐进式过滤机制（Gradual Filtering Scheme）</h3><p><img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/image-20260611164629086.png" alt="image-20260611164629086"></p>
+<p><strong>Layer 1：全量铺垫，初选候选池</strong> 在网络的第一层（Layer 1），模型会老老实实对所有输入 Token 做一次全量计算 。（因为第一层计算量极小且不依赖前面的缓存，开销可以忽略不计）。计算完后，直接通过两两比对，挑出第一层中偏差最大的一批 Token，设定一个稍大一点的初始筛选比例 $r_1\%$ 。  </p>
+<p><strong>Layer 2：局部重算，动态微调</strong> 进入第二层时，GPU <strong>只针对 Layer 1 遗留下来的这 $r_1\%$ 候选 Token</strong> 计算最新 KV 值 ，并计算出它们在这一层的真实偏差 。在这个已经缩小的候选池里，模型再次大浪淘沙，剔除掉那些偏差开始变小的 Token，筛选出更小、更准的 $r_2\%$ 核心 Token（$r_2 &lt; r_1$）喂给下一层 。  </p>
+<p><strong>后续深层（Layer 3+）：维持稳定，无脑滚动</strong> 从第三层开始，这个由 10%~15% 核心 Token 组成的“高能池”就基本在语义和空间上收敛稳定了 。后续的每一步，模型都只需要服侍好上一层传下来的这 15% 核心词 ，算完后立刻把它们跟显存里复用的 85% 旧缓存进行矩阵拼接（Expand），直接交付给当前层的全局自注意力机制 。  </p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>CacheBlend 整个故事的精髓就在于对这个指标的合理利用 ：  </p>
+<p>过去大家觉得，只要前面换了文档，后面的 KV 就全脏了，只能全量重算（Full Recompute） 。 但通过 <strong>KV 偏差（KV Deviation）</strong> 的视角，CacheBlend 告诉我们：脏的不是全部，只有 15% 的核心 Token 语义真正变脏了 。我们只需要像精准手术一样，把这 15% 的 HKVD Token 挑出来执行局部重计算，就能以超低的算力代价，完美还原 100% 的真值质量 。  </p>
+<h2 id="前期学习"><a href="#前期学习" class="headerlink" title="前期学习"></a>前期学习</h2><h3 id="独立编码"><a href="#独立编码" class="headerlink" title="独立编码"></a>独立编码</h3><p><strong>全量联合编码（传统方式）</strong>：把文档 A 和文档 B 拼成一个超长文本 <code>[A + B]</code>，一起喂给模型做 Prefill。</p>
+<p><strong>独立编码（优化尝试）</strong>：把文档 A 和文档 B 彻底切开。先让模型只看文档 A，算出一套 KV Cache；再让模型只看文档 B，算出另一套 KV Cache。最后在显存里把这两块 KV Cache 像拼积木一样<strong>硬拼接</strong>起来。</p>
+<h3 id="什么是-RoPE（Rotary-Position-Embedding，旋转位置编码）"><a href="#什么是-RoPE（Rotary-Position-Embedding，旋转位置编码）" class="headerlink" title="什么是 RoPE（Rotary Position Embedding，旋转位置编码）"></a>什么是 RoPE（Rotary Position Embedding，旋转位置编码）</h3><p><img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/image-20260611135204663.png" alt="image-20260611135204663"></p>
+<p><strong>RoPE</strong> 是在大语言模型（LLM）中被广泛使用的一种<strong>位置编码机制</strong>。</p>
 <p><strong>核心思想</strong>：用“空间旋转”表达“相对位置”</p>
-<p>传统的绝对位置编码（如 BERT 的可学习位置编码，或 Transformer
-原版的正余弦固定编码）通常是将位置向量直接<strong>加</strong>到 Token 的
-Embedding 上。</p>
-<p>而 RoPE
-的核心创新在于：<strong>它通过旋转矩阵，在复数空间（或等价的二维分量平面）中对
-Query (Q) 和 Key (K) 向量进行旋转。旋转的角度与该 Token
-的绝对位置成正比。</strong></p>
-<h3 id="既然有了注意力掩码attention-mask来限制方向为什么还需要位置编码">既然有了注意力掩码（Attention
-Mask）来限制方向，为什么还需要位置编码？</h3>
-<h4 id="掩码mask的真实作用决定可见性">1.
-掩码（Mask）的真实作用：决定“可见性”</h4>
-<p>以大模型常用的因果掩码（Causal Mask / Triangular
-Mask）为例，它的唯一作用是：<strong>确保当前 Token 只能看到它前面的
-Token，而不能偷看后面的 Token（即防止信息向未来泄露）。</strong></p>
-<p>假设我们输入一个句子：<code>[A, B, C, D]</code> 当模型处理到第四个词
-<code>D</code> 时，因果掩码会告诉模型：你可以关注
-<code>[A, B, C]</code>，但不能关注后面的内容。</p>
-<p><strong>但是，致命的问题来了：</strong> 对于 <code>D</code>
-而言，它知道 <code>[A, B, C]</code>
-都是过去的历史，但如果<strong>没有位置编码</strong>，在 <code>D</code>
-的眼里，<code>[A, B, C]</code>
-只是一个<strong>无序的集合（袋子）</strong>。</p>
+<p>传统的绝对位置编码（如 BERT 的可学习位置编码，或 Transformer 原版的正余弦固定编码）通常是将位置向量直接<strong>加</strong>到 Token 的 Embedding 上。</p>
+<p>而 RoPE 的核心创新在于：<strong>它通过旋转矩阵，在复数空间（或等价的二维分量平面）中对 Query (Q) 和 Key (K) 向量进行旋转。旋转的角度与该 Token 的绝对位置成正比。</strong></p>
+<h3 id="既然有了注意力掩码（Attention-Mask）来限制方向，为什么还需要位置编码？"><a href="#既然有了注意力掩码（Attention-Mask）来限制方向，为什么还需要位置编码？" class="headerlink" title="既然有了注意力掩码（Attention Mask）来限制方向，为什么还需要位置编码？"></a>既然有了注意力掩码（Attention Mask）来限制方向，为什么还需要位置编码？</h3><h4 id="1-掩码（Mask）的真实作用：决定“可见性”"><a href="#1-掩码（Mask）的真实作用：决定“可见性”" class="headerlink" title="1. 掩码（Mask）的真实作用：决定“可见性”"></a>1. 掩码（Mask）的真实作用：决定“可见性”</h4><p>以大模型常用的因果掩码（Causal Mask / Triangular Mask）为例，它的唯一作用是：<strong>确保当前 Token 只能看到它前面的 Token，而不能偷看后面的 Token（即防止信息向未来泄露）。</strong></p>
+<p>假设我们输入一个句子：<code>[A, B, C, D]</code> 当模型处理到第四个词 <code>D</code> 时，因果掩码会告诉模型：你可以关注 <code>[A, B, C]</code>，但不能关注后面的内容。</p>
+<p><strong>但是，致命的问题来了：</strong> 对于 <code>D</code> 而言，它知道 <code>[A, B, C]</code> 都是过去的历史，但如果<strong>没有位置编码</strong>，在 <code>D</code> 的眼里，<code>[A, B, C]</code> 只是一个<strong>无序的集合（袋子）</strong>。</p>
 <ul>
-<li>它不知道 <code>A</code>、<code>B</code>、<code>C</code>
-谁离它更近。</li>
-<li>它不知道顺序是 <code>A -&gt; B -&gt; C</code> 还是
-<code>C -&gt; B -&gt; A</code>。</li>
-<li>即使你把输入顺序篡改成
-<code>[C, B, A, D]</code>，只要语义不变，<code>D</code>
-对它们计算出的注意力权重（Attention
-Score）也是<strong>完全一模一样</strong>的。</li>
+<li>它不知道 <code>A</code>、<code>B</code>、<code>C</code> 谁离它更近。</li>
+<li>它不知道顺序是 <code>A -&gt; B -&gt; C</code> 还是 <code>C -&gt; B -&gt; A</code>。</li>
+<li>即使你把输入顺序篡改成 <code>[C, B, A, D]</code>，只要语义不变，<code>D</code> 对它们计算出的注意力权重（Attention Score）也是<strong>完全一模一样</strong>的。</li>
 </ul>
-<h4 id="位置编码position-encoding的真实作用决定顺序与距离">2.
-位置编码（Position Encoding）的真实作用：决定“顺序与距离”</h4>
-<p>位置编码是给每一项历史信息赋予一个精确的“坐标”。有了位置编码之后，<code>D</code>
-不仅知道 <code>[A, B, C]</code>
-是合法的历史信息（掩码的功劳），还知道了（位置编码的功劳）：</p>
+<h4 id="2-位置编码（Position-Encoding）的真实作用：决定“顺序与距离”"><a href="#2-位置编码（Position-Encoding）的真实作用：决定“顺序与距离”" class="headerlink" title="2. 位置编码（Position Encoding）的真实作用：决定“顺序与距离”"></a>2. 位置编码（Position Encoding）的真实作用：决定“顺序与距离”</h4><p>位置编码是给每一项历史信息赋予一个精确的“坐标”。有了位置编码之后，<code>D</code> 不仅知道 <code>[A, B, C]</code> 是合法的历史信息（掩码的功劳），还知道了（位置编码的功劳）：</p>
 <ul>
 <li><code>C</code> 就在我左边（距离为 1）。</li>
 <li><code>B</code> 在更远一点的地方（距离为 2）。</li>
 <li><code>A</code> 是句子的开头（距离为 3）。</li>
 </ul>
-<p>有了这个距离和顺序感，模型才能理解复杂的句法结构。例如在计算
-RoPE（旋转位置编码）时，通过给
-<code>C</code>、<code>B</code>、<code>A</code>
-旋转不同的角度，模型就能天然地对距离更近的 <code>C</code>
-产生更高的注意力倾向（远程衰减特性）。</p>
-<h3 id="位置编码产生的根本原因并行计算">位置编码产生的根本原因——并行计算</h3>
-<p>矩阵计算带来了一个致命的数学副作用——<strong>置换不变性（Permutation
-Invariance）</strong>。 也就是说，在 GPU 矩阵运算的眼里，这堆 Token
-只是并排躺在显存里的“一堆没有编号的数据”，谁在前、谁在后，矩阵乘法本身是完全脱敏、完全不在乎的。如果不做任何处理，句子直接退化成了乱七八糟的“词袋”。</p>
+<p>有了这个距离和顺序感，模型才能理解复杂的句法结构。例如在计算 RoPE（旋转位置编码）时，通过给 <code>C</code>、<code>B</code>、<code>A</code> 旋转不同的角度，模型就能天然地对距离更近的 <code>C</code> 产生更高的注意力倾向（远程衰减特性）。</p>
+<h3 id="位置编码产生的根本原因——并行计算"><a href="#位置编码产生的根本原因——并行计算" class="headerlink" title="位置编码产生的根本原因——并行计算"></a>位置编码产生的根本原因——并行计算</h3><p>矩阵计算带来了一个致命的数学副作用——<strong>置换不变性（Permutation Invariance）</strong>。 也就是说，在 GPU 矩阵运算的眼里，这堆 Token 只是并排躺在显存里的“一堆没有编号的数据”，谁在前、谁在后，矩阵乘法本身是完全脱敏、完全不在乎的。如果不做任何处理，句子直接退化成了乱七八糟的“词袋”。</p>
 <p>为了在“并行计算”这个大前提下“保护”并还原位置信息，研究人员才提出了位置编码。</p>
 <p>既然我们不能在<strong>时间上</strong>让它们排队（因为那样就无法并行了），那我们就只能在<strong>空间（数值）上</strong>给它们打上烙印。</p>
 <p>位置编码的工程本质就是：</p>
-<ol type="1">
-<li><strong>并行照常进行</strong>：所有的 Token
-依然做成矩阵，同时输入，同时计算。</li>
-<li><strong>人造坐标系</strong>：在输入矩阵的一瞬间，强行为第 1 个 Token
-的向量加上（或通过 RoPE 旋转）一个代表“位置 1”的微小信号；为第 2 个
-Token 加上一个代表“位置 2”的信号……</li>
+<ol>
+<li><strong>并行照常进行</strong>：所有的 Token 依然做成矩阵，同时输入，同时计算。</li>
+<li><strong>人造坐标系</strong>：在输入矩阵的一瞬间，强行为第 1 个 Token 的向量加上（或通过 RoPE 旋转）一个代表“位置 1”的微小信号；为第 2 个 Token 加上一个代表“位置 2”的信号……</li>
 </ol>
-<p>这样一来，GPU 依然在轰轰烈烈地进行着全并行的矩阵大乘法，但每一个
-Token 的向量骨子里都已经携带了属于它自己的“数字工牌”。</p>
-<h3 id="transformer的并行计算">transformer的并行计算</h3>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1zFFTziEdL/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">GPU是如何一步步计算Transformer中的自注意力机制的？_哔哩哔哩_bilibili</a></p>
-<h4 id="阶段一线性映射阶段qkv-矩阵的生成">阶段一：线性映射阶段（QKV
-矩阵的生成）</h4>
-<blockquote>
-<p><strong>你的理解</strong>：每个 token 独立与权重相乘得到各自的
-qkv，然后拼接形成单头的 QKV 矩阵。</p>
+<p>这样一来，GPU 依然在轰轰烈烈地进行着全并行的矩阵大乘法，但每一个 Token 的向量骨子里都已经携带了属于它自己的“数字工牌”。</p>
+<h3 id="transformer的并行计算"><a href="#transformer的并行计算" class="headerlink" title="transformer的并行计算"></a>transformer的并行计算</h3><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1zFFTziEdL/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">GPU是如何一步步计算Transformer中的自注意力机制的？_哔哩哔哩_bilibili</a></p>
+<h4 id="阶段一：线性映射阶段（QKV-矩阵的生成）"><a href="#阶段一：线性映射阶段（QKV-矩阵的生成）" class="headerlink" title="阶段一：线性映射阶段（QKV 矩阵的生成）"></a>阶段一：线性映射阶段（QKV 矩阵的生成）</h4><blockquote>
+<p><strong>你的理解</strong>：每个 token 独立与权重相乘得到各自的 qkv，然后拼接形成单头的 QKV 矩阵。</p>
 </blockquote>
-<figure>
-<img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/image-20260611143625274.png" alt="image-20260611143625274">
-<figcaption aria-hidden="true">image-20260611143625274</figcaption>
-</figure>
-<figure>
-<img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/image-20260611143611135.png" alt="image-20260611143611135">
-<figcaption aria-hidden="true">image-20260611143611135</figcaption>
-</figure>
-<p>在<strong>概念和数学逻辑</strong>上，你说得完全正确！每个 Token
-的确是“各走各的路”，互不干扰。</p>
-<p>但在<strong>实际的工程实现（GPU
-算子）*<em>中，顺序刚好是反过来的：我们不是先让它们单独相乘再拼接，而是*</em>先拼接（堆叠），再整体相乘</strong>。</p>
-<ol type="1">
-<li><strong>打包（Stack）</strong>：在数据刚准备输入模型时，我们就已经把这一句话的
-<span class="math inline"><em>N</em></span> 个 Token
-的向量叠在一起，拼成了一个大矩阵 <span class="math inline"><em>X</em></span>（形状为 <span class="math inline">[<em>N</em>, <em>d</em>]</span>）。</li>
-<li><strong>一发入魂（GEMM）</strong>：把这个大矩阵 <span class="math inline"><em>X</em></span> 直接整体乘以权重矩阵 <span class="math inline"><em>W</em></span>。</li>
+<p><img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/image-20260611143625274.png" alt="image-20260611143625274"></p>
+<p><img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/image-20260611143611135.png" alt="image-20260611143611135"></p>
+<p>在<strong>概念和数学逻辑</strong>上，你说得完全正确！每个 Token 的确是“各走各的路”，互不干扰。</p>
+<p>但在<strong>实际的工程实现（GPU 算子）\</strong>中，顺序刚好是反过来的：我们不是先让它们单独相乘再拼接，而是*<em>先拼接（堆叠），再整体相乘*</em>。</p>
+<ol>
+<li><strong>打包（Stack）</strong>：在数据刚准备输入模型时，我们就已经把这一句话的 $N$ 个 Token 的向量叠在一起，拼成了一个大矩阵 $X$（形状为 $[N, d]$）。</li>
+<li><strong>一发入魂（GEMM）</strong>：把这个大矩阵 $X$ 直接整体乘以权重矩阵 $W$。</li>
 </ol>
-<p><strong>为什么说这依然是并行的？</strong> 因为在 GPU
-内部执行大矩阵乘法 <span class="math inline"><em>X</em> × <em>W</em></span> 时，硬件会自动把矩阵
-<span class="math inline"><em>X</em></span> 的每一行（也就是每个
-Token）分发给不同的计算核心（Thread
-Block）。在物理层面上，各个核心是同时计算、同时输出结果的。所以，虽然代码上只写了一行矩阵乘法，但它在硬件里展现的就是<strong>全自动的、按行并行的“并行投影”</strong>。</p>
-<h4 id="阶段二注意力分数计算阶段q-times-kt">阶段二：注意力分数计算阶段（<span class="math inline"><em>Q</em> × <em>K</em><sup><em>T</em></sup></span>）</h4>
-<blockquote>
-<p><strong>你的理解</strong>：将 Q 矩阵拆分，分别和完整的 K
-矩阵相乘，最后拼接形成完整的注意力分数矩阵。</p>
+<p><strong>为什么说这依然是并行的？</strong> 因为在 GPU 内部执行大矩阵乘法 $X \times W$ 时，硬件会自动把矩阵 $X$ 的每一行（也就是每个 Token）分发给不同的计算核心（Thread Block）。在物理层面上，各个核心是同时计算、同时输出结果的。所以，虽然代码上只写了一行矩阵乘法，但它在硬件里展现的就是<strong>全自动的、按行并行的“并行投影”</strong>。</p>
+<h4 id="阶段二：注意力分数计算阶段（-Q-times-K-T-）"><a href="#阶段二：注意力分数计算阶段（-Q-times-K-T-）" class="headerlink" title="阶段二：注意力分数计算阶段（$Q \times K^T$）"></a>阶段二：注意力分数计算阶段（$Q \times K^T$）</h4><blockquote>
+<p><strong>你的理解</strong>：将 Q 矩阵拆分，分别和完整的 K 矩阵相乘，最后拼接形成完整的注意力分数矩阵。</p>
 </blockquote>
-<figure>
-<img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/image-20260611143808446.png" alt="image-20260611143808446">
-<figcaption aria-hidden="true">image-20260611143808446</figcaption>
-</figure>
-<p><strong>这个理解极其深刻，完全切中了矩阵乘法的物理本质！</strong>
-让我们用矩阵乘法的公式来验证你的想法。假设我们要计算注意力分数矩阵 <span class="math inline"><em>A</em> = <em>Q</em> × <em>K</em><sup><em>T</em></sup></span>。</p>
-<p>根据矩阵乘法的规则，输出矩阵 <span class="math inline"><em>A</em></span> 的第 <span class="math inline"><em>i</em></span> 行，<strong>仅仅取决于 <span class="math inline"><em>Q</em></span> 矩阵的第 <span class="math inline"><em>i</em></span> 行和整个 <span class="math inline"><em>K</em><sup><em>T</em></sup></span>
-矩阵</strong>：</p>
-<p><span class="math display"><em>A</em>[<em>i</em>,  : ] = <em>q</em><sub><em>i</em></sub> × <em>K</em><sup><em>T</em></sup></span></p>
-<p>这意味着：</p>
+<p><img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/rag%E7%9A%84kvcache%E9%97%AE%E9%A2%98/image-20260611143808446.png" alt="image-20260611143808446"></p>
+<p><strong>这个理解极其深刻，完全切中了矩阵乘法的物理本质！</strong> 让我们用矩阵乘法的公式来验证你的想法。假设我们要计算注意力分数矩阵 $A = Q \times K^T$。</p>
+<p>根据矩阵乘法的规则，输出矩阵 $A$ 的第 $i$ 行，<strong>仅仅取决于 $Q$ 矩阵的第 $i$ 行和整个 $K^T$ 矩阵</strong>：</p>
+<script type="math/tex; mode=display">A[i, :] = q_i \times K^T</script><p>这意味着：</p>
 <ul>
-<li>想要算出 <code>“苹果”</code>（假设是第 4 行）对所有词的分数，GPU
-只需要拿着 <span class="math inline"><em>q</em><sub>4</sub></span>
-去和完整的 <span class="math inline"><em>K</em></span>
-矩阵的所有列做点乘。</li>
-<li>在算这一行时，<strong>完全不需要</strong>知道 <span class="math inline"><em>q</em><sub>1</sub>, <em>q</em><sub>2</sub>, <em>q</em><sub>3</sub></span>
-是多少，也<strong>完全不需要</strong>等待它们的计算结果。</li>
+<li>想要算出 <code>“苹果”</code>（假设是第 4 行）对所有词的分数，GPU 只需要拿着 $q_4$ 去和完整的 $K$ 矩阵的所有列做点乘。</li>
+<li>在算这一行时，<strong>完全不需要</strong>知道 $q_1, q_2, q_3$ 是多少，也<strong>完全不需要</strong>等待它们的计算结果。</li>
 </ul>
-<p>在 GPU 的实际调度中，这被称为“行并行”。GPU 会启动 <span class="math inline"><em>N</em></span> 组线程，第一组专门算 <span class="math inline"><em>q</em><sub>1</sub> × <em>K</em><sup><em>T</em></sup></span>，第二组专门算
-<span class="math inline"><em>q</em><sub>2</sub> × <em>K</em><sup><em>T</em></sup></span>……它们在芯片内部同时开工，算完后直接写进显存中对应的位置，连显式“拼接”的开销都省了。</p>
-<h3 id="transformer训练与推理并行计算的差异">transformer训练与推理并行计算的差异</h3>
-<h4 id="一-训练阶段完美的全并行上帝视角">一、
-训练阶段：完美的“全并行”（上帝视角）</h4>
-<p>在训练大模型时，你的核心任务是“预测下一个词”。这时候，整条语料（比如一句
-1024 个 Token 的小说片段）已经安安静静地躺在你的显存里了。</p>
-<p>既然整个序列 <span class="math inline"><em>N</em> = 1024</span>
-已经是已知的，我们就可以利用 Transformer
-的并行特性，<strong>一次性</strong>把它们全部处理完。</p>
-<h5 id="矩阵的绝对并行">1. 矩阵的绝对并行</h5>
-<p>在训练时，你的输入矩阵 <span class="math inline"><em>X</em></span>
-的形状是 <span class="math inline">[1024, <em>d</em>]</span>。</p>
+<p>在 GPU 的实际调度中，这被称为“行并行”。GPU 会启动 $N$ 组线程，第一组专门算 $q_1 \times K^T$，第二组专门算 $q_2 \times K^T$……它们在芯片内部同时开工，算完后直接写进显存中对应的位置，连显式“拼接”的开销都省了。</p>
+<h3 id="transformer训练与推理并行计算的差异"><a href="#transformer训练与推理并行计算的差异" class="headerlink" title="transformer训练与推理并行计算的差异"></a>transformer训练与推理并行计算的差异</h3><h4 id="一、-训练阶段：完美的“全并行”（上帝视角）"><a href="#一、-训练阶段：完美的“全并行”（上帝视角）" class="headerlink" title="一、 训练阶段：完美的“全并行”（上帝视角）"></a>一、 训练阶段：完美的“全并行”（上帝视角）</h4><p>在训练大模型时，你的核心任务是“预测下一个词”。这时候，整条语料（比如一句 1024 个 Token 的小说片段）已经安安静静地躺在你的显存里了。</p>
+<p>既然整个序列 $N=1024$ 已经是已知的，我们就可以利用 Transformer 的并行特性，<strong>一次性</strong>把它们全部处理完。</p>
+<h5 id="1-矩阵的绝对并行"><a href="#1-矩阵的绝对并行" class="headerlink" title="1. 矩阵的绝对并行"></a>1. 矩阵的绝对并行</h5><p>在训练时，你的输入矩阵 $X$ 的形状是 $[1024, d]$。</p>
 <p>通过我们之前聊过的行并行：</p>
 <ul>
-<li>整个 <span class="math inline"><em>Q</em>、<em>K</em>、<em>V</em></span>
-矩阵的形状都是 <span class="math inline">[1024, <em>d</em>]</span>，一次大矩阵乘法（GEMM）全部算完。</li>
-<li>计算注意力分数 <span class="math inline"><em>Q</em> × <em>K</em><sup><em>T</em></sup></span>
-时，是 <span class="math inline">[1024, <em>d</em>] × [<em>d</em>, 1024]</span>，直接喷吐出一个
-<span class="math inline">[1024, 1024]</span> 的超大注意力矩阵。</li>
+<li>整个 $Q、K、V$ 矩阵的形状都是 $[1024, d]$，一次大矩阵乘法（GEMM）全部算完。</li>
+<li>计算注意力分数 $Q \times K^T$ 时，是 $[1024, d] \times [d, 1024]$，直接喷吐出一个 $[1024, 1024]$ 的超大注意力矩阵。</li>
 </ul>
-<h5 id="既然是一起算的怎么体现先后顺序">2.
-既然是一起算的，怎么体现“先后顺序”？</h5>
-<p>你可能会问：“全一起算，第 500 个词不就把第 800
-个词的答案偷看光了吗？”</p>
-<p>这就是因果掩码（Causal Mask）的妙处。在计算出 <span class="math inline">[1024, 1024]</span>
-的注意力矩阵后，我们用一个上三角矩阵把右上角的信息全部强行抹成 <span class="math inline">−∞</span>（Softmax 后变成 0）。</p>
+<h5 id="2-既然是一起算的，怎么体现“先后顺序”？"><a href="#2-既然是一起算的，怎么体现“先后顺序”？" class="headerlink" title="2. 既然是一起算的，怎么体现“先后顺序”？"></a>2. 既然是一起算的，怎么体现“先后顺序”？</h5><p>你可能会问：“全一起算，第 500 个词不就把第 800 个词的答案偷看光了吗？”</p>
+<p>这就是因果掩码（Causal Mask）的妙处。在计算出 $[1024, 1024]$ 的注意力矩阵后，我们用一个上三角矩阵把右上角的信息全部强行抹成 $-\infty$（Softmax 后变成 0）。</p>
 <ul>
-<li><strong>重点在于</strong>：这个“抹除”操作是在矩阵算完之后统一执行的。<strong>硬件上，第
-500 个词和第 800 个词对应的矩阵行是同时在不同的 Tensor Core
-上被计算出来的。</strong> *
-模型在一瞬间，同时完成了“用前1个词预测第2个词”、“用前2个词预测第3个词”……直到“用前1023个词预测第1024个词”的所有训练。</li>
+<li><strong>重点在于</strong>：这个“抹除”操作是在矩阵算完之后统一执行的。<strong>硬件上，第 500 个词和第 800 个词对应的矩阵行是同时在不同的 Tensor Core 上被计算出来的。</strong> * 模型在一瞬间，同时完成了“用前1个词预测第2个词”、“用前2个词预测第3个词”……直到“用前1023个词预测第1024个词”的所有训练。</li>
 </ul>
-<p><strong>训练的属性：计算密集型（Compute-Bound）</strong>。GPU
-的计算核心（Tensor
-Cores）一刻不停地在做大规模矩阵乘法，利用率极高，这就叫全并行。</p>
-<h4 id="二-推理阶段割裂的两段式从并行跌落到串行">二、
-推理阶段：割裂的“两段式”（从并行跌落到串行）</h4>
-<p>当你把训练好的模型部署到线上（比如你现在在和 AI
-聊天），情况发生了翻天覆地的变化。因为“未来的词”在物理上还不存在，是需要大模型一字一字吐出来的。</p>
+<p><strong>训练的属性：计算密集型（Compute-Bound）</strong>。GPU 的计算核心（Tensor Cores）一刻不停地在做大规模矩阵乘法，利用率极高，这就叫全并行。</p>
+<h4 id="二、-推理阶段：割裂的“两段式”（从并行跌落到串行）"><a href="#二、-推理阶段：割裂的“两段式”（从并行跌落到串行）" class="headerlink" title="二、 推理阶段：割裂的“两段式”（从并行跌落到串行）"></a>二、 推理阶段：割裂的“两段式”（从并行跌落到串行）</h4><p>当你把训练好的模型部署到线上（比如你现在在和 AI 聊天），情况发生了翻天覆地的变化。因为“未来的词”在物理上还不存在，是需要大模型一字一字吐出来的。</p>
 <p>推理过程必须被生生割裂为两个完全不同的阶段：</p>
-<h5 id="阶段-1prefill预热交互阶段-它是并行的">阶段
-1：Prefill（预热/交互阶段）—— 它是并行的！</h5>
-<p>当你把一段 500 字的 Prompt 发给大模型时，这 500
-个词对模型来说是<strong>已知的前文</strong>。</p>
+<h5 id="阶段-1：Prefill（预热-交互阶段）——-它是并行的！"><a href="#阶段-1：Prefill（预热-交互阶段）——-它是并行的！" class="headerlink" title="阶段 1：Prefill（预热/交互阶段）—— 它是并行的！"></a>阶段 1：Prefill（预热/交互阶段）—— 它是并行的！</h5><p>当你把一段 500 字的 Prompt 发给大模型时，这 500 个词对模型来说是<strong>已知的前文</strong>。</p>
 <ul>
-<li><strong>动作</strong>：模型会把这 500 个 Token 绑定成一个 <span class="math inline">[500, <em>d</em>]</span> 的矩阵，直接整体送入
-GPU。</li>
-<li><strong>本质</strong>：<strong>这个阶段的计算方式和“训练”一模一样！</strong>
-也是利用行并行，在一瞬间把这 500 个词的两两注意力、QKV 全部算完。</li>
-<li><strong>副产品</strong>：算完之后，这 500 个词的 <span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span> 向量会被存进<strong>KV
-Cache</strong>里，留着备用。</li>
+<li><strong>动作</strong>：模型会把这 500 个 Token 绑定成一个 $[500, d]$ 的矩阵，直接整体送入 GPU。</li>
+<li><strong>本质</strong>：<strong>这个阶段的计算方式和“训练”一模一样！</strong> 也是利用行并行，在一瞬间把这 500 个词的两两注意力、QKV 全部算完。</li>
+<li><strong>副产品</strong>：算完之后，这 500 个词的 $K$ 和 $V$ 向量会被存进<strong>KV Cache</strong>里，留着备用。</li>
 </ul>
-<h5 id="阶段-2decode逐字生成阶段-它是串行的">阶段
-2：Decode（逐字生成阶段）—— 它是串行的！</h5>
-<p>Prefill 结束后，模型吐出了第一个新词（第 501 个词）。接下来，要生成第
-502 个词，模型就必须把第 501 个词当作输入再喂给自己。</p>
+<h5 id="阶段-2：Decode（逐字生成阶段）——-它是串行的！"><a href="#阶段-2：Decode（逐字生成阶段）——-它是串行的！" class="headerlink" title="阶段 2：Decode（逐字生成阶段）—— 它是串行的！"></a>阶段 2：Decode（逐字生成阶段）—— 它是串行的！</h5><p>Prefill 结束后，模型吐出了第一个新词（第 501 个词）。接下来，要生成第 502 个词，模型就必须把第 501 个词当作输入再喂给自己。</p>
 <p>这时候，并行的神话破灭了：</p>
-<ol type="1">
-<li><strong>输入极其单薄</strong>：此时的新输入 <span class="math inline"><em>X</em></span> 只有一个 Token，矩阵形状变成了
-<strong><span class="math inline">[1, <em>d</em>]</span></strong>。</li>
-<li><strong>Q 矩阵变成了单行</strong>：因为输入只有一行，所以算出来的
-Query 矩阵 <span class="math inline"><em>Q</em></span> 的形状也是
-<strong><span class="math inline">[1, <em>d</em>]</span></strong>（只有当前这个新词有
-Query）。</li>
-<li><strong>K 和 V 靠缓存维持</strong>：模型不需要重新计算前 500
-个词，它直接从 <strong>KV Cache</strong> 里把之前存好的 <span class="math inline">[500, <em>d</em>]</span> 的 <span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span> 捞出来，和当前第 501
-个词新算出来的 <span class="math inline"><em>k</em><sub>501</sub>, <em>v</em><sub>501</sub></span>
-拼接，组织成一个 <span class="math inline">[501, <em>d</em>]</span>
-的完整历史。</li>
+<ol>
+<li><strong>输入极其单薄</strong>：此时的新输入 $X$ 只有一个 Token，矩阵形状变成了 <strong>$[1, d]$</strong>。</li>
+<li><strong>Q 矩阵变成了单行</strong>：因为输入只有一行，所以算出来的 Query 矩阵 $Q$ 的形状也是 <strong>$[1, d]$</strong>（只有当前这个新词有 Query）。</li>
+<li><strong>K 和 V 靠缓存维持</strong>：模型不需要重新计算前 500 个词，它直接从 <strong>KV Cache</strong> 里把之前存好的 $[500, d]$ 的 $K$ 和 $V$ 捞出来，和当前第 501 个词新算出来的 $k<em>{501}, v</em>{501}$ 拼接，组织成一个 $[501, d]$ 的完整历史。</li>
 </ol>
-<p><strong>推理的属性：内存带宽限制型（Memory-Bound）</strong>。GPU
-大部分时间没有在做高强度的计算，而是在干苦力活：不停地把显存（HBM）里巨大的
-KV Cache 搬运到片上缓存（SRAM）里，去和那一行小小的 <span class="math inline"><em>Q</em></span>
-做乘法。这也是大模型生成速度（Tokens/s）会遇到瓶颈的根本原因。</p>
+<p><strong>推理的属性：内存带宽限制型（Memory-Bound）</strong>。GPU 大部分时间没有在做高强度的计算，而是在干苦力活：不停地把显存（HBM）里巨大的 KV Cache 搬运到片上缓存（SRAM）里，去和那一行小小的 $Q$ 做乘法。这也是大模型生成速度（Tokens/s）会遇到瓶颈的根本原因。</p>
 
     </div>
 
@@ -640,8 +438,8 @@ KV Cache 搬运到片上缓存（SRAM）里，去和那一行小小的 <span cla
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E8%BF%90%E7%BB%B4%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%99%A8/LLMWeb%E5%BA%94%E7%94%A8%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" rel="prev" title="LLMWeb应用漏洞挖掘">
-                  <i class="fa fa-angle-left"></i> LLMWeb应用漏洞挖掘
+                <a href="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%A1%A8%E5%BE%81%E5%B7%A5%E7%A8%8B%E4%B8%8E%E6%BF%80%E6%B4%BB%E5%BC%95%E5%AF%BC/" rel="prev" title="表征工程与激活引导">
+                  <i class="fa fa-angle-left"></i> 表征工程与激活引导
                 </a>
             </div>
             <div class="post-nav-item">

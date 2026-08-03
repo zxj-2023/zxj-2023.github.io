@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="Python项目结构和打包 pip install 的本质 从 PyPI（默认）或其他源（如私有仓库、本地文件）查找指定名称的包，下载对应的.whl文件 whl文件  .whl 是 Wheel 的缩写，是 Python 的一种标准打包格式（PEP 427 定义）。 它本质上是一个 ZIP 格式的压缩包，扩展名改为 .whl。  安装 .whl 文件 1pip install">
+    <meta name="description" content="Python项目结构和打包pip install 的本质从 PyPI （默认）或其他源（如私有仓库、本地文件）查找指定名称的包，下载对应的.whl文件 whl文件 .whl 是 Wheel 的缩写，是 Python 的一种标准打包格式（PEP 427 定义）。 它本质上是一个 ZIP 格式的压缩包，扩展名改为 .whl。  安装 .whl 文件 1pip install package_name.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Python项目结构和打包">
 <meta property="og:url" content="http://example.com/2025/10/18/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/Python%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84%E5%92%8C%E6%89%93%E5%8C%85/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="Python项目结构和打包 pip install 的本质 从 PyPI（默认）或其他源（如私有仓库、本地文件）查找指定名称的包，下载对应的.whl文件 whl文件  .whl 是 Wheel 的缩写，是 Python 的一种标准打包格式（PEP 427 定义）。 它本质上是一个 ZIP 格式的压缩包，扩展名改为 .whl。  安装 .whl 文件 1pip install">
+<meta property="og:description" content="Python项目结构和打包pip install 的本质从 PyPI （默认）或其他源（如私有仓库、本地文件）查找指定名称的包，下载对应的.whl文件 whl文件 .whl 是 Wheel 的缩写，是 Python 的一种标准打包格式（PEP 427 定义）。 它本质上是一个 ZIP 格式的压缩包，扩展名改为 .whl。  安装 .whl 文件 1pip install package_name.">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2025/10/18/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/Python%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84%E5%92%8C%E6%89%93%E5%8C%85/image-20251018192905210.png">
 <meta property="og:image" content="http://example.com/2025/10/18/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/Python%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84%E5%92%8C%E6%89%93%E5%8C%85/image-20251018193022973.png">
@@ -147,9 +147,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#python%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84%E5%92%8C%E6%89%93%E5%8C%85"><span class="nav-number">1.</span> <span class="nav-text">Python项目结构和打包</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pip-install-%E7%9A%84%E6%9C%AC%E8%B4%A8"><span class="nav-number">1.1.</span> <span class="nav-text">pip install 的本质</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#whl%E6%96%87%E4%BB%B6"><span class="nav-number">1.2.</span> <span class="nav-text">whl文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hachling"><span class="nav-number">1.3.</span> <span class="nav-text">hachling</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#src-layout"><span class="nav-number">1.4.</span> <span class="nav-text">src layout</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#uv-build%E5%92%8Cuv-pip-install-.%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="nav-number">1.5.</span> <span class="nav-text">uv build和uv pip install
-.什么区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#editable-install%E5%8F%AF%E7%BC%96%E8%BE%91%E5%AE%89%E8%A3%85"><span class="nav-number">1.6.</span> <span class="nav-text">Editable
-install（可编辑安装）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#python%E6%98%AF%E4%BB%8E%E5%93%AA%E9%87%8C%E6%9F%A5%E6%89%BE%E6%A8%A1%E5%9D%97%E7%9A%84"><span class="nav-number">1.7.</span> <span class="nav-text">python是从哪里查找模块的</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">2.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Python%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84%E5%92%8C%E6%89%93%E5%8C%85"><span class="nav-number">1.</span> <span class="nav-text">Python项目结构和打包</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#pip-install-%E7%9A%84%E6%9C%AC%E8%B4%A8"><span class="nav-number">1.1.</span> <span class="nav-text">pip install 的本质</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#whl%E6%96%87%E4%BB%B6"><span class="nav-number">1.2.</span> <span class="nav-text">whl文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hachling"><span class="nav-number">1.3.</span> <span class="nav-text">hachling</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#src-layout"><span class="nav-number">1.4.</span> <span class="nav-text">src layout</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#uv-build%E5%92%8Cuv-pip-install-%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="nav-number">1.5.</span> <span class="nav-text">uv build和uv pip install .什么区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Editable-install%EF%BC%88%E5%8F%AF%E7%BC%96%E8%BE%91%E5%AE%89%E8%A3%85%EF%BC%89"><span class="nav-number">1.6.</span> <span class="nav-text">Editable install（可编辑安装）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#python%E6%98%AF%E4%BB%8E%E5%93%AA%E9%87%8C%E6%9F%A5%E6%89%BE%E6%A8%A1%E5%9D%97%E7%9A%84"><span class="nav-number">1.7.</span> <span class="nav-text">python是从哪里查找模块的</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">2.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -164,7 +162,7 @@ install（可编辑安装）</span></a></li><li class="nav-item nav-level-4"><a 
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">196</span>
+          <span class="site-state-item-count">199</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -287,31 +285,19 @@ install（可编辑安装）</span></a></li><li class="nav-item nav-level-4"><a 
     
     
     
-    <div class="post-body" itemprop="articleBody"><h3 id="python项目结构和打包">Python项目结构和打包</h3>
-<h4 id="pip-install-的本质">pip install 的本质</h4>
-<p>从 <a target="_blank" rel="noopener" href="https://pypi.org/">PyPI</a>（默认）或其他源（如私有仓库、本地文件）查找指定名称的包，下载对应的<code>.whl</code>文件</p>
-<h4 id="whl文件">whl文件</h4>
-<ul>
-<li><code>.whl</code> 是 <strong>Wheel</strong> 的缩写，是 Python
-的一种标准打包格式（PEP 427 定义）。</li>
-<li>它本质上是一个 <strong>ZIP 格式的压缩包</strong>，扩展名改为
-<code>.whl</code>。</li>
+    <div class="post-body" itemprop="articleBody"><h3 id="Python项目结构和打包"><a href="#Python项目结构和打包" class="headerlink" title="Python项目结构和打包"></a>Python项目结构和打包</h3><h4 id="pip-install-的本质"><a href="#pip-install-的本质" class="headerlink" title="pip install 的本质"></a>pip install 的本质</h4><p>从 <a target="_blank" rel="noopener" href="https://pypi.org/">PyPI </a>（默认）或其他源（如私有仓库、本地文件）查找指定名称的包，下载对应的<code>.whl</code>文件</p>
+<h4 id="whl文件"><a href="#whl文件" class="headerlink" title="whl文件"></a>whl文件</h4><ul>
+<li><code>.whl</code> 是 <strong>Wheel</strong> 的缩写，是 Python 的一种标准打包格式（PEP 427 定义）。</li>
+<li>它本质上是一个 <strong>ZIP 格式的压缩包</strong>，扩展名改为 <code>.whl</code>。</li>
 </ul>
 <p>安装 .whl 文件</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install package_name.whl</span><br></pre></td></tr></table></figure>
-<h4 id="hachling">hachling</h4>
-<p><code>hatchling</code> 是 Python
-生态中一个<strong>现代的、轻量级的构建后端（build
-backend）</strong>，主要用于将 Python 项目打包成可分发的格式（如
-<code>.whl</code> 或源码包）。它是 <a target="_blank" rel="noopener" href="https://hatch.pypa.io/">Hatch</a>项目的一部分，由 PyPA（Python
-Packaging Authority）推荐使用。</p>
+<h4 id="hachling"><a href="#hachling" class="headerlink" title="hachling"></a>hachling</h4><p><code>hatchling</code> 是 Python 生态中一个<strong>现代的、轻量级的构建后端（build backend）</strong>，主要用于将 Python 项目打包成可分发的格式（如 <code>.whl</code> 或源码包）。它是 <a target="_blank" rel="noopener" href="https://hatch.pypa.io/">Hatch </a>项目的一部分，由 PyPA（Python Packaging Authority）推荐使用。</p>
 <p>在pyproject.toml添加</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[build-system]</span><br><span class="line">requires = [&quot;hatchling&quot;]</span><br><span class="line">build-backend = &quot;hatchling.build&quot;</span><br></pre></td></tr></table></figure>
 <p>当你运行：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pip install .</span><br><span class="line"># 或</span><br><span class="line">python -m build</span><br></pre></td></tr></table></figure>
-<p>如果项目配置了 <code>hatchling</code> 作为构建后端，<code>pip</code>
-或 <code>build</code> 工具就会调用 <code>hatchling</code>
-来完成打包和安装。</p>
+<p>如果项目配置了 <code>hatchling</code> 作为构建后端，<code>pip</code> 或 <code>build</code> 工具就会调用 <code>hatchling</code> 来完成打包和安装。</p>
 <p>例如以下项目结构</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">my_project/</span><br><span class="line">├── pyproject.toml</span><br><span class="line">├── src/</span><br><span class="line">│   └── my_utils/               ← 你写的包</span><br><span class="line">│       ├── __init__.py</span><br><span class="line">│       └── math.py</span><br><span class="line">├── scripts/</span><br><span class="line">│   └── run_demo.py             ← 想在这里用 my_utils</span><br></pre></td></tr></table></figure>
 <p><strong>想让项目的其他文件使用自己编写的包</strong>，在pyproject.toml增加</p>
@@ -319,130 +305,98 @@ Packaging Authority）推荐使用。</p>
 <p>在项目根目录（<code>my_project/</code>）执行：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uv pip install -e .</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>✅ 这会把 <code>src/my_utils/</code> 注册为一个可导入的包。</p>
+<p>✅ 这会把 <code>src/my_utils/</code> 注册为一个可导入的包。 </p>
 </blockquote>
-<h4 id="src-layout">src layout</h4>
-<p><code>src layout</code>（也称为 <strong>src 布局</strong> 或
-<strong>src 目录结构</strong>）是 Python
-项目中一种<strong>推荐的源代码组织方式</strong>，其核心思想是：<strong>将你的
-Python 包（package）放在一个名为 <code>src/</code>
-的子目录下，而不是直接放在项目根目录中。</strong></p>
+<h4 id="src-layout"><a href="#src-layout" class="headerlink" title="src layout"></a>src layout</h4><p><code>src layout</code>（也称为 <strong>src 布局</strong> 或 <strong>src 目录结构</strong>）是 Python 项目中一种<strong>推荐的源代码组织方式</strong>，其核心思想是：<strong>将你的 Python 包（package）放在一个名为 <code>src/</code> 的子目录下，而不是直接放在项目根目录中。</strong></p>
 <p>❌ 传统布局（不推荐）</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">my_project/</span><br><span class="line">├── my_package/</span><br><span class="line">│   ├── __init__.py</span><br><span class="line">│   └── module.py</span><br><span class="line">├── tests/</span><br><span class="line">├── setup.py</span><br><span class="line">└── README.md</span><br></pre></td></tr></table></figure>
 <p>✅ <strong>src 布局（推荐）</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">my_project/</span><br><span class="line">├── src/</span><br><span class="line">│   └── my_package/</span><br><span class="line">│       ├── __init__.py</span><br><span class="line">│       └── module.py</span><br><span class="line">├── tests/</span><br><span class="line">├── pyproject.toml</span><br><span class="line">└── README.md</span><br></pre></td></tr></table></figure>
-<h4 id="uv-build和uv-pip-install-.什么区别">uv build和uv pip install
-.什么区别</h4>
-<p>一、<code>uv build</code></p>
+<h4 id="uv-build和uv-pip-install-什么区别"><a href="#uv-build和uv-pip-install-什么区别" class="headerlink" title="uv build和uv pip install .什么区别"></a>uv build和uv pip install .什么区别</h4><p>一、<code>uv build</code></p>
 <p>✅ 作用：<strong>构建分发包（不安装）</strong></p>
 <ul>
-<li>调用项目的构建后端（如
-<code>hatchling</code>、<code>setuptools</code> 等）。</li>
-<li>生成标准的分发文件：
-<ul>
+<li>调用项目的构建后端（如 <code>hatchling</code>、<code>setuptools</code> 等）。</li>
+<li>生成标准的分发文件：<ul>
 <li>一个 <strong>Wheel 文件</strong>（<code>.whl</code>）</li>
 <li>一个 <strong>源码分发包</strong>（sdist，<code>.tar.gz</code>）</li>
-</ul></li>
+</ul>
+</li>
 <li>输出到项目根目录下的 <code>dist/</code> 文件夹。</li>
 <li><strong>不会将包安装到当前 Python 环境中</strong>。</li>
 </ul>
 <p>🔧 示例：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uv build</span><br></pre></td></tr></table></figure>
-<p>输出： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dist/my_package-0.1.0-py3-none-any.whl</span><br><span class="line">dist/my_package-0.1.0.tar.gz</span><br></pre></td></tr></table></figure></p>
-<figure>
-<img src="/2025/10/18/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/Python%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84%E5%92%8C%E6%89%93%E5%8C%85/image-20251018192905210.png" alt="image-20251018192905210">
-<figcaption aria-hidden="true">image-20251018192905210</figcaption>
-</figure>
+<p>输出：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dist/my_package-0.1.0-py3-none-any.whl</span><br><span class="line">dist/my_package-0.1.0.tar.gz</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2025/10/18/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/Python%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84%E5%92%8C%E6%89%93%E5%8C%85/image-20251018192905210.png" alt="image-20251018192905210"></p>
 <p>二、<code>uv pip install .</code></p>
 <p>✅ 作用：<strong>安装当前项目到当前环境</strong></p>
 <ul>
 <li>首先（隐式）构建项目（类似 <code>uv build</code> 的过程）。</li>
-<li>然后将构建结果<strong>安装到当前激活的 Python
-环境</strong>（如虚拟环境或系统环境）。</li>
+<li>然后将构建结果<strong>安装到当前激活的 Python 环境</strong>（如虚拟环境或系统环境）。</li>
 <li>安装后，你可以在 Python 中 <code>import</code> 该包。</li>
-<li>默认是
-<strong>“非可编辑安装”</strong>（即代码改动不会自动生效，除非重新安装）。</li>
+<li>默认是 <strong>“非可编辑安装”</strong>（即代码改动不会自动生效，除非重新安装）。</li>
 </ul>
 <p>🔧 示例：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uv pip install .</span><br></pre></td></tr></table></figure>
-<p>效果： - 包被安装到 <code>site-packages/</code> - 可在 Python 中
-<code>import my_package</code></p>
-<h4 id="editable-install可编辑安装"><strong>Editable
-install（可编辑安装）</strong></h4>
-<p><strong>Editable install（可编辑安装）</strong> 是 Python
-包管理中的一种安装模式，它让你在<strong>安装一个包的同时，保留对源代码的直接引用</strong>。</p>
+<p>效果：</p>
+<ul>
+<li>包被安装到 <code>site-packages/</code></li>
+<li>可在 Python 中 <code>import my_package</code></li>
+</ul>
+<h4 id="Editable-install（可编辑安装）"><a href="#Editable-install（可编辑安装）" class="headerlink" title="Editable install（可编辑安装）"></a><strong>Editable install（可编辑安装）</strong></h4><p><strong>Editable install（可编辑安装）</strong> 是 Python 包管理中的一种安装模式，它让你在<strong>安装一个包的同时，保留对源代码的直接引用</strong>。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uv pip install -e .</span><br></pre></td></tr></table></figure>
 <ul>
-<li><strong>核心机制</strong>：
-<ul>
+<li><strong>核心机制</strong>：<ul>
 <li>不复制代码到 <code>site-packages/</code>。</li>
-<li>而是在 <code>site-packages/</code> 中创建一个
-<strong><code>.pth</code> 文件</strong> 或
-<strong><code>my_package.egg-link</code></strong>，指向你本地项目中的
-<code>src/</code>（或包目录）。</li>
+<li>而是在 <code>site-packages/</code> 中创建一个 <strong><code>.pth</code> 文件</strong> 或 <strong><code>my_package.egg-link</code></strong>，指向你本地项目中的 <code>src/</code>（或包目录）。</li>
 <li>Python 解释器在导入时，会顺着这个链接去读你本地的源码。</li>
-</ul></li>
 </ul>
-<figure>
-<img src="/2025/10/18/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/Python%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84%E5%92%8C%E6%89%93%E5%8C%85/image-20251018193022973.png" alt="image-20251018193022973">
-<figcaption aria-hidden="true">image-20251018193022973</figcaption>
-</figure>
-<h4 id="python是从哪里查找模块的">python是从哪里查找模块的</h4>
-<p>Python 查找模块（module）的机制由 <strong>模块搜索路径（module search
-path）</strong> 决定，这个路径是一个字符串列表，存储在
-<code>sys.path</code> 中。当你执行 <code>import some_module</code>
-时，Python
-会<strong>按顺序</strong>在这个列表中的每个目录里查找对应的模块文件。</p>
+</li>
+</ul>
+<p><img src="/2025/10/18/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/Python%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84%E5%92%8C%E6%89%93%E5%8C%85/image-20251018193022973.png" alt="image-20251018193022973"></p>
+<h4 id="python是从哪里查找模块的"><a href="#python是从哪里查找模块的" class="headerlink" title="python是从哪里查找模块的"></a>python是从哪里查找模块的</h4><p>Python 查找模块（module）的机制由 <strong>模块搜索路径（module search path）</strong> 决定，这个路径是一个字符串列表，存储在 <code>sys.path</code> 中。当你执行 <code>import some_module</code> 时，Python 会<strong>按顺序</strong>在这个列表中的每个目录里查找对应的模块文件。</p>
 <p>可以通过以下代码查看当前 Python 的模块搜索路径：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import sys</span><br><span class="line">print(sys.path)</span><br></pre></td></tr></table></figure>
 <p><code>sys.path</code> 通常包含以下几类路径（顺序很重要）：</p>
-<ol type="1">
+<ol>
 <li><strong>脚本所在目录（或当前工作目录）</strong></li>
 </ol>
 <ul>
-<li>如果你运行 <code>python /path/to/script.py</code>，那么
-<code>/path/to/</code> 会被加到 <code>sys.path[0]</code>。</li>
-<li>如果你运行 <code>python</code> 进入交互模式，或运行
-<code>python -c "..."</code>，则<strong>当前工作目录（<code>os.getcwd()</code>）</strong>
-会被放在首位。</li>
+<li>如果你运行 <code>python /path/to/script.py</code>，那么 <code>/path/to/</code> 会被加到 <code>sys.path[0]</code>。</li>
+<li>如果你运行 <code>python</code> 进入交互模式，或运行 <code>python -c &quot;...&quot;</code>，则<strong>当前工作目录（<code>os.getcwd()</code>）</strong> 会被放在首位。</li>
 <li>⚠️ 这是很多“意外导入”问题的根源（比如项目根目录下有同名包）。</li>
 </ul>
-<ol start="2" type="1">
+<ol>
 <li><strong>环境变量 <code>PYTHONPATH</code> 中的目录</strong></li>
 </ol>
 <ul>
-<li>类似系统的 <code>PATH</code>，你可以通过设置 <code>PYTHONPATH</code>
-添加自定义搜索路径。</li>
-<li>示例（Linux/macOS）： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PYTHONPATH=<span class="string">&quot;/my/custom/modules:<span class="variable">$PYTHONPATH</span>&quot;</span></span><br><span class="line">python my_script.py</span><br></pre></td></tr></table></figure></li>
-<li>Windows（PowerShell）： <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$env:PYTHONPATH</span> = <span class="string">&quot;C:\my\custom\modules;&quot;</span> + <span class="variable">$env:PYTHONPATH</span></span><br></pre></td></tr></table></figure></li>
+<li>类似系统的 <code>PATH</code>，你可以通过设置 <code>PYTHONPATH</code> 添加自定义搜索路径。</li>
+<li>示例（Linux/macOS）：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PYTHONPATH=<span class="string">&quot;/my/custom/modules:<span class="variable">$PYTHONPATH</span>&quot;</span></span><br><span class="line">python my_script.py</span><br></pre></td></tr></table></figure></li>
+<li>Windows（PowerShell）：<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$env:PYTHONPATH</span> = <span class="string">&quot;C:\my\custom\modules;&quot;</span> + <span class="variable">$env:PYTHONPATH</span></span><br></pre></td></tr></table></figure>
+</li>
 </ul>
-<ol start="3" type="1">
+<ol>
 <li><strong>标准库目录</strong></li>
 </ol>
 <ul>
-<li>Python 自带的模块（如 <code>os</code>, <code>sys</code>,
-<code>json</code>）所在位置。</li>
+<li>Python 自带的模块（如 <code>os</code>, <code>sys</code>, <code>json</code>）所在位置。</li>
 <li>通常位于 Python 安装目录下的 <code>lib/</code> 子目录中。</li>
 </ul>
-<ol start="4" type="1">
+<ol>
 <li><strong>第三方包安装目录（site-packages）</strong></li>
 </ol>
 <ul>
-<li>通过 <code>pip install</code>、<code>uv pip install</code>
-等安装的包，会被放到 <code>site-packages</code> 目录。</li>
-<li>路径可通过以下命令查看： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> site</span><br><span class="line"><span class="built_in">print</span>(site.getsitepackages())  <span class="comment"># 全局环境</span></span><br><span class="line"><span class="built_in">print</span>(site.getusersitepackages())  <span class="comment"># 用户级安装</span></span><br></pre></td></tr></table></figure></li>
+<li>通过 <code>pip install</code>、<code>uv pip install</code> 等安装的包，会被放到 <code>site-packages</code> 目录。</li>
+<li>路径可通过以下命令查看：<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> site</span><br><span class="line"><span class="built_in">print</span>(site.getsitepackages())  <span class="comment"># 全局环境</span></span><br><span class="line"><span class="built_in">print</span>(site.getusersitepackages())  <span class="comment"># 用户级安装</span></span><br></pre></td></tr></table></figure>
+</li>
 </ul>
-<ol start="5" type="1">
+<ol>
 <li><strong><code>.pth</code> 文件中指定的路径</strong></li>
 </ol>
 <ul>
-<li>某些包（尤其是 editable install）会在 <code>site-packages/</code>
-中放置 <code>.pth</code> 文件，动态添加路径到
-<code>sys.path</code>。</li>
+<li>某些包（尤其是 editable install）会在 <code>site-packages/</code> 中放置 <code>.pth</code> 文件，动态添加路径到 <code>sys.path</code>。</li>
 </ul>
-<h3 id="参考资料">参考资料</h3>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV12NgLzhEKx?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">build
-+ hatchling 15分钟搞懂Python项目结构和打包_哔哩哔哩_bilibili</a></p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV12NgLzhEKx?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">build + hatchling 15分钟搞懂Python项目结构和打包_哔哩哔哩_bilibili</a></p>
 
     </div>
 
@@ -483,8 +437,8 @@ path）</strong> 决定，这个路径是一个字符串列表，存储在
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2025/10/19/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/python-async/" rel="next" title="python异步编程-asyncio">
-                  python异步编程-asyncio <i class="fa fa-angle-right"></i>
+                <a href="/2025/10/19/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/python%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="next" title="python设计模式">
+                  python设计模式 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>

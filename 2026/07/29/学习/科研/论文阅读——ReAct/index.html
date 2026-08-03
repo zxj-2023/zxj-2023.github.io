@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="背景作者指出，当时的大语言模型研究在“推理”和“行动”两个方向上各自取得了一定进展，但都存在明显的短板：       范式 代表技术 工作机制 致命缺陷 &#x2F; 局限性     纯推理范式 (Reason-Only) Chain-of-Thought (CoT) 提示模型生成多步思维链来推导答案（如数学、逻辑题）。 静态黑盒，未接地（Ungrounded）：仅依赖模型内部参数，无法与外部世界交互更新知">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文阅读——ReAct">
+<meta property="og:url" content="http://example.com/2026/07/29/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94ReAct/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="背景作者指出，当时的大语言模型研究在“推理”和“行动”两个方向上各自取得了一定进展，但都存在明显的短板：       范式 代表技术 工作机制 致命缺陷 &#x2F; 局限性     纯推理范式 (Reason-Only) Chain-of-Thought (CoT) 提示模型生成多步思维链来推导答案（如数学、逻辑题）。 静态黑盒，未接地（Ungrounded）：仅依赖模型内部参数，无法与外部世界交互更新知">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2026/07/29/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94ReAct/image-20260729122948649.png">
+<meta property="article:published_time" content="2026-07-28T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-31T13:29:33.236Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="大模型">
+<meta property="article:tag" content="llm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2026/07/29/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94ReAct/image-20260729122948649.png">
+
+
+<link rel="canonical" href="http://example.com/2026/07/29/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94ReAct/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2026/07/29/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94ReAct/","path":"2026/07/29/学习/科研/论文阅读——ReAct/","title":"论文阅读——ReAct"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>论文阅读——ReAct | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ReAct-%E8%8C%83%E5%BC%8F%E7%9A%84%E6%8F%90%E5%87%BA"><span class="nav-number">2.</span> <span class="nav-text">ReAct 范式的提出</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%B8%8A%E5%8D%8A%E9%83%A8%E5%88%86%EF%BC%9AHotpot-QA%EF%BC%88%E7%9F%A5%E8%AF%86%E5%AF%86%E9%9B%86%E5%9E%8B%E9%97%AE%E7%AD%94%E4%BB%BB%E5%8A%A1%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">1. 上半部分：Hotpot QA（知识密集型问答任务）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E4%B8%8B%E5%8D%8A%E9%83%A8%E5%88%86%EF%BC%9AALFWorld%EF%BC%88%E4%BA%A4%E4%BA%92%E5%BC%8F%E5%85%B7%E8%BA%AB%E5%86%B3%E7%AD%96%E4%BB%BB%E5%8A%A1%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">2. 下半部分：ALFWorld（交互式具身决策任务）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9F%A5%E8%AF%86%E5%AF%86%E9%9B%86%E5%9E%8B%E6%8E%A8%E7%90%86%E4%BB%BB%E5%8A%A1"><span class="nav-number">3.</span> <span class="nav-text">知识密集型推理任务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E2%80%9C%E7%9F%A5%E8%AF%86%E5%AF%86%E9%9B%86%E5%9E%8B%E6%8E%A8%E7%90%86%E4%BB%BB%E5%8A%A1%E2%80%9D%EF%BC%9F"><span class="nav-number">3.1.</span> <span class="nav-text">什么是“知识密集型推理任务”？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%A4%E5%A4%A7%E6%B5%8B%E8%AF%95%E5%9F%BA%E5%87%86%EF%BC%88Domains%EF%BC%89"><span class="nav-number">3.2.</span> <span class="nav-text">两大测试基准（Domains）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-HotpotQA%EF%BC%88%E5%A4%9A%E8%B7%B3%E9%97%AE%E7%AD%94%E5%9F%BA%E5%87%86%EF%BC%89"><span class="nav-number">3.2.1.</span> <span class="nav-text">1. HotpotQA（多跳问答基准）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-FEVER%EF%BC%88%E4%BA%8B%E5%AE%9E%E6%A0%B8%E6%9F%A5%E4%B8%8E%E9%AA%8C%E8%AF%81%E5%9F%BA%E5%87%86%EF%BC%89"><span class="nav-number">3.2.2.</span> <span class="nav-text">2. FEVER（事实核查与验证基准）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%BA%BF%EF%BC%88Baselines%EF%BC%89%E6%9E%84%E5%BB%BA"><span class="nav-number">3.3.</span> <span class="nav-text">基线（Baselines）构建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E9%83%A8%E4%B8%8E%E5%A4%96%E9%83%A8%E7%9F%A5%E8%AF%86%E7%9A%84%E5%8A%A8%E6%80%81%E8%9E%8D%E5%90%88%E6%9C%BA%E5%88%B6%EF%BC%88Combining-Internal-amp-External-Knowledge%EF%BC%89"><span class="nav-number">3.4.</span> <span class="nav-text">内部与外部知识的动态融合机制（Combining Internal &amp; External Knowledge）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8F%91%E5%BC%8F%E9%80%80%E9%81%BF%E8%A7%84%E5%88%99%EF%BC%88Back-off-Heuristics%EF%BC%89"><span class="nav-number">3.4.1.</span> <span class="nav-text">启发式退避规则（Back-off Heuristics）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AD%96%E7%95%A5-A%EF%BC%9A-text-ReAct-rightarrow-text-CoT-SC-%EF%BC%88%E5%A4%96%E9%83%A8%E6%A3%80%E7%B4%A2%E5%A4%B1%E8%B4%A5%E6%97%B6%EF%BC%8C%E9%80%80%E5%9B%9E%E5%86%85%E9%83%A8%E6%80%9D%E8%80%83%EF%BC%89"><span class="nav-number">3.4.1.1.</span> <span class="nav-text">策略 A：$\text{ReAct} \rightarrow \text{CoT-SC}$（外部检索失败时，退回内部思考）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AD%96%E7%95%A5-B%EF%BC%9A-text-CoT-SC-rightarrow-text-ReAct-%EF%BC%88%E5%86%85%E9%83%A8%E6%8E%A8%E5%AF%BC%E8%87%AA%E4%BF%A1%E5%BA%A6%E4%BD%8E%E6%97%B6%EF%BC%8C%E9%80%80%E5%9B%9E%E5%A4%96%E9%83%A8%E6%A3%80%E7%B4%A2%EF%BC%89"><span class="nav-number">3.4.1.2.</span> <span class="nav-text">策略 B：$\text{CoT-SC} \rightarrow \text{ReAct}$（内部推导自信度低时，退回外部检索）</span></a></li></ol></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">199</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">69</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">71</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/07/29/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94ReAct/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="论文阅读——ReAct | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          论文阅读——ReAct
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-07-29 00:00:00" itemprop="dateCreated datePublished" datetime="2026-07-29T00:00:00+08:00">2026-07-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-07-31 21:29:33" itemprop="dateModified" datetime="2026-07-31T21:29:33+08:00">2026-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%A7%91%E7%A0%94/" itemprop="url" rel="index"><span itemprop="name">科研</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>作者指出，当时的大语言模型研究在“推理”和“行动”两个方向上各自取得了一定进展，但都存在明显的短板：  </p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th><strong>范式</strong></th>
+<th><strong>代表技术</strong></th>
+<th><strong>工作机制</strong></th>
+<th><strong>致命缺陷 / 局限性</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>纯推理范式 (Reason-Only)</strong></td>
+<td>Chain-of-Thought (CoT)</td>
+<td>提示模型生成多步思维链来推导答案（如数学、逻辑题）。</td>
+<td><strong>静态黑盒，未接地（Ungrounded）</strong>：仅依赖模型内部参数，无法与外部世界交互更新知识。极易导致<strong>事实幻觉（Fact Hallucination）和错误累积（Error Propagation）</strong>（见 Figure 1 (1b)）。</td>
+</tr>
+<tr>
+<td><strong>纯行动范式 (Act-Only)</strong></td>
+<td>机器人规划、Web 导航 agent</td>
+<td>将环境观测转化为文本，利用 LLM 先验生成具体动作计划。</td>
+<td><strong>缺乏高层规划与工作记忆</strong>：不使用语言进行抽象高层目标推理，无法维护工作记忆，难以在复杂交互中维持长</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h1 id="ReAct-范式的提出"><a href="#ReAct-范式的提出" class="headerlink" title="ReAct 范式的提出"></a>ReAct 范式的提出</h1><p>为了打破这种割裂，作者提出了 <strong>ReAct</strong>（<strong>Re</strong>ason + <strong>Act</strong>）：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────┐</span><br><span class="line">│    Reasoning (Thought)  │</span><br><span class="line">│   - 制定/调整高层计划    │</span><br><span class="line">│   - 追踪进度 &amp; 异常处理 │</span><br><span class="line">└────────────┬────────────┘</span><br><span class="line">             │▲</span><br><span class="line">  Reason to  ││ Act to</span><br><span class="line">    Act      ││ Reason</span><br><span class="line">             ▼│</span><br><span class="line">┌─────────────────────────┐</span><br><span class="line">│     Action &amp; Observation │</span><br><span class="line">│   - 检索外部知识库      │</span><br><span class="line">│   - 与物理/网页环境交互 │</span><br><span class="line">└─────────────────────────┘</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>Reason to Act（推理指导行动）</strong>：利用思考轨迹（Thoughts）来创建、维护和调整高层的行动计划。  </li>
+<li><strong>Act to Reason（行动支持推理）</strong>：利用行动（Actions）与外部环境（如 Wikipedia、网页环境）交互，将获取的新信息反馈给后续推理步骤。</li>
+</ul>
+<p><img src="/2026/07/29/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94ReAct/image-20260729122948649.png" alt="image-20260729122948649"></p>
+<h2 id="1-上半部分：Hotpot-QA（知识密集型问答任务）"><a href="#1-上半部分：Hotpot-QA（知识密集型问答任务）" class="headerlink" title="1. 上半部分：Hotpot QA（知识密集型问答任务）"></a>1. 上半部分：Hotpot QA（知识密集型问答任务）</h2><ul>
+<li><strong>任务问题</strong>：“除了 Apple Remote，还有什么设备可以控制 <strong>Apple Remote 最初设计用来交互的那个程序</strong>？”  </li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th><strong>方法范式</strong></th>
+<th><strong>表现与执行路径</strong></th>
+<th><strong>结果与失败原因分析</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(1a) Standard (标准回答)</td>
+<td>直接预测：<code>iPod</code></td>
+<td><strong>错误 $\boldsymbol{\times}$</strong>：模型无法直接凭空猜出多步跳跃（Multi-hop）的复杂事实。</td>
+</tr>
+<tr>
+<td>(1b) CoT (纯推理/思维链)</td>
+<td><strong>思考</strong>：“Apple Remote 最初是用来控制 Apple TV 的，而 Apple TV 可以被 iPhone/iPad 控制……”</td>
+<td><strong>错误 $\boldsymbol{\times}$（产生幻觉）</strong>：模型依靠内部知识“闭门造车”，第一步就记错了事实（其实是 Front Row 程序），导致<strong>错误传导与严重幻觉</strong>。</td>
+</tr>
+<tr>
+<td>(1c) Act-Only (纯行动无思考)</td>
+<td><strong>Act 1</strong>: 搜索 <code>Apple Remote</code> $\rightarrow$ 观察到程序叫 Front Row；   <strong>Act 2</strong>: 搜索 <code>Front Row</code> $\rightarrow$ 提示未找到；   <strong>Act 3/4</strong>: 盲目搜索词项并直接结束。</td>
+<td><strong>错误 $\boldsymbol{\times}$（陷入盲目）</strong>：缺乏高层推理指导。当搜索遇到阻碍（搜索不到精确词项）时，<strong>无法分析原因，也不知道如何修正搜索关键词</strong>。</td>
+</tr>
+<tr>
+<td>(1d) ReAct (推理 + 行动)</td>
+<td><strong>Thought 1</strong>: 决定先搜 Apple Remote 找程序名；   <strong>Act 1 + Obs 1</strong>: 查到程序是 <code>Front Row</code>；   <strong>Thought 2 + Act 2 + Obs 2</strong>: 搜 <code>Front Row</code> 没找到，<strong>思考分析原因</strong>；   <strong>Thought 3 + Act 3</strong>: 动态修正关键词搜 <code>Front Row (software)</code>，成功查到；   <strong>Thought 4 + Act 4</strong>: 提炼出答案并输出 <code>keyboard function keys</code>。</td>
+<td><strong>正确 $\boldsymbol{\checkmark}$（闭环纠错）</strong>：用思考指导检索方向，用检索结果验证并矫正思考，完美避开了幻觉与盲目。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="2-下半部分：ALFWorld（交互式具身决策任务）"><a href="#2-下半部分：ALFWorld（交互式具身决策任务）" class="headerlink" title="2. 下半部分：ALFWorld（交互式具身决策任务）"></a>2. 下半部分：ALFWorld（交互式具身决策任务）</h2><ul>
+<li><strong>任务目标</strong>：“把胡椒粉瓶（pepper shaker）拿到抽屉（drawer）里。”  </li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th><strong>方法范式</strong></th>
+<th><strong>表现与执行路径</strong></th>
+<th><strong>结果与失败原因分析</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(2a) Act-Only (纯行动)</td>
+<td><strong>Act 1-3</strong>: 去开抽屉 1，又跑去水槽 1；   <strong>Act 4-5</strong>: 在没有看到胡椒瓶的情况下，强行尝试执行 <code>Take peppershaker 1</code>。</td>
+<td><strong>错误 $\boldsymbol{\times}$（无效交互）</strong>：系统不断提示 <code>Nothing happens</code>。模型失去了工作记忆，<strong>既不知道物品常识分布在哪，也记不住自己当前做到了哪一步</strong>。</td>
+</tr>
+<tr>
+<td>(2b) ReAct (推理 + 行动)</td>
+<td><strong>Act 1 (Think)</strong>: 引入常识推理——“胡椒瓶最可能出现在柜子（1-6）或台面（1-3）”；   <strong>Act 2-7</strong>: 有针对性地逐个检查，顺利在台面 3 找到并拿到胡椒瓶；   <strong>Act 8 (Think)</strong>: 追踪进度——“现在已拿到胡椒瓶，下一步该去放进抽屉 1”；   <strong>Act 9-11</strong>: 前往 drawer 1，打开并成功放入。</td>
+<td><strong>正确 $\boldsymbol{\checkmark}$（高效规划）</strong>：推理提供了<strong>常识先验</strong>（去哪里找）和<strong>状态跟踪</strong>（当前完成了什么子目标），大幅提升了长流程决策的成功率。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h1 id="知识密集型推理任务"><a href="#知识密集型推理任务" class="headerlink" title="知识密集型推理任务"></a>知识密集型推理任务</h1><h2 id="什么是“知识密集型推理任务”？"><a href="#什么是“知识密集型推理任务”？" class="headerlink" title="什么是“知识密集型推理任务”？"></a>什么是“知识密集型推理任务”？</h2><p>我们可以把这种任务拆成两部分来理解：</p>
+<ol>
+<li><strong>“知识密集”（Knowledge-Intensive）</strong>：<ul>
+<li>意味着解决任务<strong>极其依赖海量、精准的外部事实知识</strong>（如具体的人物生卒年份、地理位置、历史事件、作品名称等）。  </li>
+<li>单凭模型自身的参数记忆（内部知识），极易因记忆模糊或知识过期而产生<strong>事实幻觉（Hallucination）</strong>。  </li>
+</ul>
+</li>
+<li><strong>“推理”（Reasoning）</strong>：<ul>
+<li>意味着单靠简单的“关键词检索”或“直接查一次百科”是拿不到答案的。  </li>
+<li>它需要模型具备<strong>多步骤的逻辑拆解、信息聚合、常识判断与比较</strong>的能力（如：先查出 A 的身份，再根据身份去查 B，最后对比 A 和 B 的出生年份）。</li>
+</ul>
+</li>
+</ol>
+<h2 id="两大测试基准（Domains）"><a href="#两大测试基准（Domains）" class="headerlink" title="两大测试基准（Domains）"></a>两大测试基准（Domains）</h2><h3 id="1-HotpotQA（多跳问答基准）"><a href="#1-HotpotQA（多跳问答基准）" class="headerlink" title="1. HotpotQA（多跳问答基准）"></a>1. HotpotQA（多跳问答基准）</h3><ul>
+<li><p><strong>任务类型</strong>：多跳复杂问答（Multi-hop Question Answering）。  </p>
+</li>
+<li><p><strong>核心特点</strong>：</p>
+<ul>
+<li><p><strong>“多跳”（Multi-hop）</strong> 指的是解答一个问题不能只查一个实体，而是需要跨越<strong>两个或更多个 Wikipedia 页面</strong>进行“跳跃式”的信息接力。  </p>
+</li>
+<li><p><strong>典型示例</strong>：</p>
+<blockquote>
+<p><strong>问题</strong>：“除了 Apple Remote，还有什么设备可以控制 Apple Remote 最初设计用来交互的那个程序？”  </p>
+<ul>
+<li><strong>第 1 跳（查找中间实体）</strong>：先搜索 <code>Apple Remote</code>，查出它最初设计控制的程序叫 <strong>Front Row</strong>。  </li>
+<li><strong>第 2 跳（关联推理与检索）</strong>：再搜索 <code>Front Row</code>，查找还有哪些设备可以控制 Front Row。  </li>
+<li><strong>最终合成答案</strong>：得出键盘功能键（keyboard function keys）。  </li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p><strong>论文中的实验设定（Question-only Setup）</strong>：</p>
+<ul>
+<li>传统的 HotpotQA 评估有时会直接把相关文本段落喂给模型，但本论文采用仅给定问题（Question-only）的严苛设定。  </li>
+<li>模型一开始<strong>只收到一句话问题</strong>，没有任何参考文档。它必须完全依靠 ReAct 机制，自己决定何时去搜索 Wikipedia API、搜什么词、如何根据观察结果（Observation）展开下一轮思考与搜索。  </li>
+</ul>
+</li>
+</ul>
+<h3 id="2-FEVER（事实核查与验证基准）"><a href="#2-FEVER（事实核查与验证基准）" class="headerlink" title="2. FEVER（事实核查与验证基准）"></a>2. FEVER（事实核查与验证基准）</h3><ul>
+<li><p><strong>任务类型</strong>：事实提取与验证（Fact Extraction and Verification）。  </p>
+</li>
+<li><p><strong>核心特点</strong>：</p>
+<ul>
+<li><p><strong>三分类判断</strong>：给出一个声明（Claim），要求模型结合 Wikipedia 事实，将其分类为以下三种结果之一：  </p>
+<ol>
+<li><strong><code>SUPPORTS</code>（支持）</strong>：有明确的百科事实证明该声明为真。  </li>
+<li><strong><code>REFUTES</code>（反驳）</strong>：有明确的百科事实证明该声明为假。  </li>
+<li><strong><code>NOT ENOUGH INFO</code>（信息不足）</strong>：基于现有的百科信息无法判断真伪。  </li>
+</ol>
+</li>
+<li><p><strong>对细节极度敏感</strong>：</p>
+<ul>
+<li><p><strong>典型示例</strong>：</p>
+<blockquote>
+<p><strong>声明</strong>：“《怪奇物语》（Stranger Things）的背景设定在印第安纳州的布卢明顿（Bloomington, Indiana）。”  </p>
+<ul>
+<li><strong>检索与推理</strong>：搜索 <code>Stranger Things</code> 后发现，剧集背景设定在印第安纳州的虚构小镇<strong>霍金斯（Hawkins, Indiana）</strong>，而不是布卢明顿。  </li>
+<li><strong>最终结论</strong>：判别为 <strong><code>REFUTES</code></strong>。  </li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>为什么适合验证 ReAct</strong>：</p>
+<ul>
+<li>FEVER 任务中 <code>SUPPORTS</code> 和 <code>REFUTES</code> 往往只差一两个关键词或数字细节。如果模型单凭凭记忆“硬猜”（CoT），极其容易记错或产生幻觉；只有通过 ReAct 去实时查阅 Wikipedia，才能做到精准把关。  </li>
+</ul>
+</li>
+</ul>
+<h2 id="基线（Baselines）构建"><a href="#基线（Baselines）构建" class="headerlink" title="基线（Baselines）构建"></a>基线（Baselines）构建</h2><p>在 ReAct 论文中，CoT（思维链）和 Act-Only（纯行动）作为对比基线，<strong>确实都是通过消融（Ablation）和修改 Few-shot Prompt（少样本提示词）中的示例格式来实现的</strong>。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th><strong>提示词方法</strong></th>
+<th><strong>Prompt 中保留的组件</strong></th>
+<th><strong>实现方式（对 ReAct 轨迹的处理）</strong></th>
+<th><strong>作用与定位</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ReAct</strong></td>
+<td><code>Question</code> + <strong><code>Thought</code></strong> + <strong><code>Action</code></strong> + <strong><code>Observation</code></strong> + <code>Answer</code></td>
+<td><strong>完整保留</strong>：交替生成思考与行动。</td>
+<td><strong>本文核心方法</strong>（推理 + 行动闭环）</td>
+</tr>
+<tr>
+<td><strong>CoT (Reason-Only)</strong></td>
+<td><code>Question</code> + <strong><code>Thought</code></strong> + <code>Answer</code></td>
+<td><strong>剥离 Action &amp; Observation</strong>：删掉所有与外部 API/环境交互的步骤，只保留纯文本推导。</td>
+<td><strong>纯思考基线</strong>（评估仅靠内部记忆推导的表现）</td>
+</tr>
+<tr>
+<td><strong>Act-Only</strong></td>
+<td><code>Question</code> + <strong><code>Action</code></strong> + <strong><code>Observation</code></strong> + <code>Answer</code></td>
+<td><strong>剥离 Thought</strong>：删掉所有 <code>Thought</code> 思考语句，只保留环境动作和观察反馈。</td>
+<td><strong>纯行动基线</strong>（评估无规划、直接盲目操作的表现）</td>
+</tr>
+<tr>
+<td><strong>Standard</strong></td>
+<td><code>Question</code> + <code>Answer</code></td>
+<td><strong>剥离 Thought, Action &amp; Observation</strong>：删掉所有中间过程，直接给答案。</td>
+<td><strong>标准提示基线</strong>（直出答案）</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="内部与外部知识的动态融合机制（Combining-Internal-amp-External-Knowledge）"><a href="#内部与外部知识的动态融合机制（Combining-Internal-amp-External-Knowledge）" class="headerlink" title="内部与外部知识的动态融合机制（Combining Internal &amp; External Knowledge）"></a>内部与外部知识的动态融合机制（Combining Internal &amp; External Knowledge）</h2><p>作者在分析中发现：  </p>
+<ul>
+<li><strong>ReAct 擅长结合外部知识，事实接地性（Groundedness）极强</strong>，但在遭遇复杂逻辑时，格式约束可能会稍微限制其推导灵活性。  </li>
+<li><strong>COT 擅长构建流畅的逻辑推理架构</strong>，但极其依赖模型内部记忆，容易发生<strong>事实幻觉（Hallucination）</strong>。</li>
+</ul>
+<h3 id="启发式退避规则（Back-off-Heuristics）"><a href="#启发式退避规则（Back-off-Heuristics）" class="headerlink" title="启发式退避规则（Back-off Heuristics）"></a>启发式退避规则（Back-off Heuristics）</h3><p>作者设计了两种双向退避（Back-off）策略，由模型在运行过程中根据“置信度”或“步数限制”动态决定何时切换：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">                              ┌────────────────────────┐</span><br><span class="line">                              │  如何协同内部与外部知识？ │</span><br><span class="line">                              └───────────┬────────────┘</span><br><span class="line">                                          │</span><br><span class="line">             ┌────────────────────────────┴────────────────────────────┐</span><br><span class="line">             ▼                                                         ▼</span><br><span class="line">   【策略 A: ReAct ➔ CoT-SC】                                【策略 B: CoT-SC ➔ ReAct】</span><br><span class="line">(以外部检索为主，失败退回内部思考)                         (以内部推理为主，低信心退回外部检索)</span><br></pre></td></tr></table></figure>
+<h4 id="策略-A：-text-ReAct-rightarrow-text-CoT-SC-（外部检索失败时，退回内部思考）"><a href="#策略-A：-text-ReAct-rightarrow-text-CoT-SC-（外部检索失败时，退回内部思考）" class="headerlink" title="策略 A：$\text{ReAct} \rightarrow \text{CoT-SC}$（外部检索失败时，退回内部思考）"></a>策略 A：$\text{ReAct} \rightarrow \text{CoT-SC}$（外部检索失败时，退回内部思考）</h4><ul>
+<li><strong>触发条件</strong>：先使用 ReAct 尝试与外部 Wikipedia API 交互。若 ReAct 在达到<strong>最大允许步数上限</strong>（HotpotQA 设为 7 步，FEVER 设为 5 步）后仍未给出答案；  </li>
+<li><strong>动作</strong>：自动放弃 ReAct 交互，退避（Back-off）切换为 <strong>CoT-SC</strong> 模式，让大模型完全依靠自身的内部记忆与逻辑来硬拆并给出最终答案。  </li>
+<li><strong>设计逻辑</strong>：如果外部搜索陷入死胡同或没查到关键词，与其直接报空失败，不如死马当活马医，信任模型自身的内部常识。  </li>
+</ul>
+<h4 id="策略-B：-text-CoT-SC-rightarrow-text-ReAct-（内部推导自信度低时，退回外部检索）"><a href="#策略-B：-text-CoT-SC-rightarrow-text-ReAct-（内部推导自信度低时，退回外部检索）" class="headerlink" title="策略 B：$\text{CoT-SC} \rightarrow \text{ReAct}$（内部推导自信度低时，退回外部检索）"></a>策略 B：$\text{CoT-SC} \rightarrow \text{ReAct}$（内部推导自信度低时，退回外部检索）</h4><ul>
+<li><strong>触发条件</strong>：先对大模型运行 CoT-SC（采样 $n$ 条思考轨迹，默认 $n=21$ 并取多数票）。如果在采样结果中，<strong>得票最高的那个答案，其票数占总采样数不到一半（$&lt; n/2$）</strong>；  </li>
+<li><strong>动作</strong>：这说明模型内部知识非常犹豫、未能形成强共识（即内部置信度低），此时自动退避切换为 <strong>ReAct</strong> 模式，亲自去 Wikipedia 搜索验证。  </li>
+<li><strong>设计逻辑</strong>：模型内部记忆有信心（投票集中）时就直接用 CoT-SC 输出；没信心（投票分散）时才去上网查，既省时又准确。  </li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" rel="tag"># 大模型</a>
+              <a href="/tags/llm/" rel="tag"># llm</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/" rel="prev" title="论文阅读——抗幻觉多智能体框架MA-CF">
+                  <i class="fa fa-angle-left"></i> 论文阅读——抗幻觉多智能体框架MA-CF
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/07/29/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94KVCOMM/" rel="next" title="论文阅读——KVCOMM">
+                  论文阅读——KVCOMM <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js","integrity":"sha256-stuqcu2FrjYCXDOytWFA5SoUE/r3nkp6gTglzNSlavU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
