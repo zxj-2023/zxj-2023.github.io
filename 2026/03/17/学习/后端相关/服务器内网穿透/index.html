@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="没问题，这个方法叫 SSH 远程端口转发（SSH Remote Port Forwarding）。它是绕过校园网&#x2F;公司内网限制、借用本地网络最安全且最高效的“基操”。 以下是为你整理的完整流程手册，你可以直接收藏：  🛠️ 学校服务器“借网”出海手册第一步：在本地电脑开启隧道在你自己电脑的终端（Windows PowerShell 或 Mac Terminal）中运行，不要在 VS Code 的">
+    <meta name="description" content="没问题，这个方法叫 SSH 远程端口转发（SSH Remote Port Forwarding）。它是绕过校园网&#x2F;公司内网限制、借用本地网络最安全且最高效的“基操”。 以下是为你整理的完整流程手册，你可以直接收藏：  🛠️ 学校服务器“借网”出海手册 第一步：在本地电脑开启隧道 在你自己电脑的终端（Windows PowerShell 或 Mac Terminal）中运行，不要在">
 <meta property="og:type" content="article">
 <meta property="og:title" content="服务器内网穿透（ssh远程隧道）">
 <meta property="og:url" content="http://example.com/2026/03/17/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="没问题，这个方法叫 SSH 远程端口转发（SSH Remote Port Forwarding）。它是绕过校园网&#x2F;公司内网限制、借用本地网络最安全且最高效的“基操”。 以下是为你整理的完整流程手册，你可以直接收藏：  🛠️ 学校服务器“借网”出海手册第一步：在本地电脑开启隧道在你自己电脑的终端（Windows PowerShell 或 Mac Terminal）中运行，不要在 VS Code 的">
+<meta property="og:description" content="没问题，这个方法叫 SSH 远程端口转发（SSH Remote Port Forwarding）。它是绕过校园网&#x2F;公司内网限制、借用本地网络最安全且最高效的“基操”。 以下是为你整理的完整流程手册，你可以直接收藏：  🛠️ 学校服务器“借网”出海手册 第一步：在本地电脑开启隧道 在你自己电脑的终端（Windows PowerShell 或 Mac Terminal）中运行，不要在">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-03-16T16:00:00.000Z">
 <meta property="article:modified_time" content="2026-07-11T13:25:09.321Z">
@@ -144,7 +144,9 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%9B%A0%EF%B8%8F-%E5%AD%A6%E6%A0%A1%E6%9C%8D%E5%8A%A1%E5%99%A8%E2%80%9C%E5%80%9F%E7%BD%91%E2%80%9D%E5%87%BA%E6%B5%B7%E6%89%8B%E5%86%8C"><span class="nav-number">1.</span> <span class="nav-text">🛠️ 学校服务器“借网”出海手册</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E5%9C%A8%E6%9C%AC%E5%9C%B0%E7%94%B5%E8%84%91%E5%BC%80%E5%90%AF%E9%9A%A7%E9%81%93"><span class="nav-number">1.1.</span> <span class="nav-text">第一步：在本地电脑开启隧道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E5%9C%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BB%88%E7%AB%AF%E6%8C%82%E8%BD%BD%E4%BB%A3%E7%90%86"><span class="nav-number">1.2.</span> <span class="nav-text">第二步：在服务器终端挂载代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E9%AA%8C%E8%AF%81%E8%81%94%E7%BD%91%E7%8A%B6%E6%80%81"><span class="nav-number">1.3.</span> <span class="nav-text">第三步：验证联网状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%9A%E5%90%AF%E5%8A%A8-Copilot-CLI"><span class="nav-number">1.4.</span> <span class="nav-text">第四步：启动 Copilot CLI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%9A%A0%EF%B8%8F-%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97%EF%BC%88%E5%A6%82%E6%9E%9C%E5%A4%B1%E8%B4%A5%E8%AF%B7%E6%A3%80%E6%9F%A5%E8%BF%99%E9%87%8C%EF%BC%89"><span class="nav-number">1.5.</span> <span class="nav-text">⚠️ 避坑指南（如果失败请检查这里）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%92%A1-%E8%BF%9B%E9%98%B6%EF%BC%9A%E5%A6%82%E4%BD%95%E4%B8%8D%E7%94%A8%E6%AF%8F%E6%AC%A1%E9%83%BD%E6%89%93-export%EF%BC%9F"><span class="nav-number">1.6.</span> <span class="nav-text">💡 进阶：如何不用每次都打 export？</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%A6%E6%A0%A1%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%80%9F%E7%BD%91%E5%87%BA%E6%B5%B7%E6%89%8B%E5%86%8C"><span class="nav-number">1.</span> <span class="nav-text">🛠️ 学校服务器“借网”出海手册</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%E5%9C%A8%E6%9C%AC%E5%9C%B0%E7%94%B5%E8%84%91%E5%BC%80%E5%90%AF%E9%9A%A7%E9%81%93"><span class="nav-number">1.1.</span> <span class="nav-text">第一步：在本地电脑开启隧道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%E5%9C%A8%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%BB%88%E7%AB%AF%E6%8C%82%E8%BD%BD%E4%BB%A3%E7%90%86"><span class="nav-number">1.2.</span> <span class="nav-text">第二步：在服务器终端挂载代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%E9%AA%8C%E8%AF%81%E8%81%94%E7%BD%91%E7%8A%B6%E6%80%81"><span class="nav-number">1.3.</span> <span class="nav-text">第三步：验证联网状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E6%AD%A5%E5%90%AF%E5%8A%A8-copilot-cli"><span class="nav-number">1.4.</span> <span class="nav-text">第四步：启动 Copilot CLI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97%E5%A6%82%E6%9E%9C%E5%A4%B1%E8%B4%A5%E8%AF%B7%E6%A3%80%E6%9F%A5%E8%BF%99%E9%87%8C"><span class="nav-number">1.5.</span> <span class="nav-text">⚠️
+避坑指南（如果失败请检查这里）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E9%98%B6%E5%A6%82%E4%BD%95%E4%B8%8D%E7%94%A8%E6%AF%8F%E6%AC%A1%E9%83%BD%E6%89%93-export"><span class="nav-number">1.6.</span> <span class="nav-text">💡 进阶：如何不用每次都打
+export？</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -159,18 +161,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">199</span>
+          <span class="site-state-item-count">205</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">69</span>
+        <span class="site-state-item-count">70</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">71</span>
+        <span class="site-state-item-count">72</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -284,60 +286,78 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><p>没问题，这个方法叫 <strong>SSH 远程端口转发（SSH Remote Port Forwarding）</strong>。它是绕过校园网/公司内网限制、借用本地网络最安全且最高效的“基操”。</p>
+    <div class="post-body" itemprop="articleBody"><p>没问题，这个方法叫 <strong>SSH 远程端口转发（SSH Remote Port
+Forwarding）</strong>。它是绕过校园网/公司内网限制、借用本地网络最安全且最高效的“基操”。</p>
 <p>以下是为你整理的完整流程手册，你可以直接收藏：</p>
 <hr>
-<h2 id="🛠️-学校服务器“借网”出海手册"><a href="#🛠️-学校服务器“借网”出海手册" class="headerlink" title="🛠️ 学校服务器“借网”出海手册"></a>🛠️ 学校服务器“借网”出海手册</h2><h3 id="第一步：在本地电脑开启隧道"><a href="#第一步：在本地电脑开启隧道" class="headerlink" title="第一步：在本地电脑开启隧道"></a>第一步：在本地电脑开启隧道</h3><p>在<strong>你自己电脑</strong>的终端（Windows PowerShell 或 Mac Terminal）中运行，不要在 VS Code 的内置终端里运行。</p>
+<h2 id="学校服务器借网出海手册">🛠️ 学校服务器“借网”出海手册</h2>
+<h3 id="第一步在本地电脑开启隧道">第一步：在本地电脑开启隧道</h3>
+<p>在<strong>你自己电脑</strong>的终端（Windows PowerShell 或 Mac
+Terminal）中运行，不要在 VS Code 的内置终端里运行。</p>
 <p>Bash</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 命令格式：ssh -R [远程端口]:127.0.0.1:[本地代理端口] [用户名]@[服务器IP]</span><br><span class="line">ssh -R 7897:127.0.0.1:7897 wjw@223.2.18.229</span><br><span class="line">wjw19230415</span><br><span class="line">ssh -R 7890:127.0.0.1:7890 zxj@223.2.18.229</span><br><span class="line">cd MLLM_pre </span><br><span class="line">npx @anthropic-ai/claude-code</span><br><span class="line">export ANTHROPIC_MODEL=deepseek-v4-pro[1m]</span><br><span class="line">export ANTHROPIC_DEFAULT_OPUS_MODEL=deepseek-v4-pro[1m]</span><br><span class="line">export ANTHROPIC_DEFAULT_SONNET_MODEL=deepseek-v4-pro[1m]</span><br><span class="line">export ANTHROPIC_DEFAULT_HAIKU_MODEL=deepseek-v4-flash</span><br><span class="line">export CLAUDE_CODE_SUBAGENT_MODEL=deepseek-v4-flash</span><br><span class="line">export CLAUDE_CODE_EFFORT_LEVEL=max</span><br></pre></td></tr></table></figure>
 <ul>
 <li><strong><code>-R</code></strong>: 开启远程转发模式。</li>
-<li><strong><code>7890</code></strong>: 这里的两个数字必须对应。前一个是服务器上开启的口子，后一个是你本地梯子的监听端口。</li>
+<li><strong><code>7890</code></strong>:
+这里的两个数字必须对应。前一个是服务器上开启的口子，后一个是你本地梯子的监听端口。</li>
 </ul>
 <hr>
-<h3 id="第二步：在服务器终端挂载代理"><a href="#第二步：在服务器终端挂载代理" class="headerlink" title="第二步：在服务器终端挂载代理"></a>第二步：在服务器终端挂载代理</h3><p>连接成功进入服务器后，在弹出的黑色窗口中输入以下命令，告诉系统“指路牌”：</p>
+<h3 id="第二步在服务器终端挂载代理">第二步：在服务器终端挂载代理</h3>
+<p>连接成功进入服务器后，在弹出的黑色窗口中输入以下命令，告诉系统“指路牌”：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export https_proxy=http://127.0.0.1:7897</span><br><span class="line">export http_proxy=http://127.0.0.1:7897</span><br><span class="line">export all_proxy=http://127.0.0.1:7897</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p><strong>注意</strong>：这几行命令只对<strong>当前</strong>这个窗口有效。如果你关掉窗口重新连，需要重新输入。</p>
 </blockquote>
 <hr>
-<h3 id="第三步：验证联网状态"><a href="#第三步：验证联网状态" class="headerlink" title="第三步：验证联网状态"></a>第三步：验证联网状态</h3><p>输入测试命令，观察是否返回 <code>HTTP/2 200</code>：</p>
+<h3 id="第三步验证联网状态">第三步：验证联网状态</h3>
+<p>输入测试命令，观察是否返回 <code>HTTP/2 200</code>：</p>
 <p>Bash</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -I https://www.google.com</span><br></pre></td></tr></table></figure>
 <hr>
-<h3 id="第四步：启动-Copilot-CLI"><a href="#第四步：启动-Copilot-CLI" class="headerlink" title="第四步：启动 Copilot CLI"></a>第四步：启动 Copilot CLI</h3><p>联网成功后，直接运行你安装好的工具：</p>
+<h3 id="第四步启动-copilot-cli">第四步：启动 Copilot CLI</h3>
+<p>联网成功后，直接运行你安装好的工具：</p>
 <p>Bash</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx @github/copilot /login</span><br></pre></td></tr></table></figure>
 <hr>
-<h3 id="⚠️-避坑指南（如果失败请检查这里）"><a href="#⚠️-避坑指南（如果失败请检查这里）" class="headerlink" title="⚠️ 避坑指南（如果失败请检查这里）"></a>⚠️ 避坑指南（如果失败请检查这里）</h3><ol>
+<h3 id="避坑指南如果失败请检查这里">⚠️
+避坑指南（如果失败请检查这里）</h3>
+<ol type="1">
 <li><p><strong>本地梯子设置</strong>：</p>
-<p>必须打开梯子软件（Clash/v2ray/Surfboard 等）中的 <strong>“允许局域网连接 (Allow LAN)”</strong> 开关。即使是在同一台电脑通过隧道回传，软件有时也会拦截非本地请求。</p>
-</li>
+<p>必须打开梯子软件（Clash/v2ray/Surfboard 等）中的
+<strong>“允许局域网连接 (Allow LAN)”</strong>
+开关。即使是在同一台电脑通过隧道回传，软件有时也会拦截非本地请求。</p></li>
 <li><p><strong>端口匹配</strong>：</p>
-<p>如果你的梯子端口不是 <code>7890</code>（比如是 <code>10809</code> 或 <code>1080</code>），请把上面所有步骤中的 <code>7890</code> 替换成你的实际端口。</p>
-</li>
+<p>如果你的梯子端口不是 <code>7890</code>（比如是 <code>10809</code> 或
+<code>1080</code>），请把上面所有步骤中的 <code>7890</code>
+替换成你的实际端口。</p></li>
 <li><p><strong>VS Code 侧边栏同步</strong>：</p>
-<p>如果你想让 VS Code 的 Chat 插件也通，请在 VS Code 的 <code>settings.json</code> 中添加：</p>
-<p><code>&quot;http.proxy&quot;: &quot;http://127.0.0.1:7890&quot;</code>。</p>
-<p>由于你已经开了 SSH 隧道，此时远程服务器会认为 <code>127.0.0.1:7890</code> 就是它的出口。</p>
-</li>
+<p>如果你想让 VS Code 的 Chat 插件也通，请在 VS Code 的
+<code>settings.json</code> 中添加：</p>
+<p><code>"http.proxy": "http://127.0.0.1:7890"</code>。</p>
+<p>由于你已经开了 SSH 隧道，此时远程服务器会认为
+<code>127.0.0.1:7890</code> 就是它的出口。</p></li>
 </ol>
 <hr>
-<h3 id="💡-进阶：如何不用每次都打-export？"><a href="#💡-进阶：如何不用每次都打-export？" class="headerlink" title="💡 进阶：如何不用每次都打 export？"></a>💡 进阶：如何不用每次都打 <code>export</code>？</h3><p>你可以把代理命令写入服务器的个人配置文件中：</p>
-<ol>
-<li><p>输入 <code>vim ~/.bashrc</code>。</p>
-</li>
+<h3 id="进阶如何不用每次都打-export">💡 进阶：如何不用每次都打
+<code>export</code>？</h3>
+<p>你可以把代理命令写入服务器的个人配置文件中：</p>
+<ol type="1">
+<li><p>输入 <code>vim ~/.bashrc</code>。</p></li>
 <li><p>在文件最后添加：</p>
-<p><code>alias proxyon=&quot;export https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 all_proxy=http://127.0.0.1:7890&quot;</code></p>
-</li>
-<li><p>保存退出后，下次连上服务器只需输入 <code>proxyon</code> 即可一键开启。</p>
-</li>
+<p><code>alias proxyon="export https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 all_proxy=http://127.0.0.1:7890"</code></p></li>
+<li><p>保存退出后，下次连上服务器只需输入 <code>proxyon</code>
+即可一键开启。</p></li>
 </ol>
-<p><strong>这个流程存好了吗？如果你准备好尝试在服务器上直接安装一个永久“梯子”（不需要本地电脑一直开着），我们可以开始讲解 Tailscale 的方案。</strong></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/tailscale/tailscale">tailscale/tailscale: The easiest, most secure way to use WireGuard and 2FA.</a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/search?q=singbox&amp;type=repositories">Repository search results</a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/MetaCubeX/mihomo/releases">Releases · MetaCubeX/mihomo</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1gNcUzMEKs?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">SSH隧道的原理和实操 | 本地隧道、远程隧道、动态隧道_哔哩哔哩_bilibili</a></p>
+<p><strong>这个流程存好了吗？如果你准备好尝试在服务器上直接安装一个永久“梯子”（不需要本地电脑一直开着），我们可以开始讲解
+Tailscale 的方案。</strong></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/tailscale/tailscale">tailscale/tailscale:
+The easiest, most secure way to use WireGuard and 2FA.</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/search?q=singbox&amp;type=repositories">Repository
+search results</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/MetaCubeX/mihomo/releases">Releases ·
+MetaCubeX/mihomo</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1gNcUzMEKs?spm_id_from=333.788.videopod.sections&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">SSH隧道的原理和实操
+| 本地隧道、远程隧道、动态隧道_哔哩哔哩_bilibili</a></p>
 
     </div>
 

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="功能设计 my-agent-llm 是「模型边界层」——agent 框架和各家 LLM API 之间的翻译层。 它让上层的 my-agent-core（agent 循环）永远只认识一种接口（LLM.chat），完全不知道背后是 OpenAI、DeepSeek 还是 Anthropic。 123456789my-pi-agent（两层结构）│├── my-agent-core   框架层：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="my-pi-agent--模型层">
+<meta property="og:url" content="http://example.com/2026/08/05/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E6%A8%A1%E5%9E%8B%E5%B1%82/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="功能设计 my-agent-llm 是「模型边界层」——agent 框架和各家 LLM API 之间的翻译层。 它让上层的 my-agent-core（agent 循环）永远只认识一种接口（LLM.chat），完全不知道背后是 OpenAI、DeepSeek 还是 Anthropic。 123456789my-pi-agent（两层结构）│├── my-agent-core   框架层：">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-08-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-12T07:09:20.858Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="agent">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2026/08/05/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E6%A8%A1%E5%9E%8B%E5%B1%82/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2026/08/05/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E6%A8%A1%E5%9E%8B%E5%B1%82/","path":"2026/08/05/学习/agent实战/my-pi-agent/my-pi-agent--模型层/","title":"my-pi-agent--模型层"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>my-pi-agent--模型层 | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.</span> <span class="nav-text">功能设计</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%85%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.</span> <span class="nav-text">包结构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BE%9B%E5%BA%94%E5%95%86%E6%A8%A1%E5%9D%97"><span class="nav-number">2.</span> <span class="nav-text">供应商模块</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%B1%BB"><span class="nav-number">2.1.</span> <span class="nav-text">基类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#openai"><span class="nav-number">2.2.</span> <span class="nav-text">openai</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E5%BC%8F-vs-%E9%9D%9E%E6%B5%81%E5%BC%8F"><span class="nav-number">2.2.1.</span> <span class="nav-text">流式 vs 非流式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5-vs-%E5%BC%82%E6%AD%A5"><span class="nav-number">2.2.2.</span> <span class="nav-text">同步 vs 异步</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.</span> <span class="nav-text">数据模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#anthropic-%E5%8E%9F%E7%94%9F-web_search-%E7%9A%84%E7%9C%9F%E5%AE%9E%E6%9C%BA%E5%88%B6"><span class="nav-number">4.</span> <span class="nav-text">anthropic 原生 web_search
+的真实机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#llm-%E7%B1%BB"><span class="nav-number">5.</span> <span class="nav-text">LLM 类</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">205</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">72</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/08/05/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E6%A8%A1%E5%9E%8B%E5%B1%82/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="my-pi-agent--模型层 | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          my-pi-agent--模型层
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-08-05 00:00:00" itemprop="dateCreated datePublished" datetime="2026-08-05T00:00:00+08:00">2026-08-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-08-12 15:09:20" itemprop="dateModified" datetime="2026-08-12T15:09:20+08:00">2026-08-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/agent%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">agent实战</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/agent%E5%AE%9E%E6%88%98/my-pi-agent/" itemprop="url" rel="index"><span itemprop="name">my-pi-agent</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="功能设计">功能设计</h1>
+<p>my-agent-llm 是「模型边界层」——agent 框架和各家 LLM API
+之间的翻译层。 它让上层的 my-agent-core（agent
+循环）永远只认识一种接口（LLM.chat），完全不知道背后是 OpenAI、DeepSeek
+还是 Anthropic。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">my-pi-agent（两层结构）</span><br><span class="line">│</span><br><span class="line">├── my-agent-core   框架层：ReAct 循环、工具、事件（只认识 LLM.chat）</span><br><span class="line">│       │</span><br><span class="line">│       ▼ 依赖</span><br><span class="line">├── my-agent-llm   ★ 模型边界层：统一 LLM 门面 + 数据模型 + 三 provider</span><br><span class="line">│       │</span><br><span class="line">│       ▼ 调用</span><br><span class="line">└── openai / anthropic / deepseek SDK（真正发 HTTP 请求的）</span><br></pre></td></tr></table></figure>
+<h2 id="包结构">包结构</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">packages/my-agent-llm/</span><br><span class="line">├── pyproject.toml          # name=my-agent-llm，src 布局 + hatchling</span><br><span class="line">├── .env.example</span><br><span class="line">├── src/my_agent_llm/</span><br><span class="line">│   ├── __init__.py         # 导出 LLM, Config, Message, Response, StreamChunk, Provider</span><br><span class="line">│   ├── client.py           # LLM 门面（chat/stream/achat/achat_stream + kwargs 透传）</span><br><span class="line">│   ├── config.py           # Config（pydantic）</span><br><span class="line">│   ├── models.py           # Message / Response / StreamChunk</span><br><span class="line">│   └── providers/</span><br><span class="line">│       ├── _base.py        # Provider ABC（4 个抽象方法）</span><br><span class="line">│       ├── registry.py     # PROVIDER_REGISTRY（provider 注册表，从 client.py 拆出）</span><br><span class="line">│       ├── openai.py       # OpenAIProvider</span><br><span class="line">│       ├── deepseek.py     # DeepSeekProvider（+ reasoning 提取）</span><br><span class="line">│       └── anthropic.py    # AnthropicProvider（block 翻译 + web_search 增强）</span><br><span class="line">└── tests/</span><br></pre></td></tr></table></figure>
+<h1 id="供应商模块">供应商模块</h1>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">providers/</span><br><span class="line">├── _base.py      # Provider 抽象基类（complete/stream/acomplete/astream 四个抽象方法）</span><br><span class="line">├── openai.py     # OpenAIProvider —— 标准 OpenAI 翻译</span><br><span class="line">├── deepseek.py   # DeepSeekProvider —— OpenAI 兼容 + reasoning_content 提取</span><br><span class="line">└── anthropic.py  # AnthropicProvider —— 完整双向翻译（block 结构）</span><br><span class="line"></span><br><span class="line">        ┌─────────────────────────────────────────────┐</span><br><span class="line">        │  LLM  门面（Facade）                          │  client.py</span><br><span class="line">        │  chat / stream / achat / achat_stream        │</span><br><span class="line">        └──────────────┬──────────────────────────────┘</span><br><span class="line">                       │ 按 config.provider 查表实例化   ← 简单工厂 + 策略选择</span><br><span class="line">        ┌──────────────▼──────────────────────────────┐</span><br><span class="line">        │  Provider  抽象契约（ABC）                     │  providers/_base.py</span><br><span class="line">        └─────────────────────────────────────────────┘</span><br><span class="line">             │                    │                    │</span><br><span class="line">      OpenAIProvider     DeepSeekProvider     AnthropicProvider</span><br><span class="line">      （策略实现+内部适配器） （继承 OpenAI+override）   （策略实现+内部适配器）</span><br><span class="line">        └──────────────┴──────────────┴──────────────┘</span><br><span class="line">              每个 provider 内部：SDK wire ⇄ 统一模型   ← 适配器（Adapter）</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="基类">基类</h2>
+<p>ABC
+作父类（_base.py:8）——标记这个类是「抽象基类」，不允许直接实例化：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Provider()</span><br><span class="line"></span><br><span class="line">TypeError: Can&#x27;t instantiate abstract class Provider with abstract method chat</span><br></pre></td></tr></table></figure>
+<p>你根本 new 不出一个「抽象 provider」——因为那没有任何意义。</p>
+<p><span class="citation" data-cites="abstractmethod">@abstractmethod</span>
+标记方法（_base.py:11, 22, 33,
+44）——声明这些方法是「契约项」：子类必须实现，漏一个就实例化失败：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">class BadProvider(Provider):</span><br><span class="line">    pass                          # 四个方法都没实现</span><br><span class="line"></span><br><span class="line">BadProvider()                     # ← TypeError：缺少 4 个抽象方法</span><br><span class="line"></span><br><span class="line">class GoodProvider(Provider):</span><br><span class="line">    def chat(self, ...): ...      # 四个方法都实现了</span><br><span class="line">    def stream(self, ...): ...</span><br><span class="line">    async def achat(self, ...): ...</span><br><span class="line">    async def achat_stream(self, ...): ...</span><br><span class="line"></span><br><span class="line">GoodProvider()                    # ← 正常</span><br></pre></td></tr></table></figure>
+<p>关键点：<span class="citation" data-cites="abstractmethod">@abstractmethod</span>
+的强制是在实例化时（或者说创建时）检查的，不是运行时才炸。这就是「契约」的价值——写错就立刻报错</p>
+<p>它是「策略模式」的契约部分</p>
+<p>我上一条讲的策略模式，其实由三块组成：</p>
+<ol type="1">
+<li>统一接口 ← 就是这个文件</li>
+<li>可互换的具体策略 ← openai.py / deepseek.py / anthropic.py</li>
+<li>运行时选择策略 ← client.py 的 _PROVIDER_CLASSES</li>
+</ol>
+<h2 id="openai">openai</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">OpenAIProvider(Provider)</span><br><span class="line">│</span><br><span class="line">├─ __init__           造两个 SDK 客户端（同步 + 异步）</span><br><span class="line">│</span><br><span class="line">├─ _convert_messages  入站翻译：Message 对象 → OpenAI wire dict</span><br><span class="line">│</span><br><span class="line">├─ _extract_tool_calls  出站翻译：SDK 对象 → 统一 tool_calls dict</span><br><span class="line">├─ _extract_usage       出站翻译：SDK usage → 统一 usage dict</span><br><span class="line">│</span><br><span class="line">├─ chat / stream               同步两条路</span><br><span class="line">└─ achat / achat_stream        异步两条路</span><br></pre></td></tr></table></figure>
+<p><code>__init__</code></p>
+<p>同步方法走 self.client（openai.OpenAI），异步方法走
+self.async_client（openai.AsyncOpenAI）。SDK
+把同步/异步拆成两个类——同步的不能在 async def
+里直接用（会阻塞事件循环），异步的不能在同步代码里 await。</p>
+<p>_convert_messages —— 入站翻译</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">def _convert_messages(self, messages: list[Message]) -&gt; list[dict]:</span><br><span class="line">    &quot;&quot;&quot;Message → OpenAI wire dict。&quot;&quot;&quot;</span><br><span class="line">    result = []</span><br><span class="line">    for msg in messages:</span><br><span class="line">        if msg.role == &quot;assistant&quot; and msg.metadata and &quot;tool_calls&quot; in msg.metadata:</span><br><span class="line">            result.append(</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;role&quot;: &quot;assistant&quot;,</span><br><span class="line">                    &quot;content&quot;: msg.content or None,</span><br><span class="line">                    &quot;tool_calls&quot;: msg.metadata[&quot;tool_calls&quot;],</span><br><span class="line">                &#125;</span><br><span class="line">            )</span><br><span class="line">        elif msg.role == &quot;tool&quot; and msg.metadata:</span><br><span class="line">            result.append(</span><br><span class="line">                &#123;</span><br><span class="line">                    &quot;role&quot;: &quot;tool&quot;,</span><br><span class="line">                    &quot;content&quot;: msg.content,</span><br><span class="line">                    &quot;tool_call_id&quot;: msg.metadata.get(&quot;tool_call_id&quot;, &quot;&quot;),</span><br><span class="line">                &#125;</span><br><span class="line">            )</span><br><span class="line">        else:</span><br><span class="line">            result.append(&#123;&quot;role&quot;: msg.role, &quot;content&quot;: msg.content&#125;)</span><br><span class="line">    return result    # ← 循环外（笔记早期缩进笔误：return 在 for 内会只处理第一条）</span><br></pre></td></tr></table></figure>
+<p>把统一的 Message 对象翻译成 OpenAI 要求的 wire dict</p>
+<p><strong>Assistant 消息（包含工具调用）</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;role&quot;: &quot;assistant&quot;,</span><br><span class="line">    &quot;content&quot;: None,</span><br><span class="line">    &quot;tool_calls&quot;: [</span><br><span class="line">        &#123;</span><br><span class="line">            &quot;id&quot;: &quot;call_987654&quot;,</span><br><span class="line">            &quot;type&quot;: &quot;function&quot;,</span><br><span class="line">            &quot;function&quot;: &#123;</span><br><span class="line">                &quot;name&quot;: &quot;get_weather&quot;,</span><br><span class="line">                &quot;arguments&quot;: &#x27;&#123;&quot;location&quot;: &quot;Beijing&quot;&#125;&#x27;  # Wire Format 中 arguments 必须是 JSON 字符串</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>Tool 响应消息</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;role&quot;: &quot;tool&quot;,</span><br><span class="line">    &quot;tool_call_id&quot;: &quot;call_987654&quot;,</span><br><span class="line">    &quot;content&quot;: &#x27;&#123;&quot;temperature&quot;: &quot;22C&quot;&#125;&#x27;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="流式-vs-非流式">流式 vs 非流式</h3>
+<p>核心差异：一个参数 stream=True</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># chat（非流式）</span><br><span class="line">response = self.client.chat.completions.create(</span><br><span class="line">    model=model, messages=..., tools=..., **kwargs,    # 没有 stream=True</span><br><span class="line">)</span><br><span class="line"># 调用方在这里会【阻塞】，直到模型吐完一整段话</span><br><span class="line"></span><br><span class="line"># stream（流式）</span><br><span class="line">stream = self.client.chat.completions.create(</span><br><span class="line">    model=model, messages=..., tools=..., stream=True, **kwargs,  # 多了这个</span><br><span class="line">)</span><br><span class="line"># create 立刻返回一个【迭代器】，不用等模型说完</span><br></pre></td></tr></table></figure>
+<p>数据流的差异：一次性提取 vs 增量聚合</p>
+<p>这是两者最本质的区别。</p>
+<p>非流式——响应是完整的，直接提取：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">choice = response.choices[0]           # 一次拿到完整 choice</span><br><span class="line">return Response(</span><br><span class="line">    content=choice.message.content or &quot;&quot;,        # 完整文本</span><br><span class="line">    usage=self._extract_usage(response),         # 完整 usage</span><br><span class="line">    tool_calls=self._extract_tool_calls(choice.message),  # 完整 tool_calls</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>所有数据都是「一次性出现」的，<em>extract</em>* 各提取一次，拼成
+Response 收工。</p>
+<p>流式——数据是分批出现的，得自己攒：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">accumulator = _ToolCallAccumulator()   # 攒工具调用</span><br><span class="line">usage = None                            # 攒 token 用量</span><br><span class="line">for chunk in stream:</span><br><span class="line">    if chunk_usage:</span><br><span class="line">        usage = chunk_usage             # usage 在流里分批/末尾出现</span><br><span class="line">    ...</span><br><span class="line">    accumulator.add(delta)              # tool_calls 是碎片，增量拼接</span><br><span class="line">    if delta.content:</span><br><span class="line">        yield StreamChunk(content=delta.content, ...)   # 文本增量先吐出去</span><br><span class="line">tool_calls = accumulator.finish()       # 流结束，才拼出完整的</span><br><span class="line">if tool_calls or usage:</span><br><span class="line">    yield StreamChunk(content=&quot;&quot;, tool_calls=..., usage=...)  # 末块补发元信息</span><br></pre></td></tr></table></figure>
+<h3 id="同步-vs-异步">同步 vs 异步</h3>
+<p>三处不同</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># chat（同步）</span><br><span class="line">response = self.client.chat.completions.create(...)      # ① 用 self.client</span><br><span class="line"># ② 没有 await</span><br><span class="line"></span><br><span class="line"># achat（异步）</span><br><span class="line">if self.async_client is None:                             # ③ 多了守卫</span><br><span class="line">    raise RuntimeError(&quot;async_client not provided; ...&quot;)</span><br><span class="line">response = await self.async_client.chat.completions.create(...)  # ① self.async_client ② await</span><br></pre></td></tr></table></figure>
+<h1 id="数据模型">数据模型</h1>
+<h1 id="anthropic-原生-web_search-的真实机制">anthropic 原生 web_search
+的真实机制</h1>
+<p>看 anthropic.py:134-149，pig-mono 的处理方式是：</p>
+<pre><code>def _resolve_tools_with_web_search(self, kwargs: dict) -&gt; list[dict] | None:
+    &quot;&quot;&quot;Build the Anthropic tools list from function tools + optional native search.&quot;&quot;&quot;
+    enable_web = kwargs.pop(&quot;enable_web_search&quot;, False)   # ← 从 kwargs 弹出统一开关
+    max_uses = kwargs.pop(&quot;web_search_max_uses&quot;, 5)
+tools = ...  # 你的 function tools 转成 anthropic 格式
+
+if enable_web:
+    tools.append(&#123;                                  # ← 追加 anthropic 原生搜索工具
+        &quot;type&quot;: &quot;web_search_20250305&quot;,
+        &quot;name&quot;: &quot;web_search&quot;,
+        &quot;max_uses&quot;: max_uses,
+    &#125;)
+return tools</code></pre>
+<p>关键事实：anthropic 的 web_search 不是一个独立 API 调用，而是在 tools
+列表里追加一个内置工具 {“type”: “web_search_20250305”, “name”:
+“web_search”}。模型判断需要搜索时，服务端执行搜索并把结果合进响应（不是返回
+tool_calls 让你执行）。你什么都不用做，拿到 Response
+就是带搜索结果的回答。</p>
+<p>你的统一 LLM.chat() 收 tools: list[dict]。要让 anthropic provider
+支持原生搜索，在 anthropic provider 内部处理（anthropic.py）：</p>
+<p>AnthropicProvider.complete / stream 里</p>
+<pre><code>def _resolve_tools(self, tools, kwargs):
+    # 1. 从 kwargs 弹出统一开关（openai/deepseek 会忽略它，自然不传）
+    enable_web = kwargs.pop(&quot;enable_web_search&quot;, False)
+    max_uses = kwargs.pop(&quot;web_search_max_uses&quot;, 5)
+    
+# 2. 你的 function tools 转成 anthropic 格式
+anthropic_tools = convert_to_anthropic(tools) if tools else []
+
+# 3. 开关打开就追加原生搜索工具
+if enable_web:
+    anthropic_tools.append(&#123;
+        &quot;type&quot;: &quot;web_search_20250305&quot;,
+        &quot;name&quot;: &quot;web_search&quot;,
+        &quot;max_uses&quot;: max_uses,
+    &#125;)
+return anthropic_tools</code></pre>
+<h1 id="llm-类">LLM 类</h1>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class LLM（门面——只路由和传参，不实现对话逻辑）</span><br><span class="line">│</span><br><span class="line">├─ __init__    造 provider：散参→Config → 校验 → 查 PROVIDER_REGISTRY → 实例化</span><br><span class="line">├─ model       属性：取模型名（没有就报错）</span><br><span class="line">│</span><br><span class="line">├─ chat           同步·一次性 → Response</span><br><span class="line">├─ stream         同步·流式   → Iterator[StreamChunk]</span><br><span class="line">├─ achat          异步·一次性 → Response</span><br><span class="line">└─ achat_stream   异步·流式   → AsyncIterator[StreamChunk]</span><br></pre></td></tr></table></figure>
+<p>四方法都是「解析参数 → 转发给
+self._provider」，自己什么都不实现。真正的翻译在三个 provider 里。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/agent/" rel="tag"># agent</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/08/04/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/wsl/" rel="prev" title="wsl">
+                  <i class="fa fa-angle-left"></i> wsl
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/08/10/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--session%E7%AE%A1%E7%90%86/" rel="next" title="my-pi-agent--session管理">
+                  my-pi-agent--session管理 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js","integrity":"sha256-stuqcu2FrjYCXDOytWFA5SoUE/r3nkp6gTglzNSlavU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

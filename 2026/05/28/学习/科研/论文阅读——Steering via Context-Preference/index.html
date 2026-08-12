@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="介绍2605.27993 重新思考视觉忽视：通过情境引导——MLLM幻觉缓解的偏好 本文为这篇论文的阅读学习笔记 挑战以往工作中“增强视觉依赖即可降低幻觉”的单一假设，通过系统性干预实验发现，图像会同时与模型参数化知识和历史文本上下文产生竞争关系。基于这一观察，提出训练无关的 Context-Preference Activation Steering（CAS）推理期干预方法，将 MLLM 的视觉">
+    <meta name="description" content="介绍 2605.27993 重新思考视觉忽视：通过情境引导——MLLM幻觉缓解的偏好 本文为这篇论文的阅读学习笔记 挑战以往工作中“增强视觉依赖即可降低幻觉”的单一假设，通过系统性干预实验发现，图像会同时与模型参数化知识和历史文本上下文产生竞争关系。基于这一观察，提出训练无关的 Context-Preference Activation Steering（CAS）推理期干预方法，将 ML">
 <meta property="og:type" content="article">
 <meta property="og:title" content="论文阅读——Steering via Context-Preference">
 <meta property="og:url" content="http://example.com/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="介绍2605.27993 重新思考视觉忽视：通过情境引导——MLLM幻觉缓解的偏好 本文为这篇论文的阅读学习笔记 挑战以往工作中“增强视觉依赖即可降低幻觉”的单一假设，通过系统性干预实验发现，图像会同时与模型参数化知识和历史文本上下文产生竞争关系。基于这一观察，提出训练无关的 Context-Preference Activation Steering（CAS）推理期干预方法，将 MLLM 的视觉">
+<meta property="og:description" content="介绍 2605.27993 重新思考视觉忽视：通过情境引导——MLLM幻觉缓解的偏好 本文为这篇论文的阅读学习笔记 挑战以往工作中“增强视觉依赖即可降低幻觉”的单一假设，通过系统性干预实验发现，图像会同时与模型参数化知识和历史文本上下文产生竞争关系。基于这一观察，提出训练无关的 Context-Preference Activation Steering（CAS）推理期干预方法，将 ML">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260603081542984.png">
 <meta property="og:image" content="http://example.com/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601120555879.png">
@@ -156,7 +156,73 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B9%BB%E8%A7%89%E7%8E%B0%E8%B1%A1"><span class="nav-number">2.</span> <span class="nav-text">幻觉现象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%BC%BA%E5%A4%A7%E7%9A%84%E2%80%9C%E8%AF%AD%E8%A8%80%E5%88%BB%E6%9D%BF%E5%8D%B0%E8%B1%A1%E2%80%9D%EF%BC%88Language-Prior-Statistical-Bias%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">1.强大的“语言刻板印象”（Language Prior &#x2F; Statistical Bias）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E9%95%BF%E6%96%87%E6%9C%AC%E4%B8%AD%E7%9A%84%E6%96%87%E6%9C%AC%E6%83%AF%E6%80%A7%E6%88%96%E8%BF%87%E5%BA%A6%E4%BF%A1%E8%B5%96%EF%BC%88Text-Inertia-Over-trust%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">2.长文本中的文本惯性或过度信赖（Text Inertia &#x2F; Over-trust）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%84%E6%B5%8B%E6%8C%87%E6%A0%87"><span class="nav-number">3.</span> <span class="nav-text">评测指标</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CHAIR-%E8%AF%84%E6%B5%8B%E6%B5%81%E7%A8%8B%EF%BC%9A%E5%9F%BA%E4%BA%8E%E6%96%87%E6%9C%AC%E8%A7%A3%E6%9E%90%E7%9A%84%E2%80%9C%E5%90%8D%E8%AF%8D%E7%89%A9%E4%BD%93%E9%AA%8C%E8%AF%81%E2%80%9D"><span class="nav-number">3.1.</span> <span class="nav-text">CHAIR 评测流程：基于文本解析的“名词物体验证”</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%A8%A1%E5%9E%8B%E7%94%9F%E6%88%90%EF%BC%88Caption-Generation%EF%BC%89"><span class="nav-number">3.1.1.</span> <span class="nav-text">1. 模型生成（Caption Generation）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%96%87%E6%9C%AC%E8%A7%A3%E6%9E%90%E4%B8%8E%E5%90%8D%E8%AF%8D%E6%8F%90%E5%8F%96%EF%BC%88POS-Tagging-amp-Parsing%EF%BC%89"><span class="nav-number">3.1.2.</span> <span class="nav-text">2. 文本解析与名词提取（POS Tagging &amp; Parsing）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%90%8C%E4%B9%89%E8%AF%8D%E4%B8%8E%E7%B1%BB%E5%88%AB%E6%98%A0%E5%B0%84%EF%BC%88Synonym-Mapping%EF%BC%89"><span class="nav-number">3.1.3.</span> <span class="nav-text">3. 同义词与类别映射（Synonym Mapping）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E7%9C%9F%E5%AE%9E%E6%A0%87%E7%AD%BE%E6%AF%94%E5%AF%B9%EF%BC%88Ground-Truth-Matching%EF%BC%89"><span class="nav-number">3.1.4.</span> <span class="nav-text">4. 真实标签比对（Ground-Truth Matching）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E6%8C%87%E6%A0%87%E7%BB%93%E7%AE%97"><span class="nav-number">3.1.5.</span> <span class="nav-text">5. 指标结算</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#POPE-%E8%AF%84%E6%B5%8B%E6%B5%81%E7%A8%8B%EF%BC%9A%E5%9F%BA%E4%BA%8E%E9%9D%9E%E5%AF%B9%E7%A7%B0%E9%87%87%E6%A0%B7%E7%9A%84%E2%80%9C%E6%98%AF%E9%9D%9E%E9%A2%98%E7%9B%B2%E6%B5%8B%E2%80%9D"><span class="nav-number">3.2.</span> <span class="nav-text">POPE 评测流程：基于非对称采样的“是非题盲测”</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%9E%84%E5%BB%BA%E6%99%BA%E8%83%BD%E9%97%AE%E7%AD%94%E5%BA%93%EF%BC%88Question-Construction%EF%BC%89"><span class="nav-number">3.2.1.</span> <span class="nav-text">1. 构建智能问答库（Question Construction）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86%EF%BC%88Inference%EF%BC%89"><span class="nav-number">3.2.2.</span> <span class="nav-text">2. 模型推理（Inference）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%B7%B7%E6%B7%86%E7%9F%A9%E9%98%B5%E5%88%A4%E5%AE%9A%EF%BC%88Confusion-Matrix%EF%BC%89"><span class="nav-number">3.2.3.</span> <span class="nav-text">3. 混淆矩阵判定（Confusion Matrix）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%8C%87%E6%A0%87%E7%BB%93%E7%AE%97"><span class="nav-number">3.2.4.</span> <span class="nav-text">4. 指标结算</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AMBER-%E8%AF%84%E6%B5%8B%E6%B5%81%E7%A8%8B%EF%BC%9A%E6%97%A0%E9%9C%80%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E2%80%9C%E5%8F%8C%E8%BD%A8%E4%BA%A4%E7%BB%87%E7%9F%A9%E9%98%B5%E2%80%9D"><span class="nav-number">3.3.</span> <span class="nav-text">AMBER 评测流程：无需大模型的“双轨交织矩阵”</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%95%B0%E6%8D%AE%E5%88%86%E6%B5%81%EF%BC%9A%E5%90%AF%E5%8A%A8%E5%8F%8C%E8%BD%A8%E6%B5%8B%E8%AF%95%EF%BC%88Dual-Path-Input%EF%BC%89"><span class="nav-number">3.3.1.</span> <span class="nav-text">1. 数据分流：启动双轨测试（Dual-Path Input）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%A8%E9%81%93-A%EF%BC%9AAMBER-G%EF%BC%88%E7%94%9F%E6%88%90%E5%BC%8F%E8%BD%A8%E9%81%93%EF%BC%89"><span class="nav-number">3.3.1.1.</span> <span class="nav-text">轨道 A：AMBER-G（生成式轨道）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%A8%E9%81%93-B%EF%BC%9AAMBER-D%EF%BC%88%E5%88%A4%E5%88%AB%E5%BC%8F%E8%BD%A8%E9%81%93%EF%BC%89"><span class="nav-number">3.3.1.2.</span> <span class="nav-text">轨道 B：AMBER-D（判别式轨道）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%85%A8%E5%B1%80%E7%BB%BC%E5%90%88%E5%BE%97%E5%88%86%E6%B1%87%E7%AE%97%EF%BC%88Final-Aggregation%EF%BC%89"><span class="nav-number">3.3.2.</span> <span class="nav-text">2. 全局综合得分汇算（Final Aggregation）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E7%9A%84%E4%B8%BB%E8%A6%81%E8%B7%AF%E7%BA%BF"><span class="nav-number">4.</span> <span class="nav-text">解决的主要路线</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="nav-number">5.</span> <span class="nav-text">相关工作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E8%AE%AD%E7%BB%83%E7%9A%84%E5%B9%BB%E8%A7%89%E7%BC%93%E8%A7%A3-Training-based-Hallucination-Mitigation"><span class="nav-number">5.1.</span> <span class="nav-text">基于训练的幻觉缓解 (Training-based Hallucination Mitigation)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%96%B9%E6%B3%95%E4%B8%8E%E4%BB%A3%E8%A1%A8%E6%80%A7%E6%8A%80%E6%9C%AF"><span class="nav-number">5.1.1.</span> <span class="nav-text">核心方法与代表性技术</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%A5%E8%B7%AF%E7%BA%BF%E7%9A%84%E4%BC%98%E5%8A%BF%E4%B8%8E%E5%B1%80%E9%99%90%E6%80%A7"><span class="nav-number">5.1.2.</span> <span class="nav-text">该路线的优势与局限性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Training-free"><span class="nav-number">5.2.</span> <span class="nav-text">Training-free</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%88%E6%A3%80%E6%B5%8B%E5%90%8E%E4%BF%AE%E6%AD%A3%E7%9A%84%E6%B5%81%E7%A8%8BDetect-then-Correct-Work%EF%AC%82ows"><span class="nav-number">5.2.1.</span> <span class="nav-text">先检测后修正的流程Detect-then-Correct Workﬂows</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E9%80%BB%E8%BE%91%E4%B8%8E%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">5.2.1.1.</span> <span class="nav-text">核心逻辑与工作原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E8%A1%A8%E6%80%A7%E6%8A%80%E6%9C%AF%E4%B8%8E%E6%96%B9%E6%B3%95"><span class="nav-number">5.2.1.2.</span> <span class="nav-text">代表性技术与方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%A5%E8%B7%AF%E7%BA%BF%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9%E5%88%86%E6%9E%90"><span class="nav-number">5.2.1.3.</span> <span class="nav-text">该路线的优缺点分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E6%BA%AF%E4%B8%8E%E5%B1%82%E5%AF%B9%E6%AF%94%E8%A7%A3%E7%A0%81-Retrospection-and-Layer-Contrastive-Decoding"><span class="nav-number">5.2.2.</span> <span class="nav-text">回溯与层对比解码 (Retrospection and Layer-Contrastive Decoding)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%A0%B8%E5%BF%83%E5%81%87%E8%AE%BE%E4%B8%8E%E5%8E%9F%E7%90%86"><span class="nav-number">5.2.2.1.</span> <span class="nav-text">1. 核心假设与原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E4%BB%A3%E8%A1%A8%E6%80%A7%E6%96%B9%E6%B3%95%E4%B8%8E%E6%8A%80%E6%9C%AF%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.2.2.2.</span> <span class="nav-text">2. 代表性方法与技术实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E8%AF%A5%E8%B7%AF%E7%BA%BF%E7%9A%84%E5%B1%80%E9%99%90%E6%80%A7%E4%B8%8E%E7%97%9B%E7%82%B9"><span class="nav-number">5.2.2.3.</span> <span class="nav-text">3. 该路线的局限性与痛点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E8%A7%86%E8%A7%89%E5%BF%BD%E7%95%A5%E5%81%87%E8%AE%BE%E7%9A%84%E6%96%B9%E6%B3%95%EF%BC%88Methods-under-the-Visual-Neglect-Hypothesis%EF%BC%89"><span class="nav-number">5.2.3.</span> <span class="nav-text">基于视觉忽略假设的方法（Methods under the Visual-Neglect Hypothesis）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%81%87%E8%AE%BE"><span class="nav-number">5.2.3.1.</span> <span class="nav-text">核心假设</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9B%E7%A7%8D%E4%BB%A3%E8%A1%A8%E6%80%A7%E6%8A%80%E6%9C%AF%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.2.3.2.</span> <span class="nav-text">四种代表性技术实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-VCD-Visual-Contrastive-Decoding"><span class="nav-number">5.2.3.2.1.</span> <span class="nav-text">1. VCD (Visual Contrastive Decoding)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-PAI-Paying-More-Attention-to-Image"><span class="nav-number">5.2.3.2.2.</span> <span class="nav-text">2. PAI (Paying More Attention to Image)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-AttnReal-Attention-Reallocation"><span class="nav-number">5.2.3.2.3.</span> <span class="nav-text">3. AttnReal (Attention Reallocation)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-SSL-Steering-LVLMs-via-Sparse-Autoencoder"><span class="nav-number">5.2.3.2.4.</span> <span class="nav-text">4. SSL (Steering LVLMs via Sparse Autoencoder)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AF%A5%E5%81%87%E8%AE%BE%E4%B8%8E%E6%96%B9%E6%A1%88%E7%9A%84%E5%B1%80%E9%99%90%E6%80%A7"><span class="nav-number">5.2.3.2.5.</span> <span class="nav-text">该假设与方案的局限性</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pai%E4%B8%8EAttnReal-%E7%BC%BA%E7%82%B9"><span class="nav-number">6.</span> <span class="nav-text">pai与AttnReal 缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%89%A9%E7%90%86%E8%BE%B9%E7%95%8C%E6%B6%88%E5%A4%B1%EF%BC%8C%E6%97%A0%E6%B3%95%E5%9C%A8%E8%87%AA%E6%B3%A8%E6%84%8F%E5%8A%9B%E7%9F%A9%E9%98%B5%E4%B8%AD%E7%B2%BE%E5%87%86%E5%AE%9A%E4%BD%8D"><span class="nav-number">6.1.</span> <span class="nav-text">1. 物理边界消失，无法在自注意力矩阵中精准定位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%BC%BA%E8%A1%8C%E5%B9%B2%E9%A2%84%E4%BC%9A%E7%A0%B4%E5%9D%8F%E8%81%94%E5%90%88%E6%A6%82%E7%8E%87%E5%88%86%E5%B8%83%EF%BC%8C%E5%AF%BC%E8%87%B4%E8%AF%AD%E4%B9%89%E5%B4%A9%E6%BA%83%EF%BC%88%E8%BE%93%E5%87%BA%E4%B9%B1%E7%A0%81%EF%BC%89"><span class="nav-number">6.2.</span> <span class="nav-text">2. 强行干预会破坏联合概率分布，导致语义崩溃（输出乱码）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%8A%A8%E6%9C%BA%EF%BC%88Motivation%EF%BC%89%E4%B8%8E%E6%A0%B8%E5%BF%83%E5%AE%9E%E9%AA%8C%E5%8F%91%E7%8E%B0%EF%BC%88Findings%EF%BC%89"><span class="nav-number">7.</span> <span class="nav-text">核心动机（Motivation）与核心实验发现（Findings）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%9D%B6-External-vs-Internal-%E7%AB%9E%E4%BA%89"><span class="nav-number">7.0.1.</span> <span class="nav-text">❶ External-vs-Internal 竞争</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%9D%B7-Cross-Modal-%E7%AB%9E%E4%BA%89"><span class="nav-number">7.0.2.</span> <span class="nav-text">❷ Cross-Modal 竞争</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E5%81%8F%E5%A5%BD%E5%90%91%E9%87%8F%EF%BC%88CPVs%EF%BC%89%E7%9A%84%E8%A7%A3%E8%80%A6%E4%B8%8E%E6%8F%90%E5%8F%96"><span class="nav-number">8.</span> <span class="nav-text">上下文偏好向量（CPVs）的解耦与提取</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%9D%B6-%E8%A7%86%E8%A7%89%E4%BF%9D%E7%9C%9F%E5%90%91%E9%87%8F%EF%BC%88Visual-Fidelity-Vector-mathbf-V-text-VFV-%EF%BC%89"><span class="nav-number">8.0.1.</span> <span class="nav-text">❶ 视觉保真向量（Visual Fidelity Vector, $\mathbf{V}_{\text{VFV}}$）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%9D%B7-%E6%A8%A1%E6%80%81%E4%BE%9D%E8%B5%96%E5%90%91%E9%87%8F%EF%BC%88Modality-Reliance-Vector-mathbf-V-text-MRV-%EF%BC%89"><span class="nav-number">8.0.2.</span> <span class="nav-text">❷ 模态依赖向量（Modality Reliance Vector, $\mathbf{V}_{\text{MRV}}$）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8F%90%E5%8F%96%E4%B8%8A%E4%B8%8B%E6%96%87%E5%81%8F%E5%A5%BD%E5%90%91%E9%87%8F"><span class="nav-number">9.</span> <span class="nav-text">提取上下文偏好向量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81-%E8%A7%86%E8%A7%89%E4%BF%9D%E7%9C%9F%E5%90%91%E9%87%8F%EF%BC%88VFV%EF%BC%89%EF%BC%9A%E8%A7%A3%E5%86%B3%E2%80%9C%E5%A4%96%E9%83%A8%E8%A7%86%E8%A7%89%E2%80%9D%E4%B8%8E%E2%80%9C%E5%86%85%E9%83%A8%E5%B8%B8%E8%AF%86%E2%80%9D%E7%9A%84%E5%86%B2%E7%AA%81"><span class="nav-number">9.1.</span> <span class="nav-text">一、 视觉保真向量（VFV）：解决“外部视觉”与“内部常识”的冲突</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81-%E6%A8%A1%E6%80%81%E4%BE%9D%E8%B5%96%E5%90%91%E9%87%8F%EF%BC%88MRV%EF%BC%89%EF%BC%9A%E8%A7%A3%E5%86%B3%E2%80%9C%E8%A7%86%E8%A7%89%E4%B8%8A%E4%B8%8B%E6%96%87%E2%80%9D%E4%B8%8E%E2%80%9C%E6%96%87%E6%9C%AC%E4%B8%8A%E4%B8%8B%E6%96%87%E2%80%9D%E7%9A%84%E5%86%B2%E7%AA%81"><span class="nav-number">9.2.</span> <span class="nav-text">二、 模态依赖向量（MRV）：解决“视觉上下文”与“文本上下文”的冲突</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%8F%90%E5%8F%96CPVs"><span class="nav-number">10.</span> <span class="nav-text">如何提取CPVs</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9-MLP-%E5%B1%82%E4%BD%9C%E4%B8%BA%E6%8F%90%E5%8F%96%E4%BD%8D%E7%BD%AE%EF%BC%9F"><span class="nav-number">10.1.</span> <span class="nav-text">1. 为什么选择 MLP 层作为提取位置？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%AE%9A%E4%BD%8D%E5%85%B3%E9%94%AE-Token-%E4%BD%8D%E7%BD%AE%EF%BC%88-t-star-%EF%BC%89"><span class="nav-number">10.2.</span> <span class="nav-text">2. 定位关键 Token 位置（$t^\star$）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E8%AE%A1%E7%AE%97%E8%BF%9E%E7%BB%AD%E5%81%8F%E5%A5%BD%E4%BF%A1%E5%8F%B7%EF%BC%88-pref-%EF%BC%89"><span class="nav-number">10.3.</span> <span class="nav-text">3. 计算连续偏好信号（$pref$）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E9%80%90%E5%B1%82%E5%B2%AD%E5%9B%9E%E5%BD%92%EF%BC%88Ridge-Regression%EF%BC%89%E6%8B%9F%E5%90%88"><span class="nav-number">10.4.</span> <span class="nav-text">4. 逐层岭回归（Ridge Regression）拟合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E5%B1%82%E5%AE%9A%E4%BD%8D%EF%BC%88Layer-Localization%EF%BC%89"><span class="nav-number">10.5.</span> <span class="nav-text">5. 层定位（Layer Localization）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97-pref-%E7%9A%84%E5%90%AB%E4%B9%89%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">11.</span> <span class="nav-text">计算$pref$的含义是什么</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81-%E4%BB%80%E4%B9%88%E6%98%AF%E2%80%9C%E8%AF%BB%E5%8F%96%E6%A8%A1%E5%9E%8B%E9%A2%84%E6%B5%8B%E4%B8%8B%E4%B8%80%E4%B8%AA-Token-%E7%9A%84%E6%A6%82%E7%8E%87%E5%AF%B9%E6%95%B0%EF%BC%88Logits%EF%BC%89%E2%80%9D%EF%BC%9F"><span class="nav-number">11.1.</span> <span class="nav-text">一、 什么是“读取模型预测下一个 Token 的概率对数（Logits）”？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%89-T-%E5%92%8C-T-%EF%BC%8C%E8%BF%98%E8%A6%81%E5%8F%96-max-%EF%BC%9F"><span class="nav-number">11.2.</span> <span class="nav-text">二、 为什么有 $T^+$ 和 $T^-$，还要取 $\max$ ？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81-%E8%BF%99%E4%B8%AA-pref-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E7%AE%97%EF%BC%9F%E5%AE%83%E7%9A%84%E7%89%A9%E7%90%86%E6%84%8F%E4%B9%89%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">11.3.</span> <span class="nav-text">三、 这个 $pref$ 为什么这么算？它的物理意义是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">11.4.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MRV%E7%9A%84%E6%8F%90%E5%8F%96"><span class="nav-number">12.</span> <span class="nav-text">MRV的提取</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81-MRV-%E7%9A%84%E6%95%B0%E6%8D%AE%E9%9B%86%E8%AE%BE%E8%AE%A1%EF%BC%9A%E5%AF%B9%E7%A7%B0%E5%9B%BE%E6%96%87%E5%86%B2%E7%AA%81%EF%BC%88Setup-II%EF%BC%89"><span class="nav-number">12.1.</span> <span class="nav-text">一、 MRV 的数据集设计：对称图文冲突（Setup II）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81-%E7%94%A8%E5%85%B7%E4%BD%93%E6%A1%88%E4%BE%8B%E6%8B%86%E8%A7%A3%E8%BF%99%E4%B8%A4%E4%B8%AA%E5%AD%90%E9%9B%86"><span class="nav-number">12.2.</span> <span class="nav-text">二、 用具体案例拆解这两个子集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%A0%B7%E6%9C%AC%E5%AD%90%E9%9B%86-S-a-%EF%BC%88%E5%9B%BE%E6%98%AF%E7%8C%AB%EF%BC%8C%E6%96%87%E6%9C%AC%E8%AF%B4%E6%98%AF%E7%8B%97%EF%BC%89"><span class="nav-number">12.2.1.</span> <span class="nav-text">1. 样本子集 $S_a$（图是猫，文本说是狗）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%AF%B9%E7%A7%B0%E6%A0%B7%E6%9C%AC%E5%AD%90%E9%9B%86-S-b-%EF%BC%88%E5%9B%BE%E6%98%AF%E7%8B%97%EF%BC%8C%E6%96%87%E6%9C%AC%E8%AF%B4%E6%98%AF%E7%8C%AB%EF%BC%89"><span class="nav-number">12.2.2.</span> <span class="nav-text">2. 对称样本子集 $S_b$（图是狗，文本说是猫）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%A4%A7%E8%B4%B9%E5%91%A8%E7%AB%A0%E5%81%9A%E2%80%9C%E5%AF%B9%E7%A7%B0%E8%AE%BE%E8%AE%A1%E2%80%9D%EF%BC%9F"><span class="nav-number">12.3.</span> <span class="nav-text">三、 为什么要大费周章做“对称设计”？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81-MRV-%E7%9A%84%E6%9C%80%E7%BB%88%E6%8F%90%E5%8F%96"><span class="nav-number">12.4.</span> <span class="nav-text">四、 MRV 的最终提取</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Signed-Activation-Steering-%E6%9C%89%E7%AC%A6%E5%8F%B7%E6%BF%80%E6%B4%BB%E5%AF%BC%E5%90%91"><span class="nav-number">13.</span> <span class="nav-text">Signed Activation Steering (有符号激活导向)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-Signed-Activation-Steering-%E6%9C%89%E7%AC%A6%E5%8F%B7%E6%BF%80%E6%B4%BB%E5%AF%BC%E5%90%91-%EF%BC%9F"><span class="nav-number">13.1.</span> <span class="nav-text">什么是 Signed Activation Steering (有符号激活导向)？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%B9%B2%E9%A2%84%E5%85%AC%E5%BC%8F%E6%8B%86%E8%A7%A3"><span class="nav-number">13.2.</span> <span class="nav-text">核心干预公式拆解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%AE%8B%E5%B7%AE%E9%93%BE%E6%8E%A5%EF%BC%88%E6%B3%A8%E5%85%A5%EF%BC%89%E7%9A%84%E5%B7%A8%E5%A4%A7%E4%BC%98%E5%8A%BF"><span class="nav-number">13.2.1.</span> <span class="nav-text">使用残差链接（注入）的巨大优势</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%B5%B7%E5%90%8D%E5%8F%AB-%E2%80%9CSigned%E2%80%9D%EF%BC%88%E6%9C%89%E7%AC%A6%E5%8F%B7%EF%BC%89%EF%BC%9F%E8%BF%99%E8%83%8C%E5%90%8E%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%A9%E7%90%86%E5%8F%91%E7%8E%B0%EF%BC%9F"><span class="nav-number">13.3.</span> <span class="nav-text">为什么起名叫 “Signed”（有符号）？这背后有什么物理发现？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Tempered-Position-Prior-TPP%E8%B0%83%E5%92%8C%E4%BD%8D%E7%BD%AE%E5%85%88%E9%AA%8C"><span class="nav-number">14.</span> <span class="nav-text">Tempered Position Prior (TPP调和位置先验)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81-TPP%EF%BC%9F%EF%BC%88%E5%8E%9F%E7%94%9F%E7%9A%84%E4%BD%8D%E7%BD%AE%E5%85%88%E9%AA%8C%E9%99%B7%E9%98%B1%EF%BC%89"><span class="nav-number">14.1.</span> <span class="nav-text">一、 为什么需要 TPP？（原生的位置先验陷阱）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81-TPP-%E7%9A%84%E6%A0%B8%E5%BF%83%E9%80%BB%E8%BE%91%EF%BC%9A%E4%BB%80%E4%B9%88%E6%98%AF%E2%80%9CTempered%EF%BC%88%E6%B8%A9%E5%92%8C-%E8%B0%83%E5%92%8C%EF%BC%89%E2%80%9D%EF%BC%9F"><span class="nav-number">14.2.</span> <span class="nav-text">二、 TPP 的核心逻辑：什么是“Tempered（温和&#x2F;调和）”？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">15.</span> <span class="nav-text">流程图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%B7%A6%E5%8D%8A%E9%83%A8%E5%88%86%EF%BC%9A%E7%A6%BB%E7%BA%BF%E6%8F%90%E5%8F%96%E9%98%B6%E6%AE%B5%EF%BC%88Offline-Extraction%EF%BC%89"><span class="nav-number">15.1.</span> <span class="nav-text">1. 左半部分：离线提取阶段（Offline Extraction）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%8F%B3%E5%8D%8A%E9%83%A8%E5%88%86%EF%BC%9A%E5%9C%A8%E7%BA%BF%E6%8E%A8%E7%90%86%E4%B8%AD%E7%9A%84%E6%BF%80%E6%B4%BB%E5%AF%BC%E5%90%91%EF%BC%88Online-Inference-Strategy%EF%BC%89"><span class="nav-number">15.2.</span> <span class="nav-text">2. 右半部分：在线推理中的激活导向（Online Inference Strategy）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E8%AE%BE%E7%BD%AE-Experimental-Setup"><span class="nav-number">16.</span> <span class="nav-text">实验设置 (Experimental Setup)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E8%AF%84%E4%BC%B0%E6%A8%A1%E5%9E%8B-Models-%E2%80%94%E2%80%94-%E8%A6%86%E7%9B%96%E5%9B%9B%E5%A4%A7%E4%B8%BB%E6%B5%81%E6%9E%B6%E6%9E%84"><span class="nav-number">16.1.</span> <span class="nav-text">1. 评估模型 (Models) —— 覆盖四大主流架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E8%AF%84%E4%BC%B0%E5%9F%BA%E5%87%86-Benchmarks-%E2%80%94%E2%80%94-%E8%87%AA%E7%94%B1%E7%94%9F%E6%88%90%E4%B8%8E%E6%98%AF%E9%9D%9E%E5%88%A4%E5%88%AB%E5%8F%8C%E8%BD%A8%E5%88%B6"><span class="nav-number">16.2.</span> <span class="nav-text">2. 评估基准 (Benchmarks) —— 自由生成与是非判别双轨制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%AF%B9%E6%AF%94%E5%9F%BA%E7%BA%BF-Baselines-%E2%80%94%E2%80%94-%E5%85%AB%E5%A4%A7%E5%BC%BA%E5%8A%B2%E5%AF%B9%E6%89%8B%E5%A4%A7%E5%9B%B4%E5%89%BF"><span class="nav-number">16.3.</span> <span class="nav-text">3. 对比基线 (Baselines) —— 八大强劲对手大围剿</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E5%BC%95%E5%85%A5%E6%96%B0%E6%96%87%E6%9C%AC%E8%B4%A8%E9%87%8F%E6%8C%87%E6%A0%87-%E2%80%94%E2%80%94-%E5%A0%B5%E4%BD%8F%E2%80%9C%E5%A4%8D%E8%AF%BB%E6%9C%BA%E2%80%9D%E6%BC%8F%E6%B4%9E"><span class="nav-number">16.4.</span> <span class="nav-text">4. 引入新文本质量指标 —— 堵住“复读机”漏洞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-CAS-%E7%9A%84%E4%B8%93%E5%B1%9E%E7%A1%AC%E7%BC%96%E7%A0%81%E9%85%8D%E7%BD%AE-CAS-Configuration"><span class="nav-number">16.5.</span> <span class="nav-text">5. CAS 的专属硬编码配置 (CAS Configuration)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E8%A7%A3%E7%A0%81%E7%AD%96%E7%95%A5%E4%B8%8E%E7%A1%AC%E4%BB%B6%E7%8E%AF%E5%A2%83-Decoding-amp-Hardware"><span class="nav-number">16.6.</span> <span class="nav-text">6. 解码策略与硬件环境 (Decoding &amp; Hardware)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%AA%E5%BF%83%E8%A7%A3%E7%A0%81%EF%BC%88Greedy-Decoding%EF%BC%89"><span class="nav-number">17.</span> <span class="nav-text">贪心解码（Greedy Decoding）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81-%E6%A0%B8%E5%BF%83%E9%80%BB%E8%BE%91%E4%B8%8E%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">17.1.</span> <span class="nav-text">一、 核心逻辑与工作原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81-%E8%B4%AA%E5%BF%83%E8%A7%A3%E7%A0%81%E5%9C%A8%E8%AE%BA%E6%96%87%E4%B8%AD%E7%9A%84%E5%85%B3%E9%94%AE%E4%BD%9C%E7%94%A8"><span class="nav-number">17.2.</span> <span class="nav-text">二、 贪心解码在论文中的关键作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81-%E8%B4%AA%E5%BF%83%E8%A7%A3%E7%A0%81%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9%E6%A8%AA%E5%90%91%E5%AF%B9%E6%AF%94"><span class="nav-number">17.3.</span> <span class="nav-text">三、 贪心解码的优缺点横向对比</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Generative-Hallucination%EF%BC%88%E7%94%9F%E6%88%90%E5%BC%8F%E5%B9%BB%E8%A7%89%E8%AF%84%E4%BC%B0%EF%BC%89"><span class="nav-number">18.</span> <span class="nav-text">Generative Hallucination（生成式幻觉评估）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Table-1%EF%BC%9ACHAIR-%E8%AF%84%E6%B5%8B%E7%BB%93%E6%9E%9C%EF%BC%88%E7%89%A9%E4%BD%93%E5%B9%BB%E8%A7%89%E7%9A%84%E7%A1%AC%E6%A0%B8%E8%BE%83%E9%87%8F%EF%BC%89"><span class="nav-number">18.1.</span> <span class="nav-text">Table 1：CHAIR 评测结果（物体幻觉的硬核较量）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%A0%B8%E5%BF%83%E6%8C%87%E6%A0%87%E8%A7%A3%E8%AF%BB"><span class="nav-number">18.1.1.</span> <span class="nav-text">1. 核心指标解读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%8F%AD%E9%9C%B2-Baseline-%E7%9A%84%E2%80%9C%E4%BD%9C%E5%BC%8A%E2%80%9D%E7%8E%B0%E8%B1%A1%EF%BC%88%E5%AD%A6%E6%9C%AF%E4%BA%AE%E7%82%B9%EF%BC%89"><span class="nav-number">18.1.2.</span> <span class="nav-text">2. 揭露 Baseline 的“作弊”现象（学术亮点）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Table-2%EF%BC%9AAMBER-G%EF%BC%88%E7%94%9F%E6%88%90%E5%BC%8F%E5%B9%BB%E8%A7%89%EF%BC%89%E8%AF%84%E6%B5%8B%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90"><span class="nav-number">18.2.</span> <span class="nav-text">Table 2：AMBER-G（生成式幻觉）评测结果分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%A0%B8%E5%BF%83%E6%8C%87%E6%A0%87%E7%9F%A9%E9%98%B5"><span class="nav-number">18.2.1.</span> <span class="nav-text">1. 核心指标矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%B8%BA%E4%BB%80%E4%B9%88-AMBER-G-%E7%9A%84%E6%95%B0%E6%8D%AE%E8%83%BD%E5%AF%B9-Baseline-%E5%BD%A2%E6%88%90%E9%99%8D%E7%BB%B4%E6%89%93%E5%87%BB%EF%BC%9F"><span class="nav-number">18.2.2.</span> <span class="nav-text">2. 为什么 AMBER-G 的数据能对 Baseline 形成降维打击？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%A4%E5%88%AB%E5%BC%8F%E5%B9%BB%E8%A7%89%EF%BC%88Discriminative-Hallucination%EF%BC%89"><span class="nav-number">19.</span> <span class="nav-text">判别式幻觉（Discriminative Hallucination）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Table-3-%E7%9A%84%E7%BA%B5%E7%BA%B5%E6%A8%AA%E6%A8%AA%EF%BC%9A%E7%BB%93%E6%9E%84%E4%B8%8E%E6%A0%B8%E5%BF%83%E6%8C%87%E6%A0%87"><span class="nav-number">19.1.</span> <span class="nav-text">Table 3 的纵纵横横：结构与核心指标</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Per-model-response-to-VFV-and-MRV"><span class="nav-number">20.</span> <span class="nav-text">Per-model response to VFV and MRV</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%8F%91%E7%8E%B0%EF%BC%9A%E6%A8%A1%E5%9E%8B%E5%BC%82%E8%B4%A8%E6%80%A7%EF%BC%88Model-Heterogeneity%EF%BC%89%E4%B8%8E%E7%AC%A6%E5%8F%B7%E6%90%9C%E7%B4%A2"><span class="nav-number">20.1.</span> <span class="nav-text">核心发现：模型异质性（Model Heterogeneity）与符号搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Figure-3-%E6%B7%B1%E5%BA%A6%E8%A7%A3%E7%A0%81%EF%BC%9A%E7%AC%A6%E5%8F%B7%E4%B8%8E%E5%BC%BA%E5%BA%A6%E7%9A%84%E5%85%A8%E9%9D%A2%E5%90%9E%E5%90%90%E6%B5%81%EF%BC%88Grid-Search-%E8%B6%8B%E5%8A%BF%EF%BC%89"><span class="nav-number">20.2.</span> <span class="nav-text">Figure 3 深度解码：符号与强度的全面吞吐流（Grid Search 趋势）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%80%A7%E8%83%BD%E6%9B%B2%E7%BA%BF%E7%9A%84%E2%80%9C%E5%8D%95%E5%B3%B0%E7%89%B9%E6%80%A7%E2%80%9D%E4%B8%8E%E9%9B%B6%E7%82%B9%E8%B7%A8%E8%B6%8A"><span class="nav-number">20.2.1.</span> <span class="nav-text">1. 性能曲线的“单峰特性”与零点跨越</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%82%AC%E5%B4%96%E6%95%88%E5%BA%94%EF%BC%88Cliff-Effect%EF%BC%89%EF%BC%9A%E8%BF%87%E5%BA%A6%E5%B9%B2%E9%A2%84%E7%9A%84%E8%AF%AD%E8%A8%80%E5%B4%A9%E5%A1%8C"><span class="nav-number">20.2.2.</span> <span class="nav-text">2. 悬崖效应（Cliff Effect）：过度干预的语言崩塌</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Table-6-amp-Table-7-%E6%B7%B1%E5%BA%A6%E8%A7%A3%E7%A0%81%EF%BC%9A%E8%B6%85%E5%8F%82%E6%95%B0%E5%9B%BE%E8%B0%B1%E4%B8%8E%E7%A8%B3%E5%81%A5%E6%80%A7%E9%AA%8C%E8%AF%81"><span class="nav-number">20.3.</span> <span class="nav-text">Table 6 &amp; Table 7 深度解码：超参数图谱与稳健性验证</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Layer-Analysis%E5%B1%82%E6%B6%88%E8%9E%8D%E5%AE%9E%E9%AA%8C"><span class="nav-number">21.</span> <span class="nav-text">Layer Analysis层消融实验</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion%E5%92%8CLimitations"><span class="nav-number">22.</span> <span class="nav-text">Conclusion和Limitations</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81-%E7%BB%93%E8%AE%BA%E9%83%A8%E5%88%86-Conclusion"><span class="nav-number">22.1.</span> <span class="nav-text">一、 结论部分 (Conclusion)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81-%E5%B1%80%E9%99%90%E6%80%A7%E9%83%A8%E5%88%86-Limitations"><span class="nav-number">22.2.</span> <span class="nav-text">二、 局限性部分 (Limitations)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E4%B8%A5%E9%87%8D%E4%BE%9D%E8%B5%96%E7%A6%BB%E7%BA%BF%E7%BD%91%E6%A0%BC%E6%90%9C%E7%B4%A2%EF%BC%88Hyperparameter-Dependency%EF%BC%89"><span class="nav-number">22.2.1.</span> <span class="nav-text">1. 严重依赖离线网格搜索（Hyperparameter Dependency）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%B9%BB%E8%A7%89%E9%98%B2%E5%BE%A1%E7%9A%84%E8%8C%83%E7%95%B4%E8%BE%B9%E7%95%8C%EF%BC%88Scope-Limitations%EF%BC%89"><span class="nav-number">22.2.2.</span> <span class="nav-text">2. 幻觉防御的范畴边界（Scope Limitations）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E9%9D%99%E6%80%81%E8%AF%AD%E4%B9%89%E8%BD%B4%E4%B8%8E%E5%8A%A8%E6%80%81%E7%94%9F%E6%88%90%E4%B8%8A%E4%B8%8B%E6%96%87%E7%9A%84%E8%84%B1%E8%8A%82%EF%BC%88Static-CPV-Vector%EF%BC%89"><span class="nav-number">22.2.3.</span> <span class="nav-text">3. 静态语义轴与动态生成上下文的脱节（Static CPV Vector）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E8%B6%85%E5%A4%A7%E5%B0%BA%E5%BA%A6%E6%A8%A1%E5%9E%8B%EF%BC%88Ultra-Large-Models%EF%BC%89%E7%9A%84%E5%B1%82%E5%AE%9A%E4%BD%8D%E6%88%90%E6%9C%AC"><span class="nav-number">22.2.4.</span> <span class="nav-text">4. 超大尺度模型（Ultra-Large Models）的层定位成本</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%99%84%E5%BD%95"><span class="nav-number">23.</span> <span class="nav-text">附录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-number">24.</span> <span class="nav-text">问题</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B9%BB%E8%A7%89%E7%8E%B0%E8%B1%A1"><span class="nav-number">2.</span> <span class="nav-text">幻觉现象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%BA%E5%A4%A7%E7%9A%84%E8%AF%AD%E8%A8%80%E5%88%BB%E6%9D%BF%E5%8D%B0%E8%B1%A1language-prior-statistical-bias"><span class="nav-number">2.1.</span> <span class="nav-text">1.强大的“语言刻板印象”（Language
+Prior &#x2F; Statistical Bias）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%95%BF%E6%96%87%E6%9C%AC%E4%B8%AD%E7%9A%84%E6%96%87%E6%9C%AC%E6%83%AF%E6%80%A7%E6%88%96%E8%BF%87%E5%BA%A6%E4%BF%A1%E8%B5%96text-inertia-over-trust"><span class="nav-number">2.2.</span> <span class="nav-text">2.长文本中的文本惯性或过度信赖（Text
+Inertia &#x2F; Over-trust）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%84%E6%B5%8B%E6%8C%87%E6%A0%87"><span class="nav-number">3.</span> <span class="nav-text">评测指标</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#chair-%E8%AF%84%E6%B5%8B%E6%B5%81%E7%A8%8B%E5%9F%BA%E4%BA%8E%E6%96%87%E6%9C%AC%E8%A7%A3%E6%9E%90%E7%9A%84%E5%90%8D%E8%AF%8D%E7%89%A9%E4%BD%93%E9%AA%8C%E8%AF%81"><span class="nav-number">3.1.</span> <span class="nav-text">CHAIR
+评测流程：基于文本解析的“名词物体验证”</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E7%94%9F%E6%88%90caption-generation"><span class="nav-number">3.1.1.</span> <span class="nav-text">1. 模型生成（Caption
+Generation）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E6%9C%AC%E8%A7%A3%E6%9E%90%E4%B8%8E%E5%90%8D%E8%AF%8D%E6%8F%90%E5%8F%96pos-tagging-parsing"><span class="nav-number">3.1.2.</span> <span class="nav-text">2.
+文本解析与名词提取（POS Tagging &amp; Parsing）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E4%B9%89%E8%AF%8D%E4%B8%8E%E7%B1%BB%E5%88%AB%E6%98%A0%E5%B0%84synonym-mapping"><span class="nav-number">3.1.3.</span> <span class="nav-text">3. 同义词与类别映射（Synonym
+Mapping）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9C%9F%E5%AE%9E%E6%A0%87%E7%AD%BE%E6%AF%94%E5%AF%B9ground-truth-matching"><span class="nav-number">3.1.4.</span> <span class="nav-text">4. 真实标签比对（Ground-Truth
+Matching）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E6%A0%87%E7%BB%93%E7%AE%97"><span class="nav-number">3.1.5.</span> <span class="nav-text">5. 指标结算</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pope-%E8%AF%84%E6%B5%8B%E6%B5%81%E7%A8%8B%E5%9F%BA%E4%BA%8E%E9%9D%9E%E5%AF%B9%E7%A7%B0%E9%87%87%E6%A0%B7%E7%9A%84%E6%98%AF%E9%9D%9E%E9%A2%98%E7%9B%B2%E6%B5%8B"><span class="nav-number">3.2.</span> <span class="nav-text">POPE
+评测流程：基于非对称采样的“是非题盲测”</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E6%99%BA%E8%83%BD%E9%97%AE%E7%AD%94%E5%BA%93question-construction"><span class="nav-number">3.2.1.</span> <span class="nav-text">1. 构建智能问答库（Question
+Construction）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86inference"><span class="nav-number">3.2.2.</span> <span class="nav-text">2. 模型推理（Inference）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%B7%E6%B7%86%E7%9F%A9%E9%98%B5%E5%88%A4%E5%AE%9Aconfusion-matrix"><span class="nav-number">3.2.3.</span> <span class="nav-text">3. 混淆矩阵判定（Confusion
+Matrix）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E6%A0%87%E7%BB%93%E7%AE%97-1"><span class="nav-number">3.2.4.</span> <span class="nav-text">4. 指标结算</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#amber-%E8%AF%84%E6%B5%8B%E6%B5%81%E7%A8%8B%E6%97%A0%E9%9C%80%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%8F%8C%E8%BD%A8%E4%BA%A4%E7%BB%87%E7%9F%A9%E9%98%B5"><span class="nav-number">3.3.</span> <span class="nav-text">AMBER
+评测流程：无需大模型的“双轨交织矩阵”</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%88%86%E6%B5%81%E5%90%AF%E5%8A%A8%E5%8F%8C%E8%BD%A8%E6%B5%8B%E8%AF%95dual-path-input"><span class="nav-number">3.3.1.</span> <span class="nav-text">1.
+数据分流：启动双轨测试（Dual-Path Input）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%A8%E9%81%93-aamber-g%E7%94%9F%E6%88%90%E5%BC%8F%E8%BD%A8%E9%81%93"><span class="nav-number">3.3.1.1.</span> <span class="nav-text">轨道 A：AMBER-G（生成式轨道）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%A8%E9%81%93-bamber-d%E5%88%A4%E5%88%AB%E5%BC%8F%E8%BD%A8%E9%81%93"><span class="nav-number">3.3.1.2.</span> <span class="nav-text">轨道 B：AMBER-D（判别式轨道）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E7%BB%BC%E5%90%88%E5%BE%97%E5%88%86%E6%B1%87%E7%AE%97final-aggregation"><span class="nav-number">3.3.2.</span> <span class="nav-text">2. 全局综合得分汇算（Final
+Aggregation）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E7%9A%84%E4%B8%BB%E8%A6%81%E8%B7%AF%E7%BA%BF"><span class="nav-number">4.</span> <span class="nav-text">解决的主要路线</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="nav-number">5.</span> <span class="nav-text">相关工作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E8%AE%AD%E7%BB%83%E7%9A%84%E5%B9%BB%E8%A7%89%E7%BC%93%E8%A7%A3-training-based-hallucination-mitigation"><span class="nav-number">5.1.</span> <span class="nav-text">基于训练的幻觉缓解
+(Training-based Hallucination Mitigation)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%96%B9%E6%B3%95%E4%B8%8E%E4%BB%A3%E8%A1%A8%E6%80%A7%E6%8A%80%E6%9C%AF"><span class="nav-number">5.1.1.</span> <span class="nav-text">核心方法与代表性技术</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%A5%E8%B7%AF%E7%BA%BF%E7%9A%84%E4%BC%98%E5%8A%BF%E4%B8%8E%E5%B1%80%E9%99%90%E6%80%A7"><span class="nav-number">5.1.2.</span> <span class="nav-text">该路线的优势与局限性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#training-free"><span class="nav-number">5.2.</span> <span class="nav-text">Training-free</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%88%E6%A3%80%E6%B5%8B%E5%90%8E%E4%BF%AE%E6%AD%A3%E7%9A%84%E6%B5%81%E7%A8%8Bdetect-then-correct-work%EF%AC%82ows"><span class="nav-number">5.2.1.</span> <span class="nav-text">先检测后修正的流程Detect-then-Correct
+Workﬂows</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E9%80%BB%E8%BE%91%E4%B8%8E%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">5.2.1.1.</span> <span class="nav-text">核心逻辑与工作原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E8%A1%A8%E6%80%A7%E6%8A%80%E6%9C%AF%E4%B8%8E%E6%96%B9%E6%B3%95"><span class="nav-number">5.2.1.2.</span> <span class="nav-text">代表性技术与方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%A5%E8%B7%AF%E7%BA%BF%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9%E5%88%86%E6%9E%90"><span class="nav-number">5.2.1.3.</span> <span class="nav-text">该路线的优缺点分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E6%BA%AF%E4%B8%8E%E5%B1%82%E5%AF%B9%E6%AF%94%E8%A7%A3%E7%A0%81-retrospection-and-layer-contrastive-decoding"><span class="nav-number">5.2.2.</span> <span class="nav-text">回溯与层对比解码
+(Retrospection and Layer-Contrastive Decoding)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%81%87%E8%AE%BE%E4%B8%8E%E5%8E%9F%E7%90%86"><span class="nav-number">5.2.2.1.</span> <span class="nav-text">1. 核心假设与原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E8%A1%A8%E6%80%A7%E6%96%B9%E6%B3%95%E4%B8%8E%E6%8A%80%E6%9C%AF%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.2.2.2.</span> <span class="nav-text">2. 代表性方法与技术实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%A5%E8%B7%AF%E7%BA%BF%E7%9A%84%E5%B1%80%E9%99%90%E6%80%A7%E4%B8%8E%E7%97%9B%E7%82%B9"><span class="nav-number">5.2.2.3.</span> <span class="nav-text">3. 该路线的局限性与痛点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E8%A7%86%E8%A7%89%E5%BF%BD%E7%95%A5%E5%81%87%E8%AE%BE%E7%9A%84%E6%96%B9%E6%B3%95methods-under-the-visual-neglect-hypothesis"><span class="nav-number">5.2.3.</span> <span class="nav-text">基于视觉忽略假设的方法（Methods
+under the Visual-Neglect Hypothesis）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%81%87%E8%AE%BE"><span class="nav-number">5.2.3.1.</span> <span class="nav-text">核心假设</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9B%E7%A7%8D%E4%BB%A3%E8%A1%A8%E6%80%A7%E6%8A%80%E6%9C%AF%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.2.3.2.</span> <span class="nav-text">四种代表性技术实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#vcd-visual-contrastive-decoding"><span class="nav-number">5.2.3.2.1.</span> <span class="nav-text">1. VCD (Visual Contrastive
+Decoding)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#pai-paying-more-attention-to-image"><span class="nav-number">5.2.3.2.2.</span> <span class="nav-text">2. PAI (Paying More
+Attention to Image)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#attnreal-attention-reallocation"><span class="nav-number">5.2.3.2.3.</span> <span class="nav-text">3. AttnReal (Attention
+Reallocation)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ssl-steering-lvlms-via-sparse-autoencoder"><span class="nav-number">5.2.3.2.4.</span> <span class="nav-text">4. SSL (Steering
+LVLMs via Sparse Autoencoder)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%AF%A5%E5%81%87%E8%AE%BE%E4%B8%8E%E6%96%B9%E6%A1%88%E7%9A%84%E5%B1%80%E9%99%90%E6%80%A7"><span class="nav-number">5.2.3.2.5.</span> <span class="nav-text">该假设与方案的局限性</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pai%E4%B8%8Eattnreal-%E7%BC%BA%E7%82%B9"><span class="nav-number">6.</span> <span class="nav-text">pai与AttnReal 缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E8%BE%B9%E7%95%8C%E6%B6%88%E5%A4%B1%E6%97%A0%E6%B3%95%E5%9C%A8%E8%87%AA%E6%B3%A8%E6%84%8F%E5%8A%9B%E7%9F%A9%E9%98%B5%E4%B8%AD%E7%B2%BE%E5%87%86%E5%AE%9A%E4%BD%8D"><span class="nav-number">6.1.</span> <span class="nav-text">1.
+物理边界消失，无法在自注意力矩阵中精准定位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%BA%E8%A1%8C%E5%B9%B2%E9%A2%84%E4%BC%9A%E7%A0%B4%E5%9D%8F%E8%81%94%E5%90%88%E6%A6%82%E7%8E%87%E5%88%86%E5%B8%83%E5%AF%BC%E8%87%B4%E8%AF%AD%E4%B9%89%E5%B4%A9%E6%BA%83%E8%BE%93%E5%87%BA%E4%B9%B1%E7%A0%81"><span class="nav-number">6.2.</span> <span class="nav-text">2.
+强行干预会破坏联合概率分布，导致语义崩溃（输出乱码）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%8A%A8%E6%9C%BAmotivation%E4%B8%8E%E6%A0%B8%E5%BF%83%E5%AE%9E%E9%AA%8C%E5%8F%91%E7%8E%B0findings"><span class="nav-number">7.</span> <span class="nav-text">核心动机（Motivation）与核心实验发现（Findings）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#external-vs-internal-%E7%AB%9E%E4%BA%89"><span class="nav-number">7.0.1.</span> <span class="nav-text">❶ External-vs-Internal 竞争</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cross-modal-%E7%AB%9E%E4%BA%89"><span class="nav-number">7.0.2.</span> <span class="nav-text">❷ Cross-Modal 竞争</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E5%81%8F%E5%A5%BD%E5%90%91%E9%87%8Fcpvs%E7%9A%84%E8%A7%A3%E8%80%A6%E4%B8%8E%E6%8F%90%E5%8F%96"><span class="nav-number">8.</span> <span class="nav-text">上下文偏好向量（CPVs）的解耦与提取</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%86%E8%A7%89%E4%BF%9D%E7%9C%9F%E5%90%91%E9%87%8Fvisual-fidelity-vector-mathbfv_textvfv"><span class="nav-number">8.0.1.</span> <span class="nav-text">❶
+视觉保真向量（Visual Fidelity Vector, VVFV）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%80%81%E4%BE%9D%E8%B5%96%E5%90%91%E9%87%8Fmodality-reliance-vector-mathbfv_textmrv"><span class="nav-number">8.0.2.</span> <span class="nav-text">❷
+模态依赖向量（Modality Reliance Vector, VMRV）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8F%90%E5%8F%96%E4%B8%8A%E4%B8%8B%E6%96%87%E5%81%8F%E5%A5%BD%E5%90%91%E9%87%8F"><span class="nav-number">9.</span> <span class="nav-text">提取上下文偏好向量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80-%E8%A7%86%E8%A7%89%E4%BF%9D%E7%9C%9F%E5%90%91%E9%87%8Fvfv%E8%A7%A3%E5%86%B3%E5%A4%96%E9%83%A8%E8%A7%86%E8%A7%89%E4%B8%8E%E5%86%85%E9%83%A8%E5%B8%B8%E8%AF%86%E7%9A%84%E5%86%B2%E7%AA%81"><span class="nav-number">9.1.</span> <span class="nav-text">一、
+视觉保真向量（VFV）：解决“外部视觉”与“内部常识”的冲突</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C-%E6%A8%A1%E6%80%81%E4%BE%9D%E8%B5%96%E5%90%91%E9%87%8Fmrv%E8%A7%A3%E5%86%B3%E8%A7%86%E8%A7%89%E4%B8%8A%E4%B8%8B%E6%96%87%E4%B8%8E%E6%96%87%E6%9C%AC%E4%B8%8A%E4%B8%8B%E6%96%87%E7%9A%84%E5%86%B2%E7%AA%81"><span class="nav-number">9.2.</span> <span class="nav-text">二、
+模态依赖向量（MRV）：解决“视觉上下文”与“文本上下文”的冲突</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%8F%90%E5%8F%96cpvs"><span class="nav-number">10.</span> <span class="nav-text">如何提取CPVs</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%89%E6%8B%A9-mlp-%E5%B1%82%E4%BD%9C%E4%B8%BA%E6%8F%90%E5%8F%96%E4%BD%8D%E7%BD%AE"><span class="nav-number">10.1.</span> <span class="nav-text">1. 为什么选择 MLP
+层作为提取位置？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%BD%8D%E5%85%B3%E9%94%AE-token-%E4%BD%8D%E7%BD%AEtstar"><span class="nav-number">10.2.</span> <span class="nav-text">2. 定位关键 Token 位置（t⋆）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E8%BF%9E%E7%BB%AD%E5%81%8F%E5%A5%BD%E4%BF%A1%E5%8F%B7pref"><span class="nav-number">10.3.</span> <span class="nav-text">3. 计算连续偏好信号（pref）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%90%E5%B1%82%E5%B2%AD%E5%9B%9E%E5%BD%92ridge-regression%E6%8B%9F%E5%90%88"><span class="nav-number">10.4.</span> <span class="nav-text">4. 逐层岭回归（Ridge
+Regression）拟合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B1%82%E5%AE%9A%E4%BD%8Dlayer-localization"><span class="nav-number">10.5.</span> <span class="nav-text">5. 层定位（Layer Localization）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97pref%E7%9A%84%E5%90%AB%E4%B9%89%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">11.</span> <span class="nav-text">计算pref的含义是什么</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80-%E4%BB%80%E4%B9%88%E6%98%AF%E8%AF%BB%E5%8F%96%E6%A8%A1%E5%9E%8B%E9%A2%84%E6%B5%8B%E4%B8%8B%E4%B8%80%E4%B8%AA-token-%E7%9A%84%E6%A6%82%E7%8E%87%E5%AF%B9%E6%95%B0logits"><span class="nav-number">11.1.</span> <span class="nav-text">一、
+什么是“读取模型预测下一个 Token 的概率对数（Logits）”？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%89-t-%E5%92%8C-t-%E8%BF%98%E8%A6%81%E5%8F%96-max"><span class="nav-number">11.2.</span> <span class="nav-text">二、 为什么有 T+ 和 T−，还要取 max  ？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89-%E8%BF%99%E4%B8%AA-pref-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E7%AE%97%E5%AE%83%E7%9A%84%E7%89%A9%E7%90%86%E6%84%8F%E4%B9%89%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">11.3.</span> <span class="nav-text">三、 这个 pref
+为什么这么算？它的物理意义是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">11.4.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#mrv%E7%9A%84%E6%8F%90%E5%8F%96"><span class="nav-number">12.</span> <span class="nav-text">MRV的提取</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80-mrv-%E7%9A%84%E6%95%B0%E6%8D%AE%E9%9B%86%E8%AE%BE%E8%AE%A1%E5%AF%B9%E7%A7%B0%E5%9B%BE%E6%96%87%E5%86%B2%E7%AA%81setup-ii"><span class="nav-number">12.1.</span> <span class="nav-text">一、 MRV
+的数据集设计：对称图文冲突（Setup II）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C-%E7%94%A8%E5%85%B7%E4%BD%93%E6%A1%88%E4%BE%8B%E6%8B%86%E8%A7%A3%E8%BF%99%E4%B8%A4%E4%B8%AA%E5%AD%90%E9%9B%86"><span class="nav-number">12.2.</span> <span class="nav-text">二、 用具体案例拆解这两个子集</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B7%E6%9C%AC%E5%AD%90%E9%9B%86-s_a%E5%9B%BE%E6%98%AF%E7%8C%AB%E6%96%87%E6%9C%AC%E8%AF%B4%E6%98%AF%E7%8B%97"><span class="nav-number">12.2.1.</span> <span class="nav-text">1. 样本子集 Sa（图是猫，文本说是狗）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E7%A7%B0%E6%A0%B7%E6%9C%AC%E5%AD%90%E9%9B%86-s_b%E5%9B%BE%E6%98%AF%E7%8B%97%E6%96%87%E6%9C%AC%E8%AF%B4%E6%98%AF%E7%8C%AB"><span class="nav-number">12.2.2.</span> <span class="nav-text">2. 对称样本子集 Sb（图是狗，文本说是猫）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%A4%A7%E8%B4%B9%E5%91%A8%E7%AB%A0%E5%81%9A%E5%AF%B9%E7%A7%B0%E8%AE%BE%E8%AE%A1"><span class="nav-number">12.3.</span> <span class="nav-text">三、
+为什么要大费周章做“对称设计”？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B-mrv-%E7%9A%84%E6%9C%80%E7%BB%88%E6%8F%90%E5%8F%96"><span class="nav-number">12.4.</span> <span class="nav-text">四、 MRV 的最终提取</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#signed-activation-steering-%E6%9C%89%E7%AC%A6%E5%8F%B7%E6%BF%80%E6%B4%BB%E5%AF%BC%E5%90%91"><span class="nav-number">13.</span> <span class="nav-text">Signed Activation
+Steering (有符号激活导向)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-signed-activation-steering-%E6%9C%89%E7%AC%A6%E5%8F%B7%E6%BF%80%E6%B4%BB%E5%AF%BC%E5%90%91"><span class="nav-number">13.1.</span> <span class="nav-text">什么是 Signed
+Activation Steering (有符号激活导向)？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%B9%B2%E9%A2%84%E5%85%AC%E5%BC%8F%E6%8B%86%E8%A7%A3"><span class="nav-number">13.2.</span> <span class="nav-text">核心干预公式拆解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%AE%8B%E5%B7%AE%E9%93%BE%E6%8E%A5%E6%B3%A8%E5%85%A5%E7%9A%84%E5%B7%A8%E5%A4%A7%E4%BC%98%E5%8A%BF"><span class="nav-number">13.2.1.</span> <span class="nav-text">使用残差链接（注入）的巨大优势</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%B5%B7%E5%90%8D%E5%8F%AB-signed%E6%9C%89%E7%AC%A6%E5%8F%B7%E8%BF%99%E8%83%8C%E5%90%8E%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%A9%E7%90%86%E5%8F%91%E7%8E%B0"><span class="nav-number">13.3.</span> <span class="nav-text">为什么起名叫
+“Signed”（有符号）？这背后有什么物理发现？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tempered-position-prior-tpp%E8%B0%83%E5%92%8C%E4%BD%8D%E7%BD%AE%E5%85%88%E9%AA%8C"><span class="nav-number">14.</span> <span class="nav-text">Tempered Position Prior
+(TPP调和位置先验)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81-tpp%E5%8E%9F%E7%94%9F%E7%9A%84%E4%BD%8D%E7%BD%AE%E5%85%88%E9%AA%8C%E9%99%B7%E9%98%B1"><span class="nav-number">14.1.</span> <span class="nav-text">一、 为什么需要
+TPP？（原生的位置先验陷阱）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C-tpp-%E7%9A%84%E6%A0%B8%E5%BF%83%E9%80%BB%E8%BE%91%E4%BB%80%E4%B9%88%E6%98%AFtempered%E6%B8%A9%E5%92%8C%E8%B0%83%E5%92%8C"><span class="nav-number">14.2.</span> <span class="nav-text">二、 TPP
+的核心逻辑：什么是“Tempered（温和&#x2F;调和）”？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">15.</span> <span class="nav-text">流程图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A6%E5%8D%8A%E9%83%A8%E5%88%86%E7%A6%BB%E7%BA%BF%E6%8F%90%E5%8F%96%E9%98%B6%E6%AE%B5offline-extraction"><span class="nav-number">15.1.</span> <span class="nav-text">1.
+左半部分：离线提取阶段（Offline Extraction）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%B3%E5%8D%8A%E9%83%A8%E5%88%86%E5%9C%A8%E7%BA%BF%E6%8E%A8%E7%90%86%E4%B8%AD%E7%9A%84%E6%BF%80%E6%B4%BB%E5%AF%BC%E5%90%91online-inference-strategy"><span class="nav-number">15.2.</span> <span class="nav-text">2.
+右半部分：在线推理中的激活导向（Online Inference Strategy）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E8%AE%BE%E7%BD%AE-experimental-setup"><span class="nav-number">16.</span> <span class="nav-text">实验设置 (Experimental
+Setup)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%84%E4%BC%B0%E6%A8%A1%E5%9E%8B-models-%E8%A6%86%E7%9B%96%E5%9B%9B%E5%A4%A7%E4%B8%BB%E6%B5%81%E6%9E%B6%E6%9E%84"><span class="nav-number">16.1.</span> <span class="nav-text">1. 评估模型 (Models) ——
+覆盖四大主流架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%84%E4%BC%B0%E5%9F%BA%E5%87%86-benchmarks-%E8%87%AA%E7%94%B1%E7%94%9F%E6%88%90%E4%B8%8E%E6%98%AF%E9%9D%9E%E5%88%A4%E5%88%AB%E5%8F%8C%E8%BD%A8%E5%88%B6"><span class="nav-number">16.2.</span> <span class="nav-text">2. 评估基准
+(Benchmarks) —— 自由生成与是非判别双轨制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94%E5%9F%BA%E7%BA%BF-baselines-%E5%85%AB%E5%A4%A7%E5%BC%BA%E5%8A%B2%E5%AF%B9%E6%89%8B%E5%A4%A7%E5%9B%B4%E5%89%BF"><span class="nav-number">16.3.</span> <span class="nav-text">3. 对比基线 (Baselines)
+—— 八大强劲对手大围剿</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E5%85%A5%E6%96%B0%E6%96%87%E6%9C%AC%E8%B4%A8%E9%87%8F%E6%8C%87%E6%A0%87-%E5%A0%B5%E4%BD%8F%E5%A4%8D%E8%AF%BB%E6%9C%BA%E6%BC%8F%E6%B4%9E"><span class="nav-number">16.4.</span> <span class="nav-text">4. 引入新文本质量指标 ——
+堵住“复读机”漏洞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cas-%E7%9A%84%E4%B8%93%E5%B1%9E%E7%A1%AC%E7%BC%96%E7%A0%81%E9%85%8D%E7%BD%AE-cas-configuration"><span class="nav-number">16.5.</span> <span class="nav-text">5. CAS 的专属硬编码配置
+(CAS Configuration)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E7%A0%81%E7%AD%96%E7%95%A5%E4%B8%8E%E7%A1%AC%E4%BB%B6%E7%8E%AF%E5%A2%83-decoding-hardware"><span class="nav-number">16.6.</span> <span class="nav-text">6. 解码策略与硬件环境
+(Decoding &amp; Hardware)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%AA%E5%BF%83%E8%A7%A3%E7%A0%81greedy-decoding"><span class="nav-number">17.</span> <span class="nav-text">贪心解码（Greedy Decoding）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80-%E6%A0%B8%E5%BF%83%E9%80%BB%E8%BE%91%E4%B8%8E%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">17.1.</span> <span class="nav-text">一、 核心逻辑与工作原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C-%E8%B4%AA%E5%BF%83%E8%A7%A3%E7%A0%81%E5%9C%A8%E8%AE%BA%E6%96%87%E4%B8%AD%E7%9A%84%E5%85%B3%E9%94%AE%E4%BD%9C%E7%94%A8"><span class="nav-number">17.2.</span> <span class="nav-text">二、
+贪心解码在论文中的关键作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89-%E8%B4%AA%E5%BF%83%E8%A7%A3%E7%A0%81%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9%E6%A8%AA%E5%90%91%E5%AF%B9%E6%AF%94"><span class="nav-number">17.3.</span> <span class="nav-text">三、 贪心解码的优缺点横向对比</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#generative-hallucination%E7%94%9F%E6%88%90%E5%BC%8F%E5%B9%BB%E8%A7%89%E8%AF%84%E4%BC%B0"><span class="nav-number">18.</span> <span class="nav-text">Generative
+Hallucination（生成式幻觉评估）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#table-1chair-%E8%AF%84%E6%B5%8B%E7%BB%93%E6%9E%9C%E7%89%A9%E4%BD%93%E5%B9%BB%E8%A7%89%E7%9A%84%E7%A1%AC%E6%A0%B8%E8%BE%83%E9%87%8F"><span class="nav-number">18.1.</span> <span class="nav-text">Table 1：CHAIR
+评测结果（物体幻觉的硬核较量）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%8C%87%E6%A0%87%E8%A7%A3%E8%AF%BB"><span class="nav-number">18.1.1.</span> <span class="nav-text">1. 核心指标解读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%AD%E9%9C%B2-baseline-%E7%9A%84%E4%BD%9C%E5%BC%8A%E7%8E%B0%E8%B1%A1%E5%AD%A6%E6%9C%AF%E4%BA%AE%E7%82%B9"><span class="nav-number">18.1.2.</span> <span class="nav-text">2. 揭露 Baseline
+的“作弊”现象（学术亮点）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#table-2amber-g%E7%94%9F%E6%88%90%E5%BC%8F%E5%B9%BB%E8%A7%89%E8%AF%84%E6%B5%8B%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90"><span class="nav-number">18.2.</span> <span class="nav-text">Table
+2：AMBER-G（生成式幻觉）评测结果分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%8C%87%E6%A0%87%E7%9F%A9%E9%98%B5"><span class="nav-number">18.2.1.</span> <span class="nav-text">1. 核心指标矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88-amber-g-%E7%9A%84%E6%95%B0%E6%8D%AE%E8%83%BD%E5%AF%B9-baseline-%E5%BD%A2%E6%88%90%E9%99%8D%E7%BB%B4%E6%89%93%E5%87%BB"><span class="nav-number">18.2.2.</span> <span class="nav-text">2. 为什么
+AMBER-G 的数据能对 Baseline 形成降维打击？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%A4%E5%88%AB%E5%BC%8F%E5%B9%BB%E8%A7%89discriminative-hallucination"><span class="nav-number">19.</span> <span class="nav-text">判别式幻觉（Discriminative
+Hallucination）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#table-3-%E7%9A%84%E7%BA%B5%E7%BA%B5%E6%A8%AA%E6%A8%AA%E7%BB%93%E6%9E%84%E4%B8%8E%E6%A0%B8%E5%BF%83%E6%8C%87%E6%A0%87"><span class="nav-number">19.1.</span> <span class="nav-text">Table 3
+的纵纵横横：结构与核心指标</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#per-model-response-to-vfv-and-mrv"><span class="nav-number">20.</span> <span class="nav-text">Per-model response to VFV and
+MRV</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%8F%91%E7%8E%B0%E6%A8%A1%E5%9E%8B%E5%BC%82%E8%B4%A8%E6%80%A7model-heterogeneity%E4%B8%8E%E7%AC%A6%E5%8F%B7%E6%90%9C%E7%B4%A2"><span class="nav-number">20.1.</span> <span class="nav-text">核心发现：模型异质性（Model
+Heterogeneity）与符号搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#figure-3-%E6%B7%B1%E5%BA%A6%E8%A7%A3%E7%A0%81%E7%AC%A6%E5%8F%B7%E4%B8%8E%E5%BC%BA%E5%BA%A6%E7%9A%84%E5%85%A8%E9%9D%A2%E5%90%9E%E5%90%90%E6%B5%81grid-search-%E8%B6%8B%E5%8A%BF"><span class="nav-number">20.2.</span> <span class="nav-text">Figure
+3 深度解码：符号与强度的全面吞吐流（Grid Search 趋势）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%9B%B2%E7%BA%BF%E7%9A%84%E5%8D%95%E5%B3%B0%E7%89%B9%E6%80%A7%E4%B8%8E%E9%9B%B6%E7%82%B9%E8%B7%A8%E8%B6%8A"><span class="nav-number">20.2.1.</span> <span class="nav-text">1.
+性能曲线的“单峰特性”与零点跨越</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%82%AC%E5%B4%96%E6%95%88%E5%BA%94cliff-effect%E8%BF%87%E5%BA%A6%E5%B9%B2%E9%A2%84%E7%9A%84%E8%AF%AD%E8%A8%80%E5%B4%A9%E5%A1%8C"><span class="nav-number">20.2.2.</span> <span class="nav-text">2. 悬崖效应（Cliff
+Effect）：过度干预的语言崩塌</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#table-6-table-7-%E6%B7%B1%E5%BA%A6%E8%A7%A3%E7%A0%81%E8%B6%85%E5%8F%82%E6%95%B0%E5%9B%BE%E8%B0%B1%E4%B8%8E%E7%A8%B3%E5%81%A5%E6%80%A7%E9%AA%8C%E8%AF%81"><span class="nav-number">20.3.</span> <span class="nav-text">Table 6 &amp;
+Table 7 深度解码：超参数图谱与稳健性验证</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#layer-analysis%E5%B1%82%E6%B6%88%E8%9E%8D%E5%AE%9E%E9%AA%8C"><span class="nav-number">21.</span> <span class="nav-text">Layer Analysis层消融实验</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#conclusion%E5%92%8Climitations"><span class="nav-number">22.</span> <span class="nav-text">Conclusion和Limitations</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80-%E7%BB%93%E8%AE%BA%E9%83%A8%E5%88%86-conclusion"><span class="nav-number">22.1.</span> <span class="nav-text">一、 结论部分 (Conclusion)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C-%E5%B1%80%E9%99%90%E6%80%A7%E9%83%A8%E5%88%86-limitations"><span class="nav-number">22.2.</span> <span class="nav-text">二、 局限性部分 (Limitations)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%A5%E9%87%8D%E4%BE%9D%E8%B5%96%E7%A6%BB%E7%BA%BF%E7%BD%91%E6%A0%BC%E6%90%9C%E7%B4%A2hyperparameter-dependency"><span class="nav-number">22.2.1.</span> <span class="nav-text">1.
+严重依赖离线网格搜索（Hyperparameter Dependency）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%BB%E8%A7%89%E9%98%B2%E5%BE%A1%E7%9A%84%E8%8C%83%E7%95%B4%E8%BE%B9%E7%95%8Cscope-limitations"><span class="nav-number">22.2.2.</span> <span class="nav-text">2.
+幻觉防御的范畴边界（Scope Limitations）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E8%AF%AD%E4%B9%89%E8%BD%B4%E4%B8%8E%E5%8A%A8%E6%80%81%E7%94%9F%E6%88%90%E4%B8%8A%E4%B8%8B%E6%96%87%E7%9A%84%E8%84%B1%E8%8A%82static-cpv-vector"><span class="nav-number">22.2.3.</span> <span class="nav-text">3.
+静态语义轴与动态生成上下文的脱节（Static CPV Vector）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B6%85%E5%A4%A7%E5%B0%BA%E5%BA%A6%E6%A8%A1%E5%9E%8Bultra-large-models%E7%9A%84%E5%B1%82%E5%AE%9A%E4%BD%8D%E6%88%90%E6%9C%AC"><span class="nav-number">22.2.4.</span> <span class="nav-text">4.
+超大尺度模型（Ultra-Large Models）的层定位成本</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%99%84%E5%BD%95"><span class="nav-number">23.</span> <span class="nav-text">附录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-number">24.</span> <span class="nav-text">问题</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -171,18 +237,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">199</span>
+          <span class="site-state-item-count">205</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">69</span>
+        <span class="site-state-item-count">70</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">71</span>
+        <span class="site-state-item-count">72</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -296,99 +362,204 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2605.27993">2605.27993 重新思考视觉忽视：通过情境引导——MLLM幻觉缓解的偏好</a></p>
+    <div class="post-body" itemprop="articleBody"><h1 id="介绍">介绍</h1>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2605.27993">2605.27993
+重新思考视觉忽视：通过情境引导——MLLM幻觉缓解的偏好</a></p>
 <p>本文为这篇论文的阅读学习笔记</p>
-<p>挑战以往工作中“增强视觉依赖即可降低幻觉”的单一假设，通过系统性干预实验发现，图像会同时与模型参数化知识和历史文本上下文产生竞争关系。基于这一观察，提出训练无关的 Context-Preference Activation Steering（CAS）推理期干预方法，将 MLLM 的视觉依赖解耦为两类上下文偏好。</p>
-<p>设计两组冲突样本来提取 Context Preference Vectors：基于反事实图像构造 Visual Fidelity Vector（VFV），刻画模型在“外部视觉证据 vs 内部常识先验”之间的偏好；基于对称图文冲突对构造 Modality Reliance Vector（MRV），刻画模型在“视觉上下文 vs 文本上下文”之间的模态依赖。</p>
-<p>在 LLaVA-1.5、Qwen-VL、Shikra 等主流 MLLM 上的实验表明，不同模型对视觉信息、参数化知识和文本上下文的依赖存在显著异质性，并提出带符号的激活引导干预：在推理阶段根据模型自身的偏好方向选择正向或负向干预，在 MLP 层输出处进行带符号的残差注入。</p>
-<p>实验结果显示，CAS在多个模型评测中，平均 CHAIR_S 从 55.5 降至 38.5，下降 30.7%，在显著降低物体幻觉的同时保持生成质量稳定。在 AMBER 生成式评测中，平均 Hal 从 36.1 降至 25.9，下降 28.2%，验证了 CAS 在多模型、多基准任务上的稳定泛化能力。推理延迟为 28.09ms/token，与原模型基本同量级，几乎不引入额外推理开销。</p>
-<h1 id="幻觉现象"><a href="#幻觉现象" class="headerlink" title="幻觉现象"></a>幻觉现象</h1><h2 id="1-强大的“语言刻板印象”（Language-Prior-Statistical-Bias）"><a href="#1-强大的“语言刻板印象”（Language-Prior-Statistical-Bias）" class="headerlink" title="1.强大的“语言刻板印象”（Language Prior / Statistical Bias）"></a>1.强大的“语言刻板印象”（Language Prior / Statistical Bias）</h2><p>大模型在纯文本预训练阶段，读了上万亿字的人类书籍。在它的记忆里，某些词是<strong>高度绑定、经常一起出现</strong>的（即 Co-occurrence 统计偏见）。</p>
+<p>挑战以往工作中“增强视觉依赖即可降低幻觉”的单一假设，通过系统性干预实验发现，图像会同时与模型参数化知识和历史文本上下文产生竞争关系。基于这一观察，提出训练无关的
+Context-Preference Activation Steering（CAS）推理期干预方法，将 MLLM
+的视觉依赖解耦为两类上下文偏好。</p>
+<p>设计两组冲突样本来提取 Context Preference Vectors：基于反事实图像构造
+Visual Fidelity Vector（VFV），刻画模型在“外部视觉证据 vs
+内部常识先验”之间的偏好；基于对称图文冲突对构造 Modality Reliance
+Vector（MRV），刻画模型在“视觉上下文 vs 文本上下文”之间的模态依赖。</p>
+<p>在 LLaVA-1.5、Qwen-VL、Shikra 等主流 MLLM
+上的实验表明，不同模型对视觉信息、参数化知识和文本上下文的依赖存在显著异质性，并提出带符号的激活引导干预：在推理阶段根据模型自身的偏好方向选择正向或负向干预，在
+MLP 层输出处进行带符号的残差注入。</p>
+<p>实验结果显示，CAS在多个模型评测中，平均 CHAIR_S 从 55.5 降至
+38.5，下降 30.7%，在显著降低物体幻觉的同时保持生成质量稳定。在 AMBER
+生成式评测中，平均 Hal 从 36.1 降至 25.9，下降 28.2%，验证了 CAS
+在多模型、多基准任务上的稳定泛化能力。推理延迟为
+28.09ms/token，与原模型基本同量级，几乎不引入额外推理开销。</p>
+<h1 id="幻觉现象">幻觉现象</h1>
+<h2 id="强大的语言刻板印象language-prior-statistical-bias">1.强大的“语言刻板印象”（Language
+Prior / Statistical Bias）</h2>
+<p>大模型在纯文本预训练阶段，读了上万亿字的人类书籍。在它的记忆里，某些词是<strong>高度绑定、经常一起出现</strong>的（即
+Co-occurrence 统计偏见）。</p>
 <p>大模型的参数量通常比视觉部分大得多，会出现即使视觉部分看清了，但是还是被语言部分影响，因此出现幻觉</p>
-<h2 id="2-长文本中的文本惯性或过度信赖（Text-Inertia-Over-trust）"><a href="#2-长文本中的文本惯性或过度信赖（Text-Inertia-Over-trust）" class="headerlink" title="2.长文本中的文本惯性或过度信赖（Text Inertia / Over-trust）"></a>2.长文本中的文本惯性或过度信赖（Text Inertia / Over-trust）</h2><p>前者指多模态模型在自回归解码中，由于文本特征流的权重压倒了视觉特征流，导致后续 Token 的生成完全受历史文本指令支配，模型输出退化为无条件语言建模（Unconditional Language Modeling）的行为。</p>
-<p>后者指在 Transformer 的自回归解码阶段，自注意力矩阵（Self-Attention Matrix）的权重在已生成的文本 Token 上形成了异常密集的局部聚集，形成“注意力黑洞”，从而阻断了来自图像（Vision Tokens）的信息流。</p>
-<h1 id="评测指标"><a href="#评测指标" class="headerlink" title="评测指标"></a>评测指标</h1><h2 id="CHAIR-评测流程：基于文本解析的“名词物体验证”"><a href="#CHAIR-评测流程：基于文本解析的“名词物体验证”" class="headerlink" title="CHAIR 评测流程：基于文本解析的“名词物体验证”"></a>CHAIR 评测流程：基于文本解析的“名词物体验证”</h2><p>CHAIR 的评测本质是一个“生成-提取-比对”的流水线，通常建立在 MSCOCO 数据集上（因为该数据集有极度详尽的人工物体标注）。</p>
-<h3 id="1-模型生成（Caption-Generation）"><a href="#1-模型生成（Caption-Generation）" class="headerlink" title="1. 模型生成（Caption Generation）"></a>1. 模型生成（Caption Generation）</h3><ul>
-<li>给大模型输入一张测试图片，并配合标准的生成提示词（例如：<code>&quot;Describe this image in detail.&quot;</code>）。</li>
+<h2 id="长文本中的文本惯性或过度信赖text-inertia-over-trust">2.长文本中的文本惯性或过度信赖（Text
+Inertia / Over-trust）</h2>
+<p>前者指多模态模型在自回归解码中，由于文本特征流的权重压倒了视觉特征流，导致后续
+Token
+的生成完全受历史文本指令支配，模型输出退化为无条件语言建模（Unconditional
+Language Modeling）的行为。</p>
+<p>后者指在 Transformer 的自回归解码阶段，自注意力矩阵（Self-Attention
+Matrix）的权重在已生成的文本 Token
+上形成了异常密集的局部聚集，形成“注意力黑洞”，从而阻断了来自图像（Vision
+Tokens）的信息流。</p>
+<h1 id="评测指标">评测指标</h1>
+<h2 id="chair-评测流程基于文本解析的名词物体验证">CHAIR
+评测流程：基于文本解析的“名词物体验证”</h2>
+<p>CHAIR 的评测本质是一个“生成-提取-比对”的流水线，通常建立在 MSCOCO
+数据集上（因为该数据集有极度详尽的人工物体标注）。</p>
+<h3 id="模型生成caption-generation">1. 模型生成（Caption
+Generation）</h3>
+<ul>
+<li>给大模型输入一张测试图片，并配合标准的生成提示词（例如：<code>"Describe this image in detail."</code>）。</li>
 <li>模型自回归生成一段完整的描述性文本（Caption）。</li>
 </ul>
-<h3 id="2-文本解析与名词提取（POS-Tagging-amp-Parsing）"><a href="#2-文本解析与名词提取（POS-Tagging-amp-Parsing）" class="headerlink" title="2. 文本解析与名词提取（POS Tagging &amp; Parsing）"></a>2. 文本解析与名词提取（POS Tagging &amp; Parsing）</h3><ul>
-<li>评测脚本调用自然语言处理工具包（如 SpaCy 或 NLTK）对模型生成的文本进行<strong>词性标注（POS Tagging）</strong>。</li>
+<h3 id="文本解析与名词提取pos-tagging-parsing">2.
+文本解析与名词提取（POS Tagging &amp; Parsing）</h3>
+<ul>
+<li>评测脚本调用自然语言处理工具包（如 SpaCy 或
+NLTK）对模型生成的文本进行<strong>词性标注（POS
+Tagging）</strong>。</li>
 <li>过滤并提取出所有的<strong>名词和名词短语</strong>（例如：“cat”、“table”、“apple”），这些代表模型认为图片里存在的物体。</li>
 </ul>
-<h3 id="3-同义词与类别映射（Synonym-Mapping）"><a href="#3-同义词与类别映射（Synonym-Mapping）" class="headerlink" title="3. 同义词与类别映射（Synonym Mapping）"></a>3. 同义词与类别映射（Synonym Mapping）</h3><ul>
-<li>大模型输出的词汇可能五花八门（如 “kitty”），而 MSCOCO 固定的物体标签只有 80 类（如 “cat”）。</li>
+<h3 id="同义词与类别映射synonym-mapping">3. 同义词与类别映射（Synonym
+Mapping）</h3>
+<ul>
+<li>大模型输出的词汇可能五花八门（如 “kitty”），而 MSCOCO
+固定的物体标签只有 80 类（如 “cat”）。</li>
 <li>评测系统使用预设的同义词词典，将模型生成的名词全部归一化映射到官方的物体类别中。</li>
 </ul>
-<h3 id="4-真实标签比对（Ground-Truth-Matching）"><a href="#4-真实标签比对（Ground-Truth-Matching）" class="headerlink" title="4. 真实标签比对（Ground-Truth Matching）"></a>4. 真实标签比对（Ground-Truth Matching）</h3><ul>
-<li>将映射后的物体名词，与该图片在数据集里自带的人工标注物体列表（Ground-Truth Objects）进行逐一比对：<ul>
-<li>如果模型说了 “dog”，而人工标注里有 “dog”，则计为<strong>正确物体</strong>。</li>
-<li>如果模型说了 “sofa”，但人工标注里完全没有 “sofa”，则计为<strong>幻觉物体（Hallucinated Object）</strong>。</li>
-</ul>
-</li>
-</ul>
-<h3 id="5-指标结算"><a href="#5-指标结算" class="headerlink" title="5. 指标结算"></a>5. 指标结算</h3><p>根据全量测试集的结果，带入公式计算：</p>
+<h3 id="真实标签比对ground-truth-matching">4. 真实标签比对（Ground-Truth
+Matching）</h3>
 <ul>
-<li><strong>$CHAIR_I$ (Instance-level)</strong>：$\frac{\text{幻觉物体词出现的总次数}}{\text{所有生成的物体词总次数}}$</li>
-<li><strong>$CHAIR_S$ (Sentence-level)</strong>：$\frac{\text{包含至少一个幻觉物体的句子数量}}{\text{总生成句子数量}}$</li>
-</ul>
-<h2 id="POPE-评测流程：基于非对称采样的“是非题盲测”"><a href="#POPE-评测流程：基于非对称采样的“是非题盲测”" class="headerlink" title="POPE 评测流程：基于非对称采样的“是非题盲测”"></a>POPE 评测流程：基于非对称采样的“是非题盲测”</h2><p>POPE 彻底抛弃了自由文本生成的复杂性，直接将幻觉转变为<strong>二分类（Yes/No）\</strong>的问答流程。其核心灵魂在于*<em>如何向模型提问（即负样本采样策略）*</em>。</p>
-<h3 id="1-构建智能问答库（Question-Construction）"><a href="#1-构建智能问答库（Question-Construction）" class="headerlink" title="1. 构建智能问答库（Question Construction）"></a>1. 构建智能问答库（Question Construction）</h3><p>评测集针对每一张图片，构建大量的“图片中是否有 [物体] ？”的标准问题。问题分为两大家族：</p>
+<li>将映射后的物体名词，与该图片在数据集里自带的人工标注物体列表（Ground-Truth
+Objects）进行逐一比对：
 <ul>
-<li><strong>正样本问题（表中确实有）</strong>：根据 Ground-Truth，直接问图片里存在的物体（预期回答：Yes）。</li>
-<li><strong>负样本问题（表中其实没有，专门用来钓鱼）</strong>：这是 POPE 的核心，分为三种模式：<ul>
+<li>如果模型说了 “dog”，而人工标注里有
+“dog”，则计为<strong>正确物体</strong>。</li>
+<li>如果模型说了 “sofa”，但人工标注里完全没有
+“sofa”，则计为<strong>幻觉物体（Hallucinated Object）</strong>。</li>
+</ul></li>
+</ul>
+<h3 id="指标结算">5. 指标结算</h3>
+<p>根据全量测试集的结果，带入公式计算：</p>
+<ul>
+<li><strong><span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em><sub><em>I</em></sub></span>
+(Instance-level)</strong>：<span class="math inline">$\frac{\text{幻觉物体词出现的总次数}}{\text{所有生成的物体词总次数}}$</span></li>
+<li><strong><span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em><sub><em>S</em></sub></span>
+(Sentence-level)</strong>：<span class="math inline">$\frac{\text{包含至少一个幻觉物体的句子数量}}{\text{总生成句子数量}}$</span></li>
+</ul>
+<h2 id="pope-评测流程基于非对称采样的是非题盲测">POPE
+评测流程：基于非对称采样的“是非题盲测”</h2>
+<p>POPE
+彻底抛弃了自由文本生成的复杂性，直接将幻觉转变为<strong>二分类（Yes/No）*<em>的问答流程。其核心灵魂在于*</em>如何向模型提问（即负样本采样策略）</strong>。</p>
+<h3 id="构建智能问答库question-construction">1. 构建智能问答库（Question
+Construction）</h3>
+<p>评测集针对每一张图片，构建大量的“图片中是否有 [物体]
+？”的标准问题。问题分为两大家族：</p>
+<ul>
+<li><strong>正样本问题（表中确实有）</strong>：根据
+Ground-Truth，直接问图片里存在的物体（预期回答：Yes）。</li>
+<li><strong>负样本问题（表中其实没有，专门用来钓鱼）</strong>：这是 POPE
+的核心，分为三种模式：
+<ul>
 <li><strong>Random（随机）</strong>：从整个数据集的物体库中，随机挑一个这张图没有的物体（如：图里是厨房，随机问有没有“斑马”）。<strong>太简单，模型容易识破。</strong></li>
 <li><strong>Popular（高频）</strong>：挑选整个数据集里出现频次最高的物体（如“人”、“包”），哪怕这张图里没有。<strong>考验模型是否对高频词有盲目偏见。</strong></li>
 <li><strong>Adversarial（对抗式）</strong>：根据协同过滤原理，挑选那些经常与图中物体<strong>共同出现、但这张图里恰好没有</strong>的物体（如：图里有“马路、汽车”，偏问有没有“红绿灯”）。<strong>极具误导性，最容易诱发幻觉。</strong></li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<h3 id="2-模型推理（Inference）"><a href="#2-模型推理（Inference）" class="headerlink" title="2. 模型推理（Inference）"></a>2. 模型推理（Inference）</h3><ul>
-<li>将（图片 + 每一个 Yes/No 问题）成对喂给模型。</li>
-<li>强制模型输出，或者提取模型输出的第一个有效 Token（锁定为 <code>&quot;Yes&quot;</code> 或 <code>&quot;No&quot;</code>）。</li>
-</ul>
-<h3 id="3-混淆矩阵判定（Confusion-Matrix）"><a href="#3-混淆矩阵判定（Confusion-Matrix）" class="headerlink" title="3. 混淆矩阵判定（Confusion Matrix）"></a>3. 混淆矩阵判定（Confusion Matrix）</h3><p>将模型的回答与真实答案对比，塞进经典的二分类评测矩阵：</p>
+<h3 id="模型推理inference">2. 模型推理（Inference）</h3>
 <ul>
-<li>图有且模型说 Yes $\rightarrow$ <strong>True Positive (TP)</strong></li>
-<li>图无但模型说 Yes $\rightarrow$ <strong>False Positive (FP) 【判定为幻觉】</strong></li>
-<li>图有但模型说 No $\rightarrow$ <strong>False Negative (FN)</strong></li>
-<li>图无且模型说 No $\rightarrow$ <strong>True Negative (TN)</strong></li>
+<li>将（图片 + 每一个 Yes/No 问题）成对喂给模型。</li>
+<li>强制模型输出，或者提取模型输出的第一个有效 Token（锁定为
+<code>"Yes"</code> 或 <code>"No"</code>）。</li>
 </ul>
-<h3 id="4-指标结算"><a href="#4-指标结算" class="headerlink" title="4. 指标结算"></a>4. 指标结算</h3><p>计算全集下的 <strong>Accuracy（准确率）</strong>、<strong>Precision（精确率）</strong>、<strong>Recall（召回率）</strong> 以及 <strong>F1-Score</strong>。如果 F1 和 Precision 很低，说明模型是个“Yes Man”（不管看到啥都只会盲目说 Yes）。</p>
-<h2 id="AMBER-评测流程：无需大模型的“双轨交织矩阵”"><a href="#AMBER-评测流程：无需大模型的“双轨交织矩阵”" class="headerlink" title="AMBER 评测流程：无需大模型的“双轨交织矩阵”"></a>AMBER 评测流程：无需大模型的“双轨交织矩阵”</h2><p>AMBER 结合了 CHAIR 的自由表达验证和 POPE 的严苛抗噪能力，并且实现了多维度的纯自动化流水线。</p>
-<h3 id="1-数据分流：启动双轨测试（Dual-Path-Input）"><a href="#1-数据分流：启动双轨测试（Dual-Path-Input）" class="headerlink" title="1. 数据分流：启动双轨测试（Dual-Path Input）"></a>1. 数据分流：启动双轨测试（Dual-Path Input）</h3><p>同一张图片进入 AMBER 评测集后，会被同时分流到两个完全不同的测试轨道：</p>
-<h4 id="轨道-A：AMBER-G（生成式轨道）"><a href="#轨道-A：AMBER-G（生成式轨道）" class="headerlink" title="轨道 A：AMBER-G（生成式轨道）"></a>轨道 A：AMBER-G（生成式轨道）</h4><ul>
+<h3 id="混淆矩阵判定confusion-matrix">3. 混淆矩阵判定（Confusion
+Matrix）</h3>
+<p>将模型的回答与真实答案对比，塞进经典的二分类评测矩阵：</p>
+<ul>
+<li>图有且模型说 Yes <span class="math inline">→</span> <strong>True
+Positive (TP)</strong></li>
+<li>图无但模型说 Yes <span class="math inline">→</span> <strong>False
+Positive (FP) 【判定为幻觉】</strong></li>
+<li>图有但模型说 No <span class="math inline">→</span> <strong>False
+Negative (FN)</strong></li>
+<li>图无且模型说 No <span class="math inline">→</span> <strong>True
+Negative (TN)</strong></li>
+</ul>
+<h3 id="指标结算-1">4. 指标结算</h3>
+<p>计算全集下的
+<strong>Accuracy（准确率）</strong>、<strong>Precision（精确率）</strong>、<strong>Recall（召回率）</strong>
+以及 <strong>F1-Score</strong>。如果 F1 和 Precision
+很低，说明模型是个“Yes Man”（不管看到啥都只会盲目说 Yes）。</p>
+<h2 id="amber-评测流程无需大模型的双轨交织矩阵">AMBER
+评测流程：无需大模型的“双轨交织矩阵”</h2>
+<p>AMBER 结合了 CHAIR 的自由表达验证和 POPE
+的严苛抗噪能力，并且实现了多维度的纯自动化流水线。</p>
+<h3 id="数据分流启动双轨测试dual-path-input">1.
+数据分流：启动双轨测试（Dual-Path Input）</h3>
+<p>同一张图片进入 AMBER
+评测集后，会被同时分流到两个完全不同的测试轨道：</p>
+<h4 id="轨道-aamber-g生成式轨道">轨道 A：AMBER-G（生成式轨道）</h4>
+<ul>
 <li><strong>流程</strong>：向模型发送开放式指令（如描述图像）。</li>
-<li><strong>提取</strong>：模型吐出长文本。AMBER 并不调用 GPT-4 这种昂贵的外部裁判，而是使用内置的经过优化的<strong>自动化关键词匹配正则引擎</strong>。</li>
-<li><strong>比对</strong>：提取出名词后，直接与图片对应集成的 Object 字典匹配。</li>
-<li><strong>结算</strong>：输出 <strong>CHAIR</strong>、<strong>Cover（模型提及了多少比例的真实物体）</strong> 以及 <strong>Hal（整体句级幻觉率）</strong>。</li>
+<li><strong>提取</strong>：模型吐出长文本。AMBER 并不调用 GPT-4
+这种昂贵的外部裁判，而是使用内置的经过优化的<strong>自动化关键词匹配正则引擎</strong>。</li>
+<li><strong>比对</strong>：提取出名词后，直接与图片对应集成的 Object
+字典匹配。</li>
+<li><strong>结算</strong>：输出
+<strong>CHAIR</strong>、<strong>Cover（模型提及了多少比例的真实物体）</strong>
+以及 <strong>Hal（整体句级幻觉率）</strong>。</li>
 </ul>
-<h4 id="轨道-B：AMBER-D（判别式轨道）"><a href="#轨道-B：AMBER-D（判别式轨道）" class="headerlink" title="轨道 B：AMBER-D（判别式轨道）"></a>轨道 B：AMBER-D（判别式轨道）</h4><ul>
+<h4 id="轨道-bamber-d判别式轨道">轨道 B：AMBER-D（判别式轨道）</h4>
+<ul>
 <li><strong>流程</strong>：向模型发送定制的是非题（Yes/No），但这些问题被精细地打上了<strong>维度标签</strong>。</li>
-<li><strong>多维度设陷</strong>：<ul>
+<li><strong>多维度设陷</strong>：
+<ul>
 <li><em>存在性问答</em>：“图里有xx吗？”（验证模型是否凭空造物）</li>
 <li><em>属性问答</em>：“图里的那辆车是<strong>红色</strong>的吗？”（实际是蓝色的，验证状态幻觉）/“图里有<strong>三只</strong>猫吗？”（实际只有一只，验证数量幻觉）</li>
 <li><em>关系问答</em>：“笔记本电脑是在桌子的<strong>下面</strong>吗？”（实际在上面，验证空间关系幻觉）</li>
+</ul></li>
+<li><strong>结算</strong>：模型回答 Yes/No
+后，系统分别计算出<strong>存在、属性、关系</strong>三大独立维度的
+Accuracy 和 F1-score。</li>
 </ul>
-</li>
-<li><strong>结算</strong>：模型回答 Yes/No 后，系统分别计算出<strong>存在、属性、关系</strong>三大独立维度的 Accuracy 和 F1-score。</li>
-</ul>
-<h3 id="2-全局综合得分汇算（Final-Aggregation）"><a href="#2-全局综合得分汇算（Final-Aggregation）" class="headerlink" title="2. 全局综合得分汇算（Final Aggregation）"></a>2. 全局综合得分汇算（Final Aggregation）</h3><p>AMBER 会把生成式轨道和判别式轨道的得分加权汇总，输出一份最终的<strong>综合雷达图评分</strong>。</p>
-<p>这套双轨流程确保了：任何通过“牺牲生成能力、只一味回答 No”来刷判别式高分的作弊手段，都会在生成式轨道的 Cover 指标上暴雷；反之，胡言乱语的模型也会在判别式轨道上大比分落后。这也是为什么前沿工作非常喜欢用它来做最终全方位验证的原因。</p>
-<h1 id="解决的主要路线"><a href="#解决的主要路线" class="headerlink" title="解决的主要路线"></a>解决的主要路线</h1><p>通常，要解决大模型的幻觉或错误，有两种主要路线：</p>
-<ol>
-<li><strong>训练阶段方法（Training-time methods）：</strong> 重新收集高质量数据，对模型进行对齐训练（如结合人类反馈的强化学习 RLHF、监督微调 SFT）。<strong>缺点：</strong> 耗费巨大的计算资源、时间和金钱，且一旦模型训练完，固有的错误很难再改。</li>
-<li><strong>推理阶段方法（Inference-time methods）：</strong> <strong>不需要重新训练或微调模型</strong>（Training-free），直接在模型吐出字（Token）的过程中进行实时干预。<strong>优点：</strong> 成本极低（甚至接近零额外成本），即插即用，非常灵活。</li>
+<h3 id="全局综合得分汇算final-aggregation">2. 全局综合得分汇算（Final
+Aggregation）</h3>
+<p>AMBER
+会把生成式轨道和判别式轨道的得分加权汇总，输出一份最终的<strong>综合雷达图评分</strong>。</p>
+<p>这套双轨流程确保了：任何通过“牺牲生成能力、只一味回答
+No”来刷判别式高分的作弊手段，都会在生成式轨道的 Cover
+指标上暴雷；反之，胡言乱语的模型也会在判别式轨道上大比分落后。这也是为什么前沿工作非常喜欢用它来做最终全方位验证的原因。</p>
+<h1 id="解决的主要路线">解决的主要路线</h1>
+<p>通常，要解决大模型的幻觉或错误，有两种主要路线：</p>
+<ol type="1">
+<li><strong>训练阶段方法（Training-time methods）：</strong>
+重新收集高质量数据，对模型进行对齐训练（如结合人类反馈的强化学习
+RLHF、监督微调 SFT）。<strong>缺点：</strong>
+耗费巨大的计算资源、时间和金钱，且一旦模型训练完，固有的错误很难再改。</li>
+<li><strong>推理阶段方法（Inference-time methods）：</strong>
+<strong>不需要重新训练或微调模型</strong>（Training-free），直接在模型吐出字（Token）的过程中进行实时干预。<strong>优点：</strong>
+成本极低（甚至接近零额外成本），即插即用，非常灵活。</li>
 </ol>
-<h1 id="相关工作"><a href="#相关工作" class="headerlink" title="相关工作"></a>相关工作</h1><h2 id="基于训练的幻觉缓解-Training-based-Hallucination-Mitigation"><a href="#基于训练的幻觉缓解-Training-based-Hallucination-Mitigation" class="headerlink" title="基于训练的幻觉缓解 (Training-based Hallucination Mitigation)"></a>基于训练的幻觉缓解 (Training-based Hallucination Mitigation)</h2><h3 id="核心方法与代表性技术"><a href="#核心方法与代表性技术" class="headerlink" title="核心方法与代表性技术"></a>核心方法与代表性技术</h3><p>根据目前的研究进展，基于训练的缓解方案主要演化出以下几种代表性路径：</p>
+<h1 id="相关工作">相关工作</h1>
+<h2 id="基于训练的幻觉缓解-training-based-hallucination-mitigation">基于训练的幻觉缓解
+(Training-based Hallucination Mitigation)</h2>
+<h3 id="核心方法与代表性技术">核心方法与代表性技术</h3>
+<p>根据目前的研究进展，基于训练的缓解方案主要演化出以下几种代表性路径：</p>
 <ul>
-<li><strong>基于 DPO 的基础对齐</strong>：这类方法通常在忠实（<em>faithful</em>）的响应与包含幻觉（<em>hallucinated</em>）的响应之间构建显式的偏好关系，通过直接偏好优化（DPO）来让模型学会拒绝幻觉。</li>
-<li><strong>感知增强的 DPO 变体</strong>：近期的研究进一步将“幻觉感知的偏好构造”与“多模态感知先验”纳入其中，专门面向物体感知和感知增强进行扩展。</li>
-<li><strong>Re-Align (Xing et al., 2025)</strong>：该方法通过图像检索技术来构造双重的“文本-视觉偏好对”，并使用检索增强的 DPO 技术对视觉语言模型（VLM）进行微调。</li>
-<li><strong>RLHF-V (Yu et al., 2024)</strong>：将人类反馈强化学习（RLHF）的思想引入多模态幻觉抑制中。它通过收集片段级（segment-level）的细粒度纠错反馈，并利用 Dense DPO 进行精准的行为对齐。</li>
+<li><strong>基于 DPO
+的基础对齐</strong>：这类方法通常在忠实（<em>faithful</em>）的响应与包含幻觉（<em>hallucinated</em>）的响应之间构建显式的偏好关系，通过直接偏好优化（DPO）来让模型学会拒绝幻觉。</li>
+<li><strong>感知增强的 DPO
+变体</strong>：近期的研究进一步将“幻觉感知的偏好构造”与“多模态感知先验”纳入其中，专门面向物体感知和感知增强进行扩展。</li>
+<li><strong>Re-Align (Xing et al.,
+2025)</strong>：该方法通过图像检索技术来构造双重的“文本-视觉偏好对”，并使用检索增强的
+DPO 技术对视觉语言模型（VLM）进行微调。</li>
+<li><strong>RLHF-V (Yu et al.,
+2024)</strong>：将人类反馈强化学习（RLHF）的思想引入多模态幻觉抑制中。它通过收集片段级（segment-level）的细粒度纠错反馈，并利用
+Dense DPO 进行精准的行为对齐。</li>
 </ul>
-<h3 id="该路线的优势与局限性"><a href="#该路线的优势与局限性" class="headerlink" title="该路线的优势与局限性"></a>该路线的优势与局限性</h3><p>虽然基于训练的方法能够为模型带来<strong>稳定的收益</strong>，但它在实际落地时也存在明显的瓶颈：</p>
-<div class="table-container">
+<h3 id="该路线的优势与局限性">该路线的优势与局限性</h3>
+<p>虽然基于训练的方法能够为模型带来<strong>稳定的收益</strong>，但它在实际落地时也存在明显的瓶颈：</p>
 <table>
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
 <thead>
 <tr>
 <th><strong>优势 (Pros)</strong></th>
@@ -402,25 +573,44 @@
 </tr>
 <tr>
 <td><strong>针对性强</strong>：可以通过引入细粒度的片段纠错或检索增强，提升对特定物体的感知精确度。</td>
-<td><strong>通用能力受损</strong>：对齐后的模型在通用任务上的表现，有时反而会弱于原始的 VLM 基座。</td>
+<td><strong>通用能力受损</strong>：对齐后的模型在通用任务上的表现，有时反而会弱于原始的
+VLM 基座。</td>
 </tr>
 <tr>
 <td></td>
-<td><strong>行为退化风险</strong>：标准的 RLHF 采用粗粒度偏好，容易引发“奖励黑客”（<em>reward hacking</em>）和“行为退化”（<em>behavior degeneration</em>）。</td>
+<td><strong>行为退化风险</strong>：标准的 RLHF
+采用粗粒度偏好，容易引发“奖励黑客”（<em>reward
+hacking</em>）和“行为退化”（<em>behavior degeneration</em>）。</td>
 </tr>
 </tbody>
 </table>
-</div>
-<h2 id="Training-free"><a href="#Training-free" class="headerlink" title="Training-free"></a>Training-free</h2><h3 id="先检测后修正的流程Detect-then-Correct-Workﬂows"><a href="#先检测后修正的流程Detect-then-Correct-Workﬂows" class="headerlink" title="先检测后修正的流程Detect-then-Correct Workﬂows"></a>先检测后修正的流程Detect-then-Correct Workﬂows</h3><p>根据您提供的文献资料，以下为您详细介绍无需训练的“先检测后修正”流程（Training-free Detect-then-Correct Workflows）：</p>
-<h4 id="核心逻辑与工作原理"><a href="#核心逻辑与工作原理" class="headerlink" title="核心逻辑与工作原理"></a>核心逻辑与工作原理</h4><p>这类方法并不直接干预模型的单次解码生成过程，而是构建一个<strong>后处理流程（Post-processing Pipeline）</strong>。它们会对大模型已经生成的原始文本结果进行<strong>多阶段的审查与重写</strong>，通过定位并纠正其中的错误，从而达到抑制物体幻觉的目的。</p>
-<h4 id="代表性技术与方法"><a href="#代表性技术与方法" class="headerlink" title="代表性技术与方法"></a>代表性技术与方法</h4><p>根据文献，这类工作主要有以下几种典型的技术实现：</p>
+<h2 id="training-free">Training-free</h2>
+<h3 id="先检测后修正的流程detect-then-correct-workﬂows">先检测后修正的流程Detect-then-Correct
+Workﬂows</h3>
+<p>根据您提供的文献资料，以下为您详细介绍无需训练的“先检测后修正”流程（Training-free
+Detect-then-Correct Workflows）：</p>
+<h4 id="核心逻辑与工作原理">核心逻辑与工作原理</h4>
+<p>这类方法并不直接干预模型的单次解码生成过程，而是构建一个<strong>后处理流程（Post-processing
+Pipeline）</strong>。它们会对大模型已经生成的原始文本结果进行<strong>多阶段的审查与重写</strong>，通过定位并纠正其中的错误，从而达到抑制物体幻觉的目的。</p>
+<h4 id="代表性技术与方法">代表性技术与方法</h4>
+<p>根据文献，这类工作主要有以下几种典型的技术实现：</p>
 <ul>
-<li><strong>LURE (Zhou et al., 2024)</strong>：训练一个专门的“幻觉修订器”。该修订器以模型生成的原始描述作为输入，在文本中精准定位幻觉物体，并将其重写为与视觉内容忠实的描述。</li>
-<li><strong>Woodpecker (Yin et al., 2024)</strong>：将整个检测与修正过程标准化地拆分为<strong>五个阶段</strong>。它在运行中需要依次调用外部的 VLM 来分别完成“关键概念抽取”、“视觉声明验证”以及“文本重写”等子任务。</li>
-<li><strong>Generate-then-verify 变体 (Wu et al., 2025)</strong>：这类近期的方法引入了<strong>回溯验证</strong>（Backtracking Verification）和<strong>重采样</strong>（Resampling）机制，通过在生成后进行验证循环，来减少缺乏图像证据支撑的文本生成。</li>
+<li><strong>LURE (Zhou et al.,
+2024)</strong>：训练一个专门的“幻觉修订器”。该修订器以模型生成的原始描述作为输入，在文本中精准定位幻觉物体，并将其重写为与视觉内容忠实的描述。</li>
+<li><strong>Woodpecker (Yin et al.,
+2024)</strong>：将整个检测与修正过程标准化地拆分为<strong>五个阶段</strong>。它在运行中需要依次调用外部的
+VLM
+来分别完成“关键概念抽取”、“视觉声明验证”以及“文本重写”等子任务。</li>
+<li><strong>Generate-then-verify 变体 (Wu et al.,
+2025)</strong>：这类近期的方法引入了<strong>回溯验证</strong>（Backtracking
+Verification）和<strong>重采样</strong>（Resampling）机制，通过在生成后进行验证循环，来减少缺乏图像证据支撑的文本生成。</li>
 </ul>
-<h4 id="该路线的优缺点分析"><a href="#该路线的优缺点分析" class="headerlink" title="该路线的优缺点分析"></a>该路线的优缺点分析</h4><div class="table-container">
+<h4 id="该路线的优缺点分析">该路线的优缺点分析</h4>
 <table>
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
 <thead>
 <tr>
 <th><strong>优势 (Pros)</strong></th>
@@ -429,167 +619,351 @@
 </thead>
 <tbody>
 <tr>
-<td><strong>即插即用 (Plug-and-play)</strong>：不需要修改或重新训练多模态基准模型的原生参数，具有很强的通用适配性。</td>
-<td><strong>推理延迟显著 (High Latency)</strong>：由于采用流水线设计，每个样本的深度检查通常需要 3–5 次顺序的模型调用，无法满足流式实时输出的需求。</td>
+<td><strong>即插即用
+(Plug-and-play)</strong>：不需要修改或重新训练多模态基准模型的原生参数，具有很强的通用适配性。</td>
+<td><strong>推理延迟显著 (High
+Latency)</strong>：由于采用流水线设计，每个样本的深度检查通常需要 3–5
+次顺序的模型调用，无法满足流式实时输出的需求。</td>
 </tr>
 <tr>
 <td></td>
-<td><strong>计算开销高昂 (High Overhead)</strong>：这类方法高度依赖外部的 VLM、检测器或密集的重采样过程，带来了不可忽视的额外计算资源消耗。</td>
+<td><strong>计算开销高昂 (High
+Overhead)</strong>：这类方法高度依赖外部的
+VLM、检测器或密集的重采样过程，带来了不可忽视的额外计算资源消耗。</td>
 </tr>
 </tbody>
 </table>
-</div>
-<h3 id="回溯与层对比解码-Retrospection-and-Layer-Contrastive-Decoding"><a href="#回溯与层对比解码-Retrospection-and-Layer-Contrastive-Decoding" class="headerlink" title="回溯与层对比解码 (Retrospection and Layer-Contrastive Decoding)"></a>回溯与层对比解码 (Retrospection and Layer-Contrastive Decoding)</h3><h4 id="1-核心假设与原理"><a href="#1-核心假设与原理" class="headerlink" title="1. 核心假设与原理"></a>1. 核心假设与原理</h4><p>这类方法建立在一个共同的隐含假设之上：<strong>模型在生成文本时，其内部其实已经隐式地编码了关于“相对忠实度”（Relative Faithfulness）的信号</strong>。因此，不需要修改模型参数，也不需要调用外部工具，只需在解码（Decoding）阶段设计特定的机制去检测并放大这些正面信号，就能在输出端抑制幻觉。</p>
-<h4 id="2-代表性方法与技术实现"><a href="#2-代表性方法与技术实现" class="headerlink" title="2. 代表性方法与技术实现"></a>2. 代表性方法与技术实现</h4><p>根据技术路径的不同，该路线主要衍生出“回溯机制”与“跨层对比”两种方案：</p>
+<h3 id="回溯与层对比解码-retrospection-and-layer-contrastive-decoding">回溯与层对比解码
+(Retrospection and Layer-Contrastive Decoding)</h3>
+<h4 id="核心假设与原理">1. 核心假设与原理</h4>
+<p>这类方法建立在一个共同的隐含假设之上：<strong>模型在生成文本时，其内部其实已经隐式地编码了关于“相对忠实度”（Relative
+Faithfulness）的信号</strong>。因此，不需要修改模型参数，也不需要调用外部工具，只需在解码（Decoding）阶段设计特定的机制去检测并放大这些正面信号，就能在输出端抑制幻觉。</p>
+<h4 id="代表性方法与技术实现">2. 代表性方法与技术实现</h4>
+<p>根据技术路径的不同，该路线主要衍生出“回溯机制”与“跨层对比”两种方案：</p>
 <ul>
-<li><strong>回溯机制（以 OPERA 为代表）</strong>：<ul>
-<li><strong>工作原理</strong>：OPERA (Huang et al., 2024) 在模型的束搜索（Beam Search）过程中，会实时监测注意力权重的分布。</li>
-<li><strong>关键操作</strong>：一旦在某些 token 上检测到“过度信任”（Over-trust）的异常注意力模式（这通常是幻觉累积的信号），就会触发<strong>回溯重新选择机制</strong>，强行让模型退回上一步并重新选择更可靠的 token。</li>
-</ul>
-</li>
-<li><strong>层对比解码（以 DoLa 和 DeCo 为代表）</strong>：<ul>
-<li><strong>工作原理</strong>：DoLa (Chuang et al., 2024) 及其在多模态领域的扩展工作 DeCo (Wang et al., 2025a) 试图在模型的层级（Layer Level）上捕捉忠实度信号。</li>
-<li><strong>关键操作</strong>：它们会将模型较高层和较低层的隐层状态同时通过语言头投影到词表上，计算各自的输出 Logits，并让二者进行<strong>对比（Contrast）</strong>。</li>
-<li><strong>筛选策略</strong>：在解码时，模型会优先保留那些在跨层对比中“一致性更高”的 token，从而过滤掉低层中残留的幻觉噪声。</li>
-</ul>
-</li>
-</ul>
-<h4 id="3-该路线的局限性与痛点"><a href="#3-该路线的局限性与痛点" class="headerlink" title="3. 该路线的局限性与痛点"></a>3. 该路线的局限性与痛点</h4><p>虽然这类方法善于发掘模型的“内在潜能”，但在实际流式部署中存在以下技术瓶颈：</p>
+<li><strong>回溯机制（以 OPERA 为代表）</strong>：
 <ul>
-<li><strong>高昂的推理开销，破坏流式输出</strong>：回溯方法（如 OPERA）需要频繁维护和执行多次“束回退”（Beam Fallbacks），这会导致模型生成的文本无法像常规大模型那样顺畅地流式逐字输出，并带来了明显的额外推理延迟。</li>
-<li><strong>加剧重复退化（Repetitive Degeneration）</strong>：层对比解码类方法在放大特定跨层一致性信号的同时，往往会破坏语言模型的自然流利度，极其容易引发文本的<strong>死循环和无意义重复</strong>。</li>
-<li><strong>对调参极其敏感</strong>：这类方法的效果高度依赖于<strong>层选择（Layer Selection）</strong>。在不同的基座模型上，究竟对比哪几层才能精准抑制幻觉，需要进行极其繁琐且敏感的超参数微调。</li>
+<li><strong>工作原理</strong>：OPERA (Huang et al., 2024)
+在模型的束搜索（Beam Search）过程中，会实时监测注意力权重的分布。</li>
+<li><strong>关键操作</strong>：一旦在某些 token
+上检测到“过度信任”（Over-trust）的异常注意力模式（这通常是幻觉累积的信号），就会触发<strong>回溯重新选择机制</strong>，强行让模型退回上一步并重新选择更可靠的
+token。</li>
+</ul></li>
+<li><strong>层对比解码（以 DoLa 和 DeCo 为代表）</strong>：
+<ul>
+<li><strong>工作原理</strong>：DoLa (Chuang et al., 2024)
+及其在多模态领域的扩展工作 DeCo (Wang et al., 2025a)
+试图在模型的层级（Layer Level）上捕捉忠实度信号。</li>
+<li><strong>关键操作</strong>：它们会将模型较高层和较低层的隐层状态同时通过语言头投影到词表上，计算各自的输出
+Logits，并让二者进行<strong>对比（Contrast）</strong>。</li>
+<li><strong>筛选策略</strong>：在解码时，模型会优先保留那些在跨层对比中“一致性更高”的
+token，从而过滤掉低层中残留的幻觉噪声。</li>
+</ul></li>
 </ul>
-<h3 id="基于视觉忽略假设的方法（Methods-under-the-Visual-Neglect-Hypothesis）"><a href="#基于视觉忽略假设的方法（Methods-under-the-Visual-Neglect-Hypothesis）" class="headerlink" title="基于视觉忽略假设的方法（Methods under the Visual-Neglect Hypothesis）"></a>基于视觉忽略假设的方法（Methods under the Visual-Neglect Hypothesis）</h3><h4 id="核心假设"><a href="#核心假设" class="headerlink" title="核心假设"></a>核心假设</h4><p>这一类工作建立在一个共同的隐含共识之上：多模态大模型（MLLM）的物体幻觉主要源于模型的“视觉忽略”（Visual Neglect）<strong>以及对文本先验的过度依赖。因此，无论是哪种具体的基座模型，这些方法都会通过不同的推理期干预手段，促使模型</strong>“把更多注意力放在图像上”（Pay more attention to the image），以此来抑制幻觉。</p>
-<h4 id="四种代表性技术实现"><a href="#四种代表性技术实现" class="headerlink" title="四种代表性技术实现"></a>四种代表性技术实现</h4><p>在具体的技术路径上，这四种方法分别在模型的解码端（Decoding side）<strong>和</strong>前向传播端（Forward-pass side）展开了不同的干预：</p>
-<h5 id="1-VCD-Visual-Contrastive-Decoding"><a href="#1-VCD-Visual-Contrastive-Decoding" class="headerlink" title="1. VCD (Visual Contrastive Decoding)"></a>1. VCD (Visual Contrastive Decoding)</h5><ul>
+<h4 id="该路线的局限性与痛点">3. 该路线的局限性与痛点</h4>
+<p>虽然这类方法善于发掘模型的“内在潜能”，但在实际流式部署中存在以下技术瓶颈：</p>
+<ul>
+<li><strong>高昂的推理开销，破坏流式输出</strong>：回溯方法（如
+OPERA）需要频繁维护和执行多次“束回退”（Beam
+Fallbacks），这会导致模型生成的文本无法像常规大模型那样顺畅地流式逐字输出，并带来了明显的额外推理延迟。</li>
+<li><strong>加剧重复退化（Repetitive
+Degeneration）</strong>：层对比解码类方法在放大特定跨层一致性信号的同时，往往会破坏语言模型的自然流利度，极其容易引发文本的<strong>死循环和无意义重复</strong>。</li>
+<li><strong>对调参极其敏感</strong>：这类方法的效果高度依赖于<strong>层选择（Layer
+Selection）</strong>。在不同的基座模型上，究竟对比哪几层才能精准抑制幻觉，需要进行极其繁琐且敏感的超参数微调。</li>
+</ul>
+<h3 id="基于视觉忽略假设的方法methods-under-the-visual-neglect-hypothesis">基于视觉忽略假设的方法（Methods
+under the Visual-Neglect Hypothesis）</h3>
+<h4 id="核心假设">核心假设</h4>
+<p>这一类工作建立在一个共同的隐含共识之上：多模态大模型（MLLM）的物体幻觉主要源于模型的“视觉忽略”（Visual
+Neglect）<strong>以及对文本先验的过度依赖。因此，无论是哪种具体的基座模型，这些方法都会通过不同的推理期干预手段，促使模型</strong>“把更多注意力放在图像上”（Pay
+more attention to the image），以此来抑制幻觉。</p>
+<h4 id="四种代表性技术实现">四种代表性技术实现</h4>
+<p>在具体的技术路径上，这四种方法分别在模型的解码端（Decoding
+side）<strong>和</strong>前向传播端（Forward-pass
+side）展开了不同的干预：</p>
+<h5 id="vcd-visual-contrastive-decoding">1. VCD (Visual Contrastive
+Decoding)</h5>
+<ul>
 <li><strong>干预位置</strong>：解码端（Decoding side）。</li>
-<li><strong>技术核心</strong>：在推理时，对比原始图像与高斯噪声图像所对应的输出 Logits。</li>
+<li><strong>技术核心</strong>：在推理时，对比原始图像与高斯噪声图像所对应的输出
+Logits。</li>
 <li><strong>主要目的</strong>：通过两者的差值对比，强行抑制在视觉信号退化（加入高斯噪声）后，模型内部依然残留的盲目语言先验。</li>
 </ul>
-<h5 id="2-PAI-Paying-More-Attention-to-Image"><a href="#2-PAI-Paying-More-Attention-to-Image" class="headerlink" title="2. PAI (Paying More Attention to Image)"></a>2. PAI (Paying More Attention to Image)</h5><ul>
+<h5 id="pai-paying-more-attention-to-image">2. PAI (Paying More
+Attention to Image)</h5>
+<ul>
 <li><strong>干预位置</strong>：前向传播端（Forward-pass side）。</li>
-<li><strong>技术核心</strong>：直接强行放大图像 Token 在计算时的自注意力权重。</li>
-<li><strong>辅助手段</strong>：在生成过程中，会进一步结合来自纯文本输入（无图输入）的对比 Logits，以此来削弱语言偏见。</li>
+<li><strong>技术核心</strong>：直接强行放大图像 Token
+在计算时的自注意力权重。</li>
+<li><strong>辅助手段</strong>：在生成过程中，会进一步结合来自纯文本输入（无图输入）的对比
+Logits，以此来削弱语言偏见。</li>
 </ul>
-<h5 id="3-AttnReal-Attention-Reallocation"><a href="#3-AttnReal-Attention-Reallocation" class="headerlink" title="3. AttnReal (Attention Reallocation)"></a>3. AttnReal (Attention Reallocation)</h5><ul>
+<h5 id="attnreal-attention-reallocation">3. AttnReal (Attention
+Reallocation)</h5>
+<ul>
 <li><strong>干预位置</strong>：前向传播端（Forward-pass side）。</li>
 <li><strong>技术核心</strong>：实施<strong>注意力重分配</strong>机制。</li>
-<li><strong>具体操作</strong>：随着文本越写越长，模型往往会在历史生成的 Token 上过度累积注意力；AttnReal 会实时检测这一现象，并将这些被文本截留的注意力额度重新分配给视觉 Token，强迫模型回头看图。</li>
+<li><strong>具体操作</strong>：随着文本越写越长，模型往往会在历史生成的
+Token 上过度累积注意力；AttnReal
+会实时检测这一现象，并将这些被文本截留的注意力额度重新分配给视觉
+Token，强迫模型回头看图。</li>
 </ul>
-<h5 id="4-SSL-Steering-LVLMs-via-Sparse-Autoencoder"><a href="#4-SSL-Steering-LVLMs-via-Sparse-Autoencoder" class="headerlink" title="4. SSL (Steering LVLMs via Sparse Autoencoder)"></a>4. SSL (Steering LVLMs via Sparse Autoencoder)</h5><ul>
-<li><strong>干预位置</strong>：前向传播端（Forward-pass side）/ 激活导向。</li>
-<li><strong>技术核心</strong>：引入预训练的<strong>稀疏自编码器（Sparse Autoencoder, SAE）</strong>。</li>
-<li><strong>具体操作</strong>：在模型的隐层中，将预先定义和提取好的“忠实特征向量”和“幻觉特征向量”，直接施加（Steer/注入）到对应的视觉 Token 与输出 Token 上，从认知底层的概念向量层面完成纠偏。</li>
+<h5 id="ssl-steering-lvlms-via-sparse-autoencoder">4. SSL (Steering
+LVLMs via Sparse Autoencoder)</h5>
+<ul>
+<li><strong>干预位置</strong>：前向传播端（Forward-pass side）/
+激活导向。</li>
+<li><strong>技术核心</strong>：引入预训练的<strong>稀疏自编码器（Sparse
+Autoencoder, SAE）</strong>。</li>
+<li><strong>具体操作</strong>：在模型的隐层中，将预先定义和提取好的“忠实特征向量”和“幻觉特征向量”，直接施加（Steer/注入）到对应的视觉
+Token 与输出 Token 上，从认知底层的概念向量层面完成纠偏。</li>
 </ul>
-<h5 id="该假设与方案的局限性"><a href="#该假设与方案的局限性" class="headerlink" title="该假设与方案的局限性"></a>该假设与方案的局限性</h5><p>虽然上述方法在特定场景下取得了一定成功，但本文作者通过系统性的重新审视，指出了“视觉忽略假设”存在的<strong>三大致命局限</strong>：</p>
-<ol>
+<h5 id="该假设与方案的局限性">该假设与方案的局限性</h5>
+<p>虽然上述方法在特定场景下取得了一定成功，但本文作者通过系统性的重新审视，指出了“视觉忽略假设”存在的<strong>三大致命局限</strong>：</p>
+<ol type="1">
 <li><strong>完全忽略了模型的异质性</strong>：“只要放大视觉信号就足以降低幻觉”的假设是不完整的。作者通过实验发现，不同基座模型对视觉偏好的响应具有强烈的异质性；<strong>对某些模型而言，强行推动其更强地依赖视觉信息反而可能加剧幻觉</strong>。</li>
-<li><strong>易引发重复退化</strong>：由于这类方法属于硬性增强或强力抑制，往往会破坏模型原生的生成流形（Generation Manifold），导致模型在生成文本时极易陷入死循环，引发重复退化（Repetitive Degeneration）问题。</li>
-<li><strong>提取成本高昂</strong>：以 SSL 为代表的激活导向方法，其导向信号（特征向量）的提取过程往往高度依赖于外部模型或繁重的预训练资源，无法做到真正的轻量自适应。</li>
+<li><strong>易引发重复退化</strong>：由于这类方法属于硬性增强或强力抑制，往往会破坏模型原生的生成流形（Generation
+Manifold），导致模型在生成文本时极易陷入死循环，引发重复退化（Repetitive
+Degeneration）问题。</li>
+<li><strong>提取成本高昂</strong>：以 SSL
+为代表的激活导向方法，其导向信号（特征向量）的提取过程往往高度依赖于外部模型或繁重的预训练资源，无法做到真正的轻量自适应。</li>
 </ol>
-<h1 id="pai与AttnReal-缺点"><a href="#pai与AttnReal-缺点" class="headerlink" title="pai与AttnReal 缺点"></a>pai与AttnReal 缺点</h1><p>“在推理阶段通过修改注意力矩阵来放大视觉词元（Image Tokens）权重”的方法（例如 PAI、AttnReal 等算法），<strong>无法直接应用在原生多模态模型中，而且这样做不仅没有必要，反而会导致模型崩溃。</strong></p>
-<h2 id="1-物理边界消失，无法在自注意力矩阵中精准定位"><a href="#1-物理边界消失，无法在自注意力矩阵中精准定位" class="headerlink" title="1. 物理边界消失，无法在自注意力矩阵中精准定位"></a>1. 物理边界消失，无法在自注意力矩阵中精准定位</h2><p>在 LLaVA 等拼接多模态模型中，图像由独立的视觉编码器处理，生成的“图像 Token”与提示词的“文本 Token”在序列中的位置和界限是非常清晰的。PAI 或 AttnReal 算法正是利用这一点，直接去自注意力矩阵（Self-Attention Matrix）中锁定属于图像 Token 的行和列，然后进行乘法放大。</p>
-<p>然而，在原生多模态模型中，图片和文本在最底层通过统一分词器（Unified Tokenizer）被转化为同等地位的交织词元（Interleaved Tokens）。进入统一的 Transformer 主干网络后，各模态的特征空间在计算图内部高度融合，模态之间的物理边界已经模糊。在注意力矩阵中，你无法画出一个干净的边界去单独剥离并放大所谓的“视觉部分”。</p>
-<h2 id="2-强行干预会破坏联合概率分布，导致语义崩溃（输出乱码）"><a href="#2-强行干预会破坏联合概率分布，导致语义崩溃（输出乱码）" class="headerlink" title="2. 强行干预会破坏联合概率分布，导致语义崩溃（输出乱码）"></a>2. 强行干预会破坏联合概率分布，导致语义崩溃（输出乱码）</h2><p>原生多模态模型（如 GPT-4o、Gemini）的参数在训练时，已经让文本、图像等多种模态达到了联合概率分布的最优均衡。</p>
+<h1 id="pai与attnreal-缺点">pai与AttnReal 缺点</h1>
+<p>“在推理阶段通过修改注意力矩阵来放大视觉词元（Image
+Tokens）权重”的方法（例如 PAI、AttnReal
+等算法），<strong>无法直接应用在原生多模态模型中，而且这样做不仅没有必要，反而会导致模型崩溃。</strong></p>
+<h2 id="物理边界消失无法在自注意力矩阵中精准定位">1.
+物理边界消失，无法在自注意力矩阵中精准定位</h2>
+<p>在 LLaVA 等拼接多模态模型中，图像由独立的视觉编码器处理，生成的“图像
+Token”与提示词的“文本 Token”在序列中的位置和界限是非常清晰的。PAI 或
+AttnReal 算法正是利用这一点，直接去自注意力矩阵（Self-Attention
+Matrix）中锁定属于图像 Token 的行和列，然后进行乘法放大。</p>
+<p>然而，在原生多模态模型中，图片和文本在最底层通过统一分词器（Unified
+Tokenizer）被转化为同等地位的交织词元（Interleaved Tokens）。进入统一的
+Transformer
+主干网络后，各模态的特征空间在计算图内部高度融合，模态之间的物理边界已经模糊。在注意力矩阵中，你无法画出一个干净的边界去单独剥离并放大所谓的“视觉部分”。</p>
+<h2 id="强行干预会破坏联合概率分布导致语义崩溃输出乱码">2.
+强行干预会破坏联合概率分布，导致语义崩溃（输出乱码）</h2>
+<p>原生多模态模型（如
+GPT-4o、Gemini）的参数在训练时，已经让文本、图像等多种模态达到了联合概率分布的最优均衡。</p>
 <p>如果你在推理阶段，强行对自注意力层中某些你认为是图像位置的词元施加巨大的数学惩罚或奖励，这种粗暴的外力干预会立刻破坏模型长序列建模的上下文连贯性。其后果不是缓解幻觉，而是直接破坏模型的解码逻辑，导致模型退化，直接<strong>输出乱码或产生逻辑断层（即语义崩溃）</strong>。</p>
-<h1 id="核心动机（Motivation）与核心实验发现（Findings）"><a href="#核心动机（Motivation）与核心实验发现（Findings）" class="headerlink" title="核心动机（Motivation）与核心实验发现（Findings）"></a>核心动机（Motivation）与核心实验发现（Findings）</h1><h3 id="❶-External-vs-Internal-竞争"><a href="#❶-External-vs-Internal-竞争" class="headerlink" title="❶ External-vs-Internal 竞争"></a>❶ External-vs-Internal 竞争</h3><ul>
-<li><strong>本质：</strong> 实时输入的外部视觉条件约束（External Visual Context）<strong>与模型参数权重中固化的</strong>内部先验知识（Internal Parametric Knowledge）之间的抗衡。</li>
-<li><strong>现象：</strong> 模型眼前面临一张“蓝色香蕉”的图，其体内的参数化知识却强烈倾向于预测“黄色”。</li>
+<h1 id="核心动机motivation与核心实验发现findings">核心动机（Motivation）与核心实验发现（Findings）</h1>
+<h3 id="external-vs-internal-竞争">❶ External-vs-Internal 竞争</h3>
+<ul>
+<li><strong>本质：</strong> 实时输入的外部视觉条件约束（External Visual
+Context）<strong>与模型参数权重中固化的</strong>内部先验知识（Internal
+Parametric Knowledge）之间的抗衡。</li>
+<li><strong>现象：</strong>
+模型眼前面临一张“蓝色香蕉”的图，其体内的参数化知识却强烈倾向于预测“黄色”。</li>
 </ul>
-<h3 id="❷-Cross-Modal-竞争"><a href="#❷-Cross-Modal-竞争" class="headerlink" title="❷ Cross-Modal 竞争"></a>❷ Cross-Modal 竞争</h3><ul>
-<li><strong>本质：</strong> 视觉上下文（Visual Context）<strong>与</strong>历史文本上下文（Textual Context）之间的支配权拉扯。</li>
-<li><strong>现象：</strong> 提示词文本中包含强烈的诱导性或错误历史（如“前文说树上有一个橘子”），导致模型在生成后续 Token 时，注意力矩阵的能量偏向文本端而忽略视觉端（即退化为无条件文本建模）。</li>
+<h3 id="cross-modal-竞争">❷ Cross-Modal 竞争</h3>
+<ul>
+<li><strong>本质：</strong> 视觉上下文（Visual
+Context）<strong>与</strong>历史文本上下文（Textual
+Context）之间的支配权拉扯。</li>
+<li><strong>现象：</strong>
+提示词文本中包含强烈的诱导性或错误历史（如“前文说树上有一个橘子”），导致模型在生成后续
+Token
+时，注意力矩阵的能量偏向文本端而忽略视觉端（即退化为无条件文本建模）。</li>
 </ul>
-<h1 id="上下文偏好向量（CPVs）的解耦与提取"><a href="#上下文偏好向量（CPVs）的解耦与提取" class="headerlink" title="上下文偏好向量（CPVs）的解耦与提取"></a>上下文偏好向量（CPVs）的解耦与提取</h1><p>为了定量化表征上述两种竞争在隐空间（Latent Space）中所处的多维几何方向，论文设计了两种冲突激发实验（Conflict-based Probing），从而在不改动模型参数的前提下，逆向提取出两个<strong>上下文偏好向量（Context Preference Vectors, CPVs）</strong>：</p>
-<h3 id="❶-视觉保真向量（Visual-Fidelity-Vector-mathbf-V-text-VFV-）"><a href="#❶-视觉保真向量（Visual-Fidelity-Vector-mathbf-V-text-VFV-）" class="headerlink" title="❶ 视觉保真向量（Visual Fidelity Vector, $\mathbf{V}_{\text{VFV}}$）"></a>❶ 视觉保真向量（Visual Fidelity Vector, $\mathbf{V}_{\text{VFV}}$）</h3><ul>
-<li><strong>提取手段：</strong> 利用 <strong>反事实图片（Counterfactual Images）</strong>。</li>
-<li><strong>机理：</strong> 强行制造外部视觉与内部常识的极端冲突。捕获模型在此冲突下的隐层激活状态（Hidden States），通过差分计算剥离出纯粹掌管“外部真实视觉信任度”的特征方向。</li>
+<h1 id="上下文偏好向量cpvs的解耦与提取">上下文偏好向量（CPVs）的解耦与提取</h1>
+<p>为了定量化表征上述两种竞争在隐空间（Latent
+Space）中所处的多维几何方向，论文设计了两种冲突激发实验（Conflict-based
+Probing），从而在不改动模型参数的前提下，逆向提取出两个<strong>上下文偏好向量（Context
+Preference Vectors, CPVs）</strong>：</p>
+<h3 id="视觉保真向量visual-fidelity-vector-mathbfv_textvfv">❶
+视觉保真向量（Visual Fidelity Vector, <span class="math inline"><strong>V</strong><sub>VFV</sub></span>）</h3>
+<ul>
+<li><strong>提取手段：</strong> 利用 <strong>反事实图片（Counterfactual
+Images）</strong>。</li>
+<li><strong>机理：</strong>
+强行制造外部视觉与内部常识的极端冲突。捕获模型在此冲突下的隐层激活状态（Hidden
+States），通过差分计算剥离出纯粹掌管“外部真实视觉信任度”的特征方向。</li>
 </ul>
-<h3 id="❷-模态依赖向量（Modality-Reliance-Vector-mathbf-V-text-MRV-）"><a href="#❷-模态依赖向量（Modality-Reliance-Vector-mathbf-V-text-MRV-）" class="headerlink" title="❷ 模态依赖向量（Modality Reliance Vector, $\mathbf{V}_{\text{MRV}}$）"></a>❷ 模态依赖向量（Modality Reliance Vector, $\mathbf{V}_{\text{MRV}}$）</h3><ul>
-<li><strong>提取手段：</strong> 利用 <strong>对称图文冲突对（Symmetric Image-Text Conflict Pairs）</strong>。</li>
-<li><strong>机理：</strong> 固定视觉输入，在文本端施加偏置（或反之）。通过测量模型在多模态对齐平衡被破坏时的空间轨迹，提取出控制“该听图的还是该听文的”模态天平方向。</li>
+<h3 id="模态依赖向量modality-reliance-vector-mathbfv_textmrv">❷
+模态依赖向量（Modality Reliance Vector, <span class="math inline"><strong>V</strong><sub>MRV</sub></span>）</h3>
+<ul>
+<li><strong>提取手段：</strong> 利用 <strong>对称图文冲突对（Symmetric
+Image-Text Conflict Pairs）</strong>。</li>
+<li><strong>机理：</strong>
+固定视觉输入，在文本端施加偏置（或反之）。通过测量模型在多模态对齐平衡被破坏时的空间轨迹，提取出控制“该听图的还是该听文的”模态天平方向。</li>
 </ul>
-<p><img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260603081542984.png" alt="image-20260603081542984"></p>
-<h1 id="提取上下文偏好向量"><a href="#提取上下文偏好向量" class="headerlink" title="提取上下文偏好向量"></a>提取上下文偏好向量</h1><p>论文指出，图像作为一种多模态上下文，在模型内部其实面临着<strong>双重语义竞争</strong>：一是与模型预训练获得的<strong>参数化知识</strong>竞争；二是与指令和生成历史构成的<strong>文本上下文</strong>竞争。基于这一全新视角，CAS 框架将视觉偏好解耦为两个独立的轴，并在离线（Offline）阶段通过精妙的样本设计来提取两个<strong>上下文偏好向量（Context Preference Vectors, CPVs）</strong>。</p>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260603081542984.png" alt="image-20260603081542984">
+<figcaption aria-hidden="true">image-20260603081542984</figcaption>
+</figure>
+<h1 id="提取上下文偏好向量">提取上下文偏好向量</h1>
+<p>论文指出，图像作为一种多模态上下文，在模型内部其实面临着<strong>双重语义竞争</strong>：一是与模型预训练获得的<strong>参数化知识</strong>竞争；二是与指令和生成历史构成的<strong>文本上下文</strong>竞争。基于这一全新视角，CAS
+框架将视觉偏好解耦为两个独立的轴，并在离线（Offline）阶段通过精妙的样本设计来提取两个<strong>上下文偏好向量（Context
+Preference Vectors, CPVs）</strong>。</p>
 <p>以下为您梳理其核心的构造与提取机制：</p>
-<h2 id="一、-视觉保真向量（VFV）：解决“外部视觉”与“内部常识”的冲突"><a href="#一、-视觉保真向量（VFV）：解决“外部视觉”与“内部常识”的冲突" class="headerlink" title="一、 视觉保真向量（VFV）：解决“外部视觉”与“内部常识”的冲突"></a>一、 视觉保真向量（VFV）：解决“外部视觉”与“内部常识”的冲突</h2><ul>
-<li><strong>概念定位</strong>：捕获的是 <em>external-vs-internal</em> 的竞争偏好，即模型在面对外界看到的图像与内心固有的常识发生冲突时，究竟选择相信谁。</li>
-<li><strong>构造方法（设定 I：反事实图像构造）</strong>：<ul>
-<li>CAS 构造了一组违反常识的<strong>反事实图像（Counterfactual Images）</strong>。</li>
-<li>每个冲突样本的数学形式为：$\mathbf{(I_{cf}, q, y^+, y^-)}$。</li>
-<li><strong>结合图2的经典示例</strong>：<ul>
-<li>$I_{cf}$（反事实图像）：一根被整条涂成<strong>蓝色</strong>的香蕉图片。</li>
-<li>$q$（提示词问题）：<em>“What color is the banana in this image? Answer with one word.”</em>（图像中的香蕉是什么颜色？用一个词回答。）</li>
-<li>$y^+$（忠于图像的正确答案）：<code>blue</code>（蓝色）。</li>
-<li>$y^-$（依赖常识的幻觉答案）：<code>yellow</code>（黄色，因为常识中香蕉是黄色的）。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><strong>提取原理</strong>：当这个样本输入给多模态大模型时，模型在 $y^+$（视觉）和 $y^-$（常识）之间的概率倾斜和最终选择，直接反映了它在“外部视觉上下文”与“内部参数化知识”之间的相对偏好。通过捕获模型在这一冲突下的隐层激活状态，即可提取出 <strong>视觉保真向量（Visual Fidelity Vector, VFV）</strong>。</li>
-</ul>
-<h2 id="二、-模态依赖向量（MRV）：解决“视觉上下文”与“文本上下文”的冲突"><a href="#二、-模态依赖向量（MRV）：解决“视觉上下文”与“文本上下文”的冲突" class="headerlink" title="二、 模态依赖向量（MRV）：解决“视觉上下文”与“文本上下文”的冲突"></a>二、 模态依赖向量（MRV）：解决“视觉上下文”与“文本上下文”的冲突</h2><ul>
-<li><strong>概念定位</strong>：捕获的是 <em>cross-modal</em>（跨模态）的竞争偏好，即当“眼睛看到的”和“耳朵听到的（前文提示）”发生矛盾时，模型更依赖哪种模态。</li>
-<li><strong>构造方法（设定 II：对称图文冲突对）</strong>：<ul>
-<li>首先选取一对权重相当但语义不同的候选答案 $(A, B)$，例如（<em>apple</em> vs. <em>orange</em>）。</li>
-<li>为了彻底消除模型对某个具体词汇的固有偏好（即排除参数化知识的干扰），CAS 采用了极其巧妙的<strong>对称设计</strong>，将样本拆分为两个子集：<ul>
-<li><strong>子集 $S_a$</strong>：${(I_A, q_B, y^+=A, y^-=B)}$。<ul>
-<li><em>示例</em>：图像里是一棵结满<strong>苹果</strong>的树（$I_A$），但文本提示词（$q_B$）里故意误导它说：“之前的描述说树上长了橘子。请问这棵树上长了什么水果？” 此时，听眼睛的答案 $y^+$ 是 <code>apple</code>，顺从文本误导的答案 $y^-$ 是 <code>orange</code>。</li>
-</ul>
-</li>
-<li><strong>子集 $S_b$</strong>：${(I_B, q_A, y^+=B, y^-=A)}$。<ul>
-<li><em>示例</em>：把图文完全反过来。图像里是<strong>橘子树</strong>（$I_B$），文本提示词（$q_A$）里却睁眼说瞎话：“之前的描述说树上长了苹果。请问这棵树上长了什么水果？” 此时偏向视觉的答案变成了 <code>orange</code>，偏向文本的答案变成了 <code>apple</code>。</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><strong>提取原理（为什么要对称设计？）</strong>：<ul>
-<li>在普通的文本生成中，不同 Token 在词表里的原生出现频率是不一样的，这会带来严重的词表频率噪声。</li>
-<li>而在 CAS 的对称设计中，偏向视觉证据的答案和偏向文本先验的答案在 $S_a$ 与 $S_b$ 之间<strong>完全翻转</strong>。</li>
-<li>当把这两部分数据联合起来让模型进行拟合时，<strong>与特定 token 频率相关的偏差在数学上会相互抵消</strong>。这确保了最终提取出的 <strong>模态依赖向量（Modality Reliance Vector, MRV）</strong> 捕获的是纯粹的跨模态偏好，而不会夹杂任何词表噪声。</li>
-</ul>
-</li>
-</ul>
-<h1 id="如何提取CPVs"><a href="#如何提取CPVs" class="headerlink" title="如何提取CPVs"></a>如何提取CPVs</h1><h2 id="1-为什么选择-MLP-层作为提取位置？"><a href="#1-为什么选择-MLP-层作为提取位置？" class="headerlink" title="1. 为什么选择 MLP 层作为提取位置？"></a>1. 为什么选择 MLP 层作为提取位置？</h2><p>在线下提取偏好向量时，无论是针对“反事实图像（VFV）”还是“对称图文冲突（MRV）”的样本设定，它们都共享完全相同的提取流程 。 作者团队<strong>选择 Transformer 中的 MLP（Feed-Forward）层作为提取和注入的基点</strong> 。这背后的理论支撑在于：现有的前沿研究已经证实，MLP 层是大模型中<strong>存储事实知识的关键模块</strong>，并且对模型的最终输出起到了<strong>因果决定性作用</strong> 。  </p>
-<h2 id="2-定位关键-Token-位置（-t-star-）"><a href="#2-定位关键-Token-位置（-t-star-）" class="headerlink" title="2. 定位关键 Token 位置（$t^\star$）"></a>2. 定位关键 Token 位置（$t^\star$）</h2><p>为了捕获模型在面对冲突（例如：视觉看到的与文本暗示的不一致）时的内心真实“纠结”状态，提取算法进行了精细的时间步定位：</p>
+<h2 id="一-视觉保真向量vfv解决外部视觉与内部常识的冲突">一、
+视觉保真向量（VFV）：解决“外部视觉”与“内部常识”的冲突</h2>
 <ul>
-<li>模型首先自回归地生成答案 。  </li>
-<li>算法会定位到与视觉对齐的答案（$y^+$）或与常识/文本对齐的答案（$y^-$）在序列中<strong>最早出现的位置</strong>，并将其首个 Token 的位置标记为 $t^\star$ 。  </li>
+<li><strong>概念定位</strong>：捕获的是 <em>external-vs-internal</em>
+的竞争偏好，即模型在面对外界看到的图像与内心固有的常识发生冲突时，究竟选择相信谁。</li>
+<li><strong>构造方法（设定 I：反事实图像构造）</strong>：
+<ul>
+<li>CAS 构造了一组违反常识的<strong>反事实图像（Counterfactual
+Images）</strong>。</li>
+<li>每个冲突样本的数学形式为：<span class="math inline"><strong>(</strong><strong>I</strong><sub><strong>c</strong><strong>f</strong></sub><strong>,</strong> <strong>q</strong><strong>,</strong> <strong>y</strong><sup><strong>+</strong></sup><strong>,</strong> <strong>y</strong><sup><strong>−</strong></sup><strong>)</strong></span>。</li>
+<li><strong>结合图2的经典示例</strong>：
+<ul>
+<li><span class="math inline"><em>I</em><sub><em>c</em><em>f</em></sub></span>（反事实图像）：一根被整条涂成<strong>蓝色</strong>的香蕉图片。</li>
+<li><span class="math inline"><em>q</em></span>（提示词问题）：<em>“What
+color is the banana in this image? Answer with one
+word.”</em>（图像中的香蕉是什么颜色？用一个词回答。）</li>
+<li><span class="math inline"><em>y</em><sup>+</sup></span>（忠于图像的正确答案）：<code>blue</code>（蓝色）。</li>
+<li><span class="math inline"><em>y</em><sup>−</sup></span>（依赖常识的幻觉答案）：<code>yellow</code>（黄色，因为常识中香蕉是黄色的）。</li>
+</ul></li>
+</ul></li>
+<li><strong>提取原理</strong>：当这个样本输入给多模态大模型时，模型在
+<span class="math inline"><em>y</em><sup>+</sup></span>（视觉）和 <span class="math inline"><em>y</em><sup>−</sup></span>（常识）之间的概率倾斜和最终选择，直接反映了它在“外部视觉上下文”与“内部参数化知识”之间的相对偏好。通过捕获模型在这一冲突下的隐层激活状态，即可提取出
+<strong>视觉保真向量（Visual Fidelity Vector, VFV）</strong>。</li>
 </ul>
-<h2 id="3-计算连续偏好信号（-pref-）"><a href="#3-计算连续偏好信号（-pref-）" class="headerlink" title="3. 计算连续偏好信号（$pref$）"></a>3. 计算连续偏好信号（$pref$）</h2><p>在定位到 $t^\star$ 之后，算法会回退一步，在<strong>前一个位置 $t^\star - 1$</strong> 处读取模型预测下一个 Token 的概率对数（Logits），记为 $\ell$ 。接着，通过以下公式定义一个连续的<strong>偏好信号 $pref$</strong> ：  </p>
-<script type="math/tex; mode=display">pref = \max_{i \in T^+} \ell_i - \max_{j \in T^-} \ell_j</script><p>$T^+$：代表与视觉上下文一致的答案 $y^+$ 的首 Token 候选集（包含各种大小写和空格变体） 。  </p>
-<p>$T^-$：代表与对立上下文（参数化知识或文本上下文）一致的答案 $y^-$ 的首 Token 候选集 。  </p>
-<p><strong>物理意义</strong>：$pref$ 的数值正负和大小，直接反映了模型在这一步更偏向于信任视觉（正值）还是更偏向于信任先验/文本（负值） 。  </p>
+<h2 id="二-模态依赖向量mrv解决视觉上下文与文本上下文的冲突">二、
+模态依赖向量（MRV）：解决“视觉上下文”与“文本上下文”的冲突</h2>
+<ul>
+<li><strong>概念定位</strong>：捕获的是
+<em>cross-modal</em>（跨模态）的竞争偏好，即当“眼睛看到的”和“耳朵听到的（前文提示）”发生矛盾时，模型更依赖哪种模态。</li>
+<li><strong>构造方法（设定 II：对称图文冲突对）</strong>：
+<ul>
+<li>首先选取一对权重相当但语义不同的候选答案 <span class="math inline">(<em>A</em>, <em>B</em>)</span>，例如（<em>apple</em>
+vs. <em>orange</em>）。</li>
+<li>为了彻底消除模型对某个具体词汇的固有偏好（即排除参数化知识的干扰），CAS
+采用了极其巧妙的<strong>对称设计</strong>，将样本拆分为两个子集：
+<ul>
+<li><strong>子集 <span class="math inline"><em>S</em><sub><em>a</em></sub></span></strong>：<span class="math inline">{(<em>I</em><sub><em>A</em></sub>, <em>q</em><sub><em>B</em></sub>, <em>y</em><sup>+</sup> = <em>A</em>, <em>y</em><sup>−</sup> = <em>B</em>)}</span>。
+<ul>
+<li><em>示例</em>：图像里是一棵结满<strong>苹果</strong>的树（<span class="math inline"><em>I</em><sub><em>A</em></sub></span>），但文本提示词（<span class="math inline"><em>q</em><sub><em>B</em></sub></span>）里故意误导它说：“之前的描述说树上长了橘子。请问这棵树上长了什么水果？”
+此时，听眼睛的答案 <span class="math inline"><em>y</em><sup>+</sup></span> 是
+<code>apple</code>，顺从文本误导的答案 <span class="math inline"><em>y</em><sup>−</sup></span> 是
+<code>orange</code>。</li>
+</ul></li>
+<li><strong>子集 <span class="math inline"><em>S</em><sub><em>b</em></sub></span></strong>：<span class="math inline">{(<em>I</em><sub><em>B</em></sub>, <em>q</em><sub><em>A</em></sub>, <em>y</em><sup>+</sup> = <em>B</em>, <em>y</em><sup>−</sup> = <em>A</em>)}</span>。
+<ul>
+<li><em>示例</em>：把图文完全反过来。图像里是<strong>橘子树</strong>（<span class="math inline"><em>I</em><sub><em>B</em></sub></span>），文本提示词（<span class="math inline"><em>q</em><sub><em>A</em></sub></span>）里却睁眼说瞎话：“之前的描述说树上长了苹果。请问这棵树上长了什么水果？”
+此时偏向视觉的答案变成了 <code>orange</code>，偏向文本的答案变成了
+<code>apple</code>。</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><strong>提取原理（为什么要对称设计？）</strong>：
+<ul>
+<li>在普通的文本生成中，不同 Token
+在词表里的原生出现频率是不一样的，这会带来严重的词表频率噪声。</li>
+<li>而在 CAS 的对称设计中，偏向视觉证据的答案和偏向文本先验的答案在
+<span class="math inline"><em>S</em><sub><em>a</em></sub></span> 与
+<span class="math inline"><em>S</em><sub><em>b</em></sub></span>
+之间<strong>完全翻转</strong>。</li>
+<li>当把这两部分数据联合起来让模型进行拟合时，<strong>与特定 token
+频率相关的偏差在数学上会相互抵消</strong>。这确保了最终提取出的
+<strong>模态依赖向量（Modality Reliance Vector, MRV）</strong>
+捕获的是纯粹的跨模态偏好，而不会夹杂任何词表噪声。</li>
+</ul></li>
+</ul>
+<h1 id="如何提取cpvs">如何提取CPVs</h1>
+<h2 id="为什么选择-mlp-层作为提取位置">1. 为什么选择 MLP
+层作为提取位置？</h2>
+<p>在线下提取偏好向量时，无论是针对“反事实图像（VFV）”还是“对称图文冲突（MRV）”的样本设定，它们都共享完全相同的提取流程
+。 作者团队<strong>选择 Transformer 中的
+MLP（Feed-Forward）层作为提取和注入的基点</strong>
+。这背后的理论支撑在于：现有的前沿研究已经证实，MLP
+层是大模型中<strong>存储事实知识的关键模块</strong>，并且对模型的最终输出起到了<strong>因果决定性作用</strong>
+。</p>
+<h2 id="定位关键-token-位置tstar">2. 定位关键 Token 位置（<span class="math inline"><em>t</em><sup>⋆</sup></span>）</h2>
+<p>为了捕获模型在面对冲突（例如：视觉看到的与文本暗示的不一致）时的内心真实“纠结”状态，提取算法进行了精细的时间步定位：</p>
+<ul>
+<li>模型首先自回归地生成答案 。<br>
+</li>
+<li>算法会定位到与视觉对齐的答案（<span class="math inline"><em>y</em><sup>+</sup></span>）或与常识/文本对齐的答案（<span class="math inline"><em>y</em><sup>−</sup></span>）在序列中<strong>最早出现的位置</strong>，并将其首个
+Token 的位置标记为 <span class="math inline"><em>t</em><sup>⋆</sup></span> 。</li>
+</ul>
+<h2 id="计算连续偏好信号pref">3. 计算连续偏好信号（<span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span>）</h2>
+<p>在定位到 <span class="math inline"><em>t</em><sup>⋆</sup></span>
+之后，算法会回退一步，在<strong>前一个位置 <span class="math inline"><em>t</em><sup>⋆</sup> − 1</span></strong>
+处读取模型预测下一个 Token 的概率对数（Logits），记为 <span class="math inline"><em>ℓ</em></span>
+。接着，通过以下公式定义一个连续的<strong>偏好信号 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span></strong>
+：</p>
+<p><span class="math display"><em>p</em><em>r</em><em>e</em><em>f</em> = max<sub><em>i</em> ∈ <em>T</em><sup>+</sup></sub><em>ℓ</em><sub><em>i</em></sub> − max<sub><em>j</em> ∈ <em>T</em><sup>−</sup></sub><em>ℓ</em><sub><em>j</em></sub></span></p>
+<p><span class="math inline"><em>T</em><sup>+</sup></span>：代表与视觉上下文一致的答案
+<span class="math inline"><em>y</em><sup>+</sup></span> 的首 Token
+候选集（包含各种大小写和空格变体） 。</p>
+<p><span class="math inline"><em>T</em><sup>−</sup></span>：代表与对立上下文（参数化知识或文本上下文）一致的答案
+<span class="math inline"><em>y</em><sup>−</sup></span> 的首 Token
+候选集 。</p>
+<p><strong>物理意义</strong>：<span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span>
+的数值正负和大小，直接反映了模型在这一步更偏向于信任视觉（正值）还是更偏向于信任先验/文本（负值）
+。</p>
 <blockquote>
-<p>$T^+$和$T^-$是<strong>随着数据集的构建，针对每一个样本提前定义好的候选 Token 集合</strong>。</p>
-<p>当你设计好一个样本（比如：图片是绿草莓，问题是“什么颜色”）时，你就已经明确知道了这个样本的 $y^+$ 是“绿色”，$y^-$ 是“红色”。</p>
-<p>只要Token <strong>第一次</strong>掉进了 $T^+$ 或者 $T^-$ 的名单里，便可以开始计算pref</p>
-<p>这一个 <code>logits</code> 向量里，包含了词表里所有 Token 的得分，它们绝对是在<strong>同一个</strong> <code>logits</code> 向量里抽取的</p>
+<p><span class="math inline"><em>T</em><sup>+</sup></span>和<span class="math inline"><em>T</em><sup>−</sup></span>是<strong>随着数据集的构建，针对每一个样本提前定义好的候选
+Token 集合</strong>。</p>
+<p>当你设计好一个样本（比如：图片是绿草莓，问题是“什么颜色”）时，你就已经明确知道了这个样本的
+<span class="math inline"><em>y</em><sup>+</sup></span> 是“绿色”，<span class="math inline"><em>y</em><sup>−</sup></span> 是“红色”。</p>
+<p>只要Token <strong>第一次</strong>掉进了 <span class="math inline"><em>T</em><sup>+</sup></span> 或者 <span class="math inline"><em>T</em><sup>−</sup></span>
+的名单里，便可以开始计算pref</p>
+<p>这一个 <code>logits</code> 向量里，包含了词表里所有 Token
+的得分，它们绝对是在<strong>同一个</strong> <code>logits</code>
+向量里抽取的</p>
 </blockquote>
-<h2 id="4-逐层岭回归（Ridge-Regression）拟合"><a href="#4-逐层岭回归（Ridge-Regression）拟合" class="headerlink" title="4. 逐层岭回归（Ridge Regression）拟合"></a>4. 逐层岭回归（Ridge Regression）拟合</h2><p>同样在 $t^\star - 1$ 这一位置，算法会导出每一层 $l$ 的 MLP 输出隐藏状态 $h_l$ 。为了把隐藏状态（高维空间向量）和模型的行为表现（偏好信号 $pref$）建立映射，作者采用了 $\ell_2$ 正则化的<strong>岭回归</strong>进行闭式求解 ：  </p>
-<script type="math/tex; mode=display">\min_{w_l, b_l} \sum_s (pref_s - w_l^\top h_l^{(s)} - b_l)^2 + \lambda \|w_l\|_2^2</script><p>在实际拟合前，为了保证高信噪比，算法会<strong>统一过滤掉行为信号过弱的样本</strong>（即 $|pref| [cite_start]&lt; \epsilon$，数据过小说明模型本身没形成明显偏好） 。  </p>
-<p>最终，每层独立求解得到的权重向量 $w_l$ 就是我们需要的<strong>上下文偏好向量（CPV）</strong> ：  </p>
+<h2 id="逐层岭回归ridge-regression拟合">4. 逐层岭回归（Ridge
+Regression）拟合</h2>
+<p>同样在 <span class="math inline"><em>t</em><sup>⋆</sup> − 1</span>
+这一位置，算法会导出每一层 <span class="math inline"><em>l</em></span>
+的 MLP 输出隐藏状态 <span class="math inline"><em>h</em><sub><em>l</em></sub></span>
+。为了把隐藏状态（高维空间向量）和模型的行为表现（偏好信号 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span>）建立映射，作者采用了
+<span class="math inline"><em>ℓ</em><sub>2</sub></span>
+正则化的<strong>岭回归</strong>进行闭式求解 ：</p>
+<p><span class="math display">min<sub><em>w</em><sub><em>l</em></sub>, <em>b</em><sub><em>l</em></sub></sub>∑<sub><em>s</em></sub>(<em>p</em><em>r</em><em>e</em><em>f</em><sub><em>s</em></sub> − <em>w</em><sub><em>l</em></sub><sup>⊤</sup><em>h</em><sub><em>l</em></sub><sup>(<em>s</em>)</sup> − <em>b</em><sub><em>l</em></sub>)<sup>2</sup> + <em>λ</em>∥<em>w</em><sub><em>l</em></sub>∥<sub>2</sub><sup>2</sup></span></p>
+<p>在实际拟合前，为了保证高信噪比，算法会<strong>统一过滤掉行为信号过弱的样本</strong>（即
+<span class="math inline">|<em>p</em><em>r</em><em>e</em><em>f</em>|[<em>c</em><em>i</em><em>t</em><em>e</em><sub><em>s</em></sub><em>t</em><em>a</em><em>r</em><em>t</em>] &lt; <em>ϵ</em></span>，数据过小说明模型本身没形成明显偏好）
+。</p>
+<p>最终，每层独立求解得到的权重向量 <span class="math inline"><em>w</em><sub><em>l</em></sub></span>
+就是我们需要的<strong>上下文偏好向量（CPV）</strong> ：</p>
 <ul>
-<li>在设定 I（反事实图像）上拟合得到的权重，称为 <strong>VFV（视觉保真向量）</strong> 。  </li>
-<li>在设定 II（对称图文冲突对 $S_a \cup S_b$）上联合拟合得到的权重，称为 <strong>MRV（模态依赖向量）</strong> 。  </li>
+<li>在设定 I（反事实图像）上拟合得到的权重，称为
+<strong>VFV（视觉保真向量）</strong> 。<br>
+</li>
+<li>在设定 II（对称图文冲突对 <span class="math inline"><em>S</em><sub><em>a</em></sub> ∪ <em>S</em><sub><em>b</em></sub></span>）上联合拟合得到的权重，称为
+<strong>MRV（模态依赖向量）</strong> 。</li>
 </ul>
 <blockquote>
-<p>在 MLP 的某一层，我们把海量样本的隐状态 $h$ 聚在一起。利用岭回归，我们求解出一个最优的方向向量 $w$（这个 $w$ 就是该层专属的 CPV）。它满足：任何一个样本的 $h$ 只要与 $w$ 做点积（即 $h$ 投影到 $w$ 方向上的长度），其结果都最接近该样本真实表现出的偏好行为特征 $pref$。</p>
+<p>在 MLP 的某一层，我们把海量样本的隐状态 <span class="math inline"><em>h</em></span>
+聚在一起。利用岭回归，我们求解出一个最优的方向向量 <span class="math inline"><em>w</em></span>（这个 <span class="math inline"><em>w</em></span> 就是该层专属的
+CPV）。它满足：任何一个样本的 <span class="math inline"><em>h</em></span> 只要与 <span class="math inline"><em>w</em></span> 做点积（即 <span class="math inline"><em>h</em></span> 投影到 <span class="math inline"><em>w</em></span>
+方向上的长度），其结果都最接近该样本真实表现出的偏好行为特征 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span>。</p>
 </blockquote>
-<h2 id="5-层定位（Layer-Localization）"><a href="#5-层定位（Layer-Localization）" class="headerlink" title="5. 层定位（Layer Localization）"></a>5. 层定位（Layer Localization）</h2><p>最后，关于“<strong>到底在模型的哪一层进行干预最有效</strong>”的问题，作者通过逐层归因实验进行了定位 ：  </p>
-<p><strong>最终选定区域</strong>：模型的<strong>中前部 MLP 层，即 L11–14 这一层带</strong> 。  </p>
-<p><strong>原因分析</strong>：根据后续的层消融实验（表 4），中前层 L11–14 是唯一既能显著缓解幻觉、表现又十分稳定的干预窗口 ；如果选在更浅的层（如 L1–9）会导致模型严重的文本生成退化和失控重复，而选在更深的层（如 L16 之后）干预则基本失效，回到原生（Vanilla）模型的水平 。因此，CPV 的提取和线上推理时的残差注入，都固定在 L11–14 层完成 。  </p>
-<h1 id="计算-pref-的含义是什么"><a href="#计算-pref-的含义是什么" class="headerlink" title="计算$pref$的含义是什么"></a>计算$pref$的含义是什么</h1><h2 id="一、-什么是“读取模型预测下一个-Token-的概率对数（Logits）”？"><a href="#一、-什么是“读取模型预测下一个-Token-的概率对数（Logits）”？" class="headerlink" title="一、 什么是“读取模型预测下一个 Token 的概率对数（Logits）”？"></a>一、 什么是“读取模型预测下一个 Token 的概率对数（Logits）”？</h2><p>在自回归大模型中，当输入前一个位置 $t^\star - 1$ 的内容后，模型的最后一层（Linear 头）会给词表里的每一个词（Token）都打一个原始分数。</p>
+<h2 id="层定位layer-localization">5. 层定位（Layer Localization）</h2>
+<p>最后，关于“<strong>到底在模型的哪一层进行干预最有效</strong>”的问题，作者通过逐层归因实验进行了定位
+：</p>
+<p><strong>最终选定区域</strong>：模型的<strong>中前部 MLP 层，即 L11–14
+这一层带</strong> 。</p>
+<p><strong>原因分析</strong>：根据后续的层消融实验（表 4），中前层
+L11–14 是唯一既能显著缓解幻觉、表现又十分稳定的干预窗口
+；如果选在更浅的层（如
+L1–9）会导致模型严重的文本生成退化和失控重复，而选在更深的层（如 L16
+之后）干预则基本失效，回到原生（Vanilla）模型的水平 。因此，CPV
+的提取和线上推理时的残差注入，都固定在 L11–14 层完成 。</p>
+<h1 id="计算pref的含义是什么">计算<span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span>的含义是什么</h1>
+<h2 id="一-什么是读取模型预测下一个-token-的概率对数logits">一、
+什么是“读取模型预测下一个 Token 的概率对数（Logits）”？</h2>
+<p>在自回归大模型中，当输入前一个位置 <span class="math inline"><em>t</em><sup>⋆</sup> − 1</span>
+的内容后，模型的最后一层（Linear
+头）会给词表里的每一个词（Token）都打一个原始分数。</p>
 <ul>
-<li><strong>这个原始分数向量，就叫做 Logits（记为 $\ell$）</strong>。它还没有经过 Softmax 归一化，所以不是 0 到 1 之间的概率，而是有正有负的实数。</li>
+<li><strong>这个原始分数向量，就叫做 Logits（记为 <span class="math inline"><em>ℓ</em></span>）</strong>。它还没有经过 Softmax
+归一化，所以不是 0 到 1 之间的概率，而是有正有负的实数。</li>
 <li><strong>分数越高，代表模型内心越想在下一步吐出这个词。</strong></li>
 </ul>
-<p>假设模型的词表里有几万个词，在 $t^\star - 1$ 这一步，模型输出的 Logits 分数向量 $\ell$ 看起来可能长这样：</p>
-<div class="table-container">
+<p>假设模型的词表里有几万个词，在 <span class="math inline"><em>t</em><sup>⋆</sup> − 1</span> 这一步，模型输出的
+Logits 分数向量 <span class="math inline"><em>ℓ</em></span>
+看起来可能长这样：</p>
 <table>
+<colgroup>
+<col style="width: 28%">
+<col style="width: 30%">
+<col style="width: 40%">
+</colgroup>
 <thead>
 <tr>
 <th><strong>词表里的 Token (k)</strong></th>
@@ -599,126 +973,218 @@
 </thead>
 <tbody>
 <tr>
-<td><code>&quot;黄&quot;</code></td>
+<td><code>"黄"</code></td>
 <td><code>12.5</code></td>
-<td>视觉派（偏向 $y^+$）</td>
+<td>视觉派（偏向 <span class="math inline"><em>y</em><sup>+</sup></span>）</td>
 </tr>
 <tr>
-<td><code>&quot;Yellow&quot;</code></td>
+<td><code>"Yellow"</code></td>
 <td><code>11.8</code></td>
-<td>视觉派（偏向 $y^+$ 的英文变体）</td>
+<td>视觉派（偏向 <span class="math inline"><em>y</em><sup>+</sup></span>
+的英文变体）</td>
 </tr>
 <tr>
-<td><code>&quot;红&quot;</code></td>
+<td><code>"红"</code></td>
 <td><code>14.2</code></td>
-<td>偏见派（偏向 $y^-$）</td>
+<td>偏见派（偏向 <span class="math inline"><em>y</em><sup>−</sup></span>）</td>
 </tr>
 <tr>
-<td><code>&quot;的&quot;</code></td>
+<td><code>"的"</code></td>
 <td><code>3.1</code></td>
 <td>酱油角色</td>
 </tr>
 <tr>
-<td><code>&quot;苹果&quot;</code></td>
+<td><code>"苹果"</code></td>
 <td><code>-5.2</code></td>
 <td>无关词</td>
 </tr>
 </tbody>
 </table>
-</div>
-<h2 id="二、-为什么有-T-和-T-，还要取-max-？"><a href="#二、-为什么有-T-和-T-，还要取-max-？" class="headerlink" title="二、 为什么有 $T^+$ 和 $T^-$，还要取 $\max$ ？"></a>二、 为什么有 $T^+$ 和 $T^-$，还要取 $\max$ ？</h2><p>因为在实际的 Tokenizer（分词器）中，同一个意思的词可能会被切成不同的 Token。比如“黄色”，模型可能想说中文的<code>&quot;黄&quot;</code>，也可能想说英文的<code>&quot;Yellow&quot;</code>或者带空格的<code>&quot; Yellow&quot;</code>。</p>
+<h2 id="二-为什么有-t-和-t-还要取-max">二、 为什么有 <span class="math inline"><em>T</em><sup>+</sup></span> 和 <span class="math inline"><em>T</em><sup>−</sup></span>，还要取 <span class="math inline">max </span> ？</h2>
+<p>因为在实际的 Tokenizer（分词器）中，同一个意思的词可能会被切成不同的
+Token。比如“黄色”，模型可能想说中文的<code>"黄"</code>，也可能想说英文的<code>"Yellow"</code>或者带空格的<code>" Yellow"</code>。</p>
 <p>为了公平起见，作者设立了两个“阵营”：</p>
 <ul>
-<li><strong>$T^+$（视觉阵营候选集）</strong>：所有能代表正确视觉答案开头的 Token，比如 <code>[&quot;黄&quot;, &quot;Yellow&quot;, &quot;yellow&quot;]</code>。</li>
-<li><strong>$T^-$（文本/常识偏见阵营候选集）</strong>：所有能代表常识错误答案开头的 Token，比如 <code>[&quot;红&quot;, &quot;Red&quot;, &quot;red&quot;]</code>。</li>
+<li><strong><span class="math inline"><em>T</em><sup>+</sup></span>（视觉阵营候选集）</strong>：所有能代表正确视觉答案开头的
+Token，比如 <code>["黄", "Yellow", "yellow"]</code>。</li>
+<li><strong><span class="math inline"><em>T</em><sup>−</sup></span>（文本/常识偏见阵营候选集）</strong>：所有能代表常识错误答案开头的
+Token，比如 <code>["红", "Red", "red"]</code>。</li>
 </ul>
-<p>公式里的 $\max_{i \in T^+} \ell_i$ 的意思就是：<strong>从视觉阵营里，挑出一个大模型最想说的词（分数最高的那个）。</strong></p>
-<p>在上面的表格中，视觉阵营里 <code>&quot;黄&quot;</code> 的分数最高（<code>12.5</code>），所以 $\max_{i \in T^+} \ell_i = 12.5$。</p>
-<p>同理，偏见阵营里 <code>&quot;红&quot;</code> 的分数最高（<code>14.2</code>），所以 $\max_{j \in T^-} \ell_j = 14.2$。</p>
-<h2 id="三、-这个-pref-为什么这么算？它的物理意义是什么？"><a href="#三、-这个-pref-为什么这么算？它的物理意义是什么？" class="headerlink" title="三、 这个 $pref$ 为什么这么算？它的物理意义是什么？"></a>三、 这个 $pref$ 为什么这么算？它的物理意义是什么？</h2><p>现在把两个阵营的“最强战力”拉出来作差，就得到了连续偏好信号 $pref$：</p>
-<script type="math/tex; mode=display">pref = \text{视觉阵营最高分} - \text{偏见阵营最高分}</script><p>带入上面的例子：$pref = 12.5 - 14.2 = -1.7$。</p>
-<p>这个减法做完后，得到的 $pref$ 数值具有非常完美的物理意义，能够定量反映大模型在这一时刻的<strong>内心偏向和纠结程度</strong>：</p>
+<p>公式里的 <span class="math inline">max<sub><em>i</em> ∈ <em>T</em><sup>+</sup></sub><em>ℓ</em><sub><em>i</em></sub></span>
+的意思就是：<strong>从视觉阵营里，挑出一个大模型最想说的词（分数最高的那个）。</strong></p>
+<p>在上面的表格中，视觉阵营里 <code>"黄"</code>
+的分数最高（<code>12.5</code>），所以 <span class="math inline">max<sub><em>i</em> ∈ <em>T</em><sup>+</sup></sub><em>ℓ</em><sub><em>i</em></sub> = 12.5</span>。</p>
+<p>同理，偏见阵营里 <code>"红"</code>
+的分数最高（<code>14.2</code>），所以 <span class="math inline">max<sub><em>j</em> ∈ <em>T</em><sup>−</sup></sub><em>ℓ</em><sub><em>j</em></sub> = 14.2</span>。</p>
+<h2 id="三-这个-pref-为什么这么算它的物理意义是什么">三、 这个 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span>
+为什么这么算？它的物理意义是什么？</h2>
+<p>现在把两个阵营的“最强战力”拉出来作差，就得到了连续偏好信号 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span>：</p>
+<p><span class="math display"><em>p</em><em>r</em><em>e</em><em>f</em> = 视觉阵营最高分 − 偏见阵营最高分</span></p>
+<p>带入上面的例子：<span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em> = 12.5 − 14.2 = −1.7</span>。</p>
+<p>这个减法做完后，得到的 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span>
+数值具有非常完美的物理意义，能够定量反映大模型在这一时刻的<strong>内心偏向和纠结程度</strong>：</p>
 <ul>
-<li><strong>当 $pref &gt; 0$ 时（正数）</strong>：说明视觉阵营胜出。分数值越大，说明模型越坚信自己眼睛看到的（视觉上下文），受常识或文本的干扰越小。</li>
-<li><strong>当 $pref &lt; 0$ 时（负数）</strong>：说明偏见阵营胜出。分数值越负（比如 $-5.0$），说明模型越迷失在文本偏见或常识里，睁眼说瞎话。</li>
-<li><strong>当 $pref \approx 0$ 时</strong>：说明两派分数旗鼓相当，大模型此时极度纠结，不知道该信眼睛还是信常识。</li>
+<li><strong>当 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em> &gt; 0</span>
+时（正数）</strong>：说明视觉阵营胜出。分数值越大，说明模型越坚信自己眼睛看到的（视觉上下文），受常识或文本的干扰越小。</li>
+<li><strong>当 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em> &lt; 0</span>
+时（负数）</strong>：说明偏见阵营胜出。分数值越负（比如 <span class="math inline">−5.0</span>），说明模型越迷失在文本偏见或常识里，睁眼说瞎话。</li>
+<li><strong>当 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em> ≈ 0</span>
+时</strong>：说明两派分数旗鼓相当，大模型此时极度纠结，不知道该信眼睛还是信常识。</li>
 </ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>作者大费周章算这个 $pref$，就是为了把它当成<strong>标签（Label）</strong>。</p>
-<p>在下一步的岭回归中，我们要寻找一个高维方向（即 CPV 向量 $w_l$），使得中间 MLP 层的隐藏状态 $h_l$ 在这个方向上的投影，正好等于这个 $pref$。</p>
-<h1 id="MRV的提取"><a href="#MRV的提取" class="headerlink" title="MRV的提取"></a>MRV的提取</h1><h2 id="一、-MRV-的数据集设计：对称图文冲突（Setup-II）"><a href="#一、-MRV-的数据集设计：对称图文冲突（Setup-II）" class="headerlink" title="一、 MRV 的数据集设计：对称图文冲突（Setup II）"></a>一、 MRV 的数据集设计：对称图文冲突（Setup II）</h2><p>为了提取出纯粹的跨模态偏好，而又不引入特定词汇的频次偏见，论文设计了成对出现的对称冲突数据集，包含两个子集 $S_a$ 和 $S_b$：</p>
-<script type="math/tex; mode=display">S_a = \{(I_A, q_B, y^+=A, y^-=B)\}</script><script type="math/tex; mode=display">S_b = \{(I_B, q_A, y^+=B, y^-=A)\}</script><p>其中：</p>
+<h2 id="总结">总结</h2>
+<p>作者大费周章算这个 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span>，就是为了把它当成<strong>标签（Label）</strong>。</p>
+<p>在下一步的岭回归中，我们要寻找一个高维方向（即 CPV 向量 <span class="math inline"><em>w</em><sub><em>l</em></sub></span>），使得中间
+MLP 层的隐藏状态 <span class="math inline"><em>h</em><sub><em>l</em></sub></span>
+在这个方向上的投影，正好等于这个 <span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span>。</p>
+<h1 id="mrv的提取">MRV的提取</h1>
+<h2 id="一-mrv-的数据集设计对称图文冲突setup-ii">一、 MRV
+的数据集设计：对称图文冲突（Setup II）</h2>
+<p>为了提取出纯粹的跨模态偏好，而又不引入特定词汇的频次偏见，论文设计了成对出现的对称冲突数据集，包含两个子集
+<span class="math inline"><em>S</em><sub><em>a</em></sub></span> 和
+<span class="math inline"><em>S</em><sub><em>b</em></sub></span>：</p>
+<p><span class="math display"><em>S</em><sub><em>a</em></sub> = {(<em>I</em><sub><em>A</em></sub>, <em>q</em><sub><em>B</em></sub>, <em>y</em><sup>+</sup> = <em>A</em>, <em>y</em><sup>−</sup> = <em>B</em>)}</span></p>
+<p><span class="math display"><em>S</em><sub><em>b</em></sub> = {(<em>I</em><sub><em>B</em></sub>, <em>q</em><sub><em>A</em></sub>, <em>y</em><sup>+</sup> = <em>B</em>, <em>y</em><sup>−</sup> = <em>A</em>)}</span></p>
+<p>其中：</p>
 <ul>
-<li>$I_X$：包含物体 $X$ 的图像。</li>
-<li>$q_X$：故意引导、暗示物体是 $X$ 的文本提示词。</li>
+<li><span class="math inline"><em>I</em><sub><em>X</em></sub></span>：包含物体
+<span class="math inline"><em>X</em></span> 的图像。</li>
+<li><span class="math inline"><em>q</em><sub><em>X</em></sub></span>：故意引导、暗示物体是
+<span class="math inline"><em>X</em></span> 的文本提示词。</li>
 </ul>
-<h2 id="二、-用具体案例拆解这两个子集"><a href="#二、-用具体案例拆解这两个子集" class="headerlink" title="二、 用具体案例拆解这两个子集"></a>二、 用具体案例拆解这两个子集</h2><p>我们假设物体 $A$ 是<strong>猫（Cat）</strong>，物体 $B$ 是<strong>狗（Dog）</strong>。</p>
-<h3 id="1-样本子集-S-a-（图是猫，文本说是狗）"><a href="#1-样本子集-S-a-（图是猫，文本说是狗）" class="headerlink" title="1. 样本子集 $S_a$（图是猫，文本说是狗）"></a>1. 样本子集 $S_a$（图是猫，文本说是狗）</h3><ul>
-<li><strong>输入图像 ($I_A$)</strong>：一张<strong>猫</strong>的图片。</li>
-<li><strong>输入提示词 ($q_B$)</strong>：<code>&quot;文本提示：图里有一只狗。请问图片里到底是什么动物？答：&quot;</code> （故意用文本误导模型）。</li>
-<li><strong>阵营划分</strong>：<ul>
-<li>$T^+$（视觉阵营）= <code>[&quot;猫&quot;, &quot;Cat&quot;]</code> （对应 $y^+=A$）</li>
-<li>$T^-$（文本阵营）= <code>[&quot;狗&quot;, &quot;Dog&quot;]</code> （对应 $y^-=B$）</li>
-</ul>
-</li>
-</ul>
-<h3 id="2-对称样本子集-S-b-（图是狗，文本说是猫）"><a href="#2-对称样本子集-S-b-（图是狗，文本说是猫）" class="headerlink" title="2. 对称样本子集 $S_b$（图是狗，文本说是猫）"></a>2. 对称样本子集 $S_b$（图是狗，文本说是猫）</h3><ul>
-<li><strong>输入图像 ($I_B$)</strong>：一张<strong>狗</strong>的图片。</li>
-<li><strong>输入提示词 ($q_A$)</strong>：<code>&quot;文本提示：图里有一只猫。请问图片里到底是什么动物？答：&quot;</code> （同样用文本误导）。</li>
-<li><strong>阵营划分</strong>：<ul>
-<li>$T^+$（视觉阵营）= <code>[&quot;狗&quot;, &quot;Dog&quot;]</code> （对应 $y^+=B$）</li>
-<li>$T^-$（文本阵营）= <code>[&quot;猫&quot;, &quot;Cat&quot;]</code> （对应 $y^-=A$）</li>
-</ul>
-</li>
-</ul>
-<h2 id="三、-为什么要大费周章做“对称设计”？"><a href="#三、-为什么要大费周章做“对称设计”？" class="headerlink" title="三、 为什么要大费周章做“对称设计”？"></a>三、 为什么要大费周章做“对称设计”？</h2><p>大模型对不同的 Token 本身就存在先验的“偏心”。比如，有的模型在预训练时见过无数次“猫”，它天然就更喜欢吐出“猫”这个 Token。</p>
+<h2 id="二-用具体案例拆解这两个子集">二、 用具体案例拆解这两个子集</h2>
+<p>我们假设物体 <span class="math inline"><em>A</em></span>
+是<strong>猫（Cat）</strong>，物体 <span class="math inline"><em>B</em></span> 是<strong>狗（Dog）</strong>。</p>
+<h3 id="样本子集-s_a图是猫文本说是狗">1. 样本子集 <span class="math inline"><em>S</em><sub><em>a</em></sub></span>（图是猫，文本说是狗）</h3>
 <ul>
-<li>如果我们只用 $S_a$（图猫文狗）去解回归，解出来的向量 $w$ 可能会混入“模型对‘猫’这个字本身的偏好”，导致提取出来的方向不够纯净。</li>
-<li>采用了对称设计后，在 $S_a$ 中，“猫”是 $T^+$（视觉）；而在 $S_b$ 中，“猫”变成了 $T^-$（文本）。</li>
+<li><strong>输入图像 (<span class="math inline"><em>I</em><sub><em>A</em></sub></span>)</strong>：一张<strong>猫</strong>的图片。</li>
+<li><strong>输入提示词 (<span class="math inline"><em>q</em><sub><em>B</em></sub></span>)</strong>：<code>"文本提示：图里有一只狗。请问图片里到底是什么动物？答："</code>
+（故意用文本误导模型）。</li>
+<li><strong>阵营划分</strong>：
+<ul>
+<li><span class="math inline"><em>T</em><sup>+</sup></span>（视觉阵营）=
+<code>["猫", "Cat"]</code> （对应 <span class="math inline"><em>y</em><sup>+</sup> = <em>A</em></span>）</li>
+<li><span class="math inline"><em>T</em><sup>−</sup></span>（文本阵营）=
+<code>["狗", "Dog"]</code> （对应 <span class="math inline"><em>y</em><sup>−</sup> = <em>B</em></span>）</li>
+</ul></li>
 </ul>
-<p>这样一来，<strong>通过联合在这两个子集上运行提取流程，Token 自身的频率噪声会在数学上被相互抵消。</strong> 回归方程被迫只能去寻找那个与“视觉 vs 文本”博弈逻辑强相关的隐状态维度。</p>
-<h2 id="四、-MRV-的最终提取"><a href="#四、-MRV-的最终提取" class="headerlink" title="四、 MRV 的最终提取"></a>四、 MRV 的最终提取</h2><p>当这批对称冲突的样本准备好之后，接下来的流水线动作就回归到了我们熟悉的节奏：</p>
-<ol>
+<h3 id="对称样本子集-s_b图是狗文本说是猫">2. 对称样本子集 <span class="math inline"><em>S</em><sub><em>b</em></sub></span>（图是狗，文本说是猫）</h3>
+<ul>
+<li><strong>输入图像 (<span class="math inline"><em>I</em><sub><em>B</em></sub></span>)</strong>：一张<strong>狗</strong>的图片。</li>
+<li><strong>输入提示词 (<span class="math inline"><em>q</em><sub><em>A</em></sub></span>)</strong>：<code>"文本提示：图里有一只猫。请问图片里到底是什么动物？答："</code>
+（同样用文本误导）。</li>
+<li><strong>阵营划分</strong>：
+<ul>
+<li><span class="math inline"><em>T</em><sup>+</sup></span>（视觉阵营）=
+<code>["狗", "Dog"]</code> （对应 <span class="math inline"><em>y</em><sup>+</sup> = <em>B</em></span>）</li>
+<li><span class="math inline"><em>T</em><sup>−</sup></span>（文本阵营）=
+<code>["猫", "Cat"]</code> （对应 <span class="math inline"><em>y</em><sup>−</sup> = <em>A</em></span>）</li>
+</ul></li>
+</ul>
+<h2 id="三-为什么要大费周章做对称设计">三、
+为什么要大费周章做“对称设计”？</h2>
+<p>大模型对不同的 Token
+本身就存在先验的“偏心”。比如，有的模型在预训练时见过无数次“猫”，它天然就更喜欢吐出“猫”这个
+Token。</p>
+<ul>
+<li>如果我们只用 <span class="math inline"><em>S</em><sub><em>a</em></sub></span>（图猫文狗）去解回归，解出来的向量
+<span class="math inline"><em>w</em></span>
+可能会混入“模型对‘猫’这个字本身的偏好”，导致提取出来的方向不够纯净。</li>
+<li>采用了对称设计后，在 <span class="math inline"><em>S</em><sub><em>a</em></sub></span> 中，“猫”是
+<span class="math inline"><em>T</em><sup>+</sup></span>（视觉）；而在
+<span class="math inline"><em>S</em><sub><em>b</em></sub></span>
+中，“猫”变成了 <span class="math inline"><em>T</em><sup>−</sup></span>（文本）。</li>
+</ul>
+<p>这样一来，<strong>通过联合在这两个子集上运行提取流程，Token
+自身的频率噪声会在数学上被相互抵消。</strong>
+回归方程被迫只能去寻找那个与“视觉 vs
+文本”博弈逻辑强相关的隐状态维度。</p>
+<h2 id="四-mrv-的最终提取">四、 MRV 的最终提取</h2>
+<p>当这批对称冲突的样本准备好之后，接下来的流水线动作就回归到了我们熟悉的节奏：</p>
+<ol type="1">
 <li><p><strong>过模型算 <code>pref</code></strong>：</p>
-<p>每个样本进模型，在关键位置 $t^\star-1$ 抓取 <code>logits</code>：</p>
+<p>每个样本进模型，在关键位置 <span class="math inline"><em>t</em><sup>⋆</sup> − 1</span> 抓取
+<code>logits</code>：</p>
 <ul>
-<li>在 $S_a$ 里：$pref = \max(\text{“猫”}) - \max(\text{“狗”})$</li>
-<li>在 $S_b$ 里：$pref = \max(\text{“狗”}) - \max(\text{“猫”})$</li>
-</ul>
-</li>
-<li><p><strong>存下隐状态 $h$</strong>：收集对应的中前层 MLP 隐藏状态。</p>
-</li>
+<li>在 <span class="math inline"><em>S</em><sub><em>a</em></sub></span>
+里：<span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em> = max ("猫") − max ("狗")</span></li>
+<li>在 <span class="math inline"><em>S</em><sub><em>b</em></sub></span>
+里：<span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em> = max ("狗") − max ("猫")</span></li>
+</ul></li>
+<li><p><strong>存下隐状态 <span class="math inline"><em>h</em></span></strong>：收集对应的中前层 MLP
+隐藏状态。</p></li>
 <li><p><strong>岭回归拟合</strong>：</p>
-<p>将所有样本的 $(h, pref)$ 倒进岭回归公式中一步解出权重。</p>
-</li>
+<p>将所有样本的 <span class="math inline">(<em>h</em>, <em>p</em><em>r</em><em>e</em><em>f</em>)</span>
+倒进岭回归公式中一步解出权重。</p></li>
 </ol>
-<p>最终解出来的这个 $w_{\text{MRV}}$，就是<strong>模态依赖向量</strong>。</p>
+<p>最终解出来的这个 <span class="math inline"><em>w</em><sub>MRV</sub></span>，就是<strong>模态依赖向量</strong>。</p>
 <blockquote>
-<p>岭回归时就是把 $S_a$ 和 $S_b$ 两个集合里所有的样本<strong>打包合并在一起（取并集 $S_a \cup S_b$）</strong>，作为一整个训练集扔进岭回归里去求解 $w$。</p>
-<p>在论文的数学表述里，这也正是用 $S_a \cup S_b$ 来表示的原因。</p>
+<p>岭回归时就是把 <span class="math inline"><em>S</em><sub><em>a</em></sub></span> 和 <span class="math inline"><em>S</em><sub><em>b</em></sub></span>
+两个集合里所有的样本<strong>打包合并在一起（取并集 <span class="math inline"><em>S</em><sub><em>a</em></sub> ∪ <em>S</em><sub><em>b</em></sub></span>）</strong>，作为一整个训练集扔进岭回归里去求解
+<span class="math inline"><em>w</em></span>。</p>
+<p>在论文的数学表述里，这也正是用 <span class="math inline"><em>S</em><sub><em>a</em></sub> ∪ <em>S</em><sub><em>b</em></sub></span>
+来表示的原因。</p>
 </blockquote>
-<h1 id="Signed-Activation-Steering-有符号激活导向"><a href="#Signed-Activation-Steering-有符号激活导向" class="headerlink" title="Signed Activation Steering (有符号激活导向)"></a>Signed Activation Steering (有符号激活导向)</h1><h2 id="什么是-Signed-Activation-Steering-有符号激活导向-？"><a href="#什么是-Signed-Activation-Steering-有符号激活导向-？" class="headerlink" title="什么是 Signed Activation Steering (有符号激活导向)？"></a>什么是 Signed Activation Steering (有符号激活导向)？</h2><p>完成了前期的线下提取（Offline Extraction）后，你手里已经握着两组核心的“指南针向量”：VFV（视觉保真向量）和 <strong>MRV（模态依赖向量）</strong>。</p>
-<p><strong>Signed Activation Steering (SAS)</strong> 正是 CAS 框架在线上推理（Inference-time）阶段发起总攻的核心机制。它的任务非常纯粹：在模型生成文本的单次前向传播中，直接在特定层（L11-14）把这两个向量作为残差“拍”进隐藏状态里，强行修正模型的认知偏差。</p>
-<h2 id="核心干预公式拆解"><a href="#核心干预公式拆解" class="headerlink" title="核心干预公式拆解"></a>核心干预公式拆解</h2><p>在推理生成第 $t$ 个 Token 时，对于目标干预层 $l \in {11, 12, 13, 14}$，SAS 通过以下公式对 MLP 的输出进行动态拦截和修改：</p>
-<script type="math/tex; mode=display">\hat{h}_l^{(t)} = \underbrace{h_l^{(t)}}_{\text{原生的残差流输出}} + \underbrace{\gamma(t) \cdot (\alpha v_{\text{vfv}}^{(l)} + \beta v_{\text{mrv}}^{(l)})}_{\text{SAS 强行注入的残差}}</script><p>我们把这个公式里的每一个变量拆开来看，它们各司其职：</p>
+<h1 id="signed-activation-steering-有符号激活导向">Signed Activation
+Steering (有符号激活导向)</h1>
+<h2 id="什么是-signed-activation-steering-有符号激活导向">什么是 Signed
+Activation Steering (有符号激活导向)？</h2>
+<p>完成了前期的线下提取（Offline
+Extraction）后，你手里已经握着两组核心的“指南针向量”：VFV（视觉保真向量）和
+<strong>MRV（模态依赖向量）</strong>。</p>
+<p><strong>Signed Activation Steering (SAS)</strong> 正是 CAS
+框架在线上推理（Inference-time）阶段发起总攻的核心机制。它的任务非常纯粹：在模型生成文本的单次前向传播中，直接在特定层（L11-14）把这两个向量作为残差“拍”进隐藏状态里，强行修正模型的认知偏差。</p>
+<h2 id="核心干预公式拆解">核心干预公式拆解</h2>
+<p>在推理生成第 <span class="math inline"><em>t</em></span> 个 Token
+时，对于目标干预层 <span class="math inline"><em>l</em> ∈ {11, 12, 13, 14}</span>，SAS
+通过以下公式对 MLP 的输出进行动态拦截和修改：</p>
+<p><span class="math display">$$\hat{h}_l^{(t)} =
+\underbrace{h_l^{(t)}}_{\text{原生的残差流输出}} + \underbrace{\gamma(t)
+\cdot (\alpha v_{\text{vfv}}^{(l)} + \beta
+v_{\text{mrv}}^{(l)})}_{\text{SAS 强行注入的残差}}$$</span></p>
+<p>我们把这个公式里的每一个变量拆开来看，它们各司其职：</p>
 <ul>
-<li>$h_l^{(t)}$：<strong>原生隐状态</strong>。模型在当前生成步、当前层 MLP 原本吐出来的隐藏状态向量。</li>
-<li>$v<em>{\text{vfv}}^{(l)}$ 和 $v</em>{\text{mrv}}^{(l)}$：<strong>黄金方向轴</strong>。也就是前几步利用岭回归从该层提纯出来的 VFV 和 MRV 向量（即前面讨论的权重 $w_l$）。</li>
-<li>$\gamma(t)$：<strong>步长调节因子</strong>。一个与生成时间步或 Token 相关的动态系数，用来在生成过程中微调干预的节奏，防止过度干预导致文本质量塌陷。</li>
-<li>$\alpha$ 和 $\beta$：<strong>全场的灵魂——有符号的强度系数（Signed Strength Coefficients）</strong>。它们不仅决定了干预的<strong>力度</strong>，更决定了干预的<strong>方向（正负号）</strong>。</li>
+<li><span class="math inline"><em>h</em><sub><em>l</em></sub><sup>(<em>t</em>)</sup></span>：<strong>原生隐状态</strong>。模型在当前生成步、当前层
+MLP 原本吐出来的隐藏状态向量。</li>
+<li><span class="math inline"><em>v</em><sub>vfv</sub><sup>(<em>l</em>)</sup></span>
+和 <span class="math inline"><em>v</em><sub>mrv</sub><sup>(<em>l</em>)</sup></span>：<strong>黄金方向轴</strong>。也就是前几步利用岭回归从该层提纯出来的
+VFV 和 MRV 向量（即前面讨论的权重 <span class="math inline"><em>w</em><sub><em>l</em></sub></span>）。</li>
+<li><span class="math inline"><em>γ</em>(<em>t</em>)</span>：<strong>步长调节因子</strong>。一个与生成时间步或
+Token
+相关的动态系数，用来在生成过程中微调干预的节奏，防止过度干预导致文本质量塌陷。</li>
+<li><span class="math inline"><em>α</em></span> 和 <span class="math inline"><em>β</em></span>：<strong>全场的灵魂——有符号的强度系数（Signed
+Strength
+Coefficients）</strong>。它们不仅决定了干预的<strong>力度</strong>，更决定了干预的<strong>方向（正负号）</strong>。</li>
 </ul>
 <blockquote>
-<h3 id="使用残差链接（注入）的巨大优势"><a href="#使用残差链接（注入）的巨大优势" class="headerlink" title="使用残差链接（注入）的巨大优势"></a>使用残差链接（注入）的巨大优势</h3><p>论文之所以选择残差注入，而不是直接去替换（Replace）隐藏状态，原因有三：</p>
+<h3 id="使用残差链接注入的巨大优势">使用残差链接（注入）的巨大优势</h3>
+<p>论文之所以选择残差注入，而不是直接去替换（Replace）隐藏状态，原因有三：</p>
 <ul>
-<li><strong>保证模型的“保真度”</strong>：隐藏状态包含 4096 个维度，里面大部分空间都在维持模型的语法、标点、上下文连贯性。如果我们用完全覆盖（Overwrite）的方式改写 $h$，大模型瞬间就会变成傻子，话都说不利索。而残差连接是<strong>向量加法</strong>，它只是在高维空间里把当前状态“推偏”了一点点，保留了绝大部分原生的生成能力。</li>
-<li><strong>计算极其轻量（Zero Latency）</strong>：不需要做复杂的矩阵乘法或注意力重计算，只是在 GPU 里做一次一维的 <code>Element-wise Add</code>，对推理速度完全没有任何负面影响。</li>
-<li><strong>物理意义纯粹</strong>：因为我们在前一步提取 VFV 和 MRV 时，用的就是 MLP 层的输出隐藏状态。现在原路加回去，在数学上构成了完美的因果闭环。</li>
+<li><strong>保证模型的“保真度”</strong>：隐藏状态包含 4096
+个维度，里面大部分空间都在维持模型的语法、标点、上下文连贯性。如果我们用完全覆盖（Overwrite）的方式改写
+<span class="math inline"><em>h</em></span>，大模型瞬间就会变成傻子，话都说不利索。而残差连接是<strong>向量加法</strong>，它只是在高维空间里把当前状态“推偏”了一点点，保留了绝大部分原生的生成能力。</li>
+<li><strong>计算极其轻量（Zero
+Latency）</strong>：不需要做复杂的矩阵乘法或注意力重计算，只是在 GPU
+里做一次一维的
+<code>Element-wise Add</code>，对推理速度完全没有任何负面影响。</li>
+<li><strong>物理意义纯粹</strong>：因为我们在前一步提取 VFV 和 MRV
+时，用的就是 MLP
+层的输出隐藏状态。现在原路加回去，在数学上构成了完美的因果闭环。</li>
 </ul>
 </blockquote>
-<h2 id="为什么起名叫-“Signed”（有符号）？这背后有什么物理发现？"><a href="#为什么起名叫-“Signed”（有符号）？这背后有什么物理发现？" class="headerlink" title="为什么起名叫 “Signed”（有符号）？这背后有什么物理发现？"></a>为什么起名叫 “Signed”（有符号）？这背后有什么物理发现？</h2><p>这背后承载了这篇论文<strong>最颠覆、最反直觉</strong>的核心发现。</p>
-<p>在多模态大模型（MLLM）幻觉控制领域，以前的经典方法（如 VCD、MESA 等）都建立在一个朴素的假设上：<strong>模型之所以瞎编（幻觉），是因为它“视觉忽略”了，也就是看图看漏了。所以大家之前的做法全部是一味地“增强”视觉信号（类似于在残差流里永远用加号 <code>+</code>）。</strong></p>
-<p>但作者团队在对 LLaVA-1.5、Shikra、Qwen-VL、InstructBLIP 等多款主流模型进行系统性探针实验时，发现了明显的<strong>模型异质性（Heterogeneity）</strong>：</p>
-<div class="table-container">
+<h2 id="为什么起名叫-signed有符号这背后有什么物理发现">为什么起名叫
+“Signed”（有符号）？这背后有什么物理发现？</h2>
+<p>这背后承载了这篇论文<strong>最颠覆、最反直觉</strong>的核心发现。</p>
+<p>在多模态大模型（MLLM）幻觉控制领域，以前的经典方法（如 VCD、MESA
+等）都建立在一个朴素的假设上：<strong>模型之所以瞎编（幻觉），是因为它“视觉忽略”了，也就是看图看漏了。所以大家之前的做法全部是一味地“增强”视觉信号（类似于在残差流里永远用加号
+<code>+</code>）。</strong></p>
+<p>但作者团队在对 LLaVA-1.5、Shikra、Qwen-VL、InstructBLIP
+等多款主流模型进行系统性探针实验时，发现了明显的<strong>模型异质性（Heterogeneity）</strong>：</p>
 <table>
+<colgroup>
+<col style="width: 13%">
+<col style="width: 44%">
+<col style="width: 41%">
+</colgroup>
 <thead>
 <tr>
 <th><strong>模型表现分类</strong></th>
@@ -730,144 +1196,273 @@
 <tr>
 <td><strong>视觉过度疏忽型</strong></td>
 <td>天生对图像视而不见，极度依赖历史文本或语言先验。</td>
-<td>需要<strong>正向引导（$+$）</strong>：强行拉高视觉依赖。</td>
+<td>需要<strong>正向引导（<span class="math inline">+</span>）</strong>：强行拉高视觉依赖。</td>
 </tr>
 <tr>
 <td><strong>视觉过度敏感型</strong></td>
 <td>容易过度解读视觉碎片中的非核心或不相关噪声，导致捕风捉影。</td>
-<td>需要<strong>负向拉回（$-$）</strong>：适度压制视觉，反倒能缓解幻觉！</td>
+<td>需要<strong>负向拉回（<span class="math inline">−</span>）</strong>：适度压制视觉，反倒能缓解幻觉！</td>
 </tr>
 </tbody>
 </table>
-</div>
 <blockquote>
 <p><strong>关键认知</strong></p>
-<p>每一个模型由于架构设计（如是否用了 Perceiver Resampler、Linear Projector）和指令微调数据的不同，其面对冲突时的偏好反应完全不同。有些模型需要“推一把”，有些模型需要“拉一把”。</p>
-<p>这就是为什么系数 $\alpha$ 和 $\beta$ 必须是<strong>带正负号的（Signed）</strong>。通过在线下小样本验证集上快速搜索出每个模型专属的<strong>有效符号（Effective Sign）</strong>，SAS 实现了“因材施教”，这也是它能显著击败传统一刀切（Always positive）方法的核心密码。</p>
+<p>每一个模型由于架构设计（如是否用了 Perceiver Resampler、Linear
+Projector）和指令微调数据的不同，其面对冲突时的偏好反应完全不同。有些模型需要“推一把”，有些模型需要“拉一把”。</p>
+<p>这就是为什么系数 <span class="math inline"><em>α</em></span> 和 <span class="math inline"><em>β</em></span>
+必须是<strong>带正负号的（Signed）</strong>。通过在线下小样本验证集上快速搜索出每个模型专属的<strong>有效符号（Effective
+Sign）</strong>，SAS
+实现了“因材施教”，这也是它能显著击败传统一刀切（Always
+positive）方法的核心密码。</p>
 </blockquote>
-<h1 id="Tempered-Position-Prior-TPP调和位置先验"><a href="#Tempered-Position-Prior-TPP调和位置先验" class="headerlink" title="Tempered Position Prior (TPP调和位置先验)"></a>Tempered Position Prior (TPP调和位置先验)</h1><p>在上一节谈到 Signed Activation Steering (SAS) 的公式时，我们留了一个精妙的伏笔——<strong>步长调节因子 $\gamma(t)$</strong>。</p>
-<p><strong>Tempered Position Prior (TPP，温和位置先验 / 调和位置先验)</strong> 正是决定这个 $\gamma(t)$ 应该如何演变的底层核心机制。它优雅地解决了大模型激活导向（Activation Steering）中一个致命的隐痛：<strong>“干预过度导致的语言崩塌”</strong>。</p>
-<p>为了让你轻松彻底地理解 TPP，我们从大模型的致命弱点聊起，看看它是如何给干预机制戴上“紧箍咒”的。</p>
-<h2 id="一、-为什么需要-TPP？（原生的位置先验陷阱）"><a href="#一、-为什么需要-TPP？（原生的位置先验陷阱）" class="headerlink" title="一、 为什么需要 TPP？（原生的位置先验陷阱）"></a>一、 为什么需要 TPP？（原生的位置先验陷阱）</h2><p>自回归大模型（LLM/MLLM）在生成文本时，对Token 的生成位置（Position）有着极度强烈的依赖。这就是原生的“位置先验”。</p>
-<p>在做表征干预时，如果我们<strong>一刀切</strong>地在每一个位置 $t$ 都加上相同强度的偏好向量（即 $\gamma(t) = 1$ 恒定不变），会引发极其严重的灾难：</p>
-<ol>
-<li><strong>表征漂移（Representation Drift）</strong>：MLP 层的残差流就像一条平稳流淌的河。如果你在每一个时间步都往里扔一块一模一样的石头（注入向量），整条河的生态会彻底失衡。隐状态会被强行推离模型原本的合理流形（Manifold）。</li>
-<li><strong>文本退化（Text Degeneration）</strong>：在实验中表现为模型突然变成“复读机”（比如无限重复“黄色黄色黄色……”），或者语法彻底混乱，逻辑直接崩塌。</li>
+<h1 id="tempered-position-prior-tpp调和位置先验">Tempered Position Prior
+(TPP调和位置先验)</h1>
+<p>在上一节谈到 Signed Activation Steering (SAS)
+的公式时，我们留了一个精妙的伏笔——<strong>步长调节因子 <span class="math inline"><em>γ</em>(<em>t</em>)</span></strong>。</p>
+<p><strong>Tempered Position Prior (TPP，温和位置先验 /
+调和位置先验)</strong> 正是决定这个 <span class="math inline"><em>γ</em>(<em>t</em>)</span>
+应该如何演变的底层核心机制。它优雅地解决了大模型激活导向（Activation
+Steering）中一个致命的隐痛：<strong>“干预过度导致的语言崩塌”</strong>。</p>
+<p>为了让你轻松彻底地理解
+TPP，我们从大模型的致命弱点聊起，看看它是如何给干预机制戴上“紧箍咒”的。</p>
+<h2 id="一-为什么需要-tpp原生的位置先验陷阱">一、 为什么需要
+TPP？（原生的位置先验陷阱）</h2>
+<p>自回归大模型（LLM/MLLM）在生成文本时，对Token
+的生成位置（Position）有着极度强烈的依赖。这就是原生的“位置先验”。</p>
+<p>在做表征干预时，如果我们<strong>一刀切</strong>地在每一个位置 <span class="math inline"><em>t</em></span> 都加上相同强度的偏好向量（即 <span class="math inline"><em>γ</em>(<em>t</em>) = 1</span>
+恒定不变），会引发极其严重的灾难：</p>
+<ol type="1">
+<li><strong>表征漂移（Representation Drift）</strong>：MLP
+层的残差流就像一条平稳流淌的河。如果你在每一个时间步都往里扔一块一模一样的石头（注入向量），整条河的生态会彻底失衡。隐状态会被强行推离模型原本的合理流形（Manifold）。</li>
+<li><strong>文本退化（Text
+Degeneration）</strong>：在实验中表现为模型突然变成“复读机”（比如无限重复“黄色黄色黄色……”），或者语法彻底混乱，逻辑直接崩塌。</li>
 </ol>
-<h2 id="二、-TPP-的核心逻辑：什么是“Tempered（温和-调和）”？"><a href="#二、-TPP-的核心逻辑：什么是“Tempered（温和-调和）”？" class="headerlink" title="二、 TPP 的核心逻辑：什么是“Tempered（温和/调和）”？"></a>二、 TPP 的核心逻辑：什么是“Tempered（温和/调和）”？</h2><p>TPP 的核心思想是：<strong>干预的强度，必须随着生成位置 $t$ 与关键冲突位置 $t^\star$ 的距离，进行“温和的衰减（Tempering）”。</strong></p>
-<p>它给干预强度设置了一个动态的、基于位置先验的保护罩。最常见的 TPP 表现形式（即 $\gamma(t)$ 的计算方式）通常遵循<strong>指数衰减</strong>或者<strong>阶梯窗口衰减</strong>。</p>
+<h2 id="二-tpp-的核心逻辑什么是tempered温和调和">二、 TPP
+的核心逻辑：什么是“Tempered（温和/调和）”？</h2>
+<p>TPP 的核心思想是：<strong>干预的强度，必须随着生成位置 <span class="math inline"><em>t</em></span> 与关键冲突位置 <span class="math inline"><em>t</em><sup>⋆</sup></span>
+的距离，进行“温和的衰减（Tempering）”。</strong></p>
+<p>它给干预强度设置了一个动态的、基于位置先验的保护罩。最常见的 TPP
+表现形式（即 <span class="math inline"><em>γ</em>(<em>t</em>)</span>
+的计算方式）通常遵循<strong>指数衰减</strong>或者<strong>阶梯窗口衰减</strong>。</p>
 <p>以最经典的指数衰减为例：</p>
-<script type="math/tex; mode=display">\gamma(t) =  \begin{cases}  0, & t < t^\star - 1 \\ \exp(-\tau \cdot (t - (t^\star - 1))), & t \ge t^\star - 1  \end{cases}</script><p>这里面的设计极其讲究：</p>
+<p><span class="math display">$$\gamma(t) =  \begin{cases}  0, &amp; t
+&lt; t^\star - 1 \\ \exp(-\tau \cdot (t - (t^\star - 1))), &amp; t \ge
+t^\star - 1  \end{cases}$$</span></p>
+<p>这里面的设计极其讲究：</p>
 <ul>
-<li><strong>关键点前（$t &lt; t^\star - 1$）</strong>：$\gamma(t) = 0$。模型在念前面的引言（比如“图片里的西瓜瓤是”）时，完全不进行任何干预，让模型保持 100% 的原生语言流畅度。</li>
-<li><strong>爆发点（$t = t^\star - 1$）</strong>：干预强度达到巅峰（$\gamma = 1$）。在模型即将吐出关键颜色/物体字眼的前一刹那，全力一击，强行把模型的思维拉回视觉通路。</li>
-<li><strong>调和衰减期（$t &gt; t^\star - 1$）</strong>：随着模型不断往后生成 Token，$t$ 越来越大，$\gamma(t)$ 呈指数级迅速衰减趋近于 0（$\tau$ 是控制衰减快慢的超参数）。</li>
+<li><strong>关键点前（<span class="math inline"><em>t</em> &lt; <em>t</em><sup>⋆</sup> − 1</span>）</strong>：<span class="math inline"><em>γ</em>(<em>t</em>) = 0</span>。模型在念前面的引言（比如“图片里的西瓜瓤是”）时，完全不进行任何干预，让模型保持
+100% 的原生语言流畅度。</li>
+<li><strong>爆发点（<span class="math inline"><em>t</em> = <em>t</em><sup>⋆</sup> − 1</span>）</strong>：干预强度达到巅峰（<span class="math inline"><em>γ</em> = 1</span>）。在模型即将吐出关键颜色/物体字眼的前一刹那，全力一击，强行把模型的思维拉回视觉通路。</li>
+<li><strong>调和衰减期（<span class="math inline"><em>t</em> &gt; <em>t</em><sup>⋆</sup> − 1</span>）</strong>：随着模型不断往后生成
+Token，<span class="math inline"><em>t</em></span> 越来越大，<span class="math inline"><em>γ</em>(<em>t</em>)</span> 呈指数级迅速衰减趋近于
+0（<span class="math inline"><em>τ</em></span>
+是控制衰减快慢的超参数）。</li>
 </ul>
-<h1 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h1><p><img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601120555879.png" alt="image-20260601120555879"></p>
-<h2 id="1-左半部分：离线提取阶段（Offline-Extraction）"><a href="#1-左半部分：离线提取阶段（Offline-Extraction）" class="headerlink" title="1. 左半部分：离线提取阶段（Offline Extraction）"></a>1. 左半部分：离线提取阶段（Offline Extraction）</h2><p>这张图的左侧展示了如何从模型内部“提炼”出我们需要的控制工具。</p>
+<h1 id="流程图">流程图</h1>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601120555879.png" alt="image-20260601120555879">
+<figcaption aria-hidden="true">image-20260601120555879</figcaption>
+</figure>
+<h2 id="左半部分离线提取阶段offline-extraction">1.
+左半部分：离线提取阶段（Offline Extraction）</h2>
+<p>这张图的左侧展示了如何从模型内部“提炼”出我们需要的控制工具。</p>
 <ul>
-<li><strong>步骤 A：构造两类上下文冲突（Two Setups）</strong><ul>
-<li>图里会画出两条独立的数据流，分别对应两种不同的“挖坑”设定：<ul>
-<li><strong>设定 I（反事实图像）</strong>：喂入类似“蓝色香蕉”的图，诱导模型在“视觉”与“参数化常识知识”之间打架，用于提炼 <strong>VFV（视觉保真向量，$v_{vfv}$）</strong>。</li>
-<li><strong>设定 II（对称图文冲突对）</strong>：喂入图猫文狗、图狗文猫的成对数据，诱导模型在“视觉输入”与“提示词误导文本”之间打架，用于提炼 <strong>MRV（模态依赖向量，$v_{mrv}$）</strong>。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><strong>步骤 B：在临界点实施数据抓取（Data Probing）</strong><ul>
-<li>图上会标识出一个关键点：当模型即将输出核心词（位置 $t^\star$）时，算法会回退一步（在位置 $t^\star - 1$）去拦截两样东西：<ol>
-<li>最后一层输出全词表的分数差值：即由两派最强 Token 分数作差得到的行为标签 <strong>$pref$</strong>。</li>
-<li>目标干预层 $l$ 的 MLP 输出的隐藏状态向量 <strong>$h_l$</strong>。</li>
-</ol>
-</li>
-</ul>
-</li>
-<li><strong>步骤 C：逐层岭回归（Layer-wise Ridge Regression）</strong><ul>
-<li>图的中间会画一个回归拟合的图标，代表把收集到的海量对齐数据 $(h_l, pref)$ 倒进 $\ell_2$ 正则化的线性方程里去求解。</li>
-<li><strong>最终产物</strong>：解出来的权重矩阵，就是图里画的两个专属一维黄金方向向量：$v<em>{\text{vfv}}^{(l)}$ 和 $v</em>{\text{mrv}}^{(l)}$。</li>
-</ul>
-</li>
-</ul>
-<h2 id="2-右半部分：在线推理中的激活导向（Online-Inference-Strategy）"><a href="#2-右半部分：在线推理中的激活导向（Online-Inference-Strategy）" class="headerlink" title="2. 右半部分：在线推理中的激活导向（Online Inference Strategy）"></a>2. 右半部分：在线推理中的激活导向（Online Inference Strategy）</h2><p>这张图的右侧展示了当模型在实际应用（如回答用户的开放式提问）时，我们如何动态拦截并修复幻觉。</p>
+<li><strong>步骤 A：构造两类上下文冲突（Two Setups）</strong>
 <ul>
-<li><strong>步骤 A：单阶段正常前向传播（Single-pass Forward）</strong><ul>
-<li>与对比解码（VCD 等方法）需要跑两遍前向传播（一遍正常，一遍变焦/模糊图）不同，右侧图展示的是标准的、唯一的自回归生成路径。用户输入一张新图和 Prompt，模型正常向前计算。</li>
+<li>图里会画出两条独立的数据流，分别对应两种不同的“挖坑”设定：
+<ul>
+<li><strong>设定
+I（反事实图像）</strong>：喂入类似“蓝色香蕉”的图，诱导模型在“视觉”与“参数化常识知识”之间打架，用于提炼
+<strong>VFV（视觉保真向量，<span class="math inline"><em>v</em><sub><em>v</em><em>f</em><em>v</em></sub></span>）</strong>。</li>
+<li><strong>设定
+II（对称图文冲突对）</strong>：喂入图猫文狗、图狗文猫的成对数据，诱导模型在“视觉输入”与“提示词误导文本”之间打架，用于提炼
+<strong>MRV（模态依赖向量，<span class="math inline"><em>v</em><sub><em>m</em><em>r</em><em>v</em></sub></span>）</strong>。</li>
+</ul></li>
+</ul></li>
+<li><strong>步骤 B：在临界点实施数据抓取（Data Probing）</strong>
+<ul>
+<li>图上会标识出一个关键点：当模型即将输出核心词（位置 <span class="math inline"><em>t</em><sup>⋆</sup></span>）时，算法会回退一步（在位置
+<span class="math inline"><em>t</em><sup>⋆</sup> − 1</span>）去拦截两样东西：
+<ol type="1">
+<li>最后一层输出全词表的分数差值：即由两派最强 Token
+分数作差得到的行为标签 <strong><span class="math inline"><em>p</em><em>r</em><em>e</em><em>f</em></span></strong>。</li>
+<li>目标干预层 <span class="math inline"><em>l</em></span> 的 MLP
+输出的隐藏状态向量 <strong><span class="math inline"><em>h</em><sub><em>l</em></sub></span></strong>。</li>
+</ol></li>
+</ul></li>
+<li><strong>步骤 C：逐层岭回归（Layer-wise Ridge Regression）</strong>
+<ul>
+<li>图的中间会画一个回归拟合的图标，代表把收集到的海量对齐数据 <span class="math inline">(<em>h</em><sub><em>l</em></sub>, <em>p</em><em>r</em><em>e</em><em>f</em>)</span>
+倒进 <span class="math inline"><em>ℓ</em><sub>2</sub></span>
+正则化的线性方程里去求解。</li>
+<li><strong>最终产物</strong>：解出来的权重矩阵，就是图里画的两个专属一维黄金方向向量：<span class="math inline"><em>v</em><sub>vfv</sub><sup>(<em>l</em>)</sup></span>
+和 <span class="math inline"><em>v</em><sub>mrv</sub><sup>(<em>l</em>)</sup></span>。</li>
+</ul></li>
 </ul>
-</li>
-<li><strong>步骤 B：中前层 MLP 拦截与插桩（MLP Hooking）</strong><ul>
-<li>右图会特意放大模型的 <strong>L11–L14 这一层带</strong>。当残差流传导到这四个特定的中前层 MLP 输出端时，SAS（有符号激活导向）机制像微创手术一样横插一脚，对原生的隐状态 $h_l^{(t)}$ 施加一个<strong>加性残差（Additive Residual）</strong>。</li>
+<h2 id="右半部分在线推理中的激活导向online-inference-strategy">2.
+右半部分：在线推理中的激活导向（Online Inference Strategy）</h2>
+<p>这张图的右侧展示了当模型在实际应用（如回答用户的开放式提问）时，我们如何动态拦截并修复幻觉。</p>
+<ul>
+<li><strong>步骤 A：单阶段正常前向传播（Single-pass Forward）</strong>
+<ul>
+<li>与对比解码（VCD
+等方法）需要跑两遍前向传播（一遍正常，一遍变焦/模糊图）不同，右侧图展示的是标准的、唯一的自回归生成路径。用户输入一张新图和
+Prompt，模型正常向前计算。</li>
+</ul></li>
+<li><strong>步骤 B：中前层 MLP 拦截与插桩（MLP Hooking）</strong>
+<ul>
+<li>右图会特意放大模型的 <strong>L11–L14
+这一层带</strong>。当残差流传导到这四个特定的中前层 MLP
+输出端时，SAS（有符号激活导向）机制像微创手术一样横插一脚，对原生的隐状态
+<span class="math inline"><em>h</em><sub><em>l</em></sub><sup>(<em>t</em>)</sup></span>
+施加一个<strong>加性残差（Additive Residual）</strong>。</li>
+</ul></li>
+<li><strong>步骤 C：动态残差公式的在线组装</strong>
+<ul>
+<li>图上会标出注入的完整项：<span class="math inline"><em>γ</em>(<em>t</em>) ⋅ (<em>α</em><em>v</em><sub>vfv</sub><sup>(<em>l</em>)</sup> + <em>β</em><em>v</em><sub>mrv</sub><sup>(<em>l</em>)</sup>)</span>。</li>
+<li><strong><span class="math inline"><em>α</em>, <em>β</em></span>（有符号强度调节）</strong>：根据具体模型的“性格”（是视而不见，还是捕风捉影），赋予正号或负号，决定是把模型往视觉方向推，还是从视觉噪声里拉回来。</li>
+<li><strong><span class="math inline"><em>γ</em>(<em>t</em>)</span>（TPP
+位置门控）</strong>：它像一个动态阀门。在图上通常会用一个<strong>由高到低的衰减曲线</strong>来表达。在即将吐出关键词的那一瞬间，阀门全开（<span class="math inline"><em>γ</em> = 1</span>）；随着文本往后生成，阀门快速关闭趋近于0（<span class="math inline"><em>γ</em> → 0</span>），防止污染后面正常的语法。</li>
+</ul></li>
 </ul>
-</li>
-<li><strong>步骤 C：动态残差公式的在线组装</strong><ul>
-<li>图上会标出注入的完整项：$\gamma(t) \cdot (\alpha v<em>{\text{vfv}}^{(l)} + \beta v</em>{\text{mrv}}^{(l)})$。</li>
-<li><strong>$\alpha, \beta$（有符号强度调节）</strong>：根据具体模型的“性格”（是视而不见，还是捕风捉影），赋予正号或负号，决定是把模型往视觉方向推，还是从视觉噪声里拉回来。</li>
-<li><strong>$\gamma(t)$（TPP 位置门控）</strong>：它像一个动态阀门。在图上通常会用一个<strong>由高到低的衰减曲线</strong>来表达。在即将吐出关键词的那一瞬间，阀门全开（$\gamma=1$）；随着文本往后生成，阀门快速关闭趋近于0（$\gamma \to 0$），防止污染后面正常的语法。</li>
-</ul>
-</li>
-</ul>
-<h1 id="实验设置-Experimental-Setup"><a href="#实验设置-Experimental-Setup" class="headerlink" title="实验设置 (Experimental Setup)"></a><strong>实验设置 (Experimental Setup)</strong></h1><h2 id="1-评估模型-Models-——-覆盖四大主流架构"><a href="#1-评估模型-Models-——-覆盖四大主流架构" class="headerlink" title="1. 评估模型 (Models) —— 覆盖四大主流架构"></a>1. 评估模型 (Models) —— 覆盖四大主流架构</h2><p>为了证明 CAS 框架具有<strong>跨架构的普适性</strong>，实验并没有局限于单一模型，而是挑选了四个最具代表性的开源多模态大模型（MLLM） ：  </p>
-<p><strong>LLaVA-1.5</strong>   </p>
-<p><strong>Shikra</strong>   </p>
-<p><strong>Qwen-VL</strong>   </p>
-<p><strong>InstructBLIP</strong>   </p>
+<h1 id="实验设置-experimental-setup"><strong>实验设置 (Experimental
+Setup)</strong></h1>
+<h2 id="评估模型-models-覆盖四大主流架构">1. 评估模型 (Models) ——
+覆盖四大主流架构</h2>
+<p>为了证明 CAS
+框架具有<strong>跨架构的普适性</strong>，实验并没有局限于单一模型，而是挑选了四个最具代表性的开源多模态大模型（MLLM）
+：</p>
+<p><strong>LLaVA-1.5</strong></p>
+<p><strong>Shikra</strong></p>
+<p><strong>Qwen-VL</strong></p>
+<p><strong>InstructBLIP</strong></p>
 <blockquote>
-<p><strong>学术亮点</strong>：这四个模型在<strong>跨模态融合设计（如线性投影 Linear Projector、交叉注意力 Cross-Attention、Perceiver 等）</strong>上存在显著差异 。CAS 能在这些迥异的架构上同时生效，有力证明了其在模型隐藏空间实施“表征微创手术”的通用性 。  </p>
+<p><strong>学术亮点</strong>：这四个模型在<strong>跨模态融合设计（如线性投影
+Linear Projector、交叉注意力 Cross-Attention、Perceiver
+等）</strong>上存在显著差异 。CAS
+能在这些迥异的架构上同时生效，有力证明了其在模型隐藏空间实施“表征微创手术”的通用性
+。</p>
 </blockquote>
-<h2 id="2-评估基准-Benchmarks-——-自由生成与是非判别双轨制"><a href="#2-评估基准-Benchmarks-——-自由生成与是非判别双轨制" class="headerlink" title="2. 评估基准 (Benchmarks) —— 自由生成与是非判别双轨制"></a>2. 评估基准 (Benchmarks) —— 自由生成与是非判别双轨制</h2><p>评测任务全面覆盖了生成式（Generative）<strong>和</strong>判别式（Discriminative）两大家族，不给任何作弊手段留死角 ：  </p>
+<h2 id="评估基准-benchmarks-自由生成与是非判别双轨制">2. 评估基准
+(Benchmarks) —— 自由生成与是非判别双轨制</h2>
+<p>评测任务全面覆盖了生成式（Generative）<strong>和</strong>判别式（Discriminative）两大家族，不给任何作弊手段留死角
+：</p>
 <ul>
-<li><strong>生成式任务 (Generative Task)</strong>：<ol>
-<li><strong>CHAIR</strong>：在 500 张 COCO 图像上运行详细描述任务，报告 $CHAIR_S$（句级幻觉率）、$CHAIR_I$（词级幻觉率）和 F1 分数 。  </li>
-<li><strong>AMBER (生成式划分)</strong>：包含 1,004 张图像，报告 Hal（整体幻觉率）、CHAIR、Cog 和 Cover（物体覆盖率） 。  </li>
-</ol>
+<li><strong>生成式任务 (Generative Task)</strong>：
+<ol type="1">
+<li><strong>CHAIR</strong>：在 500 张 COCO 图像上运行详细描述任务，报告
+<span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em><sub><em>S</em></sub></span>（句级幻觉率）、<span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em><sub><em>I</em></sub></span>（词级幻觉率）和
+F1 分数 。<br>
 </li>
-<li><strong>判别式任务 (Discriminative Task)</strong>：<ol>
-<li><strong>POPE</strong>：包含 Random（随机）、Popular（高频）、Adversarial（对抗）三个子集，每个子集包含 3,000 个问答对 。最终报告 Acc（准确率）和 F1 分数 。  </li>
-</ol>
+<li><strong>AMBER (生成式划分)</strong>：包含 1,004 张图像，报告
+Hal（整体幻觉率）、CHAIR、Cog 和 Cover（物体覆盖率） 。<br>
 </li>
+</ol></li>
+<li><strong>判别式任务 (Discriminative Task)</strong>：
+<ol type="1">
+<li><strong>POPE</strong>：包含
+Random（随机）、Popular（高频）、Adversarial（对抗）三个子集，每个子集包含
+3,000 个问答对 。最终报告 Acc（准确率）和 F1 分数 。</li>
+</ol></li>
 </ul>
-<h2 id="3-对比基线-Baselines-——-八大强劲对手大围剿"><a href="#3-对比基线-Baselines-——-八大强劲对手大围剿" class="headerlink" title="3. 对比基线 (Baselines) —— 八大强劲对手大围剿"></a>3. 对比基线 (Baselines) —— 八大强劲对手大围剿</h2><p>实验将原生模型（Vanilla）与近年来发表在顶会上的 <strong>8 种主流的、无需训练（Training-free）的抗幻觉方法</strong>进行了全面横向对比，按发表时间排序 ：  </p>
-<p><strong>DoLa</strong> (2024)   </p>
-<p><strong>VCD</strong> (2024)   </p>
-<p><strong>OPERA</strong> (2024)   </p>
-<p><strong>PAI</strong> (2024)   </p>
-<p><strong>Code</strong> (2024)   </p>
-<p><strong>DeCo</strong> (2025)   </p>
-<p><strong>AttnReal</strong> (2025)   </p>
-<p><strong>SSL</strong> (2025)   </p>
-<h2 id="4-引入新文本质量指标-——-堵住“复读机”漏洞"><a href="#4-引入新文本质量指标-——-堵住“复读机”漏洞" class="headerlink" title="4. 引入新文本质量指标 —— 堵住“复读机”漏洞"></a>4. 引入新文本质量指标 —— 堵住“复读机”漏洞</h2><p>作者在实验中发现了一个行业痛点：部分基线方法（如 DoLa、OPERA、PAI 等）虽然降低了幻觉，但代价是破坏了语言模型的能力，导致模型在推理时陷入<strong>严重的重复生成（复读机退化）</strong> 。  </p>
+<h2 id="对比基线-baselines-八大强劲对手大围剿">3. 对比基线 (Baselines)
+—— 八大强劲对手大围剿</h2>
+<p>实验将原生模型（Vanilla）与近年来发表在顶会上的 <strong>8
+种主流的、无需训练（Training-free）的抗幻觉方法</strong>进行了全面横向对比，按发表时间排序
+：</p>
+<p><strong>DoLa</strong> (2024)</p>
+<p><strong>VCD</strong> (2024)</p>
+<p><strong>OPERA</strong> (2024)</p>
+<p><strong>PAI</strong> (2024)</p>
+<p><strong>Code</strong> (2024)</p>
+<p><strong>DeCo</strong> (2025)</p>
+<p><strong>AttnReal</strong> (2025)</p>
+<p><strong>SSL</strong> (2025)</p>
+<h2 id="引入新文本质量指标-堵住复读机漏洞">4. 引入新文本质量指标 ——
+堵住“复读机”漏洞</h2>
+<p>作者在实验中发现了一个行业痛点：部分基线方法（如 DoLa、OPERA、PAI
+等）虽然降低了幻觉，但代价是破坏了语言模型的能力，导致模型在推理时陷入<strong>严重的重复生成（复读机退化）</strong>
+。</p>
 <ul>
-<li>更糟糕的是，传统的 CHAIR 评估由于不进行去重计数，<strong>重复喷出正确的物体反而会稀释幻觉率（人为刷低幻觉指标）</strong> 。  </li>
-<li>为此，作者额外引入了 <strong>$Rep$（n-gram 重复率）</strong> 指标 。在最终的结果表里，凡是导致模型重复退化的数据，都会被<strong>红色</strong>标出 。  </li>
+<li>更糟糕的是，传统的 CHAIR
+评估由于不进行去重计数，<strong>重复喷出正确的物体反而会稀释幻觉率（人为刷低幻觉指标）</strong>
+。<br>
+</li>
+<li>为此，作者额外引入了 <strong><span class="math inline"><em>R</em><em>e</em><em>p</em></span>（n-gram
+重复率）</strong> 指标
+。在最终的结果表里，凡是导致模型重复退化的数据，都会被<strong>红色</strong>标出
+。</li>
 </ul>
-<h2 id="5-CAS-的专属硬编码配置-CAS-Configuration"><a href="#5-CAS-的专属硬编码配置-CAS-Configuration" class="headerlink" title="5. CAS 的专属硬编码配置 (CAS Configuration)"></a>5. CAS 的专属硬编码配置 (CAS Configuration)</h2><p>在线上干预时，CAS 的策略保持了高度的简洁和克制 ：  </p>
+<h2 id="cas-的专属硬编码配置-cas-configuration">5. CAS 的专属硬编码配置
+(CAS Configuration)</h2>
+<p>在线上干预时，CAS 的策略保持了高度的简洁和克制 ：</p>
 <ul>
-<li><strong>干预位置</strong>：固定为模型的<strong>中前层，即 L11–L14 层的 MLP 输出</strong> 。  </li>
-<li><strong>干预方式</strong>：执行<strong>单次有符号残差注入</strong>（即利用前面通过岭回归解出的 $\alpha$ 和 $\beta$ 有符号系数进行向量加法） 。  </li>
+<li><strong>干预位置</strong>：固定为模型的<strong>中前层，即 L11–L14
+层的 MLP 输出</strong> 。<br>
+</li>
+<li><strong>干预方式</strong>：执行<strong>单次有符号残差注入</strong>（即利用前面通过岭回归解出的
+<span class="math inline"><em>α</em></span> 和 <span class="math inline"><em>β</em></span> 有符号系数进行向量加法） 。</li>
 </ul>
-<h2 id="6-解码策略与硬件环境-Decoding-amp-Hardware"><a href="#6-解码策略与硬件环境-Decoding-amp-Hardware" class="headerlink" title="6. 解码策略与硬件环境 (Decoding &amp; Hardware)"></a>6. 解码策略与硬件环境 (Decoding &amp; Hardware)</h2><p>为了确保学术评测的可复现性和严谨性，实验排除了随机采样（Sampling）带来的方差影响 ：  </p>
+<h2 id="解码策略与硬件环境-decoding-hardware">6. 解码策略与硬件环境
+(Decoding &amp; Hardware)</h2>
+<p>为了确保学术评测的可复现性和严谨性，实验排除了随机采样（Sampling）带来的方差影响
+：</p>
 <ul>
-<li><strong>解码策略</strong>：所有方法一律使用 <strong>贪心解码 (Greedy Decoding)</strong> 。  </li>
-<li><strong>长度限制</strong>：CHAIR / AMBER 任务设置 <code>max_new_tokens = 512</code>（长文本生成）；POPE 任务设置 <code>max_new_tokens = 64</code>（短文本是非问答） 。  </li>
-<li><strong>算力消耗</strong>：所有实验均在<strong>单张 NVIDIA RTX 3090</strong> 上完成，充分体现了无需训练方法的低算力成本优势 。   </li>
+<li><strong>解码策略</strong>：所有方法一律使用 <strong>贪心解码 (Greedy
+Decoding)</strong> 。<br>
+</li>
+<li><strong>长度限制</strong>：CHAIR / AMBER 任务设置
+<code>max_new_tokens = 512</code>（长文本生成）；POPE 任务设置
+<code>max_new_tokens = 64</code>（短文本是非问答） 。<br>
+</li>
+<li><strong>算力消耗</strong>：所有实验均在<strong>单张 NVIDIA RTX
+3090</strong> 上完成，充分体现了无需训练方法的低算力成本优势 。</li>
 </ul>
-<h1 id="贪心解码（Greedy-Decoding）"><a href="#贪心解码（Greedy-Decoding）" class="headerlink" title="贪心解码（Greedy Decoding）"></a>贪心解码（Greedy Decoding）</h1><h2 id="一、-核心逻辑与工作原理"><a href="#一、-核心逻辑与工作原理" class="headerlink" title="一、 核心逻辑与工作原理"></a>一、 核心逻辑与工作原理</h2><p>在大模型生成文本时，它是逐个 Token（字/词碎片）自回归生成的。在每一个时间步，模型会为词表里的所有 Token 算出对应的概率分布（即我们之前提到的 Logits） 。  </p>
-<p><strong>贪心解码的规则非常简单、粗暴：它在每一步只挑选概率最高（或者得分最高）的那一个 Token，绝对不考虑其他任何人选。</strong></p>
+<h1 id="贪心解码greedy-decoding">贪心解码（Greedy Decoding）</h1>
+<h2 id="一-核心逻辑与工作原理">一、 核心逻辑与工作原理</h2>
+<p>在大模型生成文本时，它是逐个
+Token（字/词碎片）自回归生成的。在每一个时间步，模型会为词表里的所有
+Token 算出对应的概率分布（即我们之前提到的 Logits） 。</p>
+<p><strong>贪心解码的规则非常简单、粗暴：它在每一步只挑选概率最高（或者得分最高）的那一个
+Token，绝对不考虑其他任何人选。</strong></p>
 <p><strong>具体的数学表达：</strong></p>
-<script type="math/tex; mode=display">\text{Next Token} = \arg\max(\text{Logits})</script><p><strong>举个例子（模型正在回答“草莓是什么颜色”）：</strong></p>
+<p><span class="math display">Next Token = arg max (Logits)</span></p>
+<p><strong>举个例子（模型正在回答“草莓是什么颜色”）：</strong></p>
 <p>在预测下一个字时，词表张榜：</p>
 <ul>
-<li><code>&quot;红&quot;</code>：概率 60%</li>
-<li><code>&quot;绿&quot;</code>：概率 15%</li>
-<li><code>&quot;粉&quot;</code>：概率 10%</li>
+<li><code>"红"</code>：概率 60%</li>
+<li><code>"绿"</code>：概率 15%</li>
+<li><code>"粉"</code>：概率 10%</li>
 <li>……</li>
 </ul>
-<p>如果是<strong>贪心解码</strong>，模型会毫不犹豫地直接选择 <strong><code>&quot;红&quot;</code></strong>。因为它的概率最大。选完 <code>&quot;红&quot;</code> 之后，再把 <code>&quot;红&quot;</code> 拼进输入里，去预测再下一个字，以此类推。</p>
-<h2 id="二、-贪心解码在论文中的关键作用"><a href="#二、-贪心解码在论文中的关键作用" class="headerlink" title="二、 贪心解码在论文中的关键作用"></a>二、 贪心解码在论文中的关键作用</h2><p>在你上传的《TSAI：面向多模态大语言模型幻觉缓解的时序-语义注意力干预》论文中，作者在 <strong>4.1 实验设置（Experimental Setup）</strong> 里特别强调了他们<strong>统一采用贪心解码</strong>作为所有模型和方法的基准，这背后有非常严谨的学术考量：</p>
-<p><strong>隔离随机干扰（确保公平）</strong>：普通的文本生成往往会加入随机采样（如 Nucleus Sampling / Top-p），这会导致模型每次运行吐出的词都不一样。论文指出，采用贪心解码可以“隔离随机采样算法引入的性能差异，确保严格公平的比较” 。  </p>
-<p><strong>提供最稳定的基线（Baseline）</strong>：论文强调，对于评估抗幻觉能力的确定性评测（如是非题 POPE 或描述题 CHAIR），<strong>“贪心解码通常能产生最稳定且具有竞争力的基线性能”</strong> 。所以表 1、表 3、表 4 中，最基础的对照组（Vanilla）数据就是原生模型在贪心解码下的表现 。  </p>
-<h2 id="三、-贪心解码的优缺点横向对比"><a href="#三、-贪心解码的优缺点横向对比" class="headerlink" title="三、 贪心解码的优缺点横向对比"></a>三、 贪心解码的优缺点横向对比</h2><p>为了让你的概念体系更完整，我们可以把它与<strong>束搜索（Beam Search）</strong>、核采样（Nucleus / Top-p Sampling）进行横向对比：</p>
-<div class="table-container">
+<p>如果是<strong>贪心解码</strong>，模型会毫不犹豫地直接选择
+<strong><code>"红"</code></strong>。因为它的概率最大。选完
+<code>"红"</code> 之后，再把 <code>"红"</code>
+拼进输入里，去预测再下一个字，以此类推。</p>
+<h2 id="二-贪心解码在论文中的关键作用">二、
+贪心解码在论文中的关键作用</h2>
+<p>在你上传的《TSAI：面向多模态大语言模型幻觉缓解的时序-语义注意力干预》论文中，作者在
+<strong>4.1 实验设置（Experimental Setup）</strong>
+里特别强调了他们<strong>统一采用贪心解码</strong>作为所有模型和方法的基准，这背后有非常严谨的学术考量：</p>
+<p><strong>隔离随机干扰（确保公平）</strong>：普通的文本生成往往会加入随机采样（如
+Nucleus Sampling /
+Top-p），这会导致模型每次运行吐出的词都不一样。论文指出，采用贪心解码可以“隔离随机采样算法引入的性能差异，确保严格公平的比较”
+。</p>
+<p><strong>提供最稳定的基线（Baseline）</strong>：论文强调，对于评估抗幻觉能力的确定性评测（如是非题
+POPE 或描述题
+CHAIR），<strong>“贪心解码通常能产生最稳定且具有竞争力的基线性能”</strong>
+。所以表 1、表 3、表 4
+中，最基础的对照组（Vanilla）数据就是原生模型在贪心解码下的表现 。</p>
+<h2 id="三-贪心解码的优缺点横向对比">三、 贪心解码的优缺点横向对比</h2>
+<p>为了让你的概念体系更完整，我们可以把它与<strong>束搜索（Beam
+Search）</strong>、核采样（Nucleus / Top-p Sampling）进行横向对比：</p>
 <table>
+<colgroup>
+<col style="width: 16%">
+<col style="width: 25%">
+<col style="width: 22%">
+<col style="width: 35%">
+</colgroup>
 <thead>
 <tr>
 <th><strong>解码策略</strong></th>
@@ -879,15 +1474,17 @@
 <tbody>
 <tr>
 <td><strong>贪心解码 (Greedy)</strong></td>
-<td>每一步无脑选 $\max$。</td>
+<td>每一步无脑选 <span class="math inline">max </span>。</td>
 <td>速度极快、100% 可复现、结果极其稳定。</td>
-<td>缺乏创造力。在长文本生成中，极其容易陷入<strong>“语言退化”</strong>（表现为变成复读机，不断循环一句话） 。</td>
+<td>缺乏创造力。在长文本生成中，极其容易陷入<strong>“语言退化”</strong>（表现为变成复读机，不断循环一句话）
+。</td>
 </tr>
 <tr>
 <td><strong>束搜索 (Beam Search)</strong></td>
 <td>每一步保留 Top-k 个最优路径，全局综合评分。</td>
 <td>逻辑严谨、生成文本质量高。</td>
-<td>容易产生<strong>“过度信任（Over-Trust）”</strong>，即模型太相信前面自己编过的话，从而容易导致幻觉滚雪球 。</td>
+<td>容易产生<strong>“过度信任（Over-Trust）”</strong>，即模型太相信前面自己编过的话，从而容易导致幻觉滚雪球
+。</td>
 </tr>
 <tr>
 <td><strong>核采样 (Top-p / Nucleus)</strong></td>
@@ -897,100 +1494,243 @@
 </tr>
 </tbody>
 </table>
-</div>
-<h1 id="Generative-Hallucination（生成式幻觉评估）"><a href="#Generative-Hallucination（生成式幻觉评估）" class="headerlink" title="Generative Hallucination（生成式幻觉评估）"></a>Generative Hallucination（生成式幻觉评估）</h1><h2 id="Table-1：CHAIR-评测结果（物体幻觉的硬核较量）"><a href="#Table-1：CHAIR-评测结果（物体幻觉的硬核较量）" class="headerlink" title="Table 1：CHAIR 评测结果（物体幻觉的硬核较量）"></a>Table 1：CHAIR 评测结果（物体幻觉的硬核较量）</h2><p>Table 1 通常是整篇论文的“主战场”，它展示了 Vanilla（原生模型）、CAS 框架以及 8 种顶会 Baseline 在 <strong>LLaVA-1.5、Shikra、Qwen-VL 和 InstructBLIP</strong> 这四大模型上的全面横向对比。</p>
-<p><img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601130346429.png" alt="image-20260601130346429"></p>
-<h3 id="1-核心指标解读"><a href="#1-核心指标解读" class="headerlink" title="1. 核心指标解读"></a>1. 核心指标解读</h3><p>在这个表里，你会看到以下几个核心列：</p>
+<h1 id="generative-hallucination生成式幻觉评估">Generative
+Hallucination（生成式幻觉评估）</h1>
+<h2 id="table-1chair-评测结果物体幻觉的硬核较量">Table 1：CHAIR
+评测结果（物体幻觉的硬核较量）</h2>
+<p>Table 1 通常是整篇论文的“主战场”，它展示了 Vanilla（原生模型）、CAS
+框架以及 8 种顶会 Baseline 在 <strong>LLaVA-1.5、Shikra、Qwen-VL 和
+InstructBLIP</strong> 这四大模型上的全面横向对比。</p>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601130346429.png" alt="image-20260601130346429">
+<figcaption aria-hidden="true">image-20260601130346429</figcaption>
+</figure>
+<h3 id="核心指标解读">1. 核心指标解读</h3>
+<p>在这个表里，你会看到以下几个核心列：</p>
 <ul>
-<li><strong>$CHAIR_S$（句级幻觉率）</strong> 与 <strong>$CHAIR_I$（词级幻觉率）</strong>：这两个指标<strong>越低越好</strong>。CAS 的核心卖点就是在这两项上拿到了显著的最低值（Bold 粗体标注）。</li>
-<li><strong>$Rep$（n-gram 重复率）</strong>：这是作者为了<strong>打假</strong>而引入的创新指标，<strong>越低越好</strong>。它统计了模型生成文本中出现“复读机”现象的严重程度。</li>
+<li><strong><span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em><sub><em>S</em></sub></span>（句级幻觉率）</strong>
+与 <strong><span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em><sub><em>I</em></sub></span>（词级幻觉率）</strong>：这两个指标<strong>越低越好</strong>。CAS
+的核心卖点就是在这两项上拿到了显著的最低值（Bold 粗体标注）。</li>
+<li><strong><span class="math inline"><em>R</em><em>e</em><em>p</em></span>（n-gram
+重复率）</strong>：这是作者为了<strong>打假</strong>而引入的创新指标，<strong>越低越好</strong>。它统计了模型生成文本中出现“复读机”现象的严重程度。</li>
 </ul>
-<h3 id="2-揭露-Baseline-的“作弊”现象（学术亮点）"><a href="#2-揭露-Baseline-的“作弊”现象（学术亮点）" class="headerlink" title="2. 揭露 Baseline 的“作弊”现象（学术亮点）"></a>2. 揭露 Baseline 的“作弊”现象（学术亮点）</h3><p>在 Table 1 中，你会注意到许多传统方法（如 DoLa、OPERA、PAI 等）在某些模型上的 $CHAIR$ 指标看似很低，但它们的 <strong>$Rep$（重复率）数值却高得离谱，在表中被作者用红色（Red）刺眼地标出</strong>。</p>
+<h3 id="揭露-baseline-的作弊现象学术亮点">2. 揭露 Baseline
+的“作弊”现象（学术亮点）</h3>
+<p>在 Table 1 中，你会注意到许多传统方法（如 DoLa、OPERA、PAI
+等）在某些模型上的 <span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em></span>
+指标看似很低，但它们的 <strong><span class="math inline"><em>R</em><em>e</em><em>p</em></span>（重复率）数值却高得离谱，在表中被作者用红色（Red）刺眼地标出</strong>。</p>
 <ul>
-<li><strong>背后的黑幕</strong>：因为 CHAIR 的计算公式是 $\frac{\text{幻觉词数}}{\text{总词数}}$。一些对比方法因为破坏了语言模型的能力，导致模型在推理时不断重复一句话（例如：“There is a cup, a cup, a cup…”）。由于“cup”是图里真实存在的正确物体，<strong>这种无限复读正确词汇的行为人为地扩大了分母，从而恶意稀释了幻觉率</strong>。</li>
-<li><strong>CAS 的降维打击</strong>：CAS 在大幅降低 $CHAIR_S$ 和 $CHAIR_I$ 的同时，保持了极低的 $Rep$（与 Vanilla 原生模型几乎一致）。这有力地证明了 <strong>TPP（温和位置先验）</strong> 机制的成功——干预向量在关键 Token 处精准纠偏后迅速退场，绝不污染后面的正常文本生成。</li>
+<li><strong>背后的黑幕</strong>：因为 CHAIR 的计算公式是 <span class="math inline">$\frac{\text{幻觉词数}}{\text{总词数}}$</span>。一些对比方法因为破坏了语言模型的能力，导致模型在推理时不断重复一句话（例如：“There
+is a cup, a cup, a
+cup…”）。由于“cup”是图里真实存在的正确物体，<strong>这种无限复读正确词汇的行为人为地扩大了分母，从而恶意稀释了幻觉率</strong>。</li>
+<li><strong>CAS 的降维打击</strong>：CAS 在大幅降低 <span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em><sub><em>S</em></sub></span>
+和 <span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em><sub><em>I</em></sub></span>
+的同时，保持了极低的 <span class="math inline"><em>R</em><em>e</em><em>p</em></span>（与 Vanilla
+原生模型几乎一致）。这有力地证明了 <strong>TPP（温和位置先验）</strong>
+机制的成功——干预向量在关键 Token
+处精准纠偏后迅速退场，绝不污染后面的正常文本生成。</li>
 </ul>
-<h2 id="Table-2：AMBER-G（生成式幻觉）评测结果分析"><a href="#Table-2：AMBER-G（生成式幻觉）评测结果分析" class="headerlink" title="Table 2：AMBER-G（生成式幻觉）评测结果分析"></a>Table 2：AMBER-G（生成式幻觉）评测结果分析</h2><p>在这一部分中，评测完全聚焦于<strong>长文本自由描述</strong>场景。大模型在没有是非题“喂饭”的情况下，自己主动看图说话。Table 2 展现的核心价值在于：<strong>CAS 在“盲考”状态下对复杂生成任务的统治力。</strong></p>
-<p><img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601130400358.png" alt="image-20260601130400358"></p>
-<h3 id="1-核心指标矩阵"><a href="#1-核心指标矩阵" class="headerlink" title="1. 核心指标矩阵"></a>1. 核心指标矩阵</h3><p>在 Table 2 中，你需要重点记录这三个核心指标的黄金三角关系：</p>
+<h2 id="table-2amber-g生成式幻觉评测结果分析">Table
+2：AMBER-G（生成式幻觉）评测结果分析</h2>
+<p>在这一部分中，评测完全聚焦于<strong>长文本自由描述</strong>场景。大模型在没有是非题“喂饭”的情况下，自己主动看图说话。Table
+2 展现的核心价值在于：<strong>CAS
+在“盲考”状态下对复杂生成任务的统治力。</strong></p>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601130400358.png" alt="image-20260601130400358">
+<figcaption aria-hidden="true">image-20260601130400358</figcaption>
+</figure>
+<h3 id="核心指标矩阵">1. 核心指标矩阵</h3>
+<p>在 Table 2 中，你需要重点记录这三个核心指标的黄金三角关系：</p>
 <ul>
-<li><strong>$Hal \downarrow$（整体句级幻觉率）</strong>：评估生成文本中，包含存在、属性、关系等各类综合幻觉的句子比例。数值越低，说明整体越诚实。</li>
-<li><strong>$CHAIR_S / CHAIR_I \downarrow$（物体级幻觉）</strong>：精准定位到名词层面的捏造比例。</li>
-<li><strong>$Cover \uparrow$（物体覆盖率 / 召回率）</strong>：<strong>全场含金量最高的指标</strong>。它统计了大模型到底把图片里真正存在的物体认出来了多少。</li>
+<li><strong><span class="math inline"><em>H</em><em>a</em><em>l</em>↓</span>（整体句级幻觉率）</strong>：评估生成文本中，包含存在、属性、关系等各类综合幻觉的句子比例。数值越低，说明整体越诚实。</li>
+<li><strong><span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em><sub><em>S</em></sub>/<em>C</em><em>H</em><em>A</em><em>I</em><em>R</em><sub><em>I</em></sub>↓</span>（物体级幻觉）</strong>：精准定位到名词层面的捏造比例。</li>
+<li><strong><span class="math inline"><em>C</em><em>o</em><em>v</em><em>e</em><em>r</em>↑</span>（物体覆盖率
+/
+召回率）</strong>：<strong>全场含金量最高的指标</strong>。它统计了大模型到底把图片里真正存在的物体认出来了多少。</li>
 </ul>
-<h3 id="2-为什么-AMBER-G-的数据能对-Baseline-形成降维打击？"><a href="#2-为什么-AMBER-G-的数据能对-Baseline-形成降维打击？" class="headerlink" title="2. 为什么 AMBER-G 的数据能对 Baseline 形成降维打击？"></a>2. 为什么 AMBER-G 的数据能对 Baseline 形成降维打击？</h3><p>在自由生成任务中，最容易出现的两个学术大坑是“因噎废食”<strong>和</strong>“语言塌陷”。Table 2 的数据直接自证了 CAS 是如何完美避开这两个坑的：</p>
+<h3 id="为什么-amber-g-的数据能对-baseline-形成降维打击">2. 为什么
+AMBER-G 的数据能对 Baseline 形成降维打击？</h3>
+<p>在自由生成任务中，最容易出现的两个学术大坑是“因噎废食”<strong>和</strong>“语言塌陷”。Table
+2 的数据直接自证了 CAS 是如何完美避开这两个坑的：</p>
 <ul>
 <li><p><strong>打破“说得越少，错得越少”的作弊死循环</strong>：</p>
-<p>很多对比方法（比如传统对比解码）为了追求极低的幻觉率（$Hal$ 或 $CHAIR$），干预力度过大，直接导致模型变得极度保守、不敢说话。反映在数据上，就是它们的 $Cover$（物体覆盖率）会出现断崖式下跌。</p>
+<p>很多对比方法（比如传统对比解码）为了追求极低的幻觉率（<span class="math inline"><em>H</em><em>a</em><em>l</em></span> 或 <span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em></span>），干预力度过大，直接导致模型变得极度保守、不敢说话。反映在数据上，就是它们的
+<span class="math inline"><em>C</em><em>o</em><em>v</em><em>e</em><em>r</em></span>（物体覆盖率）会出现断崖式下跌。</p>
 <ul>
-<li><strong>CAS 的优势</strong>：CAS 在把 $Hal$ 和 $CHAIR$ 砸到最低的同时，<strong>$Cover$ 指标依然能够保持高位，甚至超越 Vanilla（原生模型）</strong>。这证明“有符号激活导向”不是简单地给模型贴封条，而是真正提升了模型对底层视觉特征的有效提取和正面感知。</li>
-</ul>
-</li>
+<li><strong>CAS 的优势</strong>：CAS 在把 <span class="math inline"><em>H</em><em>a</em><em>l</em></span> 和 <span class="math inline"><em>C</em><em>H</em><em>A</em><em>I</em><em>R</em></span>
+砸到最低的同时，<strong><span class="math inline"><em>C</em><em>o</em><em>v</em><em>e</em><em>r</em></span>
+指标依然能够保持高位，甚至超越
+Vanilla（原生模型）</strong>。这证明“有符号激活导向”不是简单地给模型贴封条，而是真正提升了模型对底层视觉特征的有效提取和正面感知。</li>
+</ul></li>
 <li><p><strong>证明 TPP（温和位置先验）的不可或缺性</strong>：</p>
-<p>自由生成长文本对隐空间的扰动极其敏感。CAS 能够完美跑通 AMBER-G 的长文本 Captioning 任务，并在综合得分上拿到 SOTA，在图表层面上直接宣告了 TPP 衰减机制的胜利——干预向量在 $t^\star - 1$ 位置精准爆发，修正了关键物体的倾向后<strong>优雅退场</strong>，将后半句的语法和叙事主导权还给语言模型，从而保证了长文本的顺畅。</p>
-</li>
+<p>自由生成长文本对隐空间的扰动极其敏感。CAS 能够完美跑通 AMBER-G
+的长文本 Captioning 任务，并在综合得分上拿到
+SOTA，在图表层面上直接宣告了 TPP 衰减机制的胜利——干预向量在 <span class="math inline"><em>t</em><sup>⋆</sup> − 1</span>
+位置精准爆发，修正了关键物体的倾向后<strong>优雅退场</strong>，将后半句的语法和叙事主导权还给语言模型，从而保证了长文本的顺畅。</p></li>
 </ul>
-<h1 id="判别式幻觉（Discriminative-Hallucination）"><a href="#判别式幻觉（Discriminative-Hallucination）" class="headerlink" title="判别式幻觉（Discriminative Hallucination）"></a>判别式幻觉（Discriminative Hallucination）</h1><p><img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601132110896.png" alt="image-20260601132110896"></p>
-<h2 id="Table-3-的纵纵横横：结构与核心指标"><a href="#Table-3-的纵纵横横：结构与核心指标" class="headerlink" title="Table 3 的纵纵横横：结构与核心指标"></a>Table 3 的纵纵横横：结构与核心指标</h2><p>在论文的 Table 3 中，数据矩阵通常按照以下维度展开：</p>
+<h1 id="判别式幻觉discriminative-hallucination">判别式幻觉（Discriminative
+Hallucination）</h1>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601132110896.png" alt="image-20260601132110896">
+<figcaption aria-hidden="true">image-20260601132110896</figcaption>
+</figure>
+<h2 id="table-3-的纵纵横横结构与核心指标">Table 3
+的纵纵横横：结构与核心指标</h2>
+<p>在论文的 Table 3 中，数据矩阵通常按照以下维度展开：</p>
 <ul>
-<li><strong>纵轴（Rows）</strong>：四大主流多模态模型（LLaVA-1.5、Shikra 等）作为大组，每个大组内横向对比 Vanilla（原生模型）以及各大主流 Baseline，最后以 <strong>CAS（Our）</strong> 收尾。</li>
-<li><strong>横轴（Columns）</strong>：划分出 POPE 的三个经典子集：<strong>Random（随机）</strong>、<strong>Popular（高频）</strong>、<strong>Adversarial（对抗）</strong>。每个子集下报告两个核心指标：<ol>
-<li><strong>Accuracy (Acc，准确率 $\uparrow$)</strong>：整体答对的比例。</li>
-<li><strong>F1-score ($\uparrow$)</strong>：平衡了精确率和召回率的综合指标（全场最重要的评判依据）。</li>
-</ol>
-</li>
+<li><strong>纵轴（Rows）</strong>：四大主流多模态模型（LLaVA-1.5、Shikra
+等）作为大组，每个大组内横向对比 Vanilla（原生模型）以及各大主流
+Baseline，最后以 <strong>CAS（Our）</strong> 收尾。</li>
+<li><strong>横轴（Columns）</strong>：划分出 POPE
+的三个经典子集：<strong>Random（随机）</strong>、<strong>Popular（高频）</strong>、<strong>Adversarial（对抗）</strong>。每个子集下报告两个核心指标：
+<ol type="1">
+<li><strong>Accuracy (Acc，准确率 <span class="math inline">↑</span>)</strong>：整体答对的比例。</li>
+<li><strong>F1-score (<span class="math inline">↑</span>)</strong>：平衡了精确率和召回率的综合指标（全场最重要的评判依据）。</li>
+</ol></li>
 </ul>
-<h1 id="Per-model-response-to-VFV-and-MRV"><a href="#Per-model-response-to-VFV-and-MRV" class="headerlink" title="Per-model response to VFV and MRV"></a>Per-model response to VFV and MRV</h1><p>这一部分聚焦于 CAS 框架中最核心的实证发现：<strong>不同模型对“视觉保真向量（VFV）”和“模态依赖向量（MRV）”的异质性反应（Per-model response）</strong>。</p>
-<h2 id="核心发现：模型异质性（Model-Heterogeneity）与符号搜索"><a href="#核心发现：模型异质性（Model-Heterogeneity）与符号搜索" class="headerlink" title="核心发现：模型异质性（Model Heterogeneity）与符号搜索"></a>核心发现：模型异质性（Model Heterogeneity）与符号搜索</h2><p>在表征工程（Representation Engineering）中，最理想的状态是“一个黄金向量包治百病”。但 CAS 论文在这里揭示了一个残酷的现实：<strong>即使提取流程完全一样，同一个偏好向量对不同模型而言，其最佳干预方向（正号 $+$ 还是负号 $-$）和干预力度（模长大小）是完全相反且割裂的。</strong></p>
-<p>作者将这种现象称为<strong>模型异质性</strong>。它直接决定了为什么线上注入残差时，强度系数 $\alpha$ 和 $\beta$ 必须是<strong>有符号的（Signed）</strong>。</p>
-<h2 id="Figure-3-深度解码：符号与强度的全面吞吐流（Grid-Search-趋势）"><a href="#Figure-3-深度解码：符号与强度的全面吞吐流（Grid-Search-趋势）" class="headerlink" title="Figure 3 深度解码：符号与强度的全面吞吐流（Grid Search 趋势）"></a>Figure 3 深度解码：符号与强度的全面吞吐流（Grid Search 趋势）</h2><p>Figure 3 在论文中通常是一组<strong>折线图（Line Charts）或热力图（Heatmaps）</strong>。它展示了当干预系数 $\alpha$（控制 VFV）和 $\beta$（控制 MRV）在区间（例如 $[-3.0, +3.0]$）内连续滑动时，各大模型在抗幻觉指标（如 POPE 准确率、CHAIR 幻觉率）上的<strong>动态性能表现曲线</strong>。</p>
-<p><img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601134337395.png" alt="image-20260601134337395"></p>
-<h3 id="1-性能曲线的“单峰特性”与零点跨越"><a href="#1-性能曲线的“单峰特性”与零点跨越" class="headerlink" title="1. 性能曲线的“单峰特性”与零点跨越"></a>1. 性能曲线的“单峰特性”与零点跨越</h3><ul>
-<li>如果你观察图 3 的曲线，会发现绝大多数模型的性能并不会随着干预强度的增大而无限变好，而是呈现出完美的<strong>单峰（Single-peak）结构</strong>。</li>
-<li>关键在于，这个<strong>性能巅峰（Peak）落在零点（Vanilla 原生模型）的左边还是右边</strong>。<ul>
+<h1 id="per-model-response-to-vfv-and-mrv">Per-model response to VFV and
+MRV</h1>
+<p>这一部分聚焦于 CAS
+框架中最核心的实证发现：<strong>不同模型对“视觉保真向量（VFV）”和“模态依赖向量（MRV）”的异质性反应（Per-model
+response）</strong>。</p>
+<h2 id="核心发现模型异质性model-heterogeneity与符号搜索">核心发现：模型异质性（Model
+Heterogeneity）与符号搜索</h2>
+<p>在表征工程（Representation
+Engineering）中，最理想的状态是“一个黄金向量包治百病”。但 CAS
+论文在这里揭示了一个残酷的现实：<strong>即使提取流程完全一样，同一个偏好向量对不同模型而言，其最佳干预方向（正号
+<span class="math inline">+</span> 还是负号 <span class="math inline">−</span>）和干预力度（模长大小）是完全相反且割裂的。</strong></p>
+<p>作者将这种现象称为<strong>模型异质性</strong>。它直接决定了为什么线上注入残差时，强度系数
+<span class="math inline"><em>α</em></span> 和 <span class="math inline"><em>β</em></span>
+必须是<strong>有符号的（Signed）</strong>。</p>
+<h2 id="figure-3-深度解码符号与强度的全面吞吐流grid-search-趋势">Figure
+3 深度解码：符号与强度的全面吞吐流（Grid Search 趋势）</h2>
+<p>Figure 3 在论文中通常是一组<strong>折线图（Line
+Charts）或热力图（Heatmaps）</strong>。它展示了当干预系数 <span class="math inline"><em>α</em></span>（控制 VFV）和 <span class="math inline"><em>β</em></span>（控制 MRV）在区间（例如 <span class="math inline">[−3.0, +3.0]</span>）内连续滑动时，各大模型在抗幻觉指标（如
+POPE 准确率、CHAIR 幻觉率）上的<strong>动态性能表现曲线</strong>。</p>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601134337395.png" alt="image-20260601134337395">
+<figcaption aria-hidden="true">image-20260601134337395</figcaption>
+</figure>
+<h3 id="性能曲线的单峰特性与零点跨越">1.
+性能曲线的“单峰特性”与零点跨越</h3>
+<ul>
+<li>如果你观察图 3
+的曲线，会发现绝大多数模型的性能并不会随着干预强度的增大而无限变好，而是呈现出完美的<strong>单峰（Single-peak）结构</strong>。</li>
+<li>关键在于，这个<strong>性能巅峰（Peak）落在零点（Vanilla
+原生模型）的左边还是右边</strong>。
+<ul>
 <li>如果巅峰在右边（正值区间），代表该模型属于“视觉疏忽型”，越补正向视觉信号越聪明。</li>
-<li>如果巅峰在左边（负值区间），代表该模型属于“捕风捉影型”，加了负号（压制视觉噪声）反而能刷新 Acc 分数。</li>
+<li>如果巅峰在左边（负值区间），代表该模型属于“捕风捉影型”，加了负号（压制视觉噪声）反而能刷新
+Acc 分数。</li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<h3 id="2-悬崖效应（Cliff-Effect）：过度干预的语言崩塌"><a href="#2-悬崖效应（Cliff-Effect）：过度干预的语言崩塌" class="headerlink" title="2. 悬崖效应（Cliff Effect）：过度干预的语言崩塌"></a>2. 悬崖效应（Cliff Effect）：过度干预的语言崩塌</h3><ul>
-<li>无论模型的最佳符号是正还是负，一旦干预强度（绝对值）越过了那个最佳的“甜点区（Sweet Spot）”，图 3 中的性能曲线会展现出恐怖的<strong>断崖式下跌</strong>。</li>
-<li><strong>学术本质</strong>：这是因为过大的残差向量注入直接干扰了语言模型（LLM）底层基座的指令遵循与语法概率流，导致隐状态彻底偏离了合理的表征流形（Representation Manifold），模型开始在生成端胡言乱语。</li>
-</ul>
-<h2 id="Table-6-amp-Table-7-深度解码：超参数图谱与稳健性验证"><a href="#Table-6-amp-Table-7-深度解码：超参数图谱与稳健性验证" class="headerlink" title="Table 6 &amp; Table 7 深度解码：超参数图谱与稳健性验证"></a>Table 6 &amp; Table 7 深度解码：超参数图谱与稳健性验证</h2><p>如果说 Figure 3 是连续的宏观大势，那么被放在附录或实验深入分析部分的 <strong>Table 6 和 Table 7</strong> 则是 CAS 团队留下的<strong>硬核工程账本</strong>。它们通常分别记录了<strong>最优符号与强度的全局搜索结果</strong>，以及<strong>跨任务/跨层干预的消融边界</strong>。</p>
-<p><img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601142307660.png" alt="image-20260601142307660"></p>
-<p><img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601142336909.png" alt="image-20260601142336909"></p>
-<h1 id="Layer-Analysis层消融实验"><a href="#Layer-Analysis层消融实验" class="headerlink" title="Layer Analysis层消融实验"></a>Layer Analysis层消融实验</h1><p><img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601142809876.png" alt="image-20260601142809876"></p>
-<p>为了验证干预层的选择，我们将相同的CPV置于LLaVA-CHAIR的不同四层窗口中。为了放大窗口间的差异，我们使用了更强的固定强度（MRV β=+2，VFV α=−2）。如表4所示，两种CPV在不同窗口中表现出一致的模式：在我们扫描的窗口中，中早期层L11–14是唯一有效且稳定的层；从L16开始，效果恢复到原始水平，基本为零；在浅层L1–4和L6–9，MRV和VFV都会引发严重的退化并导致失控的重复。因此，我们在所有实验中将干预固定在L11–14层。</p>
-<h1 id="Conclusion和Limitations"><a href="#Conclusion和Limitations" class="headerlink" title="Conclusion和Limitations"></a>Conclusion和Limitations</h1><h2 id="一、-结论部分-Conclusion"><a href="#一、-结论部分-Conclusion" class="headerlink" title="一、 结论部分 (Conclusion)"></a>一、 结论部分 (Conclusion)</h2><p>结论部分对 CAS 框架的成效给出了最终定性，核心成果可以概括为以下三点：</p>
+<h3 id="悬崖效应cliff-effect过度干预的语言崩塌">2. 悬崖效应（Cliff
+Effect）：过度干预的语言崩塌</h3>
 <ul>
-<li><strong>开创了表征层面的“因材施教”范式</strong>：论文成功打破了传统“一刀切增强视觉”的思维定势，首次证明了 MLLM 内部隐空间存在<strong>模型异质性</strong>。通过首创的<strong>有符号激活导向（SAS）</strong>，实现了对不同缺陷型模型（视觉疏忽型 vs 视觉敏感型）的精准对症下药。</li>
-<li><strong>抗幻觉与流畅度的帕累托最优（Pareto-optimal）</strong>：在三大硬核基准（CHAIR、POPE、AMBER-G）上，CAS 在大幅刷新最低幻觉率的同时，完美保护了模型的生成流畅度（$Rep \downarrow$）与细节丰富度（$Cover \uparrow$）。这宣告了 <strong>Tempered Position Prior (TPP)</strong> 位置门控机制的全面胜利。</li>
-<li><strong>兼顾极高部署性价比</strong>：作为一种无需训练（Training-free）的方法，CAS 仅在单次前向传播中进行极其轻量级的加性残差操作，<strong>不引入任何额外的解码延迟（Zero extra decoding latency）</strong>，彻底解决了对比解码（VCD、CODE 等）推理速度翻倍的工程痛点。</li>
+<li>无论模型的最佳符号是正还是负，一旦干预强度（绝对值）越过了那个最佳的“甜点区（Sweet
+Spot）”，图 3
+中的性能曲线会展现出恐怖的<strong>断崖式下跌</strong>。</li>
+<li><strong>学术本质</strong>：这是因为过大的残差向量注入直接干扰了语言模型（LLM）底层基座的指令遵循与语法概率流，导致隐状态彻底偏离了合理的表征流形（Representation
+Manifold），模型开始在生成端胡言乱语。</li>
 </ul>
-<h2 id="二、-局限性部分-Limitations"><a href="#二、-局限性部分-Limitations" class="headerlink" title="二、 局限性部分 (Limitations)"></a>二、 局限性部分 (Limitations)</h2><p>作者非常坦诚地分析了 CAS 框架在现阶段的局限性与改进空间，这也是未来开展研究生工作或后续大创项目的绝佳发力点：</p>
-<h3 id="1-严重依赖离线网格搜索（Hyperparameter-Dependency）"><a href="#1-严重依赖离线网格搜索（Hyperparameter-Dependency）" class="headerlink" title="1. 严重依赖离线网格搜索（Hyperparameter Dependency）"></a>1. 严重依赖离线网格搜索（Hyperparameter Dependency）</h3><p>虽然 CAS 推理时是零开销，但在正式上线前，它必须依赖一个小规模的冲突验证集，通过网格搜索（Grid Search）去试出该模型专属的最佳符号和强度系数（$\alpha$ 和 $\beta$）。</p>
+<h2 id="table-6-table-7-深度解码超参数图谱与稳健性验证">Table 6 &amp;
+Table 7 深度解码：超参数图谱与稳健性验证</h2>
+<p>如果说 Figure 3 是连续的宏观大势，那么被放在附录或实验深入分析部分的
+<strong>Table 6 和 Table 7</strong> 则是 CAS
+团队留下的<strong>硬核工程账本</strong>。它们通常分别记录了<strong>最优符号与强度的全局搜索结果</strong>，以及<strong>跨任务/跨层干预的消融边界</strong>。</p>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601142307660.png" alt="image-20260601142307660">
+<figcaption aria-hidden="true">image-20260601142307660</figcaption>
+</figure>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601142336909.png" alt="image-20260601142336909">
+<figcaption aria-hidden="true">image-20260601142336909</figcaption>
+</figure>
+<h1 id="layer-analysis层消融实验">Layer Analysis层消融实验</h1>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601142809876.png" alt="image-20260601142809876">
+<figcaption aria-hidden="true">image-20260601142809876</figcaption>
+</figure>
+<p>为了验证干预层的选择，我们将相同的CPV置于LLaVA-CHAIR的不同四层窗口中。为了放大窗口间的差异，我们使用了更强的固定强度（MRV
+β=+2，VFV
+α=−2）。如表4所示，两种CPV在不同窗口中表现出一致的模式：在我们扫描的窗口中，中早期层L11–14是唯一有效且稳定的层；从L16开始，效果恢复到原始水平，基本为零；在浅层L1–4和L6–9，MRV和VFV都会引发严重的退化并导致失控的重复。因此，我们在所有实验中将干预固定在L11–14层。</p>
+<h1 id="conclusion和limitations">Conclusion和Limitations</h1>
+<h2 id="一-结论部分-conclusion">一、 结论部分 (Conclusion)</h2>
+<p>结论部分对 CAS
+框架的成效给出了最终定性，核心成果可以概括为以下三点：</p>
+<ul>
+<li><strong>开创了表征层面的“因材施教”范式</strong>：论文成功打破了传统“一刀切增强视觉”的思维定势，首次证明了
+MLLM
+内部隐空间存在<strong>模型异质性</strong>。通过首创的<strong>有符号激活导向（SAS）</strong>，实现了对不同缺陷型模型（视觉疏忽型
+vs 视觉敏感型）的精准对症下药。</li>
+<li><strong>抗幻觉与流畅度的帕累托最优（Pareto-optimal）</strong>：在三大硬核基准（CHAIR、POPE、AMBER-G）上，CAS
+在大幅刷新最低幻觉率的同时，完美保护了模型的生成流畅度（<span class="math inline"><em>R</em><em>e</em><em>p</em>↓</span>）与细节丰富度（<span class="math inline"><em>C</em><em>o</em><em>v</em><em>e</em><em>r</em>↑</span>）。这宣告了
+<strong>Tempered Position Prior (TPP)</strong>
+位置门控机制的全面胜利。</li>
+<li><strong>兼顾极高部署性价比</strong>：作为一种无需训练（Training-free）的方法，CAS
+仅在单次前向传播中进行极其轻量级的加性残差操作，<strong>不引入任何额外的解码延迟（Zero
+extra decoding latency）</strong>，彻底解决了对比解码（VCD、CODE
+等）推理速度翻倍的工程痛点。</li>
+</ul>
+<h2 id="二-局限性部分-limitations">二、 局限性部分 (Limitations)</h2>
+<p>作者非常坦诚地分析了 CAS
+框架在现阶段的局限性与改进空间，这也是未来开展研究生工作或后续大创项目的绝佳发力点：</p>
+<h3 id="严重依赖离线网格搜索hyperparameter-dependency">1.
+严重依赖离线网格搜索（Hyperparameter Dependency）</h3>
+<p>虽然 CAS
+推理时是零开销，但在正式上线前，它必须依赖一个小规模的冲突验证集，通过网格搜索（Grid
+Search）去试出该模型专属的最佳符号和强度系数（<span class="math inline"><em>α</em></span> 和 <span class="math inline"><em>β</em></span>）。</p>
 <ul>
 <li><strong>痛点</strong>：这种“调参”过程是离线的（Offline）。如果换了一个全新的、完全没见过的微调模型，用户无法盲打注入残差，必须先跑一次快速的离线校准。</li>
 </ul>
-<h3 id="2-幻觉防御的范畴边界（Scope-Limitations）"><a href="#2-幻觉防御的范畴边界（Scope-Limitations）" class="headerlink" title="2. 幻觉防御的范畴边界（Scope Limitations）"></a>2. 幻觉防御的范畴边界（Scope Limitations）</h3><p>CAS 提取的黄金方向向量（VFV 和 MRV），其核心对齐逻辑建立在“物体存在性”<strong>和</strong>“模态冲突”上。</p>
+<h3 id="幻觉防御的范畴边界scope-limitations">2.
+幻觉防御的范畴边界（Scope Limitations）</h3>
+<p>CAS 提取的黄金方向向量（VFV 和
+MRV），其核心对齐逻辑建立在“物体存在性”<strong>和</strong>“模态冲突”上。</p>
 <ul>
-<li><strong>痛点</strong>：多模态幻觉的成因极度复杂。如果模型发生的不是物体层面的幻觉，而是高级的<strong>多步跨模态推理错误（Reasoning Error）</strong>、复杂的空间几何倒错，或者是在长视频理解（Long-form Video）中产生的时序颠倒，现有的 VFV 和 MRV 向量可能无法提供足够强大的因果纠偏能力。</li>
+<li><strong>痛点</strong>：多模态幻觉的成因极度复杂。如果模型发生的不是物体层面的幻觉，而是高级的<strong>多步跨模态推理错误（Reasoning
+Error）</strong>、复杂的空间几何倒错，或者是在长视频理解（Long-form
+Video）中产生的时序颠倒，现有的 VFV 和 MRV
+向量可能无法提供足够强大的因果纠偏能力。</li>
 </ul>
-<h3 id="3-静态语义轴与动态生成上下文的脱节（Static-CPV-Vector）"><a href="#3-静态语义轴与动态生成上下文的脱节（Static-CPV-Vector）" class="headerlink" title="3. 静态语义轴与动态生成上下文的脱节（Static CPV Vector）"></a>3. 静态语义轴与动态生成上下文的脱节（Static CPV Vector）</h3><p>岭回归解出来的 CPV（上下文偏好向量）在训练集拟合完成后，其高维方向就<strong>完全固定</strong>了。</p>
+<h3 id="静态语义轴与动态生成上下文的脱节static-cpv-vector">3.
+静态语义轴与动态生成上下文的脱节（Static CPV Vector）</h3>
+<p>岭回归解出来的
+CPV（上下文偏好向量）在训练集拟合完成后，其高维方向就<strong>完全固定</strong>了。</p>
 <ul>
-<li><strong>痛点</strong>：在实际生成长文本时，虽然有 TPP 门控在时序上让它衰减，但这个向量本身并不会根据模型当前吐出的<strong>具体词汇语境</strong>发生动态的形状自适应变化。它主管的是大方向上的“认知站队”（信眼睛还是信常识），缺乏例级自适应（Instance-specific Adaptive Steering）的细粒度微调。</li>
+<li><strong>痛点</strong>：在实际生成长文本时，虽然有 TPP
+门控在时序上让它衰减，但这个向量本身并不会根据模型当前吐出的<strong>具体词汇语境</strong>发生动态的形状自适应变化。它主管的是大方向上的“认知站队”（信眼睛还是信常识），缺乏例级自适应（Instance-specific
+Adaptive Steering）的细粒度微调。</li>
 </ul>
-<h3 id="4-超大尺度模型（Ultra-Large-Models）的层定位成本"><a href="#4-超大尺度模型（Ultra-Large-Models）的层定位成本" class="headerlink" title="4. 超大尺度模型（Ultra-Large Models）的层定位成本"></a>4. 超大尺度模型（Ultra-Large Models）的层定位成本</h3><p>实验虽然在 7B/8B 尺度上的四大主流架构上表现得极为稳健（最优干预层均收敛在 L11–L14），但如果未来基座模型扩展到 14B、32B 甚至 70B 时，知识存储的中枢层带必然会发生漂移。</p>
+<h3 id="超大尺度模型ultra-large-models的层定位成本">4.
+超大尺度模型（Ultra-Large Models）的层定位成本</h3>
+<p>实验虽然在 7B/8B
+尺度上的四大主流架构上表现得极为稳健（最优干预层均收敛在
+L11–L14），但如果未来基座模型扩展到 14B、32B 甚至 70B
+时，知识存储的中枢层带必然会发生漂移。</p>
 <ul>
-<li><strong>痛点</strong>：这意味着在面对超大模型时，研究人员必须重新做一遍 4.5 章节那套高成本的“层消融实验（Layer Analysis）”，才能重新定位到新模型的“黄金干预窗口”。</li>
+<li><strong>痛点</strong>：这意味着在面对超大模型时，研究人员必须重新做一遍
+4.5 章节那套高成本的“层消融实验（Layer
+Analysis）”，才能重新定位到新模型的“黄金干预窗口”。</li>
 </ul>
-<h1 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h1><p>超参数设置</p>
-<p><img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601144400758.png" alt="image-20260601144400758"></p>
+<h1 id="附录">附录</h1>
+<p>超参数设置</p>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601144400758.png" alt="image-20260601144400758">
+<figcaption aria-hidden="true">image-20260601144400758</figcaption>
+</figure>
 <p>推理延迟</p>
-<p><img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601144445230.png" alt="image-20260601144445230"></p>
-<p>我们在 LLaVA-1.5 上测量了每种方法的每 token 解码延迟，结果如表 5 所示。CAS 在单次前向传播中仅对四个中早期层的 MLP 输出进行加性残差操作，没有额外的前向传播，也没有对比解码。因此，其每 token 延迟接近于 vanilla 方法，且远低于双前向方法（PAI / VCD / CODE）和多步搜索方法（OPERA）。</p>
-<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>怎么想到提取这两个向量的</p>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94Steering%20via%20Context-Preference/image-20260601144445230.png" alt="image-20260601144445230">
+<figcaption aria-hidden="true">image-20260601144445230</figcaption>
+</figure>
+<p>我们在 LLaVA-1.5 上测量了每种方法的每 token 解码延迟，结果如表 5
+所示。CAS 在单次前向传播中仅对四个中早期层的 MLP
+输出进行加性残差操作，没有额外的前向传播，也没有对比解码。因此，其每
+token 延迟接近于 vanilla 方法，且远低于双前向方法（PAI / VCD /
+CODE）和多步搜索方法（OPERA）。</p>
+<h1 id="问题">问题</h1>
+<p>怎么想到提取这两个向量的</p>
 <p>为什么作用在mlp层，是类比lora吗</p>
 <p>TPP真的巧妙</p>
 <p>训练干预模型？</p>

@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="进程，线程，协程的区别是什么？  进程（Process）—— 独立的“资源城堡”  进程是操作系统分配资源（如内存、文件句柄、CPU 时间片）的最小单位。当你运行一个程序（比如 Chrome 浏览器或一个 Python 脚本）时，操作系统就会为它创建一个进程。  特点：每个进程都有自己独立的虚拟内存空间（代码段、数据段、堆、栈等）。 优缺点： 优点：安全性高。一个进程崩溃了，不会直接导致其他进程崩">
+    <meta name="description" content="进程，线程，协程的区别是什么？   image-20260604172026017   进程（Process）—— 独立的“资源城堡”  进程是操作系统分配资源（如内存、文件句柄、CPU 时间片）的最小单位。当你运行一个程序（比如 Chrome 浏览器或一个 Python 脚本）时，操作系统就会为它创建一个进程。  特点：每个进程都有自己独立的虚拟内存空间（代码段、数据段、">
 <meta property="og:type" content="article">
 <meta property="og:title" content="面试八股——操作系统">
 <meta property="og:url" content="http://example.com/2026/06/02/%E5%AE%9E%E4%B9%A0/%E9%9D%A2%E8%AF%95/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="进程，线程，协程的区别是什么？  进程（Process）—— 独立的“资源城堡”  进程是操作系统分配资源（如内存、文件句柄、CPU 时间片）的最小单位。当你运行一个程序（比如 Chrome 浏览器或一个 Python 脚本）时，操作系统就会为它创建一个进程。  特点：每个进程都有自己独立的虚拟内存空间（代码段、数据段、堆、栈等）。 优缺点： 优点：安全性高。一个进程崩溃了，不会直接导致其他进程崩">
+<meta property="og:description" content="进程，线程，协程的区别是什么？   image-20260604172026017   进程（Process）—— 独立的“资源城堡”  进程是操作系统分配资源（如内存、文件句柄、CPU 时间片）的最小单位。当你运行一个程序（比如 Chrome 浏览器或一个 Python 脚本）时，操作系统就会为它创建一个进程。  特点：每个进程都有自己独立的虚拟内存空间（代码段、数据段、">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2026/06/02/%E5%AE%9E%E4%B9%A0/%E9%9D%A2%E8%AF%95/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/image-20260604172026017.png">
 <meta property="og:image" content="http://example.com/2026/06/02/%E5%AE%9E%E4%B9%A0/%E9%9D%A2%E8%AF%95/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/image-20260703134310159.png">
@@ -148,7 +148,41 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%EF%BC%8C%E7%BA%BF%E7%A8%8B%EF%BC%8C%E5%8D%8F%E7%A8%8B%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">进程，线程，协程的区别是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%B9%B6%E5%8F%91"><span class="nav-number">2.</span> <span class="nav-text">线程与并发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E7%9A%84%E7%B1%BB%E5%9E%8B%EF%BC%9ACPU-%E5%AF%86%E9%9B%86%E5%9E%8B-vs-I-O-%E5%AF%86%E9%9B%86%E5%9E%8B"><span class="nav-number">2.1.</span> <span class="nav-text">任务的类型：CPU 密集型 vs I&#x2F;O 密集型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%B9%B6%E5%8F%91%EF%BC%88Concurrency%EF%BC%89%EF%BC%9F"><span class="nav-number">2.2.</span> <span class="nav-text">1. 什么是并发（Concurrency）？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%BA%BF%E7%A8%8B%EF%BC%9A%E5%B9%B6%E5%8F%91%E7%9A%84%E2%80%9C%E6%9C%80%E5%B0%8F%E6%89%A7%E8%A1%8C%E5%8D%95%E5%85%83%E2%80%9D"><span class="nav-number">2.3.</span> <span class="nav-text">2. 线程：并发的“最小执行单元”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%B9%B6%E5%8F%91%EF%BC%88Concurrency%EF%BC%89-vs-%E5%B9%B6%E8%A1%8C%EF%BC%88Parallelism%EF%BC%89"><span class="nav-number">2.4.</span> <span class="nav-text">3. 并发（Concurrency） vs 并行（Parallelism）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%81%87%E5%B9%B6%E5%8F%91%EF%BC%88%E5%AE%8F%E8%A7%82%E5%B9%B6%E8%A1%8C%EF%BC%8C%E5%BE%AE%E8%A7%82%E4%B8%B2%E8%A1%8C%EF%BC%89%E2%80%94%E2%80%94-%E5%8D%95%E6%A0%B8-CPU"><span class="nav-number">2.4.1.</span> <span class="nav-text">假并发（宏观并行，微观串行）—— 单核 CPU</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9C%9F%E5%B9%B6%E8%A1%8C%EF%BC%88%E7%9C%9F%E6%AD%A3%E7%9A%84%E5%90%8C%E6%97%B6%E5%8F%91%E7%94%9F%EF%BC%89%E2%80%94%E2%80%94-%E5%A4%9A%E6%A0%B8-CPU"><span class="nav-number">2.4.2.</span> <span class="nav-text">真并行（真正的同时发生）—— 多核 CPU</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B%E4%B8%8E%E7%BA%BF%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">python中的进程与线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E9%97%B4%E7%9A%84%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">线程间的通信方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98-Shared-Memory"><span class="nav-number">4.1.</span> <span class="nav-text">共享内存 (Shared Memory)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%92%E6%96%A5%E9%94%81-Mutex-Lock-%E2%80%94%E2%80%94-%E4%BF%9D%E6%8A%A4%E6%95%B0%E6%8D%AE%E7%9A%84%E2%80%9C%E9%98%B2%E7%9B%97%E9%97%A8%E2%80%9D"><span class="nav-number">4.2.</span> <span class="nav-text">互斥锁 (Mutex Lock) —— 保护数据的“防盗门”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%8F%98%E9%87%8F-Condition-Variable-%E2%80%94%E2%80%94-%E7%BA%BF%E7%A8%8B%E9%97%B4%E7%9A%84%E2%80%9C%E5%AF%B9%E8%AE%B2%E6%9C%BA%E2%80%9D%EF%BC%88%F0%9F%94%A5%E9%9D%A2%E8%AF%95%E9%87%8D%E7%81%BE%E5%8C%BA%EF%BC%89"><span class="nav-number">4.3.</span> <span class="nav-text">条件变量 (Condition Variable) —— 线程间的“对讲机”（🔥面试重灾区）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F-Semaphore-%E2%80%94%E2%80%94-%E6%8E%A7%E5%88%B6%E4%BA%BA%E6%95%B0%E7%9A%84%E2%80%9C%E9%99%90%E6%B5%81%E5%99%A8%E2%80%9D"><span class="nav-number">4.4.</span> <span class="nav-text">信号量 (Semaphore) —— 控制人数的“限流器”</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2%EF%BC%88Context-Switch%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">上下文切换（Context Switch）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2%EF%BC%9F%EF%BC%88%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%EF%BC%89"><span class="nav-number">5.1.</span> <span class="nav-text">什么是上下文切换？（核心概念）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2%E7%9A%84%E8%A7%A6%E5%8F%91%E6%97%B6%E6%9C%BA"><span class="nav-number">5.2.</span> <span class="nav-text">上下文切换的触发时机</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E3%80%81-%E8%87%AA%E6%84%BF%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2%EF%BC%88Voluntary-Context-Switch%EF%BC%89"><span class="nav-number">5.2.1.</span> <span class="nav-text">一、 自愿上下文切换（Voluntary Context Switch）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E3%80%81-%E9%9D%9E%E8%87%AA%E6%84%BF%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2%EF%BC%88Non-voluntary-Context-Switch%EF%BC%89"><span class="nav-number">5.2.2.</span> <span class="nav-text">二、 非自愿上下文切换（Non-voluntary Context Switch）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PCB%EF%BC%88Process-Control-Block%EF%BC%8C%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%9D%97%EF%BC%89"><span class="nav-number">5.3.</span> <span class="nav-text">PCB（Process Control Block，进程控制块）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E6%80%81%E4%B8%8E%E5%86%85%E6%A0%B8%E6%80%81"><span class="nav-number">6.</span> <span class="nav-text">用户态与内核态</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E6%80%81%E5%A6%82%E4%BD%95%E5%88%87%E6%8D%A2%E5%88%B0%E5%86%85%E6%A0%B8%E6%80%81%EF%BC%9F"><span class="nav-number">6.1.</span> <span class="nav-text">用户态如何切换到内核态？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AE%B5%E9%A1%B5%E5%BC%8F%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86"><span class="nav-number">7.</span> <span class="nav-text">段页式存储管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E9%A1%B5%E4%B8%8E%E5%88%86%E6%AE%B5"><span class="nav-number">7.1.</span> <span class="nav-text">分页与分段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AF%B4%E5%88%86%E6%AE%B5%E5%88%86%E9%A1%B5%E6%98%AF%E9%92%88%E5%AF%B9%E8%BF%9B%E7%A8%8B%EF%BC%9F"><span class="nav-number">7.2.</span> <span class="nav-text">为什么说分段分页是针对进程？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%BA%E9%A1%B5%E4%B8%AD%E6%96%AD-Page-Fault"><span class="nav-number">7.3.</span> <span class="nav-text">缺页中断 (Page Fault)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-CPU-%E5%8F%91%E8%B5%B7%E5%AF%BB%E5%9D%80"><span class="nav-number">7.3.1.</span> <span class="nav-text">1. CPU 发起寻址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-MMU-%E7%A1%AC%E4%BB%B6%E6%A3%80%E6%9F%A5"><span class="nav-number">7.3.2.</span> <span class="nav-text">2. MMU 硬件检查</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E8%A7%A6%E5%8F%91%E7%A1%AC%E4%BB%B6%E4%B8%AD%E6%96%AD"><span class="nav-number">7.3.3.</span> <span class="nav-text">3. 触发硬件中断</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-OS-%E6%A0%B8%E5%BF%83%E5%A4%84%E7%90%86%EF%BC%88%E5%85%B3%E9%94%AE%E5%88%86%E6%B0%B4%E5%B2%AD%E5%88%86%E6%94%AF%EF%BC%89"><span class="nav-number">7.3.4.</span> <span class="nav-text">4. OS 核心处理（关键分水岭分支）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%F0%9F%9F%A9-%E6%83%85%E5%86%B5-A%EF%BC%9A%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98%E6%9C%89%E7%A9%BA%E9%97%B2%E4%BD%8D%EF%BC%88%E6%8C%89%E9%9C%80%E8%B0%83%E9%A1%B5%EF%BC%89"><span class="nav-number">7.3.4.1.</span> <span class="nav-text">🟩 情况 A：物理内存有空闲位（按需调页）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%F0%9F%9F%A5-%E6%83%85%E5%86%B5-B%EF%BC%9A%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98%E5%B7%B2%E6%BB%A1%EF%BC%88%E8%A7%A6%E5%8F%91%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%EF%BC%89"><span class="nav-number">7.3.4.2.</span> <span class="nav-text">🟥 情况 B：物理内存已满（触发页面置换）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E7%8E%B0%E5%9C%BA%E6%81%A2%E5%A4%8D%E4%B8%8E%E6%8C%87%E4%BB%A4%E9%87%8D%E6%89%A7"><span class="nav-number">7.3.5.</span> <span class="nav-text">5. 现场恢复与指令重执</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95"><span class="nav-number">7.4.</span> <span class="nav-text">页面置换算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%EF%BC%88Virtual-Memory%EF%BC%89"><span class="nav-number">8.</span> <span class="nav-text">虚拟内存（Virtual Memory）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%EF%BC%9F"><span class="nav-number">8.1.</span> <span class="nav-text">为什么需要虚拟内存？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E5%9C%B0%E5%9D%80-vs-%E7%89%A9%E7%90%86%E5%9C%B0%E5%9D%80"><span class="nav-number">8.2.</span> <span class="nav-text">逻辑地址 vs 物理地址</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E9%80%BB%E8%BE%91%E5%9C%B0%E5%9D%80%EF%BC%88Logical-Address%EF%BC%89%EF%BC%9F"><span class="nav-number">8.2.1.</span> <span class="nav-text">1. 什么是逻辑地址（Logical Address）？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E4%BB%80%E4%B9%88%E6%98%AF%E7%89%A9%E7%90%86%E5%9C%B0%E5%9D%80%EF%BC%88Physical-Address%EF%BC%89%EF%BC%9F"><span class="nav-number">8.2.2.</span> <span class="nav-text">2. 什么是物理地址（Physical Address）？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TLB%EF%BC%88Translation-Lookaside-Buffer%EF%BC%8C%E6%97%81%E8%B7%AF%E8%BD%AC%E6%8D%A2%E7%BC%93%E5%86%B2%EF%BC%8C%E5%BF%AB%E8%A1%A8%EF%BC%89%E3%80%82"><span class="nav-number">9.</span> <span class="nav-text">TLB（Translation Lookaside Buffer，旁路转换缓冲，快表）。</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B5%E8%A1%A8%E4%B8%8E%E5%BF%AB%E8%A1%A8%E5%AD%98%E5%82%A8%E4%BD%8D%E7%BD%AE%E7%9A%84%E5%B7%AE%E5%BC%82"><span class="nav-number">9.1.</span> <span class="nav-text">页表与快表存储位置的差异</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E9%A1%B5%E8%A1%A8%EF%BC%88Page-Table%EF%BC%89%E5%AD%98%E5%82%A8%E5%9C%A8%E5%93%AA%EF%BC%9F"><span class="nav-number">9.1.1.</span> <span class="nav-text">1. 页表（Page Table）存储在哪？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-TLB%EF%BC%88%E5%BF%AB%E8%A1%A8%EF%BC%89%E5%AD%98%E5%82%A8%E5%9C%A8%E5%93%AA%EF%BC%9F"><span class="nav-number">9.1.2.</span> <span class="nav-text">2. TLB（快表）存储在哪？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BF%85%E9%A1%BB%E8%A6%81%E6%9C%89-TLB%EF%BC%9F"><span class="nav-number">9.2.</span> <span class="nav-text">为什么必须要有 TLB？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TLB-%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%EF%BC%88Hit-vs-Miss%EF%BC%89"><span class="nav-number">9.3.</span> <span class="nav-text">TLB 的工作流程（Hit vs Miss）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E7%BA%A7%E9%A1%B5%E8%A1%A8%EF%BC%88Multi-Level-Page-Table%EF%BC%89"><span class="nav-number">10.</span> <span class="nav-text">多级页表（Multi-Level Page Table）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%97%9B%E7%82%B9%E5%BC%95%E5%85%A5%EF%BC%9A%E5%8D%95%E7%BA%A7%E9%A1%B5%E8%A1%A8%E7%9A%84%E2%80%9C%E5%86%85%E5%AD%98%E5%A4%A7%E7%88%86%E7%82%B8%E2%80%9D"><span class="nav-number">10.1.</span> <span class="nav-text">痛点引入：单级页表的“内存大爆炸”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E6%B5%81%E7%A8%8B"><span class="nav-number">10.2.</span> <span class="nav-text">查询流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%BB%E5%A1%9E%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9E"><span class="nav-number">11.</span> <span class="nav-text">阻塞与非阻塞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5%EF%BC%88Synchronous%EF%BC%89%E4%B8%8E%E5%BC%82%E6%AD%A5%EF%BC%88Asynchronous%EF%BC%89"><span class="nav-number">12.</span> <span class="nav-text">同步（Synchronous）与异步（Asynchronous）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%80%9C%E5%B9%B6%E5%8F%91%E2%80%9D%E5%92%8C%E2%80%9C%E5%BC%82%E6%AD%A5%E2%80%9D"><span class="nav-number">12.1.</span> <span class="nav-text">“并发”和“异步”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-I-O-%E5%AF%86%E9%9B%86%E5%9E%8B%EF%BC%9A%E5%8D%95%E7%BA%BF%E7%A8%8B-%E5%BC%82%E6%AD%A5-%E6%9E%81%E9%99%90%E5%B9%B6%E5%8F%91"><span class="nav-number">12.2.</span> <span class="nav-text">1. I&#x2F;O 密集型：单线程 + 异步 &#x3D; 极限并发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%AE%A1%E7%AE%97%E5%AF%86%E9%9B%86%E5%9E%8B%EF%BC%9A%E5%90%8C%E6%AD%A5%E4%BB%A3%E7%A0%81-%E5%A4%9A%E7%BA%BF%E7%A8%8B-%E5%A4%9A%E8%BF%9B%E7%A8%8B-%E7%9C%9F%E6%AD%A3%E7%9A%84%E5%B9%B6%E8%A1%8C%EF%BC%88Parallelism%EF%BC%89"><span class="nav-number">12.3.</span> <span class="nav-text">2. 计算密集型：同步代码 + 多线程&#x2F;多进程 &#x3D; 真正的并行（Parallelism）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%9E%E4%BA%89%E5%85%B3%E7%B3%BB%EF%BC%88Mutual-Exclusion%EF%BC%89-%E5%92%8C-%E5%8D%8F%E4%BD%9C%E5%85%B3%E7%B3%BB%EF%BC%88Synchronization%EF%BC%89"><span class="nav-number">13.</span> <span class="nav-text">竞争关系（Mutual Exclusion） 和 协作关系（Synchronization）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%B4%E7%95%8C%E5%8C%BA"><span class="nav-number">14.</span> <span class="nav-text">临界区</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E2%80%9C%E4%B8%B4%E7%95%8C%E5%8C%BA%E2%80%9D%EF%BC%9F"><span class="nav-number">14.1.</span> <span class="nav-text">什么是“临界区”？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%9A%99%EF%B8%8F-%E4%B8%B4%E7%95%8C%E5%8C%BA%E8%B0%83%E5%BA%A6%E7%9A%84%E4%B8%89%E4%B8%AA%E5%8E%9F%E5%88%99%EF%BC%88%E7%BB%8F%E5%85%B8%EF%BC%81%EF%BC%89"><span class="nav-number">14.2.</span> <span class="nav-text">⚙️ 临界区调度的三个原则（经典！）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%EF%B8%8F%E2%83%A3-%E5%8E%9F%E5%88%99-1%EF%BC%9A%E4%B8%80%E6%AC%A1%E8%87%B3%E5%A4%9A%E4%B8%80%E4%B8%AA%E8%BF%9B%E7%A8%8B%E8%83%BD%E5%A4%9F%E8%BF%9B%E5%85%A5%E4%B8%B4%E7%95%8C%E5%8C%BA%E5%86%85%E6%89%A7%E8%A1%8C-%E2%80%94%E2%80%94-%E4%BA%92%E6%96%A5%E6%80%A7%EF%BC%88Mutual-Exclusion%EF%BC%89"><span class="nav-number">14.2.1.</span> <span class="nav-text">1️⃣ 原则 1：一次至多一个进程能够进入临界区内执行 —— 互斥性（Mutual Exclusion）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2%EF%B8%8F%E2%83%A3-%E5%8E%9F%E5%88%99-2%EF%BC%9A%E5%A6%82%E6%9E%9C%E5%B7%B2%E6%9C%89%E8%BF%9B%E7%A8%8B%E5%9C%A8%E4%B8%B4%E7%95%8C%E5%8C%BA%EF%BC%8C%E5%85%B6%E4%BB%96%E8%AF%95%E5%9B%BE%E8%BF%9B%E5%85%A5%E7%9A%84%E8%BF%9B%E7%A8%8B%E5%BA%94%E7%AD%89%E5%BE%85-%E2%80%94%E2%80%94-%E5%BF%99%E5%88%99%E7%AD%89%E5%BE%85%EF%BC%88Progress%EF%BC%89"><span class="nav-number">14.2.2.</span> <span class="nav-text">2️⃣ 原则 2：如果已有进程在临界区，其他试图进入的进程应等待 —— 忙则等待（Progress）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3%EF%B8%8F%E2%83%A3-%E5%8E%9F%E5%88%99-3%EF%BC%9A%E8%BF%9B%E5%85%A5%E4%B8%B4%E7%95%8C%E5%8C%BA%E5%86%85%E7%9A%84%E8%BF%9B%E7%A8%8B%E5%BA%94%E5%9C%A8%E6%9C%89%E9%99%90%E6%97%B6%E9%97%B4%E5%86%85%E9%80%80%E5%87%BA-%E2%80%94%E2%80%94-%E6%9C%89%E9%99%90%E7%AD%89%E5%BE%85%EF%BC%88Bounded-Waiting%EF%BC%89"><span class="nav-number">14.2.3.</span> <span class="nav-text">3️⃣ 原则 3：进入临界区内的进程应在有限时间内退出 —— 有限等待（Bounded Waiting）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%BB%E9%94%81%EF%BC%88Deadlock%EF%BC%89"><span class="nav-number">15.</span> <span class="nav-text">死锁（Deadlock）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81-%E4%BB%80%E4%B9%88%E6%98%AF%E6%AD%BB%E9%94%81%EF%BC%9F"><span class="nav-number">15.1.</span> <span class="nav-text">一、 什么是死锁？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81-%E6%AD%BB%E9%94%81%E4%BA%A7%E7%94%9F%E7%9A%84%E5%9B%9B%E4%B8%AA%E5%BF%85%E8%A6%81%E6%9D%A1%E4%BB%B6%EF%BC%88%E8%91%97%E5%90%8D%E7%9A%84-Coffman-%E6%9D%A1%E4%BB%B6%EF%BC%89"><span class="nav-number">15.2.</span> <span class="nav-text">二、 死锁产生的四个必要条件（著名的 Coffman 条件）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E4%BA%92%E6%96%A5%E6%9D%A1%E4%BB%B6%EF%BC%88Mutual-Exclusion%EF%BC%89"><span class="nav-number">15.2.1.</span> <span class="nav-text">1. 互斥条件（Mutual Exclusion）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E8%AF%B7%E6%B1%82%E4%B8%8E%E4%BF%9D%E6%8C%81%E6%9D%A1%E4%BB%B6%EF%BC%88Hold-and-Wait-%E5%8D%A0%E6%9C%89%E5%B9%B6%E7%AD%89%E5%BE%85%EF%BC%89"><span class="nav-number">15.2.2.</span> <span class="nav-text">2. 请求与保持条件（Hold and Wait &#x2F; 占有并等待）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E4%B8%8D%E5%8F%AF%E5%89%A5%E5%A4%BA%E6%9D%A1%E4%BB%B6%EF%BC%88No-Preemption-%E9%9D%9E%E6%8A%A2%E5%8D%A0%EF%BC%89"><span class="nav-number">15.2.3.</span> <span class="nav-text">3. 不可剥夺条件（No Preemption &#x2F; 非抢占）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E5%BE%AA%E7%8E%AF%E7%AD%89%E5%BE%85%E6%9D%A1%E4%BB%B6%EF%BC%88Circular-Wait%EF%BC%89"><span class="nav-number">15.2.4.</span> <span class="nav-text">4. 循环等待条件（Circular Wait）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95"><span class="nav-number">16.</span> <span class="nav-text">银行家算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%B5%84%E6%BA%90%E8%AF%B7%E6%B1%82%E7%AE%97%E6%B3%95%EF%BC%88%E5%BD%93%E8%BF%9B%E7%A8%8B-P-i-%E6%8F%90%E5%87%BA%E8%AF%B7%E6%B1%82-Request-i-%E6%97%B6%EF%BC%89"><span class="nav-number">16.1.</span> <span class="nav-text">1. 资源请求算法（当进程 $P_i$ 提出请求 $Request_i$ 时）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%AE%89%E5%85%A8%E6%80%A7%E6%A3%80%E6%9F%A5%E7%AE%97%E6%B3%95%EF%BC%88%E7%81%B5%E9%AD%82%E6%89%80%E5%9C%A8%EF%BC%9A%E5%AF%BB%E6%89%BE%E5%AE%89%E5%85%A8%E5%BA%8F%E5%88%97%EF%BC%89"><span class="nav-number">16.2.</span> <span class="nav-text">2. 安全性检查算法（灵魂所在：寻找安全序列）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E9%97%AE%E9%A2%98%EF%BC%88Producer-Consumer-Problem%EF%BC%89"><span class="nav-number">17.</span> <span class="nav-text">生产者消费者问题（Producer-Consumer Problem）</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B%E5%8D%8F%E7%A8%8B%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.</span> <span class="nav-text">进程，线程，协程的区别是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E4%B8%8E%E5%B9%B6%E5%8F%91"><span class="nav-number">2.</span> <span class="nav-text">线程与并发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E7%9A%84%E7%B1%BB%E5%9E%8Bcpu-%E5%AF%86%E9%9B%86%E5%9E%8B-vs-io-%E5%AF%86%E9%9B%86%E5%9E%8B"><span class="nav-number">2.1.</span> <span class="nav-text">任务的类型：CPU 密集型 vs I&#x2F;O
+密集型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%B9%B6%E5%8F%91concurrency"><span class="nav-number">2.2.</span> <span class="nav-text">1. 什么是并发（Concurrency）？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%B9%B6%E5%8F%91%E7%9A%84%E6%9C%80%E5%B0%8F%E6%89%A7%E8%A1%8C%E5%8D%95%E5%85%83"><span class="nav-number">2.3.</span> <span class="nav-text">2. 线程：并发的“最小执行单元”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91concurrency-vs-%E5%B9%B6%E8%A1%8Cparallelism"><span class="nav-number">2.4.</span> <span class="nav-text">3. 并发（Concurrency） vs
+并行（Parallelism）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%81%87%E5%B9%B6%E5%8F%91%E5%AE%8F%E8%A7%82%E5%B9%B6%E8%A1%8C%E5%BE%AE%E8%A7%82%E4%B8%B2%E8%A1%8C-%E5%8D%95%E6%A0%B8-cpu"><span class="nav-number">2.4.1.</span> <span class="nav-text">假并发（宏观并行，微观串行）——
+单核 CPU</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9C%9F%E5%B9%B6%E8%A1%8C%E7%9C%9F%E6%AD%A3%E7%9A%84%E5%90%8C%E6%97%B6%E5%8F%91%E7%94%9F-%E5%A4%9A%E6%A0%B8-cpu"><span class="nav-number">2.4.2.</span> <span class="nav-text">真并行（真正的同时发生）—— 多核
+CPU</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#python%E4%B8%AD%E7%9A%84%E8%BF%9B%E7%A8%8B%E4%B8%8E%E7%BA%BF%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">python中的进程与线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E9%97%B4%E7%9A%84%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">线程间的通信方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98-shared-memory"><span class="nav-number">4.1.</span> <span class="nav-text">共享内存 (Shared Memory)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%92%E6%96%A5%E9%94%81-mutex-lock-%E4%BF%9D%E6%8A%A4%E6%95%B0%E6%8D%AE%E7%9A%84%E9%98%B2%E7%9B%97%E9%97%A8"><span class="nav-number">4.2.</span> <span class="nav-text">互斥锁 (Mutex Lock) ——
+保护数据的“防盗门”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%8F%98%E9%87%8F-condition-variable-%E7%BA%BF%E7%A8%8B%E9%97%B4%E7%9A%84%E5%AF%B9%E8%AE%B2%E6%9C%BA%E9%9D%A2%E8%AF%95%E9%87%8D%E7%81%BE%E5%8C%BA"><span class="nav-number">4.3.</span> <span class="nav-text">条件变量
+(Condition Variable) —— 线程间的“对讲机”（🔥面试重灾区）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F-semaphore-%E6%8E%A7%E5%88%B6%E4%BA%BA%E6%95%B0%E7%9A%84%E9%99%90%E6%B5%81%E5%99%A8"><span class="nav-number">4.4.</span> <span class="nav-text">信号量 (Semaphore) ——
+控制人数的“限流器”</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2context-switch"><span class="nav-number">5.</span> <span class="nav-text">上下文切换（Context Switch）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="nav-number">5.1.</span> <span class="nav-text">什么是上下文切换？（核心概念）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2%E7%9A%84%E8%A7%A6%E5%8F%91%E6%97%B6%E6%9C%BA"><span class="nav-number">5.2.</span> <span class="nav-text">上下文切换的触发时机</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80-%E8%87%AA%E6%84%BF%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2voluntary-context-switch"><span class="nav-number">5.2.1.</span> <span class="nav-text">一、
+自愿上下文切换（Voluntary Context Switch）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C-%E9%9D%9E%E8%87%AA%E6%84%BF%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2non-voluntary-context-switch"><span class="nav-number">5.2.2.</span> <span class="nav-text">二、
+非自愿上下文切换（Non-voluntary Context Switch）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pcbprocess-control-block%E8%BF%9B%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%9D%97"><span class="nav-number">5.3.</span> <span class="nav-text">PCB（Process Control
+Block，进程控制块）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E6%80%81%E4%B8%8E%E5%86%85%E6%A0%B8%E6%80%81"><span class="nav-number">6.</span> <span class="nav-text">用户态与内核态</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E6%80%81%E5%A6%82%E4%BD%95%E5%88%87%E6%8D%A2%E5%88%B0%E5%86%85%E6%A0%B8%E6%80%81"><span class="nav-number">6.1.</span> <span class="nav-text">用户态如何切换到内核态？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AE%B5%E9%A1%B5%E5%BC%8F%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86"><span class="nav-number">7.</span> <span class="nav-text">段页式存储管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E9%A1%B5%E4%B8%8E%E5%88%86%E6%AE%B5"><span class="nav-number">7.1.</span> <span class="nav-text">分页与分段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AF%B4%E5%88%86%E6%AE%B5%E5%88%86%E9%A1%B5%E6%98%AF%E9%92%88%E5%AF%B9%E8%BF%9B%E7%A8%8B"><span class="nav-number">7.2.</span> <span class="nav-text">为什么说分段分页是针对进程？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%BA%E9%A1%B5%E4%B8%AD%E6%96%AD-page-fault"><span class="nav-number">7.3.</span> <span class="nav-text">缺页中断 (Page Fault)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#cpu-%E5%8F%91%E8%B5%B7%E5%AF%BB%E5%9D%80"><span class="nav-number">7.3.1.</span> <span class="nav-text">1. CPU 发起寻址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mmu-%E7%A1%AC%E4%BB%B6%E6%A3%80%E6%9F%A5"><span class="nav-number">7.3.2.</span> <span class="nav-text">2. MMU 硬件检查</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A6%E5%8F%91%E7%A1%AC%E4%BB%B6%E4%B8%AD%E6%96%AD"><span class="nav-number">7.3.3.</span> <span class="nav-text">3. 触发硬件中断</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#os-%E6%A0%B8%E5%BF%83%E5%A4%84%E7%90%86%E5%85%B3%E9%94%AE%E5%88%86%E6%B0%B4%E5%B2%AD%E5%88%86%E6%94%AF"><span class="nav-number">7.3.4.</span> <span class="nav-text">4. OS 核心处理（关键分水岭分支）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%83%85%E5%86%B5-a%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98%E6%9C%89%E7%A9%BA%E9%97%B2%E4%BD%8D%E6%8C%89%E9%9C%80%E8%B0%83%E9%A1%B5"><span class="nav-number">7.3.4.1.</span> <span class="nav-text">🟩 情况
+A：物理内存有空闲位（按需调页）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%83%85%E5%86%B5-b%E7%89%A9%E7%90%86%E5%86%85%E5%AD%98%E5%B7%B2%E6%BB%A1%E8%A7%A6%E5%8F%91%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2"><span class="nav-number">7.3.4.2.</span> <span class="nav-text">🟥 情况
+B：物理内存已满（触发页面置换）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8E%B0%E5%9C%BA%E6%81%A2%E5%A4%8D%E4%B8%8E%E6%8C%87%E4%BB%A4%E9%87%8D%E6%89%A7"><span class="nav-number">7.3.5.</span> <span class="nav-text">5. 现场恢复与指令重执</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95"><span class="nav-number">7.4.</span> <span class="nav-text">页面置换算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98virtual-memory"><span class="nav-number">8.</span> <span class="nav-text">虚拟内存（Virtual Memory）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98"><span class="nav-number">8.1.</span> <span class="nav-text">为什么需要虚拟内存？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E5%9C%B0%E5%9D%80-vs-%E7%89%A9%E7%90%86%E5%9C%B0%E5%9D%80"><span class="nav-number">8.2.</span> <span class="nav-text">逻辑地址 vs 物理地址</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E9%80%BB%E8%BE%91%E5%9C%B0%E5%9D%80logical-address"><span class="nav-number">8.2.1.</span> <span class="nav-text">1. 什么是逻辑地址（Logical
+Address）？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%89%A9%E7%90%86%E5%9C%B0%E5%9D%80physical-address"><span class="nav-number">8.2.2.</span> <span class="nav-text">2. 什么是物理地址（Physical
+Address）？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tlbtranslation-lookaside-buffer%E6%97%81%E8%B7%AF%E8%BD%AC%E6%8D%A2%E7%BC%93%E5%86%B2%E5%BF%AB%E8%A1%A8"><span class="nav-number">9.</span> <span class="nav-text">TLB（Translation
+Lookaside Buffer，旁路转换缓冲，快表）。</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B5%E8%A1%A8%E4%B8%8E%E5%BF%AB%E8%A1%A8%E5%AD%98%E5%82%A8%E4%BD%8D%E7%BD%AE%E7%9A%84%E5%B7%AE%E5%BC%82"><span class="nav-number">9.1.</span> <span class="nav-text">页表与快表存储位置的差异</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A1%B5%E8%A1%A8page-table%E5%AD%98%E5%82%A8%E5%9C%A8%E5%93%AA"><span class="nav-number">9.1.1.</span> <span class="nav-text">1. 页表（Page Table）存储在哪？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tlb%E5%BF%AB%E8%A1%A8%E5%AD%98%E5%82%A8%E5%9C%A8%E5%93%AA"><span class="nav-number">9.1.2.</span> <span class="nav-text">2. TLB（快表）存储在哪？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BF%85%E9%A1%BB%E8%A6%81%E6%9C%89-tlb"><span class="nav-number">9.2.</span> <span class="nav-text">为什么必须要有 TLB？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tlb-%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8Bhit-vs-miss"><span class="nav-number">9.3.</span> <span class="nav-text">TLB 的工作流程（Hit vs Miss）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E7%BA%A7%E9%A1%B5%E8%A1%A8multi-level-page-table"><span class="nav-number">10.</span> <span class="nav-text">多级页表（Multi-Level Page
+Table）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%97%9B%E7%82%B9%E5%BC%95%E5%85%A5%E5%8D%95%E7%BA%A7%E9%A1%B5%E8%A1%A8%E7%9A%84%E5%86%85%E5%AD%98%E5%A4%A7%E7%88%86%E7%82%B8"><span class="nav-number">10.1.</span> <span class="nav-text">痛点引入：单级页表的“内存大爆炸”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E6%B5%81%E7%A8%8B"><span class="nav-number">10.2.</span> <span class="nav-text">查询流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%BB%E5%A1%9E%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9E"><span class="nav-number">11.</span> <span class="nav-text">阻塞与非阻塞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8C%E6%AD%A5synchronous%E4%B8%8E%E5%BC%82%E6%AD%A5asynchronous"><span class="nav-number">12.</span> <span class="nav-text">同步（Synchronous）与异步（Asynchronous）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E5%92%8C%E5%BC%82%E6%AD%A5"><span class="nav-number">12.1.</span> <span class="nav-text">“并发”和“异步”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#io-%E5%AF%86%E9%9B%86%E5%9E%8B%E5%8D%95%E7%BA%BF%E7%A8%8B-%E5%BC%82%E6%AD%A5-%E6%9E%81%E9%99%90%E5%B9%B6%E5%8F%91"><span class="nav-number">12.2.</span> <span class="nav-text">1. I&#x2F;O 密集型：单线程 + 异步 &#x3D;
+极限并发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E5%AF%86%E9%9B%86%E5%9E%8B%E5%90%8C%E6%AD%A5%E4%BB%A3%E7%A0%81-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%A4%9A%E8%BF%9B%E7%A8%8B-%E7%9C%9F%E6%AD%A3%E7%9A%84%E5%B9%B6%E8%A1%8Cparallelism"><span class="nav-number">12.3.</span> <span class="nav-text">2.
+计算密集型：同步代码 + 多线程&#x2F;多进程 &#x3D; 真正的并行（Parallelism）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%9E%E4%BA%89%E5%85%B3%E7%B3%BBmutual-exclusion-%E5%92%8C-%E5%8D%8F%E4%BD%9C%E5%85%B3%E7%B3%BBsynchronization"><span class="nav-number">13.</span> <span class="nav-text">竞争关系（Mutual
+Exclusion） 和
+协作关系（Synchronization）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%B4%E7%95%8C%E5%8C%BA"><span class="nav-number">14.</span> <span class="nav-text">临界区</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%B4%E7%95%8C%E5%8C%BA"><span class="nav-number">14.1.</span> <span class="nav-text">什么是“临界区”？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%B4%E7%95%8C%E5%8C%BA%E8%B0%83%E5%BA%A6%E7%9A%84%E4%B8%89%E4%B8%AA%E5%8E%9F%E5%88%99%E7%BB%8F%E5%85%B8"><span class="nav-number">14.2.</span> <span class="nav-text">⚙️ 临界区调度的三个原则（经典！）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8E%9F%E5%88%99-1%E4%B8%80%E6%AC%A1%E8%87%B3%E5%A4%9A%E4%B8%80%E4%B8%AA%E8%BF%9B%E7%A8%8B%E8%83%BD%E5%A4%9F%E8%BF%9B%E5%85%A5%E4%B8%B4%E7%95%8C%E5%8C%BA%E5%86%85%E6%89%A7%E8%A1%8C-%E4%BA%92%E6%96%A5%E6%80%A7mutual-exclusion"><span class="nav-number">14.2.1.</span> <span class="nav-text">1️⃣
+原则 1：一次至多一个进程能够进入临界区内执行 —— 互斥性（Mutual
+Exclusion）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8E%9F%E5%88%99-2%E5%A6%82%E6%9E%9C%E5%B7%B2%E6%9C%89%E8%BF%9B%E7%A8%8B%E5%9C%A8%E4%B8%B4%E7%95%8C%E5%8C%BA%E5%85%B6%E4%BB%96%E8%AF%95%E5%9B%BE%E8%BF%9B%E5%85%A5%E7%9A%84%E8%BF%9B%E7%A8%8B%E5%BA%94%E7%AD%89%E5%BE%85-%E5%BF%99%E5%88%99%E7%AD%89%E5%BE%85progress"><span class="nav-number">14.2.2.</span> <span class="nav-text">2️⃣
+原则 2：如果已有进程在临界区，其他试图进入的进程应等待 ——
+忙则等待（Progress）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8E%9F%E5%88%99-3%E8%BF%9B%E5%85%A5%E4%B8%B4%E7%95%8C%E5%8C%BA%E5%86%85%E7%9A%84%E8%BF%9B%E7%A8%8B%E5%BA%94%E5%9C%A8%E6%9C%89%E9%99%90%E6%97%B6%E9%97%B4%E5%86%85%E9%80%80%E5%87%BA-%E6%9C%89%E9%99%90%E7%AD%89%E5%BE%85bounded-waiting"><span class="nav-number">14.2.3.</span> <span class="nav-text">3️⃣
+原则 3：进入临界区内的进程应在有限时间内退出 —— 有限等待（Bounded
+Waiting）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%BB%E9%94%81deadlock"><span class="nav-number">15.</span> <span class="nav-text">死锁（Deadlock）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80-%E4%BB%80%E4%B9%88%E6%98%AF%E6%AD%BB%E9%94%81"><span class="nav-number">15.1.</span> <span class="nav-text">一、 什么是死锁？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C-%E6%AD%BB%E9%94%81%E4%BA%A7%E7%94%9F%E7%9A%84%E5%9B%9B%E4%B8%AA%E5%BF%85%E8%A6%81%E6%9D%A1%E4%BB%B6%E8%91%97%E5%90%8D%E7%9A%84-coffman-%E6%9D%A1%E4%BB%B6"><span class="nav-number">15.2.</span> <span class="nav-text">二、
+死锁产生的四个必要条件（著名的 Coffman 条件）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%92%E6%96%A5%E6%9D%A1%E4%BB%B6mutual-exclusion"><span class="nav-number">15.2.1.</span> <span class="nav-text">1. 互斥条件（Mutual Exclusion）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E4%B8%8E%E4%BF%9D%E6%8C%81%E6%9D%A1%E4%BB%B6hold-and-wait-%E5%8D%A0%E6%9C%89%E5%B9%B6%E7%AD%89%E5%BE%85"><span class="nav-number">15.2.2.</span> <span class="nav-text">2. 请求与保持条件（Hold
+and Wait &#x2F; 占有并等待）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%8F%AF%E5%89%A5%E5%A4%BA%E6%9D%A1%E4%BB%B6no-preemption-%E9%9D%9E%E6%8A%A2%E5%8D%A0"><span class="nav-number">15.2.3.</span> <span class="nav-text">3. 不可剥夺条件（No Preemption
+&#x2F; 非抢占）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E7%AD%89%E5%BE%85%E6%9D%A1%E4%BB%B6circular-wait"><span class="nav-number">15.2.4.</span> <span class="nav-text">4. 循环等待条件（Circular Wait）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%B6%E8%A1%8C%E5%AE%B6%E7%AE%97%E6%B3%95"><span class="nav-number">16.</span> <span class="nav-text">银行家算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E8%AF%B7%E6%B1%82%E7%AE%97%E6%B3%95%E5%BD%93%E8%BF%9B%E7%A8%8B-p_i-%E6%8F%90%E5%87%BA%E8%AF%B7%E6%B1%82-request_i-%E6%97%B6"><span class="nav-number">16.1.</span> <span class="nav-text">1.
+资源请求算法（当进程 Pi 提出请求
+Requesti
+时）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%80%A7%E6%A3%80%E6%9F%A5%E7%AE%97%E6%B3%95%E7%81%B5%E9%AD%82%E6%89%80%E5%9C%A8%E5%AF%BB%E6%89%BE%E5%AE%89%E5%85%A8%E5%BA%8F%E5%88%97"><span class="nav-number">16.2.</span> <span class="nav-text">2.
+安全性检查算法（灵魂所在：寻找安全序列）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85%E9%97%AE%E9%A2%98producer-consumer-problem"><span class="nav-number">17.</span> <span class="nav-text">生产者消费者问题（Producer-Consumer
+Problem）</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -163,18 +197,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">199</span>
+          <span class="site-state-item-count">205</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">69</span>
+        <span class="site-state-item-count">70</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">71</span>
+        <span class="site-state-item-count">72</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -292,64 +326,96 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h2 id="进程，线程，协程的区别是什么？"><a href="#进程，线程，协程的区别是什么？" class="headerlink" title="进程，线程，协程的区别是什么？"></a>进程，线程，协程的区别是什么？</h2><p><img src="/2026/06/02/%E5%AE%9E%E4%B9%A0/%E9%9D%A2%E8%AF%95/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/image-20260604172026017.png" alt="image-20260604172026017"></p>
-<ol>
+    <div class="post-body" itemprop="articleBody"><h2 id="进程线程协程的区别是什么">进程，线程，协程的区别是什么？</h2>
+<figure>
+<img src="/2026/06/02/%E5%AE%9E%E4%B9%A0/%E9%9D%A2%E8%AF%95/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/image-20260604172026017.png" alt="image-20260604172026017">
+<figcaption aria-hidden="true">image-20260604172026017</figcaption>
+</figure>
+<ol type="1">
 <li>进程（Process）—— 独立的“资源城堡”</li>
 </ol>
-<p>进程是<strong>操作系统分配资源</strong>（如内存、文件句柄、CPU 时间片）的<strong>最小单位</strong>。当你运行一个程序（比如 Chrome 浏览器或一个 Python 脚本）时，操作系统就会为它创建一个进程。</p>
+<p>进程是<strong>操作系统分配资源</strong>（如内存、文件句柄、CPU
+时间片）的<strong>最小单位</strong>。当你运行一个程序（比如 Chrome
+浏览器或一个 Python 脚本）时，操作系统就会为它创建一个进程。</p>
 <ul>
 <li><strong>特点</strong>：每个进程都有自己独立的虚拟内存空间（代码段、数据段、堆、栈等）。</li>
-<li><strong>优缺点</strong>：<ul>
+<li><strong>优缺点</strong>：
+<ul>
 <li><strong>优点</strong>：安全性高。一个进程崩溃了，不会直接导致其他进程崩溃。</li>
 <li><strong>缺点</strong>：创建、销毁和切换的开销非常巨大，因为操作系统需要频繁地在内核态和用户态之间切换，并且要刷新内存映射表（TLB/页表）。</li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<ol>
+<ol start="2" type="1">
 <li>线程（Thread）—— 城堡里的“打工人”</li>
 </ol>
-<p>线程是进程内部的一个执行路径，是 <strong>CPU 调度和执行</strong>的<strong>最小单位</strong>。一个进程可以包含多个线程，它们共享该进程的所有资源。</p>
+<p>线程是进程内部的一个执行路径，是 <strong>CPU
+调度和执行</strong>的<strong>最小单位</strong>。一个进程可以包含多个线程，它们共享该进程的所有资源。</p>
 <ul>
-<li><strong>特点</strong>：同一个进程内的多个线程共享堆内存和全局变量，但每个线程有自己独立的<strong>栈（Stack）\</strong>和*<em>程序计数器（PC）*</em>。</li>
-<li><strong>优缺点</strong>：<ul>
+<li><strong>特点</strong>：同一个进程内的多个线程共享堆内存和全局变量，但每个线程有自己独立的<strong>栈（Stack）*<em>和*</em>程序计数器（PC）</strong>。</li>
+<li><strong>优缺点</strong>：
+<ul>
 <li><strong>优点</strong>：通信极其方便，因为它们可以直接访问相同的内存数据；切换开销比进程小得多。</li>
-<li><strong>缺点</strong>：因为共享内存，多个线程同时读写同一块数据时容易产生并发冲突（数据竞争），需要引入锁机制（如 <code>Mutex</code>）。此外，一个线程崩溃（如段错误）可能会导致整个进程挂掉。</li>
+<li><strong>缺点</strong>：因为共享内存，多个线程同时读写同一块数据时容易产生并发冲突（数据竞争），需要引入锁机制（如
+<code>Mutex</code>）。此外，一个线程崩溃（如段错误）可能会导致整个进程挂掉。</li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<ol>
+<ol start="3" type="1">
 <li>协程（Coroutine）—— 程序员掌控的“分身术”</li>
 </ol>
-<p>协程是一种<strong>用户态</strong>的轻量级线程。它完全由程序（或编程语言的运行时，如 Go 的 goroutine，Python 的 asyncio）来控制，操作系统根本不知道协程的存在。</p>
+<p>协程是一种<strong>用户态</strong>的轻量级线程。它完全由程序（或编程语言的运行时，如
+Go 的 goroutine，Python 的
+asyncio）来控制，操作系统根本不知道协程的存在。</p>
 <ul>
-<li><strong>特点</strong>：<ul>
-<li><strong>非抢占式（协作式）</strong>：线程的切换是由操作系统强行插手的（抢占式调度）；而协程的切换是<strong>自愿</strong>的。当一个协程遇到 I/O 阻塞时，它会主动“让出” CPU，让其他协程执行。</li>
+<li><strong>特点</strong>：
+<ul>
+<li><strong>非抢占式（协作式）</strong>：线程的切换是由操作系统强行插手的（抢占式调度）；而协程的切换是<strong>自愿</strong>的。当一个协程遇到
+I/O 阻塞时，它会主动“让出” CPU，让其他协程执行。</li>
 <li><strong>单线程内并发</strong>：多个协程可以在同一个线程内运行。</li>
-</ul>
-</li>
-<li><strong>优缺点</strong>：<ul>
-<li><strong>优点</strong>：<ol>
-<li><strong>性能压倒性优势</strong>：切换不涉及内核态，纯粹是用户态的指针移动，极其轻量。</li>
-<li><strong>极高的并发量</strong>：单机轻松创建百万个协程（而如果是百万个线程，内存早就爆了，CPU 也会被上下文切换拖垮）。</li>
-</ol>
-</li>
-<li><strong>缺点</strong>：无法直接利用多核 CPU（除非配合多线程/多进程模型）。如果一个协程内部执行了死循环或者同步的阻塞操作（如传统的 <code>time.sleep</code>），整个线程都会被卡死。</li>
-</ul>
-</li>
-</ul>
-<h2 id="线程与并发"><a href="#线程与并发" class="headerlink" title="线程与并发"></a>线程与并发</h2><h3 id="任务的类型：CPU-密集型-vs-I-O-密集型"><a href="#任务的类型：CPU-密集型-vs-I-O-密集型" class="headerlink" title="任务的类型：CPU 密集型 vs I/O 密集型"></a>任务的类型：CPU 密集型 vs I/O 密集型</h3><p>多线程利用多核，在不同任务类型下的效果是完全不同的：</p>
+</ul></li>
+<li><strong>优缺点</strong>：
 <ul>
-<li><strong>CPU 密集型任务（如：视频渲染、3D 游戏、科学计算、AI 模型推理）</strong>：这类任务死磕 CPU 算力。此时，线程数通常设置为 <strong>CPU 核心数 ＋ 1</strong> 最合适。让每个核心死磕一个线程，没有多余的切换开销，多核利用率最高。</li>
-<li><strong>I/O 密集型任务（如：网络爬虫、文件下载、数据库查询）</strong>：这类任务大部分时间 CPU 都在闲着，等待硬盘或网络返回数据。此时，哪怕你开了 100 个线程，CPU 核心的利用率可能也只有 5%，因为 CPU 根本不忙，忙的是网卡和硬盘。</li>
+<li><strong>优点</strong>：
+<ol type="1">
+<li><strong>性能压倒性优势</strong>：切换不涉及内核态，纯粹是用户态的指针移动，极其轻量。</li>
+<li><strong>极高的并发量</strong>：单机轻松创建百万个协程（而如果是百万个线程，内存早就爆了，CPU
+也会被上下文切换拖垮）。</li>
+</ol></li>
+<li><strong>缺点</strong>：无法直接利用多核
+CPU（除非配合多线程/多进程模型）。如果一个协程内部执行了死循环或者同步的阻塞操作（如传统的
+<code>time.sleep</code>），整个线程都会被卡死。</li>
+</ul></li>
 </ul>
-<h3 id="1-什么是并发（Concurrency）？"><a href="#1-什么是并发（Concurrency）？" class="headerlink" title="1. 什么是并发（Concurrency）？"></a>1. 什么是并发（Concurrency）？</h3><p>在计算机世界里，<strong>并发</strong>是指<strong>系统在同一时间段内处理多个任务的能力</strong>。</p>
+<h2 id="线程与并发">线程与并发</h2>
+<h3 id="任务的类型cpu-密集型-vs-io-密集型">任务的类型：CPU 密集型 vs I/O
+密集型</h3>
+<p>多线程利用多核，在不同任务类型下的效果是完全不同的：</p>
+<ul>
+<li><strong>CPU 密集型任务（如：视频渲染、3D 游戏、科学计算、AI
+模型推理）</strong>：这类任务死磕 CPU 算力。此时，线程数通常设置为
+<strong>CPU 核心数 ＋ 1</strong>
+最合适。让每个核心死磕一个线程，没有多余的切换开销，多核利用率最高。</li>
+<li><strong>I/O
+密集型任务（如：网络爬虫、文件下载、数据库查询）</strong>：这类任务大部分时间
+CPU 都在闲着，等待硬盘或网络返回数据。此时，哪怕你开了 100 个线程，CPU
+核心的利用率可能也只有 5%，因为 CPU 根本不忙，忙的是网卡和硬盘。</li>
+</ul>
+<h3 id="什么是并发concurrency">1. 什么是并发（Concurrency）？</h3>
+<p>在计算机世界里，<strong>并发</strong>是指<strong>系统在同一时间段内处理多个任务的能力</strong>。</p>
 <p>注意这里的措辞：是“同一时间段”，而不是“同一绝对时刻”。</p>
 <ul>
-<li><strong>没有并发的系统</strong>：就像一个极其死板的银行柜员，必须给 A 办完所有的存款、贷款、理财手续，才能叫 B 的号。如果 A 在等待审批，柜员也只能干坐着，B 只能在后面死等。</li>
-<li><strong>支持并发的系统</strong>：柜员给 A 提交了贷款审批（进入等待），立刻招呼 B 过来办存款；B 拿单据去填写的空档，柜员又转头帮 A 把剩下的手续办了。在宏观上看，A 和 B 的业务是<strong>同时在推进</strong>的。</li>
+<li><strong>没有并发的系统</strong>：就像一个极其死板的银行柜员，必须给
+A 办完所有的存款、贷款、理财手续，才能叫 B 的号。如果 A
+在等待审批，柜员也只能干坐着，B 只能在后面死等。</li>
+<li><strong>支持并发的系统</strong>：柜员给 A
+提交了贷款审批（进入等待），立刻招呼 B 过来办存款；B
+拿单据去填写的空档，柜员又转头帮 A 把剩下的手续办了。在宏观上看，A 和 B
+的业务是<strong>同时在推进</strong>的。</li>
 </ul>
-<h3 id="2-线程：并发的“最小执行单元”"><a href="#2-线程：并发的“最小执行单元”" class="headerlink" title="2. 线程：并发的“最小执行单元”"></a>2. 线程：并发的“最小执行单元”</h3><p>前面我们提到过，进程是资源分配的单位，而线程（Thread）是 CPU 调度的最小单位。在并发模型中，线程就是那个真正去执行任务的“具体的柜员”或“执行流”。</p>
-<p>现代软件为了实现并发，通常会采用<strong>多线程模型</strong>。 例如，当你打开一个高并发的 Web 服务器（如 Nginx 或 Tomcat）：</p>
+<h3 id="线程并发的最小执行单元">2. 线程：并发的“最小执行单元”</h3>
+<p>前面我们提到过，进程是资源分配的单位，而线程（Thread）是 CPU
+调度的最小单位。在并发模型中，线程就是那个真正去执行任务的“具体的柜员”或“执行流”。</p>
+<p>现代软件为了实现并发，通常会采用<strong>多线程模型</strong>。
+例如，当你打开一个高并发的 Web 服务器（如 Nginx 或 Tomcat）：</p>
 <ul>
 <li><strong>主线程</strong>：坐在门口（监听端口），专门负责迎接新进来的用户网络请求。</li>
 <li><strong>工作线程 A</strong>：负责去数据库读取用户的小说文本。</li>
@@ -357,92 +423,179 @@
 <li><strong>工作线程 C</strong>：负责校验用户的登录密码。</li>
 </ul>
 <p>通过把一个庞大的进程拆分成无数个各司其职的线程，程序就具备了同时处理成千上万用户请求的<strong>并发能力</strong>。</p>
-<h3 id="3-并发（Concurrency）-vs-并行（Parallelism）"><a href="#3-并发（Concurrency）-vs-并行（Parallelism）" class="headerlink" title="3. 并发（Concurrency） vs 并行（Parallelism）"></a>3. 并发（Concurrency） vs 并行（Parallelism）</h3><p>这是学习并发最容易混淆的两个概念。它们的区别，完美体现了<strong>多线程是如何在不同硬件上运转的</strong>。</p>
-<h4 id="假并发（宏观并行，微观串行）——-单核-CPU"><a href="#假并发（宏观并行，微观串行）——-单核-CPU" class="headerlink" title="假并发（宏观并行，微观串行）—— 单核 CPU"></a>假并发（宏观并行，微观串行）—— 单核 CPU</h4><p>如果你的 CPU <strong>只有一个核心</strong>，但你同时打开了音乐播放器、浏览器和游戏，它们能同时运行吗？能。但这是 CPU 演的戏。</p>
+<h3 id="并发concurrency-vs-并行parallelism">3. 并发（Concurrency） vs
+并行（Parallelism）</h3>
+<p>这是学习并发最容易混淆的两个概念。它们的区别，完美体现了<strong>多线程是如何在不同硬件上运转的</strong>。</p>
+<h4 id="假并发宏观并行微观串行-单核-cpu">假并发（宏观并行，微观串行）——
+单核 CPU</h4>
+<p>如果你的 CPU
+<strong>只有一个核心</strong>，但你同时打开了音乐播放器、浏览器和游戏，它们能同时运行吗？能。但这是
+CPU 演的戏。</p>
 <ul>
-<li>CPU 会把时间切成极小的碎片（比如 5 毫秒一段，称为<strong>时间片</strong>）。</li>
-<li>前 5 毫秒给音乐播放器线程，播放一段音频；后 5 毫秒切换给浏览器线程，渲染一部分网页；再后 5 毫秒给游戏。</li>
-<li>因为 CPU 切换的速度高到每秒几亿次，人类的大脑根本察觉不到断点。这种利用<strong>时间片轮转</strong>、在单核上交替执行多个线程的方式，叫做<strong>并发</strong>（Concurrency）。</li>
+<li>CPU 会把时间切成极小的碎片（比如 5
+毫秒一段，称为<strong>时间片</strong>）。</li>
+<li>前 5 毫秒给音乐播放器线程，播放一段音频；后 5
+毫秒切换给浏览器线程，渲染一部分网页；再后 5 毫秒给游戏。</li>
+<li>因为 CPU
+切换的速度高到每秒几亿次，人类的大脑根本察觉不到断点。这种利用<strong>时间片轮转</strong>、在单核上交替执行多个线程的方式，叫做<strong>并发</strong>（Concurrency）。</li>
 </ul>
-<h4 id="真并行（真正的同时发生）——-多核-CPU"><a href="#真并行（真正的同时发生）——-多核-CPU" class="headerlink" title="真并行（真正的同时发生）—— 多核 CPU"></a>真并行（真正的同时发生）—— 多核 CPU</h4><p>如果你的 CPU 有 <strong>4 个核心</strong>，操作系统就可以把音乐播放器丢给核心 1，浏览器丢给核心 2，游戏丢给核心 3。</p>
+<h4 id="真并行真正的同时发生-多核-cpu">真并行（真正的同时发生）—— 多核
+CPU</h4>
+<p>如果你的 CPU 有 <strong>4
+个核心</strong>，操作系统就可以把音乐播放器丢给核心 1，浏览器丢给核心
+2，游戏丢给核心 3。</p>
 <ul>
 <li>在任何一个绝对的微观时刻，这三个核心都在同时通电、同时计算。</li>
 <li>这种在<strong>同一时刻、物理上真正同时执行</strong>多个线程的方式，叫做<strong>并行</strong>（Parallelism）。</li>
 </ul>
 <blockquote>
-<p><strong>总结：</strong> 并发是<strong>架构设计</strong>上的概念（代码逻辑支持同时处理多件事）；并行是<strong>硬件执行</strong>上的概念（硬件有能力同时开工）。<strong>多线程代码在单核上叫并发，在多核上叫并行。</strong></p>
+<p><strong>总结：</strong>
+并发是<strong>架构设计</strong>上的概念（代码逻辑支持同时处理多件事）；并行是<strong>硬件执行</strong>上的概念（硬件有能力同时开工）。<strong>多线程代码在单核上叫并发，在多核上叫并行。</strong></p>
 </blockquote>
-<h2 id="python中的进程与线程"><a href="#python中的进程与线程" class="headerlink" title="python中的进程与线程"></a>python中的进程与线程</h2><p>在标准的 CPython 解释器中，存在一个叫做 <strong>GIL (Global Interpreter Lock)</strong> 的机制。它的作用是：<strong>在任何一个时刻，只允许一个线程执行 Python 字节码。</strong></p>
+<h2 id="python中的进程与线程">python中的进程与线程</h2>
+<p>在标准的 CPython 解释器中，存在一个叫做 <strong>GIL (Global
+Interpreter Lock)</strong>
+的机制。它的作用是：<strong>在任何一个时刻，只允许一个线程执行 Python
+字节码。</strong></p>
 <ul>
-<li><strong>这意味着什么？</strong> 即使你有 8 核 CPU，Python 的多线程在同一时刻也只能在 1 个核上运行。</li>
-<li><strong>为什么要有 GIL？</strong> 为了简化 CPython 的内存管理（特别是引用计数机制），避免多线程同时修改对象导致内存泄漏或崩溃。</li>
-<li><strong>结论</strong>：在 Python 中，<strong>多线程不能提升 CPU 密集型任务（如大量数学计算、图像处理）的速度</strong>，反而可能因为线程切换的开销变得更慢。</li>
+<li><strong>这意味着什么？</strong> 即使你有 8 核 CPU，Python
+的多线程在同一时刻也只能在 1 个核上运行。</li>
+<li><strong>为什么要有 GIL？</strong> 为了简化 CPython
+的内存管理（特别是引用计数机制），避免多线程同时修改对象导致内存泄漏或崩溃。</li>
+<li><strong>结论</strong>：在 Python 中，<strong>多线程不能提升 CPU
+密集型任务（如大量数学计算、图像处理）的速度</strong>，反而可能因为线程切换的开销变得更慢。</li>
 </ul>
-<ol>
+<ol type="1">
 <li>多线程 (<code>threading</code> 模块)</li>
 </ol>
-<p>虽然受 GIL 限制，但多线程在 <strong>I/O 密集型任务</strong>（如网络请求、文件读写、数据库查询）中依然非常有用。因为当线程等待 I/O（如等待网页返回）时，它会主动释放 GIL，让其他线程运行。</p>
-<ol>
+<p>虽然受 GIL 限制，但多线程在 <strong>I/O
+密集型任务</strong>（如网络请求、文件读写、数据库查询）中依然非常有用。因为当线程等待
+I/O（如等待网页返回）时，它会主动释放 GIL，让其他线程运行。</p>
+<ol start="2" type="1">
 <li>多进程 (<code>multiprocessing</code> 模块)</li>
 </ol>
-<p>为了绕过 GIL，真正利用多核 CPU 来处理 <strong>CPU 密集型任务</strong>，我们需要使用多进程。每个进程都有自己独立的 Python 解释器和内存空间，因此各自拥有独立的 GIL，互不干扰。</p>
-<h2 id="线程间的通信方式"><a href="#线程间的通信方式" class="headerlink" title="线程间的通信方式"></a>线程间的通信方式</h2><h3 id="共享内存-Shared-Memory"><a href="#共享内存-Shared-Memory" class="headerlink" title="共享内存 (Shared Memory)"></a>共享内存 (Shared Memory)</h3><p><strong>原理</strong>：因为同一个进程内的线程共享堆内存和全局变量区，所以线程 A 直接把数据写入一个全局变量，线程 B 直接去读这个变量，这就完成了通信。</p>
-<p><strong>致命缺陷</strong>：如果两个线程同时读写这个变量，会导致<strong>数据竞争 (Data Race)</strong>，数据就乱了。</p>
+<p>为了绕过 GIL，真正利用多核 CPU 来处理 <strong>CPU
+密集型任务</strong>，我们需要使用多进程。每个进程都有自己独立的 Python
+解释器和内存空间，因此各自拥有独立的 GIL，互不干扰。</p>
+<h2 id="线程间的通信方式">线程间的通信方式</h2>
+<h3 id="共享内存-shared-memory">共享内存 (Shared Memory)</h3>
+<p><strong>原理</strong>：因为同一个进程内的线程共享堆内存和全局变量区，所以线程
+A 直接把数据写入一个全局变量，线程 B
+直接去读这个变量，这就完成了通信。</p>
+<p><strong>致命缺陷</strong>：如果两个线程同时读写这个变量，会导致<strong>数据竞争
+(Data Race)</strong>，数据就乱了。</p>
 <p><strong>结论</strong>：共享内存<strong>必须</strong>配合下面的“锁机制”才能安全使用。存<strong>必须</strong>配合下面的“锁机制”才能安全使用。</p>
-<h3 id="互斥锁-Mutex-Lock-——-保护数据的“防盗门”"><a href="#互斥锁-Mutex-Lock-——-保护数据的“防盗门”" class="headerlink" title="互斥锁 (Mutex Lock) —— 保护数据的“防盗门”"></a>互斥锁 (Mutex Lock) —— 保护数据的“防盗门”</h3><p><strong>原理</strong>：用于保证<strong>互斥</strong>。当线程 A 要修改共享变量时，先“上锁”，其他线程想修改只能阻塞等待；A 修改完“解锁”，下一个线程才能进。</p>
-<p><strong>场景</strong>：比如多个线程同时给一个全局计数器 <code>count++</code>，必须用互斥锁把 <code>count++</code> 保护起来（变成原子操作）。</p>
-<h3 id="条件变量-Condition-Variable-——-线程间的“对讲机”（🔥面试重灾区）"><a href="#条件变量-Condition-Variable-——-线程间的“对讲机”（🔥面试重灾区）" class="headerlink" title="条件变量 (Condition Variable) —— 线程间的“对讲机”（🔥面试重灾区）"></a>条件变量 (Condition Variable) —— 线程间的“对讲机”（🔥面试重灾区）</h3><p><strong>原理</strong>：互斥锁只解决了“抢资源”的问题，但解决不了“等待”的问题。条件变量用于线程间的<strong>同步</strong>，允许线程阻塞，直到某个<strong>特定条件</strong>成立。</p>
-<p><strong>经典搭配</strong>：<strong>条件变量 永远和 互斥锁 配合使用</strong>。</p>
-<p><strong>核心 API</strong>：<code>wait()</code> (等待), <code>signal()</code> (唤醒一个), <code>broadcast()</code> (唤醒所有)。</p>
-<h3 id="信号量-Semaphore-——-控制人数的“限流器”"><a href="#信号量-Semaphore-——-控制人数的“限流器”" class="headerlink" title="信号量 (Semaphore) —— 控制人数的“限流器”"></a>信号量 (Semaphore) —— 控制人数的“限流器”</h3><p><strong>原理</strong>：本质上是一个带锁的计数器。它允许<strong>指定数量</strong>的线程同时访问某个资源。</p>
-<p><strong>对比互斥锁</strong>：互斥锁其实就是<strong>值为 1 的信号量</strong>（二值信号量），只允许 1 个线程进。</p>
-<p><strong>场景</strong>：比如你的系统最多只能同时处理 3 个视频渲染任务。你可以初始化一个值为 3 的信号量。前 3 个线程拿到信号量直接执行，第 4 个线程来了只能阻塞，直到前 3 个里有一个执行完释放信号量。</p>
-<h2 id="上下文切换（Context-Switch）"><a href="#上下文切换（Context-Switch）" class="headerlink" title="上下文切换（Context Switch）"></a>上下文切换（Context Switch）</h2><h3 id="什么是上下文切换？（核心概念）"><a href="#什么是上下文切换？（核心概念）" class="headerlink" title="什么是上下文切换？（核心概念）"></a>什么是上下文切换？（核心概念）</h3><blockquote>
-<p><strong>一句话总结：</strong> 上下文切换就是 CPU 从一个进程（或线程）切换到另一个进程（或线程）执行的过程。</p>
+<h3 id="互斥锁-mutex-lock-保护数据的防盗门">互斥锁 (Mutex Lock) ——
+保护数据的“防盗门”</h3>
+<p><strong>原理</strong>：用于保证<strong>互斥</strong>。当线程 A
+要修改共享变量时，先“上锁”，其他线程想修改只能阻塞等待；A
+修改完“解锁”，下一个线程才能进。</p>
+<p><strong>场景</strong>：比如多个线程同时给一个全局计数器
+<code>count++</code>，必须用互斥锁把 <code>count++</code>
+保护起来（变成原子操作）。</p>
+<h3 id="条件变量-condition-variable-线程间的对讲机面试重灾区">条件变量
+(Condition Variable) —— 线程间的“对讲机”（🔥面试重灾区）</h3>
+<p><strong>原理</strong>：互斥锁只解决了“抢资源”的问题，但解决不了“等待”的问题。条件变量用于线程间的<strong>同步</strong>，允许线程阻塞，直到某个<strong>特定条件</strong>成立。</p>
+<p><strong>经典搭配</strong>：<strong>条件变量 永远和 互斥锁
+配合使用</strong>。</p>
+<p><strong>核心 API</strong>：<code>wait()</code> (等待),
+<code>signal()</code> (唤醒一个), <code>broadcast()</code>
+(唤醒所有)。</p>
+<h3 id="信号量-semaphore-控制人数的限流器">信号量 (Semaphore) ——
+控制人数的“限流器”</h3>
+<p><strong>原理</strong>：本质上是一个带锁的计数器。它允许<strong>指定数量</strong>的线程同时访问某个资源。</p>
+<p><strong>对比互斥锁</strong>：互斥锁其实就是<strong>值为 1
+的信号量</strong>（二值信号量），只允许 1 个线程进。</p>
+<p><strong>场景</strong>：比如你的系统最多只能同时处理 3
+个视频渲染任务。你可以初始化一个值为 3 的信号量。前 3
+个线程拿到信号量直接执行，第 4 个线程来了只能阻塞，直到前 3
+个里有一个执行完释放信号量。</p>
+<h2 id="上下文切换context-switch">上下文切换（Context Switch）</h2>
+<h3 id="什么是上下文切换核心概念">什么是上下文切换？（核心概念）</h3>
+<blockquote>
+<p><strong>一句话总结：</strong> 上下文切换就是 CPU
+从一个进程（或线程）切换到另一个进程（或线程）执行的过程。</p>
 </blockquote>
-<p>为了让被切换掉的程序下次被调度时能接着跑，CPU 在切换前必须把当前的“运行现场”保存起来，并加载新程序的“运行现场”。这里的“现场”就是<strong>上下文（Context）</strong>，主要包括：</p>
+<p>为了让被切换掉的程序下次被调度时能接着跑，CPU
+在切换前必须把当前的“运行现场”保存起来，并加载新程序的“运行现场”。这里的“现场”就是<strong>上下文（Context）</strong>，主要包括：</p>
 <ul>
-<li><strong>硬件上下文：</strong> 通用寄存器、程序计数器（PC，指向下一条指令的位置）、堆栈指针（SP）等。</li>
-<li><strong>内核管理数据：</strong> 进程控制块（PCB）或线程控制块（TCB）中记录的运行状态信息。</li>
+<li><strong>硬件上下文：</strong>
+通用寄存器、程序计数器（PC，指向下一条指令的位置）、堆栈指针（SP）等。</li>
+<li><strong>内核管理数据：</strong>
+进程控制块（PCB）或线程控制块（TCB）中记录的运行状态信息。</li>
 </ul>
-<h3 id="上下文切换的触发时机"><a href="#上下文切换的触发时机" class="headerlink" title="上下文切换的触发时机"></a>上下文切换的触发时机</h3><h4 id="一、-自愿上下文切换（Voluntary-Context-Switch）"><a href="#一、-自愿上下文切换（Voluntary-Context-Switch）" class="headerlink" title="一、 自愿上下文切换（Voluntary Context Switch）"></a>一、 自愿上下文切换（Voluntary Context Switch）</h4><blockquote>
-<p><strong>核心特征：</strong> 线程自己发现“日子过不下去了”或者“活干完了”，<strong>主动</strong>让出 CPU，把执行机会留给别人。</p>
+<h3 id="上下文切换的触发时机">上下文切换的触发时机</h3>
+<h4 id="一-自愿上下文切换voluntary-context-switch">一、
+自愿上下文切换（Voluntary Context Switch）</h4>
+<blockquote>
+<p><strong>核心特征：</strong>
+线程自己发现“日子过不下去了”或者“活干完了”，<strong>主动</strong>让出
+CPU，把执行机会留给别人。</p>
 </blockquote>
-<ol>
-<li><strong>面临阻塞 I/O（最常见）：</strong><ul>
-<li><strong>场景：</strong> 线程尝试读取一个大文件（<code>read()</code>）或者等待网络数据包（<code>recv()</code>）。</li>
-<li><strong>底层：</strong> 硬件速度（磁盘、网卡）远慢于 CPU。线程此时必须等待硬件把数据拷贝到内核缓冲区。由于无事可做，内核调度器会把该线程的状态从“运行态（Running）”改为“睡眠/阻塞态（Blocked）”，并立即切换到另一个就绪线程。</li>
-</ul>
-</li>
-<li><strong>等待同步锁或线程协同：</strong><ul>
-<li><strong>场景：</strong> 高并发下，线程去拿一个互斥锁（如 C++ 的 <code>std::mutex</code>，Java 的 <code>synchronized</code> 或 <code>ReentrantLock</code>），结果发现锁被别的线程占了；或者调用了 <code>wait()</code>、<code>park()</code> 等待被唤醒。</li>
-<li><strong>底层：</strong> 线程无法进入临界区，继续空转会白白浪费 CPU，于是操作系统将其挂起，放入锁的等待队列中，触发上下文切换。</li>
-</ul>
-</li>
-<li><strong>代码主动“摆烂”（挂起/休眠）：</strong><ul>
-<li><strong>场景：</strong> 程序员在代码里写了 <code>Thread.sleep(1000)</code>，或者调用了 <code>sched_yield()</code>（主动放弃剩余时间片）。</li>
-<li><strong>底层：</strong> 内核定时器开始倒计时，在这个线程醒来之前，CPU 被切换给其他线程使用。</li>
-</ul>
-</li>
+<ol type="1">
+<li><strong>面临阻塞 I/O（最常见）：</strong>
+<ul>
+<li><strong>场景：</strong>
+线程尝试读取一个大文件（<code>read()</code>）或者等待网络数据包（<code>recv()</code>）。</li>
+<li><strong>底层：</strong> 硬件速度（磁盘、网卡）远慢于
+CPU。线程此时必须等待硬件把数据拷贝到内核缓冲区。由于无事可做，内核调度器会把该线程的状态从“运行态（Running）”改为“睡眠/阻塞态（Blocked）”，并立即切换到另一个就绪线程。</li>
+</ul></li>
+<li><strong>等待同步锁或线程协同：</strong>
+<ul>
+<li><strong>场景：</strong> 高并发下，线程去拿一个互斥锁（如 C++ 的
+<code>std::mutex</code>，Java 的 <code>synchronized</code> 或
+<code>ReentrantLock</code>），结果发现锁被别的线程占了；或者调用了
+<code>wait()</code>、<code>park()</code> 等待被唤醒。</li>
+<li><strong>底层：</strong> 线程无法进入临界区，继续空转会白白浪费
+CPU，于是操作系统将其挂起，放入锁的等待队列中，触发上下文切换。</li>
+</ul></li>
+<li><strong>代码主动“摆烂”（挂起/休眠）：</strong>
+<ul>
+<li><strong>场景：</strong> 程序员在代码里写了
+<code>Thread.sleep(1000)</code>，或者调用了
+<code>sched_yield()</code>（主动放弃剩余时间片）。</li>
+<li><strong>底层：</strong>
+内核定时器开始倒计时，在这个线程醒来之前，CPU
+被切换给其他线程使用。</li>
+</ul></li>
 </ol>
-<h4 id="二、-非自愿上下文切换（Non-voluntary-Context-Switch）"><a href="#二、-非自愿上下文切换（Non-voluntary-Context-Switch）" class="headerlink" title="二、 非自愿上下文切换（Non-voluntary Context Switch）"></a>二、 非自愿上下文切换（Non-voluntary Context Switch）</h4><blockquote>
-<p><strong>核心特征：</strong> 线程自己还想拼命工作，但被操作系统无情地<strong>强行剥夺</strong>了 CPU 使用权（抢占式调度）。</p>
+<h4 id="二-非自愿上下文切换non-voluntary-context-switch">二、
+非自愿上下文切换（Non-voluntary Context Switch）</h4>
+<blockquote>
+<p><strong>核心特征：</strong>
+线程自己还想拼命工作，但被操作系统无情地<strong>强行剥夺</strong>了 CPU
+使用权（抢占式调度）。</p>
 </blockquote>
-<ol>
-<li><strong>时间片耗尽（Time Slice Expiration）：</strong><ul>
-<li><strong>场景：</strong> 现代操作系统（如 Linux 的 CFS 调度器）是分时复用的。每个线程被分配了一小段可以运行的时间（比如几个毫秒）。</li>
-<li><strong>底层：</strong> 每一个时钟中断（Clock Interrupt）到来时，内核都会检查当前线程的时间片。一旦发现额度扣完，内核就会在中断返回前，强行把当前线程踢下来，换另一个线程上去。</li>
-</ul>
-</li>
-<li><strong>高优先级线程抢占（Preemption）：</strong><ul>
-<li><strong>场景：</strong> 此时正在运行一个低优先级的后台清理线程。突然，一个负责处理用户点击、或者刚从 I/O 阻塞中醒来的高优先级线程进入了就绪队列。</li>
-<li><strong>底层：</strong> 为了保证系统的实时响应，操作系统内核会立刻发出抢占信号，强行中断低优先级线程，把 CPU 让给高优先级线程。</li>
-</ul>
-</li>
+<ol type="1">
+<li><strong>时间片耗尽（Time Slice Expiration）：</strong>
+<ul>
+<li><strong>场景：</strong> 现代操作系统（如 Linux 的 CFS
+调度器）是分时复用的。每个线程被分配了一小段可以运行的时间（比如几个毫秒）。</li>
+<li><strong>底层：</strong> 每一个时钟中断（Clock
+Interrupt）到来时，内核都会检查当前线程的时间片。一旦发现额度扣完，内核就会在中断返回前，强行把当前线程踢下来，换另一个线程上去。</li>
+</ul></li>
+<li><strong>高优先级线程抢占（Preemption）：</strong>
+<ul>
+<li><strong>场景：</strong>
+此时正在运行一个低优先级的后台清理线程。突然，一个负责处理用户点击、或者刚从
+I/O 阻塞中醒来的高优先级线程进入了就绪队列。</li>
+<li><strong>底层：</strong>
+为了保证系统的实时响应，操作系统内核会立刻发出抢占信号，强行中断低优先级线程，把
+CPU 让给高优先级线程。</li>
+</ul></li>
 </ol>
-<h3 id="PCB（Process-Control-Block，进程控制块）"><a href="#PCB（Process-Control-Block，进程控制块）" class="headerlink" title="PCB（Process Control Block，进程控制块）"></a><strong>PCB（Process Control Block，进程控制块）</strong></h3><p>PCB 是操作系统为了管理进程而专门维护的一种<strong>内核数据结构</strong>。它是进程存在的唯一凭证（进程消失，PCB 也会被销毁）。</p>
-<div class="table-container">
+<h3 id="pcbprocess-control-block进程控制块"><strong>PCB（Process Control
+Block，进程控制块）</strong></h3>
+<p>PCB
+是操作系统为了管理进程而专门维护的一种<strong>内核数据结构</strong>。它是进程存在的唯一凭证（进程消失，PCB
+也会被销毁）。</p>
 <table>
+<colgroup>
+<col style="width: 12%">
+<col style="width: 29%">
+<col style="width: 29%">
+<col style="width: 29%">
+</colgroup>
 <thead>
 <tr>
 <th><strong>核心功能大类</strong></th>
@@ -455,68 +608,101 @@
 <tr>
 <td><strong>1. 身份与生命周期管理</strong></td>
 <td>作为进程存在的唯一标志；区分不同的进程；处理父子进程的同步。</td>
-<td>• <strong>PID</strong>（进程 ID） • 父子进程指针 • 退出码（Exit Code）</td>
-<td><strong>僵尸进程/孤儿进程</strong>的产生原因及清理机制（<code>wait()</code> 系统调用）。</td>
+<td>• <strong>PID</strong>（进程 ID） • 父子进程指针 • 退出码（Exit
+Code）</td>
+<td><strong>僵尸进程/孤儿进程</strong>的产生原因及清理机制（<code>wait()</code>
+系统调用）。</td>
 </tr>
 <tr>
 <td><strong>2. 状态与调度管理</strong></td>
 <td>告诉内核调度器当前进程能不能运行、应该什么时候运行。</td>
-<td>• <strong>进程状态</strong>（就绪/运行/阻塞） • <strong>优先级</strong>（Priority） • 调度策略与时间片额度</td>
-<td>操作系统是如何挑选下一个执行进程的？（引出 <strong>CFS 调度算法</strong>和就绪队列）。</td>
+<td>• <strong>进程状态</strong>（就绪/运行/阻塞） •
+<strong>优先级</strong>（Priority） • 调度策略与时间片额度</td>
+<td>操作系统是如何挑选下一个执行进程的？（引出 <strong>CFS
+调度算法</strong>和就绪队列）。</td>
 </tr>
 <tr>
 <td><strong>3. 上下文记忆存储</strong></td>
-<td>在多任务切换（被踢下 CPU）时，保存断点现场，确保下次能无缝接着跑。</td>
-<td>• <strong>程序计数器（PC）</strong> • 堆栈指针（SP） • 所有通用硬件寄存器状态</td>
+<td>在多任务切换（被踢下
+CPU）时，保存断点现场，确保下次能无缝接着跑。</td>
+<td>• <strong>程序计数器（PC）</strong> • 堆栈指针（SP） •
+所有通用硬件寄存器状态</td>
 <td><strong>上下文切换的直接开销</strong>是什么？寄存器里的数据保存在哪里？</td>
 </tr>
 <tr>
 <td><strong>4. 内存与地址空间隔离</strong></td>
 <td>圈定进程的活动范围，防止进程越界访问别人的内存；实现资源分配。</td>
-<td>• <strong>页表根地址指针</strong>（如 CR3 的值） • 内存段描述（代码段/数据段界限）</td>
-<td>为什么<strong>进程切换比线程切换慢</strong>？（引出修改页表和 TLB 失效）。</td>
+<td>• <strong>页表根地址指针</strong>（如 CR3 的值） •
+内存段描述（代码段/数据段界限）</td>
+<td>为什么<strong>进程切换比线程切换慢</strong>？（引出修改页表和 TLB
+失效）。</td>
 </tr>
 <tr>
 <td><strong>5. I/O 与外设资源管理</strong></td>
 <td>记录进程持有哪些系统资源，防止资源泄露；支持进程的网络和磁盘读写。</td>
-<td>• <strong>文件描述符表（fd table）</strong> • 占用的网络 Socket • 打开的外设清单</td>
-<td>高并发下“<strong>文件描述符耗尽</strong>”（Too many open files）报错的根本原因是什么？</td>
+<td>• <strong>文件描述符表（fd table）</strong> • 占用的网络 Socket •
+打开的外设清单</td>
+<td>高并发下“<strong>文件描述符耗尽</strong>”（Too many open
+files）报错的根本原因是什么？</td>
 </tr>
 </tbody>
 </table>
-</div>
-<h2 id="用户态与内核态"><a href="#用户态与内核态" class="headerlink" title="用户态与内核态"></a>用户态与内核态</h2><p><strong>用户态（User Mode）\</strong>和*<em>内核态（Kernel Mode）*<em>是 CPU 的两种**工作状态（特权级别）</em></em>。操作系统通过这种划分，把普通应用程序和系统核心资源隔离开来，防止普通程序犯错导致整个系统崩溃。</p>
-<p>在 Linux/x86 架构中，CPU 的特权级别被划分为 4 个级别（Ring 0 到 Ring 3），但操作系统主要只使用了其中两个：</p>
+<h2 id="用户态与内核态">用户态与内核态</h2>
+<p><strong>用户态（User Mode）*<em>和*</em>内核态（Kernel Mode）*<em>是
+CPU
+的两种*</em>工作状态（特权级别）</strong>。操作系统通过这种划分，把普通应用程序和系统核心资源隔离开来，防止普通程序犯错导致整个系统崩溃。</p>
+<p>在 Linux/x86 架构中，CPU 的特权级别被划分为 4 个级别（Ring 0 到 Ring
+3），但操作系统主要只使用了其中两个：</p>
 <ul>
-<li><strong>用户态（Ring 3）：</strong><ul>
-<li><strong>定义：</strong> 普通应用程序（如你的浏览器、IDE、微信、游戏）运行的状态。</li>
-<li><strong>权限：</strong> 受限权限。只能访问受保护的内存空间，绝对<strong>不允许</strong>直接访问底层硬件设备（如硬盘、网卡、显卡）或执行特权指令（如关机、修改页表）。</li>
-</ul>
-</li>
-<li><strong>内核态（Ring 0）：</strong><ul>
+<li><strong>用户态（Ring 3）：</strong>
+<ul>
+<li><strong>定义：</strong>
+普通应用程序（如你的浏览器、IDE、微信、游戏）运行的状态。</li>
+<li><strong>权限：</strong>
+受限权限。只能访问受保护的内存空间，绝对<strong>不允许</strong>直接访问底层硬件设备（如硬盘、网卡、显卡）或执行特权指令（如关机、修改页表）。</li>
+</ul></li>
+<li><strong>内核态（Ring 0）：</strong>
+<ul>
 <li><strong>定义：</strong> 操作系统的核心（Kernel）运行的状态。</li>
-<li><strong>权限：</strong> 最高权限。可以执行 CPU 的所有特权指令，可以直接控制和访问任何硬件资源，管理所有内存空间。</li>
+<li><strong>权限：</strong> 最高权限。可以执行 CPU
+的所有特权指令，可以直接控制和访问任何硬件资源，管理所有内存空间。</li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<h3 id="用户态如何切换到内核态？"><a href="#用户态如何切换到内核态？" class="headerlink" title="用户态如何切换到内核态？"></a>用户态如何切换到内核态？</h3><p>应用程序在运行过程中，不可避免地需要用到硬件资源（比如读取文件、发送网络数据）。由于它在用户态没有权限，就必须<strong>触发状态切换</strong>，请求内核帮忙。</p>
+<h3 id="用户态如何切换到内核态">用户态如何切换到内核态？</h3>
+<p>应用程序在运行过程中，不可避免地需要用到硬件资源（比如读取文件、发送网络数据）。由于它在用户态没有权限，就必须<strong>触发状态切换</strong>，请求内核帮忙。</p>
 <p>切换的触发途径主要有以下三种：</p>
-<ol>
-<li><strong>系统调用（System Call，最主动）：</strong> 这是普通程序<strong>主动</strong>请求内核服务的唯一方式。<ul>
-<li><em>例子：</em> 你在代码里调用了 <code>printf()</code>（底层调用 <code>write</code> 往屏幕写数据）、<code>open()</code> 读写文件、或者 <code>socket()</code> 发送网络包。</li>
-</ul>
-</li>
-<li><strong>异常（Exception，最被动）：</strong> 当 CPU 在执行用户态指令时，发生了一些内部错误或特殊事件，CPU 会<strong>被迫</strong>切换到内核态，由内核的异常处理器来处理。<ul>
-<li><em>例子：</em> 发生了<strong>除以 0 错误</strong>、<strong>空指针异常（缺页异常 Page Fault）</strong>。</li>
-</ul>
-</li>
-<li><strong>外设中断（Hardware Interrupt，最随机）：</strong> 当外设（如键盘、鼠标、网卡、定时器）完成某些任务或发生状态改变时，会向 CPU 发出硬件中断信号。CPU 收到信号后，会<strong>暂停</strong>当前的用户程序，切换到内核态去执行对应的中断处理程序（ISR）。<ul>
-<li><em>例子：</em> 网卡收到了一个网络数据包、或者倒计时定时器到期了（触发时间片轮转）。</li>
-</ul>
-</li>
+<ol type="1">
+<li><strong>系统调用（System Call，最主动）：</strong>
+这是普通程序<strong>主动</strong>请求内核服务的唯一方式。
+<ul>
+<li><em>例子：</em> 你在代码里调用了 <code>printf()</code>（底层调用
+<code>write</code> 往屏幕写数据）、<code>open()</code> 读写文件、或者
+<code>socket()</code> 发送网络包。</li>
+</ul></li>
+<li><strong>异常（Exception，最被动）：</strong> 当 CPU
+在执行用户态指令时，发生了一些内部错误或特殊事件，CPU
+会<strong>被迫</strong>切换到内核态，由内核的异常处理器来处理。
+<ul>
+<li><em>例子：</em> 发生了<strong>除以 0
+错误</strong>、<strong>空指针异常（缺页异常 Page Fault）</strong>。</li>
+</ul></li>
+<li><strong>外设中断（Hardware Interrupt，最随机）：</strong>
+当外设（如键盘、鼠标、网卡、定时器）完成某些任务或发生状态改变时，会向
+CPU 发出硬件中断信号。CPU
+收到信号后，会<strong>暂停</strong>当前的用户程序，切换到内核态去执行对应的中断处理程序（ISR）。
+<ul>
+<li><em>例子：</em>
+网卡收到了一个网络数据包、或者倒计时定时器到期了（触发时间片轮转）。</li>
+</ul></li>
 </ol>
-<h2 id="段页式存储管理"><a href="#段页式存储管理" class="headerlink" title="段页式存储管理"></a>段页式存储管理</h2><h3 id="分页与分段"><a href="#分页与分段" class="headerlink" title="分页与分段"></a>分页与分段</h3><div class="table-container">
+<h2 id="段页式存储管理">段页式存储管理</h2>
+<h3 id="分页与分段">分页与分段</h3>
 <table>
+<colgroup>
+<col style="width: 10%">
+<col style="width: 44%">
+<col style="width: 44%">
+</colgroup>
 <thead>
 <tr>
 <th><strong>对比维度</strong></th>
@@ -552,67 +738,112 @@
 </tr>
 </tbody>
 </table>
-</div>
-<p>既然分页和分段各有优缺点（分页能绝育外部碎片，分段方便逻辑保护），那聪明的架构师一拍大腿：<strong>我全都要！</strong> 这就诞生了现代 CPU（如 x86 架构）普遍采用的 <strong>段页式内存管理</strong>。</p>
+<p>既然分页和分段各有优缺点（分页能绝育外部碎片，分段方便逻辑保护），那聪明的架构师一拍大腿：<strong>我全都要！</strong>
+这就诞生了现代 CPU（如 x86 架构）普遍采用的
+<strong>段页式内存管理</strong>。</p>
 <ul>
-<li><strong>做法：</strong><ol>
+<li><strong>做法：</strong>
+<ol type="1">
 <li>先把程序按照逻辑<strong>分段</strong>（分成代码段、数据段等）。</li>
-<li>在每一个段内部，再把它无情地切成固定大小的<strong>页</strong>（比如 4KB 一页）。</li>
-</ol>
-</li>
-<li><strong>寻址流程：</strong> 虚拟地址 $\rightarrow$ 查段表（找到页表起始地址） $\rightarrow$ 查页表（找到物理页框地址） $\rightarrow$ 加上页内偏移量 $\rightarrow$ 物理地址。</li>
-<li><strong>代价：</strong> 算一次地址需要访问三次内存，速度变慢了。不过不用担心，硬件层面上我们有 <strong>TLB（快表）</strong> 来做缓存加速。</li>
+<li>在每一个段内部，再把它无情地切成固定大小的<strong>页</strong>（比如
+4KB 一页）。</li>
+</ol></li>
+<li><strong>寻址流程：</strong> 虚拟地址 <span class="math inline">→</span> 查段表（找到页表起始地址） <span class="math inline">→</span> 查页表（找到物理页框地址） <span class="math inline">→</span> 加上页内偏移量 <span class="math inline">→</span> 物理地址。</li>
+<li><strong>代价：</strong>
+算一次地址需要访问三次内存，速度变慢了。不过不用担心，硬件层面上我们有
+<strong>TLB（快表）</strong> 来做缓存加速。</li>
 </ul>
-<h3 id="为什么说分段分页是针对进程？"><a href="#为什么说分段分页是针对进程？" class="headerlink" title="为什么说分段分页是针对进程？"></a>为什么说分段分页是针对进程？</h3><p>我们可以从进程和线程在内核中的资源划分来理解：</p>
+<h3 id="为什么说分段分页是针对进程">为什么说分段分页是针对进程？</h3>
+<p>我们可以从进程和线程在内核中的资源划分来理解：</p>
 <ul>
-<li><strong>进程拥有独立的“财产清单”（页表/段表）：</strong> 当操作系统启动一个新进程时，会为它圈出一块完全独立的、甚至高达 4GB（32位系统）的虚拟内存空间。为了管理这块空间，系统会为该进程专门创建并维护一套<strong>页表（Page Table）\</strong>或*<em>段表（Segment Table）*</em>。<ul>
-<li>这个页表的根地址，就记录在进程的 <strong>PCB（进程控制块）</strong> 里面。</li>
-</ul>
-</li>
-<li><strong>线程只是共享进程的财产：</strong> 同一个进程里的所有线程，就像是住在同一个屋檐下的亲兄弟。它们<strong>共享该进程的整个虚拟内存空间</strong>。<ul>
-<li>这意味着，线程 A 和线程 B 使用的是<strong>同一个页表</strong>。一个相同的虚拟地址，无论是线程 A 还是线程 B 去访问，通过页表翻译出来的物理物理内存地址完全是一样的。</li>
+<li><strong>进程拥有独立的“财产清单”（页表/段表）：</strong>
+当操作系统启动一个新进程时，会为它圈出一块完全独立的、甚至高达
+4GB（32位系统）的虚拟内存空间。为了管理这块空间，系统会为该进程专门创建并维护一套<strong>页表（Page
+Table）*<em>或*</em>段表（Segment Table）</strong>。
+<ul>
+<li>这个页表的根地址，就记录在进程的 <strong>PCB（进程控制块）</strong>
+里面。</li>
+</ul></li>
+<li><strong>线程只是共享进程的财产：</strong>
+同一个进程里的所有线程，就像是住在同一个屋檐下的亲兄弟。它们<strong>共享该进程的整个虚拟内存空间</strong>。
+<ul>
+<li>这意味着，线程 A 和线程 B
+使用的是<strong>同一个页表</strong>。一个相同的虚拟地址，无论是线程 A
+还是线程 B 去访问，通过页表翻译出来的物理物理内存地址完全是一样的。</li>
 <li>所以，线程自己是没有独立的页表或段表的，它只是一个在进程划分好的“格子（页）”里跑代码的工具人。</li>
+</ul></li>
 </ul>
-</li>
+<h3 id="缺页中断-page-fault">缺页中断 (Page Fault)</h3>
+<figure>
+<img src="/2026/06/02/%E5%AE%9E%E4%B9%A0/%E9%9D%A2%E8%AF%95/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/image-20260703134310159.png" alt="image-20260703134310159">
+<figcaption aria-hidden="true">image-20260703134310159</figcaption>
+</figure>
+<h4 id="cpu-发起寻址">1. CPU 发起寻址</h4>
+<ul>
+<li>CPU 给出要访问的<strong>虚拟地址（逻辑地址）</strong>，由硬件
+MMU（内存管理单元）试图进行地址翻译。</li>
 </ul>
-<h3 id="缺页中断-Page-Fault"><a href="#缺页中断-Page-Fault" class="headerlink" title="缺页中断 (Page Fault)"></a>缺页中断 (Page Fault)</h3><p><img src="/2026/06/02/%E5%AE%9E%E4%B9%A0/%E9%9D%A2%E8%AF%95/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/image-20260703134310159.png" alt="image-20260703134310159"></p>
-<h4 id="1-CPU-发起寻址"><a href="#1-CPU-发起寻址" class="headerlink" title="1. CPU 发起寻址"></a>1. CPU 发起寻址</h4><ul>
-<li>CPU 给出要访问的<strong>虚拟地址（逻辑地址）</strong>，由硬件 MMU（内存管理单元）试图进行地址翻译。</li>
+<h4 id="mmu-硬件检查">2. MMU 硬件检查</h4>
+<ul>
+<li>MMU 查询页表，发现该页表项的“驻留标识位 / 有效位（Valid Bit）”为
+0，代表该页面目前只躺在硬盘里，不在物理内存中。</li>
 </ul>
-<h4 id="2-MMU-硬件检查"><a href="#2-MMU-硬件检查" class="headerlink" title="2. MMU 硬件检查"></a>2. MMU 硬件检查</h4><ul>
-<li>MMU 查询页表，发现该页表项的“驻留标识位 / 有效位（Valid Bit）”为 0，代表该页面目前只躺在硬盘里，不在物理内存中。</li>
-</ul>
-<h4 id="3-触发硬件中断"><a href="#3-触发硬件中断" class="headerlink" title="3. 触发硬件中断"></a>3. 触发硬件中断</h4><ul>
+<h4 id="触发硬件中断">3. 触发硬件中断</h4>
+<ul>
 <li>MMU 当场触发<strong>缺页中断（实质上是一种内核异常）</strong>。</li>
-<li>CPU 立即暂停当前用户进程，保存当前硬件现场，特权级从用户态<strong>陷入内核态</strong>，将控制权全权交给操作系统的缺页中断处理程序。</li>
+<li>CPU
+立即暂停当前用户进程，保存当前硬件现场，特权级从用户态<strong>陷入内核态</strong>，将控制权全权交给操作系统的缺页中断处理程序。</li>
 </ul>
-<h4 id="4-OS-核心处理（关键分水岭分支）"><a href="#4-OS-核心处理（关键分水岭分支）" class="headerlink" title="4. OS 核心处理（关键分水岭分支）"></a>4. OS 核心处理（关键分水岭分支）</h4><p>操作系统接管后，首先检查地址合法性。确认合法后，根据当前物理内存的拥挤程度，分流为以下两种情况：</p>
-<h5 id="🟩-情况-A：物理内存有空闲位（按需调页）"><a href="#🟩-情况-A：物理内存有空闲位（按需调页）" class="headerlink" title="🟩 情况 A：物理内存有空闲位（按需调页）"></a>🟩 情况 A：物理内存有空闲位（按需调页）</h5><ol>
-<li><strong>磁盘读取：</strong> 操作系统直接启动磁盘 I/O，从硬盘中找到对应的页面数据。</li>
-<li><strong>数据载入：</strong> 将页面数据读入物理内存的空闲页框（物理块）中。</li>
-<li><strong>更新页表：</strong> 修改该虚拟页对应的页表项，将<strong>块号（物理页框号）\</strong>填入，并将*<em>驻留位置为 1*</em>（标记已在内存）。</li>
+<h4 id="os-核心处理关键分水岭分支">4. OS 核心处理（关键分水岭分支）</h4>
+<p>操作系统接管后，首先检查地址合法性。确认合法后，根据当前物理内存的拥挤程度，分流为以下两种情况：</p>
+<h5 id="情况-a物理内存有空闲位按需调页">🟩 情况
+A：物理内存有空闲位（按需调页）</h5>
+<ol type="1">
+<li><strong>磁盘读取：</strong> 操作系统直接启动磁盘
+I/O，从硬盘中找到对应的页面数据。</li>
+<li><strong>数据载入：</strong>
+将页面数据读入物理内存的空闲页框（物理块）中。</li>
+<li><strong>更新页表：</strong>
+修改该虚拟页对应的页表项，将<strong>块号（物理页框号）*<em>填入，并将*</em>驻留位置为
+1</strong>（标记已在内存）。</li>
 </ol>
-<h5 id="🟥-情况-B：物理内存已满（触发页面置换）"><a href="#🟥-情况-B：物理内存已满（触发页面置换）" class="headerlink" title="🟥 情况 B：物理内存已满（触发页面置换）"></a>🟥 情况 B：物理内存已满（触发页面置换）</h5><ol>
-<li><strong>挑选倒霉蛋：</strong> 操作系统执行<strong>页面置换算法</strong>（如 LRU），挑出一个物理页作为淘汰页。</li>
-<li><strong>脏页写回（面试必杀点 🌟）：</strong><ul>
+<h5 id="情况-b物理内存已满触发页面置换">🟥 情况
+B：物理内存已满（触发页面置换）</h5>
+<ol type="1">
+<li><strong>挑选倒霉蛋：</strong>
+操作系统执行<strong>页面置换算法</strong>（如
+LRU），挑出一个物理页作为淘汰页。</li>
+<li><strong>脏页写回（面试必杀点 🌟）：</strong>
+<ul>
 <li>检查该淘汰页的“修改位 / 脏位（Dirty Bit）”。</li>
 <li>如果<strong>被修改过（脏页）</strong>：必须先把它异步写回磁盘，防止数据丢失；</li>
 <li>如果<strong>未被修改过（干净页）</strong>：直接无情释放，省去一次磁盘写入开销。</li>
-</ul>
-</li>
-<li><strong>鸠占鹊巢：</strong> 把淘汰后腾出来的空闲位给新页面使用，启动磁盘 I/O 读入新页。</li>
-<li><strong>双向更新：</strong><ul>
+</ul></li>
+<li><strong>鸠占鹊巢：</strong>
+把淘汰后腾出来的空闲位给新页面使用，启动磁盘 I/O 读入新页。</li>
+<li><strong>双向更新：</strong>
+<ul>
 <li>将淘汰页的页表驻留位置为 0；</li>
 <li>将新页的页表填入新块号，驻留位置为 1。</li>
-</ul>
-</li>
+</ul></li>
 </ol>
-<h4 id="5-现场恢复与指令重执"><a href="#5-现场恢复与指令重执" class="headerlink" title="5. 现场恢复与指令重执"></a>5. 现场恢复与指令重执</h4><ul>
-<li>操作系统更新完页表、完成内存搬运后，将之前保存的进程现场恢复到 CPU 寄存器中。</li>
-<li><strong>指令重新执行（核心特征）：</strong> CPU <strong>重新执行刚才那条导致中断的旧指令</strong>。这一次 MMU 查表成功（有效位为 1），顺利拿到数据，进程继续流畅运行。</li>
+<h4 id="现场恢复与指令重执">5. 现场恢复与指令重执</h4>
+<ul>
+<li>操作系统更新完页表、完成内存搬运后，将之前保存的进程现场恢复到 CPU
+寄存器中。</li>
+<li><strong>指令重新执行（核心特征）：</strong> CPU
+<strong>重新执行刚才那条导致中断的旧指令</strong>。这一次 MMU
+查表成功（有效位为 1），顺利拿到数据，进程继续流畅运行。</li>
 </ul>
-<h3 id="页面置换算法"><a href="#页面置换算法" class="headerlink" title="页面置换算法"></a>页面置换算法</h3><div class="table-container">
+<h3 id="页面置换算法">页面置换算法</h3>
 <table>
+<colgroup>
+<col style="width: 9%">
+<col style="width: 22%">
+<col style="width: 22%">
+<col style="width: 22%">
+<col style="width: 22%">
+</colgroup>
 <thead>
 <tr>
 <th><strong>算法名称</strong></th>
@@ -635,40 +866,60 @@
 <td>谁最先进入内存，就先淘汰谁（像排队一样，队列实现）。</td>
 <td>实现极其简单，开发成本低。</td>
 <td>性能很差。完全违背了局部性原理（最先来的可能是一直在用的热点代码）。</td>
-<td>⚠️ 必考：<strong>Belady 异常</strong>（诡异现象：物理块增加，缺页次数反而上升）。</td>
+<td>⚠️ 必考：<strong>Belady
+异常</strong>（诡异现象：物理块增加，缺页次数反而上升）。</td>
 </tr>
 <tr>
 <td><strong>LRU</strong> (最近最少使用)</td>
 <td>淘汰<strong>最近最长时间没有被访问</strong>的页面。依据是<strong>“过去的时间”</strong>。</td>
 <td>性能极好，最符合<strong>时空局部性原理</strong>，实际缺页率很低。</td>
 <td>需要硬件支持（计数器或栈），每次访问都要更新顺序，<strong>系统开销巨大</strong>。</td>
-<td>👑 <strong>面试大厂手写代码必考题</strong>（LeetCode 146，用“哈希表 + 双向链表”实现）。</td>
+<td>👑 <strong>面试大厂手写代码必考题</strong>（LeetCode 146，用“哈希表
++ 双向链表”实现）。</td>
 </tr>
 <tr>
 <td><strong>CLOCK</strong> (时钟/NRU算法)</td>
-<td>页面排成环形链表，指针像时钟一样转动。利用<strong>“访问位（0/1）”</strong>，碰到 1 改为 0（给一次机会），碰到 0 之间淘汰。</td>
-<td><strong>工程落地首选</strong>。性能逼近 LRU，但实现极其轻量，不需要硬件频繁记录时间。</td>
+<td>页面排成环形链表，指针像时钟一样转动。利用<strong>“访问位（0/1）”</strong>，碰到
+1 改为 0（给一次机会），碰到 0 之间淘汰。</td>
+<td><strong>工程落地首选</strong>。性能逼近
+LRU，但实现极其轻量，不需要硬件频繁记录时间。</td>
 <td>极端情况下，指针需要转好几圈才能找到淘汰页，有扫描开销。</td>
-<td><strong>现代 Linux 等操作系统的实际底层选型</strong>。改进型 CLOCK 会同时看“访问位”和“修改位（脏位）”。</td>
+<td><strong>现代 Linux 等操作系统的实际底层选型</strong>。改进型 CLOCK
+会同时看“访问位”和“修改位（脏位）”。</td>
 </tr>
 <tr>
 <td><strong>LFU</strong> (最不经常使用)</td>
 <td>淘汰在一段时间内<strong>访问次数（频率）最少</strong>的页面。依据是<strong>“访问次数”</strong>。</td>
 <td>适合某些长期高频访问、周期性访问的特定业务场景。</td>
 <td>没考虑时间维度。如果一个页面前期被疯狂访问（计数极高）但后期废弃了，它会一直赖在内存里占地方。</td>
-<td>核心对比：<strong>LRU 看的是“多久没用过”（时间），LFU 看的是“用得有多频繁”（次数）。</strong></td>
+<td>核心对比：<strong>LRU 看的是“多久没用过”（时间），LFU
+看的是“用得有多频繁”（次数）。</strong></td>
 </tr>
 </tbody>
 </table>
-</div>
-<h2 id="虚拟内存（Virtual-Memory）"><a href="#虚拟内存（Virtual-Memory）" class="headerlink" title="虚拟内存（Virtual Memory）"></a>虚拟内存（Virtual Memory）</h2><h3 id="为什么需要虚拟内存？"><a href="#为什么需要虚拟内存？" class="headerlink" title="为什么需要虚拟内存？"></a>为什么需要虚拟内存？</h3><p>在早期没有虚拟内存的系统里，程序是<strong>直接运行在物理内存</strong>上的。也就是说，代码里的地址 <code>0x0012</code> 就是内存条上的第 <code>0x0012</code> 个格子。这带来了三个灾难性的后果：</p>
-<ol>
-<li><strong>毫无安全可言（没有隔离）：</strong> 进程 A 如果写错了指针（比如野指针），不小心改了地址 <code>0x0050</code> 的数据，而这个地址正好是进程 B 的核心数据，进程 B 就会莫名其妙地崩溃。恶意软件甚至可以直接读取你微信进程的物理内存来偷看聊天记录。</li>
-<li><strong>物理内存容易得“高血压”（碎片化）：</strong> 物理内存必须连续分配。如果系统里零散地运行着几个小软件，哪怕剩余的总内存足够，但只要没有一块<strong>连续</strong>的大空间，大程序就根本无法启动。</li>
-<li><strong>程序大小被死死卡死（容量限制）：</strong> 如果你的电脑只有 8GB 内存，那你绝对运行不了一个 15GB 的大型游戏，因为内存条根本装不下。</li>
+<h2 id="虚拟内存virtual-memory">虚拟内存（Virtual Memory）</h2>
+<h3 id="为什么需要虚拟内存">为什么需要虚拟内存？</h3>
+<p>在早期没有虚拟内存的系统里，程序是<strong>直接运行在物理内存</strong>上的。也就是说，代码里的地址
+<code>0x0012</code> 就是内存条上的第 <code>0x0012</code>
+个格子。这带来了三个灾难性的后果：</p>
+<ol type="1">
+<li><strong>毫无安全可言（没有隔离）：</strong> 进程 A
+如果写错了指针（比如野指针），不小心改了地址 <code>0x0050</code>
+的数据，而这个地址正好是进程 B 的核心数据，进程 B
+就会莫名其妙地崩溃。恶意软件甚至可以直接读取你微信进程的物理内存来偷看聊天记录。</li>
+<li><strong>物理内存容易得“高血压”（碎片化）：</strong>
+物理内存必须连续分配。如果系统里零散地运行着几个小软件，哪怕剩余的总内存足够，但只要没有一块<strong>连续</strong>的大空间，大程序就根本无法启动。</li>
+<li><strong>程序大小被死死卡死（容量限制）：</strong> 如果你的电脑只有
+8GB 内存，那你绝对运行不了一个 15GB
+的大型游戏，因为内存条根本装不下。</li>
 </ol>
-<div class="table-container">
 <table>
+<colgroup>
+<col style="width: 14%">
+<col style="width: 28%">
+<col style="width: 28%">
+<col style="width: 28%">
+</colgroup>
 <thead>
 <tr>
 <th><strong>核心功能大类</strong></th>
@@ -682,13 +933,17 @@
 <td><strong>1. 内存隔离与安全保护</strong></td>
 <td>每个进程分配一套独立的虚拟地址空间。通过各自的页表进行地址翻译，如果试图读写未授权的地址，内核会直接拦截。</td>
 <td>防止进程之间内存互相篡改。游戏脚本无法读取支付宝的数据，某个程序崩溃也不会导致整个系统蓝屏。</td>
-<td>权限检查、<strong>段错误（Segmentation Fault）</strong>、内核态/用户态隔离。</td>
+<td>权限检查、<strong>段错误（Segmentation
+Fault）</strong>、内核态/用户态隔离。</td>
 </tr>
 <tr>
 <td><strong>2. 扩大地址空间（以小博大）</strong></td>
-<td>采用<strong>按需分页（Demand Paging）</strong>。只把当前需要运行的代码载入物理内存，不常用的部分悄悄换出到硬盘（Swap分区）中。</td>
-<td>突破物理内存条的容量限制，允许系统运行远超实际物理内存大小的程序（如 8GB 内存跑 15GB 游戏）。</td>
-<td><strong>缺页中断（Page Fault）</strong>、页面置换算法（LRU/FIFO）、Swap 分区。</td>
+<td>采用<strong>按需分页（Demand
+Paging）</strong>。只把当前需要运行的代码载入物理内存，不常用的部分悄悄换出到硬盘（Swap分区）中。</td>
+<td>突破物理内存条的容量限制，允许系统运行远超实际物理内存大小的程序（如
+8GB 内存跑 15GB 游戏）。</td>
+<td><strong>缺页中断（Page
+Fault）</strong>、页面置换算法（LRU/FIFO）、Swap 分区。</td>
 </tr>
 <tr>
 <td><strong>3. 消除物理碎片（简化分配）</strong></td>
@@ -698,68 +953,134 @@
 </tr>
 <tr>
 <td><strong>4. 内存共享与高效复制</strong></td>
-<td>多个不同的进程，其虚拟内存中的某一段可以同时映射到<strong>物理内存中的同一份公共数据</strong>（如标准 C 库）。</td>
+<td>多个不同的进程，其虚拟内存中的某一段可以同时映射到<strong>物理内存中的同一份公共数据</strong>（如标准
+C 库）。</td>
 <td>极大地节省了物理内存。同时在创建子进程时，利用<strong>写时复制（COW）</strong>技术，避免了盲目拷贝大量内存，让进程创建变得极快。</td>
-<td><strong>写时复制（Copy-on-Write）</strong>、<code>fork()</code> 优化、共享内存（IPC）。</td>
+<td><strong>写时复制（Copy-on-Write）</strong>、<code>fork()</code>
+优化、共享内存（IPC）。</td>
 </tr>
 </tbody>
 </table>
-</div>
-<h3 id="逻辑地址-vs-物理地址"><a href="#逻辑地址-vs-物理地址" class="headerlink" title="逻辑地址 vs 物理地址"></a>逻辑地址 vs 物理地址</h3><h4 id="1-什么是逻辑地址（Logical-Address）？"><a href="#1-什么是逻辑地址（Logical-Address）？" class="headerlink" title="1. 什么是逻辑地址（Logical Address）？"></a>1. 什么是逻辑地址（Logical Address）？</h4><blockquote>
-<p>逻辑地址又叫<strong>虚拟地址（Virtual Address）\</strong>或*<em>相对地址*</em>。</p>
+<h3 id="逻辑地址-vs-物理地址">逻辑地址 vs 物理地址</h3>
+<h4 id="什么是逻辑地址logical-address">1. 什么是逻辑地址（Logical
+Address）？</h4>
+<blockquote>
+<p>逻辑地址又叫<strong>虚拟地址（Virtual
+Address）*<em>或*</em>相对地址</strong>。</p>
 </blockquote>
 <ul>
-<li><strong>谁产生的：</strong> 由<strong>编译器</strong>在编译代码时自动生成的，运行期间由 <strong>CPU</strong> 执行指令时使用。</li>
-<li><strong>本质：</strong> 是目标代码在各个程序块内部的相对位置。程序员在 C/C++ 里打印出来的一个指针地址（如 <code>0x7ffee3bf8</code>），或者编译后产生的可执行文件（ELF/EXE）内部的机器指令地址，<strong>全部都是逻辑地址</strong>。</li>
-<li><strong>特点：</strong> 它给程序创造了一个完美的、连续的幻想空间（比如 32 位系统下每个进程都以为自己拥有从 <code>0x00000000</code> 到 <code>0xFFFFFFFF</code> 的 4GB 连续大饼）。</li>
+<li><strong>谁产生的：</strong>
+由<strong>编译器</strong>在编译代码时自动生成的，运行期间由
+<strong>CPU</strong> 执行指令时使用。</li>
+<li><strong>本质：</strong>
+是目标代码在各个程序块内部的相对位置。程序员在 C/C++
+里打印出来的一个指针地址（如
+<code>0x7ffee3bf8</code>），或者编译后产生的可执行文件（ELF/EXE）内部的机器指令地址，<strong>全部都是逻辑地址</strong>。</li>
+<li><strong>特点：</strong>
+它给程序创造了一个完美的、连续的幻想空间（比如 32
+位系统下每个进程都以为自己拥有从 <code>0x00000000</code> 到
+<code>0xFFFFFFFF</code> 的 4GB 连续大饼）。</li>
 </ul>
-<h4 id="2-什么是物理地址（Physical-Address）？"><a href="#2-什么是物理地址（Physical-Address）？" class="headerlink" title="2. 什么是物理地址（Physical Address）？"></a>2. 什么是物理地址（Physical Address）？</h4><blockquote>
+<h4 id="什么是物理地址physical-address">2. 什么是物理地址（Physical
+Address）？</h4>
+<blockquote>
 <p>物理地址又叫<strong>绝对地址</strong>。</p>
 </blockquote>
 <ul>
-<li><strong>谁使用的：</strong> 由内存控制器、系统总线和物理内存条（RAM 芯片）使用的地址。</li>
-<li><strong>本质：</strong> 它是内存条上数以亿计的微型电容（存储单元）的<strong>真实物理编号</strong>。</li>
-<li><strong>特点：</strong> 当 CPU 最终想要往内存里写入一个字节时，必须把这个地址丢到物理地址总线上，内存条才能定位到具体的硅晶片电路。在物理内存中，数据往往是零散、不连续跳跃分布的。</li>
+<li><strong>谁使用的：</strong> 由内存控制器、系统总线和物理内存条（RAM
+芯片）使用的地址。</li>
+<li><strong>本质：</strong>
+它是内存条上数以亿计的微型电容（存储单元）的<strong>真实物理编号</strong>。</li>
+<li><strong>特点：</strong> 当 CPU
+最终想要往内存里写入一个字节时，必须把这个地址丢到物理地址总线上，内存条才能定位到具体的硅晶片电路。在物理内存中，数据往往是零散、不连续跳跃分布的。</li>
 </ul>
-<h2 id="TLB（Translation-Lookaside-Buffer，旁路转换缓冲，快表）。"><a href="#TLB（Translation-Lookaside-Buffer，旁路转换缓冲，快表）。" class="headerlink" title="TLB（Translation Lookaside Buffer，旁路转换缓冲，快表）。"></a><strong>TLB（Translation Lookaside Buffer，旁路转换缓冲，快表）</strong>。</h2><h3 id="页表与快表存储位置的差异"><a href="#页表与快表存储位置的差异" class="headerlink" title="页表与快表存储位置的差异"></a>页表与快表存储位置的差异</h3><h4 id="1-页表（Page-Table）存储在哪？"><a href="#1-页表（Page-Table）存储在哪？" class="headerlink" title="1. 页表（Page Table）存储在哪？"></a>1. 页表（Page Table）存储在哪？</h4><ul>
-<li><strong>物理存储位置：</strong> <strong>物理内存（RAM / 主存）</strong>。</li>
+<h2 id="tlbtranslation-lookaside-buffer旁路转换缓冲快表"><strong>TLB（Translation
+Lookaside Buffer，旁路转换缓冲，快表）</strong>。</h2>
+<h3 id="页表与快表存储位置的差异">页表与快表存储位置的差异</h3>
+<h4 id="页表page-table存储在哪">1. 页表（Page Table）存储在哪？</h4>
+<ul>
+<li><strong>物理存储位置：</strong> <strong>物理内存（RAM /
+主存）</strong>。</li>
 <li><strong>硬件本质：</strong> 普通的内存块（DRAM）。</li>
-<li><strong>底层机制：</strong> 页表是由<strong>操作系统内核</strong>在物理内存中开辟空间并维护的。因为页表记录了整个进程虚拟地址到物理地址的映射，体积通常很大（尤其是进程多、空间大的时候），CPU 芯片里根本没有那么大的地方能放下它，所以它只能老老实实地躺在内存条里。</li>
-<li><strong>CPU 怎么找到它：</strong> CPU 内部只保留了一个极其珍贵的寄存器，叫做<strong>页表基址寄存器</strong>（在 x86 架构中就是著名的 <strong>CR3 寄存器</strong>）。这个寄存器里只存一个东西——当前正在运行进程的<strong>页表在物理内存中的起始首地址</strong>。当发生进程切换时，操作系统只需要把新进程的页表首地址写进 CR3 寄存器，CPU 就能顺藤摸瓜去内存里查新页表了。</li>
+<li><strong>底层机制：</strong>
+页表是由<strong>操作系统内核</strong>在物理内存中开辟空间并维护的。因为页表记录了整个进程虚拟地址到物理地址的映射，体积通常很大（尤其是进程多、空间大的时候），CPU
+芯片里根本没有那么大的地方能放下它，所以它只能老老实实地躺在内存条里。</li>
+<li><strong>CPU 怎么找到它：</strong> CPU
+内部只保留了一个极其珍贵的寄存器，叫做<strong>页表基址寄存器</strong>（在
+x86 架构中就是著名的 <strong>CR3
+寄存器</strong>）。这个寄存器里只存一个东西——当前正在运行进程的<strong>页表在物理内存中的起始首地址</strong>。当发生进程切换时，操作系统只需要把新进程的页表首地址写进
+CR3 寄存器，CPU 就能顺藤摸瓜去内存里查新页表了。</li>
 </ul>
-<h4 id="2-TLB（快表）存储在哪？"><a href="#2-TLB（快表）存储在哪？" class="headerlink" title="2. TLB（快表）存储在哪？"></a>2. TLB（快表）存储在哪？</h4><ul>
-<li><strong>物理存储位置：</strong> <strong>CPU 芯片内部（具体集成在 MMU 内存管理单元中）</strong>。</li>
+<h4 id="tlb快表存储在哪">2. TLB（快表）存储在哪？</h4>
+<ul>
+<li><strong>物理存储位置：</strong> <strong>CPU 芯片内部（具体集成在 MMU
+内存管理单元中）</strong>。</li>
 <li><strong>硬件本质：</strong> 高速静态表面缓存（SRAM）。</li>
-<li><strong>底层机制：</strong> TLB 是纯硬件实现的缓存，它直接嵌在 CPU 核心内部的 <strong>MMU（Memory Management Unit，内存管理单元）</strong> 里面。因为使用的是比内存（DRAM）快上百倍、但也极度昂贵的 <strong>SRAM</strong> 材质，所以它的容量非常小（通常只能存几十到几百个核心条目）。它存在的唯一目的就是离 CPU 核心足够近，让 CPU 能在 1 个时钟周期内瞬间完成地址转换。</li>
+<li><strong>底层机制：</strong> TLB 是纯硬件实现的缓存，它直接嵌在 CPU
+核心内部的 <strong>MMU（Memory Management Unit，内存管理单元）</strong>
+里面。因为使用的是比内存（DRAM）快上百倍、但也极度昂贵的
+<strong>SRAM</strong>
+材质，所以它的容量非常小（通常只能存几十到几百个核心条目）。它存在的唯一目的就是离
+CPU 核心足够近，让 CPU 能在 1 个时钟周期内瞬间完成地址转换。</li>
 </ul>
-<h3 id="为什么必须要有-TLB？"><a href="#为什么必须要有-TLB？" class="headerlink" title="为什么必须要有 TLB？"></a>为什么必须要有 TLB？</h3><p>要理解 TLB 的价值，必须先看看没有它时，CPU 的日子有多痛苦。</p>
-<p>在虚拟内存机制下，CPU 只要想读写一个变量，就必须把<strong>虚拟地址</strong>翻译成<strong>物理地址</strong>。</p>
-<ol>
-<li><strong>第一次访问内存：</strong> CPU 跑到物理内存里，去查这个进程的<strong>页表</strong>，传回物理地址。</li>
-<li><strong>第二次访问内存：</strong> CPU 拿着刚查到的物理地址，再次跑到物理内存里，去读写<strong>真正的变量数据</strong>。</li>
+<h3 id="为什么必须要有-tlb">为什么必须要有 TLB？</h3>
+<p>要理解 TLB 的价值，必须先看看没有它时，CPU 的日子有多痛苦。</p>
+<p>在虚拟内存机制下，CPU
+只要想读写一个变量，就必须把<strong>虚拟地址</strong>翻译成<strong>物理地址</strong>。</p>
+<ol type="1">
+<li><strong>第一次访问内存：</strong> CPU
+跑到物理内存里，去查这个进程的<strong>页表</strong>，传回物理地址。</li>
+<li><strong>第二次访问内存：</strong> CPU
+拿着刚查到的物理地址，再次跑到物理内存里，去读写<strong>真正的变量数据</strong>。</li>
 </ol>
 <blockquote>
-<p>😱 <strong>性能灾难：</strong> 也就是说，原本只需要访问一次内存的操作，因为虚拟内存的存在，<strong>变成了一定要访问两次内存</strong>，CPU 的执行效率直接腰斩！</p>
+<p>😱 <strong>性能灾难：</strong>
+也就是说，原本只需要访问一次内存的操作，因为虚拟内存的存在，<strong>变成了一定要访问两次内存</strong>，CPU
+的执行效率直接腰斩！</p>
 </blockquote>
-<h3 id="TLB-的工作流程（Hit-vs-Miss）"><a href="#TLB-的工作流程（Hit-vs-Miss）" class="headerlink" title="TLB 的工作流程（Hit vs Miss）"></a>TLB 的工作流程（Hit vs Miss）</h3><p>当 CPU 发出一个虚拟地址请求时：</p>
-<ol>
-<li><strong>TLB 命中（TLB Hit）：</strong> MMU 直接在极其快速的 TLB 里找到了对应的物理页框号。<strong>耗时：不到 1 纳秒（通常只需 1 个 CPU 周期）</strong>。直接去物理内存拿数据，完美避开查页表的开销。</li>
-<li><strong>TLB 缺失（TLB Miss）：</strong> TLB 里没有这条记录。<ul>
-<li>CPU 只能老老实实启动硬件“页表遍历器”（Page Table Walker），去慢速的物理内存里一级一级查页表。</li>
-<li>拿到物理地址后，顺手把这一条映射关系<strong>写进 TLB 里</strong>（小便签记下来），以便下次使用。</li>
+<h3 id="tlb-的工作流程hit-vs-miss">TLB 的工作流程（Hit vs Miss）</h3>
+<p>当 CPU 发出一个虚拟地址请求时：</p>
+<ol type="1">
+<li><strong>TLB 命中（TLB Hit）：</strong> MMU 直接在极其快速的 TLB
+里找到了对应的物理页框号。<strong>耗时：不到 1 纳秒（通常只需 1 个 CPU
+周期）</strong>。直接去物理内存拿数据，完美避开查页表的开销。</li>
+<li><strong>TLB 缺失（TLB Miss）：</strong> TLB 里没有这条记录。
+<ul>
+<li>CPU 只能老老实实启动硬件“页表遍历器”（Page Table
+Walker），去慢速的物理内存里一级一级查页表。</li>
+<li>拿到物理地址后，顺手把这一条映射关系<strong>写进 TLB
+里</strong>（小便签记下来），以便下次使用。</li>
 <li>最后去读数据。</li>
-</ul>
-</li>
+</ul></li>
 </ol>
-<h2 id="多级页表（Multi-Level-Page-Table）"><a href="#多级页表（Multi-Level-Page-Table）" class="headerlink" title="多级页表（Multi-Level Page Table）"></a>多级页表（Multi-Level Page Table）</h2><h3 id="痛点引入：单级页表的“内存大爆炸”"><a href="#痛点引入：单级页表的“内存大爆炸”" class="headerlink" title="痛点引入：单级页表的“内存大爆炸”"></a>痛点引入：单级页表的“内存大爆炸”</h3><p>在单级页表下，<strong>每一个进程</strong>一启动，操作系统就必须无条件地在物理内存里划出一块 <strong>4MB 的连续空间</strong> 来存放它的页表。系统里如果有 100 个进程，光是存页表就要死死啃掉 400MB 的物理内存。</p>
-<h3 id="查询流程"><a href="#查询流程" class="headerlink" title="查询流程"></a>查询流程</h3><p><strong>1. 拆分虚地址：</strong> MMU 将 32 位虚拟地址切成三段：<code>[一级页号 (10位) | 二级页号 (10位) | 页内偏移量 (12位)]</code>。</p>
-<p><strong>2. 定位一级表：</strong> CPU 读取 <strong>CR3 寄存器</strong>，锁定“一级页目录表”在内存中的物理首地址。</p>
-<p><strong>3. 查一级页表：</strong> 用 <strong>一级页号</strong> 当数组下标，在一级表中查到对应的“二级页表”的物理首地址。</p>
-<p><strong>4. 查二级页表：</strong> 用 <strong>二级页号</strong> 当数组下标，在二级表中查到最终数据所在的 <strong>物理页框号</strong>。</p>
-<p><strong>5. 拼接真地址：</strong> 将 <strong>物理页框号</strong>（作为高位）和虚拟地址原本的 <strong>页内偏移量</strong>（作为低位）直接拼接，合体成最终的物理地址。</p>
-<p><strong>6. 读写物理内存：</strong> MMU 将物理地址送上总线，CPU 直接去内存条里抓取目标数据。</p>
-<h2 id="阻塞与非阻塞"><a href="#阻塞与非阻塞" class="headerlink" title="阻塞与非阻塞"></a>阻塞与非阻塞</h2><div class="table-container">
+<h2 id="多级页表multi-level-page-table">多级页表（Multi-Level Page
+Table）</h2>
+<h3 id="痛点引入单级页表的内存大爆炸">痛点引入：单级页表的“内存大爆炸”</h3>
+<p>在单级页表下，<strong>每一个进程</strong>一启动，操作系统就必须无条件地在物理内存里划出一块
+<strong>4MB 的连续空间</strong> 来存放它的页表。系统里如果有 100
+个进程，光是存页表就要死死啃掉 400MB 的物理内存。</p>
+<h3 id="查询流程">查询流程</h3>
+<p><strong>1. 拆分虚地址：</strong> MMU 将 32
+位虚拟地址切成三段：<code>[一级页号 (10位) | 二级页号 (10位) | 页内偏移量 (12位)]</code>。</p>
+<p><strong>2. 定位一级表：</strong> CPU 读取 <strong>CR3
+寄存器</strong>，锁定“一级页目录表”在内存中的物理首地址。</p>
+<p><strong>3. 查一级页表：</strong> 用 <strong>一级页号</strong>
+当数组下标，在一级表中查到对应的“二级页表”的物理首地址。</p>
+<p><strong>4. 查二级页表：</strong> 用 <strong>二级页号</strong>
+当数组下标，在二级表中查到最终数据所在的
+<strong>物理页框号</strong>。</p>
+<p><strong>5. 拼接真地址：</strong> 将
+<strong>物理页框号</strong>（作为高位）和虚拟地址原本的
+<strong>页内偏移量</strong>（作为低位）直接拼接，合体成最终的物理地址。</p>
+<p><strong>6. 读写物理内存：</strong> MMU 将物理地址送上总线，CPU
+直接去内存条里抓取目标数据。</p>
+<h2 id="阻塞与非阻塞">阻塞与非阻塞</h2>
 <table>
+<colgroup>
+<col style="width: 17%">
+<col style="width: 40%">
+<col style="width: 41%">
+</colgroup>
 <thead>
 <tr>
 <th><strong>对比维度</strong></th>
@@ -790,28 +1111,46 @@
 </tr>
 </tbody>
 </table>
-</div>
-<p><img src="/2026/06/02/%E5%AE%9E%E4%B9%A0/%E9%9D%A2%E8%AF%95/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/image-20260703142212597.png" alt="image-20260703142212597"></p>
+<figure>
+<img src="/2026/06/02/%E5%AE%9E%E4%B9%A0/%E9%9D%A2%E8%AF%95/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/image-20260703142212597.png" alt="image-20260703142212597">
+<figcaption aria-hidden="true">image-20260703142212597</figcaption>
+</figure>
 <p>阻塞就是七态模型的等待态</p>
-<ol>
+<ol type="1">
 <li>等待态 / 阻塞态（Blocked / Waiting）</li>
 </ol>
 <ul>
-<li><strong>进程在哪里：</strong> 依然在<strong>物理内存</strong>里。</li>
-<li><strong>它的待遇：</strong> 它虽然不用 CPU，但由于它在等 I/O 数据（比如等你敲键盘），操作系统认为它很快就要醒来，所以还让它在物理内存里占着茅坑。</li>
-<li><strong>CPU消耗：</strong> <strong>不用 CPU</strong>，在内核的等待队列里睡觉。</li>
+<li><strong>进程在哪里：</strong>
+依然在<strong>物理内存</strong>里。</li>
+<li><strong>它的待遇：</strong> 它虽然不用 CPU，但由于它在等 I/O
+数据（比如等你敲键盘），操作系统认为它很快就要醒来，所以还让它在物理内存里占着茅坑。</li>
+<li><strong>CPU消耗：</strong> <strong>不用
+CPU</strong>，在内核的等待队列里睡觉。</li>
 </ul>
-<ol>
+<ol start="2" type="1">
 <li>挂起态（Suspended）</li>
 </ol>
 <ul>
-<li><strong>进程在哪里：</strong> 被操作系统踢出了物理内存，<strong>打包丢到了硬盘的 Swap 分区（交换区/虚拟内存文件）里</strong>。</li>
-<li><strong>为什么会被挂起：</strong> 物理内存（内存条）严重不够用了！操作系统一看，这个进程既然在等待态睡得死沉死沉的（或者就绪态的进程太多了），却还霸占着宝贵的物理内存。操作系统为了救急，就会触发<strong>换出（Page Out）</strong>，把它的代码和数据从内存条里擦除，同步挪到硬盘的 Swap 分区里暂存。</li>
-<li><strong>CPU消耗：</strong> <strong>绝对不用 CPU</strong>。它现在连物理内存都没了，CPU 的硬件寻址电路根本摸不到它，它彻底失去了被 CPU 调度的资格，直到它被重新“唤醒并换入”内存。</li>
+<li><strong>进程在哪里：</strong>
+被操作系统踢出了物理内存，<strong>打包丢到了硬盘的 Swap
+分区（交换区/虚拟内存文件）里</strong>。</li>
+<li><strong>为什么会被挂起：</strong>
+物理内存（内存条）严重不够用了！操作系统一看，这个进程既然在等待态睡得死沉死沉的（或者就绪态的进程太多了），却还霸占着宝贵的物理内存。操作系统为了救急，就会触发<strong>换出（Page
+Out）</strong>，把它的代码和数据从内存条里擦除，同步挪到硬盘的 Swap
+分区里暂存。</li>
+<li><strong>CPU消耗：</strong> <strong>绝对不用
+CPU</strong>。它现在连物理内存都没了，CPU
+的硬件寻址电路根本摸不到它，它彻底失去了被 CPU
+调度的资格，直到它被重新“唤醒并换入”内存。</li>
 </ul>
-<h2 id="同步（Synchronous）与异步（Asynchronous）"><a href="#同步（Synchronous）与异步（Asynchronous）" class="headerlink" title="同步（Synchronous）与异步（Asynchronous）"></a>同步（Synchronous）与异步（Asynchronous）</h2><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV17V411e7Ua/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">一个视频告诉你“并发、并行、异步、同步”的区别_哔哩哔哩_bilibili</a></p>
-<div class="table-container">
+<h2 id="同步synchronous与异步asynchronous">同步（Synchronous）与异步（Asynchronous）</h2>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV17V411e7Ua/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">一个视频告诉你“并发、并行、异步、同步”的区别_哔哩哔哩_bilibili</a></p>
 <table>
+<colgroup>
+<col style="width: 11%">
+<col style="width: 44%">
+<col style="width: 44%">
+</colgroup>
 <thead>
 <tr>
 <th><strong>评估维度</strong></th>
@@ -842,31 +1181,62 @@
 </tr>
 </tbody>
 </table>
-</div>
-<h3 id="“并发”和“异步”"><a href="#“并发”和“异步”" class="headerlink" title="“并发”和“异步”"></a>“并发”和“异步”</h3><p>很多同学觉得“并发”和“异步”类似，是因为它们最终达到的目的很像——<strong>都能让系统在同一段时间内干完更多的事</strong>。但它们的本质维度完全不同：</p>
+<h3 id="并发和异步">“并发”和“异步”</h3>
+<p>很多同学觉得“并发”和“异步”类似，是因为它们最终达到的目的很像——<strong>都能让系统在同一段时间内干完更多的事</strong>。但它们的本质维度完全不同：</p>
 <ul>
-<li><strong>并发（Concurrency）是【硬件和时间片】的魔术：</strong> 它关注的是 <strong>CPU 怎么分配算力</strong>。单核 CPU 通过把时间切成碎末，一会儿给线程 A，一会儿给线程 B，交替推进。这叫“并发地处理多个任务”。</li>
-<li><strong>异步（Asynchrony）是【控制流和消息通知】的解耦：</strong> 它关注的是 <strong>代码要不要在原地等待结果</strong>。比如单线程的 Node.js，它根本没有多线程，自然没有线程间的上下文切换。但它发起一个读文件请求后，代码立刻往下走，等文件读完了由内核发通知来触发回调。<strong>这叫单线程异步，它也是并发的一种实现方式。</strong></li>
+<li><strong>并发（Concurrency）是【硬件和时间片】的魔术：</strong>
+它关注的是 <strong>CPU 怎么分配算力</strong>。单核 CPU
+通过把时间切成碎末，一会儿给线程 A，一会儿给线程
+B，交替推进。这叫“并发地处理多个任务”。</li>
+<li><strong>异步（Asynchrony）是【控制流和消息通知】的解耦：</strong>
+它关注的是 <strong>代码要不要在原地等待结果</strong>。比如单线程的
+Node.js，它根本没有多线程，自然没有线程间的上下文切换。但它发起一个读文件请求后，代码立刻往下走，等文件读完了由内核发通知来触发回调。<strong>这叫单线程异步，它也是并发的一种实现方式。</strong></li>
 </ul>
-<p><strong>并发和并行：</strong> 聊的是 <strong>CPU 硬件怎么干活</strong>（单核交替干，还是多核同时干）。</p>
-<p><strong>同步和异步：</strong> 聊的是 <strong>代码逻辑怎么协调</strong>（必须在原地等结果，还是交出主动权等通知）。</p>
+<p><strong>并发和并行：</strong> 聊的是 <strong>CPU
+硬件怎么干活</strong>（单核交替干，还是多核同时干）。</p>
+<p><strong>同步和异步：</strong> 聊的是
+<strong>代码逻辑怎么协调</strong>（必须在原地等结果，还是交出主动权等通知）。</p>
 <p>那其实我理解同步异步的话，就从代码逻辑的角度理解了，比如如果是io密集型的话，就可以使用异步，单线程就可以实现并发；如果是涉及到数学运算的话，就是同步了，可以使用多线程实现并发</p>
-<h3 id="1-I-O-密集型：单线程-异步-极限并发"><a href="#1-I-O-密集型：单线程-异步-极限并发" class="headerlink" title="1. I/O 密集型：单线程 + 异步 = 极限并发"></a>1. I/O 密集型：单线程 + 异步 = 极限并发</h3><ul>
-<li><strong>你的理解：</strong> 完全没毛病。既然是读写文件、网络爬虫、或者像你的前端工具调用大模型 API（发出去等回复），瓶颈都在网卡和硬盘上。</li>
-<li><strong>AI 场景映射：</strong> 假设你要写一个脚本，向 1000 个不同的 LLM 接口发送 Prompt 并收集结果。</li>
-<li><strong>最优解：</strong> 绝对不要开 1000 个线程！直接用<strong>单线程异步（比如 Python 的 <code>asyncio</code>）</strong>。一个线程把 1000 个请求全扔出去，然后谁先回来就处理谁。全程没有线程切换的开销，单核 CPU 就能把网络带宽跑满。</li>
+<h3 id="io-密集型单线程-异步-极限并发">1. I/O 密集型：单线程 + 异步 =
+极限并发</h3>
+<ul>
+<li><strong>你的理解：</strong>
+完全没毛病。既然是读写文件、网络爬虫、或者像你的前端工具调用大模型
+API（发出去等回复），瓶颈都在网卡和硬盘上。</li>
+<li><strong>AI 场景映射：</strong> 假设你要写一个脚本，向 1000 个不同的
+LLM 接口发送 Prompt 并收集结果。</li>
+<li><strong>最优解：</strong> 绝对不要开 1000
+个线程！直接用<strong>单线程异步（比如 Python 的
+<code>asyncio</code>）</strong>。一个线程把 1000
+个请求全扔出去，然后谁先回来就处理谁。全程没有线程切换的开销，单核 CPU
+就能把网络带宽跑满。</li>
 </ul>
-<h3 id="2-计算密集型：同步代码-多线程-多进程-真正的并行（Parallelism）"><a href="#2-计算密集型：同步代码-多线程-多进程-真正的并行（Parallelism）" class="headerlink" title="2. 计算密集型：同步代码 + 多线程/多进程 = 真正的并行（Parallelism）"></a>2. 计算密集型：同步代码 + 多线程/多进程 = 真正的并行（Parallelism）</h3><ul>
-<li><strong>你的理解：</strong> 大方向非常准！对于纯数学运算，代码逻辑确实必须是同步的（前一步算不出来，后一步没法走）。但这里我要为你补充一个极为关键的进阶细节——<strong>我们要追求的是“并行”，而不仅仅是“并发”</strong>。</li>
-<li><strong>AI 场景映射：</strong> 假设你在优化大模型的 KV Cache，或者计算 Transformer 里的注意力矩阵乘法（$Q \times K^T$）。这是极其狂暴的 CPU/GPU 纯算力消耗。</li>
-<li><strong>核心细节修正：</strong><ul>
-<li>如果在<strong>单核 CPU</strong> 上，你开多个线程去算这个矩阵，操作系统会疯狂进行“上下文切换”（并发）。结果不仅不会变快，反而会因为频繁保存/恢复线程现场，导致<strong>算得更慢</strong>。</li>
-<li>所以，面对纯数学运算，我们的终极杀招是<strong>利用多核硬件（多核 CPU 或 GPU 数以千计的流处理器）</strong>。把大矩阵切成几十个小块，分配给几十个物理核心<strong>在同一绝对瞬间“同时计算”（并行）</strong>。</li>
+<h3 id="计算密集型同步代码-多线程多进程-真正的并行parallelism">2.
+计算密集型：同步代码 + 多线程/多进程 = 真正的并行（Parallelism）</h3>
+<ul>
+<li><strong>你的理解：</strong>
+大方向非常准！对于纯数学运算，代码逻辑确实必须是同步的（前一步算不出来，后一步没法走）。但这里我要为你补充一个极为关键的进阶细节——<strong>我们要追求的是“并行”，而不仅仅是“并发”</strong>。</li>
+<li><strong>AI 场景映射：</strong> 假设你在优化大模型的 KV
+Cache，或者计算 Transformer 里的注意力矩阵乘法（<span class="math inline"><em>Q</em> × <em>K</em><sup><em>T</em></sup></span>）。这是极其狂暴的
+CPU/GPU 纯算力消耗。</li>
+<li><strong>核心细节修正：</strong>
+<ul>
+<li>如果在<strong>单核 CPU</strong>
+上，你开多个线程去算这个矩阵，操作系统会疯狂进行“上下文切换”（并发）。结果不仅不会变快，反而会因为频繁保存/恢复线程现场，导致<strong>算得更慢</strong>。</li>
+<li>所以，面对纯数学运算，我们的终极杀招是<strong>利用多核硬件（多核 CPU
+或 GPU
+数以千计的流处理器）</strong>。把大矩阵切成几十个小块，分配给几十个物理核心<strong>在同一绝对瞬间“同时计算”（并行）</strong>。</li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<h2 id="竞争关系（Mutual-Exclusion）-和-协作关系（Synchronization）"><a href="#竞争关系（Mutual-Exclusion）-和-协作关系（Synchronization）" class="headerlink" title="竞争关系（Mutual Exclusion） 和 协作关系（Synchronization）"></a><strong>竞争关系（Mutual Exclusion）</strong> 和 <strong>协作关系（Synchronization）</strong></h2><div class="table-container">
+<h2 id="竞争关系mutual-exclusion-和-协作关系synchronization"><strong>竞争关系（Mutual
+Exclusion）</strong> 和
+<strong>协作关系（Synchronization）</strong></h2>
 <table>
+<colgroup>
+<col style="width: 15%">
+<col style="width: 40%">
+<col style="width: 44%">
+</colgroup>
 <thead>
 <tr>
 <th><strong>对比维度</strong></th>
@@ -897,103 +1267,174 @@
 </tr>
 </tbody>
 </table>
-</div>
-<h2 id="临界区"><a href="#临界区" class="headerlink" title="临界区"></a>临界区</h2><h3 id="什么是“临界区”？"><a href="#什么是“临界区”？" class="headerlink" title="什么是“临界区”？"></a>什么是“临界区”？</h3><p>✅ 核心定义</p>
-<p>在并发进程中，<strong>与共享变量有关的程序段</strong>叫做“临界区”（Critical Section）。</p>
+<h2 id="临界区">临界区</h2>
+<h3 id="什么是临界区">什么是“临界区”？</h3>
+<p>✅ 核心定义</p>
+<p>在并发进程中，<strong>与共享变量有关的程序段</strong>叫做“临界区”（Critical
+Section）。</p>
 <p>🔍 关键词解析</p>
 <ul>
-<li><strong>“并发进程”</strong>：多个进程或线程在宏观上同时运行，它们在不断地争夺 CPU 的执行权。</li>
+<li><strong>“并发进程”</strong>：多个进程或线程在宏观上同时运行，它们在不断地争夺
+CPU 的执行权。</li>
 <li><strong>“共享变量”</strong>：多个进程都能同时访问、读取和修改的公共资源（如全局变量、内存缓冲区、数据库连接、文件句柄等）。</li>
-<li><strong>“程序段”</strong>：它特指<strong>一段代码</strong>。比如 <code>counter += 1</code> 或者 <code>balance -= 100</code> 这样具体的底层操作指令。</li>
+<li><strong>“程序段”</strong>：它特指<strong>一段代码</strong>。比如
+<code>counter += 1</code> 或者 <code>balance -= 100</code>
+这样具体的底层操作指令。</li>
 </ul>
 <blockquote>
-<p>💡 <strong>简单说：</strong> <strong>临界区 = 操作共享资源的那一小段代码。</strong> 它不是内存空间，也不是硬件，它就是编辑器里那几行“高危”的代码流。</p>
+<p>💡 <strong>简单说：</strong> <strong>临界区 =
+操作共享资源的那一小段代码。</strong>
+它不是内存空间，也不是硬件，它就是编辑器里那几行“高危”的代码流。</p>
 </blockquote>
 <p>⚠️ 为什么重要？</p>
-<p>因为这段代码在 CPU 底层会被拆解为多条机器指令（读、改、写）。如果它被多个进程<strong>同时执行</strong>，就会由于执行顺序交错而导致<strong>竞态条件（Race Condition）</strong>，从而产生不可预测的数据崩坏和数据脏读。</p>
+<p>因为这段代码在 CPU
+底层会被拆解为多条机器指令（读、改、写）。如果它被多个进程<strong>同时执行</strong>，就会由于执行顺序交错而导致<strong>竞态条件（Race
+Condition）</strong>，从而产生不可预测的数据崩坏和数据脏读。</p>
 <p>🛡️ 如何避免错误？—— 互斥访问临界区</p>
-<p>只要能保证一个进程在临界区内执行时，<strong>绝不让另一个进程进入</strong>，即各个进程对共享变量的访问是<strong>强互斥</strong>的，就不会造成与时间有关的交错错误。 这就是“进程互斥”的核心思想，也是所有锁机制存在的唯一目的。</p>
-<h3 id="⚙️-临界区调度的三个原则（经典！）"><a href="#⚙️-临界区调度的三个原则（经典！）" class="headerlink" title="⚙️ 临界区调度的三个原则（经典！）"></a>⚙️ 临界区调度的三个原则（经典！）</h3><p>为了完美解决临界区的冲突问题，操作系统的底层的任何同步与锁机制（如互斥锁、信号量），都必须铁律般地同时满足以下三个黄金法则：</p>
-<h4 id="1️⃣-原则-1：一次至多一个进程能够进入临界区内执行-——-互斥性（Mutual-Exclusion）"><a href="#1️⃣-原则-1：一次至多一个进程能够进入临界区内执行-——-互斥性（Mutual-Exclusion）" class="headerlink" title="1️⃣ 原则 1：一次至多一个进程能够进入临界区内执行 —— 互斥性（Mutual Exclusion）"></a>1️⃣ 原则 1：一次至多一个进程能够进入临界区内执行 —— 互斥性（Mutual Exclusion）</h4><ul>
-<li><strong>硬核白话：</strong> 这是最基本、最不容侵犯的要求。</li>
-<li><strong>具体表现：</strong> 临界区内实行严格的“一夫当关”。任何绝对瞬间，最多只能有一个进程在里面。如果进程 A 已经抢先进入了临界区，进程 B 就必须在门外老老实实地挂起或等待，绝对不允许搞“双人同屏操作”。</li>
-</ul>
-<h4 id="2️⃣-原则-2：如果已有进程在临界区，其他试图进入的进程应等待-——-忙则等待（Progress）"><a href="#2️⃣-原则-2：如果已有进程在临界区，其他试图进入的进程应等待-——-忙则等待（Progress）" class="headerlink" title="2️⃣ 原则 2：如果已有进程在临界区，其他试图进入的进程应等待 —— 忙则等待（Progress）"></a>2️⃣ 原则 2：如果已有进程在临界区，其他试图进入的进程应等待 —— 忙则等待（Progress）</h4><ul>
-<li><strong>硬核白话：</strong> 做到“空闲让进，忙则排队”。</li>
-<li><strong>具体表现：</strong><ul>
-<li>当临界区里面<strong>空无一人</strong>时，任何想进去的进程都应该被<strong>立刻放行</strong>，不准无故拖延（空闲让进）。</li>
-<li>而一旦临界区<strong>已被占用</strong>，其他后来试图进入的进程就<strong>必须进入等待状态</strong>（忙则等待）。在理想的调度机制下，这些等待的进程应该被系统妥善挂起，而不是让 CPU 疯狂做无意义的空转自旋，从而白白浪费算力。</li>
-</ul>
-</li>
-</ul>
-<h4 id="3️⃣-原则-3：进入临界区内的进程应在有限时间内退出-——-有限等待（Bounded-Waiting）"><a href="#3️⃣-原则-3：进入临界区内的进程应在有限时间内退出-——-有限等待（Bounded-Waiting）" class="headerlink" title="3️⃣ 原则 3：进入临界区内的进程应在有限时间内退出 —— 有限等待（Bounded Waiting）"></a>3️⃣ 原则 3：进入临界区内的进程应在有限时间内退出 —— 有限等待（Bounded Waiting）</h4><ul>
-<li><strong>硬核白话：</strong> 严防死守，拒绝“无限期白嫖”和“有人被饿死”。</li>
-<li><strong>具体表现：</strong><ul>
-<li>任何进程进了临界区，办完事必须<strong>赶快出来并释放锁</strong>，绝对不允许在里面无限期卡死或者做耗时的死循环。</li>
-<li>对于在外面排队等待的进程，系统必须保证它们在<strong>有限的时间或步骤内一定能获得进入的机会</strong>（例如通过 FIFO 队列管理）。绝对不能让某个倒霉的进程永远在队列末尾干等，造成严重的“线程饥饿”。</li>
-</ul>
-</li>
-</ul>
-<h2 id="死锁（Deadlock）"><a href="#死锁（Deadlock）" class="headerlink" title="死锁（Deadlock）"></a>死锁（Deadlock）</h2><h3 id="一、-什么是死锁？"><a href="#一、-什么是死锁？" class="headerlink" title="一、 什么是死锁？"></a>一、 什么是死锁？</h3><blockquote>
-<p>📌 <strong>核心定义：</strong> 死锁是指<strong>两个或多个进程（线程）在执行过程中，因争夺共享资源而造成的一种互相等待的僵局</strong>。若无外力作用，它们都将无法向前推进，永远保持阻塞状态。</p>
-</blockquote>
-<h3 id="二、-死锁产生的四个必要条件（著名的-Coffman-条件）"><a href="#二、-死锁产生的四个必要条件（著名的-Coffman-条件）" class="headerlink" title="二、 死锁产生的四个必要条件（著名的 Coffman 条件）"></a>二、 死锁产生的四个必要条件（著名的 Coffman 条件）</h3><p>死锁的发生绝非偶然，它必须<strong>同时满足</strong>以下四个硬核条件。<strong>缺一不可</strong>，只要破坏其中任意一个，死锁就无法成立！</p>
-<h4 id="1-互斥条件（Mutual-Exclusion）"><a href="#1-互斥条件（Mutual-Exclusion）" class="headerlink" title="1. 互斥条件（Mutual Exclusion）"></a>1. 互斥条件（Mutual Exclusion）</h4><ul>
-<li><strong>含义：</strong> 资源是临界资源，具有排他性。在一个绝对瞬间，某资源只能被一个进程占用。如果别人想用，只能在外面等着。</li>
-</ul>
-<h4 id="2-请求与保持条件（Hold-and-Wait-占有并等待）"><a href="#2-请求与保持条件（Hold-and-Wait-占有并等待）" class="headerlink" title="2. 请求与保持条件（Hold and Wait / 占有并等待）"></a>2. 请求与保持条件（Hold and Wait / 占有并等待）</h4><ul>
-<li><strong>含义：</strong> 进程已经至少保持了一个资源，但又提出了新的资源请求；而该新资源已被其他进程占用，此时请求进程阻塞，但它<strong>对自己已经获得的资源死死不放</strong>。</li>
-</ul>
-<h4 id="3-不可剥夺条件（No-Preemption-非抢占）"><a href="#3-不可剥夺条件（No-Preemption-非抢占）" class="headerlink" title="3. 不可剥夺条件（No Preemption / 非抢占）"></a>3. 不可剥夺条件（No Preemption / 非抢占）</h4><ul>
-<li><strong>含义：</strong> 进程已获得的资源在未使用完之前，<strong>不能被其他进程强行夺走</strong>，只能由获得该资源的进程在用完后主动释放。</li>
-</ul>
-<h4 id="4-循环等待条件（Circular-Wait）"><a href="#4-循环等待条件（Circular-Wait）" class="headerlink" title="4. 循环等待条件（Circular Wait）"></a>4. 循环等待条件（Circular Wait）</h4><ul>
-<li><strong>含义：</strong> 必然存在一个进程资源的环形链。进程 P0 在等待 P1 占有的资源，P1 在等待 P2 占有的资源……Pn 在等待 P0 占有的资源。</li>
-</ul>
-<h2 id="银行家算法"><a href="#银行家算法" class="headerlink" title="银行家算法"></a>银行家算法</h2><p>要运行银行家算法，操作系统手里必须死死攥着 4 个核心矩阵/向量（假设有 $n$ 个进程，$m$ 种资源）：</p>
+<p>只要能保证一个进程在临界区内执行时，<strong>绝不让另一个进程进入</strong>，即各个进程对共享变量的访问是<strong>强互斥</strong>的，就不会造成与时间有关的交错错误。
+这就是“进程互斥”的核心思想，也是所有锁机制存在的唯一目的。</p>
+<h3 id="临界区调度的三个原则经典">⚙️ 临界区调度的三个原则（经典！）</h3>
+<p>为了完美解决临界区的冲突问题，操作系统的底层的任何同步与锁机制（如互斥锁、信号量），都必须铁律般地同时满足以下三个黄金法则：</p>
+<h4 id="原则-1一次至多一个进程能够进入临界区内执行-互斥性mutual-exclusion">1️⃣
+原则 1：一次至多一个进程能够进入临界区内执行 —— 互斥性（Mutual
+Exclusion）</h4>
 <ul>
-<li><strong>$Available$（可利用资源向量）：</strong> 长度为 $m$ 的数组。代表系统当前手里还剩多少闲置的“现金”。</li>
-<li><strong>$Max$（最大需求矩阵）：</strong> $n \times m$ 的矩阵。代表每个进程总共需要多少资源。</li>
-<li><strong>$Allocation$（已分配矩阵）：</strong> $n \times m$ 的矩阵。代表每个进程目前手里已经借走了多少资源。</li>
-<li><strong>$Need$（需求矩阵）：</strong> $n \times m$ 的矩阵。代表每个进程接下来<strong>还要</strong>申请多少资源。</li>
+<li><strong>硬核白话：</strong> 这是最基本、最不容侵犯的要求。</li>
+<li><strong>具体表现：</strong>
+临界区内实行严格的“一夫当关”。任何绝对瞬间，最多只能有一个进程在里面。如果进程
+A 已经抢先进入了临界区，进程 B
+就必须在门外老老实实地挂起或等待，绝对不允许搞“双人同屏操作”。</li>
 </ul>
-<script type="math/tex; mode=display">\text{Need}[i][j] = \text{Max}[i][j] - \text{Allocation}[i][j]</script><p>银行家算法在代码实现上，其实由两个嵌套的子算法组成：<strong>“资源请求算法”\</strong>和*<em>“安全性检查算法”*</em>。</p>
-<h3 id="1-资源请求算法（当进程-P-i-提出请求-Request-i-时）"><a href="#1-资源请求算法（当进程-P-i-提出请求-Request-i-时）" class="headerlink" title="1. 资源请求算法（当进程 $P_i$ 提出请求 $Request_i$ 时）"></a>1. 资源请求算法（当进程 $P_i$ 提出请求 $Request_i$ 时）</h3><ul>
-<li><strong>第一步：</strong> 检查 $Request_i \le Need_i$。如果你这次要的钱，超过了你当初申报的最大额度，直接判定非法，拒绝！</li>
-<li><strong>第二步：</strong> 检查 $Request_i \le Available$。如果你要的钱，我银行库房里现在根本没有这么多，对不起，你先去排队等着。</li>
-<li><strong>第三步（高潮）：</strong> 银行家在账本上<strong>假装</strong>把钱借出去，动态修改账本数据：<ul>
-<li>$Available = Available - Request_i$</li>
-<li>$Allocation_i = Allocation_i + Request_i$</li>
-<li>$Need_i = Need_i - Request_i$</li>
+<h4 id="原则-2如果已有进程在临界区其他试图进入的进程应等待-忙则等待progress">2️⃣
+原则 2：如果已有进程在临界区，其他试图进入的进程应等待 ——
+忙则等待（Progress）</h4>
+<ul>
+<li><strong>硬核白话：</strong> 做到“空闲让进，忙则排队”。</li>
+<li><strong>具体表现：</strong>
+<ul>
+<li>当临界区里面<strong>空无一人</strong>时，任何想进去的进程都应该被<strong>立刻放行</strong>，不准无故拖延（空闲让进）。</li>
+<li>而一旦临界区<strong>已被占用</strong>，其他后来试图进入的进程就<strong>必须进入等待状态</strong>（忙则等待）。在理想的调度机制下，这些等待的进程应该被系统妥善挂起，而不是让
+CPU 疯狂做无意义的空转自旋，从而白白浪费算力。</li>
+</ul></li>
 </ul>
-</li>
-<li><strong>第四步：</strong> 立刻调用下面的【安全性检查算法】。如果检查结果是“安全”，正式放款；如果结果是“不安全”，<strong>立刻账本回滚（Rollback）</strong>，拒绝放款，让进程挂起等待。</li>
+<h4 id="原则-3进入临界区内的进程应在有限时间内退出-有限等待bounded-waiting">3️⃣
+原则 3：进入临界区内的进程应在有限时间内退出 —— 有限等待（Bounded
+Waiting）</h4>
+<ul>
+<li><strong>硬核白话：</strong>
+严防死守，拒绝“无限期白嫖”和“有人被饿死”。</li>
+<li><strong>具体表现：</strong>
+<ul>
+<li>任何进程进了临界区，办完事必须<strong>赶快出来并释放锁</strong>，绝对不允许在里面无限期卡死或者做耗时的死循环。</li>
+<li>对于在外面排队等待的进程，系统必须保证它们在<strong>有限的时间或步骤内一定能获得进入的机会</strong>（例如通过
+FIFO
+队列管理）。绝对不能让某个倒霉的进程永远在队列末尾干等，造成严重的“线程饥饿”。</li>
+</ul></li>
 </ul>
-<h3 id="2-安全性检查算法（灵魂所在：寻找安全序列）"><a href="#2-安全性检查算法（灵魂所在：寻找安全序列）" class="headerlink" title="2. 安全性检查算法（灵魂所在：寻找安全序列）"></a>2. 安全性检查算法（灵魂所在：寻找安全序列）</h3><p>这个算法用来评估当前账本状态下，系统是否安全。</p>
-<ol>
-<li>设置两个临时辅助变量：<ul>
-<li><code>Work</code> 向量：初始值等于当前库房余钱 $Available$。</li>
-<li><code>Finish</code> 数组：长度为 $n$ 的布尔数组，初始全为 <code>false</code>（代表大家都没干完活）。</li>
+<h2 id="死锁deadlock">死锁（Deadlock）</h2>
+<h3 id="一-什么是死锁">一、 什么是死锁？</h3>
+<blockquote>
+<p>📌 <strong>核心定义：</strong>
+死锁是指<strong>两个或多个进程（线程）在执行过程中，因争夺共享资源而造成的一种互相等待的僵局</strong>。若无外力作用，它们都将无法向前推进，永远保持阻塞状态。</p>
+</blockquote>
+<h3 id="二-死锁产生的四个必要条件著名的-coffman-条件">二、
+死锁产生的四个必要条件（著名的 Coffman 条件）</h3>
+<p>死锁的发生绝非偶然，它必须<strong>同时满足</strong>以下四个硬核条件。<strong>缺一不可</strong>，只要破坏其中任意一个，死锁就无法成立！</p>
+<h4 id="互斥条件mutual-exclusion">1. 互斥条件（Mutual Exclusion）</h4>
+<ul>
+<li><strong>含义：</strong>
+资源是临界资源，具有排他性。在一个绝对瞬间，某资源只能被一个进程占用。如果别人想用，只能在外面等着。</li>
 </ul>
-</li>
-<li>在所有进程中，寻找一个同时满足以下两个条件的进程 $P_i$：<ul>
+<h4 id="请求与保持条件hold-and-wait-占有并等待">2. 请求与保持条件（Hold
+and Wait / 占有并等待）</h4>
+<ul>
+<li><strong>含义：</strong>
+进程已经至少保持了一个资源，但又提出了新的资源请求；而该新资源已被其他进程占用，此时请求进程阻塞，但它<strong>对自己已经获得的资源死死不放</strong>。</li>
+</ul>
+<h4 id="不可剥夺条件no-preemption-非抢占">3. 不可剥夺条件（No Preemption
+/ 非抢占）</h4>
+<ul>
+<li><strong>含义：</strong>
+进程已获得的资源在未使用完之前，<strong>不能被其他进程强行夺走</strong>，只能由获得该资源的进程在用完后主动释放。</li>
+</ul>
+<h4 id="循环等待条件circular-wait">4. 循环等待条件（Circular Wait）</h4>
+<ul>
+<li><strong>含义：</strong> 必然存在一个进程资源的环形链。进程 P0 在等待
+P1 占有的资源，P1 在等待 P2 占有的资源……Pn 在等待 P0 占有的资源。</li>
+</ul>
+<h2 id="银行家算法">银行家算法</h2>
+<p>要运行银行家算法，操作系统手里必须死死攥着 4 个核心矩阵/向量（假设有
+<span class="math inline"><em>n</em></span> 个进程，<span class="math inline"><em>m</em></span> 种资源）：</p>
+<ul>
+<li><strong><span class="math inline"><em>A</em><em>v</em><em>a</em><em>i</em><em>l</em><em>a</em><em>b</em><em>l</em><em>e</em></span>（可利用资源向量）：</strong>
+长度为 <span class="math inline"><em>m</em></span>
+的数组。代表系统当前手里还剩多少闲置的“现金”。</li>
+<li><strong><span class="math inline"><em>M</em><em>a</em><em>x</em></span>（最大需求矩阵）：</strong>
+<span class="math inline"><em>n</em> × <em>m</em></span>
+的矩阵。代表每个进程总共需要多少资源。</li>
+<li><strong><span class="math inline"><em>A</em><em>l</em><em>l</em><em>o</em><em>c</em><em>a</em><em>t</em><em>i</em><em>o</em><em>n</em></span>（已分配矩阵）：</strong>
+<span class="math inline"><em>n</em> × <em>m</em></span>
+的矩阵。代表每个进程目前手里已经借走了多少资源。</li>
+<li><strong><span class="math inline"><em>N</em><em>e</em><em>e</em><em>d</em></span>（需求矩阵）：</strong>
+<span class="math inline"><em>n</em> × <em>m</em></span>
+的矩阵。代表每个进程接下来<strong>还要</strong>申请多少资源。</li>
+</ul>
+<p><span class="math display">Need[<em>i</em>][<em>j</em>] = Max[<em>i</em>][<em>j</em>] − Allocation[<em>i</em>][<em>j</em>]</span></p>
+<p>银行家算法在代码实现上，其实由两个嵌套的子算法组成：<strong>“资源请求算法”*<em>和*</em>“安全性检查算法”</strong>。</p>
+<h3 id="资源请求算法当进程-p_i-提出请求-request_i-时">1.
+资源请求算法（当进程 <span class="math inline"><em>P</em><sub><em>i</em></sub></span> 提出请求
+<span class="math inline"><em>R</em><em>e</em><em>q</em><em>u</em><em>e</em><em>s</em><em>t</em><sub><em>i</em></sub></span>
+时）</h3>
+<ul>
+<li><strong>第一步：</strong> 检查 <span class="math inline"><em>R</em><em>e</em><em>q</em><em>u</em><em>e</em><em>s</em><em>t</em><sub><em>i</em></sub> ≤ <em>N</em><em>e</em><em>e</em><em>d</em><sub><em>i</em></sub></span>。如果你这次要的钱，超过了你当初申报的最大额度，直接判定非法，拒绝！</li>
+<li><strong>第二步：</strong> 检查 <span class="math inline"><em>R</em><em>e</em><em>q</em><em>u</em><em>e</em><em>s</em><em>t</em><sub><em>i</em></sub> ≤ <em>A</em><em>v</em><em>a</em><em>i</em><em>l</em><em>a</em><em>b</em><em>l</em><em>e</em></span>。如果你要的钱，我银行库房里现在根本没有这么多，对不起，你先去排队等着。</li>
+<li><strong>第三步（高潮）：</strong>
+银行家在账本上<strong>假装</strong>把钱借出去，动态修改账本数据：
+<ul>
+<li><span class="math inline"><em>A</em><em>v</em><em>a</em><em>i</em><em>l</em><em>a</em><em>b</em><em>l</em><em>e</em> = <em>A</em><em>v</em><em>a</em><em>i</em><em>l</em><em>a</em><em>b</em><em>l</em><em>e</em> − <em>R</em><em>e</em><em>q</em><em>u</em><em>e</em><em>s</em><em>t</em><sub><em>i</em></sub></span></li>
+<li><span class="math inline"><em>A</em><em>l</em><em>l</em><em>o</em><em>c</em><em>a</em><em>t</em><em>i</em><em>o</em><em>n</em><sub><em>i</em></sub> = <em>A</em><em>l</em><em>l</em><em>o</em><em>c</em><em>a</em><em>t</em><em>i</em><em>o</em><em>n</em><sub><em>i</em></sub> + <em>R</em><em>e</em><em>q</em><em>u</em><em>e</em><em>s</em><em>t</em><sub><em>i</em></sub></span></li>
+<li><span class="math inline"><em>N</em><em>e</em><em>e</em><em>d</em><sub><em>i</em></sub> = <em>N</em><em>e</em><em>e</em><em>d</em><sub><em>i</em></sub> − <em>R</em><em>e</em><em>q</em><em>u</em><em>e</em><em>s</em><em>t</em><sub><em>i</em></sub></span></li>
+</ul></li>
+<li><strong>第四步：</strong>
+立刻调用下面的【安全性检查算法】。如果检查结果是“安全”，正式放款；如果结果是“不安全”，<strong>立刻账本回滚（Rollback）</strong>，拒绝放款，让进程挂起等待。</li>
+</ul>
+<h3 id="安全性检查算法灵魂所在寻找安全序列">2.
+安全性检查算法（灵魂所在：寻找安全序列）</h3>
+<p>这个算法用来评估当前账本状态下，系统是否安全。</p>
+<ol type="1">
+<li>设置两个临时辅助变量：
+<ul>
+<li><code>Work</code> 向量：初始值等于当前库房余钱 <span class="math inline"><em>A</em><em>v</em><em>a</em><em>i</em><em>l</em><em>a</em><em>b</em><em>l</em><em>e</em></span>。</li>
+<li><code>Finish</code> 数组：长度为 <span class="math inline"><em>n</em></span> 的布尔数组，初始全为
+<code>false</code>（代表大家都没干完活）。</li>
+</ul></li>
+<li>在所有进程中，寻找一个同时满足以下两个条件的进程 <span class="math inline"><em>P</em><sub><em>i</em></sub></span>：
+<ul>
 <li><code>Finish[i] == false</code>（还没完事）</li>
-<li>$Need_i \le Work$（它接下来要的全部资源，我手里的 <code>Work</code> 够给）</li>
-</ul>
-</li>
-<li><strong>如果找到了：</strong> 假设把资源全给它，它顺利干完活，把之前吃进去的资源连本带利全吐出来。更新账本：<ul>
+<li><span class="math inline"><em>N</em><em>e</em><em>e</em><em>d</em><sub><em>i</em></sub> ≤ <em>W</em><em>o</em><em>r</em><em>k</em></span>（它接下来要的全部资源，我手里的
+<code>Work</code> 够给）</li>
+</ul></li>
+<li><strong>如果找到了：</strong>
+假设把资源全给它，它顺利干完活，把之前吃进去的资源连本带利全吐出来。更新账本：
+<ul>
 <li><code>Work = Work + Allocation_i</code>（把它的存货收回）</li>
 <li><code>Finish[i] = true</code></li>
 <li>返回步骤 2，继续找下一个能拯救的进程。</li>
-</ul>
-</li>
-<li><strong>结局判定：</strong><ul>
-<li>如果最后<strong>所有进程的 <code>Finish</code> 都变成了 <code>true</code></strong>，说明我们成功找到了一条让大家都活下去的<strong>安全序列</strong>（如 $P_1 \rightarrow P_3 \rightarrow P_2$），系统是<strong>安全</strong>的！</li>
-<li>如果找了一圈，发现有些进程 <code>Finish</code> 还是 <code>false</code>，但手里剩下的 <code>Work</code> 已经不够满足任何一个人的 <code>Need</code> 了，系统就是<strong>不安全</strong>的！</li>
-</ul>
-</li>
+</ul></li>
+<li><strong>结局判定：</strong>
+<ul>
+<li>如果最后<strong>所有进程的 <code>Finish</code> 都变成了
+<code>true</code></strong>，说明我们成功找到了一条让大家都活下去的<strong>安全序列</strong>（如
+<span class="math inline"><em>P</em><sub>1</sub> → <em>P</em><sub>3</sub> → <em>P</em><sub>2</sub></span>），系统是<strong>安全</strong>的！</li>
+<li>如果找了一圈，发现有些进程 <code>Finish</code> 还是
+<code>false</code>，但手里剩下的 <code>Work</code>
+已经不够满足任何一个人的 <code>Need</code>
+了，系统就是<strong>不安全</strong>的！</li>
+</ul></li>
 </ol>
-<h2 id="生产者消费者问题（Producer-Consumer-Problem）"><a href="#生产者消费者问题（Producer-Consumer-Problem）" class="headerlink" title="生产者消费者问题（Producer-Consumer Problem）"></a>生产者消费者问题（Producer-Consumer Problem）</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">semaphore mutex = 1; // 互斥锁</span><br><span class="line">semaphore empty = N; // 空位数量，一开始是满的 N</span><br><span class="line">semaphore full  = 0; // 产品数量，一开始是 0</span><br><span class="line"></span><br><span class="line">// ──────────────── 生产者线程 ────────────────</span><br><span class="line">void producer() &#123;</span><br><span class="line">    while(true) &#123;</span><br><span class="line">        // 1. 生产一个产品 item</span><br><span class="line">        </span><br><span class="line">        sem_wait(&amp;empty);  // 🚨 检查有没有空位 (empty - 1)</span><br><span class="line">        sem_wait(&amp;mutex);  // 🔒 锁住缓冲区，准备塞数据</span><br><span class="line">        </span><br><span class="line">        // ─── 临界区 ───</span><br><span class="line">        // 把 item 放入缓冲区</span><br><span class="line">        // ──────────────</span><br><span class="line">        </span><br><span class="line">        sem_post(&amp;mutex);  // 🔓 解锁缓冲区</span><br><span class="line">        sem_post(&amp;full);   // 📢 增加一个产品数量，并顺便拍醒可能在睡觉的消费者 (full + 1)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// ──────────────── 消费者线程 ────────────────</span><br><span class="line">void consumer() &#123;</span><br><span class="line">    while(true) &#123;</span><br><span class="line">        sem_wait(&amp;full);   // 🚨 检查有没有产品 (full - 1)</span><br><span class="line">        sem_wait(&amp;mutex);  // 🔒 锁住缓冲区，准备拿数据</span><br><span class="line">        </span><br><span class="line">        // ─── 临界区 ───</span><br><span class="line">        // 从缓冲区拿走 item</span><br><span class="line">        // ──────────────</span><br><span class="line">        </span><br><span class="line">        sem_post(&amp;mutex);  // 🔓 解锁缓冲区</span><br><span class="line">        sem_post(&amp;empty);  // 📢 腾出一个空位，并顺便拍醒可能在睡觉的生产者 (empty + 1)</span><br><span class="line">        </span><br><span class="line">        // 2. 消费这个产品 item</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="生产者消费者问题producer-consumer-problem">生产者消费者问题（Producer-Consumer
+Problem）</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">semaphore mutex = 1; // 互斥锁</span><br><span class="line">semaphore empty = N; // 空位数量，一开始是满的 N</span><br><span class="line">semaphore full  = 0; // 产品数量，一开始是 0</span><br><span class="line"></span><br><span class="line">// ──────────────── 生产者线程 ────────────────</span><br><span class="line">void producer() &#123;</span><br><span class="line">    while(true) &#123;</span><br><span class="line">        // 1. 生产一个产品 item</span><br><span class="line">        </span><br><span class="line">        sem_wait(&amp;empty);  // 🚨 检查有没有空位 (empty - 1)</span><br><span class="line">        sem_wait(&amp;mutex);  // 🔒 锁住缓冲区，准备塞数据</span><br><span class="line">        </span><br><span class="line">        // ─── 临界区 ───</span><br><span class="line">        // 把 item 放入缓冲区</span><br><span class="line">        // ──────────────</span><br><span class="line">        </span><br><span class="line">        sem_post(&amp;mutex);  // 🔓 解锁缓冲区</span><br><span class="line">        sem_post(&amp;full);   // 📢 增加一个产品数量，并顺便拍醒可能在睡觉的消费者 (full + 1)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// ──────────────── 消费者线程 ────────────────</span><br><span class="line">void consumer() &#123;</span><br><span class="line">    while(true) &#123;</span><br><span class="line">        sem_wait(&amp;full);   // 🚨 检查有没有产品 (full - 1)</span><br><span class="line">        sem_wait(&amp;mutex);  // 🔒 锁住缓冲区，准备拿数据</span><br><span class="line">        </span><br><span class="line">        // ─── 临界区 ───</span><br><span class="line">        // 从缓冲区拿走 item</span><br><span class="line">        // ──────────────</span><br><span class="line">        </span><br><span class="line">        sem_post(&amp;mutex);  // 🔓 解锁缓冲区</span><br><span class="line">        sem_post(&amp;empty);  // 📢 腾出一个空位，并顺便拍醒可能在睡觉的生产者 (empty + 1)</span><br><span class="line">        </span><br><span class="line">        // 2. 消费这个产品 item</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -1029,13 +1470,13 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2026/06/02/%E5%AE%9E%E4%B9%A0/%E9%9D%A2%E8%AF%95/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="prev" title="408八股——数据结构">
-                  <i class="fa fa-angle-left"></i> 408八股——数据结构
+                <a href="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/kvcache/" rel="prev" title="kvcache">
+                  <i class="fa fa-angle-left"></i> kvcache
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%A1%A8%E5%BE%81%E5%B7%A5%E7%A8%8B%E4%B8%8E%E6%BF%80%E6%B4%BB%E5%BC%95%E5%AF%BC/" rel="next" title="表征工程与激活引导">
-                  表征工程与激活引导 <i class="fa fa-angle-right"></i>
+                <a href="/2026/06/02/%E5%AE%9E%E4%B9%A0/%E9%9D%A2%E8%AF%95/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="next" title="408八股——数据结构">
+                  408八股——数据结构 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>

@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="现有方法的致命缺陷当前免训练的方法主要有对比解码（Contrastive Decoding）和注意力干预（Attention Intervention）。但作者指出，它们普遍存在一个隐式的错误假设——“同质化假设”（Homogeneous Assumption）：    一刀切的弊端：这些方法在整个文本生成的过程中，施加的是全局统一、上下文无关（Context-agnostic）的惩罚。   预算">
+    <meta name="description" content="现有方法的致命缺陷 当前免训练的方法主要有对比解码（Contrastive Decoding）和注意力干预（Attention Intervention）。但作者指出，它们普遍存在一个隐式的错误假设——“同质化假设”（Homogeneous Assumption）：  一刀切的弊端：这些方法在整个文本生成的过程中，施加的是全局统一、上下文无关（Context-agnostic）的惩罚。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="论文阅读——TSAI">
 <meta property="og:url" content="http://example.com/2026/07/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94TSAI/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="现有方法的致命缺陷当前免训练的方法主要有对比解码（Contrastive Decoding）和注意力干预（Attention Intervention）。但作者指出，它们普遍存在一个隐式的错误假设——“同质化假设”（Homogeneous Assumption）：    一刀切的弊端：这些方法在整个文本生成的过程中，施加的是全局统一、上下文无关（Context-agnostic）的惩罚。   预算">
+<meta property="og:description" content="现有方法的致命缺陷 当前免训练的方法主要有对比解码（Contrastive Decoding）和注意力干预（Attention Intervention）。但作者指出，它们普遍存在一个隐式的错误假设——“同质化假设”（Homogeneous Assumption）：  一刀切的弊端：这些方法在整个文本生成的过程中，施加的是全局统一、上下文无关（Context-agnostic）的惩罚。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2026/07/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94TSAI/image-20260711130108252.png">
 <meta property="og:image" content="http://example.com/2026/07/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94TSAI/image-20260711135118270.png">
@@ -147,7 +147,33 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%8E%B0%E6%9C%89%E6%96%B9%E6%B3%95%E7%9A%84%E8%87%B4%E5%91%BD%E7%BC%BA%E9%99%B7"><span class="nav-number">1.</span> <span class="nav-text">现有方法的致命缺陷</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%8F%91%E7%8E%B0%EF%BC%9A%E5%B9%BB%E8%A7%89%E7%9A%84%E2%80%9C%E5%A4%9A%E7%BB%B4%E5%BC%82%E8%B4%A8%E6%80%A7%E2%80%9D"><span class="nav-number">2.</span> <span class="nav-text">核心发现：幻觉的“多维异质性”</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#a-%E5%9B%BE%EF%BC%9A%E7%94%9F%E6%88%90%E7%9A%84%E5%AE%9E%E4%BD%93%E5%9C%A8%E5%8F%A5%E5%AD%90%E4%B8%AD%E7%9A%84%E4%BD%8D%E7%BD%AE%E5%88%86%E5%B8%83-Temporal-Position"><span class="nav-number">2.1.</span> <span class="nav-text">(a) 图：生成的实体在句子中的位置分布 (Temporal Position)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#b-%E5%9B%BE%EF%BC%9A%E4%B8%8D%E5%90%8C%E5%B1%82%E5%AF%B9%E5%8E%86%E5%8F%B2%E8%AF%AD%E4%B9%89%E7%9A%84%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%AF%94%E4%BE%8B-Attention-Ratio"><span class="nav-number">2.2.</span> <span class="nav-text">(b) 图：不同层对历史语义的注意力比例 (Attention Ratio)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E4%B8%AA%E6%9C%80%E6%A0%B8%E5%BF%83%E7%9A%84%E7%BB%B4%E5%BA%A6"><span class="nav-number">2.3.</span> <span class="nav-text">三个最核心的维度</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%8B%86%E5%88%86%E4%BA%86%E2%80%9C%E6%97%B6%E9%97%B4%E8%BD%B4%E2%80%9D%EF%BC%9A%E4%BB%8E%E5%85%A8%E5%B1%80%E9%80%9A%E7%BD%9A%E5%88%B0%E5%90%8E%E6%9C%9F%E9%87%8D%E7%BD%9A-Temporal-Decoupling"><span class="nav-number">2.3.1.</span> <span class="nav-text">1. 拆分了“时间轴”：从全局通罚到后期重罚 (Temporal Decoupling)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%8B%86%E5%88%86%E4%BA%86%E2%80%9C%E8%AF%AD%E4%B9%89%E8%BD%B4%E2%80%9D%EF%BC%9A%E4%BB%8E%E6%97%A0%E5%B7%AE%E5%88%AB%E5%89%A5%E5%A4%BA%E5%88%B0%E8%AF%AD%E6%B3%95%E4%BF%9D%E6%8A%A4-Semantic-Decoupling"><span class="nav-number">2.3.2.</span> <span class="nav-text">2. 拆分了“语义轴”：从无差别剥夺到语法保护 (Semantic Decoupling)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%8B%86%E5%88%86%E4%BA%86%E2%80%9C%E8%A1%A5%E5%81%BF%E5%8E%BB%E5%90%91%E2%80%9D%EF%BC%9A%E4%BB%8E%E5%8D%95%E5%90%91%E8%A7%86%E8%A7%89%E6%B3%A8%E5%85%A5%E5%88%B0%E5%8F%8C%E7%89%B9%E5%BE%81%E7%89%B9%E5%BE%81%E8%A1%A5%E5%81%BF-Dual-Axis-Compensation"><span class="nav-number">2.3.3.</span> <span class="nav-text">3. 拆分了“补偿去向”：从单向视觉注入到双特征特征补偿 (Dual-Axis Compensation)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="nav-number">3.</span> <span class="nav-text">相关工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Logit-%E6%A6%82%E7%8E%87%E5%88%86%E5%B8%83%E6%A0%A1%E5%87%86%E6%B5%81%E6%B4%BE%EF%BC%88Logit-level-amp-Decoding-Strategies%EF%BC%89"><span class="nav-number">3.0.1.</span> <span class="nav-text">1. Logit 概率分布校准流派（Logit-level &amp; Decoding Strategies）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%A4%9A%E9%98%B6%E6%AE%B5%E5%B7%A5%E4%BD%9C%E6%B5%81%E6%B5%81%E6%B4%BE%EF%BC%88Multi-stage-Pipeline-Interventions%EF%BC%89"><span class="nav-number">3.0.2.</span> <span class="nav-text">2. 多阶段工作流流派（Multi-stage Pipeline Interventions）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%B3%A8%E6%84%8F%E5%8A%9B%E7%9F%A9%E9%98%B5%E5%B9%B2%E9%A2%84%E6%B5%81%E6%B4%BE%EF%BC%88Attention-Interventions%EF%BC%89"><span class="nav-number">3.0.3.</span> <span class="nav-text">3. 注意力矩阵干预流派（Attention Interventions）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TSAI-%E6%A1%86%E6%9E%B6%E6%80%BB%E8%A7%88"><span class="nav-number">4.</span> <span class="nav-text">TSAI 框架总览</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9AToken-%E7%A9%BA%E9%97%B4%E5%88%92%E5%88%86-Token-Partitioning"><span class="nav-number">4.0.1.</span> <span class="nav-text">第一步：Token 空间划分 (Token Partitioning)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E5%B9%B2%E9%A2%84%E9%98%B6%E6%AE%B5%EF%BC%88Intervention-Stages%EF%BC%89"><span class="nav-number">4.0.2.</span> <span class="nav-text">第二步：干预阶段（Intervention Stages）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%EF%B8%8F%E2%83%A3-%E6%B5%85%E5%B1%82%E7%B3%BB%E7%BB%9F%E6%B3%A8%E6%84%8F%E5%8A%9B%E5%9B%9E%E6%94%B6-Shallow-Stage-System-Recycling"><span class="nav-number">4.0.2.1.</span> <span class="nav-text">1️⃣ 浅层系统注意力回收 (Shallow-Stage System Recycling)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2%EF%B8%8F%E2%83%A3-%E5%AE%BD%E8%B7%A8%E5%BA%A6%E5%8F%8C%E8%BD%B4%E5%8E%86%E5%8F%B2%E6%8A%91%E5%88%B6-Broad-Span-Dual-Axis-Historical-Suppression"><span class="nav-number">4.0.2.2.</span> <span class="nav-text">2️⃣ 宽跨度双轴历史抑制 (Broad-Span Dual-Axis Historical Suppression)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E7%94%9F%E6%88%90%E4%B8%8E%E6%9C%80%E7%BB%88%E6%A6%82%E7%8E%87%E8%BE%93%E5%87%BA-Unified-Output"><span class="nav-number">4.0.3.</span> <span class="nav-text">第三步：生成与最终概率输出 (Unified Output)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Method"><span class="nav-number">5.</span> <span class="nav-text">Method</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E9%97%AE%E9%A2%98%E5%BB%BA%E6%A8%A1%E4%B8%8E-Token-%E7%A9%BA%E9%97%B4%E5%88%92%E5%88%86-Problem-Formulation"><span class="nav-number">5.1.</span> <span class="nav-text">1. 问题建模与 Token 空间划分 (Problem Formulation)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%B5%85%E5%B1%82%E7%B3%BB%E7%BB%9F%E6%B3%A8%E6%84%8F%E5%8A%9B%E5%9B%9E%E6%94%B6-Shallow-Stage-System-Recycling"><span class="nav-number">5.1.1.</span> <span class="nav-text">2. 浅层系统注意力回收 (Shallow-Stage System Recycling)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%AE%BD%E8%B7%A8%E5%BA%A6%E5%8F%8C%E8%BD%B4%E5%8E%86%E5%8F%B2%E6%8A%91%E5%88%B6-Broad-Span-Dual-Axis-Historical-Suppression"><span class="nav-number">5.1.2.</span> <span class="nav-text">3. 宽跨度双轴历史抑制 (Broad-Span Dual-Axis Historical Suppression)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%B4%E4%B8%80%EF%BC%9A%E6%97%B6%E9%97%B4%E8%BD%B4-%E2%80%94%E2%80%94-%E6%AD%A5%E8%BF%9B%E5%BC%8F%E6%B8%90%E8%BF%9B%E6%83%A9%E7%BD%9A-Temporal-Axis"><span class="nav-number">5.1.3.</span> <span class="nav-text">轴一：时间轴 —— 步进式渐进惩罚 (Temporal Axis)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E4%B8%80%E5%88%80%E5%88%87%EF%BC%9F"><span class="nav-number">5.1.3.1.</span> <span class="nav-text">1. 为什么不能一刀切？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.1.3.2.</span> <span class="nav-text">2. 数学公式实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%F0%9F%92%A1-%E6%97%B6%E9%97%B4%E8%BD%B4%E7%9A%84%E6%95%88%E6%9E%9C%EF%BC%9A"><span class="nav-number">5.1.3.3.</span> <span class="nav-text">💡 时间轴的效果：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%B4%E4%BA%8C%EF%BC%9A%E8%AF%AD%E4%B9%89%E8%BD%B4-%E2%80%94%E2%80%94-%E8%AF%AD%E6%B3%95%E5%B7%AE%E5%BC%82%E5%8C%96%E5%89%A5%E5%A4%BA-Semantic-Axis"><span class="nav-number">5.1.4.</span> <span class="nav-text">轴二：语义轴 —— 语法差异化剥夺 (Semantic Axis)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%8B%A6%E6%88%AA%E7%BD%91%E9%87%8C%E7%9A%84%E2%80%9C%E6%97%A0%E8%BE%9C%E8%80%85%E2%80%9D"><span class="nav-number">5.1.4.1.</span> <span class="nav-text">1. 拦截网里的“无辜者”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F%E5%AE%9E%E7%8E%B0-1"><span class="nav-number">5.1.4.2.</span> <span class="nav-text">2. 数学公式实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%92%B0-%E7%BB%88%E5%B1%80%EF%BC%9A%E4%BB%8E%E5%8E%86%E5%8F%B2%E6%89%93%E5%8A%AB%EF%BC%8C%E5%85%A8%E9%A2%9D%E8%BF%94%E8%BF%98%E8%A7%86%E8%A7%89%E4%B8%8E%E6%8C%87%E4%BB%A4"><span class="nav-number">5.1.5.</span> <span class="nav-text">💰 终局：从历史打劫，全额返还视觉与指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E7%BB%9F%E4%B8%80%E5%B9%B2%E9%A2%84%E5%85%AC%E5%BC%8F%E4%B8%8E%E5%8F%8C%E7%89%B9%E5%BE%81%E7%89%B9%E5%BE%81%E8%A1%A5%E5%81%BF-Unified-Formulation"><span class="nav-number">5.1.6.</span> <span class="nav-text">4. 统一干预公式与双特征特征补偿 (Unified Formulation)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Experiments"><span class="nav-number">6.</span> <span class="nav-text">Experiments</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Decoding-Overhead-%E8%A7%A3%E7%A0%81%E5%BC%80%E9%94%80%E5%88%86%E6%9E%90"><span class="nav-number">6.1.</span> <span class="nav-text">Decoding Overhead (解码开销分析)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%94%8D-%E4%B8%BA%E4%BB%80%E4%B9%88-TSAI-%E8%83%BD%E5%A4%9F%E6%AD%BB%E6%AD%BB%E5%AE%88%E4%BD%8F-N-text-forward-1-%E7%9A%84%E5%BA%95%E7%BA%BF%EF%BC%9F"><span class="nav-number">6.1.1.</span> <span class="nav-text">🔍 为什么 TSAI 能够死死守住 $N_{\text{forward}} &#x3D; 1$ 的底线？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rebuttal"><span class="nav-number">7.</span> <span class="nav-text">rebuttal</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%92%88%E5%AF%B9%E2%80%9C%E7%9B%B8%E6%AF%94%E5%89%8D%E4%BD%9C-AttnReal-%E6%A6%82%E5%BF%B5%E5%88%9B%E6%96%B0%E6%80%A7%E4%B8%8D%E8%B6%B3%E2%80%9D%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">7.0.1.</span> <span class="nav-text">针对“相比前作 AttnReal 概念创新性不足”的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%92%88%E5%AF%B9%E2%80%9C%E5%8D%95%E6%AC%A1%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E5%B9%B6%E4%B8%8D%E7%AD%89%E5%90%8C%E4%BA%8E%E7%9C%9F%E6%AD%A3%E4%BD%8E%E5%BC%80%E9%94%80%E2%80%9D%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">7.0.2.</span> <span class="nav-text">针对“单次前向传播并不等同于真正低开销”的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%92%88%E5%AF%B9%E2%80%9C%E5%A6%82%E6%9E%9C%E5%9B%BA%E5%AE%9A%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%90%E9%95%BF%E5%BA%A6%E4%B8%BA-64%EF%BC%8C%E7%BB%93%E6%9E%9C%E4%BC%9A%E6%80%8E%E6%A0%B7%E2%80%9D%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">7.0.3.</span> <span class="nav-text">针对“如果固定文本生成长度为 64，结果会怎样”的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%95%BF%E6%96%87%E6%9C%AC%E5%90%8E%E6%9C%9F%E5%8D%95%E8%B0%83%E9%80%92%E5%A2%9E%E6%83%A9%E7%BD%9A%E6%98%AF%E5%90%A6%E4%BC%9A%E5%AF%BC%E8%87%B4%E6%A8%A1%E5%9E%8B%E5%A4%B1%E5%BF%86%E3%80%81%E5%A4%B1%E5%8E%BB%E8%BF%9E%E8%B4%AF%E6%80%A7"><span class="nav-number">7.0.4.</span> <span class="nav-text">长文本后期单调递增惩罚是否会导致模型失忆、失去连贯性</span></a></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%8E%B0%E6%9C%89%E6%96%B9%E6%B3%95%E7%9A%84%E8%87%B4%E5%91%BD%E7%BC%BA%E9%99%B7"><span class="nav-number">1.</span> <span class="nav-text">现有方法的致命缺陷</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%8F%91%E7%8E%B0%E5%B9%BB%E8%A7%89%E7%9A%84%E5%A4%9A%E7%BB%B4%E5%BC%82%E8%B4%A8%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text">核心发现：幻觉的“多维异质性”</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#a-%E5%9B%BE%E7%94%9F%E6%88%90%E7%9A%84%E5%AE%9E%E4%BD%93%E5%9C%A8%E5%8F%A5%E5%AD%90%E4%B8%AD%E7%9A%84%E4%BD%8D%E7%BD%AE%E5%88%86%E5%B8%83-temporal-position"><span class="nav-number">2.1.</span> <span class="nav-text">(a)
+图：生成的实体在句子中的位置分布 (Temporal Position)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#b-%E5%9B%BE%E4%B8%8D%E5%90%8C%E5%B1%82%E5%AF%B9%E5%8E%86%E5%8F%B2%E8%AF%AD%E4%B9%89%E7%9A%84%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%AF%94%E4%BE%8B-attention-ratio"><span class="nav-number">2.2.</span> <span class="nav-text">(b)
+图：不同层对历史语义的注意力比例 (Attention Ratio)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E4%B8%AA%E6%9C%80%E6%A0%B8%E5%BF%83%E7%9A%84%E7%BB%B4%E5%BA%A6"><span class="nav-number">2.3.</span> <span class="nav-text">三个最核心的维度</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%86%E5%88%86%E4%BA%86%E6%97%B6%E9%97%B4%E8%BD%B4%E4%BB%8E%E5%85%A8%E5%B1%80%E9%80%9A%E7%BD%9A%E5%88%B0%E5%90%8E%E6%9C%9F%E9%87%8D%E7%BD%9A-temporal-decoupling"><span class="nav-number">2.3.1.</span> <span class="nav-text">1.
+拆分了“时间轴”：从全局通罚到后期重罚 (Temporal Decoupling)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%86%E5%88%86%E4%BA%86%E8%AF%AD%E4%B9%89%E8%BD%B4%E4%BB%8E%E6%97%A0%E5%B7%AE%E5%88%AB%E5%89%A5%E5%A4%BA%E5%88%B0%E8%AF%AD%E6%B3%95%E4%BF%9D%E6%8A%A4-semantic-decoupling"><span class="nav-number">2.3.2.</span> <span class="nav-text">2.
+拆分了“语义轴”：从无差别剥夺到语法保护 (Semantic Decoupling)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%86%E5%88%86%E4%BA%86%E8%A1%A5%E5%81%BF%E5%8E%BB%E5%90%91%E4%BB%8E%E5%8D%95%E5%90%91%E8%A7%86%E8%A7%89%E6%B3%A8%E5%85%A5%E5%88%B0%E5%8F%8C%E7%89%B9%E5%BE%81%E7%89%B9%E5%BE%81%E8%A1%A5%E5%81%BF-dual-axis-compensation"><span class="nav-number">2.3.3.</span> <span class="nav-text">3.
+拆分了“补偿去向”：从单向视觉注入到双特征特征补偿 (Dual-Axis
+Compensation)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="nav-number">3.</span> <span class="nav-text">相关工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#logit-%E6%A6%82%E7%8E%87%E5%88%86%E5%B8%83%E6%A0%A1%E5%87%86%E6%B5%81%E6%B4%BElogit-level-decoding-strategies"><span class="nav-number">3.0.1.</span> <span class="nav-text">1. Logit
+概率分布校准流派（Logit-level &amp; Decoding Strategies）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E9%98%B6%E6%AE%B5%E5%B7%A5%E4%BD%9C%E6%B5%81%E6%B5%81%E6%B4%BEmulti-stage-pipeline-interventions"><span class="nav-number">3.0.2.</span> <span class="nav-text">2.
+多阶段工作流流派（Multi-stage Pipeline Interventions）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E5%8A%9B%E7%9F%A9%E9%98%B5%E5%B9%B2%E9%A2%84%E6%B5%81%E6%B4%BEattention-interventions"><span class="nav-number">3.0.3.</span> <span class="nav-text">3.
+注意力矩阵干预流派（Attention Interventions）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tsai-%E6%A1%86%E6%9E%B6%E6%80%BB%E8%A7%88"><span class="nav-number">4.</span> <span class="nav-text">TSAI 框架总览</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5token-%E7%A9%BA%E9%97%B4%E5%88%92%E5%88%86-token-partitioning"><span class="nav-number">4.0.1.</span> <span class="nav-text">第一步：Token 空间划分
+(Token Partitioning)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%E5%B9%B2%E9%A2%84%E9%98%B6%E6%AE%B5intervention-stages"><span class="nav-number">4.0.2.</span> <span class="nav-text">第二步：干预阶段（Intervention
+Stages）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%85%E5%B1%82%E7%B3%BB%E7%BB%9F%E6%B3%A8%E6%84%8F%E5%8A%9B%E5%9B%9E%E6%94%B6-shallow-stage-system-recycling"><span class="nav-number">4.0.2.1.</span> <span class="nav-text">1️⃣
+浅层系统注意力回收 (Shallow-Stage System Recycling)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%BD%E8%B7%A8%E5%BA%A6%E5%8F%8C%E8%BD%B4%E5%8E%86%E5%8F%B2%E6%8A%91%E5%88%B6-broad-span-dual-axis-historical-suppression"><span class="nav-number">4.0.2.2.</span> <span class="nav-text">2️⃣
+宽跨度双轴历史抑制 (Broad-Span Dual-Axis Historical Suppression)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%E7%94%9F%E6%88%90%E4%B8%8E%E6%9C%80%E7%BB%88%E6%A6%82%E7%8E%87%E8%BE%93%E5%87%BA-unified-output"><span class="nav-number">4.0.3.</span> <span class="nav-text">第三步：生成与最终概率输出
+(Unified Output)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#method"><span class="nav-number">5.</span> <span class="nav-text">Method</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%BB%BA%E6%A8%A1%E4%B8%8E-token-%E7%A9%BA%E9%97%B4%E5%88%92%E5%88%86-problem-formulation"><span class="nav-number">5.1.</span> <span class="nav-text">1. 问题建模与
+Token 空间划分 (Problem Formulation)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%85%E5%B1%82%E7%B3%BB%E7%BB%9F%E6%B3%A8%E6%84%8F%E5%8A%9B%E5%9B%9E%E6%94%B6-shallow-stage-system-recycling-1"><span class="nav-number">5.1.1.</span> <span class="nav-text">2.
+浅层系统注意力回收 (Shallow-Stage System Recycling)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%BD%E8%B7%A8%E5%BA%A6%E5%8F%8C%E8%BD%B4%E5%8E%86%E5%8F%B2%E6%8A%91%E5%88%B6-broad-span-dual-axis-historical-suppression-1"><span class="nav-number">5.1.2.</span> <span class="nav-text">3.
+宽跨度双轴历史抑制 (Broad-Span Dual-Axis Historical Suppression)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%B4%E4%B8%80%E6%97%B6%E9%97%B4%E8%BD%B4-%E6%AD%A5%E8%BF%9B%E5%BC%8F%E6%B8%90%E8%BF%9B%E6%83%A9%E7%BD%9A-temporal-axis"><span class="nav-number">5.1.3.</span> <span class="nav-text">轴一：时间轴 ——
+步进式渐进惩罚 (Temporal Axis)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E4%B8%80%E5%88%80%E5%88%87"><span class="nav-number">5.1.3.1.</span> <span class="nav-text">1. 为什么不能一刀切？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.1.3.2.</span> <span class="nav-text">2. 数学公式实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E8%BD%B4%E7%9A%84%E6%95%88%E6%9E%9C"><span class="nav-number">5.1.3.3.</span> <span class="nav-text">💡 时间轴的效果：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%B4%E4%BA%8C%E8%AF%AD%E4%B9%89%E8%BD%B4-%E8%AF%AD%E6%B3%95%E5%B7%AE%E5%BC%82%E5%8C%96%E5%89%A5%E5%A4%BA-semantic-axis"><span class="nav-number">5.1.4.</span> <span class="nav-text">轴二：语义轴 ——
+语法差异化剥夺 (Semantic Axis)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8B%A6%E6%88%AA%E7%BD%91%E9%87%8C%E7%9A%84%E6%97%A0%E8%BE%9C%E8%80%85"><span class="nav-number">5.1.4.1.</span> <span class="nav-text">1. 拦截网里的“无辜者”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F%E5%AE%9E%E7%8E%B0-1"><span class="nav-number">5.1.4.2.</span> <span class="nav-text">2. 数学公式实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%88%E5%B1%80%E4%BB%8E%E5%8E%86%E5%8F%B2%E6%89%93%E5%8A%AB%E5%85%A8%E9%A2%9D%E8%BF%94%E8%BF%98%E8%A7%86%E8%A7%89%E4%B8%8E%E6%8C%87%E4%BB%A4"><span class="nav-number">5.1.5.</span> <span class="nav-text">💰
+终局：从历史打劫，全额返还视觉与指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%9F%E4%B8%80%E5%B9%B2%E9%A2%84%E5%85%AC%E5%BC%8F%E4%B8%8E%E5%8F%8C%E7%89%B9%E5%BE%81%E7%89%B9%E5%BE%81%E8%A1%A5%E5%81%BF-unified-formulation"><span class="nav-number">5.1.6.</span> <span class="nav-text">4.
+统一干预公式与双特征特征补偿 (Unified Formulation)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#experiments"><span class="nav-number">6.</span> <span class="nav-text">Experiments</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#decoding-overhead-%E8%A7%A3%E7%A0%81%E5%BC%80%E9%94%80%E5%88%86%E6%9E%90"><span class="nav-number">6.1.</span> <span class="nav-text">Decoding Overhead
+(解码开销分析)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88-tsai-%E8%83%BD%E5%A4%9F%E6%AD%BB%E6%AD%BB%E5%AE%88%E4%BD%8F-n_textforward-1-%E7%9A%84%E5%BA%95%E7%BA%BF"><span class="nav-number">6.1.1.</span> <span class="nav-text">🔍 为什么 TSAI
+能够死死守住 Nforward &#x3D; 1
+的底线？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#rebuttal"><span class="nav-number">7.</span> <span class="nav-text">rebuttal</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%92%88%E5%AF%B9%E7%9B%B8%E6%AF%94%E5%89%8D%E4%BD%9C-attnreal-%E6%A6%82%E5%BF%B5%E5%88%9B%E6%96%B0%E6%80%A7%E4%B8%8D%E8%B6%B3%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">7.0.1.</span> <span class="nav-text">针对“相比前作
+AttnReal 概念创新性不足”的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%92%88%E5%AF%B9%E5%8D%95%E6%AC%A1%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD%E5%B9%B6%E4%B8%8D%E7%AD%89%E5%90%8C%E4%BA%8E%E7%9C%9F%E6%AD%A3%E4%BD%8E%E5%BC%80%E9%94%80%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">7.0.2.</span> <span class="nav-text">针对“单次前向传播并不等同于真正低开销”的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%92%88%E5%AF%B9%E5%A6%82%E6%9E%9C%E5%9B%BA%E5%AE%9A%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%90%E9%95%BF%E5%BA%A6%E4%B8%BA-64%E7%BB%93%E6%9E%9C%E4%BC%9A%E6%80%8E%E6%A0%B7%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">7.0.3.</span> <span class="nav-text">针对“如果固定文本生成长度为
+64，结果会怎样”的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%95%BF%E6%96%87%E6%9C%AC%E5%90%8E%E6%9C%9F%E5%8D%95%E8%B0%83%E9%80%92%E5%A2%9E%E6%83%A9%E7%BD%9A%E6%98%AF%E5%90%A6%E4%BC%9A%E5%AF%BC%E8%87%B4%E6%A8%A1%E5%9E%8B%E5%A4%B1%E5%BF%86%E5%A4%B1%E5%8E%BB%E8%BF%9E%E8%B4%AF%E6%80%A7"><span class="nav-number">7.0.4.</span> <span class="nav-text">长文本后期单调递增惩罚是否会导致模型失忆、失去连贯性</span></a></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -162,18 +188,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">199</span>
+          <span class="site-state-item-count">205</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">69</span>
+        <span class="site-state-item-count">70</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">71</span>
+        <span class="site-state-item-count">72</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -287,155 +313,440 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="现有方法的致命缺陷"><a href="#现有方法的致命缺陷" class="headerlink" title="现有方法的致命缺陷"></a>现有方法的致命缺陷</h1><p>当前免训练的方法主要有对比解码（Contrastive Decoding）和注意力干预（Attention Intervention）。但作者指出，它们普遍存在一个隐式的错误假设——<strong>“同质化假设”（Homogeneous Assumption）</strong>：  </p>
+    <div class="post-body" itemprop="articleBody"><h1 id="现有方法的致命缺陷">现有方法的致命缺陷</h1>
+<p>当前免训练的方法主要有对比解码（Contrastive
+Decoding）和注意力干预（Attention
+Intervention）。但作者指出，它们普遍存在一个隐式的错误假设——<strong>“同质化假设”（Homogeneous
+Assumption）</strong>：</p>
 <ul>
-<li><strong>一刀切的弊端</strong>：这些方法在整个文本生成的过程中，施加的是<strong>全局统一、上下文无关（Context-agnostic）的惩罚</strong>。  </li>
-<li><strong>预算浪费</strong>：由于惩罚目标不明确，它们把有限的干预资源（干预预算）浪费在了原本“低风险”的 Token 上，导致模型的<strong>生成质量（语言流利度）与幻觉抑制之间无法达到最优平衡</strong>（比如管得太死导致模型话都不会说了）。</li>
+<li><strong>一刀切的弊端</strong>：这些方法在整个文本生成的过程中，施加的是<strong>全局统一、上下文无关（Context-agnostic）的惩罚</strong>。<br>
+</li>
+<li><strong>预算浪费</strong>：由于惩罚目标不明确，它们把有限的干预资源（干预预算）浪费在了原本“低风险”的
+Token
+上，导致模型的<strong>生成质量（语言流利度）与幻觉抑制之间无法达到最优平衡</strong>（比如管得太死导致模型话都不会说了）。</li>
 </ul>
-<h1 id="核心发现：幻觉的“多维异质性”"><a href="#核心发现：幻觉的“多维异质性”" class="headerlink" title="核心发现：幻觉的“多维异质性”"></a>核心发现：幻觉的“多维异质性”</h1><p>为了打破上述一刀切的局限，作者对 MLLM 的长文本解码过程进行了深度的<strong>定量分析</strong>（也就是我们刚才看的 Figure 1），并首次确凿地揭示了幻觉具有<strong>多维异质性</strong>：  </p>
+<h1 id="核心发现幻觉的多维异质性">核心发现：幻觉的“多维异质性”</h1>
+<p>为了打破上述一刀切的局限，作者对 MLLM
+的长文本解码过程进行了深度的<strong>定量分析</strong>（也就是我们刚才看的
+Figure 1），并首次确凿地揭示了幻觉具有<strong>多维异质性</strong>：</p>
 <ul>
-<li><strong>时间轴上：后期累积</strong>。随着自回归解码的深入，幻觉在生成的中后期呈现出明显的累积趋势。  </li>
-<li><strong>语义轴上：上下文共现错觉（Contextual Co-occurrence Illusion）</strong>。当模型开始胡说八道（产生幻觉）时，它对历史生成过的“语义 Token”的注意力会异常增高。  </li>
+<li><strong>时间轴上：后期累积</strong>。随着自回归解码的深入，幻觉在生成的中后期呈现出明显的累积趋势。<br>
+</li>
+<li><strong>语义轴上：上下文共现错觉（Contextual Co-occurrence
+Illusion）</strong>。当模型开始胡说八道（产生幻觉）时，它对历史生成过的“语义
+Token”的注意力会异常增高。</li>
 </ul>
 <blockquote>
-<p>💡 <strong>深层根源（模态鸿沟）</strong>：作者进一步指出了这种现象的底层数学本质——<strong>跨模态表示空间中的模态鸿沟（Modality Gap）</strong>。在模型内部，<strong>“文本-文本”的相似度天然高于“图像-文本”的对齐度</strong>。因此，随着自回归一步步往下走，<strong>视觉信息被不断稀释</strong>，大模型开始走捷径，顺着自己前面写过的文本高密度流形一路跑偏（即语义惯性），彻底把图片抛在了脑后。</p>
+<p>💡
+<strong>深层根源（模态鸿沟）</strong>：作者进一步指出了这种现象的底层数学本质——<strong>跨模态表示空间中的模态鸿沟（Modality
+Gap）</strong>。在模型内部，<strong>“文本-文本”的相似度天然高于“图像-文本”的对齐度</strong>。因此，随着自回归一步步往下走，<strong>视觉信息被不断稀释</strong>，大模型开始走捷径，顺着自己前面写过的文本高密度流形一路跑偏（即语义惯性），彻底把图片抛在了脑后。</p>
 </blockquote>
-<p><img src="/2026/07/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94TSAI/image-20260711130108252.png" alt="image-20260711130108252"></p>
-<h2 id="a-图：生成的实体在句子中的位置分布-Temporal-Position"><a href="#a-图：生成的实体在句子中的位置分布-Temporal-Position" class="headerlink" title="(a) 图：生成的实体在句子中的位置分布 (Temporal Position)"></a>(a) 图：生成的实体在句子中的位置分布 (Temporal Position)</h2><p>这张图统计了模型生成的词在整个句子（Caption）从开头（0.0）到结尾（1.0）的位置分布。  </p>
+<figure>
+<img src="/2026/07/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94TSAI/image-20260711130108252.png" alt="image-20260711130108252">
+<figcaption aria-hidden="true">image-20260711130108252</figcaption>
+</figure>
+<h2 id="a-图生成的实体在句子中的位置分布-temporal-position">(a)
+图：生成的实体在句子中的位置分布 (Temporal Position)</h2>
+<p>这张图统计了模型生成的词在整个句子（Caption）从开头（0.0）到结尾（1.0）的位置分布。</p>
 <ul>
-<li><strong>蓝色线（Factual Words / 真实词）</strong>：波峰极度集中在 <strong>0.0 到 0.2</strong> 之间。这说明<strong>符合事实的物体描述往往在句子前半句就早早出现了</strong>（Factual entities earlier occurrence）。  </li>
-<li><strong>橙色线（Hallucinated Words / 幻觉词）</strong>：波峰显著向右偏移，大量堆积在 <strong>0.6 到 0.9</strong> 之间。这铁证了<strong>幻觉具有明显的“后期累积”特征</strong>（Hallucinations: late-stage accumulation），模型句子越写到后面，越容易胡思乱想。  </li>
+<li><strong>蓝色线（Factual Words / 真实词）</strong>：波峰极度集中在
+<strong>0.0 到 0.2</strong>
+之间。这说明<strong>符合事实的物体描述往往在句子前半句就早早出现了</strong>（Factual
+entities earlier occurrence）。<br>
+</li>
+<li><strong>橙色线（Hallucinated Words /
+幻觉词）</strong>：波峰显著向右偏移，大量堆积在 <strong>0.6 到
+0.9</strong>
+之间。这铁证了<strong>幻觉具有明显的“后期累积”特征</strong>（Hallucinations:
+late-stage accumulation），模型句子越写到后面，越容易胡思乱想。</li>
 </ul>
-<h2 id="b-图：不同层对历史语义的注意力比例-Attention-Ratio"><a href="#b-图：不同层对历史语义的注意力比例-Attention-Ratio" class="headerlink" title="(b) 图：不同层对历史语义的注意力比例 (Attention Ratio)"></a>(b) 图：不同层对历史语义的注意力比例 (Attention Ratio)</h2><p>这张图统计了在 Transformer 的不同层数中，模型在生成下一个词时，注意力分配给“历史文本”的比例。  </p>
+<h2 id="b-图不同层对历史语义的注意力比例-attention-ratio">(b)
+图：不同层对历史语义的注意力比例 (Attention Ratio)</h2>
+<p>这张图统计了在 Transformer
+的不同层数中，模型在生成下一个词时，注意力分配给“历史文本”的比例。</p>
 <ul>
-<li><strong>纵轴意义</strong>：非语法词注意力比例（Non-grammar Attention Ratio）。这里的“非语法词”指的就是具体的<strong>语义词（Semantic tokens）</strong>，排除了无意义的介词、标点等语法锚点。  </li>
-<li><strong>对比结果</strong>：无论在哪一层，<strong>橙色线（幻觉词）的注意力比例都死死压着蓝色线（真实词）</strong>。  </li>
-<li><strong>核心结论</strong>：当模型在产生幻觉时，它对历史生成过的“语义词”分配了异常高的注意力（Hallucinations attend more to semantic than grammar tokens）。它不看图片，而是被自己前面说过的具体词汇给吸进去了，也就是摘要里说的产生“语义惯性”。</li>
+<li><strong>纵轴意义</strong>：非语法词注意力比例（Non-grammar Attention
+Ratio）。这里的“非语法词”指的就是具体的<strong>语义词（Semantic
+tokens）</strong>，排除了无意义的介词、标点等语法锚点。<br>
+</li>
+<li><strong>对比结果</strong>：无论在哪一层，<strong>橙色线（幻觉词）的注意力比例都死死压着蓝色线（真实词）</strong>。<br>
+</li>
+<li><strong>核心结论</strong>：当模型在产生幻觉时，它对历史生成过的“语义词”分配了异常高的注意力（Hallucinations
+attend more to semantic than grammar
+tokens）。它不看图片，而是被自己前面说过的具体词汇给吸进去了，也就是摘要里说的产生“语义惯性”。</li>
 </ul>
-<h2 id="三个最核心的维度"><a href="#三个最核心的维度" class="headerlink" title="三个最核心的维度"></a>三个最核心的维度</h2><h3 id="1-拆分了“时间轴”：从全局通罚到后期重罚-Temporal-Decoupling"><a href="#1-拆分了“时间轴”：从全局通罚到后期重罚-Temporal-Decoupling" class="headerlink" title="1. 拆分了“时间轴”：从全局通罚到后期重罚 (Temporal Decoupling)"></a>1. 拆分了“时间轴”：从全局通罚到后期重罚 (Temporal Decoupling)</h3><ul>
-<li><strong>过去的方法</strong>：在生成的每一个字、每一秒，对历史文本的惩罚力度完全一样 。  </li>
-<li><strong>TSAI 的拆分</strong>：它把文本生成的过程按时间步（Steps）进行了切块 。在句子刚开头的语法构建期，它不怎么插手；随着自回归越往后走，幻觉风险在后期开始累积时，它的惩罚力度才像阶梯一样层层递增（步进式渐进惩罚） 。  </li>
-<li><strong>分配结果</strong>：成功在<strong>开头</strong>保护了句子的流利度，并在<strong>后期</strong>精准扼杀了幻觉的累积 。  </li>
+<h2 id="三个最核心的维度">三个最核心的维度</h2>
+<h3 id="拆分了时间轴从全局通罚到后期重罚-temporal-decoupling">1.
+拆分了“时间轴”：从全局通罚到后期重罚 (Temporal Decoupling)</h3>
+<ul>
+<li><strong>过去的方法</strong>：在生成的每一个字、每一秒，对历史文本的惩罚力度完全一样
+。<br>
+</li>
+<li><strong>TSAI
+的拆分</strong>：它把文本生成的过程按时间步（Steps）进行了切块
+。在句子刚开头的语法构建期，它不怎么插手；随着自回归越往后走，幻觉风险在后期开始累积时，它的惩罚力度才像阶梯一样层层递增（步进式渐进惩罚）
+。<br>
+</li>
+<li><strong>分配结果</strong>：成功在<strong>开头</strong>保护了句子的流利度，并在<strong>后期</strong>精准扼杀了幻觉的累积
+。</li>
 </ul>
-<h3 id="2-拆分了“语义轴”：从无差别剥夺到语法保护-Semantic-Decoupling"><a href="#2-拆分了“语义轴”：从无差别剥夺到语法保护-Semantic-Decoupling" class="headerlink" title="2. 拆分了“语义轴”：从无差别剥夺到语法保护 (Semantic Decoupling)"></a>2. 拆分了“语义轴”：从无差别剥夺到语法保护 (Semantic Decoupling)</h3><ul>
+<h3 id="拆分了语义轴从无差别剥夺到语法保护-semantic-decoupling">2.
+拆分了“语义轴”：从无差别剥夺到语法保护 (Semantic Decoupling)</h3>
+<ul>
 <li><strong>过去的方法</strong>：一旦决定惩罚历史，就把前面生成过的所有词（不论是标点还是具体名词）的注意力全部等比例扣除。</li>
-<li><strong>TSAI 的拆分</strong>：它在历史文本的 Token 阵营里拉了一道防火墙 。它把历史词拆分成了“语法锚点（介词、标点等）”<strong>和</strong>“高危历史语义词（具体的物体、实体等）” 。对于语法词它网开一面（低剥夺），只把重罚精准地拍在那些容易引发共现幻觉的“历史语义词”上 。  </li>
-<li><strong>分配结果</strong>：用最小的干预代价，击碎了引发幻觉的文本惯性，同时完全不伤及大模型说话的语言骨架 。  </li>
+<li><strong>TSAI 的拆分</strong>：它在历史文本的 Token
+阵营里拉了一道防火墙
+。它把历史词拆分成了“语法锚点（介词、标点等）”<strong>和</strong>“高危历史语义词（具体的物体、实体等）”
+。对于语法词它网开一面（低剥夺），只把重罚精准地拍在那些容易引发共现幻觉的“历史语义词”上
+。<br>
+</li>
+<li><strong>分配结果</strong>：用最小的干预代价，击碎了引发幻觉的文本惯性，同时完全不伤及大模型说话的语言骨架
+。</li>
 </ul>
-<h3 id="3-拆分了“补偿去向”：从单向视觉注入到双特征特征补偿-Dual-Axis-Compensation"><a href="#3-拆分了“补偿去向”：从单向视觉注入到双特征特征补偿-Dual-Axis-Compensation" class="headerlink" title="3. 拆分了“补偿去向”：从单向视觉注入到双特征特征补偿 (Dual-Axis Compensation)"></a>3. 拆分了“补偿去向”：从单向视觉注入到双特征特征补偿 (Dual-Axis Compensation)</h3><ul>
-<li><strong>过去的方法</strong>：把扣出来的注意力额度，全部粗暴地全额塞给图像。这会导致模型出现“指令遗忘（Instruction Forgetting）”——光看图不听指挥 。  </li>
-<li><strong>TSAI 的拆分</strong>：它把回收上来的“注意力资金池”进行了公允的二次切分，引入了<strong>双特征特征补偿（Dual Feature Compensation）</strong> 。这些额度会按照比例，<strong>同时分配给图像 Token（加强视觉锚定）和当前的用户指令 Token（保持任务意图）</strong> 。  </li>
-<li><strong>分配结果</strong>：模型不仅看图看得很准，而且牢牢记着主人的任务要求，完美解决了管得太死导致模型不听话的行业痛点 。  </li>
-</ul>
-<h1 id="相关工作"><a href="#相关工作" class="headerlink" title="相关工作"></a>相关工作</h1><h3 id="1-Logit-概率分布校准流派（Logit-level-amp-Decoding-Strategies）"><a href="#1-Logit-概率分布校准流派（Logit-level-amp-Decoding-Strategies）" class="headerlink" title="1. Logit 概率分布校准流派（Logit-level &amp; Decoding Strategies）"></a>1. Logit 概率分布校准流派（Logit-level &amp; Decoding Strategies）</h3><p>这一流派的核心思想是在模型预测下一个词输出的概率分布（Logits）上做文章，通过人为调整概率来扼杀幻觉 </p>
-<p>OPERA ：它发现模型在产生幻觉时，注意力往往会陷入局部自我循环（Over-trust 现象） 。因此它引入了一个基于<strong>注意力聚合模式的惩罚项</strong>，并搭配了一个“回溯-分配（Retrospection-allocation）”机制 。当发现不对劲时，它会触发<strong>序列回滚（Sequence Rollback）</strong>，退回去重新生成 。  </p>
-<p>VCD  和 PAI ：属于对比解码（Contrastive Decoding）流派 。  </p>
+<h3 id="拆分了补偿去向从单向视觉注入到双特征特征补偿-dual-axis-compensation">3.
+拆分了“补偿去向”：从单向视觉注入到双特征特征补偿 (Dual-Axis
+Compensation)</h3>
 <ul>
-<li><strong>VCD</strong> 通过给图像<strong>注入视觉噪声</strong>来制造一个“业余模型（Amateur）”，然后用原模型（Expert）的 Logits 减去业余模型的 Logits，从而过滤失真的语言先验 。  </li>
-<li><strong>PAI</strong> 则更激进，它直接<strong>剥离图像输入</strong>（只给文本历史），让业余模型纯靠文本惯性盲猜，再用原模型去减它，以此抵消文本惯性 。  </li>
+<li><strong>过去的方法</strong>：把扣出来的注意力额度，全部粗暴地全额塞给图像。这会导致模型出现“指令遗忘（Instruction
+Forgetting）”——光看图不听指挥 。<br>
+</li>
+<li><strong>TSAI
+的拆分</strong>：它把回收上来的“注意力资金池”进行了公允的二次切分，引入了<strong>双特征特征补偿（Dual
+Feature Compensation）</strong>
+。这些额度会按照比例，<strong>同时分配给图像
+Token（加强视觉锚定）和当前的用户指令 Token（保持任务意图）</strong>
+。<br>
+</li>
+<li><strong>分配结果</strong>：模型不仅看图看得很准，而且牢牢记着主人的任务要求，完美解决了管得太死导致模型不听话的行业痛点
+。</li>
 </ul>
-<p>DoLa  和 DeCo ：属于层间对比（Layer Contrastive）流派。它们利用大模型深层（包含更多事实特征）和浅层（包含更多语言先验）的 Logits 进行对比或动态修正，以此放大真实表征 。  </p>
+<h1 id="相关工作">相关工作</h1>
+<h3 id="logit-概率分布校准流派logit-level-decoding-strategies">1. Logit
+概率分布校准流派（Logit-level &amp; Decoding Strategies）</h3>
+<p>这一流派的核心思想是在模型预测下一个词输出的概率分布（Logits）上做文章，通过人为调整概率来扼杀幻觉</p>
+<p>OPERA
+：它发现模型在产生幻觉时，注意力往往会陷入局部自我循环（Over-trust
+现象）
+。因此它引入了一个基于<strong>注意力聚合模式的惩罚项</strong>，并搭配了一个“回溯-分配（Retrospection-allocation）”机制
+。当发现不对劲时，它会触发<strong>序列回滚（Sequence
+Rollback）</strong>，退回去重新生成 。</p>
+<p>VCD 和 PAI ：属于对比解码（Contrastive Decoding）流派 。</p>
+<ul>
+<li><strong>VCD</strong>
+通过给图像<strong>注入视觉噪声</strong>来制造一个“业余模型（Amateur）”，然后用原模型（Expert）的
+Logits 减去业余模型的 Logits，从而过滤失真的语言先验 。<br>
+</li>
+<li><strong>PAI</strong>
+则更激进，它直接<strong>剥离图像输入</strong>（只给文本历史），让业余模型纯靠文本惯性盲猜，再用原模型去减它，以此抵消文本惯性
+。</li>
+</ul>
+<p>DoLa 和 DeCo ：属于层间对比（Layer
+Contrastive）流派。它们利用大模型深层（包含更多事实特征）和浅层（包含更多语言先验）的
+Logits 进行对比或动态修正，以此放大真实表征 。</p>
 <blockquote>
-<p>❌ <strong>此类前作的共同痛点</strong>： 这些 Logit 校正方法往往需要<strong>多次前向传播</strong>（例如 VCD/PAI 生成每个 Token 需要跑 2 次前向）、<strong>层级追踪</strong>或<strong>序列回滚</strong>（如 OPERA），这不可避免地带来了<strong>高昂的计算和时间开销</strong>，导致推理变慢 。  </p>
+<p>❌ <strong>此类前作的共同痛点</strong>： 这些 Logit
+校正方法往往需要<strong>多次前向传播</strong>（例如 VCD/PAI 生成每个
+Token 需要跑 2
+次前向）、<strong>层级追踪</strong>或<strong>序列回滚</strong>（如
+OPERA），这不可避免地带来了<strong>高昂的计算和时间开销</strong>，导致推理变慢
+。</p>
 </blockquote>
-<h3 id="2-多阶段工作流流派（Multi-stage-Pipeline-Interventions）"><a href="#2-多阶段工作流流派（Multi-stage-Pipeline-Interventions）" class="headerlink" title="2. 多阶段工作流流派（Multi-stage Pipeline Interventions）"></a>2. 多阶段工作流流派（Multi-stage Pipeline Interventions）</h3><p>这一流派不在单次生成里做微调，而是把任务做成了流水线 。  </p>
-<p>EAZY ：在输入端下功夫，通过视觉掩码（Visual Masking）过滤掉容易引发幻觉的输入源 。  </p>
-<p>HalTrapper ：设计了一套“诱导-检测-抑制”（Induce-Detect-Suppress）的完整 Pipeline，主动设套诱导模型暴露出幻觉倾向再加以拔除 。  </p>
-<p>Woodpecker ：属于<strong>后处理修正（Post-hoc Correction）</strong>，等模型全部说完了，再调用一个外部小工具像啄木鸟一样一行行去核对和纠错 。  </p>
+<h3 id="多阶段工作流流派multi-stage-pipeline-interventions">2.
+多阶段工作流流派（Multi-stage Pipeline Interventions）</h3>
+<p>这一流派不在单次生成里做微调，而是把任务做成了流水线 。</p>
+<p>EAZY ：在输入端下功夫，通过视觉掩码（Visual
+Masking）过滤掉容易引发幻觉的输入源 。</p>
+<p>HalTrapper
+：设计了一套“诱导-检测-抑制”（Induce-Detect-Suppress）的完整
+Pipeline，主动设套诱导模型暴露出幻觉倾向再加以拔除 。</p>
+<p>Woodpecker ：属于<strong>后处理修正（Post-hoc
+Correction）</strong>，等模型全部说完了，再调用一个外部小工具像啄木鸟一样一行行去核对和纠错
+。</p>
 <blockquote>
-<p>❌ <strong>此类前作的共同痛点</strong>： 架构过于<strong>流水线化（Pipeline-heavy）</strong>，需要多步处理或外部调用，<strong>大幅度增加了推理延迟</strong>，无法做到真正的实时响应 。  </p>
+<p>❌ <strong>此类前作的共同痛点</strong>：
+架构过于<strong>流水线化（Pipeline-heavy）</strong>，需要多步处理或外部调用，<strong>大幅度增加了推理延迟</strong>，无法做到真正的实时响应
+。</p>
 </blockquote>
-<h3 id="3-注意力矩阵干预流派（Attention-Interventions）"><a href="#3-注意力矩阵干预流派（Attention-Interventions）" class="headerlink" title="3. 注意力矩阵干预流派（Attention Interventions）"></a>3. 注意力矩阵干预流派（Attention Interventions）</h3><p>直接修改 Transformer 内部的 post-softmax 注意力矩阵 。  </p>
-<p>AttnReal ：它是 TSAI 最直接的近亲 。它同样在单次前向传播（Single Forward Pass）中运行 ，其做法是识别历史输出 Token 中的“注意力下水道（Attention Sinks）”，把这些无用权重强行抠出来挪给视觉 Token 。</p>
-<h1 id="TSAI-框架总览"><a href="#TSAI-框架总览" class="headerlink" title="TSAI 框架总览"></a>TSAI 框架总览</h1><p><img src="/2026/07/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94TSAI/image-20260711135118270.png" alt="image-20260711135118270"></p>
-<h3 id="第一步：Token-空间划分-Token-Partitioning"><a href="#第一步：Token-空间划分-Token-Partitioning" class="headerlink" title="第一步：Token 空间划分 (Token Partitioning)"></a>第一步：Token 空间划分 (Token Partitioning)</h3><p>在输入端，TSAI 将上下文的所有 Token 严格划分为四个互斥的语义子集：</p>
-<ol>
-<li><strong>$\mathcal{T}_{\text{sys}}$ (系统 Token)</strong>：如大模型固定的 Prompt（“User: ”）。</li>
-<li><strong>$\mathcal{T}_{\text{img}}$ (图像 Token)</strong>：由视觉编码器转化而来的图像 Patch。</li>
-<li><strong>$\mathcal{T}_{\text{ins}}$ (指令 Token)</strong>：用户输入的具体任务文本（如 “Describe the image.”）。</li>
-<li><strong>$\mathcal{T}_{\text{his}}$ (历史 Token)</strong>：模型在前 $t-1$ 步已经自己生成出的响应文本。<ul>
-<li>进一步细分为：包含实际物体的<strong>语义词（Semantic Tokens）\</strong>和用于维持结构的*<em>语法锚点（Syntactic Anchors）*</em>。</li>
-</ul>
-</li>
-</ol>
-<p>划分后，在每一步（$t$ 步）和每一层（$l$ 层）都能得到一根初始的注意力向量 $A(l,t)$。</p>
-<h3 id="第二步：干预阶段（Intervention-Stages）"><a href="#第二步：干预阶段（Intervention-Stages）" class="headerlink" title="第二步：干预阶段（Intervention Stages）"></a>第二步：干预阶段（Intervention Stages）</h3><p>这是 TSAI 最核心的<strong>两大并行/协同干预机制</strong>：</p>
-<h4 id="1️⃣-浅层系统注意力回收-Shallow-Stage-System-Recycling"><a href="#1️⃣-浅层系统注意力回收-Shallow-Stage-System-Recycling" class="headerlink" title="1️⃣ 浅层系统注意力回收 (Shallow-Stage System Recycling)"></a>1️⃣ 浅层系统注意力回收 (Shallow-Stage System Recycling)</h4><ul>
-<li><strong>动作</strong>：针对浅层网络（$\mathcal{L}<em>{\text{sys}}$），算法发现系统词 $\mathcal{T}</em>{\text{sys}}$ 占用了大量无用的注意力（形成 Attention Sink）。</li>
-<li><strong>操作</strong>：通过乘以一个提取因子 $\rho<em>{\text{sys}}$，强行把分配给系统词的注意力“回收”上来，形成一个可调配的注意力预算总额 $S</em>{\text{sys}}$。</li>
-<li><strong>去向</strong>：将回收来的这笔额度，按照固定比例<strong>补偿分配</strong>给视觉 Token ($\mathcal{T}<em>{\text{img}}$) 和指令 Token ($\mathcal{T}</em>{\text{ins}}$)。</li>
-</ul>
-<h4 id="2️⃣-宽跨度双轴历史抑制-Broad-Span-Dual-Axis-Historical-Suppression"><a href="#2️⃣-宽跨度双轴历史抑制-Broad-Span-Dual-Axis-Historical-Suppression" class="headerlink" title="2️⃣ 宽跨度双轴历史抑制 (Broad-Span Dual-Axis Historical Suppression)"></a>2️⃣ 宽跨度双轴历史抑制 (Broad-Span Dual-Axis Historical Suppression)</h4><p>针对较深层网络（$\mathcal{L}_{\text{hist}}$），为了打破幻觉的异质性，实施<strong>双轴联合绞杀</strong>：</p>
+<h3 id="注意力矩阵干预流派attention-interventions">3.
+注意力矩阵干预流派（Attention Interventions）</h3>
+<p>直接修改 Transformer 内部的 post-softmax 注意力矩阵 。</p>
+<p>AttnReal ：它是 TSAI 最直接的近亲 。它同样在单次前向传播（Single
+Forward Pass）中运行 ，其做法是识别历史输出 Token
+中的“注意力下水道（Attention Sinks）”，把这些无用权重强行抠出来挪给视觉
+Token 。</p>
+<h1 id="tsai-框架总览">TSAI 框架总览</h1>
+<figure>
+<img src="/2026/07/11/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94TSAI/image-20260711135118270.png" alt="image-20260711135118270">
+<figcaption aria-hidden="true">image-20260711135118270</figcaption>
+</figure>
+<h3 id="第一步token-空间划分-token-partitioning">第一步：Token 空间划分
+(Token Partitioning)</h3>
+<p>在输入端，TSAI 将上下文的所有 Token
+严格划分为四个互斥的语义子集：</p>
+<ol type="1">
+<li><strong><span class="math inline">𝒯<sub>sys</sub></span> (系统
+Token)</strong>：如大模型固定的 Prompt（“User: ”）。</li>
+<li><strong><span class="math inline">𝒯<sub>img</sub></span> (图像
+Token)</strong>：由视觉编码器转化而来的图像 Patch。</li>
+<li><strong><span class="math inline">𝒯<sub>ins</sub></span> (指令
+Token)</strong>：用户输入的具体任务文本（如 “Describe the
+image.”）。</li>
+<li><strong><span class="math inline">𝒯<sub>his</sub></span> (历史
+Token)</strong>：模型在前 <span class="math inline"><em>t</em> − 1</span> 步已经自己生成出的响应文本。
 <ul>
-<li><strong>时间轴（Temporal Modulation）</strong>：引入<strong>步进式渐进惩罚（Progressive penalty）</strong>。随着时间步（Time step）往后推移，幻觉风险越高，惩罚力度 $p_{\text{hist}}$ 呈阶梯状越来越重，完美贴合幻觉后期累积的节奏。</li>
-<li><strong>语义轴（Semantic Modulation）</strong>：实施<strong>差异化剥夺（Differential deprivation）</strong>。对历史 Token ($\mathcal{T}_{\text{his}}$) 区别对待——如果是无意义的语法词，给予低剥夺（Low deprivation）；如果是高危的<strong>历史语义词</strong>，给予高剥夺（High deprivation），从而狠狠压制语义惯性。</li>
-<li><strong>去向</strong>：通过双轴计算，从历史词中强行扣除一笔注意力总额 $S<em>{\text{his}}$，同样将其<strong>补偿</strong>给经过 Prefill 阶段筛选的高显著视觉 Token ($\mathcal{T}^*</em>{\text{img}}$) 以及指令 Token ($\mathcal{T}_{\text{ins}}$)。</li>
-</ul>
-<h3 id="第三步：生成与最终概率输出-Unified-Output"><a href="#第三步：生成与最终概率输出-Unified-Output" class="headerlink" title="第三步：生成与最终概率输出 (Unified Output)"></a>第三步：生成与最终概率输出 (Unified Output)</h3><ul>
-<li>经过上述“扣除与补充”的动态调整后，模型得到了一个全新的、经过干预的注意力向量 $\hat{A}(l,t)$。</li>
-<li><strong>最终效果对比</strong>：<ul>
-<li><strong>如果没有干预（下路）</strong>：模型在预测下一个词时，受语义惯性影响，词表概率（Vocabulary prob）中幻觉词（Hallucination word，如 “ball”）的概率会反超真实词，导致输出幻觉。</li>
-<li><strong>应用 TSAI 干预后（上路）</strong>：由于高危历史语义被压制、视觉和指令被放大，词表概率得到完美校准，真实词（GT word）的概率遥遥领先，模型得以准确输出符合事实的文本。</li>
-</ul>
-</li>
-</ul>
-<h1 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h1><h2 id="1-问题建模与-Token-空间划分-Problem-Formulation"><a href="#1-问题建模与-Token-空间划分-Problem-Formulation" class="headerlink" title="1. 问题建模与 Token 空间划分 (Problem Formulation)"></a>1. 问题建模与 Token 空间划分 (Problem Formulation)</h2><p>在标准的 MLLM 自回归解码中，假设我们在第 $t$ 个生成步骤、第 $l$ 层 Transformer 网络中。此时，大模型算完 $Q \times K^\top$ 跑完 Softmax 后，会得到当前位置对过去所有位置的<strong>初始注意力分数向量</strong> $A^{(l,t)} \in \mathbb{R}^L$（$L$ 为当前总上下文序列长度）。  </p>
-<p>为了能够“数格子”动手术，TSAI 做的第一个拆分，就是将整个上下文空间 $L$ 划分为<strong>四个互不相交的语义子集</strong> ：  </p>
-<script type="math/tex; mode=display">\mathcal{T} = \mathcal{T}_{\text{sys}} \cup \mathcal{T}_{\text{img}} \cup \mathcal{T}_{\text{ins}} \cup \mathcal{T}_{\text{his}}</script><ul>
-<li><strong>$\mathcal{T}_{\text{sys}}$（系统 Token）</strong>：视觉输入前固定的系统 Prompt 词（如 <code>USER:</code>）。  </li>
-<li><strong>$\mathcal{T}_{\text{img}}$（图像 Token）</strong>：输入的 $N_v$ 个图像 Patch 块 。  </li>
-<li><strong>$\mathcal{T}_{\text{ins}}$（指令 Token）</strong>：用户输入的具体文本命令（如 <code>Describe the image.</code>）。  </li>
-<li><strong>$\mathcal{T}_{\text{his}}$（历史 Token）</strong>：截至当前步 $t$ 之前，模型自己吐出来的所有历史生成词 。  </li>
-</ul>
-<p>作者指出，幻觉的本质就是<strong>注意力预算在这四个子集里分配失调</strong>，模型过于死盯着历史文本 $\mathcal{T}<em>{\text{his}}$ 产生了共现幻想，却忽略了图像事实 $\mathcal{T}</em>{\text{img}}$ 。  </p>
-<h3 id="2-浅层系统注意力回收-Shallow-Stage-System-Recycling"><a href="#2-浅层系统注意力回收-Shallow-Stage-System-Recycling" class="headerlink" title="2. 浅层系统注意力回收 (Shallow-Stage System Recycling)"></a>2. 浅层系统注意力回收 (Shallow-Stage System Recycling)</h3><p>通过前期的定量分析（Figure 3），作者注意到在网络的指定浅层（$l \in \mathcal{L}<em>{\text{sys}}$，如前 10 层）中，系统词 $\mathcal{T}</em>{\text{sys}}$ 占用了极其巨大的无用注意力 。  </p>
-<p>为了“白嫖”这部分被白白浪费的预算，TSAI 在浅层网络直接祭出第一刀——<strong>硬性按比例扣除</strong> ：<script type="math/tex">\tilde{A}_i^{(l,t)} = (1 - \rho_{\text{sys}})A_i^{(l,t)}, \quad \forall i \in \mathcal{T}_{\text{sys}}</script></p>
-<ul>
-<li><p>$\rho_{\text{sys}} \in (0,1)$ 是预设的抽取比例 。  </p>
-</li>
-<li><p>这些被强行剥夺出来的注意力分数，会被打包累加成一个可支配的<strong>浅层系统回收资金池 $S_{\text{sys}}^{(l,t)}$</strong> ：  </p>
-<script type="math/tex; mode=display">S_{\text{sys}}^{(l,t)} = \sum_{i \in \mathcal{T}_{\text{sys}}} \rho_{\text{sys}}A_i^{(l,t)}</script></li>
-</ul>
-<p>随后，这笔额度会通过动态比例（超参数 $Y<em>{\text{ins}}$ 和 $Y</em>{\text{img}}$），<strong>按需补偿分配给指令 Token 和视觉 Token</strong>，从而在网络刚开始时就牢牢帮模型锚定住任务意图 。  </p>
-<h3 id="3-宽跨度双轴历史抑制-Broad-Span-Dual-Axis-Historical-Suppression"><a href="#3-宽跨度双轴历史抑制-Broad-Span-Dual-Axis-Historical-Suppression" class="headerlink" title="3. 宽跨度双轴历史抑制 (Broad-Span Dual-Axis Historical Suppression)"></a>3. 宽跨度双轴历史抑制 (Broad-Span Dual-Axis Historical Suppression)</h3><p>这是 TSAI 最精妙的地方。在中深层网络中（$l \in \mathcal{L}<em>{\text{hist}}$），为了防止模型眼睛脱离图片、只盯着历史词瞎编，算法对历史 Token $\mathcal{T}</em>{\text{his}}$ 进行了“时间 + 语义”的双轴细粒度拆分与重罚 ：  </p>
-<h3 id="轴一：时间轴-——-步进式渐进惩罚-Temporal-Axis"><a href="#轴一：时间轴-——-步进式渐进惩罚-Temporal-Axis" class="headerlink" title="轴一：时间轴 —— 步进式渐进惩罚 (Temporal Axis)"></a>轴一：时间轴 —— 步进式渐进惩罚 (Temporal Axis)</h3><h4 id="1-为什么不能一刀切？"><a href="#1-为什么不能一刀切？" class="headerlink" title="1. 为什么不能一刀切？"></a>1. 为什么不能一刀切？</h4><p>如果从句子的第一个字开始，就对历史文本施加一成不变的重罚，会带来灾难性的后果 。句子开头（如主语、谓语的构建期）大模型高度依赖前文的语法和结构，如果此时粗暴地扣掉历史注意力，大模型就会“失语”，逻辑彻底崩盘（F1分数塌陷） 。  </p>
-<h4 id="2-数学公式实现"><a href="#2-数学公式实现" class="headerlink" title="2. 数学公式实现"></a>2. 数学公式实现</h4><p>作者通过 Figure 1 (a) 发现，<strong>幻觉往往在长文本生成的后半段才开始滚雪球式地爆发</strong> 。因此，作者为历史抑制设计了一个<strong>随时间步（Decoding Step $t$）阶梯状 monotonic 递增的动态基础惩罚因子 $\rho_{\text{his}}^{(t)}$</strong> ：  </p>
-<script type="math/tex; mode=display">\rho_{\text{his}}^{(t)} = \min\left(\rho_{\text{max}}, \Delta\rho \cdot \lfloor\frac{t}{n}\rfloor\right) \quad \text{[cite: 692]}</script><ul>
-<li><strong>$\lfloor\frac{t}{n}\rfloor$（分块下取整）</strong>：$n$ 是指定的文本块大小（Chunk size） 。这意味着惩罚不是丝滑连续变化的，而是<strong>每隔 $n$ 个字（比如每隔 5 个字）才上一个台阶</strong> 。因为作者敏锐地洞察到，幻觉在模型内部往往是以“离散的语义块（Discrete semantic chunks）”形式累积的 。  </li>
-<li><strong>$\Delta\rho$</strong>：每个阶梯固定的惩罚增量 。  </li>
-<li><strong>$\rho_{\text{max}}$</strong>：惩罚的保护上限，防止到了生成极后期时把历史注意力彻底扣成 0，导致模型彻底忘掉前文 。  </li>
-</ul>
-<h4 id="💡-时间轴的效果："><a href="#💡-时间轴的效果：" class="headerlink" title="💡 时间轴的效果："></a>💡 时间轴的效果：</h4><p>句子刚开头时（$t$ 很小），$\rho_{\text{his}}^{(t)} = 0$，TSAI 选择<strong>冷眼旁观，不打扰大模型梳理语言结构</strong> 。随着文字越吐越多，大模型开始有编造幻觉的倾向时（$t$ 变大），惩罚力度阶梯式暴涨，拦截网越收越紧 。  </p>
-<h3 id="轴二：语义轴-——-语法差异化剥夺-Semantic-Axis"><a href="#轴二：语义轴-——-语法差异化剥夺-Semantic-Axis" class="headerlink" title="轴二：语义轴 —— 语法差异化剥夺 (Semantic Axis)"></a>轴二：语义轴 —— 语法差异化剥夺 (Semantic Axis)</h3><h4 id="1-拦截网里的“无辜者”"><a href="#1-拦截网里的“无辜者”" class="headerlink" title="1. 拦截网里的“无辜者”"></a>1. 拦截网里的“无辜者”</h4><p>即使到了生成后期，大模型去查阅历史文本时，历史文本里也包含两类完全不同的 Token ：  </p>
-<ul>
-<li><strong>语法锚点（Syntactic Anchors）</strong>：如标点符号（<code>,</code>、<code>.</code>）、连词（<code>and</code>）、介词（<code>in</code>、<code>on</code>） 。  </li>
-<li><strong>具体语义词（Semantic Tokens）</strong>：如具体的物体名词（<code>dog</code>、<code>fridge</code>、<code>ball</code>） 。  </li>
-</ul>
-<p>如果无差别通罚，把标点和介词的注意力也扣光，模型说话就会变得颠三倒四（比如连主谓宾都连不起来） 。真正引发幻觉惯性的，是那些具体的<strong>物体语义词</strong> 。  </p>
-<h4 id="2-数学公式实现-1"><a href="#2-数学公式实现-1" class="headerlink" title="2. 数学公式实现"></a>2. 数学公式实现</h4><p>作者引入了一个<strong>指示函数 $\mathbb{I}[i \in \mathcal{G}]$</strong>（其中 $\mathcal{G}$ 是一个预设的、包含标点介词的静态语法词表库） 。通过它来作为标点符号的防护盾，计算出每个历史位置 $i$ 最终承受的 deprivation 比例 $\rho_i^{(t)}$ ：  </p>
-<script type="math/tex; mode=display">\rho_i^{(t)} = \rho_{\text{his}}^{(t)} \cdot \left(1 - (1 - \beta) \cdot \mathbb{I}[i \in \mathcal{G}]\right) \quad \text{[cite: 697]}</script><ul>
-<li><strong>如果当前位置 $i$ 对应的是一个“标点/语法词”</strong>： 此时 $i \in \mathcal{G}$，指示函数 $\mathbb{I} = 1$ 。 代入公式后，括号里变成了 $1 - (1 - \beta) = \beta$。 最终惩罚降级为：$\rho<em>i^{(t)} = \beta \cdot \rho</em>{\text{his}}^{(t)}$ 。 （注：$\beta \in [0, 1]$ 是一个保留系数 ，通常设得很小。这就形成了一道<strong>保护屏障</strong>，让语法词免受重罚 ）。  </li>
-<li><strong>如果当前位置 $i$ 对应的是一个“高危历史语义词（如具体的物体名）”</strong>： 此时 $i \notin \mathcal{G}$，指示函数 $\mathbb{I} = 0$ 。 代入公式后，括号里变成了 $1 - 0 = 1$。 最终惩罚直接吃满：$\rho<em>i^{(t)} = \rho</em>{\text{his}}^{(t)}$ —— <strong>全额重罚，毫不留情</strong> ！  </li>
-</ul>
-<h3 id="💰-终局：从历史打劫，全额返还视觉与指令"><a href="#💰-终局：从历史打劫，全额返还视觉与指令" class="headerlink" title="💰 终局：从历史打劫，全额返还视觉与指令"></a>💰 终局：从历史打劫，全额返还视觉与指令</h3><p>通过“时间 $\times$ 语义”双轴合围后，TSAI 在当前中深层网络中，成功拦截并抢救出了一大笔原本要浪费在历史语义词上的注意力总额 $S_{\text{his}}^{(l,t)}$ ：  </p>
-<script type="math/tex; mode=display">S_{\text{his}}^{(l,t)} = \sum_{i \in \mathcal{T}_{\text{his}}} \rho_i^{(t)}A_i^{(l,t)} \quad \text{[cite: 708]}</script><p>随后，这一大笔预算会立刻通过大一统公式（Eq. 6）执行<strong>双特征特征补偿（Dual Feature Compensation）</strong>，全额原地分赃 ：  </p>
-<ol>
-<li><strong>分给当前的用户指令 $\mathcal{T}_{\text{ins}}$</strong>：把一部分额度均分给所有指令 Token，<strong>强行锚定任务意图，防止模型看图太投入而发生“指令遗忘”</strong> 。  </li>
-<li><strong>分给过滤后的视觉特征 $\mathcal{T}_{\text{img}}^*$</strong>：利用 <strong>PGF（预充填引导过滤）</strong> 机制 ，不把额度胡乱分给全图的背景噪声（比如空白墙壁、天空） ，而是根据初始 Prefill 阶段的眼动规律 ，<strong>只精准加到那些包含核心物体的 Top-k 高显著性视觉 Token（$\mathcal{T}_{\text{img}}^*$）的格子里</strong> 。  </li>
+<li>进一步细分为：包含实际物体的<strong>语义词（Semantic
+Tokens）*<em>和用于维持结构的*</em>语法锚点（Syntactic
+Anchors）</strong>。</li>
+</ul></li>
 </ol>
-<p>做完这个大手术后，注意力向量 $\hat{A}^{(l,t)}$ 重新归一化 ，随后乘以当前层的 $V$ 矩阵 。</p>
-<h3 id="4-统一干预公式与双特征特征补偿-Unified-Formulation"><a href="#4-统一干预公式与双特征特征补偿-Unified-Formulation" class="headerlink" title="4. 统一干预公式与双特征特征补偿 (Unified Formulation)"></a>4. 统一干预公式与双特征特征补偿 (Unified Formulation)</h3><p>现在，算法手里拿着两笔“巨款”：浅层从系统词抠出来的 $S<em>{\text{sys}}$ ，以及中深层从历史语义词精准打劫来的 $S</em>{\text{his}}$ 。  </p>
-<p>为了把这些额度聪明地还给图像（$\mathcal{T}<em>{\text{img}}$）和指令（$\mathcal{T}</em>{\text{ins}}$），作者提出了最终的<strong>注意力统一加性更新公式</strong>（针对任何目标 Token $j$）：  </p>
-<script type="math/tex; mode=display">\hat{A}_j^{(l,t)} = A_j^{(l,t)} + \frac{\Delta_{\text{ins}}^{(l,t)}}{|\mathcal{T}_{\text{ins}}|}\mathbb{I}[j \in \mathcal{T}_{\text{ins}}] + \frac{S_{\text{img,sys}}^{(l,t)}}{N_v}\mathbb{I}[j \in \mathcal{T}_{\text{img}}]\cdot\mathbb{I}[l \in \mathcal{L}_{\text{sys}}] + \frac{S_{\text{img,his}}^{(l,t)}}{|\mathcal{T}_{\text{img}}^*|}\mathbb{I}[j \in \mathcal{T}_{\text{img}}^*]\cdot\mathbb{I}[l \in \mathcal{L}_{\text{hist}}]</script><p>在这个最终大一统公式里，作者完成了最妙的<strong>重新分配</strong>：</p>
-<ol>
-<li><strong>指令特征补偿（$\Delta_{\text{ins}}^{(l,t)}$）</strong>：把两笔钱中分给指令的部分合并，无缝补偿给指令 Token，<strong>彻底防止大模型只看图而“忘记任务意图”</strong> 。  </li>
-<li><strong>图像预选过滤补偿（$\mathcal{T}_{\text{img}}^*$）</strong>：在深层往图像补注意力时，作者又贴心地加了一个 <strong>PGF（预充填引导过滤）</strong> 机制 。它不把额度胡乱分给全图的背景噪声，而是利用 Prefill 阶段的先验，只精准补偿给排名前 $k$ 的<strong>高显著性物体视觉 Token（$\mathcal{T}_{\text{img}}^*$）</strong> 。  </li>
+<p>划分后，在每一步（<span class="math inline"><em>t</em></span>
+步）和每一层（<span class="math inline"><em>l</em></span>
+层）都能得到一根初始的注意力向量 <span class="math inline"><em>A</em>(<em>l</em>, <em>t</em>)</span>。</p>
+<h3 id="第二步干预阶段intervention-stages">第二步：干预阶段（Intervention
+Stages）</h3>
+<p>这是 TSAI 最核心的<strong>两大并行/协同干预机制</strong>：</p>
+<h4 id="浅层系统注意力回收-shallow-stage-system-recycling">1️⃣
+浅层系统注意力回收 (Shallow-Stage System Recycling)</h4>
+<ul>
+<li><strong>动作</strong>：针对浅层网络（<span class="math inline">ℒ<sub>sys</sub></span>），算法发现系统词 <span class="math inline">𝒯<sub>sys</sub></span> 占用了大量无用的注意力（形成
+Attention Sink）。</li>
+<li><strong>操作</strong>：通过乘以一个提取因子 <span class="math inline"><em>ρ</em><sub>sys</sub></span>，强行把分配给系统词的注意力“回收”上来，形成一个可调配的注意力预算总额
+<span class="math inline"><em>S</em><sub>sys</sub></span>。</li>
+<li><strong>去向</strong>：将回收来的这笔额度，按照固定比例<strong>补偿分配</strong>给视觉
+Token (<span class="math inline">𝒯<sub>img</sub></span>) 和指令 Token
+(<span class="math inline">𝒯<sub>ins</sub></span>)。</li>
+</ul>
+<h4 id="宽跨度双轴历史抑制-broad-span-dual-axis-historical-suppression">2️⃣
+宽跨度双轴历史抑制 (Broad-Span Dual-Axis Historical Suppression)</h4>
+<p>针对较深层网络（<span class="math inline">ℒ<sub>hist</sub></span>），为了打破幻觉的异质性，实施<strong>双轴联合绞杀</strong>：</p>
+<ul>
+<li><strong>时间轴（Temporal
+Modulation）</strong>：引入<strong>步进式渐进惩罚（Progressive
+penalty）</strong>。随着时间步（Time
+step）往后推移，幻觉风险越高，惩罚力度 <span class="math inline"><em>p</em><sub>hist</sub></span>
+呈阶梯状越来越重，完美贴合幻觉后期累积的节奏。</li>
+<li><strong>语义轴（Semantic
+Modulation）</strong>：实施<strong>差异化剥夺（Differential
+deprivation）</strong>。对历史 Token (<span class="math inline">𝒯<sub>his</sub></span>)
+区别对待——如果是无意义的语法词，给予低剥夺（Low
+deprivation）；如果是高危的<strong>历史语义词</strong>，给予高剥夺（High
+deprivation），从而狠狠压制语义惯性。</li>
+<li><strong>去向</strong>：通过双轴计算，从历史词中强行扣除一笔注意力总额
+<span class="math inline"><em>S</em><sub>his</sub></span>，同样将其<strong>补偿</strong>给经过
+Prefill 阶段筛选的高显著视觉 Token (<span class="math inline">𝒯<sub>img</sub><sup>*</sup></span>) 以及指令 Token
+(<span class="math inline">𝒯<sub>ins</sub></span>)。</li>
+</ul>
+<h3 id="第三步生成与最终概率输出-unified-output">第三步：生成与最终概率输出
+(Unified Output)</h3>
+<ul>
+<li>经过上述“扣除与补充”的动态调整后，模型得到了一个全新的、经过干预的注意力向量
+<span class="math inline"><em>Â</em>(<em>l</em>, <em>t</em>)</span>。</li>
+<li><strong>最终效果对比</strong>：
+<ul>
+<li><strong>如果没有干预（下路）</strong>：模型在预测下一个词时，受语义惯性影响，词表概率（Vocabulary
+prob）中幻觉词（Hallucination word，如
+“ball”）的概率会反超真实词，导致输出幻觉。</li>
+<li><strong>应用 TSAI
+干预后（上路）</strong>：由于高危历史语义被压制、视觉和指令被放大，词表概率得到完美校准，真实词（GT
+word）的概率遥遥领先，模型得以准确输出符合事实的文本。</li>
+</ul></li>
+</ul>
+<h1 id="method">Method</h1>
+<h2 id="问题建模与-token-空间划分-problem-formulation">1. 问题建模与
+Token 空间划分 (Problem Formulation)</h2>
+<p>在标准的 MLLM 自回归解码中，假设我们在第 <span class="math inline"><em>t</em></span> 个生成步骤、第 <span class="math inline"><em>l</em></span> 层 Transformer
+网络中。此时，大模型算完 <span class="math inline"><em>Q</em> × <em>K</em><sup>⊤</sup></span> 跑完
+Softmax
+后，会得到当前位置对过去所有位置的<strong>初始注意力分数向量</strong>
+<span class="math inline"><em>A</em><sup>(<em>l</em>, <em>t</em>)</sup> ∈ ℝ<sup><em>L</em></sup></span>（<span class="math inline"><em>L</em></span> 为当前总上下文序列长度）。</p>
+<p>为了能够“数格子”动手术，TSAI 做的第一个拆分，就是将整个上下文空间
+<span class="math inline"><em>L</em></span>
+划分为<strong>四个互不相交的语义子集</strong> ：</p>
+<p><span class="math display">𝒯 = 𝒯<sub>sys</sub> ∪ 𝒯<sub>img</sub> ∪ 𝒯<sub>ins</sub> ∪ 𝒯<sub>his</sub></span></p>
+<ul>
+<li><strong><span class="math inline">𝒯<sub>sys</sub></span>（系统
+Token）</strong>：视觉输入前固定的系统 Prompt 词（如
+<code>USER:</code>）。<br>
+</li>
+<li><strong><span class="math inline">𝒯<sub>img</sub></span>（图像
+Token）</strong>：输入的 <span class="math inline"><em>N</em><sub><em>v</em></sub></span> 个图像 Patch
+块 。<br>
+</li>
+<li><strong><span class="math inline">𝒯<sub>ins</sub></span>（指令
+Token）</strong>：用户输入的具体文本命令（如
+<code>Describe the image.</code>）。<br>
+</li>
+<li><strong><span class="math inline">𝒯<sub>his</sub></span>（历史
+Token）</strong>：截至当前步 <span class="math inline"><em>t</em></span>
+之前，模型自己吐出来的所有历史生成词 。</li>
+</ul>
+<p>作者指出，幻觉的本质就是<strong>注意力预算在这四个子集里分配失调</strong>，模型过于死盯着历史文本
+<span class="math inline">𝒯<sub>his</sub></span>
+产生了共现幻想，却忽略了图像事实 <span class="math inline">𝒯<sub>img</sub></span> 。</p>
+<h3 id="浅层系统注意力回收-shallow-stage-system-recycling-1">2.
+浅层系统注意力回收 (Shallow-Stage System Recycling)</h3>
+<p>通过前期的定量分析（Figure 3），作者注意到在网络的指定浅层（<span class="math inline"><em>l</em> ∈ ℒ<sub>sys</sub></span>，如前 10
+层）中，系统词 <span class="math inline">𝒯<sub>sys</sub></span>
+占用了极其巨大的无用注意力 。</p>
+<p>为了“白嫖”这部分被白白浪费的预算，TSAI
+在浅层网络直接祭出第一刀——<strong>硬性按比例扣除</strong> ：<span class="math display"><em>Ã</em><sub><em>i</em></sub><sup>(<em>l</em>, <em>t</em>)</sup> = (1 − <em>ρ</em><sub>sys</sub>)<em>A</em><sub><em>i</em></sub><sup>(<em>l</em>, <em>t</em>)</sup>,  ∀<em>i</em> ∈ 𝒯<sub>sys</sub></span></p>
+<ul>
+<li><p><span class="math inline"><em>ρ</em><sub>sys</sub> ∈ (0, 1)</span>
+是预设的抽取比例 。</p></li>
+<li><p>这些被强行剥夺出来的注意力分数，会被打包累加成一个可支配的<strong>浅层系统回收资金池
+<span class="math inline"><em>S</em><sub>sys</sub><sup>(<em>l</em>, <em>t</em>)</sup></span></strong>
+：</p>
+<p><span class="math display"><em>S</em><sub>sys</sub><sup>(<em>l</em>, <em>t</em>)</sup> = ∑<sub><em>i</em> ∈ 𝒯<sub>sys</sub></sub><em>ρ</em><sub>sys</sub><em>A</em><sub><em>i</em></sub><sup>(<em>l</em>, <em>t</em>)</sup></span></p></li>
+</ul>
+<p>随后，这笔额度会通过动态比例（超参数 <span class="math inline"><em>Y</em><sub>ins</sub></span> 和 <span class="math inline"><em>Y</em><sub>img</sub></span>），<strong>按需补偿分配给指令
+Token 和视觉
+Token</strong>，从而在网络刚开始时就牢牢帮模型锚定住任务意图 。</p>
+<h3 id="宽跨度双轴历史抑制-broad-span-dual-axis-historical-suppression-1">3.
+宽跨度双轴历史抑制 (Broad-Span Dual-Axis Historical Suppression)</h3>
+<p>这是 TSAI 最精妙的地方。在中深层网络中（<span class="math inline"><em>l</em> ∈ ℒ<sub>hist</sub></span>），为了防止模型眼睛脱离图片、只盯着历史词瞎编，算法对历史
+Token <span class="math inline">𝒯<sub>his</sub></span> 进行了“时间 +
+语义”的双轴细粒度拆分与重罚 ：</p>
+<h3 id="轴一时间轴-步进式渐进惩罚-temporal-axis">轴一：时间轴 ——
+步进式渐进惩罚 (Temporal Axis)</h3>
+<h4 id="为什么不能一刀切">1. 为什么不能一刀切？</h4>
+<p>如果从句子的第一个字开始，就对历史文本施加一成不变的重罚，会带来灾难性的后果
+。句子开头（如主语、谓语的构建期）大模型高度依赖前文的语法和结构，如果此时粗暴地扣掉历史注意力，大模型就会“失语”，逻辑彻底崩盘（F1分数塌陷）
+。</p>
+<h4 id="数学公式实现">2. 数学公式实现</h4>
+<p>作者通过 Figure 1 (a)
+发现，<strong>幻觉往往在长文本生成的后半段才开始滚雪球式地爆发</strong>
+。因此，作者为历史抑制设计了一个<strong>随时间步（Decoding Step <span class="math inline"><em>t</em></span>）阶梯状 monotonic
+递增的动态基础惩罚因子 <span class="math inline"><em>ρ</em><sub>his</sub><sup>(<em>t</em>)</sup></span></strong>
+：</p>
+<p><span class="math display">$$\rho_{\text{his}}^{(t)} =
+\min\left(\rho_{\text{max}}, \Delta\rho \cdot
+\lfloor\frac{t}{n}\rfloor\right) \quad \text{[cite: 692]}$$</span></p>
+<ul>
+<li><strong><span class="math inline">$\lfloor\frac{t}{n}\rfloor$</span>（分块下取整）</strong>：<span class="math inline"><em>n</em></span> 是指定的文本块大小（Chunk size）
+。这意味着惩罚不是丝滑连续变化的，而是<strong>每隔 <span class="math inline"><em>n</em></span> 个字（比如每隔 5
+个字）才上一个台阶</strong>
+。因为作者敏锐地洞察到，幻觉在模型内部往往是以“离散的语义块（Discrete
+semantic chunks）”形式累积的 。<br>
+</li>
+<li><strong><span class="math inline"><em>Δ</em><em>ρ</em></span></strong>：每个阶梯固定的惩罚增量
+。<br>
+</li>
+<li><strong><span class="math inline"><em>ρ</em><sub>max</sub></span></strong>：惩罚的保护上限，防止到了生成极后期时把历史注意力彻底扣成
+0，导致模型彻底忘掉前文 。</li>
+</ul>
+<h4 id="时间轴的效果">💡 时间轴的效果：</h4>
+<p>句子刚开头时（<span class="math inline"><em>t</em></span>
+很小），<span class="math inline"><em>ρ</em><sub>his</sub><sup>(<em>t</em>)</sup> = 0</span>，TSAI
+选择<strong>冷眼旁观，不打扰大模型梳理语言结构</strong>
+。随着文字越吐越多，大模型开始有编造幻觉的倾向时（<span class="math inline"><em>t</em></span>
+变大），惩罚力度阶梯式暴涨，拦截网越收越紧 。</p>
+<h3 id="轴二语义轴-语法差异化剥夺-semantic-axis">轴二：语义轴 ——
+语法差异化剥夺 (Semantic Axis)</h3>
+<h4 id="拦截网里的无辜者">1. 拦截网里的“无辜者”</h4>
+<p>即使到了生成后期，大模型去查阅历史文本时，历史文本里也包含两类完全不同的
+Token ：</p>
+<ul>
+<li><strong>语法锚点（Syntactic
+Anchors）</strong>：如标点符号（<code>,</code>、<code>.</code>）、连词（<code>and</code>）、介词（<code>in</code>、<code>on</code>）
+。<br>
+</li>
+<li><strong>具体语义词（Semantic
+Tokens）</strong>：如具体的物体名词（<code>dog</code>、<code>fridge</code>、<code>ball</code>）
+。</li>
+</ul>
+<p>如果无差别通罚，把标点和介词的注意力也扣光，模型说话就会变得颠三倒四（比如连主谓宾都连不起来）
+。真正引发幻觉惯性的，是那些具体的<strong>物体语义词</strong> 。</p>
+<h4 id="数学公式实现-1">2. 数学公式实现</h4>
+<p>作者引入了一个<strong>指示函数 <span class="math inline">𝕀[<em>i</em> ∈ 𝒢]</span></strong>（其中 <span class="math inline">𝒢</span>
+是一个预设的、包含标点介词的静态语法词表库）
+。通过它来作为标点符号的防护盾，计算出每个历史位置 <span class="math inline"><em>i</em></span> 最终承受的 deprivation 比例 <span class="math inline"><em>ρ</em><sub><em>i</em></sub><sup>(<em>t</em>)</sup></span>
+：</p>
+<p><span class="math display"><em>ρ</em><sub><em>i</em></sub><sup>(<em>t</em>)</sup> = <em>ρ</em><sub>his</sub><sup>(<em>t</em>)</sup> ⋅ (1 − (1 − <em>β</em>) ⋅ 𝕀[<em>i</em> ∈ 𝒢])  [cite:
+697]</span></p>
+<ul>
+<li><strong>如果当前位置 <span class="math inline"><em>i</em></span>
+对应的是一个“标点/语法词”</strong>： 此时 <span class="math inline"><em>i</em> ∈ 𝒢</span>，指示函数 <span class="math inline">𝕀 = 1</span> 。 代入公式后，括号里变成了 <span class="math inline">1 − (1 − <em>β</em>) = <em>β</em></span>。
+最终惩罚降级为：<span class="math inline"><em>ρ</em><sub><em>i</em></sub><sup>(<em>t</em>)</sup> = <em>β</em> ⋅ <em>ρ</em><sub>his</sub><sup>(<em>t</em>)</sup></span>
+。 （注：<span class="math inline"><em>β</em> ∈ [0, 1]</span>
+是一个保留系数
+，通常设得很小。这就形成了一道<strong>保护屏障</strong>，让语法词免受重罚
+）。<br>
+</li>
+<li><strong>如果当前位置 <span class="math inline"><em>i</em></span>
+对应的是一个“高危历史语义词（如具体的物体名）”</strong>： 此时 <span class="math inline"><em>i</em> ∉ 𝒢</span>，指示函数 <span class="math inline">𝕀 = 0</span> 。 代入公式后，括号里变成了 <span class="math inline">1 − 0 = 1</span>。 最终惩罚直接吃满：<span class="math inline"><em>ρ</em><sub><em>i</em></sub><sup>(<em>t</em>)</sup> = <em>ρ</em><sub>his</sub><sup>(<em>t</em>)</sup></span>
+—— <strong>全额重罚，毫不留情</strong> ！</li>
+</ul>
+<h3 id="终局从历史打劫全额返还视觉与指令">💰
+终局：从历史打劫，全额返还视觉与指令</h3>
+<p>通过“时间 <span class="math inline">×</span> 语义”双轴合围后，TSAI
+在当前中深层网络中，成功拦截并抢救出了一大笔原本要浪费在历史语义词上的注意力总额
+<span class="math inline"><em>S</em><sub>his</sub><sup>(<em>l</em>, <em>t</em>)</sup></span>
+：</p>
+<p><span class="math display"><em>S</em><sub>his</sub><sup>(<em>l</em>, <em>t</em>)</sup> = ∑<sub><em>i</em> ∈ 𝒯<sub>his</sub></sub><em>ρ</em><sub><em>i</em></sub><sup>(<em>t</em>)</sup><em>A</em><sub><em>i</em></sub><sup>(<em>l</em>, <em>t</em>)</sup>  [cite:
+708]</span></p>
+<p>随后，这一大笔预算会立刻通过大一统公式（Eq.
+6）执行<strong>双特征特征补偿（Dual Feature
+Compensation）</strong>，全额原地分赃 ：</p>
+<ol type="1">
+<li><strong>分给当前的用户指令 <span class="math inline">𝒯<sub>ins</sub></span></strong>：把一部分额度均分给所有指令
+Token，<strong>强行锚定任务意图，防止模型看图太投入而发生“指令遗忘”</strong>
+。<br>
+</li>
+<li><strong>分给过滤后的视觉特征 <span class="math inline">𝒯<sub>img</sub><sup>*</sup></span></strong>：利用
+<strong>PGF（预充填引导过滤）</strong> 机制
+，不把额度胡乱分给全图的背景噪声（比如空白墙壁、天空） ，而是根据初始
+Prefill 阶段的眼动规律 ，<strong>只精准加到那些包含核心物体的 Top-k
+高显著性视觉 Token（<span class="math inline">$\mathcal{T}_{\text{img}}^\*$</span>）的格子里</strong>
+。</li>
 </ol>
-<p>更新完毕后，代码会对整根 $\hat{A}^{(l,t)}$ 向量进行最后一步<strong>数值重新归一化（Re-normalization）</strong>，保证分数值加起来重新等于 1，完美输送给下一步的 $V$ 矩阵相乘 。</p>
-<h1 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h1><h2 id="Decoding-Overhead-解码开销分析"><a href="#Decoding-Overhead-解码开销分析" class="headerlink" title="Decoding Overhead (解码开销分析)"></a>Decoding Overhead (解码开销分析)</h2><p>这是 TSAI 最值得骄傲的物理防线。许多号称能缓解幻觉的方法，在实际落地时因为“推理太慢”根本没法商用。作者通过 <strong>Table 2</strong> 的前向传播次数（$N_{\text{forward}}$）对比，扒下了前作们的效率底裤 。  </p>
-<p>我们来看一下论文中 <strong>Table 2</strong> 的数据分布和背后的本质含义 ：  </p>
-<div class="table-container">
+<p>做完这个大手术后，注意力向量 <span class="math inline"><em>Â</em><sup>(<em>l</em>, <em>t</em>)</sup></span>
+重新归一化 ，随后乘以当前层的 <span class="math inline"><em>V</em></span> 矩阵 。</p>
+<h3 id="统一干预公式与双特征特征补偿-unified-formulation">4.
+统一干预公式与双特征特征补偿 (Unified Formulation)</h3>
+<p>现在，算法手里拿着两笔“巨款”：浅层从系统词抠出来的 <span class="math inline"><em>S</em><sub>sys</sub></span>
+，以及中深层从历史语义词精准打劫来的 <span class="math inline"><em>S</em><sub>his</sub></span> 。</p>
+<p>为了把这些额度聪明地还给图像（<span class="math inline">𝒯<sub>img</sub></span>）和指令（<span class="math inline">𝒯<sub>ins</sub></span>），作者提出了最终的<strong>注意力统一加性更新公式</strong>（针对任何目标
+Token <span class="math inline"><em>j</em></span>）：</p>
+<p><span class="math display">$$\hat{A}_j^{(l,t)} = A_j^{(l,t)} +
+\frac{\Delta_{\text{ins}}^{(l,t)}}{|\mathcal{T}_{\text{ins}}|}\mathbb{I}[j
+\in \mathcal{T}_{\text{ins}}] +
+\frac{S_{\text{img,sys}}^{(l,t)}}{N_v}\mathbb{I}[j \in
+\mathcal{T}_{\text{img}}]\cdot\mathbb{I}[l \in \mathcal{L}_{\text{sys}}]
++
+\frac{S_{\text{img,his}}^{(l,t)}}{|\mathcal{T}_{\text{img}}^*|}\mathbb{I}[j
+\in \mathcal{T}_{\text{img}}^*]\cdot\mathbb{I}[l \in
+\mathcal{L}_{\text{hist}}]$$</span></p>
+<p>在这个最终大一统公式里，作者完成了最妙的<strong>重新分配</strong>：</p>
+<ol type="1">
+<li><strong>指令特征补偿（<span class="math inline"><em>Δ</em><sub>ins</sub><sup>(<em>l</em>, <em>t</em>)</sup></span>）</strong>：把两笔钱中分给指令的部分合并，无缝补偿给指令
+Token，<strong>彻底防止大模型只看图而“忘记任务意图”</strong> 。<br>
+</li>
+<li><strong>图像预选过滤补偿（<span class="math inline">𝒯<sub>img</sub><sup>*</sup></span>）</strong>：在深层往图像补注意力时，作者又贴心地加了一个
+<strong>PGF（预充填引导过滤）</strong> 机制
+。它不把额度胡乱分给全图的背景噪声，而是利用 Prefill
+阶段的先验，只精准补偿给排名前 <span class="math inline"><em>k</em></span> 的<strong>高显著性物体视觉
+Token（<span class="math inline">𝒯<sub>img</sub><sup>*</sup></span>）</strong>
+。</li>
+</ol>
+<p>更新完毕后，代码会对整根 <span class="math inline"><em>Â</em><sup>(<em>l</em>, <em>t</em>)</sup></span>
+向量进行最后一步<strong>数值重新归一化（Re-normalization）</strong>，保证分数值加起来重新等于
+1，完美输送给下一步的 <span class="math inline"><em>V</em></span>
+矩阵相乘 。</p>
+<h1 id="experiments">Experiments</h1>
+<h2 id="decoding-overhead-解码开销分析">Decoding Overhead
+(解码开销分析)</h2>
+<p>这是 TSAI
+最值得骄傲的物理防线。许多号称能缓解幻觉的方法，在实际落地时因为“推理太慢”根本没法商用。作者通过
+<strong>Table 2</strong> 的前向传播次数（<span class="math inline"><em>N</em><sub>forward</sub></span>）对比，扒下了前作们的效率底裤
+。</p>
+<p>我们来看一下论文中 <strong>Table 2</strong>
+的数据分布和背后的本质含义 ：</p>
 <table>
+<colgroup>
+<col style="width: 17%">
+<col style="width: 28%">
+<col style="width: 53%">
+</colgroup>
 <thead>
 <tr>
 <th><strong>方法 (Method)</strong></th>
@@ -467,35 +778,72 @@
 <tr>
 <td><strong>VCD / PAI / CODE</strong></td>
 <td>传统对比解码 (Contrastive)</td>
-<td><strong>2</strong>（每吐一个字都必须跑 Expert 和 Amateur 双路前向）</td>
+<td><strong>2</strong>（每吐一个字都必须跑 Expert 和 Amateur
+双路前向）</td>
 </tr>
 <tr>
 <td><strong>OPERA</strong></td>
 <td>回溯分配流派 (Retrospection)</td>
-<td><strong>$n \ (\ge 5)$</strong>（一旦触发局部循环，需要不断把序列回滚并重新计算）</td>
+<td><strong><span class="math inline"><em>n</em> ( ≥ 5)</span></strong>（一旦触发局部循环，需要不断把序列回滚并重新计算）</td>
 </tr>
 </tbody>
 </table>
-</div>
-<h3 id="🔍-为什么-TSAI-能够死死守住-N-text-forward-1-的底线？"><a href="#🔍-为什么-TSAI-能够死死守住-N-text-forward-1-的底线？" class="headerlink" title="🔍 为什么 TSAI 能够死死守住 $N_{\text{forward}} = 1$ 的底线？"></a>🔍 为什么 TSAI 能够死死守住 $N_{\text{forward}} = 1$ 的底线？</h3><p>通过我们在 Method 章节里死磕的底层逻辑，你现在看这个表一定会产生降维打击的顿悟：</p>
+<h3 id="为什么-tsai-能够死死守住-n_textforward-1-的底线">🔍 为什么 TSAI
+能够死死守住 <span class="math inline"><em>N</em><sub>forward</sub> = 1</span>
+的底线？</h3>
+<p>通过我们在 Method
+章节里死磕的底层逻辑，你现在看这个表一定会产生降维打击的顿悟：</p>
 <ul>
-<li>以 VCD、PAI 或者是 CODE 为代表的流派，因为必须要在“有图事实”和“无图/噪图先验”两个平行宇宙里反复对比 ，所以它们每吐一个字，模型都必须雷打不动地跑 <strong>2 次前向传播</strong> ，<strong>推理延迟直接翻倍</strong> ！  </li>
-<li>OPERA 更不用说了，遇到幻觉苗头就得序列回滚（Sequence Rollback）退回去重写 ，跑一次前向的代价甚至超过 5 次 ，极其卡顿 。  </li>
+<li>以 VCD、PAI 或者是 CODE
+为代表的流派，因为必须要在“有图事实”和“无图/噪图先验”两个平行宇宙里反复对比
+，所以它们每吐一个字，模型都必须雷打不动地跑 <strong>2
+次前向传播</strong> ，<strong>推理延迟直接翻倍</strong> ！<br>
+</li>
+<li>OPERA 更不用说了，遇到幻觉苗头就得序列回滚（Sequence
+Rollback）退回去重写 ，跑一次前向的代价甚至超过 5 次 ，极其卡顿 。</li>
 </ul>
-<p>而 <strong>TSAI 框架是在同一个 forward 函数内部，直接在算好的 Softmax 注意力矩阵上做“原地切片、原地相加”的纯数学加减法</strong> 。它没有开辟第二条平行宇宙通道（无需跑第二次前向） ，也没有任何打断、退回和重写的动作 。因此，它完美保住了 <strong>$N_{\text{forward}} = 1$</strong> 的原生速度 。  </p>
-<h1 id="rebuttal"><a href="#rebuttal" class="headerlink" title="rebuttal"></a>rebuttal</h1><h3 id="针对“相比前作-AttnReal-概念创新性不足”的问题"><a href="#针对“相比前作-AttnReal-概念创新性不足”的问题" class="headerlink" title="针对“相比前作 AttnReal 概念创新性不足”的问题"></a>针对“相比前作 AttnReal 概念创新性不足”的问题</h3><ul>
-<li><strong>审稿人（Reviewer VX7Z, 15M9）质疑</strong>：TSAI 同样是在 Softmax 之后原地做注意力重新分配，核心贡献看起来只是公式微调，有夸大创新之嫌。</li>
-<li><strong>你的回复</strong>：直接阐明本质差异（解耦）。AttnReal 隐式地假设 Token 在时空上是同质的，而 TSAI 首次打破了这一假设，提出了<strong>4 维上下文空间注意力分配</strong>；TSAI 首次实现了对<strong>系统词（System Tokens）\</strong>中被困注意力的回收利用，且通过消退实验证明了*<em>双特征特征补偿*</em>显著优于单向视觉注入。</li>
+<p>而 <strong>TSAI 框架是在同一个 forward 函数内部，直接在算好的 Softmax
+注意力矩阵上做“原地切片、原地相加”的纯数学加减法</strong>
+。它没有开辟第二条平行宇宙通道（无需跑第二次前向）
+，也没有任何打断、退回和重写的动作 。因此，它完美保住了 <strong><span class="math inline"><em>N</em><sub>forward</sub> = 1</span></strong>
+的原生速度 。</p>
+<h1 id="rebuttal">rebuttal</h1>
+<h3 id="针对相比前作-attnreal-概念创新性不足的问题">针对“相比前作
+AttnReal 概念创新性不足”的问题</h3>
+<ul>
+<li><strong>审稿人（Reviewer VX7Z, 15M9）质疑</strong>：TSAI 同样是在
+Softmax
+之后原地做注意力重新分配，核心贡献看起来只是公式微调，有夸大创新之嫌。</li>
+<li><strong>你的回复</strong>：直接阐明本质差异（解耦）。AttnReal
+隐式地假设 Token 在时空上是同质的，而 TSAI
+首次打破了这一假设，提出了<strong>4
+维上下文空间注意力分配</strong>；TSAI 首次实现了对<strong>系统词（System
+Tokens）*<em>中被困注意力的回收利用，且通过消退实验证明了*</em>双特征特征补偿</strong>显著优于单向视觉注入。</li>
 </ul>
-<h3 id="针对“单次前向传播并不等同于真正低开销”的问题"><a href="#针对“单次前向传播并不等同于真正低开销”的问题" class="headerlink" title="针对“单次前向传播并不等同于真正低开销”的问题"></a>针对“单次前向传播并不等同于真正低开销”的问题</h3><ul>
-<li><strong>审稿人（Reviewer p1hu）质疑</strong>：Table 2 只数了前向传播次数，没有实际的时间运行延迟和显存开销。</li>
-<li><strong>你的回复</strong>：直接抛出物理硬核数据：TSAI 的逐 Token 推理延迟为 <strong>$46.67 \pm 2.74$ 毫秒</strong>，相比于原生 Baseline（$31.78 \pm 2.20$ 毫秒）属于完全可接受的微弱增加；而作为交换，显存和内存占用增加极小，<strong>仅仅增加了几十个 KB</strong>，完全不构成算力瓶颈。</li>
+<h3 id="针对单次前向传播并不等同于真正低开销的问题">针对“单次前向传播并不等同于真正低开销”的问题</h3>
+<ul>
+<li><strong>审稿人（Reviewer p1hu）质疑</strong>：Table 2
+只数了前向传播次数，没有实际的时间运行延迟和显存开销。</li>
+<li><strong>你的回复</strong>：直接抛出物理硬核数据：TSAI 的逐 Token
+推理延迟为 <strong><span class="math inline">46.67 ± 2.74</span>
+毫秒</strong>，相比于原生 Baseline（<span class="math inline">31.78 ± 2.20</span>
+毫秒）属于完全可接受的微弱增加；而作为交换，显存和内存占用增加极小，<strong>仅仅增加了几十个
+KB</strong>，完全不构成算力瓶颈。</li>
 </ul>
-<h3 id="针对“如果固定文本生成长度为-64，结果会怎样”的问题"><a href="#针对“如果固定文本生成长度为-64，结果会怎样”的问题" class="headerlink" title="针对“如果固定文本生成长度为 64，结果会怎样”的问题"></a>针对“如果固定文本生成长度为 64，结果会怎样”的问题</h3><ul>
-<li><strong>审稿人（Reviewer VX7Z）质疑</strong>：在不同输出长度下，模型的表现和评估指标是否依然鲁棒？</li>
-<li><strong>你的回复</strong>：补做实验证明稳健性。即使在生成的文本被强制截断为 64 个 Token 的严苛场景下，TSAI 在 LLaVA-1.5 上的 CHAIR_S / CHAIR_I 指标依然以 <strong>27.20 / 8.69</strong> 完爆原生模型的 44.00 / 13.66，同时 F1 分数（75.15 vs 73.96）依然逆势反超。</li>
+<h3 id="针对如果固定文本生成长度为-64结果会怎样的问题">针对“如果固定文本生成长度为
+64，结果会怎样”的问题</h3>
+<ul>
+<li><strong>审稿人（Reviewer
+VX7Z）质疑</strong>：在不同输出长度下，模型的表现和评估指标是否依然鲁棒？</li>
+<li><strong>你的回复</strong>：补做实验证明稳健性。即使在生成的文本被强制截断为
+64 个 Token 的严苛场景下，TSAI 在 LLaVA-1.5 上的 CHAIR_S / CHAIR_I
+指标依然以 <strong>27.20 / 8.69</strong> 完爆原生模型的 44.00 /
+13.66，同时 F1 分数（75.15 vs 73.96）依然逆势反超。</li>
 </ul>
-<h3 id="长文本后期单调递增惩罚是否会导致模型失忆、失去连贯性"><a href="#长文本后期单调递增惩罚是否会导致模型失忆、失去连贯性" class="headerlink" title="长文本后期单调递增惩罚是否会导致模型失忆、失去连贯性"></a>长文本后期单调递增惩罚是否会导致模型失忆、失去连贯性</h3><p>代表语言长文本连贯性与质量的综合指标 <strong>F1 Score，TSAI 依然以 75.15 逆势反超了原生模型的 73.96</strong>。这用铁打的数据直接回击了审稿人——即便在长文本生成的后期，模型的长上下文连贯性和语言组织能力不仅没有发生任何“因为打压历史而崩溃失忆”的现象，反而表现得更加稳健和清醒。 </p>
+<h3 id="长文本后期单调递增惩罚是否会导致模型失忆失去连贯性">长文本后期单调递增惩罚是否会导致模型失忆、失去连贯性</h3>
+<p>代表语言长文本连贯性与质量的综合指标 <strong>F1 Score，TSAI 依然以
+75.15 逆势反超了原生模型的
+73.96</strong>。这用铁打的数据直接回击了审稿人——即便在长文本生成的后期，模型的长上下文连贯性和语言组织能力不仅没有发生任何“因为打压历史而崩溃失忆”的现象，反而表现得更加稳健和清醒。</p>
 
     </div>
 

@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="功能设计 三层结构 123456789101112131415161718┌─────────────────────────────────────────────────────────────┐│  SessionEntry  (pydantic BaseModel)                          ││  「树的节点」：id &#x2F; parent_id &#x2F; timesta">
+<meta property="og:type" content="article">
+<meta property="og:title" content="my-pi-agent--session管理">
+<meta property="og:url" content="http://example.com/2026/08/10/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--session%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="功能设计 三层结构 123456789101112131415161718┌─────────────────────────────────────────────────────────────┐│  SessionEntry  (pydantic BaseModel)                          ││  「树的节点」：id &#x2F; parent_id &#x2F; timesta">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-08-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-12T07:09:27.906Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="agent">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2026/08/10/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--session%E7%AE%A1%E7%90%86/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2026/08/10/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--session%E7%AE%A1%E7%90%86/","path":"2026/08/10/学习/agent实战/my-pi-agent/my-pi-agent--session管理/","title":"my-pi-agent--session管理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>my-pi-agent--session管理 | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.</span> <span class="nav-text">功能设计</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E5%B1%82%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.</span> <span class="nav-text">三层结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%A0%91-current-%E6%8C%87%E9%92%88"><span class="nav-number">1.2.</span> <span class="nav-text">数据结构：树 + current 指针</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%AE%B0%E5%BD%95parent_id"><span class="nav-number">1.2.1.</span> <span class="nav-text">为什么记录parent_id</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%AD%98children%E5%8F%8C%E5%90%91"><span class="nav-number">1.2.2.</span> <span class="nav-text">为什么不存children（双向）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%88%87%E6%8D%A2branch"><span class="nav-number">1.2.3.</span> <span class="nav-text">如何切换branch</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">核心流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E8%90%BD%E7%9B%98add_message-%E5%8E%9F%E5%AD%90%E5%85%A8%E9%87%8F%E9%87%8D%E5%86%99"><span class="nav-number">1.3.1.</span> <span class="nav-text">消息落盘（add_message →
+原子全量重写）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%81%A2%E5%A4%8Dload"><span class="nav-number">1.3.2.</span> <span class="nav-text">恢复（load）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#agent-%E9%9B%86%E6%88%90%E6%8C%81%E4%B9%85%E5%8C%96%E5%BE%AA%E7%8E%AF"><span class="nav-number">1.3.3.</span> <span class="nav-text">Agent 集成（持久化循环）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rewind-%E5%90%8E%E7%9A%84%E7%BB%AD%E8%B7%91"><span class="nav-number">1.3.4.</span> <span class="nav-text">rewind 后的续跑</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sessionentry%E4%B8%8Esessiontree"><span class="nav-number">2.</span> <span class="nav-text">SessionEntry与SessionTree</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#sessionentry"><span class="nav-number">2.1.</span> <span class="nav-text">SessionEntry</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sessiontree"><span class="nav-number">2.2.</span> <span class="nav-text">SessionTree</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#session-%E7%B1%BB%E6%A0%91-%E6%96%87%E4%BB%B6%E7%9A%84%E4%BC%9A%E8%AF%9D%E6%9C%AC%E4%BD%93"><span class="nav-number">3.</span> <span class="nav-text">Session 类——「树 +
+文件」的会话本体</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8%E6%A0%91"><span class="nav-number">3.1.</span> <span class="nav-text">为什么要用树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%91%E7%9A%84%E5%85%B6%E4%BB%96%E5%A5%BD%E5%A4%84"><span class="nav-number">3.2.</span> <span class="nav-text">树的其他好处</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sessionmanager"><span class="nav-number">4.</span> <span class="nav-text">sessionmanager</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B"><span class="nav-number">4.1.</span> <span class="nav-text">流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86session"><span class="nav-number">4.2.</span> <span class="nav-text">如何管理session</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95%E9%9A%94%E7%A6%BB"><span class="nav-number">4.2.1.</span> <span class="nav-text">目录隔离</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96%E5%AE%B9%E9%94%99"><span class="nav-number">4.2.2.</span> <span class="nav-text">读取容错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#workspace-%E8%BF%87%E6%BB%A4%E8%B7%A8%E9%A1%B9%E7%9B%AE%E9%9A%94%E7%A6%BB"><span class="nav-number">4.2.3.</span> <span class="nav-text">workspace 过滤（跨项目隔离）</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">205</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">72</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/08/10/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--session%E7%AE%A1%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="my-pi-agent--session管理 | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          my-pi-agent--session管理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-08-10 00:00:00" itemprop="dateCreated datePublished" datetime="2026-08-10T00:00:00+08:00">2026-08-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-08-12 15:09:27" itemprop="dateModified" datetime="2026-08-12T15:09:27+08:00">2026-08-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/agent%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">agent实战</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/agent%E5%AE%9E%E6%88%98/my-pi-agent/" itemprop="url" rel="index"><span itemprop="name">my-pi-agent</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="功能设计">功能设计</h1>
+<h2 id="三层结构">三层结构</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────────┐</span><br><span class="line">│  SessionEntry  (pydantic BaseModel)                          │</span><br><span class="line">│  「树的节点」：id / parent_id / timestamp / role /            │</span><br><span class="line">│                content / metadata                            │</span><br><span class="line">│  只管&quot;一条消息长什么样&quot;——无树、无文件知识                      │</span><br><span class="line">├─────────────────────────────────────────────────────────────┤</span><br><span class="line">│  SessionTree                                                │</span><br><span class="line">│  「树」：entries: dict[id→entry] + current_id 指针 + root_id  │</span><br><span class="line">│  add_entry / get_current_path / get_path_to_entry /          │</span><br><span class="line">│  rewind / to_jsonl / from_jsonl_iter                        │</span><br><span class="line">│  只管&quot;消息怎么组织成树&quot;——不知道文件存在                        │</span><br><span class="line">├─────────────────────────────────────────────────────────────┤</span><br><span class="line">│  Session                                                     │</span><br><span class="line">│  「树 + 文件」：path + id + created_at + cwd + tree           │</span><br><span class="line">│  add_message / save / load / rewind / reset /                │</span><br><span class="line">│  get_current_path_messages                                  │</span><br><span class="line">│  树的持久化外壳——把树写进 JSONL、从 JSONL 恢复                │</span><br><span class="line">└─────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+<h2 id="数据结构树-current-指针">数据结构：树 + current 指针</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">状态 A：current = c3（旧枝末端）</span><br><span class="line"></span><br><span class="line">r1 ──► a1 ──► b2 ──► c3      ← current_id = c3，对话位置在旧枝</span><br><span class="line">        │</span><br><span class="line">        └──► b2&#x27;             ← 新枝存在，但没人指着它</span><br><span class="line"></span><br><span class="line">get_current_path() 沿 c3 的 parent 回溯：c3 → b2 → a1 → r1</span><br><span class="line">= [r1, a1, b2, c3]</span><br><span class="line"></span><br><span class="line">状态 B：rewind(&quot;b2&#x27;&quot;) 切到新枝</span><br><span class="line"></span><br><span class="line">r1 ──► a1 ──► b2 ──► c3      ← 旧枝留档（c3 还在 entries 里）</span><br><span class="line">        │</span><br><span class="line">        └──► b2&#x27;             ← current_id = b2&#x27;，对话位置切到新枝</span><br><span class="line"></span><br><span class="line">get_current_path() 沿 b2&#x27; 的 parent 回溯：b2&#x27; → a1 → r1</span><br><span class="line">= [r1, a1, b2&#x27;]</span><br><span class="line"></span><br><span class="line">                        entries        current_id        get_current_path()</span><br><span class="line">状态 A（旧枝末端）      &#123;r1,a1,b2,c3,b2&#x27;&#125;   &quot;c3&quot;       [r1, a1, b2, c3]</span><br><span class="line">状态 B（新枝末端）      &#123;r1,a1,b2,c3,b2&#x27;&#125;   &quot;b2&#x27;&quot;      [r1, a1, b2&#x27;]</span><br><span class="line">                         ↑ 完全一样          ↑ 唯一变化     ↑ 跟着指针走</span><br><span class="line"></span><br><span class="line">SessionTree 对象</span><br><span class="line">├── entries: dict                                  # 5 个节点平铺，树关系在各自 parent_id 里</span><br><span class="line">│   ├── &quot;r1&quot; → SessionEntry(id=&quot;r1&quot;, parent_id=None,role=&quot;system&quot;,    content=&quot;sys&quot;)</span><br><span class="line">│   ├── &quot;a1&quot; → SessionEntry(id=&quot;a1&quot;, parent_id=&quot;r1&quot;,role=&quot;user&quot;,      content=&quot;q1&quot;)</span><br><span class="line">│   ├── &quot;b2&quot; → SessionEntry(id=&quot;b2&quot;, parent_id=&quot;a1&quot;,role=&quot;assistant&quot;,content=&quot;a1答案&quot;)</span><br><span class="line">│   ├── &quot;c3&quot; → SessionEntry(id=&quot;c3&quot;, parent_id=&quot;b2&quot;, role=&quot;user&quot;,    content=&quot;q2&quot;)</span><br><span class="line">│   └── &quot;b2&#x27;&quot;→ SessionEntry(id=&quot;b2&#x27;&quot;, parent_id=&quot;a1&quot;,role=&quot;assistant&quot;,content=&quot;换个答法&quot;)</span><br><span class="line">├── current_id: ???                                  # ← 可变，下面两个状态看它</span><br><span class="line">└── root_id: &quot;r1&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="为什么记录parent_id">为什么记录parent_id</h3>
+<p>它支撑的核心操作：沿祖先链回溯</p>
+<p>整个设计围绕一个需求转：“取当前对话的完整上下文”。上下文在树里的定义就是”从根一路走到
+current 的路径”——而路径就是沿 parent_id 连续向上跳：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">def get_path_to_entry(self, entry_id):</span><br><span class="line">    path = []</span><br><span class="line">    cur = self.entries[entry_id]</span><br><span class="line">    while cur:</span><br><span class="line">        path.insert(0, cur)                    # 插头部，让根在前</span><br><span class="line">        cur = self.entries.get(cur.parent_id)  # ← 跳到父节点</span><br><span class="line">    return path</span><br></pre></td></tr></table></figure>
+<p>b2’ 的视角：只看得上自己的 parent b2’.parent_id = “a1” ──►
+a1.parent_id = “r1” ──► r1.parent_id = None 停 ⇒ 回溯结果 [r1, a1, b2’]
+← 这就是”上下文”</p>
+<p>parent_id
+就是这条回溯链路的物理实现——每个节点只认识”我是谁的孩子”，整条链靠反复跳父节点拼出来。</p>
+<h3 id="为什么不存children双向">为什么不存children（双向）</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">存 parent_id（现在）            存 parent + children（备选）</span><br><span class="line">  b2.parent_id = &quot;a1&quot;             b2.parent_id = &quot;a1&quot;</span><br><span class="line">  a1.children = &#123;...&#125;  ← 需要额外维护</span><br><span class="line">  add_entry 时：                 add_entry 时：</span><br><span class="line">    只写新节点.parent_id            ① 写新节点.parent_id</span><br><span class="line">    一步                         ② 还要往父节点.children 里追加</span><br><span class="line">                                 两处写，必须同步（一致性 bug 高发区）</span><br></pre></td></tr></table></figure>
+<p>只存 parent_id 的另一个好处：add 永远只写一个地方（新节点的
+parent_id），不会有”父的 children 和子的 parent 对不上”的隐患。</p>
+<p>代价：向下看不见</p>
+<p>单向链的代价是——从 current
+不知道下面有哪些节点（不知道谁是我的孩子）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">r1 ──► a1 ──► b2 ──► c3</span><br><span class="line">        │</span><br><span class="line">        └──► b2&#x27;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>站在 a1 上，按 parent_id 只能看到 r1（上），看不见
+b2、b2’（下）</li>
+<li>但”下”这件事我们不需要：切到 b2’ 靠 rewind(“b2’”) 直接按 id
+跳（O(1)，不走路），不需要”从 a1 走过去”</li>
+<li>真要看全树（比如列所有枝），直接遍历 entries dict 就行——entries
+本身就是全量存储</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">想&quot;从 a1 走到 b2&#x27;&quot;？   → 不需要。rewind(&quot;b2&#x27;&quot;) 直接跳</span><br><span class="line">想知道 b2&#x27; 存在吗？    → 查 entries[&quot;b2&#x27;&quot;] 就行</span><br><span class="line">想枚举 a1 的所有孩子？ → 遍历 entries 过滤 parent_id==&quot;a1&quot;（pig-mono 的</span><br><span class="line">                        get_children 就是这么干的，一次 O(n) 扫描）</span><br></pre></td></tr></table></figure>
+<h3 id="如何切换branch">如何切换branch</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def rewind(self, entry_id: str) -&gt; None:</span><br><span class="line">    if entry_id not in self.entries:</span><br><span class="line">        raise ValueError(f&quot;Entry &#123;entry_id&#125; not found&quot;)</span><br><span class="line">    self.current_id = entry_id</span><br></pre></td></tr></table></figure>
+<p>切换 branch 的全部动作就是上面这 3 行——校验存在 + 给 current_id
+重新赋值。没有移动节点、没有删除、没有重建路径。路径是”现算”的：切完指针，get_current_path()
+沿新指针对应的 parent 链回溯，自动得到新枝的上下文。</p>
+<blockquote>
+<p><strong>压缩护栏（context
+阶段加的）</strong>：<code>Session.rewind</code> 在
+<code>compaction_floor</code>（压缩时刻 current id）非 None 时，只允许回
+floor（含）之后长出的节点，压缩点及之前 →
+<code>ValueError</code>——换来缓存永不失效、无尾部真空（详见 context
+笔记）。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">① 切到新枝 b2&#x27;</span><br><span class="line"></span><br><span class="line">session.rewind(&quot;b2&#x27;&quot;)          # current_id: &quot;c3&quot; → &quot;b2&#x27;&quot;</span><br><span class="line"></span><br><span class="line">   r1 ──► a1 ──► b2 ──► c3     ← 旧枝留档</span><br><span class="line">           │</span><br><span class="line">           └──► b2&#x27;            ← current 切到这</span><br><span class="line"></span><br><span class="line">此时 session.get_current_path_messages() 返回 [r1, a1, b2&#x27;]——Agent 恢复上下文就是这条。</span><br><span class="line"></span><br><span class="line">② 从新枝继续对话</span><br><span class="line"></span><br><span class="line">agent.run(&quot;那再解释下&quot;)</span><br><span class="line"></span><br><span class="line"># run() 开头：messages = session.get_current_path_messages()  → [r1, a1, b2&#x27;]</span><br><span class="line"># 循环内：add_message(&quot;user&quot;, &quot;那再解释下&quot;)</span><br><span class="line">#         → add_entry 的 parent_id 缺省 = current_id = &quot;b2&#x27;&quot;</span><br><span class="line">#         → 新节点 e5 挂在 b2&#x27; 下，current_id = &quot;e5&quot;</span><br><span class="line"></span><br><span class="line">   r1 ──► a1 ──► b2 ──► c3     ← 旧枝完全没动</span><br><span class="line">           │</span><br><span class="line">           └──► b2&#x27; ──► e5     ← 新枝继续长（current=e5）</span><br><span class="line"></span><br><span class="line">③ 切回旧枝（再切换）</span><br><span class="line"></span><br><span class="line">session.rewind(&quot;c3&quot;)           # current_id: &quot;e5&quot; → &quot;c3&quot;</span><br><span class="line"></span><br><span class="line">   r1 ──► a1 ──► b2 ──► c3     ← current 又回到旧枝末端</span><br><span class="line">           │</span><br><span class="line">           └──► b2&#x27; ──► e5     ← 新枝还在，随时可再切</span><br><span class="line"></span><br><span class="line">无限次往返切换，任何一次都不丢节点——entries 里 6 个节点始终齐全。</span><br></pre></td></tr></table></figure>
+<h2 id="核心流程">核心流程</h2>
+<h3 id="消息落盘add_message-原子全量重写">消息落盘（add_message →
+原子全量重写）</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Agent.run() 里</span><br><span class="line">   self.session.add_message(&quot;user&quot;, user_input)</span><br><span class="line">                      │</span><br><span class="line">                      ▼</span><br><span class="line">   Session.add_message(role, content, **metadata)</span><br><span class="line">      │                                    │</span><br><span class="line">      ├─ tree.add_entry(...)               │</span><br><span class="line">      │    parent_id 缺省 = current_id     │</span><br><span class="line">      │    entry 入 entries                │</span><br><span class="line">      │    current_id = entry.id           │  ← ①树里长新节点</span><br><span class="line">      │                                     │</span><br><span class="line">      ▼                                     ▼</span><br><span class="line">   Session.save()  ── ②把整棵树原子写进文件</span><br></pre></td></tr></table></figure>
+<p>save() 的原子写（崩溃安全的保证）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Agent.run() 中每加一条消息</span><br><span class="line">   session.add_message(...)</span><br><span class="line">        │</span><br><span class="line">        ├─ tree.add_entry(...)         内存：树长新节点</span><br><span class="line">        │</span><br><span class="line">        └─ save()                      磁盘：整棵树原子重写</span><br><span class="line">             │</span><br><span class="line">             ├─ 写 .tmp（全量） + fsync</span><br><span class="line">             ├─ os.replace（原子切换）</span><br><span class="line">             └─ （失败 → unlink .tmp，原文件不动）</span><br></pre></td></tr></table></figure>
+<p>save() = 把整棵树先完整写进同目录临时文件并 fsync
+落盘，再用一个原子的 os.replace
+顶替正式文件——任何时刻崩溃，正式文件要么是旧完整快照要么是新完整快照</p>
+<h3 id="恢复load">恢复（load）</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">Session.load(path)</span><br><span class="line">   │</span><br><span class="line">   ├─ 读所有行</span><br><span class="line">   ├─ 第一行 = header ──校验──► 缺 id/created_at → ValueError（必要字段门禁，</span><br><span class="line">   │                           type/version 已删：防误读靠目录隔离 + 必要字段）</span><br><span class="line">   │</span><br><span class="line">   ├─ 最后一行 JSON 损坏？  ──是──► 丢弃（尾行撕裂宽容：原子写下很少见，兜底）</span><br><span class="line">   │        │否</span><br><span class="line">   │        ▼</span><br><span class="line">   ├─ SessionTree.from_jsonl_iter(其余行)   ← 重建 entries + root_id</span><br><span class="line">   │</span><br><span class="line">   ├─ header 里的 current_id / root_id 有效？ ──► 覆盖树里的指针（文件为准）</span><br><span class="line">   │</span><br><span class="line">   └─ 返回 Session（树 + current 指针 = 恢复时的对话位置 + compaction_floor 恢复）</span><br><span class="line">   </span><br><span class="line">磁盘文件（正式 .jsonl）                         内存</span><br><span class="line">┌──────────────────────────────┐</span><br><span class="line">│ &#123;&quot;id&quot;:...,&quot;cwd&quot;:...,          │  ──②──► header dict（校验必要字段 id/created_at；</span><br><span class="line">│  &quot;current_id&quot;:&quot;e5&quot;,&quot;root_id&quot;: │           type/version 已删）</span><br><span class="line">│  &quot;r1&quot;,&quot;compaction_floor&quot;:&quot;e5&quot;&#125;│  ──⑦──► tree.current_id = &quot;e5&quot;</span><br><span class="line">├──────────────────────────────┤          tree.root_id = &quot;r1&quot;</span><br><span class="line">│ &#123;&quot;id&quot;:&quot;r1&quot;,&quot;parent_id&quot;:null,  │          session.compaction_floor = &quot;e5&quot;</span><br><span class="line">│ &#123;&quot;id&quot;:&quot;r1&quot;,&quot;parent_id&quot;:null,  │</span><br><span class="line">│  &quot;role&quot;:&quot;system&quot;,...&#125;         │  ─┐</span><br><span class="line">│ &#123;&quot;id&quot;:&quot;a1&quot;,&quot;parent_id&quot;:&quot;r1&quot;,..│   │──⑥──► SessionTree.from_jsonl_iter</span><br><span class="line">│ &#123;&quot;id&quot;:&quot;b2&quot;,...&#125;               │   │        逐行 model_validate_json</span><br><span class="line">│ ...                           │  ─┘        填 entries + 推断 root_id</span><br><span class="line">└──────────────────────────────┘</span><br></pre></td></tr></table></figure>
+<p>关键设计：from_jsonl_iter 只填 entries/root，不推断 current——current
+只信 header。pig-mono 用”叶子时间戳最新”启发式推断（兼容没有 header
+的旧文件）；我的格式从第一版就有 header，不需要猜。</p>
+<h3 id="agent-集成持久化循环">Agent 集成（持久化循环）</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Agent(llm=llm, session=session)          ← session=None 则纯内存，一行不写</span><br><span class="line">   │</span><br><span class="line">   ├─ __init__: self.messages = session.get_full_history_messages()</span><br><span class="line">   │              （恢复模式：transcript 从文件来，system_prompt 被忽略；</span><br><span class="line">   │               过滤 type=&quot;compaction&quot; 缓存 entry，context 阶段加的）</span><br><span class="line">   ▼</span><br><span class="line">run(&quot;37*19=?&quot;)</span><br><span class="line">   ├─ 同步 messages = session.get_full_history_messages()   ← F1 修复：rewind 后同 Agent 续跑</span><br><span class="line">   ├─ messages.append(user)        ──► session.add_message(&quot;user&quot;, ...)   ★落盘</span><br><span class="line">   ├─ 循环:</span><br><span class="line">   │    llm.chat(messages) → assistant</span><br><span class="line">   │    messages.append(assistant) ──► session.add_message(&quot;assistant&quot;, ...) ★落盘</span><br><span class="line">   │    if tool_calls:</span><br><span class="line">   │       for tc: 执行工具 → tool 消息</span><br><span class="line">   │       messages.append(tool)   ──► session.add_message(&quot;tool&quot;, ...)     ★落盘</span><br><span class="line">   │    else: return  （最终回答）</span><br><span class="line">   ▼</span><br><span class="line">   文件 = header + system + user + assistant(tool_calls) + tool + assistant</span><br><span class="line">   （每步一条，current 指针一路指向最新）</span><br></pre></td></tr></table></figure>
+<p>Agent 与 Session 的接缝：Agent 的 self.messages（内存，发给 LLM）和
+session 树（持久化）双写同步——add_message 在 append
+后立即调。get_current_path_messages() 就是把树路径翻译回
+list[Message]（metadata 承载
+tool_calls/tool_call_id）的桥；get_full_history_messages()
+是它的变体——沿路径过滤 type=“compaction” 缓存 entry，返回纯历史（Agent
+恢复上下文用这个，避免缓存 entry 混进 transcript）。</p>
+<p>get_current_path
+就是”把我当前对话的完整上下文取出来”这个动作的实现——每当”从会话恢复/继续对话”需要把树变成
+LLM 能用的消息序列时，它就是必经之路。</p>
+<h3 id="rewind-后的续跑">rewind 后的续跑</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">session.rewind(a1.id)          ← 只改 current 指针 + save（header 的 current_id 更新）</span><br><span class="line">   │</span><br><span class="line">Agent.run(&quot;换个问法&quot;)</span><br><span class="line">   ├─ 同步 messages = 当前路径 [r1, a1]      ← 新枝从 a1 长，旧枝 [b2,c3] 不动</span><br><span class="line">   ├─ append user → add_message → parent = a1</span><br><span class="line">   ▼</span><br><span class="line">   树:  r1 → a1 → b2 → c3      （旧枝留档）</span><br><span class="line">        r1 → a1 → b2&#x27;(新)       （新枝）</span><br></pre></td></tr></table></figure>
+<h1 id="sessionentry与sessiontree">SessionEntry与SessionTree</h1>
+<h2 id="sessionentry">SessionEntry</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">class SessionEntry(BaseModel):</span><br><span class="line">    id: str = Field(default_factory=lambda: uuid4().hex[:8])   # ①我是谁</span><br><span class="line">    parent_id: str | None = None                                # ②我爸是谁</span><br><span class="line">    timestamp: str = Field(default_factory=...)                 # ③什么时候</span><br><span class="line">    type: str = &quot;message&quot;                                       # ④节点类型：message / compaction</span><br><span class="line">    role: str                                                   # ⑤消息本体</span><br><span class="line">    content: str</span><br><span class="line">    metadata: dict[str, Any] = Field(default_factory=dict)      # ⑥附加（tool_calls 等）</span><br><span class="line"></span><br><span class="line">七字段按职责分三组：</span><br><span class="line"></span><br><span class="line">① id / ② parent_id   → 树结构层：让这条消息能被组织进树</span><br><span class="line">③ timestamp          → 审计层：什么时候（当前未读，冗余）</span><br><span class="line">④ type               → 类型层：区分真消息与缓存 entry（context 阶段加的；</span><br><span class="line">                         普通消息默认 &quot;message&quot;，save 时 exclude_defaults 不写）</span><br><span class="line">⑤ role / content     → 消息本体层：LLM 真正要的内容</span><br><span class="line">⑥ metadata           → 扩展层：tool_calls/tool_call_id 等&quot;角色+内容之外的一切&quot;</span><br></pre></td></tr></table></figure>
+<p>和 SessionTree的联系</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SessionEntry                      SessionTree</span><br><span class="line">──────────────────────────────    ──────────────────────────────</span><br><span class="line">id           →  dict 的 key       entries[id] → 查节点</span><br><span class="line">parent_id    →  树的连接           get_current_path 沿它回溯</span><br><span class="line">timestamp    →  （审计/预留）      （当前未用）</span><br><span class="line">role/content →  消息本体           get_current_path_messages 翻译</span><br><span class="line">metadata     →  tool_calls 等      add_message(**metadata) 写入</span><br></pre></td></tr></table></figure>
+<p>样例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">e1 = tree.add_entry(&quot;system&quot;, &quot;You are a helpful assistant.&quot;)</span><br><span class="line"></span><br><span class="line">SessionEntry 长这样（add_entry 内部构造的）：</span><br><span class="line"></span><br><span class="line">SessionEntry(</span><br><span class="line">    id=&quot;f3a9c2d1&quot;,          # ← uuid4().hex[:8] 自动生成</span><br><span class="line">    parent_id=None,          # ← 没有 current，所以是 None → 根</span><br><span class="line">    timestamp=&quot;2026-08-10T15:30:12.345678&quot;,</span><br><span class="line">    role=&quot;system&quot;,</span><br><span class="line">    content=&quot;You are a helpful assistant.&quot;,</span><br><span class="line">    metadata=&#123;&#125;,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h2 id="sessiontree">SessionTree</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">class SessionTree:</span><br><span class="line">    # 状态</span><br><span class="line">    entries: dict[str, SessionEntry]   # 全量节点</span><br><span class="line">    current_id: str | None             # 当前指针</span><br><span class="line">    root_id: str | None                # 根锚点</span><br><span class="line">    # 方法</span><br><span class="line">    add_entry(role, content, parent_id=None, **metadata) -&gt; SessionEntry  # 增</span><br><span class="line">    get_current_path() -&gt; list[SessionEntry]                              # 查当前路径</span><br><span class="line">    get_path_to_entry(entry_id) -&gt; list[SessionEntry]                     # 查任意路径</span><br><span class="line">    rewind(entry_id) -&gt; None                                              # 切指针</span><br><span class="line">    to_jsonl() -&gt; str                                                     # 序列化</span><br><span class="line">    from_jsonl_iter(lines) -&gt; SessionTree                                 # 反序列化</span><br></pre></td></tr></table></figure>
+<table>
+<colgroup>
+<col style="width: 17%">
+<col style="width: 49%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr>
+<th>会话流程中要做的事</th>
+<th>用哪个方法</th>
+<th>谁在调</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>新消息进来</td>
+<td><code>add_entry</code></td>
+<td><code>Session.add_message</code></td>
+</tr>
+<tr>
+<td>回退 / 切枝</td>
+<td><code>rewind</code></td>
+<td><code>Session.rewind</code></td>
+</tr>
+<tr>
+<td>取当前上下文发 LLM</td>
+<td><code>get_current_path</code></td>
+<td><code>Session.get_current_path_messages</code></td>
+</tr>
+<tr>
+<td>fork 复制路径</td>
+<td><code>get_path_to_entry</code></td>
+<td><code>SessionStore.fork</code></td>
+</tr>
+<tr>
+<td>落盘</td>
+<td><code>to_jsonl</code>（或直接遍历 <code>entries</code>）</td>
+<td><code>Session.save</code></td>
+</tr>
+<tr>
+<td>恢复</td>
+<td><code>from_jsonl_iter</code></td>
+<td><code>Session.load</code></td>
+</tr>
+<tr>
+<td>重置</td>
+<td>（无专用方法——<code>Session.reset</code> 重建
+<code>SessionTree()</code>）</td>
+<td><code>Session.reset</code></td>
+</tr>
+</tbody>
+</table>
+<p>样例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">加第二条：user 提问</span><br><span class="line"></span><br><span class="line">e2 = tree.add_entry(&quot;user&quot;, &quot;37*19=?&quot;)</span><br><span class="line"></span><br><span class="line">SessionEntry：</span><br><span class="line"></span><br><span class="line">SessionEntry(</span><br><span class="line">    id=&quot;7b04e8aa&quot;,</span><br><span class="line">    parent_id=&quot;f3a9c2d1&quot;,    # ← 缺省 = current_id = 上一条的 id</span><br><span class="line">    timestamp=&quot;2026-08-10T15:30:13.001234&quot;,</span><br><span class="line">    role=&quot;user&quot;,</span><br><span class="line">    content=&quot;37*19=?&quot;,</span><br><span class="line">    metadata=&#123;&#125;,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">树（现在两个节点连起来了）：</span><br><span class="line"></span><br><span class="line">entries = &#123;</span><br><span class="line">    &quot;f3a9c2d1&quot;: SessionEntry(id=&quot;f3a9c2d1&quot;, parent_id=None,    role=&quot;system&quot;,   content=&quot;You are a helpful assistant.&quot;),</span><br><span class="line">    &quot;7b04e8aa&quot;: SessionEntry(id=&quot;7b04e8aa&quot;, parent_id=&quot;f3a9c2d1&quot;, role=&quot;user&quot;,  content=&quot;37*19=?&quot;),</span><br><span class="line">&#125;</span><br><span class="line">current_id = &quot;7b04e8aa&quot;</span><br><span class="line">root_id    = &quot;f3a9c2d1&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h1 id="session-类树-文件的会话本体">Session 类——「树 +
+文件」的会话本体</h1>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">class Session:</span><br><span class="line">    # 状态</span><br><span class="line">    path: Path                     # 会话文件路径（一个会话 = 一个文件）</span><br><span class="line">    id: str                        # 会话身份（时间戳-hex，如 &quot;20260810-153012-a1b2c3d4&quot;）</span><br><span class="line">    created_at: str                # 创建时间（ISO）</span><br><span class="line">    cwd: str                       # 工作目录（= workspace，记录在 header）</span><br><span class="line">    tree: SessionTree              # 树（SessionTree 的全部能力在这里）</span><br><span class="line">    compaction_floor: str | None   # 压缩时刻 current id（header 持久化，rewind 护栏）</span><br><span class="line"></span><br><span class="line">    # 方法</span><br><span class="line">    __init__(*, path, cwd=None, system_prompt=None)          # 新建（空树，不写盘）</span><br><span class="line">    add_message(role, content, parent_id=None, **metadata) -&gt; SessionEntry # 增 + 落盘</span><br><span class="line">    rewind(entry_id) -&gt; None                                 # 切指针 + 落盘（护栏）</span><br><span class="line">    get_current_path_messages() -&gt; list[Message]           # 查：路径 → Message 列表（含缓存）</span><br><span class="line">    get_full_history_messages() -&gt; list[Message]           # 查：过滤 type=compaction → 纯历史</span><br><span class="line">    add_summary_cache(...) -&gt; None                          # 增：写缓存 entry（context 阶段加，不动 current）</span><br><span class="line">    get_latest_compaction_cache() -&gt; dict | None            # 查：找最新缓存 entry（context 阶段加）</span><br><span class="line">    save() -&gt; None                                                # 持久化：原子全量重写</span><br><span class="line">    load(path) -&gt; Session        # classmethod                   # 持久化：从文件恢复</span><br><span class="line">    reset() -&gt; None                                               # 清空（保留 system + 清 floor）</span><br></pre></td></tr></table></figure>
+<table>
+<colgroup>
+<col style="width: 6%">
+<col style="width: 29%">
+<col style="width: 20%">
+<col style="width: 43%">
+</colgroup>
+<thead>
+<tr>
+<th>类别</th>
+<th>方法</th>
+<th>内部动作</th>
+<th>谁在用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>增</td>
+<td><code>add_message</code></td>
+<td>树 add + save</td>
+<td><code>Agent.run</code></td>
+</tr>
+<tr>
+<td>增</td>
+<td><code>add_summary_cache</code></td>
+<td>插缓存 entry + floor</td>
+<td><code>ContextSessionBridge.write_compaction</code></td>
+</tr>
+<tr>
+<td>切</td>
+<td><code>rewind</code></td>
+<td>树 rewind + save</td>
+<td>宿主（切枝后续跑，护栏限制压缩点前）</td>
+</tr>
+<tr>
+<td>查</td>
+<td><code>get_current_path_messages</code></td>
+<td>树路径 → Message</td>
+<td>宿主（含缓存 entry 的原始路径）</td>
+</tr>
+<tr>
+<td>查</td>
+<td><code>get_full_history_messages</code></td>
+<td>树路径 → Message（过滤）</td>
+<td><code>Agent</code> 构造/续跑（纯历史）</td>
+</tr>
+<tr>
+<td>查</td>
+<td><code>get_latest_compaction_cache</code></td>
+<td>找最深 compaction</td>
+<td><code>ContextSessionBridge.restore_cache</code></td>
+</tr>
+<tr>
+<td>持久化</td>
+<td><code>save / load</code></td>
+<td>树 ↔︎ JSONL 文件</td>
+<td><code>add_message</code> 内部 / <code>SessionStore.open</code></td>
+</tr>
+<tr>
+<td>破坏</td>
+<td><code>reset</code></td>
+<td>清树 + 重写 + 清 floor</td>
+<td><code>Agent.reset</code></td>
+</tr>
+<tr>
+<td>构造</td>
+<td><code>__init__</code></td>
+<td>空树（可选 system）</td>
+<td><code>SessionStore.create</code></td>
+</tr>
+</tbody>
+</table>
+<p>Session 与 SessionTree 的分工（一句话）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SessionTree = 纯树（组织 + 回溯 + 序列化），不知道文件、不知道 Message</span><br><span class="line">Session     = 树 + 文件 + Message 翻译 + 缓存 entry（持久化外壳）</span><br><span class="line">   ├─ 转发：add_message / rewind  → 树操作 + save()</span><br><span class="line">   ├─ 独有：get_current_path_messages / get_full_history_messages（树路径 → Message 桥）</span><br><span class="line">   ├─ 独有：add_summary_cache / get_latest_compaction_cache（context 缓存读写）</span><br><span class="line">   └─ 独有：save / load / reset（文件全生命周期）</span><br></pre></td></tr></table></figure>
+<h2 id="为什么要用树">为什么要用树</h2>
+<p>树 = 允许「对话历史分叉」的数据结构。
+序列（列表）只能一条道走到底，树可以在任意点分裂出多条分支。</p>
+<p>先看序列的局限：rewind 的困境</p>
+<p>假设一个对话历史（列表）： [user, assistant(tool_calls), tool(703),
+assistant(“703”), user, assistant(“坏了，重来”)]</p>
+<p>现在你想 rewind（回退）到「user,
+assistant(“坏了，重来”)」之前，改成另一种问法：</p>
+<p>列表： [… user, assistant(“坏了”)] 回退后：[… user] ←
+新的问法从这开始</p>
+<p>问题：回退 = 删掉「assistant(“坏了”)」这一条吗？ - 删掉 →
+旧的那条分支就永久丢了（你想保留「试过错的路」对比，没了） - 不删 →
+列表尾部挂着一条「当前对话已经不在那了」的僵尸消息</p>
+<p>树解决这个：不删，而是分叉——</p>
+<p>树：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root → user → assistant(703) → assistant(&quot;703&quot;) → user</span><br><span class="line">                                                    ├─ assistant(&quot;坏了，重来&quot;)   ← 旧分支（保留）</span><br><span class="line">                                                    └─ assistant(&quot;换个问法&quot;)     ← 新分支（当前）</span><br></pre></td></tr></table></figure>
+<p>回退 = 移动 current_id 指针到
+user，然后从那里长出新分支。旧分支完整保留，随时能 branch_to
+切回来看。</p>
+<p>这就是树的第一个好处：rewind/分支是天然支持的——不需要删除数据，只是移动指针
++ 长新枝。</p>
+<h2 id="树的其他好处">树的其他好处</h2>
+<p><strong>每个消息能回溯「上下文链」</strong></p>
+<p>树里每个 entry 带 parent_id，get_path_to_entry(id)
+能回溯出从根到它的完整路径：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">def get_path_to_entry(self, entry_id):</span><br><span class="line">    &quot;&quot;&quot;从根到该 entry 的完整路径&quot;&quot;&quot;</span><br><span class="line">    while current.parent_id:</span><br><span class="line">        path.insert(0, current)</span><br><span class="line">        current = entries[current.parent_id]</span><br></pre></td></tr></table></figure>
+<p>这有什么用：你知道「当前会话」是哪条路径（get_current_conversation()
+= 从根到 current 的
+path）。比如分支后，你只关心当前这条路径，而树能干净地给出它，不需要在列表里过滤僵尸消息。</p>
+<p><strong>支持「在任意点开新对话」</strong></p>
+<p>树让「从历史某点分叉开始新对话」变得自然（fork(entry_id)）——复制根到某点的路径成一个新
+session。列表做不到（你得手动截断）。</p>
+<h1 id="sessionmanager">sessionmanager</h1>
+<p>SessionStore =
+会话文件的仓库管理员：它管理”一批会话文件”的生命周期（造/列/找/删/分叉），把”文件系统”的细节藏起来，让外面的人（宿主/Agent）只需要说”给我开个新会话
+/ 打开某某会话”，不用关心文件在哪、叫什么名。</p>
+<p>它解决什么问题</p>
+<p>Session（单会话）知道的是”我这个会话怎么写盘、怎么恢复”——但<strong>“磁盘上有哪些会话、我要用哪一个”它不知道</strong>。这正是
+SessionStore 补的：</p>
+<table>
+<colgroup>
+<col style="width: 28%">
+<col style="width: 71%">
+</colgroup>
+<thead>
+<tr>
+<th>问题</th>
+<th>SessionStore 的答案</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>怎么开一个新会话？</td>
+<td><code>create()</code> → 生成 id + 建文件 + 返回可用的 Session</td>
+</tr>
+<tr>
+<td>有哪些会话？</td>
+<td><code>list()</code> → 扫目录，返回元信息（id/时间/条数）</td>
+</tr>
+<tr>
+<td>我要接上之前的对话？</td>
+<td><code>open("前缀")</code> → 找到文件 → 恢复成 Session</td>
+</tr>
+<tr>
+<td>这个会话不要了？</td>
+<td><code>delete(id)</code> → 删文件</td>
+</tr>
+<tr>
+<td>想从某点开个新会话？</td>
+<td><code>fork(id, entry_id)</code> → 复制路径成新会话</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">class SessionMeta(BaseModel):</span><br><span class="line">    # 状态（list() 的返回类型）</span><br><span class="line">    id: str</span><br><span class="line">    path: Path</span><br><span class="line">    created_at: str</span><br><span class="line">    entries: int</span><br><span class="line"></span><br><span class="line">class SessionStore:</span><br><span class="line">    # 状态</span><br><span class="line">    workspace: Path        # 绑定的项目目录（默认 Path.cwd()）</span><br><span class="line">    root: Path             # 会话目录 = workspace/root（绝对 root 直接用）</span><br><span class="line"></span><br><span class="line">    # 方法</span><br><span class="line">    __init__(root=&quot;.my_agent_core/sessions&quot;, workspace=None)    # 绑定项目</span><br><span class="line">    create(*, system_prompt=None) -&gt; Session                    # 新会话（id 生成 + 落盘）</span><br><span class="line">    list() -&gt; list[SessionMeta]                                 # 列会话（新→旧）</span><br><span class="line">    open(id_or_prefix) -&gt; Session                               # 打开（恢复整棵树）</span><br><span class="line">    delete(id_or_prefix) -&gt; None                                # 删除文件</span><br><span class="line">    fork(id_or_prefix, entry_id) -&gt; Session                     # 分叉新会话</span><br><span class="line">    _resolve(id_or_prefix) -&gt; Path        # 私有：id/前缀 → 文件路径</span><br></pre></td></tr></table></figure>
+<p>SessionStore 在整个设计中的位置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SessionEntry  → 一条消息（数据）</span><br><span class="line">SessionTree   → 消息组织成树（容器 + 算法）</span><br><span class="line">Session       → 树 + 文件（单个会话的持久化外壳）</span><br><span class="line">SessionStore  → 管理&quot;一堆会话文件&quot;（仓库）</span><br><span class="line">                 └─ 它不管单条消息、不管树、只跟&quot;会话文件&quot;打交道</span><br></pre></td></tr></table></figure>
+<h2 id="流程">流程</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">store.create()</span><br><span class="line">   │</span><br><span class="line">   ├─ 造 id（时间戳-hex）→ 路径 &lt;root&gt;/&lt;id&gt;.jsonl</span><br><span class="line">   ├─ new Session（cwd=workspace, system_prompt）</span><br><span class="line">   ├─ session.id = sid → session.save()</span><br><span class="line">   │     └─ save() 内部：Session 把自己的树写进文件（header + entry 行）</span><br><span class="line">   └─ 返回可用的 Session</span><br><span class="line"></span><br><span class="line">store.open(&quot;20260810-153&quot;)</span><br><span class="line">   ├─ _resolve：扫 *.jsonl，header.id.startswith(&quot;20260810-153&quot;) 唯一命中</span><br><span class="line">   ├─ Session.load(文件)</span><br><span class="line">   │     └─ 读 header → 重建树 → 恢复 current/root</span><br><span class="line">   └─ 返回恢复的 Session（Agent 可以直接接上续聊）</span><br><span class="line"></span><br><span class="line">store.list()</span><br><span class="line">   ├─ 只读每个文件的 header</span><br><span class="line">   └─ 返回 [SessionMeta(id, created_at, entries)] 按时间倒序</span><br></pre></td></tr></table></figure>
+<h2 id="如何管理session">如何管理session</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">SessionStore 管理会话</span><br><span class="line">├── ① 操作面（主动做）——会话的生命周期</span><br><span class="line">│     create  造会话（id 生成 + 文件）</span><br><span class="line">│     list    列会话（元信息）</span><br><span class="line">│     open    找会话（按 id/前缀）</span><br><span class="line">│     delete  删会话（unlink）</span><br><span class="line">│     fork    分叉会话（复制路径）</span><br><span class="line">│</span><br><span class="line">└── ② 防御面（被动防）——保证&quot;只会操作对的文件&quot;</span><br><span class="line">      目录隔离   glob 限定专用目录</span><br><span class="line">      读取容错   损坏文件跳过</span><br><span class="line">      workspace 过滤  只列本项目的</span><br></pre></td></tr></table></figure>
+<h3 id="目录隔离">目录隔离</h3>
+<p>防什么：会话目录里混进的”非会话文件”（比如用户手放的一个
+notes.jsonl、将来别的格式文件）被当成会话处理。</p>
+<p>怎么防：只扫”专用目录”里符合 .jsonl
+的文件，这个目录之外的东西根本不进名单。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 我的 session_store.py（list 和 _resolve 都用）</span><br><span class="line">for f in self.root.glob(&quot;*.jsonl&quot;):</span><br><span class="line"></span><br><span class="line">效果：</span><br><span class="line"></span><br><span class="line">.my_agent_core/sessions/</span><br><span class="line">├── 20260810-153012-a1b2c3d4.jsonl   ← 被扫到 ✓</span><br><span class="line">├── notes.txt                        ← glob(&quot;*.jsonl&quot;) 不匹配，进不了名单 ✓</span><br><span class="line">└── 随便.txt</span><br></pre></td></tr></table></figure>
+<h3 id="读取容错">读取容错</h3>
+<p>防什么：某个会话文件损坏（JSON 坏了 / header 缺字段）时，list()
+整个崩掉——一个坏文件让所有会话都列不出来。</p>
+<p>怎么防：读每个文件的 header 包
+try/except，坏文件跳过、继续下一个。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 我：except (JSONDecodeError, KeyError)（精确版）</span><br><span class="line">try:</span><br><span class="line">    with open(f) as fh:</span><br><span class="line">        header = json.loads(fh.readline())</span><br><span class="line">except (json.JSONDecodeError, KeyError):</span><br><span class="line">    continue                              # 坏文件直接不列</span><br></pre></td></tr></table></figure>
+<p>效果：一个坏文件 → 它自己被跳过，其余会话照常列出。</p>
+<h3 id="workspace-过滤跨项目隔离">workspace 过滤（跨项目隔离）</h3>
+<p>我们的目录布局已经把隔离做在了目录层</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">D:/code/python/my-pi-agent/.my_agent_core/sessions/    ← 项目 A 的会话</span><br><span class="line">D:/blog/.my_agent_core/sessions/                        ← 项目 B 的会话</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/agent/" rel="tag"># agent</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/08/05/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E6%A8%A1%E5%9E%8B%E5%B1%82/" rel="prev" title="my-pi-agent--模型层">
+                  <i class="fa fa-angle-left"></i> my-pi-agent--模型层
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/08/11/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--context%E7%AE%A1%E7%90%86/" rel="next" title="my-pi-agent--context管理">
+                  my-pi-agent--context管理 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js","integrity":"sha256-stuqcu2FrjYCXDOytWFA5SoUE/r3nkp6gTglzNSlavU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

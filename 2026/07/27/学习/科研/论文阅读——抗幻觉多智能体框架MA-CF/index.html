@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="背景单智能体架构（single-agent architectures）面临着一个内在的优化冲突：即最大化生成响应质量（Generative response quality）与减少事实性幻觉（Mitigating factual hallucinations）之间的矛盾 既要追求生成质量（语言丰富、有文采、答复详尽），又要追求事实精确（严格受限、不乱编）。这两个目标在参数层面会产生梯度干扰（Gr">
+    <meta name="description" content="背景 单智能体架构（single-agent architectures）面临着一个内在的优化冲突：即最大化生成响应质量（Generative response quality）与减少事实性幻觉（Mitigating factual hallucinations）之间的矛盾 既要追求生成质量（语言丰富、有文采、答复详尽），又要追求事实精确（严格受限、不乱编）。这两个目标在参数层面会产生梯">
 <meta property="og:type" content="article">
 <meta property="og:title" content="论文阅读——抗幻觉多智能体框架MA-CF">
 <meta property="og:url" content="http://example.com/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="背景单智能体架构（single-agent architectures）面临着一个内在的优化冲突：即最大化生成响应质量（Generative response quality）与减少事实性幻觉（Mitigating factual hallucinations）之间的矛盾 既要追求生成质量（语言丰富、有文采、答复详尽），又要追求事实精确（严格受限、不乱编）。这两个目标在参数层面会产生梯度干扰（Gr">
+<meta property="og:description" content="背景 单智能体架构（single-agent architectures）面临着一个内在的优化冲突：即最大化生成响应质量（Generative response quality）与减少事实性幻觉（Mitigating factual hallucinations）之间的矛盾 既要追求生成质量（语言丰富、有文采、答复详尽），又要追求事实精确（严格受限、不乱编）。这两个目标在参数层面会产生梯">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727150801684.png">
 <meta property="og:image" content="http://example.com/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727152908189.png">
@@ -156,7 +156,20 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#related-works"><span class="nav-number">2.</span> <span class="nav-text">related works</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89%E7%9A%84%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%88%86%E7%B1%BB"><span class="nav-number">2.1.</span> <span class="nav-text">大模型幻觉的定义与分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E6%99%BA%E8%83%BD%E4%BD%93%E7%BC%93%E8%A7%A3%E6%96%B9%E6%A1%88"><span class="nav-number">2.2.</span> <span class="nav-text">单智能体缓解方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.3.</span> <span class="nav-text">多智能体系统</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Methodology"><span class="nav-number">3.</span> <span class="nav-text">Methodology</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%8F%98%E9%87%8F"><span class="nav-number">3.1.</span> <span class="nav-text">核心变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E7%9B%AE%E6%A0%87"><span class="nav-number">3.2.</span> <span class="nav-text">核心目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MA-CF-framework"><span class="nav-number">3.3.</span> <span class="nav-text">MA-CF framework</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5-1%EF%BC%9A%E5%80%99%E9%80%89%E7%94%9F%E6%88%90%EF%BC%88Phase-1-Candidate-Generation%EF%BC%89"><span class="nav-number">3.3.1.</span> <span class="nav-text">阶段 1：候选生成（Phase 1: Candidate Generation）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5-2%EF%BC%9A%E5%B9%B6%E8%A1%8C%E8%AF%84%E5%AE%A1%EF%BC%88Phase-2-Parallelized-Critique%EF%BC%89"><span class="nav-number">3.3.2.</span> <span class="nav-text">阶段 2：并行评审（Phase 2: Parallelized Critique）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E8%B4%A8%E9%87%8F%E5%88%86%E6%9E%90%E5%88%86%E6%94%AF%EF%BC%88Quality-Analysis-Branch%EF%BC%8C%E7%BB%BF%E8%89%B2%E6%A1%86%EF%BC%89"><span class="nav-number">3.3.2.1.</span> <span class="nav-text">1. 质量分析分支（Quality Analysis Branch，绿色框）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E4%BA%8B%E5%AE%9E%E6%80%A7%E5%88%86%E6%9E%90%E5%88%86%E6%94%AF%EF%BC%88Factuality-Analysis-Branch%EF%BC%8C%E6%A9%99%E8%89%B2%E6%A1%86%EF%BC%89"><span class="nav-number">3.3.2.2.</span> <span class="nav-text">2. 事实性分析分支（Factuality Analysis Branch，橙色框）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5-3%EF%BC%9A%E5%90%88%E6%88%90%E7%B2%BE%E7%82%BC%EF%BC%88Phase-3-Synthesized-Refinement%EF%BC%89"><span class="nav-number">3.3.3.</span> <span class="nav-text">阶段 3：合成精炼（Phase 3: Synthesized Refinement）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Experiments"><span class="nav-number">4.</span> <span class="nav-text">Experiments</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dataset"><span class="nav-number">4.1.</span> <span class="nav-text">dataset</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-PreciseWiki%EF%BC%88%E7%9F%AD%E6%96%87%E6%9C%AC-%E7%B2%BE%E5%87%86%E4%BA%8B%E5%AE%9E%E9%97%AE%E7%AD%94%EF%BC%89"><span class="nav-number">4.1.1.</span> <span class="nav-text">1. PreciseWiki（短文本 &#x2F; 精准事实问答）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-LongWiki%EF%BC%88%E9%95%BF%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%90-%E7%AF%87%E7%AB%A0%E7%BA%A7%E9%97%AE%E7%AD%94%EF%BC%89"><span class="nav-number">4.1.2.</span> <span class="nav-text">2. LongWiki（长文本生成 &#x2F; 篇章级问答）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-HaluEval-2-0%EF%BC%88%E8%B7%A8%E9%A2%86%E5%9F%9F%E7%BB%BC%E5%90%88%E5%9F%BA%E5%87%86%EF%BC%89"><span class="nav-number">4.1.3.</span> <span class="nav-text">3. HaluEval 2.0（跨领域综合基准）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E6%A0%87"><span class="nav-number">4.2.</span> <span class="nav-text">指标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-PreciseWiki%EF%BC%88%E7%9F%AD%E6%96%87%E6%9C%AC%E7%B2%BE%E5%87%86%E9%97%AE%E7%AD%94%EF%BC%89"><span class="nav-number">4.2.1.</span> <span class="nav-text">1. PreciseWiki（短文本精准问答）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-LongWiki%EF%BC%88%E9%95%BF%E6%96%87%E6%9C%AC%E7%AF%87%E7%AB%A0%E9%97%AE%E7%AD%94%EF%BC%89"><span class="nav-number">4.2.2.</span> <span class="nav-text">2. LongWiki（长文本篇章问答）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-HaluEval-2-0%EF%BC%88%E8%B7%A8%E9%A2%86%E5%9F%9F%E7%BB%BC%E5%90%88%E8%AF%84%E4%BC%B0%EF%BC%89"><span class="nav-number">4.2.3.</span> <span class="nav-text">3. HaluEval 2.0（跨领域综合评估）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Main-results"><span class="nav-number">4.3.</span> <span class="nav-text">Main results</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B6%88%E8%9E%8D%E5%AE%9E%E9%AA%8C"><span class="nav-number">4.4.</span> <span class="nav-text">消融实验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Agent-%E5%8A%9F%E8%83%BD%E6%80%A7%E5%88%86%E6%9E%90"><span class="nav-number">4.5.</span> <span class="nav-text">Agent 功能性分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AD%E9%97%B4%E6%8A%A5%E5%91%8A%E4%B8%80%E8%87%B4%E6%80%A7%E9%AA%8C%E8%AF%81"><span class="nav-number">4.6.</span> <span class="nav-text">中间报告一致性验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B7%E4%BE%8B%E5%92%8C%E9%94%99%E8%AF%AF%E5%88%86%E6%9E%90"><span class="nav-number">4.7.</span> <span class="nav-text">样例和错误分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%90%E5%8A%9F%E7%BA%A0%E9%94%99%E6%A1%88%E4%BE%8B"><span class="nav-number">4.7.1.</span> <span class="nav-text">成功纠错案例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E9%95%BF%E6%96%87%E6%9C%AC%E6%A1%88%E4%BE%8B%EF%BC%9A%E9%95%BF%E5%B0%BE%E7%A5%9E%E8%AF%9D%E7%9F%A5%E8%AF%86%E7%BA%A0%E5%81%8F%EF%BC%88%E7%BE%8E%E7%B4%A2%E4%B8%8D%E8%BE%BE%E7%B1%B3%E4%BA%9A%E7%A5%9E%E8%AF%9D%E4%B8%AD%E7%9A%84-Udug%EF%BC%89"><span class="nav-number">4.7.1.1.</span> <span class="nav-text">1. 长文本案例：长尾神话知识纠偏（美索不达米亚神话中的 Udug）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E7%9F%AD%E6%96%87%E6%9C%AC%E6%A1%88%E4%BE%8B%EF%BC%9A%E5%8E%86%E5%8F%B2%E4%BA%8B%E5%AE%9E%E7%B2%BE%E7%A1%AE%E6%9B%B4%E6%AD%A3%EF%BC%88%E4%B8%89%E6%98%8E%E6%B9%BE%E5%8F%B7%E8%88%AA%E6%AF%8D%E6%8F%B4%E6%95%91%E6%8B%89%E8%8F%B2%E5%8F%B7%E9%A9%B1%E9%80%90%E8%88%B0%EF%BC%89"><span class="nav-number">4.7.1.2.</span> <span class="nav-text">2. 短文本案例：历史事实精确更正（三明湾号航母援救拉菲号驱逐舰）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%B1%E8%B4%A5%E6%A1%88%E4%BE%8B"><span class="nav-number">4.8.</span> <span class="nav-text">失败案例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%A4%B1%E8%B4%A5%E6%A1%88%E4%BE%8B-1%EF%BC%9A%E7%94%9F%E7%89%A9%E5%AD%A6%E7%9F%A5%E8%AF%86%E6%BC%8F%E8%AF%8A%EF%BC%88%E5%B8%A6%E7%8A%B6%E7%B3%96%E8%9A%81%E7%9A%84%E7%B9%81%E6%AE%96%E8%A1%8C%E4%B8%BA%EF%BC%89"><span class="nav-number">4.8.0.1.</span> <span class="nav-text">1. 失败案例 1：生物学知识漏诊（带状糖蚁的繁殖行为）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E5%A4%B1%E8%B4%A5%E6%A1%88%E4%BE%8B-2%EF%BC%9A%E7%BB%9F%E8%AE%A1%E6%95%B0%E6%8D%AE%E8%99%9A%E9%AB%98%EF%BC%88%E8%B6%B3%E7%90%83%E8%BF%90%E5%8A%A8%E5%91%98-Aleksandar-Duric-%E7%9A%84%E7%94%9F%E6%B6%AF%E6%95%B0%E6%8D%AE%EF%BC%89"><span class="nav-number">4.8.0.2.</span> <span class="nav-text">2. 失败案例 2：统计数据虚高（足球运动员 Aleksandar Đurić 的生涯数据）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94%E5%AE%9E%E9%AA%8C"><span class="nav-number">4.9.</span> <span class="nav-text">对比实验</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E7%A8%8B%E5%90%AF%E7%A4%BA"><span class="nav-number">5.</span> <span class="nav-text">工程启示</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#related-works"><span class="nav-number">2.</span> <span class="nav-text">related works</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89%E7%9A%84%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%88%86%E7%B1%BB"><span class="nav-number">2.1.</span> <span class="nav-text">大模型幻觉的定义与分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E6%99%BA%E8%83%BD%E4%BD%93%E7%BC%93%E8%A7%A3%E6%96%B9%E6%A1%88"><span class="nav-number">2.2.</span> <span class="nav-text">单智能体缓解方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.3.</span> <span class="nav-text">多智能体系统</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#methodology"><span class="nav-number">3.</span> <span class="nav-text">Methodology</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%8F%98%E9%87%8F"><span class="nav-number">3.1.</span> <span class="nav-text">核心变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E7%9B%AE%E6%A0%87"><span class="nav-number">3.2.</span> <span class="nav-text">核心目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ma-cf-framework"><span class="nav-number">3.3.</span> <span class="nav-text">MA-CF framework</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5-1%E5%80%99%E9%80%89%E7%94%9F%E6%88%90phase-1-candidate-generation"><span class="nav-number">3.3.1.</span> <span class="nav-text">阶段
+1：候选生成（Phase 1: Candidate Generation）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5-2%E5%B9%B6%E8%A1%8C%E8%AF%84%E5%AE%A1phase-2-parallelized-critique"><span class="nav-number">3.3.2.</span> <span class="nav-text">阶段
+2：并行评审（Phase 2: Parallelized Critique）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B4%A8%E9%87%8F%E5%88%86%E6%9E%90%E5%88%86%E6%94%AFquality-analysis-branch%E7%BB%BF%E8%89%B2%E6%A1%86"><span class="nav-number">3.3.2.1.</span> <span class="nav-text">1.
+质量分析分支（Quality Analysis Branch，绿色框）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8B%E5%AE%9E%E6%80%A7%E5%88%86%E6%9E%90%E5%88%86%E6%94%AFfactuality-analysis-branch%E6%A9%99%E8%89%B2%E6%A1%86"><span class="nav-number">3.3.2.2.</span> <span class="nav-text">2.
+事实性分析分支（Factuality Analysis Branch，橙色框）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5-3%E5%90%88%E6%88%90%E7%B2%BE%E7%82%BCphase-3-synthesized-refinement"><span class="nav-number">3.3.3.</span> <span class="nav-text">阶段
+3：合成精炼（Phase 3: Synthesized Refinement）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#experiments"><span class="nav-number">4.</span> <span class="nav-text">Experiments</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dataset"><span class="nav-number">4.1.</span> <span class="nav-text">dataset</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#precisewiki%E7%9F%AD%E6%96%87%E6%9C%AC-%E7%B2%BE%E5%87%86%E4%BA%8B%E5%AE%9E%E9%97%AE%E7%AD%94"><span class="nav-number">4.1.1.</span> <span class="nav-text">1. PreciseWiki（短文本 &#x2F;
+精准事实问答）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#longwiki%E9%95%BF%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%90-%E7%AF%87%E7%AB%A0%E7%BA%A7%E9%97%AE%E7%AD%94"><span class="nav-number">4.1.2.</span> <span class="nav-text">2. LongWiki（长文本生成 &#x2F;
+篇章级问答）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#halueval-2.0%E8%B7%A8%E9%A2%86%E5%9F%9F%E7%BB%BC%E5%90%88%E5%9F%BA%E5%87%86"><span class="nav-number">4.1.3.</span> <span class="nav-text">3. HaluEval
+2.0（跨领域综合基准）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E6%A0%87"><span class="nav-number">4.2.</span> <span class="nav-text">指标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#precisewiki%E7%9F%AD%E6%96%87%E6%9C%AC%E7%B2%BE%E5%87%86%E9%97%AE%E7%AD%94"><span class="nav-number">4.2.1.</span> <span class="nav-text">1. PreciseWiki（短文本精准问答）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#longwiki%E9%95%BF%E6%96%87%E6%9C%AC%E7%AF%87%E7%AB%A0%E9%97%AE%E7%AD%94"><span class="nav-number">4.2.2.</span> <span class="nav-text">2. LongWiki（长文本篇章问答）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#halueval-2.0%E8%B7%A8%E9%A2%86%E5%9F%9F%E7%BB%BC%E5%90%88%E8%AF%84%E4%BC%B0"><span class="nav-number">4.2.3.</span> <span class="nav-text">3. HaluEval
+2.0（跨领域综合评估）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#main-results"><span class="nav-number">4.3.</span> <span class="nav-text">Main results</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B6%88%E8%9E%8D%E5%AE%9E%E9%AA%8C"><span class="nav-number">4.4.</span> <span class="nav-text">消融实验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#agent-%E5%8A%9F%E8%83%BD%E6%80%A7%E5%88%86%E6%9E%90"><span class="nav-number">4.5.</span> <span class="nav-text">Agent 功能性分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AD%E9%97%B4%E6%8A%A5%E5%91%8A%E4%B8%80%E8%87%B4%E6%80%A7%E9%AA%8C%E8%AF%81"><span class="nav-number">4.6.</span> <span class="nav-text">中间报告一致性验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B7%E4%BE%8B%E5%92%8C%E9%94%99%E8%AF%AF%E5%88%86%E6%9E%90"><span class="nav-number">4.7.</span> <span class="nav-text">样例和错误分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%90%E5%8A%9F%E7%BA%A0%E9%94%99%E6%A1%88%E4%BE%8B"><span class="nav-number">4.7.1.</span> <span class="nav-text">成功纠错案例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%95%BF%E6%96%87%E6%9C%AC%E6%A1%88%E4%BE%8B%E9%95%BF%E5%B0%BE%E7%A5%9E%E8%AF%9D%E7%9F%A5%E8%AF%86%E7%BA%A0%E5%81%8F%E7%BE%8E%E7%B4%A2%E4%B8%8D%E8%BE%BE%E7%B1%B3%E4%BA%9A%E7%A5%9E%E8%AF%9D%E4%B8%AD%E7%9A%84-udug"><span class="nav-number">4.7.1.1.</span> <span class="nav-text">1.
+长文本案例：长尾神话知识纠偏（美索不达米亚神话中的 Udug）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9F%AD%E6%96%87%E6%9C%AC%E6%A1%88%E4%BE%8B%E5%8E%86%E5%8F%B2%E4%BA%8B%E5%AE%9E%E7%B2%BE%E7%A1%AE%E6%9B%B4%E6%AD%A3%E4%B8%89%E6%98%8E%E6%B9%BE%E5%8F%B7%E8%88%AA%E6%AF%8D%E6%8F%B4%E6%95%91%E6%8B%89%E8%8F%B2%E5%8F%B7%E9%A9%B1%E9%80%90%E8%88%B0"><span class="nav-number">4.7.1.2.</span> <span class="nav-text">2.
+短文本案例：历史事实精确更正（三明湾号航母援救拉菲号驱逐舰）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%B1%E8%B4%A5%E6%A1%88%E4%BE%8B"><span class="nav-number">4.8.</span> <span class="nav-text">失败案例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%B1%E8%B4%A5%E6%A1%88%E4%BE%8B-1%E7%94%9F%E7%89%A9%E5%AD%A6%E7%9F%A5%E8%AF%86%E6%BC%8F%E8%AF%8A%E5%B8%A6%E7%8A%B6%E7%B3%96%E8%9A%81%E7%9A%84%E7%B9%81%E6%AE%96%E8%A1%8C%E4%B8%BA"><span class="nav-number">4.8.0.1.</span> <span class="nav-text">1. 失败案例
+1：生物学知识漏诊（带状糖蚁的繁殖行为）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%B1%E8%B4%A5%E6%A1%88%E4%BE%8B-2%E7%BB%9F%E8%AE%A1%E6%95%B0%E6%8D%AE%E8%99%9A%E9%AB%98%E8%B6%B3%E7%90%83%E8%BF%90%E5%8A%A8%E5%91%98-aleksandar-%C4%91uri%C4%87-%E7%9A%84%E7%94%9F%E6%B6%AF%E6%95%B0%E6%8D%AE"><span class="nav-number">4.8.0.2.</span> <span class="nav-text">2.
+失败案例 2：统计数据虚高（足球运动员 Aleksandar Đurić 的生涯数据）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94%E5%AE%9E%E9%AA%8C"><span class="nav-number">4.9.</span> <span class="nav-text">对比实验</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E7%A8%8B%E5%90%AF%E7%A4%BA"><span class="nav-number">5.</span> <span class="nav-text">工程启示</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -171,18 +184,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">199</span>
+          <span class="site-state-item-count">205</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">69</span>
+        <span class="site-state-item-count">70</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">71</span>
+        <span class="site-state-item-count">72</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -290,14 +303,31 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p><strong>单智能体架构（single-agent architectures）面临着一个内在的优化冲突：即最大化生成响应质量</strong>（Generative response quality）与<strong>减少事实性幻觉</strong>（Mitigating factual hallucinations）之间的矛盾</p>
-<p>既要追求<strong>生成质量</strong>（语言丰富、有文采、答复详尽），又要追求<strong>事实精确</strong>（严格受限、不乱编）。这两个目标在参数层面会产生梯度干扰（Gradient interference），对事实的过度约束往往会损害语言的表达力与实用性。</p>
-<h1 id="related-works"><a href="#related-works" class="headerlink" title="related works"></a>related works</h1><h2 id="大模型幻觉的定义与分类"><a href="#大模型幻觉的定义与分类" class="headerlink" title="大模型幻觉的定义与分类"></a>大模型幻觉的定义与分类</h2><p><strong>现代分类（无源/自由问答场景）</strong>：</p>
-<p><strong>事实性幻觉（Factual Hallucinations）</strong>：生成内容与现实世界的客观事实发生矛盾（例如说“牛顿提出了相对论”）。  </p>
-<p><strong>忠实性幻觉（Faithfulness Hallucinations）</strong>：生成内容不符合用户的指令要求或上文语境逻辑（例如答非所问、前后矛盾）。</p>
-<p><strong>MA-CF 的针对性设计</strong>： 框架中的 <strong>幻觉分析 Agent（$\mathcal{A}_{hallu}$）</strong> 专门把关“事实性幻觉”，而 <strong>质量分析 Agent（$\mathcal{A}_{qual}$）</strong> 专门审查“忠实性幻觉”（指令对齐与逻辑一致），实现了分类施策。</p>
-<h2 id="单智能体缓解方案"><a href="#单智能体缓解方案" class="headerlink" title="单智能体缓解方案"></a>单智能体缓解方案</h2><div class="table-container">
+    <div class="post-body" itemprop="articleBody"><h1 id="背景">背景</h1>
+<p><strong>单智能体架构（single-agent
+architectures）面临着一个内在的优化冲突：即最大化生成响应质量</strong>（Generative
+response quality）与<strong>减少事实性幻觉</strong>（Mitigating factual
+hallucinations）之间的矛盾</p>
+<p>既要追求<strong>生成质量</strong>（语言丰富、有文采、答复详尽），又要追求<strong>事实精确</strong>（严格受限、不乱编）。这两个目标在参数层面会产生梯度干扰（Gradient
+interference），对事实的过度约束往往会损害语言的表达力与实用性。</p>
+<h1 id="related-works">related works</h1>
+<h2 id="大模型幻觉的定义与分类">大模型幻觉的定义与分类</h2>
+<p><strong>现代分类（无源/自由问答场景）</strong>：</p>
+<p><strong>事实性幻觉（Factual
+Hallucinations）</strong>：生成内容与现实世界的客观事实发生矛盾（例如说“牛顿提出了相对论”）。</p>
+<p><strong>忠实性幻觉（Faithfulness
+Hallucinations）</strong>：生成内容不符合用户的指令要求或上文语境逻辑（例如答非所问、前后矛盾）。</p>
+<p><strong>MA-CF 的针对性设计</strong>： 框架中的 <strong>幻觉分析
+Agent（<span class="math inline">𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub></span>）</strong>
+专门把关“事实性幻觉”，而 <strong>质量分析 Agent（<span class="math inline">𝒜<sub><em>q</em><em>u</em><em>a</em><em>l</em></sub></span>）</strong>
+专门审查“忠实性幻觉”（指令对齐与逻辑一致），实现了分类施策。</p>
+<h2 id="单智能体缓解方案">单智能体缓解方案</h2>
 <table>
+<colgroup>
+<col style="width: 31%">
+<col style="width: 34%">
+<col style="width: 34%">
+</colgroup>
 <thead>
 <tr>
 <th><strong>范式分类</strong></th>
@@ -307,31 +337,43 @@
 </thead>
 <tbody>
 <tr>
-<td><strong>1. 推理时干预</strong> <em>(Inference-Time Intervention)</em></td>
+<td><strong>1. 推理时干预</strong> <em>(Inference-Time
+Intervention)</em></td>
 <td>Prompt 工程、思维链（CoT）、上下文感知解码（CAD）</td>
 <td>在不改变模型参数的情况下，通过约束提示词或优化解码概率引导生成。</td>
 </tr>
 <tr>
-<td><strong>2. 架构与知识增强</strong> <em>(External Knowledge Integration)</em></td>
+<td><strong>2. 架构与知识增强</strong> <em>(External Knowledge
+Integration)</em></td>
 <td>检索增强生成（RAG）</td>
 <td>引入外部知识库，让模型动态查询实时/真实数据，打破静态参数限制。</td>
 </tr>
 <tr>
-<td><strong>3. 事后参数精炼</strong> <em>(Post-Hoc Parameter Refinement)</em></td>
-<td>领域监督微调（SFT）、参数编辑（Parameter Editing）、嵌入空间修剪</td>
+<td><strong>3. 事后参数精炼</strong> <em>(Post-Hoc Parameter
+Refinement)</em></td>
+<td>领域监督微调（SFT）、参数编辑（Parameter
+Editing）、嵌入空间修剪</td>
 <td>重新训练或定位修改模型内部权重神经元，纠正错误记忆。</td>
 </tr>
 </tbody>
 </table>
-</div>
-<p><strong>单智能体的致命缺陷：“自环问题（Self-loop Problem）”</strong>：</p>
-<p>单模型方法让<strong>同一个 Agent 同时担任生成者（Generator）、评估者（Evaluator）和纠错者（Corrector）</strong>。这会导致：  </p>
+<p><strong>单智能体的致命缺陷：“自环问题（Self-loop
+Problem）”</strong>：</p>
+<p>单模型方法让<strong>同一个 Agent
+同时担任生成者（Generator）、评估者（Evaluator）和纠错者（Corrector）</strong>。这会导致：</p>
 <ul>
-<li><strong>认知盲区与自我确认偏误</strong>：当模型尝试自我检查（Self-reflection）时，其评估过程依然受限于<strong>最初产生错误的同一套内部知识与启发式偏见</strong>，无法实现客观诊断。  </li>
+<li><strong>认知盲区与自我确认偏误</strong>：当模型尝试自我检查（Self-reflection）时，其评估过程依然受限于<strong>最初产生错误的同一套内部知识与启发式偏见</strong>，无法实现客观诊断。<br>
+</li>
 <li><strong>优化冲突（Trade-off）</strong>：事实精准度与语言流畅度在单一模型内互相拉扯，过度限制事实会损害回答的丰富度。</li>
 </ul>
-<h2 id="多智能体系统"><a href="#多智能体系统" class="headerlink" title="多智能体系统"></a>多智能体系统</h2><div class="table-container">
+<h2 id="多智能体系统">多智能体系统</h2>
 <table>
+<colgroup>
+<col style="width: 22%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
 <thead>
 <tr>
 <th><strong>方案范式</strong></th>
@@ -344,121 +386,251 @@
 <tr>
 <td><strong>1. 迭代辩论范式</strong> <em>(Iterative Debate)</em></td>
 <td><strong>ChatEval</strong> (Chan et al., 2023/2024)</td>
-<td>多个 Agent 针对同一话题开展<strong>多轮交叉辩论与质询</strong>，通过多视角沟通逐步修正错误并达成共识。</td>
-<td>❶ <strong>共识偏误（Consensus Bias）</strong>：Agent 为了强行达成一致，常互相妥协，反而“稀释”了高质量输出或强化了表面合理的错误；   ❷ <strong>职责混杂</strong>：将事实核查与质量评估掺杂在辩论中；   ❸ <strong>高延迟与高 Token 消耗</strong>。</td>
+<td>多个 Agent
+针对同一话题开展<strong>多轮交叉辩论与质询</strong>，通过多视角沟通逐步修正错误并达成共识。</td>
+<td>❶ <strong>共识偏误（Consensus Bias）</strong>：Agent
+为了强行达成一致，常互相妥协，反而“稀释”了高质量输出或强化了表面合理的错误；
+❷ <strong>职责混杂</strong>：将事实核查与质量评估掺杂在辩论中； ❸
+<strong>高延迟与高 Token 消耗</strong>。</td>
 </tr>
 <tr>
-<td><strong>2. 协作过滤范式</strong> <em>(Collaborative Filtering)</em></td>
+<td><strong>2. 协作过滤范式</strong> <em>(Collaborative
+Filtering)</em></td>
 <td><strong>AgentVerse</strong> (Chen et al., 2024)</td>
-<td>多个 Agent 组成审查阵营，通过<strong>筛选与抑制异常离群值（Outliers）</strong>，减少复杂推理中的幻觉。</td>
-<td>❶ <strong>盲目依赖“数量堆叠”</strong>：主要靠增加 Agent 数量来干预错误，缺乏精细的职能解耦；   ❷ <strong>重降幻、轻质量</strong>：只关注消除错误，忽视了回答的语篇表达与完整性。</td>
+<td>多个 Agent
+组成审查阵营，通过<strong>筛选与抑制异常离群值（Outliers）</strong>，减少复杂推理中的幻觉。</td>
+<td>❶ <strong>盲目依赖“数量堆叠”</strong>：主要靠增加 Agent
+数量来干预错误，缺乏精细的职能解耦； ❷
+<strong>重降幻、轻质量</strong>：只关注消除错误，忽视了回答的语篇表达与完整性。</td>
 </tr>
 <tr>
-<td><strong>3. 动态网络与角色分配</strong> <em>(Dynamic Agent Networks)</em></td>
-<td><strong>DyLAN</strong> (Liu et al., 2023)   <strong>MRBalance</strong> (Zou et al., 2025)</td>
-<td>根据任务<strong>动态挑选/组建 Agent 团队</strong>或指定特定角色（如数据库转换、因果识别），优化特定业务流程。</td>
-<td>❶ <strong>缺少关注分离（Separation of Concerns）</strong>：绝大多数框架依然将“事实核查”与“质量评估”混在同一个决策节点中；   ❷ <strong>无法同时兼顾</strong>事实精准度与语言表达力。</td>
+<td><strong>3. 动态网络与角色分配</strong> <em>(Dynamic Agent
+Networks)</em></td>
+<td><strong>DyLAN</strong> (Liu et al., 2023) <strong>MRBalance</strong>
+(Zou et al., 2025)</td>
+<td>根据任务<strong>动态挑选/组建 Agent
+团队</strong>或指定特定角色（如数据库转换、因果识别），优化特定业务流程。</td>
+<td>❶ <strong>缺少关注分离（Separation of
+Concerns）</strong>：绝大多数框架依然将“事实核查”与“质量评估”混在同一个决策节点中；
+❷ <strong>无法同时兼顾</strong>事实精准度与语言表达力。</td>
 </tr>
 </tbody>
 </table>
-</div>
-<p>现有多 Agent 系统的<strong>三大缺陷</strong>：  </p>
-<ol>
-<li><strong>盲目依赖“数量堆叠（Agent Multiplicity）”</strong>：许多系统仅仅依靠增加 Agent 数量来投票减少错误，缺乏精细的职能分工。  </li>
-<li><strong>职责混杂导致“共识偏误（Consensus Bias）”</strong>：传统辩论（Debate）方法将“查证事实”与“评估表达”混在同一讨论中。Agent 们为了达成一致共识，往往会<strong>互相妥协，最终输出被“稀释”的平庸内容</strong>，甚至强化了表面合理的错误。  </li>
-<li><strong>重“降幻”轻“表达”</strong>：现有多 Agent 论文绝大多数只关注如何降低错误率，忽略了回答的语言质量与完整性。 </li>
+<p>现有多 Agent 系统的<strong>三大缺陷</strong>：</p>
+<ol type="1">
+<li><strong>盲目依赖“数量堆叠（Agent
+Multiplicity）”</strong>：许多系统仅仅依靠增加 Agent
+数量来投票减少错误，缺乏精细的职能分工。<br>
+</li>
+<li><strong>职责混杂导致“共识偏误（Consensus
+Bias）”</strong>：传统辩论（Debate）方法将“查证事实”与“评估表达”混在同一讨论中。Agent
+们为了达成一致共识，往往会<strong>互相妥协，最终输出被“稀释”的平庸内容</strong>，甚至强化了表面合理的错误。<br>
+</li>
+<li><strong>重“降幻”轻“表达”</strong>：现有多 Agent
+论文绝大多数只关注如何降低错误率，忽略了回答的语言质量与完整性。</li>
 </ol>
-<h1 id="Methodology"><a href="#Methodology" class="headerlink" title="Methodology"></a>Methodology</h1><h2 id="核心变量"><a href="#核心变量" class="headerlink" title="核心变量"></a>核心变量</h2><p><img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727150801684.png" alt="image-20260727150801684"></p>
-<h2 id="核心目标"><a href="#核心目标" class="headerlink" title="核心目标"></a>核心目标</h2><p>将“生成一个好回答”抽象为一个寻找<strong>最优解 $A_f$</strong> 的优化问题。  </p>
-<p>给定用户查询 $Q$，目标是找到一个回答 $A$，使得<strong>联合效用函数（Joint Utility Function）$U(A\vert{}Q)$</strong> 最大化：</p>
-<script type="math/tex; mode=display">A_{f} = \arg\max_{A} U(A\vert{}Q) = \arg\max_{A} \big[ w_{1} \cdot F(A,Q) + w_{2} \cdot Q(A,Q) \big]</script><ul>
-<li><strong>$F(A,Q)$（Factuality / 事实性）</strong>：回答在多大程度上符合真实的客观事实。  </li>
-<li><strong>$Q(A,Q)$（Quality / 质量）</strong>：回答在语言丰富度、相关性、逻辑完整性上的表现。  </li>
-<li><strong>$w_1, w_2$</strong>：事实性与质量之间的潜在权重（在实际决策中由合成 Agent 动态平衡）。</li>
+<h1 id="methodology">Methodology</h1>
+<h2 id="核心变量">核心变量</h2>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727150801684.png" alt="image-20260727150801684">
+<figcaption aria-hidden="true">image-20260727150801684</figcaption>
+</figure>
+<h2 id="核心目标">核心目标</h2>
+<p>将“生成一个好回答”抽象为一个寻找<strong>最优解 <span class="math inline"><em>A</em><sub><em>f</em></sub></span></strong>
+的优化问题。</p>
+<p>给定用户查询 <span class="math inline"><em>Q</em></span>，目标是找到一个回答 <span class="math inline"><em>A</em></span>，使得<strong>联合效用函数（Joint
+Utility Function）<span class="math inline"><em>U</em>(<em>A</em>|<em>Q</em>)</span></strong>
+最大化：</p>
+<p><span class="math display"><em>A</em><sub><em>f</em></sub> = arg max<sub><em>A</em></sub><em>U</em>(<em>A</em>|<em>Q</em>) = arg max<sub><em>A</em></sub>[<em>w</em><sub>1</sub> ⋅ <em>F</em>(<em>A</em>, <em>Q</em>) + <em>w</em><sub>2</sub> ⋅ <em>Q</em>(<em>A</em>, <em>Q</em>)]</span></p>
+<ul>
+<li><strong><span class="math inline"><em>F</em>(<em>A</em>, <em>Q</em>)</span>（Factuality
+/ 事实性）</strong>：回答在多大程度上符合真实的客观事实。<br>
+</li>
+<li><strong><span class="math inline"><em>Q</em>(<em>A</em>, <em>Q</em>)</span>（Quality /
+质量）</strong>：回答在语言丰富度、相关性、逻辑完整性上的表现。<br>
+</li>
+<li><strong><span class="math inline"><em>w</em><sub>1</sub>, <em>w</em><sub>2</sub></span></strong>：事实性与质量之间的潜在权重（在实际决策中由合成
+Agent 动态平衡）。</li>
 </ul>
-<h2 id="MA-CF-framework"><a href="#MA-CF-framework" class="headerlink" title="MA-CF framework"></a>MA-CF framework</h2><p><img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727152908189.png" alt="image-20260727152908189"></p>
-<h3 id="阶段-1：候选生成（Phase-1-Candidate-Generation）"><a href="#阶段-1：候选生成（Phase-1-Candidate-Generation）" class="headerlink" title="阶段 1：候选生成（Phase 1: Candidate Generation）"></a>阶段 1：候选生成（Phase 1: Candidate Generation）</h3><ul>
-<li><strong>输入</strong>：用户的原始提问 $Q$（包含文本与上下文环境）。  </li>
-<li><strong>执行角色</strong>：<strong>初稿生成 Agent（$\mathcal{A}_{gen}$）</strong>。  </li>
-<li><strong>处理逻辑</strong>： Agent 根据输入 $Q$ 直接生成一份未经自我修正的初始回答草稿 $A_c$（$f(Q) \rightarrow A_c$）。  </li>
-<li><strong>设计用意</strong>： 故意不让初稿 Agent 进行过度自我审查，目的是保留一个无偏见的原始底板，将其暴露给后续的专业审查角色，避免模型在早期通过模糊表述掩盖自己的知识盲区。  </li>
+<h2 id="ma-cf-framework">MA-CF framework</h2>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727152908189.png" alt="image-20260727152908189">
+<figcaption aria-hidden="true">image-20260727152908189</figcaption>
+</figure>
+<h3 id="阶段-1候选生成phase-1-candidate-generation">阶段
+1：候选生成（Phase 1: Candidate Generation）</h3>
+<ul>
+<li><strong>输入</strong>：用户的原始提问 <span class="math inline"><em>Q</em></span>（包含文本与上下文环境）。<br>
+</li>
+<li><strong>执行角色</strong>：<strong>初稿生成 Agent（<span class="math inline">𝒜<sub><em>g</em><em>e</em><em>n</em></sub></span>）</strong>。<br>
+</li>
+<li><strong>处理逻辑</strong>： Agent 根据输入 <span class="math inline"><em>Q</em></span>
+直接生成一份未经自我修正的初始回答草稿 <span class="math inline"><em>A</em><sub><em>c</em></sub></span>（<span class="math inline"><em>f</em>(<em>Q</em>) → <em>A</em><sub><em>c</em></sub></span>）。<br>
+</li>
+<li><strong>设计用意</strong>： 故意不让初稿 Agent
+进行过度自我审查，目的是保留一个无偏见的原始底板，将其暴露给后续的专业审查角色，避免模型在早期通过模糊表述掩盖自己的知识盲区。</li>
 </ul>
-<h3 id="阶段-2：并行评审（Phase-2-Parallelized-Critique）"><a href="#阶段-2：并行评审（Phase-2-Parallelized-Critique）" class="headerlink" title="阶段 2：并行评审（Phase 2: Parallelized Critique）"></a>阶段 2：并行评审（Phase 2: Parallelized Critique）</h3><p>初稿 $A_c$ 和原始问题 $Q$ 会同时被分发给两个<strong>互相独立、并行运行</strong>的诊断分支：  </p>
-<h4 id="1-质量分析分支（Quality-Analysis-Branch，绿色框）"><a href="#1-质量分析分支（Quality-Analysis-Branch，绿色框）" class="headerlink" title="1. 质量分析分支（Quality Analysis Branch，绿色框）"></a>1. 质量分析分支（Quality Analysis Branch，绿色框）</h4><ul>
-<li><strong>执行角色</strong>：<strong>响应质量分析 Agent（$\mathcal{A}_{qual}$）</strong>。  </li>
-<li><strong>核心指标</strong>：完整度（Completeness）、逻辑性（Logic）、缺陷分析（Deficiency）。  </li>
-<li><strong>产出</strong>：<strong>质量报告 $R<em>q = \mathcal{A}</em>{qual}(I_{qual}, Q, A_c)$</strong>。  </li>
-<li><strong>职责</strong>：评估回答是否全面回答了用户问题、逻辑是否顺畅，并提取出“好的观点（$S<em>{pro}$）”与“逻辑缺陷（$S</em>{con}$）”。  </li>
+<h3 id="阶段-2并行评审phase-2-parallelized-critique">阶段
+2：并行评审（Phase 2: Parallelized Critique）</h3>
+<p>初稿 <span class="math inline"><em>A</em><sub><em>c</em></sub></span>
+和原始问题 <span class="math inline"><em>Q</em></span>
+会同时被分发给两个<strong>互相独立、并行运行</strong>的诊断分支：</p>
+<h4 id="质量分析分支quality-analysis-branch绿色框">1.
+质量分析分支（Quality Analysis Branch，绿色框）</h4>
+<ul>
+<li><strong>执行角色</strong>：<strong>响应质量分析 Agent（<span class="math inline">𝒜<sub><em>q</em><em>u</em><em>a</em><em>l</em></sub></span>）</strong>。<br>
+</li>
+<li><strong>核心指标</strong>：完整度（Completeness）、逻辑性（Logic）、缺陷分析（Deficiency）。<br>
+</li>
+<li><strong>产出</strong>：<strong>质量报告 <span class="math inline"><em>R</em><sub><em>q</em></sub> = 𝒜<sub><em>q</em><em>u</em><em>a</em><em>l</em></sub>(<em>I</em><sub><em>q</em><em>u</em><em>a</em><em>l</em></sub>, <em>Q</em>, <em>A</em><sub><em>c</em></sub>)</span></strong>。<br>
+</li>
+<li><strong>职责</strong>：评估回答是否全面回答了用户问题、逻辑是否顺畅，并提取出“好的观点（<span class="math inline"><em>S</em><sub><em>p</em><em>r</em><em>o</em></sub></span>）”与“逻辑缺陷（<span class="math inline"><em>S</em><sub><em>c</em><em>o</em><em>n</em></sub></span>）”。</li>
 </ul>
-<h4 id="2-事实性分析分支（Factuality-Analysis-Branch，橙色框）"><a href="#2-事实性分析分支（Factuality-Analysis-Branch，橙色框）" class="headerlink" title="2. 事实性分析分支（Factuality Analysis Branch，橙色框）"></a>2. 事实性分析分支（Factuality Analysis Branch，橙色框）</h4><ul>
-<li><strong>执行角色</strong>：<strong>幻觉分析 Agent（$\mathcal{A}_{hallu}$）</strong>。  </li>
-<li><strong>核心指标</strong>：事实准确度（Factual Accuracy）、一致性（Consistency）。  </li>
-<li><strong>产出</strong>：<strong>事实报告 $R<em>h = \mathcal{A}</em>{hallu}(I_{hallu}, Q, A_c)$</strong>。  </li>
-<li><strong>职责</strong>：像“查事实的校对员”一样，严格审查草稿中是否存在瞎编、错漏或不符事实的内容，并输出具体的错误切片与修正说明（$h_i, j_i$）。  </li>
+<h4 id="事实性分析分支factuality-analysis-branch橙色框">2.
+事实性分析分支（Factuality Analysis Branch，橙色框）</h4>
+<ul>
+<li><strong>执行角色</strong>：<strong>幻觉分析 Agent（<span class="math inline">𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub></span>）</strong>。<br>
+</li>
+<li><strong>核心指标</strong>：事实准确度（Factual
+Accuracy）、一致性（Consistency）。<br>
+</li>
+<li><strong>产出</strong>：<strong>事实报告 <span class="math inline"><em>R</em><sub><em>h</em></sub> = 𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub>(<em>I</em><sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub>, <em>Q</em>, <em>A</em><sub><em>c</em></sub>)</span></strong>。<br>
+</li>
+<li><strong>职责</strong>：像“查事实的校对员”一样，严格审查草稿中是否存在瞎编、错漏或不符事实的内容，并输出具体的错误切片与修正说明（<span class="math inline"><em>h</em><sub><em>i</em></sub>, <em>j</em><sub><em>i</em></sub></span>）。</li>
 </ul>
 <blockquote>
-<p><strong>💡 架构亮点</strong>： 这个阶段的 keypoint 是<strong>并行（Parallelized）与解耦（Decoupled）</strong>。$\mathcal{A}<em>{qual}$ 专注看“文采与逻辑”，$\mathcal{A}</em>{hallu}$ 专注查“真伪”，两者互不干扰，避免了单个 Agent 既想写好文章又想扣事实细节时的“梯度干扰”与妥协折中。  </p>
+<p><strong>💡 架构亮点</strong>： 这个阶段的 keypoint
+是<strong>并行（Parallelized）与解耦（Decoupled）</strong>。<span class="math inline">𝒜<sub><em>q</em><em>u</em><em>a</em><em>l</em></sub></span>
+专注看“文采与逻辑”，<span class="math inline">𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub></span>
+专注查“真伪”，两者互不干扰，避免了单个 Agent
+既想写好文章又想扣事实细节时的“梯度干扰”与妥协折中。</p>
 </blockquote>
-<h3 id="阶段-3：合成精炼（Phase-3-Synthesized-Refinement）"><a href="#阶段-3：合成精炼（Phase-3-Synthesized-Refinement）" class="headerlink" title="阶段 3：合成精炼（Phase 3: Synthesized Refinement）"></a>阶段 3：合成精炼（Phase 3: Synthesized Refinement）</h3><ul>
-<li><p><strong>输入</strong>：汇总四个关键要素——<strong>原始问题 $Q$ + 初始草稿 $A_c$ + 质量报告 $R_q$ + 事实报告 $R_h$</strong>。  </p>
-</li>
-<li><p><strong>执行角色</strong>：<strong>最终分析与合成 Agent（$\mathcal{A}_{synth}$）</strong>（扮演主编/元推理者角色）。  </p>
-</li>
+<h3 id="阶段-3合成精炼phase-3-synthesized-refinement">阶段
+3：合成精炼（Phase 3: Synthesized Refinement）</h3>
+<ul>
+<li><p><strong>输入</strong>：汇总四个关键要素——<strong>原始问题 <span class="math inline"><em>Q</em></span> + 初始草稿 <span class="math inline"><em>A</em><sub><em>c</em></sub></span> + 质量报告
+<span class="math inline"><em>R</em><sub><em>q</em></sub></span> +
+事实报告 <span class="math inline"><em>R</em><sub><em>h</em></sub></span></strong>。</p></li>
+<li><p><strong>执行角色</strong>：<strong>最终分析与合成 Agent（<span class="math inline">𝒜<sub><em>s</em><em>y</em><em>n</em><em>t</em><em>h</em></sub></span>）</strong>（扮演主编/元推理者角色）。</p></li>
 <li><p><strong>处理逻辑</strong>：</p>
 <p>Agent 根据输入的完整上下文，执行三项精炼操作：</p>
-<ol>
-<li><strong>保留</strong>：保留草稿 $A_c$ 中被质量报告认可且未被事实报告打掉的高质量内容。  </li>
-<li><strong>修正</strong>：根据事实报告 $R_h$ 的批注，对错漏切片进行精准重写与定点替换。  </li>
-<li><strong>补充</strong>：根据质量报告 $R_q$ 指出的逻辑漏洞或未尽事宜，补全上下文。  </li>
-</ol>
+<ol type="1">
+<li><strong>保留</strong>：保留草稿 <span class="math inline"><em>A</em><sub><em>c</em></sub></span>
+中被质量报告认可且未被事实报告打掉的高质量内容。<br>
 </li>
-<li><p><strong>产出</strong>：<strong>最终优质回答 $A<em>f = \mathcal{A}</em>{synth}(I_{synth}, Q, A_c, R_q, R_h)$</strong>。</p>
+<li><strong>修正</strong>：根据事实报告 <span class="math inline"><em>R</em><sub><em>h</em></sub></span>
+的批注，对错漏切片进行精准重写与定点替换。<br>
 </li>
+<li><strong>补充</strong>：根据质量报告 <span class="math inline"><em>R</em><sub><em>q</em></sub></span>
+指出的逻辑漏洞或未尽事宜，补全上下文。</li>
+</ol></li>
+<li><p><strong>产出</strong>：<strong>最终优质回答 <span class="math inline"><em>A</em><sub><em>f</em></sub> = 𝒜<sub><em>s</em><em>y</em><em>n</em><em>t</em><em>h</em></sub>(<em>I</em><sub><em>s</em><em>y</em><em>n</em><em>t</em><em>h</em></sub>, <em>Q</em>, <em>A</em><sub><em>c</em></sub>, <em>R</em><sub><em>q</em></sub>, <em>R</em><sub><em>h</em></sub>)</span></strong>。</p></li>
 </ul>
-<p><img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727165550928.png" alt="image-20260727165550928"></p>
-<h1 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h1><h2 id="dataset"><a href="#dataset" class="headerlink" title="dataset"></a>dataset</h2><h3 id="1-PreciseWiki（短文本-精准事实问答）"><a href="#1-PreciseWiki（短文本-精准事实问答）" class="headerlink" title="1. PreciseWiki（短文本 / 精准事实问答）"></a>1. PreciseWiki（短文本 / 精准事实问答）</h3><ul>
-<li><strong>评估目标</strong>：评估模型在短答案场景下的<strong>显性事实准确性（Explicit factual accuracy）</strong>。  </li>
-<li><strong>主要应对幻觉</strong>：外在幻觉（Extrinsic Hallucinations），即生成内容与现实世界的客观知识或可核实事实直接冲突（如错乱的日期、实体名称、概念定义）。  </li>
-<li><strong>数据集来源与规模</strong>：源自维基百科条目，并按难度进行了分层，随机采样了 $N = 2000$ 个样本。  </li>
-<li><strong>核心价值</strong>：作为无噪声的 Ground-truth 标准，用于评估模型的“已知与未知边界”，特别是测试模型在内部知识不足时拒绝回答不可答问题（Knowledge-aware refusal）的能力。  </li>
-</ul>
-<h3 id="2-LongWiki（长文本生成-篇章级问答）"><a href="#2-LongWiki（长文本生成-篇章级问答）" class="headerlink" title="2. LongWiki（长文本生成 / 篇章级问答）"></a>2. LongWiki（长文本生成 / 篇章级问答）</h3><ul>
-<li><strong>评估目标</strong>：评估模型在长文本生成中维持长序列记忆、信息整合以及<strong>长距离语义连贯性与忠实度</strong>的能力。  </li>
-<li><strong>主要应对幻觉</strong>：隐性幻觉（Implicit Hallucinations），即模型在生成段落级长文时，为了桥接逻辑断层或补全上下文而编造细节、产生前后矛盾。  </li>
-<li><strong>数据集来源与规模</strong>：要求模型围绕复杂维基百科实体生成段落级内容，随机抽取了 $N = 250$ 个复杂实体。  </li>
-<li><strong>核心价值</strong>：突破了传统二元（对/错）短问答的局限，测试 MA-CF 在长文展开过程中是否能稳住事实密度，避免“越写越瞎编”。  </li>
-</ul>
-<h3 id="3-HaluEval-2-0（跨领域综合基准）"><a href="#3-HaluEval-2-0（跨领域综合基准）" class="headerlink" title="3. HaluEval 2.0（跨领域综合基准）"></a>3. HaluEval 2.0（跨领域综合基准）</h3><ul>
-<li><strong>评估目标</strong>：评估框架在不同语义领域和多元任务场景下的<strong>鲁棒性与泛化能力</strong>。  </li>
-<li><strong>数据构成</strong>：HaluEval 2.0 是一个大型高质量基准（包含 3.5 万个生成与人工标注样本），覆盖三大常见任务：<strong>问答（QA）、基于知识的对话（Knowledge-Grounded Dialogue）和文本摘要（Text Summarization）</strong>。  </li>
-<li><strong>采样规模</strong>：作者构建了一个分层测试集，包含跨 5 个不同领域的平衡样本 $N = 800$。  </li>
-<li><strong>核心价值</strong>：包含大量“看似合理但实际错误（Plausible but incorrect）”的微妙幻觉样本，专门用来检验模型区分似是而非的虚构内容与真实事实的边界感知能力。</li>
-</ul>
-<h2 id="指标"><a href="#指标" class="headerlink" title="指标"></a>指标</h2><h3 id="1-PreciseWiki（短文本精准问答）"><a href="#1-PreciseWiki（短文本精准问答）" class="headerlink" title="1. PreciseWiki（短文本精准问答）"></a>1. PreciseWiki（短文本精准问答）</h3><p>将模型输出划分为三个互斥集合：正确（Correct, $C$）、幻觉（Hallucinated, $H$）、拒绝回答（Rejected, $R$）。  </p>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727165550928.png" alt="image-20260727165550928">
+<figcaption aria-hidden="true">image-20260727165550928</figcaption>
+</figure>
+<h1 id="experiments">Experiments</h1>
+<h2 id="dataset">dataset</h2>
+<h3 id="precisewiki短文本-精准事实问答">1. PreciseWiki（短文本 /
+精准事实问答）</h3>
 <ul>
-<li><p><strong>正确率（Correct Rate）</strong>：$\frac{\vert{}C\vert{}}{N}$，评估整体答对比例。  </p>
+<li><strong>评估目标</strong>：评估模型在短答案场景下的<strong>显性事实准确性（Explicit
+factual accuracy）</strong>。<br>
 </li>
-<li><p><strong>幻觉率（Hallucination Rate）</strong>：$\frac{\vert{}H\vert{}}{N - \vert{}R\vert{}}$，在未拒绝的回答中出现事实错误的比例（核心安全指标）。  </p>
+<li><strong>主要应对幻觉</strong>：外在幻觉（Extrinsic
+Hallucinations），即生成内容与现实世界的客观知识或可核实事实直接冲突（如错乱的日期、实体名称、概念定义）。<br>
 </li>
-<li><p><strong>拒答率（Rejection Rate）</strong>：$\frac{\vert{}R\vert{}}{N}$，评估模型在知识不足时果断“弃答”的安全边界意识。  </p>
+<li><strong>数据集来源与规模</strong>：源自维基百科条目，并按难度进行了分层，随机采样了
+<span class="math inline"><em>N</em> = 2000</span> 个样本。<br>
 </li>
-<li><p><strong>F1 分数（F1 Score）</strong>：正确率与回答意愿（$1 - \text{Rejection Rate}$）的调和平均数，防止模型为了追求高正确率而盲目弃答或为了高回答率而胡乱猜答：  </p>
-<script type="math/tex; mode=display">\text{F1} = 2 \cdot \frac{\text{Correct Rate} \cdot (1 - \text{Rejection Rate})}{\text{Correct Rate} + (1 - \text{Rejection Rate})}</script></li>
+<li><strong>核心价值</strong>：作为无噪声的 Ground-truth
+标准，用于评估模型的“已知与未知边界”，特别是测试模型在内部知识不足时拒绝回答不可答问题（Knowledge-aware
+refusal）的能力。</li>
 </ul>
-<h3 id="2-LongWiki（长文本篇章问答）"><a href="#2-LongWiki（长文本篇章问答）" class="headerlink" title="2. LongWiki（长文本篇章问答）"></a>2. LongWiki（长文本篇章问答）</h3><p>长文本不能简单套用“对/错”二元分类，作者采用了<strong>原子断言抽取协议（Atomic claim extraction protocol, 设置上限 $k=32$）</strong>。设 $S<em>{ref}$ 为标准答案的断言集，$S</em>{out}$ 为模型输出抽取的断言集：  </p>
+<h3 id="longwiki长文本生成-篇章级问答">2. LongWiki（长文本生成 /
+篇章级问答）</h3>
 <ul>
-<li><strong>Recall@32（召回率）</strong>：$\frac{\vert{}\text{输出中得到支持的断言}\vert{}}{\vert{}S_{ref}\vert{}}$，评估模型捕获关键细节的全面性。  </li>
-<li><strong>Precision（精准率）</strong>：$\frac{\vert{}\text{输出中得到支持的断言}\vert{}}{\vert{}S_{out}\vert{}}$，评估输出内容中每一个断言的事实准确性。  </li>
-<li><strong>F1@32</strong>：Precision 与 Recall@32 的调和平均数，综合惩罚信息遗漏与虚构断言。  </li>
+<li><strong>评估目标</strong>：评估模型在长文本生成中维持长序列记忆、信息整合以及<strong>长距离语义连贯性与忠实度</strong>的能力。<br>
+</li>
+<li><strong>主要应对幻觉</strong>：隐性幻觉（Implicit
+Hallucinations），即模型在生成段落级长文时，为了桥接逻辑断层或补全上下文而编造细节、产生前后矛盾。<br>
+</li>
+<li><strong>数据集来源与规模</strong>：要求模型围绕复杂维基百科实体生成段落级内容，随机抽取了
+<span class="math inline"><em>N</em> = 250</span> 个复杂实体。<br>
+</li>
+<li><strong>核心价值</strong>：突破了传统二元（对/错）短问答的局限，测试
+MA-CF 在长文展开过程中是否能稳住事实密度，避免“越写越瞎编”。</li>
 </ul>
-<h3 id="3-HaluEval-2-0（跨领域综合评估）"><a href="#3-HaluEval-2-0（跨领域综合评估）" class="headerlink" title="3. HaluEval 2.0（跨领域综合评估）"></a>3. HaluEval 2.0（跨领域综合评估）</h3><ul>
-<li><strong>Macro Factual Rate（宏观事实率）</strong>：样本级的二元评估，<strong>仅当某个样本中的所有断言都完全正确时，该样本才算事实正确</strong>。  </li>
-<li><strong>Micro Factual Rate（微观事实率）</strong>：单个样本内部得到事实支持的断言比例（捕获样本内部的事实一致性）。  </li>
-<li><strong>Average Factual Rate（平均事实率）</strong>：全数据集所有样本微观事实率的平均值，代表系统的整体<strong>事实密度（Factual density）</strong>。  </li>
+<h3 id="halueval-2.0跨领域综合基准">3. HaluEval
+2.0（跨领域综合基准）</h3>
+<ul>
+<li><strong>评估目标</strong>：评估框架在不同语义领域和多元任务场景下的<strong>鲁棒性与泛化能力</strong>。<br>
+</li>
+<li><strong>数据构成</strong>：HaluEval 2.0 是一个大型高质量基准（包含
+3.5
+万个生成与人工标注样本），覆盖三大常见任务：<strong>问答（QA）、基于知识的对话（Knowledge-Grounded
+Dialogue）和文本摘要（Text Summarization）</strong>。<br>
+</li>
+<li><strong>采样规模</strong>：作者构建了一个分层测试集，包含跨 5
+个不同领域的平衡样本 <span class="math inline"><em>N</em> = 800</span>。<br>
+</li>
+<li><strong>核心价值</strong>：包含大量“看似合理但实际错误（Plausible
+but
+incorrect）”的微妙幻觉样本，专门用来检验模型区分似是而非的虚构内容与真实事实的边界感知能力。</li>
 </ul>
-<h2 id="Main-results"><a href="#Main-results" class="headerlink" title="Main results"></a>Main results</h2><p><img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727162153476.png" alt="image-20260727162153476"></p>
-<h2 id="消融实验"><a href="#消融实验" class="headerlink" title="消融实验"></a>消融实验</h2><div class="table-container">
+<h2 id="指标">指标</h2>
+<h3 id="precisewiki短文本精准问答">1. PreciseWiki（短文本精准问答）</h3>
+<p>将模型输出划分为三个互斥集合：正确（Correct, <span class="math inline"><em>C</em></span>）、幻觉（Hallucinated, <span class="math inline"><em>H</em></span>）、拒绝回答（Rejected, <span class="math inline"><em>R</em></span>）。</p>
+<ul>
+<li><p><strong>正确率（Correct Rate）</strong>：<span class="math inline">$\frac{\vert{}C\vert{}}{N}$</span>，评估整体答对比例。</p></li>
+<li><p><strong>幻觉率（Hallucination Rate）</strong>：<span class="math inline">$\frac{\vert{}H\vert{}}{N -
+\vert{}R\vert{}}$</span>，在未拒绝的回答中出现事实错误的比例（核心安全指标）。</p></li>
+<li><p><strong>拒答率（Rejection Rate）</strong>：<span class="math inline">$\frac{\vert{}R\vert{}}{N}$</span>，评估模型在知识不足时果断“弃答”的安全边界意识。</p></li>
+<li><p><strong>F1 分数（F1 Score）</strong>：正确率与回答意愿（<span class="math inline">1 − Rejection
+Rate</span>）的调和平均数，防止模型为了追求高正确率而盲目弃答或为了高回答率而胡乱猜答：</p>
+<p><span class="math display">$$\text{F1} = 2 \cdot \frac{\text{Correct
+Rate} \cdot (1 - \text{Rejection Rate})}{\text{Correct Rate} + (1 -
+\text{Rejection Rate})}$$</span></p></li>
+</ul>
+<h3 id="longwiki长文本篇章问答">2. LongWiki（长文本篇章问答）</h3>
+<p>长文本不能简单套用“对/错”二元分类，作者采用了<strong>原子断言抽取协议（Atomic
+claim extraction protocol, 设置上限 <span class="math inline"><em>k</em> = 32</span>）</strong>。设 <span class="math inline"><em>S</em><sub><em>r</em><em>e</em><em>f</em></sub></span>
+为标准答案的断言集，<span class="math inline"><em>S</em><sub><em>o</em><em>u</em><em>t</em></sub></span>
+为模型输出抽取的断言集：</p>
+<ul>
+<li><strong>Recall@32（召回率）</strong>：<span class="math inline">$\frac{\vert{}\text{输出中得到支持的断言}\vert{}}{\vert{}S_{ref}\vert{}}$</span>，评估模型捕获关键细节的全面性。<br>
+</li>
+<li><strong>Precision（精准率）</strong>：<span class="math inline">$\frac{\vert{}\text{输出中得到支持的断言}\vert{}}{\vert{}S_{out}\vert{}}$</span>，评估输出内容中每一个断言的事实准确性。<br>
+</li>
+<li><strong>F1@32</strong>：Precision 与 Recall@32
+的调和平均数，综合惩罚信息遗漏与虚构断言。</li>
+</ul>
+<h3 id="halueval-2.0跨领域综合评估">3. HaluEval
+2.0（跨领域综合评估）</h3>
+<ul>
+<li><strong>Macro Factual
+Rate（宏观事实率）</strong>：样本级的二元评估，<strong>仅当某个样本中的所有断言都完全正确时，该样本才算事实正确</strong>。<br>
+</li>
+<li><strong>Micro Factual
+Rate（微观事实率）</strong>：单个样本内部得到事实支持的断言比例（捕获样本内部的事实一致性）。<br>
+</li>
+<li><strong>Average Factual
+Rate（平均事实率）</strong>：全数据集所有样本微观事实率的平均值，代表系统的整体<strong>事实密度（Factual
+density）</strong>。</li>
+</ul>
+<h2 id="main-results">Main results</h2>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727162153476.png" alt="image-20260727162153476">
+<figcaption aria-hidden="true">image-20260727162153476</figcaption>
+</figure>
+<h2 id="消融实验">消融实验</h2>
 <table>
+<colgroup>
+<col style="width: 18%">
+<col style="width: 33%">
+<col style="width: 48%">
+</colgroup>
 <thead>
 <tr>
 <th><strong>变体名称</strong></th>
@@ -470,7 +642,8 @@
 <tr>
 <td><strong>1. 简单增强单 Agent</strong></td>
 <td>图 (e) <code>Simple Answer Without Halu</code></td>
-<td>不搞多 Agent，只在单个提示词里强行要求“不胡编乱造、拒绝不懂的问题”。</td>
+<td>不搞多
+Agent，只在单个提示词里强行要求“不胡编乱造、拒绝不懂的问题”。</td>
 </tr>
 <tr>
 <td><strong>2. 质量与幻觉合并</strong></td>
@@ -494,110 +667,231 @@
 </tr>
 </tbody>
 </table>
-</div>
-<p><img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727165501810.png" alt="image-20260727165501810"></p>
-<p><img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727164147033.png" alt="image-20260727164147033"></p>
-<h2 id="Agent-功能性分析"><a href="#Agent-功能性分析" class="headerlink" title="Agent 功能性分析"></a>Agent 功能性分析</h2><p>在 Section 4.5 中，作者做了一件更精细的事：<strong>保留 4 个 Agent 的完整架构不变，但故意“剥夺/弱化”某个 Agent Prompt 里的核心功能指令</strong>，以此观察系统的性能变化。</p>
-<p>以 <code>Llama3.1-8B-instruct</code> 为基座，作者设计了 3 组 targeted Prompt 弱化配置（具体 Prompt 见附录 Fig. A.2）：  </p>
-<ol>
-<li><strong>弱化质量分析（Weaken Quality Analysis）</strong>：<ul>
-<li><strong>改动</strong>：简化质量 Agent 的 Prompt，删除了要求其“<strong>权衡正反方论点（$S<em>{pro}, S</em>{con}$）</strong>”和“<strong>检查逻辑一致性</strong>”的具体指令，仅保留句式简陋的通用质量评估要求。  </li>
-</ul>
-</li>
-<li><strong>弱化幻觉分析（Weaken Hallucination Analysis）</strong>：<ul>
-<li><strong>改动</strong>：简化幻觉 Agent 的 Prompt，仅让其查找浅层事实错误，删除了“<strong>深挖推理过程中幻觉根源/错误归因</strong>”的高阶指令。  </li>
-</ul>
-</li>
-<li><strong>弱化决策（Weaken Decision）</strong>：<ul>
-<li><strong>改动</strong>：修改合成 Agent 的 Prompt，减少其对前两个 Agent 提交的评估报告的依赖，鼓励其做出更多自主（但缺乏依据）的独立判断。</li>
-</ul>
-</li>
-</ol>
-<p><img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727170347009.png" alt="image-20260727170347009"></p>
-<h2 id="中间报告一致性验证"><a href="#中间报告一致性验证" class="headerlink" title="中间报告一致性验证"></a>中间报告一致性验证</h2><p><strong>为了验证中间的质量分析 Agent（$\mathcal{A}<em>{qual}$）和幻觉分析 Agent（$\mathcal{A}</em>{hallu}$）出具的诊断报告到底靠不靠谱？它们自己会不会产生二次幻觉？</strong></p>
-<p>如果中间环节的 Agent 生成的是毫无关联的废话或错误批判（False Criticism），那么最后一步的合成 Agent 就成了“垃圾进，垃圾出”（Garbage in, Garbage out）。为了验证这两个中间 Agent 的实效性与可靠性，作者设计了一套严谨的<strong>自动化中间报告相关性评估实验</strong>。</p>
-<p><strong>数据集抽样</strong>： 从三个数据集（PreciseWiki、LongWiki、HaluEval 2.0）中各随机抽取 <strong>20% 的样本</strong>（样本量分别为 $n=400$、$n=50$、$n=160$）。  </p>
-<p><strong>自动化“裁判”模型</strong>： 引入超大规模强推理模型 <strong>DeepSeek-R1-671B</strong> 作为自动化评估员（Evaluator）。  </p>
-<p><strong>评估维度与标尺</strong>： 裁判模型对比 <strong>问题 $Q$、真实标准答案（Ground Truth）、初始草稿 $A_c$</strong> 与 <strong>Agent 生成的报告（$R_q$ 或 $R_h$）</strong>，测量报告的<strong>上下文相关性与一致性（Contextual Relevance）</strong>，并将得分按连续标尺划分为 3 个区间：  </p>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727165501810.png" alt="image-20260727165501810">
+<figcaption aria-hidden="true">image-20260727165501810</figcaption>
+</figure>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727164147033.png" alt="image-20260727164147033">
+<figcaption aria-hidden="true">image-20260727164147033</figcaption>
+</figure>
+<h2 id="agent-功能性分析">Agent 功能性分析</h2>
+<p>在 Section 4.5 中，作者做了一件更精细的事：<strong>保留 4 个 Agent
+的完整架构不变，但故意“剥夺/弱化”某个 Agent Prompt
+里的核心功能指令</strong>，以此观察系统的性能变化。</p>
+<p>以 <code>Llama3.1-8B-instruct</code> 为基座，作者设计了 3 组 targeted
+Prompt 弱化配置（具体 Prompt 见附录 Fig. A.2）：</p>
+<ol type="1">
+<li><strong>弱化质量分析（Weaken Quality Analysis）</strong>：
 <ul>
-<li><strong>不一致（Not Consistent，$Score &lt; 0.3$）</strong>：报告偏离主题、分析错误或产生二次幻觉。  </li>
-<li><strong>部分一致（Partially Consistent，$0.3 \le Score \le 0.7$）</strong>：报告捕捉到了关键信息，但粒度或严谨度与裁判标准存在微小差异。  </li>
-<li><strong>高度一致（Highly Consistent，$Score &gt; 0.7$）</strong>：报告分析极其精准，完全符合裁判模型的参考标准。  </li>
-</ul>
-<p><img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727180711102.png" alt="image-20260727180711102"></p>
-<h2 id="样例和错误分析"><a href="#样例和错误分析" class="headerlink" title="样例和错误分析"></a>样例和错误分析</h2><h3 id="成功纠错案例"><a href="#成功纠错案例" class="headerlink" title="成功纠错案例"></a>成功纠错案例</h3><p><img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727181316288.png" alt="image-20260727181316288"></p>
-<h4 id="1-长文本案例：长尾神话知识纠偏（美索不达米亚神话中的-Udug）"><a href="#1-长文本案例：长尾神话知识纠偏（美索不达米亚神话中的-Udug）" class="headerlink" title="1. 长文本案例：长尾神话知识纠偏（美索不达米亚神话中的 Udug）"></a>1. 长文本案例：长尾神话知识纠偏（美索不达米亚神话中的 Udug）</h4><ul>
-<li><strong>初始草稿（$A_c$）</strong>：片面地将 Udug 描述为一种纯粹邪恶的恶魔（暗影、毒药、刺耳的声音）。  </li>
-<li><strong>质量 Agent（$\mathcal{A}_{qual}$）诊断</strong>：指出回答是片面的，相关文献中 Udug 也具有“善良与同情”的含义，信息利用不充分。  </li>
-<li><strong>幻觉 Agent（$\mathcal{A}_{hallu}$）诊断</strong>：将其归类为“部分幻觉（Partial Hallucination）”，缺乏对事物二象性（Duality）的探讨。  </li>
-<li><strong>合成 Agent（$\mathcal{A}_{synth}$）精炼</strong>：保留了其与混沌黑暗相关的记载，同时补充了 Udug 善良的一面以及与女神 Ereshkigal 的联系，生成了全面且准确的最终回答。  </li>
-</ul>
-<h4 id="2-短文本案例：历史事实精确更正（三明湾号航母援救拉菲号驱逐舰）"><a href="#2-短文本案例：历史事实精确更正（三明湾号航母援救拉菲号驱逐舰）" class="headerlink" title="2. 短文本案例：历史事实精确更正（三明湾号航母援救拉菲号驱逐舰）"></a>2. 短文本案例：历史事实精确更正（三明湾号航母援救拉菲号驱逐舰）</h4><ul>
-<li><strong>问题</strong>：4月16日，USS Shamrock Bay 派遣了什么型号的战斗机协助 USS Laffey？  </li>
-<li><strong>初始草稿（$A_c$）</strong>：错误地回答为 <code>&quot;F4U Corsair&quot;</code>（海盗式战斗机）。  </li>
-<li><strong>质量 Agent（$\mathcal{A}_{qual}$）诊断</strong>：查证历史记录指出，当时派出的实际上是 4 架 FM-2 战斗机。  </li>
-<li><strong>幻觉 Agent（$\mathcal{A}_{hallu}$）诊断</strong>：识别为“事实性幻觉”，澄清 F4U 确实参与了对 Laffey 的救援（陆战队 12 架 F4U 战斗轰炸机），但 Shamrock Bay 当时具体派出的战斗机是 FM-2。  </li>
-<li><strong>合成 Agent（$\mathcal{A}_{synth}$）精炼</strong>：定点更正，最终仅输出准确的答案 <code>&quot;FM-2&quot;</code>。</li>
-</ul>
-<h2 id="失败案例"><a href="#失败案例" class="headerlink" title="失败案例"></a>失败案例</h2><p><img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727181357176.png" alt="image-20260727181357176"></p>
-<h4 id="1-失败案例-1：生物学知识漏诊（带状糖蚁的繁殖行为）"><a href="#1-失败案例-1：生物学知识漏诊（带状糖蚁的繁殖行为）" class="headerlink" title="1. 失败案例 1：生物学知识漏诊（带状糖蚁的繁殖行为）"></a>1. 失败案例 1：生物学知识漏诊（带状糖蚁的繁殖行为）</h4><ul>
-<li><strong>问题</strong>：带状糖蚁的生命周期、交配模式与蚁群结构。  </li>
-<li><strong>初始草稿</strong>：错误地称带状糖蚁“与多个雄性交配（实际上一生只交配一次，即单雄交配 monandrous）”，蚁群通常是单后制。  </li>
-<li><strong>诊断过程</strong>：<ul>
-<li>幻觉 Agent（$\mathcal{A}_{hallu}$）成功指出了蚁群结构遗漏了“多后制（polygyny，多只蚁后共存）”的可能性。  </li>
-<li>质量 Agent（$\mathcal{A}_{qual}$）<strong>漏诊</strong>了，未能挑战草稿中“与多个雄性交配”这一错误的繁殖行为描述。  </li>
-</ul>
+<li><strong>改动</strong>：简化质量 Agent 的
+Prompt，删除了要求其“<strong>权衡正反方论点（<span class="math inline"><em>S</em><sub><em>p</em><em>r</em><em>o</em></sub>, <em>S</em><sub><em>c</em><em>o</em><em>n</em></sub></span>）</strong>”和“<strong>检查逻辑一致性</strong>”的具体指令，仅保留句式简陋的通用质量评估要求。<br>
 </li>
-<li><strong>最终结果</strong>：合成 Agent 成功补充了多后制蚁群的知识，但<strong>完好地保留了关于交配模式的原始幻觉</strong>。  </li>
-</ul>
-<h4 id="2-失败案例-2：统计数据虚高（足球运动员-Aleksandar-Duric-的生涯数据）"><a href="#2-失败案例-2：统计数据虚高（足球运动员-Aleksandar-Duric-的生涯数据）" class="headerlink" title="2. 失败案例 2：统计数据虚高（足球运动员 Aleksandar Đurić 的生涯数据）"></a>2. 失败案例 2：统计数据虚高（足球运动员 Aleksandar Đurić 的生涯数据）</h4><ul>
-<li><strong>问题</strong>：Đurić 为新加坡国家队取得的显著成就。  </li>
-<li><strong>初始草稿</strong>：称其出场 128 次打入 50 球（严重虚高，实际数据为 53 场打入 24 球）。  </li>
-<li><strong>诊断过程</strong>：<ul>
-<li>质量 Agent（$\mathcal{A}_{qual}$）准确指出了草稿遗漏了 Đurić 的个人荣誉（如 AFF 最佳射手、年度最佳球员）。  </li>
-<li>幻觉 Agent（$\mathcal{A}_{hallu}$）<strong>漏诊</strong>了，它误以为 50 球/128 场的数据已经得到验证，未能识别出这一严重的数值幻觉。  </li>
-</ul>
+</ul></li>
+<li><strong>弱化幻觉分析（Weaken Hallucination Analysis）</strong>：
+<ul>
+<li><strong>改动</strong>：简化幻觉 Agent 的
+Prompt，仅让其查找浅层事实错误，删除了“<strong>深挖推理过程中幻觉根源/错误归因</strong>”的高阶指令。<br>
 </li>
-<li><strong>最终结果</strong>：合成 Agent 补充了完整的个人荣誉，但<strong>原封不动地保留了 50 球/128 场的严重统计数据幻觉</strong>。</li>
+</ul></li>
+<li><strong>弱化决策（Weaken Decision）</strong>：
+<ul>
+<li><strong>改动</strong>：修改合成 Agent 的 Prompt，减少其对前两个
+Agent
+提交的评估报告的依赖，鼓励其做出更多自主（但缺乏依据）的独立判断。</li>
+</ul></li>
+</ol>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727170347009.png" alt="image-20260727170347009">
+<figcaption aria-hidden="true">image-20260727170347009</figcaption>
+</figure>
+<h2 id="中间报告一致性验证">中间报告一致性验证</h2>
+<p><strong>为了验证中间的质量分析 Agent（<span class="math inline">𝒜<sub><em>q</em><em>u</em><em>a</em><em>l</em></sub></span>）和幻觉分析
+Agent（<span class="math inline">𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub></span>）出具的诊断报告到底靠不靠谱？它们自己会不会产生二次幻觉？</strong></p>
+<p>如果中间环节的 Agent 生成的是毫无关联的废话或错误批判（False
+Criticism），那么最后一步的合成 Agent 就成了“垃圾进，垃圾出”（Garbage
+in, Garbage out）。为了验证这两个中间 Agent
+的实效性与可靠性，作者设计了一套严谨的<strong>自动化中间报告相关性评估实验</strong>。</p>
+<p><strong>数据集抽样</strong>：
+从三个数据集（PreciseWiki、LongWiki、HaluEval 2.0）中各随机抽取
+<strong>20% 的样本</strong>（样本量分别为 <span class="math inline"><em>n</em> = 400</span>、<span class="math inline"><em>n</em> = 50</span>、<span class="math inline"><em>n</em> = 160</span>）。</p>
+<p><strong>自动化“裁判”模型</strong>： 引入超大规模强推理模型
+<strong>DeepSeek-R1-671B</strong> 作为自动化评估员（Evaluator）。</p>
+<p><strong>评估维度与标尺</strong>： 裁判模型对比 <strong>问题 <span class="math inline"><em>Q</em></span>、真实标准答案（Ground
+Truth）、初始草稿 <span class="math inline"><em>A</em><sub><em>c</em></sub></span></strong> 与
+<strong>Agent 生成的报告（<span class="math inline"><em>R</em><sub><em>q</em></sub></span> 或 <span class="math inline"><em>R</em><sub><em>h</em></sub></span>）</strong>，测量报告的<strong>上下文相关性与一致性（Contextual
+Relevance）</strong>，并将得分按连续标尺划分为 3 个区间：</p>
+<ul>
+<li><strong>不一致（Not Consistent，<span class="math inline"><em>S</em><em>c</em><em>o</em><em>r</em><em>e</em> &lt; 0.3</span>）</strong>：报告偏离主题、分析错误或产生二次幻觉。<br>
+</li>
+<li><strong>部分一致（Partially Consistent，<span class="math inline">0.3 ≤ <em>S</em><em>c</em><em>o</em><em>r</em><em>e</em> ≤ 0.7</span>）</strong>：报告捕捉到了关键信息，但粒度或严谨度与裁判标准存在微小差异。<br>
+</li>
+<li><strong>高度一致（Highly Consistent，<span class="math inline"><em>S</em><em>c</em><em>o</em><em>r</em><em>e</em> &gt; 0.7</span>）</strong>：报告分析极其精准，完全符合裁判模型的参考标准。</li>
+</ul>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727180711102.png" alt="image-20260727180711102">
+<figcaption aria-hidden="true">image-20260727180711102</figcaption>
+</figure>
+<h2 id="样例和错误分析">样例和错误分析</h2>
+<h3 id="成功纠错案例">成功纠错案例</h3>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727181316288.png" alt="image-20260727181316288">
+<figcaption aria-hidden="true">image-20260727181316288</figcaption>
+</figure>
+<h4 id="长文本案例长尾神话知识纠偏美索不达米亚神话中的-udug">1.
+长文本案例：长尾神话知识纠偏（美索不达米亚神话中的 Udug）</h4>
+<ul>
+<li><strong>初始草稿（<span class="math inline"><em>A</em><sub><em>c</em></sub></span>）</strong>：片面地将
+Udug 描述为一种纯粹邪恶的恶魔（暗影、毒药、刺耳的声音）。<br>
+</li>
+<li><strong>质量 Agent（<span class="math inline">𝒜<sub><em>q</em><em>u</em><em>a</em><em>l</em></sub></span>）诊断</strong>：指出回答是片面的，相关文献中
+Udug 也具有“善良与同情”的含义，信息利用不充分。<br>
+</li>
+<li><strong>幻觉 Agent（<span class="math inline">𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub></span>）诊断</strong>：将其归类为“部分幻觉（Partial
+Hallucination）”，缺乏对事物二象性（Duality）的探讨。<br>
+</li>
+<li><strong>合成 Agent（<span class="math inline">𝒜<sub><em>s</em><em>y</em><em>n</em><em>t</em><em>h</em></sub></span>）精炼</strong>：保留了其与混沌黑暗相关的记载，同时补充了
+Udug 善良的一面以及与女神 Ereshkigal
+的联系，生成了全面且准确的最终回答。</li>
+</ul>
+<h4 id="短文本案例历史事实精确更正三明湾号航母援救拉菲号驱逐舰">2.
+短文本案例：历史事实精确更正（三明湾号航母援救拉菲号驱逐舰）</h4>
+<ul>
+<li><strong>问题</strong>：4月16日，USS Shamrock Bay
+派遣了什么型号的战斗机协助 USS Laffey？<br>
+</li>
+<li><strong>初始草稿（<span class="math inline"><em>A</em><sub><em>c</em></sub></span>）</strong>：错误地回答为
+<code>"F4U Corsair"</code>（海盗式战斗机）。<br>
+</li>
+<li><strong>质量 Agent（<span class="math inline">𝒜<sub><em>q</em><em>u</em><em>a</em><em>l</em></sub></span>）诊断</strong>：查证历史记录指出，当时派出的实际上是
+4 架 FM-2 战斗机。<br>
+</li>
+<li><strong>幻觉 Agent（<span class="math inline">𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub></span>）诊断</strong>：识别为“事实性幻觉”，澄清
+F4U 确实参与了对 Laffey 的救援（陆战队 12 架 F4U 战斗轰炸机），但
+Shamrock Bay 当时具体派出的战斗机是 FM-2。<br>
+</li>
+<li><strong>合成 Agent（<span class="math inline">𝒜<sub><em>s</em><em>y</em><em>n</em><em>t</em><em>h</em></sub></span>）精炼</strong>：定点更正，最终仅输出准确的答案
+<code>"FM-2"</code>。</li>
+</ul>
+<h2 id="失败案例">失败案例</h2>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727181357176.png" alt="image-20260727181357176">
+<figcaption aria-hidden="true">image-20260727181357176</figcaption>
+</figure>
+<h4 id="失败案例-1生物学知识漏诊带状糖蚁的繁殖行为">1. 失败案例
+1：生物学知识漏诊（带状糖蚁的繁殖行为）</h4>
+<ul>
+<li><strong>问题</strong>：带状糖蚁的生命周期、交配模式与蚁群结构。<br>
+</li>
+<li><strong>初始草稿</strong>：错误地称带状糖蚁“与多个雄性交配（实际上一生只交配一次，即单雄交配
+monandrous）”，蚁群通常是单后制。<br>
+</li>
+<li><strong>诊断过程</strong>：
+<ul>
+<li>幻觉 Agent（<span class="math inline">𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub></span>）成功指出了蚁群结构遗漏了“多后制（polygyny，多只蚁后共存）”的可能性。<br>
+</li>
+<li>质量 Agent（<span class="math inline">𝒜<sub><em>q</em><em>u</em><em>a</em><em>l</em></sub></span>）<strong>漏诊</strong>了，未能挑战草稿中“与多个雄性交配”这一错误的繁殖行为描述。<br>
+</li>
+</ul></li>
+<li><strong>最终结果</strong>：合成 Agent
+成功补充了多后制蚁群的知识，但<strong>完好地保留了关于交配模式的原始幻觉</strong>。</li>
+</ul>
+<h4 id="失败案例-2统计数据虚高足球运动员-aleksandar-đurić-的生涯数据">2.
+失败案例 2：统计数据虚高（足球运动员 Aleksandar Đurić 的生涯数据）</h4>
+<ul>
+<li><strong>问题</strong>：Đurić 为新加坡国家队取得的显著成就。<br>
+</li>
+<li><strong>初始草稿</strong>：称其出场 128 次打入 50
+球（严重虚高，实际数据为 53 场打入 24 球）。<br>
+</li>
+<li><strong>诊断过程</strong>：
+<ul>
+<li>质量 Agent（<span class="math inline">𝒜<sub><em>q</em><em>u</em><em>a</em><em>l</em></sub></span>）准确指出了草稿遗漏了
+Đurić 的个人荣誉（如 AFF 最佳射手、年度最佳球员）。<br>
+</li>
+<li>幻觉 Agent（<span class="math inline">𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub></span>）<strong>漏诊</strong>了，它误以为
+50 球/128 场的数据已经得到验证，未能识别出这一严重的数值幻觉。<br>
+</li>
+</ul></li>
+<li><strong>最终结果</strong>：合成 Agent
+补充了完整的个人荣誉，但<strong>原封不动地保留了 50 球/128
+场的严重统计数据幻觉</strong>。</li>
 </ul>
 <hr>
-<p>作者归纳出了 MA-CF 的<strong>核心瓶颈</strong>：  </p>
-<ol>
-<li><strong>“木桶效应”与能力上限</strong>： 系统的抗幻觉上限，严格取决于<strong>单个诊断 Agent 的触发敏感度（Sensitivity）</strong>。合成 Agent（$\mathcal{A}<em>{synth}$）扮演的是“整合者”而非“全知者”，如果 $\mathcal{A}</em>{qual}$ 或 $\mathcal{A}_{hallu}$ 没有把错误标注出来，合成 Agent 就无法凭空发现并纠正该遗留幻觉。  </li>
-<li><strong>错漏传递风险</strong>：<ul>
-<li>幻觉 Agent 漏诊 $\rightarrow$ 数值/事实错误被带入最终回答；  </li>
-<li>质量 Agent 漏诊 $\rightarrow$ 逻辑漏洞或片面观点被带入最终回答。  </li>
-</ul>
+<p>作者归纳出了 MA-CF 的<strong>核心瓶颈</strong>：</p>
+<ol type="1">
+<li><strong>“木桶效应”与能力上限</strong>：
+系统的抗幻觉上限，严格取决于<strong>单个诊断 Agent
+的触发敏感度（Sensitivity）</strong>。合成 Agent（<span class="math inline">𝒜<sub><em>s</em><em>y</em><em>n</em><em>t</em><em>h</em></sub></span>）扮演的是“整合者”而非“全知者”，如果
+<span class="math inline">𝒜<sub><em>q</em><em>u</em><em>a</em><em>l</em></sub></span>
+或 <span class="math inline">𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub></span>
+没有把错误标注出来，合成 Agent 就无法凭空发现并纠正该遗留幻觉。<br>
 </li>
-</ol>
-<p>这为未来的改进指明了方向：要提升 MA-CF 的上限，重点在于<strong>增强中间诊断 Agent 在特定领域（如精准统计数据、复杂生物学）的核查敏感度</strong>。</p>
-<h2 id="对比实验"><a href="#对比实验" class="headerlink" title="对比实验"></a>对比实验</h2><p><img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727182014086.png" alt="image-20260727182014086"></p>
-<p>论文挑选了两种最具代表性的多智能体协作范式（均采用 Llama3.1-8B 和 Qwen3-8B 作为基座）：  </p>
-<ol>
-<li><strong>标准智能体辩论框架（Standard Agent Debate, SAD / ChatEval）</strong>：让多个 Agent 针对问题进行多轮顺序迭代辩论（Iterative Debate），直到达成共识。  </li>
-<li><strong>动态大模型 Agent 网络（Dynamic LLM-Agent Network, DyLAN）</strong>：配置了 3 个初始 Agent 和 2 层网络结构，通过分层剪枝与早期停止机制来筛选 Agent</li>
-</ol>
-<h1 id="工程启示"><a href="#工程启示" class="headerlink" title="工程启示"></a>工程启示</h1><p>实际部署与计算效率（Efficiency and Deployment Considerations）</p>
-<p>虽然 MA-CF 性能出众，但调用 4 个 Agent 无疑会增加计算开销。作者从工程落地角度提出了极具实用价值的部署策略：  </p>
+<li><strong>错漏传递风险</strong>：
 <ul>
-<li><strong>成本与延迟权衡（Trade-off）</strong>：  <ul>
-<li><strong>相比单模型</strong>：MA-CF 调用了多次模型，成本和延迟确实高于单次生成。  </li>
-<li><strong>相比多轮辩论（Debate）</strong>：由于采用了<strong>并行诊断（Parallelized Critique）</strong>，MA-CF 的 Token 消耗和推理延迟比多轮辩论框架降低了 <strong>50% 以上</strong>。  </li>
-</ul>
+<li>幻觉 Agent 漏诊 <span class="math inline">→</span>
+数值/事实错误被带入最终回答；<br>
 </li>
-<li><strong>小模型集成的硬件门槛优势</strong>：  <ul>
-<li>部署多个 8B 参数的小模型（如 Llama3.1-8B）所需的 GPU 显存和硬件基础设施开销，<strong>远低于</strong>运行单体 100B+ 或 671B（如 DeepSeek-V3）超大模型。  </li>
-</ul>
+<li>质量 Agent 漏诊 <span class="math inline">→</span>
+逻辑漏洞或片面观点被带入最终回答。</li>
+</ul></li>
+</ol>
+<p>这为未来的改进指明了方向：要提升 MA-CF
+的上限，重点在于<strong>增强中间诊断 Agent
+在特定领域（如精准统计数据、复杂生物学）的核查敏感度</strong>。</p>
+<h2 id="对比实验">对比实验</h2>
+<figure>
+<img src="/2026/07/27/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E2%80%94%E2%80%94%E6%8A%97%E5%B9%BB%E8%A7%89%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%A1%86%E6%9E%B6MA-CF/image-20260727182014086.png" alt="image-20260727182014086">
+<figcaption aria-hidden="true">image-20260727182014086</figcaption>
+</figure>
+<p>论文挑选了两种最具代表性的多智能体协作范式（均采用 Llama3.1-8B 和
+Qwen3-8B 作为基座）：</p>
+<ol type="1">
+<li><strong>标准智能体辩论框架（Standard Agent Debate, SAD /
+ChatEval）</strong>：让多个 Agent
+针对问题进行多轮顺序迭代辩论（Iterative Debate），直到达成共识。<br>
 </li>
-<li><strong>动态条件路由策略（Conditional Routing Strategy）</strong>：  <ul>
-<li>作者强调：<strong>没必要让每一个简单的提问都走一遍 MA-CF 管线</strong>！  </li>
-<li><strong>工程建议</strong>：在入口处加入轻量级的“置信度评估器”或分类器。简单/低风险问题直接由基座单模型回答；只有遇到复杂、高风险或容易产生幻觉的问题，才路由到 MA-CF 多 Agent 管线中。  </li>
-</ul>
+<li><strong>动态大模型 Agent 网络（Dynamic LLM-Agent Network,
+DyLAN）</strong>：配置了 3 个初始 Agent 和 2
+层网络结构，通过分层剪枝与早期停止机制来筛选 Agent</li>
+</ol>
+<h1 id="工程启示">工程启示</h1>
+<p>实际部署与计算效率（Efficiency and Deployment Considerations）</p>
+<p>虽然 MA-CF 性能出众，但调用 4 个 Agent
+无疑会增加计算开销。作者从工程落地角度提出了极具实用价值的部署策略：</p>
+<ul>
+<li><strong>成本与延迟权衡（Trade-off）</strong>：
+<ul>
+<li><strong>相比单模型</strong>：MA-CF
+调用了多次模型，成本和延迟确实高于单次生成。<br>
 </li>
-<li><strong>模块化即插即用（Plug-and-Play Modularity）</strong>：  <ul>
-<li>框架具备极强的可拓展性。例如在医疗、法律、金融等专业领域，可以在不修改生成 Agent 和合成 Agent 的前提下，直接将幻觉分析 Agent（$\mathcal{A}_{hallu}$）替换为<strong>领域专精微调模型</strong>或<strong>外挂 RAG 检索模块</strong>。  </li>
-</ul>
+<li><strong>相比多轮辩论（Debate）</strong>：由于采用了<strong>并行诊断（Parallelized
+Critique）</strong>，MA-CF 的 Token 消耗和推理延迟比多轮辩论框架降低了
+<strong>50% 以上</strong>。<br>
 </li>
+</ul></li>
+<li><strong>小模型集成的硬件门槛优势</strong>：
+<ul>
+<li>部署多个 8B 参数的小模型（如 Llama3.1-8B）所需的 GPU
+显存和硬件基础设施开销，<strong>远低于</strong>运行单体 100B+ 或
+671B（如 DeepSeek-V3）超大模型。<br>
+</li>
+</ul></li>
+<li><strong>动态条件路由策略（Conditional Routing Strategy）</strong>：
+<ul>
+<li>作者强调：<strong>没必要让每一个简单的提问都走一遍 MA-CF
+管线</strong>！<br>
+</li>
+<li><strong>工程建议</strong>：在入口处加入轻量级的“置信度评估器”或分类器。简单/低风险问题直接由基座单模型回答；只有遇到复杂、高风险或容易产生幻觉的问题，才路由到
+MA-CF 多 Agent 管线中。<br>
+</li>
+</ul></li>
+<li><strong>模块化即插即用（Plug-and-Play Modularity）</strong>：
+<ul>
+<li>框架具备极强的可拓展性。例如在医疗、法律、金融等专业领域，可以在不修改生成
+Agent 和合成 Agent 的前提下，直接将幻觉分析 Agent（<span class="math inline">𝒜<sub><em>h</em><em>a</em><em>l</em><em>l</em><em>u</em></sub></span>）替换为<strong>领域专精微调模型</strong>或<strong>外挂
+RAG 检索模块</strong>。</li>
+</ul></li>
 </ul>
 
     </div>

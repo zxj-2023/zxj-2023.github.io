@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="ViT（Vision Transformer）ViT（Vision Transformer） 是谷歌在 2020 年提出的突破性图像识别模型（论文名：《An Image is Worth 16x16 Words》）。 它的核心贡献在于：打破了计算机视觉（CV）领域由卷积神经网络（CNN）绝对统治的局面，直接将原本用于自然语言处理（NLP）的 Transformer 架构生搬硬套（几乎一字未改）地应">
+    <meta name="description" content="ViT（Vision Transformer） ViT（Vision Transformer） 是谷歌在 2020 年提出的突破性图像识别模型（论文名：《An Image is Worth 16x16 Words》）。 它的核心贡献在于：打破了计算机视觉（CV）领域由卷积神经网络（CNN）绝对统治的局面，直接将原本用于自然语言处理（NLP）的 Transformer 架构生搬硬套（几乎">
 <meta property="og:type" content="article">
 <meta property="og:title" content="多模态模型">
 <meta property="og:url" content="http://example.com/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E5%A4%9A%E6%A8%A1%E6%80%81%E6%A8%A1%E5%9E%8B/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="ViT（Vision Transformer）ViT（Vision Transformer） 是谷歌在 2020 年提出的突破性图像识别模型（论文名：《An Image is Worth 16x16 Words》）。 它的核心贡献在于：打破了计算机视觉（CV）领域由卷积神经网络（CNN）绝对统治的局面，直接将原本用于自然语言处理（NLP）的 Transformer 架构生搬硬套（几乎一字未改）地应">
+<meta property="og:description" content="ViT（Vision Transformer） ViT（Vision Transformer） 是谷歌在 2020 年提出的突破性图像识别模型（论文名：《An Image is Worth 16x16 Words》）。 它的核心贡献在于：打破了计算机视觉（CV）领域由卷积神经网络（CNN）绝对统治的局面，直接将原本用于自然语言处理（NLP）的 Transformer 架构生搬硬套（几乎">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E5%A4%9A%E6%A8%A1%E6%80%81%E6%A8%A1%E5%9E%8B/image-20260601210911553.png">
 <meta property="og:image" content="http://example.com/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E5%A4%9A%E6%A8%A1%E6%80%81%E6%A8%A1%E5%9E%8B/image-20260528155058834.png">
@@ -149,7 +149,11 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ViT%EF%BC%88Vision-Transformer%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">ViT（Vision Transformer）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ViT-%E7%9A%84%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">ViT 的核心架构与工作流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E7%BC%96%E7%A0%81%E5%99%A8%E8%80%8C%E4%B8%8D%E6%98%AF%E8%A7%A3%E7%A0%81%E5%99%A8"><span class="nav-number">1.2.</span> <span class="nav-text">为什么使用编码器而不是解码器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%8F%8C%E5%90%91%E6%B3%A8%E6%84%8F%E5%8A%9B-vs-%E5%8D%95%E5%90%91%E5%9B%A0%E6%9E%9C%E6%B3%A8%E6%84%8F%E5%8A%9B"><span class="nav-number">1.2.1.</span> <span class="nav-text">1. 双向注意力 vs. 单向因果注意力</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%89%B9%E5%BE%81%E7%90%86%E8%A7%A3%EF%BC%88Understanding%EF%BC%89-vs-%E8%87%AA%E5%9B%9E%E5%BD%92%E7%94%9F%E6%88%90%EF%BC%88Generation%EF%BC%89"><span class="nav-number">1.2.2.</span> <span class="nav-text">2. 特征理解（Understanding） vs. 自回归生成（Generation）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%9B%BE%E5%83%8F%E7%9A%84%E9%AB%98%E5%86%97%E4%BD%99%E6%80%A7%E9%9C%80%E8%A6%81%E5%85%A8%E5%B1%80%E8%A7%86%E9%87%8E"><span class="nav-number">1.2.3.</span> <span class="nav-text">3. 图像的高冗余性需要全局视野</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%9D%A5%E6%97%B6%E8%B7%AF"><span class="nav-number">2.</span> <span class="nav-text">多模态大模型的来时路</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%9D%B6-%E6%8B%BC%E6%8E%A5%E6%B5%81%E6%B4%BE%EF%BC%88%E4%BB%A3%E8%A1%A8%EF%BC%9ALLaVA%E3%80%81Qwen-VL%E3%80%81InternLM-XComposer%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">❶ 拼接流派（代表：LLaVA、Qwen-VL、InternLM-XComposer）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%9D%B7-%E5%8E%9F%E7%94%9F%E6%B5%81%E6%B4%BE%EF%BC%88%E4%BB%A3%E8%A1%A8%EF%BC%9AGPT-4o%E3%80%81Google-Gemini%E3%80%81Chameleon%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">❷ 原生流派（代表：GPT-4o、Google Gemini、Chameleon）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#qwen3vl%E4%B8%8Eqwenvl"><span class="nav-number">3.</span> <span class="nav-text">qwen3vl与qwenvl</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%86%E8%A7%89%E7%BC%96%E7%A0%81%E5%99%A8"><span class="nav-number">3.1.</span> <span class="nav-text">视觉编码器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E6%A8%A1%E6%80%81%E6%9E%B6%E6%9E%84"><span class="nav-number">3.2.</span> <span class="nav-text">多模态架构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kimivl"><span class="nav-number">4.</span> <span class="nav-text">kimivl</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gemini"><span class="nav-number">5.</span> <span class="nav-text">gemini</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#vitvision-transformer"><span class="nav-number">1.</span> <span class="nav-text">ViT（Vision Transformer）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#vit-%E7%9A%84%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">ViT 的核心架构与工作流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8%E7%BC%96%E7%A0%81%E5%99%A8%E8%80%8C%E4%B8%8D%E6%98%AF%E8%A7%A3%E7%A0%81%E5%99%A8"><span class="nav-number">1.2.</span> <span class="nav-text">为什么使用编码器而不是解码器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E5%90%91%E6%B3%A8%E6%84%8F%E5%8A%9B-vs.-%E5%8D%95%E5%90%91%E5%9B%A0%E6%9E%9C%E6%B3%A8%E6%84%8F%E5%8A%9B"><span class="nav-number">1.2.1.</span> <span class="nav-text">1. 双向注意力
+vs. 单向因果注意力</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E7%90%86%E8%A7%A3understanding-vs.-%E8%87%AA%E5%9B%9E%E5%BD%92%E7%94%9F%E6%88%90generation"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.
+特征理解（Understanding） vs. 自回归生成（Generation）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E5%83%8F%E7%9A%84%E9%AB%98%E5%86%97%E4%BD%99%E6%80%A7%E9%9C%80%E8%A6%81%E5%85%A8%E5%B1%80%E8%A7%86%E9%87%8E"><span class="nav-number">1.2.3.</span> <span class="nav-text">3. 图像的高冗余性需要全局视野</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%9D%A5%E6%97%B6%E8%B7%AF"><span class="nav-number">2.</span> <span class="nav-text">多模态大模型的来时路</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%BC%E6%8E%A5%E6%B5%81%E6%B4%BE%E4%BB%A3%E8%A1%A8llavaqwen-vlinternlm-xcomposer"><span class="nav-number">2.1.</span> <span class="nav-text">❶
+拼接流派（代表：LLaVA、Qwen-VL、InternLM-XComposer）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E7%94%9F%E6%B5%81%E6%B4%BE%E4%BB%A3%E8%A1%A8gpt-4ogoogle-geminichameleon"><span class="nav-number">2.2.</span> <span class="nav-text">❷
+原生流派（代表：GPT-4o、Google Gemini、Chameleon）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#qwen3vl%E4%B8%8Eqwenvl"><span class="nav-number">3.</span> <span class="nav-text">qwen3vl与qwenvl</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%86%E8%A7%89%E7%BC%96%E7%A0%81%E5%99%A8"><span class="nav-number">3.1.</span> <span class="nav-text">视觉编码器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E6%A8%A1%E6%80%81%E6%9E%B6%E6%9E%84"><span class="nav-number">3.2.</span> <span class="nav-text">多模态架构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kimivl"><span class="nav-number">4.</span> <span class="nav-text">kimivl</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gemini"><span class="nav-number">5.</span> <span class="nav-text">gemini</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -164,18 +168,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">199</span>
+          <span class="site-state-item-count">205</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">69</span>
+        <span class="site-state-item-count">70</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">71</span>
+        <span class="site-state-item-count">72</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -289,106 +293,247 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="ViT（Vision-Transformer）"><a href="#ViT（Vision-Transformer）" class="headerlink" title="ViT（Vision Transformer）"></a>ViT（Vision Transformer）</h1><p><strong>ViT（Vision Transformer）</strong> 是谷歌在 2020 年提出的突破性图像识别模型（论文名：《An Image is Worth 16x16 Words》）。</p>
-<p>它的核心贡献在于：<strong>打破了计算机视觉（CV）领域由卷积神经网络（CNN）绝对统治的局面，直接将原本用于自然语言处理（NLP）的 Transformer 架构生搬硬套（几乎一字未改）地应用到了图像分类任务上</strong>，并且取得了超越经典 CNN 的效果。</p>
-<h2 id="ViT-的核心架构与工作流程"><a href="#ViT-的核心架构与工作流程" class="headerlink" title="ViT 的核心架构与工作流程"></a>ViT 的核心架构与工作流程</h2><p>为了让擅长处理一维文本序列的 Transformer 理解二维图像，ViT 将图像进行了“文本化”处理。整个前向传播的流程如下：</p>
-<p><img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E5%A4%9A%E6%A8%A1%E6%80%81%E6%A8%A1%E5%9E%8B/image-20260601210911553.png" alt="image-20260601210911553"></p>
-<p><strong>1.图像切块与展平 (Patch Partition &amp; Flattening)：</strong>Step 1。</p>
-<p>输入图像无法像文本那样直接输入。ViT 首先将一张宽高为 $H \times W$ 的图像，切分成一个个固定大小的图像块（Patches），比如 $16 \times 16$ 像素。如果图像是 $224 \times 224$，就会被切成 $14 \times 14 = 196$ 个块。每个块被展平成一个一维向量。</p>
-<p><strong>2.线性映射与标量化 (Linear Projection of Flattened Patches)：</strong>Step 2。</p>
-<p>展平后的图像块通过一个线性变换层（Linear Layer），映射到指定的特征维度（Embedding Dimension），这一步就相当于 NLP 中的 Word Embedding，把图像块变成了 <strong>Visual Tokens</strong>。</p>
-<p><strong>3.引入 Class Token 与位置编码 (Position Embedding)：</strong>Step 3。</p>
+    <div class="post-body" itemprop="articleBody"><h1 id="vitvision-transformer">ViT（Vision Transformer）</h1>
+<p><strong>ViT（Vision Transformer）</strong> 是谷歌在 2020
+年提出的突破性图像识别模型（论文名：《An Image is Worth 16x16
+Words》）。</p>
+<p>它的核心贡献在于：<strong>打破了计算机视觉（CV）领域由卷积神经网络（CNN）绝对统治的局面，直接将原本用于自然语言处理（NLP）的
+Transformer
+架构生搬硬套（几乎一字未改）地应用到了图像分类任务上</strong>，并且取得了超越经典
+CNN 的效果。</p>
+<h2 id="vit-的核心架构与工作流程">ViT 的核心架构与工作流程</h2>
+<p>为了让擅长处理一维文本序列的 Transformer 理解二维图像，ViT
+将图像进行了“文本化”处理。整个前向传播的流程如下：</p>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E5%A4%9A%E6%A8%A1%E6%80%81%E6%A8%A1%E5%9E%8B/image-20260601210911553.png" alt="image-20260601210911553">
+<figcaption aria-hidden="true">image-20260601210911553</figcaption>
+</figure>
+<p><strong>1.图像切块与展平 (Patch Partition &amp;
+Flattening)：</strong>Step 1。</p>
+<p>输入图像无法像文本那样直接输入。ViT 首先将一张宽高为 <span class="math inline"><em>H</em> × <em>W</em></span>
+的图像，切分成一个个固定大小的图像块（Patches），比如 <span class="math inline">16 × 16</span> 像素。如果图像是 <span class="math inline">224 × 224</span>，就会被切成 <span class="math inline">14 × 14 = 196</span>
+个块。每个块被展平成一个一维向量。</p>
+<p><strong>2.线性映射与标量化 (Linear Projection of Flattened
+Patches)：</strong>Step 2。</p>
+<p>展平后的图像块通过一个线性变换层（Linear
+Layer），映射到指定的特征维度（Embedding Dimension），这一步就相当于 NLP
+中的 Word Embedding，把图像块变成了 <strong>Visual Tokens</strong>。</p>
+<p><strong>3.引入 Class Token 与位置编码 (Position
+Embedding)：</strong>Step 3。</p>
 <ul>
-<li><strong>[class] Token</strong>：参考了 BERT 的做法，在所有图像 Token 最前面拼一个可学习的分类 Token。经过多层 Attention 交互后，该 Token 沉淀出的特征将直接用于最后的分类预测。</li>
-<li><strong>Position Embedding</strong>：因为标准自注意力机制是“词序无关”的，ViT 为每个 Token 加上了一维的、可学习的位置编码，以此保留图像块之间的空间相对位置关系。</li>
+<li><strong>[class] Token</strong>：参考了 BERT 的做法，在所有图像 Token
+最前面拼一个可学习的分类 Token。经过多层 Attention 交互后，该 Token
+沉淀出的特征将直接用于最后的分类预测。</li>
+<li><strong>Position
+Embedding</strong>：因为标准自注意力机制是“词序无关”的，ViT 为每个 Token
+加上了一维的、可学习的位置编码，以此保留图像块之间的空间相对位置关系。</li>
 </ul>
-<p><strong>4.Transformer 编码器堆叠 (Transformer Encoder)：</strong>Step 4。</p>
-<p>拼好位置编码的 Token 序列进入标准的 Transformer Encoder。内部包含<strong>多头自注意力机制（Multi-Head Attention）</strong>和 <strong>MLP 块</strong>。由于自注意力机制的存在，任意两个图像块之间都可以直接计算相关性，具备全局视场。</p>
+<p><strong>4.Transformer 编码器堆叠 (Transformer Encoder)：</strong>Step
+4。</p>
+<p>拼好位置编码的 Token 序列进入标准的 Transformer
+Encoder。内部包含<strong>多头自注意力机制（Multi-Head
+Attention）</strong>和 <strong>MLP
+块</strong>。由于自注意力机制的存在，任意两个图像块之间都可以直接计算相关性，具备全局视场。</p>
 <p><strong>5.MLP Head 分类输出：</strong>Step 5。</p>
-<p>经过多层 Encoder 交互后，提取出第一个位置（即 <code>[class] Token</code>）对应的输出特征，送入全连接层（MLP Head），最终预测出图像所属的类别（如 Bird, Ball, Car）。</p>
-<h2 id="为什么使用编码器而不是解码器"><a href="#为什么使用编码器而不是解码器" class="headerlink" title="为什么使用编码器而不是解码器"></a>为什么使用编码器而不是解码器</h2><p>在 Transformer 架构中，选择使用 <strong>Encoder（编码器）</strong> 还是 <strong>Decoder（解码器）</strong>，本质上是由注意力机制的方向性（Attention Directionality）<strong>和</strong>任务的本质（Task Nature）决定的。</p>
-<h3 id="1-双向注意力-vs-单向因果注意力"><a href="#1-双向注意力-vs-单向因果注意力" class="headerlink" title="1. 双向注意力 vs. 单向因果注意力"></a>1. 双向注意力 vs. 单向因果注意力</h3><p>这是最根本的技术差异：</p>
+<p>经过多层 Encoder 交互后，提取出第一个位置（即
+<code>[class] Token</code>）对应的输出特征，送入全连接层（MLP
+Head），最终预测出图像所属的类别（如 Bird, Ball, Car）。</p>
+<h2 id="为什么使用编码器而不是解码器">为什么使用编码器而不是解码器</h2>
+<p>在 Transformer 架构中，选择使用 <strong>Encoder（编码器）</strong>
+还是
+<strong>Decoder（解码器）</strong>，本质上是由注意力机制的方向性（Attention
+Directionality）<strong>和</strong>任务的本质（Task Nature）决定的。</p>
+<h3 id="双向注意力-vs.-单向因果注意力">1. 双向注意力
+vs. 单向因果注意力</h3>
+<p>这是最根本的技术差异：</p>
 <ul>
-<li><strong>Encoder 采用“双向自注意力”（Bi-directional Attention）</strong>：序列中的任意一个 Token 都可以看到其他<strong>所有</strong>位置的 Token。对于图像而言，左上角的“猫头”和右下角的“猫尾”在空间上是并存的，它们之间需要进行自由的相互双向感知。</li>
-<li><strong>Decoder 采用“因果掩码自注意力”（Masked/Causal Attention）</strong>：为了能够预测下一个词，Decoder 强制引入了掩码，使得第 $i$ 个位置的 Token <strong>只能看到它前面的 Token</strong>，绝对不能“偷看”后面的 Token。</li>
+<li><strong>Encoder 采用“双向自注意力”（Bi-directional
+Attention）</strong>：序列中的任意一个 Token
+都可以看到其他<strong>所有</strong>位置的
+Token。对于图像而言，左上角的“猫头”和右下角的“猫尾”在空间上是并存的，它们之间需要进行自由的相互双向感知。</li>
+<li><strong>Decoder 采用“因果掩码自注意力”（Masked/Causal
+Attention）</strong>：为了能够预测下一个词，Decoder
+强制引入了掩码，使得第 <span class="math inline"><em>i</em></span>
+个位置的 Token <strong>只能看到它前面的
+Token</strong>，绝对不能“偷看”后面的 Token。</li>
 </ul>
 <blockquote>
 <p><strong>如果在 ViT 中使用 Decoder 会发生什么？</strong></p>
-<p>图像块（Patches）是被强行拉成一维序列输入的。如果使用 Decoder，排在序列前面的图像块（如图像顶部）就无法感知排在后面的图像块（如图像底部）。因为<strong>图像是一个二维的、并行的整体，它不具备文本那种天然的、从左到右的时间先后顺序（因果律）</strong>。强制使用单向掩码会人为地割裂图像的全局空间联系。</p>
+<p>图像块（Patches）是被强行拉成一维序列输入的。如果使用
+Decoder，排在序列前面的图像块（如图像顶部）就无法感知排在后面的图像块（如图像底部）。因为<strong>图像是一个二维的、并行的整体，它不具备文本那种天然的、从左到右的时间先后顺序（因果律）</strong>。强制使用单向掩码会人为地割裂图像的全局空间联系。</p>
 </blockquote>
-<h3 id="2-特征理解（Understanding）-vs-自回归生成（Generation）"><a href="#2-特征理解（Understanding）-vs-自回归生成（Generation）" class="headerlink" title="2. 特征理解（Understanding） vs. 自回归生成（Generation）"></a>2. 特征理解（Understanding） vs. 自回归生成（Generation）</h3><p>两者的架构设计是为了服务完全不同的使命：</p>
+<h3 id="特征理解understanding-vs.-自回归生成generation">2.
+特征理解（Understanding） vs. 自回归生成（Generation）</h3>
+<p>两者的架构设计是为了服务完全不同的使命：</p>
 <ul>
 <li><p><strong>Encoder 的使命是“压缩与理解”</strong>：</p>
-<p>它的目标是将输入的完整信息（如整张图片或整段话）进行深度的特征抽取与融合，最终在顶层沉淀出一个高质量的特征向量（例如 ViT 中的 <code>[CLS]</code> Token）。这个向量包含了全局的上下文信息，非常适合下游的<strong>分类、检测、分割</strong>等“理解型”任务。</p>
-</li>
+<p>它的目标是将输入的完整信息（如整张图片或整段话）进行深度的特征抽取与融合，最终在顶层沉淀出一个高质量的特征向量（例如
+ViT 中的 <code>[CLS]</code>
+Token）。这个向量包含了全局的上下文信息，非常适合下游的<strong>分类、检测、分割</strong>等“理解型”任务。</p></li>
 <li><p><strong>Decoder 的使命是“预测与生成”</strong>：</p>
-<p>它的设计是为了自回归（Autoregressive）地输出一个序列——根据已有的信息，一个词一个词地往后“吐”（如 LLM 的文本生成）。它不需要一次性理解全部输入来做单次分类，而是需要维持“前因后果”的生成闭环。</p>
-</li>
+<p>它的设计是为了自回归（Autoregressive）地输出一个序列——根据已有的信息，一个词一个词地往后“吐”（如
+LLM
+的文本生成）。它不需要一次性理解全部输入来做单次分类，而是需要维持“前因后果”的生成闭环。</p></li>
 </ul>
-<h3 id="3-图像的高冗余性需要全局视野"><a href="#3-图像的高冗余性需要全局视野" class="headerlink" title="3. 图像的高冗余性需要全局视野"></a>3. 图像的高冗余性需要全局视野</h3><p>文本是高度人工抽象化的符号，信息密度极高；而图像是高维、高冗余的信号（比如连续好几个图像块可能都是同一片蓝天）。</p>
-<p>处理图像时，模型迫切需要<strong>大刀阔斧地进行全局对比和信息凝练</strong>。Encoder 的全局无死角注意力机制，能够用最短的路径（只需一层 Attention）建立起全图任意两点之间的关联，从而高效地剔除冗余，把整张图的能量集中到核心目标特征上。</p>
-<h1 id="多模态大模型的来时路"><a href="#多模态大模型的来时路" class="headerlink" title="多模态大模型的来时路"></a>多模态大模型的来时路</h1><p>原生多模态 vs 拼接多模态</p>
-<h2 id="❶-拼接流派（代表：LLaVA、Qwen-VL、InternLM-XComposer）"><a href="#❶-拼接流派（代表：LLaVA、Qwen-VL、InternLM-XComposer）" class="headerlink" title="❶ 拼接流派（代表：LLaVA、Qwen-VL、InternLM-XComposer）"></a>❶ 拼接流派（代表：LLaVA、Qwen-VL、InternLM-XComposer）</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[图片] ┐</span><br><span class="line">        ├──&gt; [统一分词器 Unified Tokenizer] ──&gt; [统一多模态主干网络 Unified Backbone]──&gt;输出</span><br><span class="line">[文本] ┘</span><br></pre></td></tr></table></figure>
-<p>1.图片经过一个<strong>独立</strong>的“Vision Encoder”（视觉编码器，通常用 CLIP，参数量约 3B 左右）提取出视觉特征。 </p>
-<p>2.这些特征穿过中间那个黄色的“Connector”（连接器/投影层，通常就是一个简单的 MLP 线性层），被强行翻译成文本大模型能听懂的“视觉代号（Visual Tokens）”。</p>
-<p>3.随后，这些视觉代号和你的文字提示词（Text Tokens）<strong>拼在同一排</strong>，一起送进最后那个巨大的“Large Language Model”（大语言模型，如 Llama，参数量通常为 7B、13B 或更大）。</p>
+<h3 id="图像的高冗余性需要全局视野">3. 图像的高冗余性需要全局视野</h3>
+<p>文本是高度人工抽象化的符号，信息密度极高；而图像是高维、高冗余的信号（比如连续好几个图像块可能都是同一片蓝天）。</p>
+<p>处理图像时，模型迫切需要<strong>大刀阔斧地进行全局对比和信息凝练</strong>。Encoder
+的全局无死角注意力机制，能够用最短的路径（只需一层
+Attention）建立起全图任意两点之间的关联，从而高效地剔除冗余，把整张图的能量集中到核心目标特征上。</p>
+<h1 id="多模态大模型的来时路">多模态大模型的来时路</h1>
+<p>原生多模态 vs 拼接多模态</p>
+<h2 id="拼接流派代表llavaqwen-vlinternlm-xcomposer">❶
+拼接流派（代表：LLaVA、Qwen-VL、InternLM-XComposer）</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[图片] ┐</span><br><span class="line">        ├──&gt; [统一分词器 Unified Tokenizer] ──&gt; [统一多模态主干网络 Unified Backbone]──&gt;输出</span><br><span class="line">[文本] ┘</span><br></pre></td></tr></table></figure>
+<p>1.图片经过一个<strong>独立</strong>的“Vision
+Encoder”（视觉编码器，通常用 CLIP，参数量约 3B
+左右）提取出视觉特征。</p>
+<p>2.这些特征穿过中间那个黄色的“Connector”（连接器/投影层，通常就是一个简单的
+MLP 线性层），被强行翻译成文本大模型能听懂的“视觉代号（Visual
+Tokens）”。</p>
+<p>3.随后，这些视觉代号和你的文字提示词（Text
+Tokens）<strong>拼在同一排</strong>，一起送进最后那个巨大的“Large
+Language Model”（大语言模型，如 Llama，参数量通常为 7B、13B
+或更大）。</p>
 <p><strong>为什么这种架构天生容易产生“物体幻觉”？</strong></p>
 <ul>
-<li><strong>地位不对等：</strong> 在这个架构里，最后的 LLM 是绝对的主宰，它拥有 90% 以上的参数量和绝对的“话语权”。</li>
-<li><strong>信息的深层稀释：</strong> 视觉信号只在最开始输入时露了个脸。当模型自回归地一个字一个字往下生成时，随着文本越写越长，自注意力机制（Self-Attention）的焦点会不可避免地向左移——也就是疯狂关注自己前面刚说过的文字（<strong>Over-Trust 偏置</strong>），而最左边的视觉代号在层层传递中被严重稀释。最终，模型体内的语言先验（肌肉记忆）战胜了视觉，导致闭眼瞎编。</li>
+<li><strong>地位不对等：</strong> 在这个架构里，最后的 LLM
+是绝对的主宰，它拥有 90% 以上的参数量和绝对的“话语权”。</li>
+<li><strong>信息的深层稀释：</strong>
+视觉信号只在最开始输入时露了个脸。当模型自回归地一个字一个字往下生成时，随着文本越写越长，自注意力机制（Self-Attention）的焦点会不可避免地向左移——也就是疯狂关注自己前面刚说过的文字（<strong>Over-Trust
+偏置</strong>），而最左边的视觉代号在层层传递中被严重稀释。最终，模型体内的语言先验（肌肉记忆）战胜了视觉，导致闭眼瞎编。</li>
 </ul>
-<h2 id="❷-原生流派（代表：GPT-4o、Google-Gemini、Chameleon）"><a href="#❷-原生流派（代表：GPT-4o、Google-Gemini、Chameleon）" class="headerlink" title="❷ 原生流派（代表：GPT-4o、Google Gemini、Chameleon）"></a>❷ 原生流派（代表：GPT-4o、Google Gemini、Chameleon）</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[图片] ┐</span><br><span class="line">        ├──&gt; [统一分词器 Unified Tokenizer] ──&gt; [统一多模态主干网络 Unified Backbone]──&gt;输出</span><br><span class="line">[文本] ┘</span><br></pre></td></tr></table></figure>
-<p>注意看输入端，它没有相互独立的“视觉视觉编码器”和“文本编码器”，而是图片和文本在最底层就一起进了一个“Unified Tokenizer（统一分词器）”。</p>
-<p>在这里，图片不再是被提取特征后“嫁接”过来的外来物。像素信号和文字信号在出生（<strong>预训练</strong>）的第一天起，就被切成了同等地位的代号，手拉手一起送进底部的“Unified Backbone（统一主干网络）”。</p>
-<h1 id="qwen3vl与qwenvl"><a href="#qwen3vl与qwenvl" class="headerlink" title="qwen3vl与qwenvl"></a>qwen3vl与qwenvl</h1><p>Qwen-VL 更像是 CLIP式视觉编码器 + 一个浅桥接层 + 文本LLM；<br>Qwen3-VL 已经变成了 原生长上下文/视频友好的统一多模态架构，视觉侧和语言侧耦合得更深。</p>
-<p><img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E5%A4%9A%E6%A8%A1%E6%80%81%E6%A8%A1%E5%9E%8B/image-20260528155058834.png" alt="image-20260528155058834"></p>
-<p>Qwen3-VL 属于“组合式架构”（Compositional Architecture），而非通过单一 Transformer 从零训练的“原生”模型；但从能力表现和训练深度上看，它实现了“原生级”的融合体验。Qwen3-VL 采用了经典的三模块架构：</p>
-<p>• <strong>视觉编码器</strong> (Vision Encoder)：基于 SigLIP-2。<br>  ▪ We utilize the SigLIP-2 architecture<br>  ▪ NaViT: native resolution</p>
-<p>• <strong>视觉-语言融合层</strong> (Merger)：基于 MLP（多层感知机）。<br>  ▪ As in Qwen2.5-VL, we use a two-layer MLP to compress 2 × 2 visual features from the vision encoder into a single visual token, aligned with the LLM’s hidden dimension.<br>  ▪ 16 <em> 16 =&gt; 32 </em> 32</p>
+<h2 id="原生流派代表gpt-4ogoogle-geminichameleon">❷
+原生流派（代表：GPT-4o、Google Gemini、Chameleon）</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[图片] ┐</span><br><span class="line">        ├──&gt; [统一分词器 Unified Tokenizer] ──&gt; [统一多模态主干网络 Unified Backbone]──&gt;输出</span><br><span class="line">[文本] ┘</span><br></pre></td></tr></table></figure>
+<p>注意看输入端，它没有相互独立的“视觉视觉编码器”和“文本编码器”，而是图片和文本在最底层就一起进了一个“Unified
+Tokenizer（统一分词器）”。</p>
+<p>在这里，图片不再是被提取特征后“嫁接”过来的外来物。像素信号和文字信号在出生（<strong>预训练</strong>）的第一天起，就被切成了同等地位的代号，手拉手一起送进底部的“Unified
+Backbone（统一主干网络）”。</p>
+<h1 id="qwen3vl与qwenvl">qwen3vl与qwenvl</h1>
+<p>Qwen-VL 更像是 CLIP式视觉编码器 + 一个浅桥接层 + 文本LLM； Qwen3-VL
+已经变成了
+原生长上下文/视频友好的统一多模态架构，视觉侧和语言侧耦合得更深。</p>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E5%A4%9A%E6%A8%A1%E6%80%81%E6%A8%A1%E5%9E%8B/image-20260528155058834.png" alt="image-20260528155058834">
+<figcaption aria-hidden="true">image-20260528155058834</figcaption>
+</figure>
+<p>Qwen3-VL 属于“组合式架构”（Compositional Architecture），而非通过单一
+Transformer
+从零训练的“原生”模型；但从能力表现和训练深度上看，它实现了“原生级”的融合体验。Qwen3-VL
+采用了经典的三模块架构：</p>
+<p>• <strong>视觉编码器</strong> (Vision Encoder)：基于 SigLIP-2。 ▪ We
+utilize the SigLIP-2 architecture ▪ NaViT: native resolution</p>
+<p>• <strong>视觉-语言融合层</strong> (Merger)：基于 MLP（多层感知机）。
+▪ As in Qwen2.5-VL, we use a two-layer MLP to compress 2 × 2 visual
+features from the vision encoder into a single visual token, aligned
+with the LLM’s hidden dimension. ▪ 16 * 16 =&gt; 32 * 32</p>
 <p>• <strong>大语言模型</strong> (LLM)：基于 Qwen3。</p>
-<p>虽然架构是组合的，但报告中提到它“原生支持交错上下文（natively supports interleaved contexts）”。这里的“原生”更多是指功能层面——它能够像处理文本一样自然地处理图文混排、视频流，并支持 256K 超长上下文）。</p>
-<p>Qwen3-VL 的团队明确提出了一种<strong><em>“分而治之 (divide-and-conquer)”</em></strong> 的策略。</p>
-<p>• 先<strong>分别开发最强的视觉感知能力（SigLIP-2）和语言推理能力（Qwen3）</strong>。<br>• 然后再通过协同的方式将它们集成。这与“从零开始就在一起训练”的原生路径在理念上有本质区别。</p>
-<p>Qwen3-VL 意识到了“组合式架构”的潜在弱点：如果只把视觉编码器的最终输出给 LLM，可能会丢失细节。（不同于以往将所有视觉 token 仅输入到 LLM 输入层的做法，Qwen3-VL 的 DeepStack 抽取视觉编码器（ViT）的中间层特征，并将其注入到 LLM 的特定层中。）</p>
-<p>• <strong>解决方案（DeepStack）</strong>：它不只是“看”一眼（only input），而是把视觉编码器不同层级（从浅层纹理到深层语义）的特征都提取出来，注入到 LLM 的不同层中。<br>  ▪ DeepStack 采用的是<strong>残差连接（Residual Connections）</strong>的方式。<br>  ▪ 它将视觉特征直接“加”到 LLM 内部隐藏状态（Hidden States）上，而不是拼接到序列的开头或结尾。因此，对于 LLM 来说，处理的 Seq Length 保持不变。</p>
-<h2 id="视觉编码器"><a href="#视觉编码器" class="headerlink" title="视觉编码器"></a><strong>视觉编码器</strong></h2><p>Qwen-VL：</p>
+<p>虽然架构是组合的，但报告中提到它“原生支持交错上下文（natively
+supports interleaved
+contexts）”。这里的“原生”更多是指功能层面——它能够像处理文本一样自然地处理图文混排、视频流，并支持
+256K 超长上下文）。</p>
+<p>Qwen3-VL 的团队明确提出了一种<strong><em>“分而治之
+(divide-and-conquer)”</em></strong> 的策略。</p>
+<p>•
+先<strong>分别开发最强的视觉感知能力（SigLIP-2）和语言推理能力（Qwen3）</strong>。
+•
+然后再通过协同的方式将它们集成。这与“从零开始就在一起训练”的原生路径在理念上有本质区别。</p>
+<p>Qwen3-VL
+意识到了“组合式架构”的潜在弱点：如果只把视觉编码器的最终输出给
+LLM，可能会丢失细节。（不同于以往将所有视觉 token 仅输入到 LLM
+输入层的做法，Qwen3-VL 的 DeepStack
+抽取视觉编码器（ViT）的中间层特征，并将其注入到 LLM 的特定层中。）</p>
+<p>• <strong>解决方案（DeepStack）</strong>：它不只是“看”一眼（only
+input），而是把视觉编码器不同层级（从浅层纹理到深层语义）的特征都提取出来，注入到
+LLM 的不同层中。 ▪ DeepStack 采用的是<strong>残差连接（Residual
+Connections）</strong>的方式。 ▪ 它将视觉特征直接“加”到 LLM
+内部隐藏状态（Hidden
+States）上，而不是拼接到序列的开头或结尾。因此，对于 LLM 来说，处理的
+Seq Length 保持不变。</p>
+<h2 id="视觉编码器"><strong>视觉编码器</strong></h2>
+<p>Qwen-VL：</p>
 <ul>
-<li>视觉编码器直接用的是 OpenCLIP ViT-bigG 初始化，属于比较典型的“拿一个现成强视觉塔接到 LLM 上”的路线。</li>
-<li>论文写得很明确：图像先被 resize 到固定分辨率，ViT 以 stride 14 切 patch，再输出视觉特征；随后通过一个<strong>单层、随机初始化的 cross-attention adapter</strong>，把整张图的视觉序列压到<strong>固定 256 个 token</strong>，再送进 LLM。</li>
+<li>视觉编码器直接用的是 OpenCLIP ViT-bigG
+初始化，属于比较典型的“拿一个现成强视觉塔接到 LLM 上”的路线。</li>
+<li>论文写得很明确：图像先被 resize 到固定分辨率，ViT 以 stride 14 切
+patch，再输出视觉特征；随后通过一个<strong>单层、随机初始化的
+cross-attention adapter</strong>，把整张图的视觉序列压到<strong>固定 256
+个 token</strong>，再送进 LLM。</li>
 </ul>
 <p>Qwen3-VL：</p>
 <ul>
-<li><strong>Qwen3-VL 的视觉编码器，不只是“把图变成 token”的普通 ViT，而是一个原生支持 image + video、动态分辨率、并且能导出多层视觉特征的视觉前端。</strong></li>
-<li>重点有 4 个。<ul>
-<li><strong>它原生支持视频，不只是图片。</strong><br>官方配置里有 temporal_patch_size=2，实现里整个视觉网格都按 grid_thw 处理，也就是 time / height / width 三维，而不是传统单图的二维网格。<br>这说明它的视觉编码器从一开始就是按“时空输入”设计的。</li>
-<li><strong>它支持动态分辨率，不走“固定 256 视觉 token”那种老路。</strong><br>官方 README 直接写了：Qwen3-VL 的单图视觉 token 预算可以在 256-1280 之间，并提到 compression ratio is 32。<br>配置里还有 spatial_merge_size=2，说明它会在视觉侧做空间合并来控制 token 数量。<br>这和 Qwen-VL 那种“adapter 固定压成 256 个 token”差别很大。</li>
-<li><strong>它不是只用最后一层视觉特征，而是显式保留多层特征。</strong><br>配置里有 deepstack_visual_indexes = [8, 16, 24]；实现里会在这些层取特征，再经过额外的 deepstack_merger 输出。<br>这意味着视觉编码器不是“最后吐一层 hidden state 就完事”，而是把中层、深层信息都保留下来，供后面 DeepStack 融合。</li>
-<li><strong>它的视觉位置建模也更复杂，适合变分辨率输入。</strong><br>从实现看，视觉编码器里同时用了：<ul>
+<li><strong>Qwen3-VL 的视觉编码器，不只是“把图变成 token”的普通
+ViT，而是一个原生支持 image +
+video、动态分辨率、并且能导出多层视觉特征的视觉前端。</strong></li>
+<li>重点有 4 个。
+<ul>
+<li><strong>它原生支持视频，不只是图片。</strong> 官方配置里有
+temporal_patch_size=2，实现里整个视觉网格都按 grid_thw 处理，也就是 time
+/ height / width 三维，而不是传统单图的二维网格。
+这说明它的视觉编码器从一开始就是按“时空输入”设计的。</li>
+<li><strong>它支持动态分辨率，不走“固定 256 视觉
+token”那种老路。</strong> 官方 README 直接写了：Qwen3-VL 的单图视觉
+token 预算可以在 256-1280 之间，并提到 compression ratio is 32。
+配置里还有 spatial_merge_size=2，说明它会在视觉侧做空间合并来控制 token
+数量。 这和 Qwen-VL 那种“adapter 固定压成 256 个 token”差别很大。</li>
+<li><strong>它不是只用最后一层视觉特征，而是显式保留多层特征。</strong>
+配置里有 deepstack_visual_indexes = [8, 16,
+24]；实现里会在这些层取特征，再经过额外的 deepstack_merger 输出。
+这意味着视觉编码器不是“最后吐一层 hidden state
+就完事”，而是把中层、深层信息都保留下来，供后面 DeepStack 融合。</li>
+<li><strong>它的视觉位置建模也更复杂，适合变分辨率输入。</strong>
+从实现看，视觉编码器里同时用了：
+<ul>
 <li>基于网格的可插值 pos_embed</li>
-<li>基于 position_ids 的视觉 rotary embedding<br>这不是简单“固定尺寸图片 + 固定位置表”的做法，而是为了适配不同 T/H/W 网格。</li>
+<li>基于 position_ids 的视觉 rotary embedding 这不是简单“固定尺寸图片 +
+固定位置表”的做法，而是为了适配不同 T/H/W 网格。</li>
+</ul></li>
+</ul></li>
+<li>README 里还写了 DeepStack 会融合多层 ViT 特征；视觉 token 也不是固定
+256，而是按分辨率动态分配，单图 token 预算可在 256-1280
+之间，视频还会有额外时间压缩。</li>
 </ul>
-</li>
-</ul>
-</li>
-<li>README 里还写了 DeepStack 会融合多层 ViT 特征；视觉 token 也不是固定 256，而是按分辨率动态分配，单图 token 预算可在 256-1280 之间，视频还会有额外时间压缩。</li>
-</ul>
-<h2 id="多模态架构"><a href="#多模态架构" class="headerlink" title="多模态架构"></a><strong>多模态架构</strong></h2><p>Qwen-VL 的多模态架构特点：</p>
+<h2 id="多模态架构"><strong>多模态架构</strong></h2>
+<p>Qwen-VL 的多模态架构特点：</p>
 <ul>
 <li>结构是三段式：LLM + Visual Encoder + Position-aware Adapter。</li>
-<li>视觉信息先被单独编码，再被 adapter 压成固定长度，最后以 <img> …  形式插到语言序列里。</li>
+<li>视觉信息先被单独编码，再被 adapter 压成固定长度，最后以 <img> …
+ 形式插到语言序列里。</li>
 <li>它支持多图交错输入，但从架构本质上看，还是“先视觉编码，再注入语言模型”的老式桥接范式。</li>
-<li>位置建模主要是 adapter 里加了 2D absolute positional encoding，重点是别在压缩时把位置信息丢太多。</li>
+<li>位置建模主要是 adapter 里加了 2D absolute positional
+encoding，重点是别在压缩时把位置信息丢太多。</li>
 </ul>
 <p>Qwen3-VL 的多模态架构特点：</p>
 <ul>
-<li>它把“交错多模态上下文”当成一等公民，原生支持 text + image + video 的统一长上下文，论文里给的是 256K。</li>
+<li>它把“交错多模态上下文”当成一等公民，原生支持 text + image + video
+的统一长上下文，论文里给的是 256K。</li>
 </ul>
-<h1 id="kimivl"><a href="#kimivl" class="headerlink" title="kimivl"></a>kimivl</h1><p><strong>Kimi-VL 的 MLP（看新图中的 <code>Vision Encoder -&gt; MLP -&gt; LLM</code> 链路）：</strong> 它是位于<strong>大语言模型（LLM）之外</strong>的。它扮演的是<strong>跨模态适配器（Connector）\</strong>的角色。 视觉编码器（Vision Encoder）提取出的图像特征维度（例如 1024 维），大语言模型根本无法直接识别。这个 MLP 的物理位置处于视觉模块与语言模块的交界处，其作用是进行*<em>模态间的对齐与维度转换*</em>（将视觉空间几何映射到文本 Token 嵌入空间）。</p>
-<p><img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E5%A4%9A%E6%A8%A1%E6%80%81%E6%A8%A1%E5%9E%8B/image-20260528155205926.png" alt="image-20260528155205926"></p>
-<h1 id="gemini"><a href="#gemini" class="headerlink" title="gemini"></a>gemini</h1><p>▪ 没有分阶段：Gemini不是先训练一个纯文本的LLM，再用多模态数据进行第二阶段的微调。而是从预训练的第一天开始，就在同时学习所有模态。</p>
-<p>▪ 统一的Transformer核心：如图2所示，所有模态的输入（文本token、图像帧、音频特征）都被转换成一个统一的向量序列，然后被送入同一个Transformer解码器进行处理。</p>
-<p>▪ 联合训练带来的深远影响<br>  ○ 统一的内部表示空间 (Unified Representation Space)：由于从头开始联合训练，Gemini的神经网络权重被迫去学习不同模态之间的深层关联。它不是为图像信息在已有的文本“世界观”里“找个位”，而是构建了一个统一的、可以同时容纳和关联视觉、听觉、语言概念的内部世界。<br>  ○ 实现真正的跨模态推理 (Deep Cross-modal Reasoning)：因为底层表示是统一的，Gemini可以进行更复杂的推理。</p>
-<p><img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E5%A4%9A%E6%A8%A1%E6%80%81%E6%A8%A1%E5%9E%8B/image-20260528153603649.png" alt="image-20260528153603649"></p>
+<h1 id="kimivl">kimivl</h1>
+<p><strong>Kimi-VL 的 MLP（看新图中的
+<code>Vision Encoder -&gt; MLP -&gt; LLM</code> 链路）：</strong>
+它是位于<strong>大语言模型（LLM）之外</strong>的。它扮演的是<strong>跨模态适配器（Connector）*<em>的角色。
+视觉编码器（Vision Encoder）提取出的图像特征维度（例如 1024
+维），大语言模型根本无法直接识别。这个 MLP
+的物理位置处于视觉模块与语言模块的交界处，其作用是进行*</em>模态间的对齐与维度转换</strong>（将视觉空间几何映射到文本
+Token 嵌入空间）。</p>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E5%A4%9A%E6%A8%A1%E6%80%81%E6%A8%A1%E5%9E%8B/image-20260528155205926.png" alt="image-20260528155205926">
+<figcaption aria-hidden="true">image-20260528155205926</figcaption>
+</figure>
+<h1 id="gemini">gemini</h1>
+<p>▪
+没有分阶段：Gemini不是先训练一个纯文本的LLM，再用多模态数据进行第二阶段的微调。而是从预训练的第一天开始，就在同时学习所有模态。</p>
+<p>▪
+统一的Transformer核心：如图2所示，所有模态的输入（文本token、图像帧、音频特征）都被转换成一个统一的向量序列，然后被送入同一个Transformer解码器进行处理。</p>
+<p>▪ 联合训练带来的深远影响 ○ 统一的内部表示空间 (Unified Representation
+Space)：由于从头开始联合训练，Gemini的神经网络权重被迫去学习不同模态之间的深层关联。它不是为图像信息在已有的文本“世界观”里“找个位”，而是构建了一个统一的、可以同时容纳和关联视觉、听觉、语言概念的内部世界。
+○ 实现真正的跨模态推理 (Deep Cross-modal
+Reasoning)：因为底层表示是统一的，Gemini可以进行更复杂的推理。</p>
+<figure>
+<img src="/2026/05/28/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E5%A4%9A%E6%A8%A1%E6%80%81%E6%A8%A1%E5%9E%8B/image-20260528153603649.png" alt="image-20260528153603649">
+<figcaption aria-hidden="true">image-20260528153603649</figcaption>
+</figure>
 
     </div>
 

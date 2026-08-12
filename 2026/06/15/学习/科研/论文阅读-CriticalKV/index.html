@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="论文[2502.03805] CriticalKV: Optimizing KV Cache Eviction from an Output Perturbation Perspective 背景问题：长序列推理中庞大的 KV（键值）缓存面临着高存储和运行时间成本的巨大挑战 传统做法：基于注意力权重剪枝较不重要的条目来减小 KV 缓存大小 局限性：在删减缓存时，普遍默认“注意力权重（Attenti">
+    <meta name="description" content="论文 [2502.03805] CriticalKV: Optimizing KV Cache Eviction from an Output Perturbation Perspective 背景 问题：长序列推理中庞大的 KV（键值）缓存面临着高存储和运行时间成本的巨大挑战 传统做法：基于注意力权重剪枝较不重要的条目来减小 KV 缓存大小 局限性：在删减缓存时，普遍默认“注意力">
 <meta property="og:type" content="article">
 <meta property="og:title" content="论文阅读-CriticalKV">
 <meta property="og:url" content="http://example.com/2026/06/15/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-CriticalKV/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="论文[2502.03805] CriticalKV: Optimizing KV Cache Eviction from an Output Perturbation Perspective 背景问题：长序列推理中庞大的 KV（键值）缓存面临着高存储和运行时间成本的巨大挑战 传统做法：基于注意力权重剪枝较不重要的条目来减小 KV 缓存大小 局限性：在删减缓存时，普遍默认“注意力权重（Attenti">
+<meta property="og:description" content="论文 [2502.03805] CriticalKV: Optimizing KV Cache Eviction from an Output Perturbation Perspective 背景 问题：长序列推理中庞大的 KV（键值）缓存面临着高存储和运行时间成本的巨大挑战 传统做法：基于注意力权重剪枝较不重要的条目来减小 KV 缓存大小 局限性：在删减缓存时，普遍默认“注意力">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2026/06/15/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-CriticalKV/image-20260615205757831.png">
 <meta property="og:image" content="http://example.com/2026/06/15/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-CriticalKV/image-20260615235424989.png">
@@ -149,7 +149,11 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BA%E6%96%87"><span class="nav-number">1.</span> <span class="nav-text">论文</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">2.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%8F%91%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">核心发现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%91%E7%9A%84%E7%90%86%E8%A7%A3"><span class="nav-number">3.1.</span> <span class="nav-text">我的理解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%EF%BC%88Cache-Eviction%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">大语言模型缓存淘汰（Cache Eviction）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%8F%91%E7%8E%B0-1"><span class="nav-number">4.1.</span> <span class="nav-text">核心发现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#H2O-%E7%9A%84%E5%8A%A8%E6%80%81%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%E6%9C%BA%E5%88%B6"><span class="nav-number">4.2.</span> <span class="nav-text">H2O 的动态缓存淘汰机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E7%BB%B4%E6%8A%A4%E6%B5%81%E7%A8%8B"><span class="nav-number">4.2.1.</span> <span class="nav-text">动态维护流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%AF%B9%E6%AF%94%E6%96%B9%E6%B3%95"><span class="nav-number">4.3.</span> <span class="nav-text">其他对比方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%EF%B8%8F%E2%83%A3-SnapKV-Li-et-al-2024"><span class="nav-number">4.3.1.</span> <span class="nav-text">1️⃣ SnapKV (Li et al., 2024)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%EF%B8%8F%E2%83%A3-AdaKV-Feng-et-al-2024-HeadKV-Fu-et-al-2024"><span class="nav-number">4.3.2.</span> <span class="nav-text">2️⃣ AdaKV (Feng et al., 2024) &#x2F; HeadKV (Fu et al., 2024)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Critical-KV-Cache-Entry-Selection%EF%BC%88%E5%85%B3%E9%94%AE-KV-%E7%BC%93%E5%AD%98%E6%9D%A1%E7%9B%AE%E9%80%89%E6%8B%A9%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">Critical KV Cache Entry Selection（关键 KV 缓存条目选择）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#KV-%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%E9%97%AE%E9%A2%98"><span class="nav-number">5.1.</span> <span class="nav-text">KV 缓存淘汰问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%9D%8F%E6%83%85%E5%86%B5%E8%BE%93%E5%87%BA%E6%89%B0%E5%8A%A8"><span class="nav-number">5.2.</span> <span class="nav-text">最坏情况输出扰动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E5%BA%A6%E5%BE%97%E5%88%86%EF%BC%88The-Criticality-Score%EF%BC%89"><span class="nav-number">5.3.</span> <span class="nav-text">关键度得分（The Criticality Score）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8E%E4%BC%A0%E7%BB%9F%E6%96%B9%E6%B3%95%E5%AF%B9%E6%AF%94"><span class="nav-number">5.3.1.</span> <span class="nav-text">与传统方法对比</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-number">6.</span> <span class="nav-text">实验</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Setup"><span class="nav-number">6.1.</span> <span class="nav-text">Setup</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ruler-Benchmark"><span class="nav-number">6.2.</span> <span class="nav-text">Ruler Benchmark</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LongBench-Evaluation"><span class="nav-number">6.3.</span> <span class="nav-text">LongBench Evaluation</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9F%A5%E8%AF%86%E8%A1%A5%E5%85%A8"><span class="nav-number">7.</span> <span class="nav-text">知识补全</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#KV-%E7%BC%93%E5%AD%98%E6%9D%A1%E7%9B%AE%EF%BC%88entry%EF%BC%89"><span class="nav-number">7.1.</span> <span class="nav-text">KV 缓存条目（entry）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#W-O-%E5%A6%82%E4%BD%95%E7%90%86%E8%A7%A3"><span class="nav-number">7.2.</span> <span class="nav-text">$W_O$如何理解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E8%BF%9B%E8%A1%8Ckvcache%E7%9A%84%E6%B7%98%E6%B1%B0%E6%9C%BA%E5%88%B6"><span class="nav-number">7.2.1.</span> <span class="nav-text">什么时候进行kvcache的淘汰机制</span></a></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BA%E6%96%87"><span class="nav-number">1.</span> <span class="nav-text">论文</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%83%8C%E6%99%AF"><span class="nav-number">2.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%8F%91%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">核心发现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%91%E7%9A%84%E7%90%86%E8%A7%A3"><span class="nav-number">3.1.</span> <span class="nav-text">我的理解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0cache-eviction"><span class="nav-number">4.</span> <span class="nav-text">大语言模型缓存淘汰（Cache
+Eviction）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%8F%91%E7%8E%B0-1"><span class="nav-number">4.1.</span> <span class="nav-text">核心发现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#h2o-%E7%9A%84%E5%8A%A8%E6%80%81%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%E6%9C%BA%E5%88%B6"><span class="nav-number">4.2.</span> <span class="nav-text">H2O 的动态缓存淘汰机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E7%BB%B4%E6%8A%A4%E6%B5%81%E7%A8%8B"><span class="nav-number">4.2.1.</span> <span class="nav-text">动态维护流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E5%AF%B9%E6%AF%94%E6%96%B9%E6%B3%95"><span class="nav-number">4.3.</span> <span class="nav-text">其他对比方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#snapkv-li-et-al.-2024"><span class="nav-number">4.3.1.</span> <span class="nav-text">1️⃣ SnapKV (Li et al., 2024)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#adakv-feng-et-al.-2024-headkv-fu-et-al.-2024"><span class="nav-number">4.3.2.</span> <span class="nav-text">2️⃣ AdaKV (Feng et
+al., 2024) &#x2F; HeadKV (Fu et al., 2024)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#critical-kv-cache-entry-selection%E5%85%B3%E9%94%AE-kv-%E7%BC%93%E5%AD%98%E6%9D%A1%E7%9B%AE%E9%80%89%E6%8B%A9"><span class="nav-number">5.</span> <span class="nav-text">Critical
+KV Cache Entry Selection（关键 KV 缓存条目选择）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kv-%E7%BC%93%E5%AD%98%E6%B7%98%E6%B1%B0%E9%97%AE%E9%A2%98"><span class="nav-number">5.1.</span> <span class="nav-text">KV 缓存淘汰问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%9D%8F%E6%83%85%E5%86%B5%E8%BE%93%E5%87%BA%E6%89%B0%E5%8A%A8"><span class="nav-number">5.2.</span> <span class="nav-text">最坏情况输出扰动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E5%BA%A6%E5%BE%97%E5%88%86the-criticality-score"><span class="nav-number">5.3.</span> <span class="nav-text">关键度得分（The Criticality
+Score）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8E%E4%BC%A0%E7%BB%9F%E6%96%B9%E6%B3%95%E5%AF%B9%E6%AF%94"><span class="nav-number">5.3.1.</span> <span class="nav-text">与传统方法对比</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-number">6.</span> <span class="nav-text">实验</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#setup"><span class="nav-number">6.1.</span> <span class="nav-text">Setup</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ruler-benchmark"><span class="nav-number">6.2.</span> <span class="nav-text">Ruler Benchmark</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#longbench-evaluation"><span class="nav-number">6.3.</span> <span class="nav-text">LongBench Evaluation</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9F%A5%E8%AF%86%E8%A1%A5%E5%85%A8"><span class="nav-number">7.</span> <span class="nav-text">知识补全</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kv-%E7%BC%93%E5%AD%98%E6%9D%A1%E7%9B%AEentry"><span class="nav-number">7.1.</span> <span class="nav-text">KV 缓存条目（entry）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#w_o%E5%A6%82%E4%BD%95%E7%90%86%E8%A7%A3"><span class="nav-number">7.2.</span> <span class="nav-text">WO如何理解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E8%BF%9B%E8%A1%8Ckvcache%E7%9A%84%E6%B7%98%E6%B1%B0%E6%9C%BA%E5%88%B6"><span class="nav-number">7.2.1.</span> <span class="nav-text">什么时候进行kvcache的淘汰机制</span></a></li></ol></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -164,18 +168,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">199</span>
+          <span class="site-state-item-count">205</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">69</span>
+        <span class="site-state-item-count">70</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">71</span>
+        <span class="site-state-item-count">72</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -289,65 +293,200 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="论文"><a href="#论文" class="headerlink" title="论文"></a>论文</h1><p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2502.03805">[2502.03805] CriticalKV: Optimizing KV Cache Eviction from an Output Perturbation Perspective</a></p>
-<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>问题：长序列推理中庞大的 KV（键值）缓存面临着高存储和运行时间成本的巨大挑战</p>
+    <div class="post-body" itemprop="articleBody"><h1 id="论文">论文</h1>
+<p>[<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2502.03805">2502.03805] CriticalKV:
+Optimizing KV Cache Eviction from an Output Perturbation
+Perspective</a></p>
+<h1 id="背景">背景</h1>
+<p>问题：长序列推理中庞大的
+KV（键值）缓存面临着高存储和运行时间成本的巨大挑战</p>
 <p>传统做法：基于注意力权重剪枝较不重要的条目来减小 KV 缓存大小</p>
-<p>局限性：在删减缓存时，普遍默认“注意力权重（Attention Weights）大 = 条目重要” 。</p>
-<p>核心工作：提出了一个通过分析注意力输出扰动（Output Perturbation）来识别关键 KV 缓存条目，除了注意力权重之外，KV 条目中的 Value（值）状态以及预训练参数矩阵也是至关重要的 。</p>
-<p>技术方案：提出了一种扰动约束选择算法，该算法通过优化最坏情况下的输出扰动来识别关键条目 。我们证明了我们的算法是一种通用的、即插即用的增强模块，且仅带来微不足道的计算开销 。</p>
-<p>实验定量结果：覆盖了 3 种基线方法（SnapKV、AdaKV、HeadKV） 、3 种不同架构和规模的模型（Llama-3.1-8B、Mistral-7B、Qwen-2.5-32B），在相同的缓存留存率下（例如 40% 的缓存大小），由剪枝带来的模型精度降级（Compression Loss）平均减少了 <strong>50% 以上</strong> </p>
-<h1 id="核心发现"><a href="#核心发现" class="headerlink" title="核心发现"></a>核心发现</h1><p>决定剪枝引发的输出误差（Output Error）的，远不止注意力权重本身。至关重要的是，<strong>包含在 KV 条目内部的 Value（值）状态的模长，以及模型固有的预训练输出投影矩阵（Output Projection Matrix，即 $W_O$），同样对最终的输出扰动起着决定性的约束作用</strong>。</p>
+<p>局限性：在删减缓存时，普遍默认“注意力权重（Attention Weights）大 =
+条目重要” 。</p>
+<p>核心工作：提出了一个通过分析注意力输出扰动（Output
+Perturbation）来识别关键 KV 缓存条目，除了注意力权重之外，KV 条目中的
+Value（值）状态以及预训练参数矩阵也是至关重要的 。</p>
+<p>技术方案：提出了一种扰动约束选择算法，该算法通过优化最坏情况下的输出扰动来识别关键条目
+。我们证明了我们的算法是一种通用的、即插即用的增强模块，且仅带来微不足道的计算开销
+。</p>
+<p>实验定量结果：覆盖了 3 种基线方法（SnapKV、AdaKV、HeadKV） 、3
+种不同架构和规模的模型（Llama-3.1-8B、Mistral-7B、Qwen-2.5-32B），在相同的缓存留存率下（例如
+40% 的缓存大小），由剪枝带来的模型精度降级（Compression Loss）平均减少了
+<strong>50% 以上</strong></p>
+<h1 id="核心发现">核心发现</h1>
+<p>决定剪枝引发的输出误差（Output
+Error）的，远不止注意力权重本身。至关重要的是，<strong>包含在 KV
+条目内部的
+Value（值）状态的模长，以及模型固有的预训练输出投影矩阵（Output
+Projection Matrix，即 <span class="math inline"><em>W</em><sub><em>O</em></sub></span>），同样对最终的输出扰动起着决定性的约束作用</strong>。</p>
 <ul>
-<li>我不去猜哪个条目重要，我直接去计算一个纯粹的数学问题——<strong>“如果我把条目 $i$ 删掉，注意力层的最终输出结果会偏离多少（即扰动值 $\Delta O$ 有多大）？”</strong></li>
-<li>通过严格的数学推导，作者抓住了前人的盲区：自注意力机制的最终输出是 $O = \text{Softmax}(QK^T)V \cdot W_O$。前人只盯着前面的 $\text{Softmax}(QK^T)$（注意力权重）看，却完全忽略了后面乘上的 $V$（Value 状态）和 $W_O$ 矩阵。如果一个 Token 虽然注意力权重很高，但它的 $V$ 向量模长极小，或者它经过 $W_O$ 投影后几乎被坍缩掉，那删掉它其实根本不影响大局！</li>
+<li>我不去猜哪个条目重要，我直接去计算一个纯粹的数学问题——<strong>“如果我把条目
+<span class="math inline"><em>i</em></span>
+删掉，注意力层的最终输出结果会偏离多少（即扰动值 <span class="math inline"><em>Δ</em><em>O</em></span>
+有多大）？”</strong></li>
+<li>通过严格的数学推导，作者抓住了前人的盲区：自注意力机制的最终输出是
+<span class="math inline"><em>O</em> = Softmax(<em>Q</em><em>K</em><sup><em>T</em></sup>)<em>V</em> ⋅ <em>W</em><sub><em>O</em></sub></span>。前人只盯着前面的
+<span class="math inline">Softmax(<em>Q</em><em>K</em><sup><em>T</em></sup>)</span>（注意力权重）看，却完全忽略了后面乘上的
+<span class="math inline"><em>V</em></span>（Value 状态）和 <span class="math inline"><em>W</em><sub><em>O</em></sub></span>
+矩阵。如果一个 Token 虽然注意力权重很高，但它的 <span class="math inline"><em>V</em></span> 向量模长极小，或者它经过 <span class="math inline"><em>W</em><sub><em>O</em></sub></span>
+投影后几乎被坍缩掉，那删掉它其实根本不影响大局！</li>
 </ul>
-<p>基于上述理论发现，我们提出了一种“<strong>扰动约束选择算法（Perturbation-Constrained Selection Algorithm）”</strong>。该算法的核心在于，它在数学上显式地去优化和控制“<strong>最坏情况下的输出扰动上界</strong>”。我们进一步证明了，该算法是一个通用的（Universal）、即插即用的（Plug-and-play）增强模块，<strong>能够无缝嵌入现有的各种淘汰策略</strong>中，且仅引入微不足道的线性计算开销。在 Ruler 和 LongBench 等长文本基准上的广泛实验表明，我们的方法能够将压缩带来的精度损失平均降低一半以上。</p>
-<p><img src="/2026/06/15/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-CriticalKV/image-20260615205757831.png" alt="image-20260615205757831"></p>
-<h2 id="我的理解"><a href="#我的理解" class="headerlink" title="我的理解"></a>我的理解</h2><p>也就是说这篇工作，</p>
+<p>基于上述理论发现，我们提出了一种“<strong>扰动约束选择算法（Perturbation-Constrained
+Selection
+Algorithm）”</strong>。该算法的核心在于，它在数学上显式地去优化和控制“<strong>最坏情况下的输出扰动上界</strong>”。我们进一步证明了，该算法是一个通用的（Universal）、即插即用的（Plug-and-play）增强模块，<strong>能够无缝嵌入现有的各种淘汰策略</strong>中，且仅引入微不足道的线性计算开销。在
+Ruler 和 LongBench
+等长文本基准上的广泛实验表明，我们的方法能够将压缩带来的精度损失平均降低一半以上。</p>
+<figure>
+<img src="/2026/06/15/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-CriticalKV/image-20260615205757831.png" alt="image-20260615205757831">
+<figcaption aria-hidden="true">image-20260615205757831</figcaption>
+</figure>
+<h2 id="我的理解">我的理解</h2>
+<p>也就是说这篇工作，</p>
 <p>1.还是在kvcache淘汰方法的基础上，作为一个<strong>即插即用（Plug-and-play）的增强模块</strong>，嵌套在它们的底层代码里</p>
 <p>2.主要聚焦在如何判断哪些kv条目是有用的，即挑选权重时，不能光看attention权重</p>
 <p>3.使用扰动算法挑选出：谁被扔掉后引起的输出扰动上界最小，就优先淘汰谁</p>
-<h1 id="大语言模型缓存淘汰（Cache-Eviction）"><a href="#大语言模型缓存淘汰（Cache-Eviction）" class="headerlink" title="大语言模型缓存淘汰（Cache Eviction）"></a>大语言模型缓存淘汰（Cache Eviction）</h1><p>核心思想是在推理过程中，<strong>动态地剪枝（Prune）掉较不重要的历史 KV 条目</strong>。然而，现有的工作绝大多数依赖自注意力权重（Attention Weights）作为主要的启发式指标（Heuristic Metric）来评估条目的重要性。这些方法普遍遵循一个经验性假设，即注意力权重较小的条目对最终输出的贡献微乎其微。遗憾的是，这种纯经验驱动的方法缺乏严格的数学形式化证明与理论根基。</p>
-<p>代表论文<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2306.14048">[2306.14048] H$_2$O: Heavy-Hitter Oracle for Efficient Generative Inference of Large Language Models</a></p>
-<h2 id="核心发现-1"><a href="#核心发现-1" class="headerlink" title="核心发现"></a>核心发现</h2><p><strong>惊人的注意力稀疏性（Sparsity）</strong>：即使 LLM 是在全连接（Dense）状态下训练出来的，但在推理阶段，注意力矩阵有 <strong>95% 以上</strong> 的元素其实都是高度稀疏、接近于零的 。这意味着，只有大约 5% 的 KV Cache 对当前 Token 的预测真正起作用 。  </p>
-<p><strong>重击者 Token（Heavy Hitters, 简称 $H^2$）</strong>：模型在解码时，注意力得分（Attention Scores）的累积呈现出明显的<strong>幂律分布</strong> 。也就是说，有极少数的核心 Token（如句首 Token、高频共现词等）在整个生成过程中持续贡献着绝大部分的注意力权重 。  </p>
-<p><strong>功能坍塌风险</strong>：实验表明，如果强行把这些 $H^2$ Token 从缓存中移除，模型的准确率会断崖式下跌，发生严重的“功能崩塌” 。 </p>
-<h2 id="H2O-的动态缓存淘汰机制"><a href="#H2O-的动态缓存淘汰机制" class="headerlink" title="H2O 的动态缓存淘汰机制"></a>H2O 的动态缓存淘汰机制</h2><p>基于上述发现，理想的策略应当是将宝贵的显存留给那些最关键的 Token 。H2O 提出了一种均分显存预算的动态淘汰策略，将 KV Cache 预算（例如只保留总长度的 20%）平分给两类 Token ：  </p>
-<p><strong>最近的 Token（Local Tokens）</strong>：由于自然语言的局部相关性，刚生成不久的临近词通常拥有很强的关联。  </p>
-<p><strong>重击者 Token（$H^2$ Tokens）</strong>：全文本中累积注意力得分最高、影响力最大的核心 Token 。 </p>
-<h3 id="动态维护流程"><a href="#动态维护流程" class="headerlink" title="动态维护流程"></a>动态维护流程</h3><p>在每个解码（Decoding）步骤中：</p>
-<ol>
-<li>新生成的 Token 产生的 KV 键值对会被正常放入缓存中 。  </li>
-<li>当缓存中的 Token 数量超过了预设的显存空间预算 $k$ 时，淘汰机制就会触发 。  </li>
-<li>算法会利用<strong>局部统计数据（Local Statistics）</strong>——即只累加当前步骤及之前所有步骤产生的注意力得分 ，算出一个累积总分 。  </li>
-<li>算法进行贪心选择：在原有的 $H^2$ 集合与新加入的 Token 中，找出累积注意力得分最低的那个 Token，将其从缓存中无情剔除，确保缓存容量始终恒定 。</li>
+<h1 id="大语言模型缓存淘汰cache-eviction">大语言模型缓存淘汰（Cache
+Eviction）</h1>
+<p>核心思想是在推理过程中，<strong>动态地剪枝（Prune）掉较不重要的历史
+KV 条目</strong>。然而，现有的工作绝大多数依赖自注意力权重（Attention
+Weights）作为主要的启发式指标（Heuristic
+Metric）来评估条目的重要性。这些方法普遍遵循一个经验性假设，即注意力权重较小的条目对最终输出的贡献微乎其微。遗憾的是，这种纯经验驱动的方法缺乏严格的数学形式化证明与理论根基。</p>
+<p>代表论文[<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2306.14048">2306.14048]
+H<span class="math inline"><sub>2</sub></span>O: Heavy-Hitter Oracle for
+Efficient Generative Inference of Large Language Models</a></p>
+<h2 id="核心发现-1">核心发现</h2>
+<p><strong>惊人的注意力稀疏性（Sparsity）</strong>：即使 LLM
+是在全连接（Dense）状态下训练出来的，但在推理阶段，注意力矩阵有
+<strong>95% 以上</strong> 的元素其实都是高度稀疏、接近于零的
+。这意味着，只有大约 5% 的 KV Cache 对当前 Token 的预测真正起作用 。</p>
+<p><strong>重击者 Token（Heavy Hitters, 简称 <span class="math inline"><em>H</em><sup>2</sup></span>）</strong>：模型在解码时，注意力得分（Attention
+Scores）的累积呈现出明显的<strong>幂律分布</strong>
+。也就是说，有极少数的核心 Token（如句首
+Token、高频共现词等）在整个生成过程中持续贡献着绝大部分的注意力权重
+。</p>
+<p><strong>功能坍塌风险</strong>：实验表明，如果强行把这些 <span class="math inline"><em>H</em><sup>2</sup></span> Token
+从缓存中移除，模型的准确率会断崖式下跌，发生严重的“功能崩塌” 。</p>
+<h2 id="h2o-的动态缓存淘汰机制">H2O 的动态缓存淘汰机制</h2>
+<p>基于上述发现，理想的策略应当是将宝贵的显存留给那些最关键的 Token
+。H2O 提出了一种均分显存预算的动态淘汰策略，将 KV Cache
+预算（例如只保留总长度的 20%）平分给两类 Token ：</p>
+<p><strong>最近的 Token（Local
+Tokens）</strong>：由于自然语言的局部相关性，刚生成不久的临近词通常拥有很强的关联。</p>
+<p><strong>重击者 Token（<span class="math inline"><em>H</em><sup>2</sup></span>
+Tokens）</strong>：全文本中累积注意力得分最高、影响力最大的核心 Token
+。</p>
+<h3 id="动态维护流程">动态维护流程</h3>
+<p>在每个解码（Decoding）步骤中：</p>
+<ol type="1">
+<li>新生成的 Token 产生的 KV 键值对会被正常放入缓存中 。<br>
+</li>
+<li>当缓存中的 Token 数量超过了预设的显存空间预算 <span class="math inline"><em>k</em></span> 时，淘汰机制就会触发 。<br>
+</li>
+<li>算法会利用<strong>局部统计数据（Local
+Statistics）</strong>——即只累加当前步骤及之前所有步骤产生的注意力得分
+，算出一个累积总分 。<br>
+</li>
+<li>算法进行贪心选择：在原有的 <span class="math inline"><em>H</em><sup>2</sup></span> 集合与新加入的 Token
+中，找出累积注意力得分最低的那个
+Token，将其从缓存中无情剔除，确保缓存容量始终恒定 。</li>
 </ol>
-<h2 id="其他对比方法"><a href="#其他对比方法" class="headerlink" title="其他对比方法"></a>其他对比方法</h2><h3 id="1️⃣-SnapKV-Li-et-al-2024"><a href="#1️⃣-SnapKV-Li-et-al-2024" class="headerlink" title="1️⃣ SnapKV (Li et al., 2024)"></a>1️⃣ SnapKV (Li et al., 2024)</h3><ul>
-<li><strong>核心原理</strong>：SnapKV 发现，在 Prefill（提示词前缀编码）阶段结束时，各个注意力头（Attention Head）重点关注哪些 Token 的格局已经<strong>基本固化</strong>了。因此，它在 Prefill 结束时，对最后的观察窗口（Observation Window）内的注意力权重算一次<strong>均值/最大池化（Pooling）</strong>，选出得分最高的特征簇（Clustered Features），然后一锤定音锁死需要保留的历史 KV 位置，后续 Decode 阶段不再动态更改。</li>
-<li><strong>本文如何增强它</strong>：原本 SnapKV 在选出高分簇后直接按注意力权重大小做 Top-K 留下 KV；本文将其改为“既看权重，又看 Value 模长与矩阵投影带来的扰动上界”的动态筛选。</li>
+<h2 id="其他对比方法">其他对比方法</h2>
+<h3 id="snapkv-li-et-al.-2024">1️⃣ SnapKV (Li et al., 2024)</h3>
+<ul>
+<li><strong>核心原理</strong>：SnapKV 发现，在
+Prefill（提示词前缀编码）阶段结束时，各个注意力头（Attention
+Head）重点关注哪些 Token
+的格局已经<strong>基本固化</strong>了。因此，它在 Prefill
+结束时，对最后的观察窗口（Observation
+Window）内的注意力权重算一次<strong>均值/最大池化（Pooling）</strong>，选出得分最高的特征簇（Clustered
+Features），然后一锤定音锁死需要保留的历史 KV 位置，后续 Decode
+阶段不再动态更改。</li>
+<li><strong>本文如何增强它</strong>：原本 SnapKV
+在选出高分簇后直接按注意力权重大小做 Top-K 留下
+KV；本文将其改为“既看权重，又看 Value
+模长与矩阵投影带来的扰动上界”的动态筛选。</li>
 </ul>
-<h3 id="2️⃣-AdaKV-Feng-et-al-2024-HeadKV-Fu-et-al-2024"><a href="#2️⃣-AdaKV-Feng-et-al-2024-HeadKV-Fu-et-al-2024" class="headerlink" title="2️⃣ AdaKV (Feng et al., 2024) / HeadKV (Fu et al., 2024)"></a>2️⃣ AdaKV (Feng et al., 2024) / HeadKV (Fu et al., 2024)</h3><ul>
-<li><strong>核心原理</strong>：这两篇工作聚焦于<strong>注意力头之间的动态预算分配（Head-wise Dynamic Budget Allocation）</strong>。传统的淘汰方法（如 H2O）对每个注意力头都是一视同仁的（例如每个头都强制只留 128 个词的缓存）。但 AdaKV 和 HeadKV 发现，有的头属于“钝感头”（注意力很分散），有的头属于“敏感头”（注意力极度聚焦）。它们通过计算每个头的注意力熵（Entropy）或实时统计量，动态地把宝贵的显存预算挪给更需要的头。</li>
-<li><strong>本文如何增强它</strong>：本文的算法与这类分配策略是完全正交（Orthogonal）的。AdaKV 负责在全球视角下决定“给这个注意力头分配多少个缓存位置（Budget $b$）”，而本文的算法则在拿到这个预算 $b$ 后，在注意力头内部以最低扰动代价精准挑出这 $b$ 个条目。</li>
+<h3 id="adakv-feng-et-al.-2024-headkv-fu-et-al.-2024">2️⃣ AdaKV (Feng et
+al., 2024) / HeadKV (Fu et al., 2024)</h3>
+<ul>
+<li><strong>核心原理</strong>：这两篇工作聚焦于<strong>注意力头之间的动态预算分配（Head-wise
+Dynamic Budget Allocation）</strong>。传统的淘汰方法（如
+H2O）对每个注意力头都是一视同仁的（例如每个头都强制只留 128
+个词的缓存）。但 AdaKV 和 HeadKV
+发现，有的头属于“钝感头”（注意力很分散），有的头属于“敏感头”（注意力极度聚焦）。它们通过计算每个头的注意力熵（Entropy）或实时统计量，动态地把宝贵的显存预算挪给更需要的头。</li>
+<li><strong>本文如何增强它</strong>：本文的算法与这类分配策略是完全正交（Orthogonal）的。AdaKV
+负责在全球视角下决定“给这个注意力头分配多少个缓存位置（Budget <span class="math inline"><em>b</em></span>）”，而本文的算法则在拿到这个预算
+<span class="math inline"><em>b</em></span>
+后，在注意力头内部以最低扰动代价精准挑出这 <span class="math inline"><em>b</em></span> 个条目。</li>
 </ul>
-<h1 id="Critical-KV-Cache-Entry-Selection（关键-KV-缓存条目选择）"><a href="#Critical-KV-Cache-Entry-Selection（关键-KV-缓存条目选择）" class="headerlink" title="Critical KV Cache Entry Selection（关键 KV 缓存条目选择）"></a>Critical KV Cache Entry Selection（关键 KV 缓存条目选择）</h1><h2 id="KV-缓存淘汰问题"><a href="#KV-缓存淘汰问题" class="headerlink" title="KV 缓存淘汰问题"></a>KV 缓存淘汰问题</h2><p>给定严格的硬件资源限制，KV 缓存的最大容量受到用户定义预算 $b$（其中 $b \ll t$）的约束。KV 缓存淘汰算法的目标是识别一个关键索引子集 $S_t \subset {1, 2, \dots, t}$，且满足 $|S_t| = b$。被淘汰的补集表示为 $S_t^c$。剪枝后的缓存矩阵 $\hat{K}_t, \hat{V}_t \in \mathbb{R}^{b \times d}$ 仅由 $S_t$ 索引的条目组成。因此，近似的注意力权重和受到扰动的层输出公式化为：</p>
-<script type="math/tex; mode=display">\hat{A}_t = \text{Softmax}\left(\frac{q_t \hat{K}_t^T}{\sqrt{d}}\right), \quad \hat{o}_t = \hat{A}_t \hat{V}_t W_O</script><h2 id="最坏情况输出扰动"><a href="#最坏情况输出扰动" class="headerlink" title="最坏情况输出扰动"></a>最坏情况输出扰动</h2><p>假设我们的显存预算（Budget）只允许我们保留一个大小为 $b$ 的子集 $S$（即 $|S| = b$），而剩下的条目集合 $S^c$（大小为 $N - b$）必须被无情淘汰（Evict）。</p>
-<p>如果直接丢弃 $S^c$ 中的条目，那么剪枝后的近似输出 $\hat{O}$ 就变成了：</p>
-<script type="math/tex; mode=display">\hat{O} = \sum_{i \in S} A_i V_i W_O</script><blockquote>
-<p>这个公式的含义是利用残缺的历史 Key 矩阵计算出<strong>重构后的注意力权重</strong>，乘上对应的 <strong>Value 向量</strong>，最后通过<strong>当前头的输出投影矩阵</strong></p>
+<h1 id="critical-kv-cache-entry-selection关键-kv-缓存条目选择">Critical
+KV Cache Entry Selection（关键 KV 缓存条目选择）</h1>
+<h2 id="kv-缓存淘汰问题">KV 缓存淘汰问题</h2>
+<p>给定严格的硬件资源限制，KV 缓存的最大容量受到用户定义预算 <span class="math inline"><em>b</em></span>（其中 <span class="math inline"><em>b</em> ≪ <em>t</em></span>）的约束。KV
+缓存淘汰算法的目标是识别一个关键索引子集 <span class="math inline"><em>S</em><sub><em>t</em></sub> ⊂ {1, 2, …, <em>t</em>}</span>，且满足
+<span class="math inline">|<em>S</em><sub><em>t</em></sub>| = <em>b</em></span>。被淘汰的补集表示为
+<span class="math inline"><em>S</em><sub><em>t</em></sub><sup><em>c</em></sup></span>。剪枝后的缓存矩阵
+<span class="math inline"><em>K̂</em><sub><em>t</em></sub>, <em>V̂</em><sub><em>t</em></sub> ∈ ℝ<sup><em>b</em> × <em>d</em></sup></span>
+仅由 <span class="math inline"><em>S</em><sub><em>t</em></sub></span>
+索引的条目组成。因此，近似的注意力权重和受到扰动的层输出公式化为：</p>
+<p><span class="math display">$$\hat{A}_t =
+\text{Softmax}\left(\frac{q_t \hat{K}_t^T}{\sqrt{d}}\right), \quad
+\hat{o}_t = \hat{A}_t \hat{V}_t W_O$$</span></p>
+<h2 id="最坏情况输出扰动">最坏情况输出扰动</h2>
+<p>假设我们的显存预算（Budget）只允许我们保留一个大小为 <span class="math inline"><em>b</em></span> 的子集 <span class="math inline"><em>S</em></span>（即 <span class="math inline">|<em>S</em>| = <em>b</em></span>），而剩下的条目集合
+<span class="math inline"><em>S</em><sup><em>c</em></sup></span>（大小为
+<span class="math inline"><em>N</em> − <em>b</em></span>）必须被无情淘汰（Evict）。</p>
+<p>如果直接丢弃 <span class="math inline"><em>S</em><sup><em>c</em></sup></span>
+中的条目，那么剪枝后的近似输出 <span class="math inline"><em>Ô</em></span> 就变成了：</p>
+<p><span class="math display"><em>Ô</em> = ∑<sub><em>i</em> ∈ <em>S</em></sub><em>A</em><sub><em>i</em></sub><em>V</em><sub><em>i</em></sub><em>W</em><sub><em>O</em></sub></span></p>
+<blockquote>
+<p>这个公式的含义是利用残缺的历史 Key
+矩阵计算出<strong>重构后的注意力权重</strong>，乘上对应的 <strong>Value
+向量</strong>，最后通过<strong>当前头的输出投影矩阵</strong></p>
 <p>这样计算累加后的结果，就是多头注意力要吐出的一维向量</p>
 </blockquote>
-<p>论文的核心目标是：<strong>衡量剪枝前后的输出绝对误差，即输出扰动（Output Perturbation） $\Delta O$</strong>。作者在这里严谨地引入了 $L_1$ 范数（Norm）来定量刻画：</p>
-<script type="math/tex; mode=display">\Delta O = \| O - \hat{O} \|_1 = \left\| \sum_{i=1}^N A_i V_i W_O - \sum_{i \in S} A_i V_i W_O \right\|_1 = \left\| \sum_{i \in S^c} A_i V_i W_O \right\|_1</script><p>这是一个多元向量求和的范数。由于我们在推理阶段根本无法预测下一个未知的 Query 会让这些向量如何交织，因此为了提供最稳固的理论保证，必须去推导它的<strong>最坏情况上界（Worst-case Upper Bound）</strong>。</p>
-<p>利用矩阵与向量分析中最经典的<strong>三角不等式（Triangle Inequality）</strong>，作者完成了惊艳的去耦合（Decoupling）推导：</p>
-<script type="math/tex; mode=display">\Delta O = \left\| \sum_{i \in S^c} A_i V_i W_O \right\|_1 \le \sum_{i \in S^c} \| A_i V_i W_O \|_1</script><p>因为自注意力权重 $A_i$ 经过 Softmax 标量化后天然满足 $A_i \ge 0$，所以标量 $A_i$ 可以直接从范数内部提出来。于是公式完美收敛为：</p>
-<script type="math/tex; mode=display">\Delta O \le \sum_{i \in S^c} A_i \| V_i W_O \|_1</script><h2 id="关键度得分（The-Criticality-Score）"><a href="#关键度得分（The-Criticality-Score）" class="headerlink" title="关键度得分（The Criticality Score）"></a>关键度得分（The Criticality Score）</h2><p>上面的不等式右侧，就是作者千方百计寻找的“误差天花板”（Perturbation Upper Bound）。</p>
-<p>为了让大模型在剪枝后不“变傻”，我们的终极优化目标是让真正的扰动 $\Delta O$ 尽可能小。既然直接控制 $\Delta O$ 极难，那最严谨、最鲁棒的工程解法就是<strong>直接把这个上界死死压住</strong>。</p>
-<p>为了让留下的子集 $S$ 使得未留下的子集 $S^c$ 的误差之和最小：</p>
-<script type="math/tex; mode=display">\min_{S} \sum_{i \in S^c} A_i \| V_i W_O \|_1 \iff \max_{S} \sum_{i \in S} A_i \| V_i W_O \|_1</script><p>这级联导出了这篇论文最核心的算法判定准则。每一个 KV 缓存条目 $i$ 的<strong>关键度得分（Criticality Score） $\mathcal{M}_i$</strong> 被严谨地定义为：</p>
-<script type="math/tex; mode=display">\mathcal{M}_i = A_i \cdot \| V_i W_O \|_1</script><h3 id="与传统方法对比"><a href="#与传统方法对比" class="headerlink" title="与传统方法对比"></a>与传统方法对比</h3><p>我们可以通过下面这个简单的表格，直观对比传统方法与本文方法在筛选机制上的根本演进：</p>
-<div class="table-container">
+<p>论文的核心目标是：<strong>衡量剪枝前后的输出绝对误差，即输出扰动（Output
+Perturbation） <span class="math inline"><em>Δ</em><em>O</em></span></strong>。作者在这里严谨地引入了
+<span class="math inline"><em>L</em><sub>1</sub></span>
+范数（Norm）来定量刻画：</p>
+<p><span class="math display">$$\Delta O = \| O - \hat{O} \|_1 = \left\|
+\sum_{i=1}^N A_i V_i W_O - \sum_{i \in S} A_i V_i W_O \right\|_1 =
+\left\| \sum_{i \in S^c} A_i V_i W_O \right\|_1$$</span></p>
+<p>这是一个多元向量求和的范数。由于我们在推理阶段根本无法预测下一个未知的
+Query
+会让这些向量如何交织，因此为了提供最稳固的理论保证，必须去推导它的<strong>最坏情况上界（Worst-case
+Upper Bound）</strong>。</p>
+<p>利用矩阵与向量分析中最经典的<strong>三角不等式（Triangle
+Inequality）</strong>，作者完成了惊艳的去耦合（Decoupling）推导：</p>
+<p><span class="math display"><em>Δ</em><em>O</em> = ∥∑<sub><em>i</em> ∈ <em>S</em><sup><em>c</em></sup></sub><em>A</em><sub><em>i</em></sub><em>V</em><sub><em>i</em></sub><em>W</em><sub><em>O</em></sub>∥<sub>1</sub> ≤ ∑<sub><em>i</em> ∈ <em>S</em><sup><em>c</em></sup></sub>∥<em>A</em><sub><em>i</em></sub><em>V</em><sub><em>i</em></sub><em>W</em><sub><em>O</em></sub>∥<sub>1</sub></span></p>
+<p>因为自注意力权重 <span class="math inline"><em>A</em><sub><em>i</em></sub></span> 经过 Softmax
+标量化后天然满足 <span class="math inline"><em>A</em><sub><em>i</em></sub> ≥ 0</span>，所以标量
+<span class="math inline"><em>A</em><sub><em>i</em></sub></span>
+可以直接从范数内部提出来。于是公式完美收敛为：</p>
+<p><span class="math display"><em>Δ</em><em>O</em> ≤ ∑<sub><em>i</em> ∈ <em>S</em><sup><em>c</em></sup></sub><em>A</em><sub><em>i</em></sub>∥<em>V</em><sub><em>i</em></sub><em>W</em><sub><em>O</em></sub>∥<sub>1</sub></span></p>
+<h2 id="关键度得分the-criticality-score">关键度得分（The Criticality
+Score）</h2>
+<p>上面的不等式右侧，就是作者千方百计寻找的“误差天花板”（Perturbation
+Upper Bound）。</p>
+<p>为了让大模型在剪枝后不“变傻”，我们的终极优化目标是让真正的扰动 <span class="math inline"><em>Δ</em><em>O</em></span> 尽可能小。既然直接控制
+<span class="math inline"><em>Δ</em><em>O</em></span>
+极难，那最严谨、最鲁棒的工程解法就是<strong>直接把这个上界死死压住</strong>。</p>
+<p>为了让留下的子集 <span class="math inline"><em>S</em></span>
+使得未留下的子集 <span class="math inline"><em>S</em><sup><em>c</em></sup></span>
+的误差之和最小：</p>
+<p><span class="math display">min<sub><em>S</em></sub>∑<sub><em>i</em> ∈ <em>S</em><sup><em>c</em></sup></sub><em>A</em><sub><em>i</em></sub>∥<em>V</em><sub><em>i</em></sub><em>W</em><sub><em>O</em></sub>∥<sub>1</sub> ⇔ max<sub><em>S</em></sub>∑<sub><em>i</em> ∈ <em>S</em></sub><em>A</em><sub><em>i</em></sub>∥<em>V</em><sub><em>i</em></sub><em>W</em><sub><em>O</em></sub>∥<sub>1</sub></span></p>
+<p>这级联导出了这篇论文最核心的算法判定准则。每一个 KV 缓存条目 <span class="math inline"><em>i</em></span> 的<strong>关键度得分（Criticality
+Score） <span class="math inline">ℳ<sub><em>i</em></sub></span></strong>
+被严谨地定义为：</p>
+<p><span class="math display">ℳ<sub><em>i</em></sub> = <em>A</em><sub><em>i</em></sub>⋅∥<em>V</em><sub><em>i</em></sub><em>W</em><sub><em>O</em></sub>∥<sub>1</sub></span></p>
+<h3 id="与传统方法对比">与传统方法对比</h3>
+<p>我们可以通过下面这个简单的表格，直观对比传统方法与本文方法在筛选机制上的根本演进：</p>
 <table>
+<colgroup>
+<col style="width: 11%">
+<col style="width: 36%">
+<col style="width: 51%">
+</colgroup>
 <thead>
 <tr>
 <th><strong>维度</strong></th>
@@ -358,19 +497,15 @@
 <tbody>
 <tr>
 <td><strong>评估指标</strong></td>
-<td>$\mathcal{M}_i^{\text{legacy}} = A_i$</td>
-<td>$\mathcal{M}_i^{\text{ours}} = A_i \cdot \</td>
-<td>V_i W_O \</td>
-<td>$</td>
+<td><span class="math inline">ℳ<sub><em>i</em></sub><sup>legacy</sup> = <em>A</em><sub><em>i</em></sub></span></td>
+<td><span class="math inline">ℳ<sub><em>i</em></sub><sup>ours</sup> = <em>A</em><sub><em>i</em></sub>⋅∥<em>V</em><sub><em>i</em></sub><em>W</em><sub><em>O</em></sub>∥</span></td>
 </tr>
 <tr>
 <td><strong>数学假设</strong></td>
-<td>隐式假设 $\</td>
-<td>V_i W_O \</td>
-<td>$ 为常数常数噪声</td>
-<td>承认 $\</td>
-<td>V_i W_O \</td>
-<td>$ 具有高方差和支配级影响力</td>
+<td>隐式假设 <span class="math inline">∥<em>V</em><sub><em>i</em></sub><em>W</em><sub><em>O</em></sub>∥</span>
+为常数常数噪声</td>
+<td>承认 <span class="math inline">∥<em>V</em><sub><em>i</em></sub><em>W</em><sub><em>O</em></sub>∥</span>
+具有高方差和支配级影响力</td>
 </tr>
 <tr>
 <td><strong>物理意义</strong></td>
@@ -379,48 +514,106 @@
 </tr>
 </tbody>
 </table>
-</div>
-<h1 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h1><h2 id="Setup"><a href="#Setup" class="headerlink" title="Setup"></a>Setup</h2><p>基座模型：Llama-3.1、Mistral 和 Qwen-2.5</p>
-<p>评估基准：采用了来自两个严格基准的 29 个数据集：<strong>Ruler</strong> 和 <strong>LongBench</strong></p>
+<h1 id="实验">实验</h1>
+<h2 id="setup">Setup</h2>
+<p>基座模型：Llama-3.1、Mistral 和 Qwen-2.5</p>
+<p>评估基准：采用了来自两个严格基准的 29
+个数据集：<strong>Ruler</strong> 和 <strong>LongBench</strong></p>
 <blockquote>
-<p>Ruler 是目前公认对长文本剪枝极其严苛的基准（比传统的 LongBench 更难欺骗），它包含了大量长距离依赖和噪声干扰任务。</p>
+<p>Ruler 是目前公认对长文本剪枝极其严苛的基准（比传统的 LongBench
+更难欺骗），它包含了大量长距离依赖和噪声干扰任务。</p>
 </blockquote>
-<p>集成基线：本文的算法是作为<strong>增强插件（Plugin）</strong>，直接替换掉了 <strong>SnapKV</strong>、<strong>AdaKV</strong> 和 <strong>HeadKV</strong> 原本纯看 Attention 权重的 Top-K 筛选核心代码，并保持它们其余的窗格和跨头预算分配逻辑完全不动</p>
-<h2 id="Ruler-Benchmark"><a href="#Ruler-Benchmark" class="headerlink" title="Ruler Benchmark"></a>Ruler Benchmark</h2><p><img src="/2026/06/15/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-CriticalKV/image-20260615235424989.png" alt="image-20260615235424989"></p>
-<p>RULER 基准通过提升标准检索任务的难度来评估大语言模型的有效上下文长度。它包含四大核心任务类别：单值检索、多值检索、变量追踪和通用聚合。</p>
-<p><strong>固定物理缓存预算 $b$，然后让输入的总文本长度 $N$ 从 4K 一路疯狂拉长到 128K</strong>。</p>
-<p>在 Llama-3.1-8B 的 SnapKV 框架下，当序列长度超过 32K 时，原始的纯注意力权重策略经历了严重的性能下滑。相比之下，通过集成我们的准则 $\mathcal{M}_i$，增强后的模型在高达 64K 甚至 128K 的长度下依然维持了高准确率，将淘汰缓存后的有效上下文长度有效地扩展了 2 到 4 倍。</p>
+<p>集成基线：本文的算法是作为<strong>增强插件（Plugin）</strong>，直接替换掉了
+<strong>SnapKV</strong>、<strong>AdaKV</strong> 和
+<strong>HeadKV</strong> 原本纯看 Attention 权重的 Top-K
+筛选核心代码，并保持它们其余的窗格和跨头预算分配逻辑完全不动</p>
+<h2 id="ruler-benchmark">Ruler Benchmark</h2>
+<figure>
+<img src="/2026/06/15/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-CriticalKV/image-20260615235424989.png" alt="image-20260615235424989">
+<figcaption aria-hidden="true">image-20260615235424989</figcaption>
+</figure>
+<p>RULER
+基准通过提升标准检索任务的难度来评估大语言模型的有效上下文长度。它包含四大核心任务类别：单值检索、多值检索、变量追踪和通用聚合。</p>
+<p><strong>固定物理缓存预算 <span class="math inline"><em>b</em></span>，然后让输入的总文本长度 <span class="math inline"><em>N</em></span> 从 4K 一路疯狂拉长到
+128K</strong>。</p>
+<p>在 Llama-3.1-8B 的 SnapKV 框架下，当序列长度超过 32K
+时，原始的纯注意力权重策略经历了严重的性能下滑。相比之下，通过集成我们的准则
+<span class="math inline">ℳ<sub><em>i</em></sub></span>，增强后的模型在高达
+64K 甚至 128K
+的长度下依然维持了高准确率，将淘汰缓存后的有效上下文长度有效地扩展了 2
+到 4 倍。</p>
 <blockquote>
-<p><strong>CWE</strong> (Common Words Extraction) / <strong>FWE</strong> (Frequent Words Extraction)：<strong>常见词/高频词提取</strong>。测试模型能否在海量长文本中准确统计和提取出现频率最高的词汇，考察全局信息聚合能力。</p>
+<p><strong>CWE</strong> (Common Words Extraction) / <strong>FWE</strong>
+(Frequent Words
+Extraction)：<strong>常见词/高频词提取</strong>。测试模型能否在海量长文本中准确统计和提取出现频率最高的词汇，考察全局信息聚合能力。</p>
 <p><strong>NIAH (Needle In A Haystack )</strong>：</p>
 <ul>
 <li>这是目前测试长文本检索最核心的指标，要求模型从几万字的文档中找出隐藏的一句话。</li>
-<li><strong>Multikey 1/2/3</strong>：多键检索（文档里藏了多组不同的钥匙和宝箱，看模型能不能全部对应找出来）。</li>
+<li><strong>Multikey
+1/2/3</strong>：多键检索（文档里藏了多组不同的钥匙和宝箱，看模型能不能全部对应找出来）。</li>
 <li><strong>Multiquery</strong>：多查询检索（一次性问模型多个捞针问题）。</li>
 <li><strong>Multivalue</strong>：多值检索（一个键对应了多个不同的值，看模型能不能找全）。</li>
-<li><strong>Single 1/2/3</strong>：单针检索（最基础的捞针，放在文章的不同位置）。</li>
+<li><strong>Single
+1/2/3</strong>：单针检索（最基础的捞针，放在文章的不同位置）。</li>
 </ul>
 <p><strong>QA1 / QA2</strong>：</p>
 <ul>
-<li><strong>长文本问答（Quality Assurance）</strong>。通常基于 HotpotQA 等数据集改装，需要模型结合长文本中的多处碎片信息进行深度推理才能回答。</li>
+<li><strong>长文本问答（Quality Assurance）</strong>。通常基于 HotpotQA
+等数据集改装，需要模型结合长文本中的多处碎片信息进行深度推理才能回答。</li>
 </ul>
 <p><strong>VT (Variable Tracking)</strong>：</p>
 <ul>
-<li><strong>变量跟踪</strong>。模拟代码运行，在极长的上下文中追踪多个变量（如 <code>a=1</code>, <code>b=a+2</code>, <code>c=b...</code>）的状态改变，测试模型的精确长程依赖能力。</li>
+<li><strong>变量跟踪</strong>。模拟代码运行，在极长的上下文中追踪多个变量（如
+<code>a=1</code>, <code>b=a+2</code>,
+<code>c=b...</code>）的状态改变，测试模型的精确长程依赖能力。</li>
 </ul>
 </blockquote>
-<p><img src="/2026/06/15/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-CriticalKV/image-20260616084402352.png" alt="image-20260616084402352"></p>
+<figure>
+<img src="/2026/06/15/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-CriticalKV/image-20260616084402352.png" alt="image-20260616084402352">
+<figcaption aria-hidden="true">image-20260616084402352</figcaption>
+</figure>
 <blockquote>
-<p> Cache Size（缓存大小）：代表了 KV 缓存的保留比例。</p>
-<p><strong>具体子任务：</strong> 包括 <code>cwe</code>（单词提取）、<code>fwe</code>、<code>niah</code>（大海捞针测试的各种变体，如单针 single、多键 multikey、多查询 multiquery、多值 multivalue）、<code>qa</code>（长文本问答）以及 <code>vt</code>（变量追踪） 。</p>
+<p>Cache Size（缓存大小）：代表了 KV 缓存的保留比例。</p>
+<p><strong>具体子任务：</strong> 包括
+<code>cwe</code>（单词提取）、<code>fwe</code>、<code>niah</code>（大海捞针测试的各种变体，如单针
+single、多键 multikey、多查询 multiquery、多值
+multivalue）、<code>qa</code>（长文本问答）以及
+<code>vt</code>（变量追踪） 。</p>
 </blockquote>
-<p>结论一：随着横轴的 Cache Size 从 100% 缩减到 40% 甚至 20%，所有的虚线（SnapKV, AdaKV, HeadKV 基础版本）都呈现出严重的<strong>急速下滑趋势</strong> 。这说明在极高压缩率下，仅仅依靠“注意力权重（Attention Weights）”来决定删除哪些缓存，会错误地删掉很多关键信息，导致模型在长文本任务中“失忆” 。</p>
-<h2 id="LongBench-Evaluation"><a href="#LongBench-Evaluation" class="headerlink" title="LongBench Evaluation"></a>LongBench Evaluation</h2><p><img src="/2026/06/15/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-CriticalKV/image-20260616085249629.png" alt="image-20260616085249629"></p>
-<h1 id="知识补全"><a href="#知识补全" class="headerlink" title="知识补全"></a>知识补全</h1><h2 id="KV-缓存条目（entry）"><a href="#KV-缓存条目（entry）" class="headerlink" title="KV 缓存条目（entry）"></a>KV 缓存<strong>条目（entry）</strong></h2><p>当模型处理或生成一个词（Token）时，它会为这个词计算出对应的 Key 向量（键状态）和 Value 向量（值状态） 。这两个向量作为一个整体，被存入显存中，这就构成了 KV Cache 中的一个 <strong>Entry（条目/记录）</strong> 。</p>
-<h2 id="W-O-如何理解"><a href="#W-O-如何理解" class="headerlink" title="$W_O$如何理解"></a>$W_O$如何理解</h2><p>多头注意力机制（Multi-Head Attention）中有一个全局的输出投影矩阵，写作 $W_O^{\text{global}}$，用于让所有头不同维度上的特征进行加权组合。而这篇论文里写在每个头公式里的 $W_O$，正是<strong>全局权重矩阵中属于当前头的那一个“切片”（Block/Slice）</strong>。</p>
-<p>为了让多头的信息彻底混合，并且映射回模型的残差连接空间，Transformer 在多头注意力层的最后，放置了一个全连接线性层。这个线性层的权重矩阵，就是 <strong>$W_O$</strong>（维度是 $d<em>{\text{model}} \times d</em>{\text{model}}$）。</p>
-<h3 id="什么时候进行kvcache的淘汰机制"><a href="#什么时候进行kvcache的淘汰机制" class="headerlink" title="什么时候进行kvcache的淘汰机制"></a>什么时候进行kvcache的淘汰机制</h3><p><strong>触发条件</strong>：当前缓存里的 Token 数量已经达到了规定的硬件上限（例如 $2048$ 个），此时第 $2049$ 个新生成的 Token 带着它刚算出来的 $K, V$ 向量准备挤进显存。</p>
-<p>在给kvcache显存满的时候，开始进行token的末位淘汰，这个论文就是计算每个每个关键度得分 $\mathcal{M}_i = A_i \cdot |V_i W_O|_1$，找出得分最低的那 1 个 Token，直接从显存里扔掉</p>
+<p>结论一：随着横轴的 Cache Size 从 100% 缩减到 40% 甚至
+20%，所有的虚线（SnapKV, AdaKV, HeadKV
+基础版本）都呈现出严重的<strong>急速下滑趋势</strong>
+。这说明在极高压缩率下，仅仅依靠“注意力权重（Attention
+Weights）”来决定删除哪些缓存，会错误地删掉很多关键信息，导致模型在长文本任务中“失忆”
+。</p>
+<h2 id="longbench-evaluation">LongBench Evaluation</h2>
+<figure>
+<img src="/2026/06/15/%E5%AD%A6%E4%B9%A0/%E7%A7%91%E7%A0%94/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB-CriticalKV/image-20260616085249629.png" alt="image-20260616085249629">
+<figcaption aria-hidden="true">image-20260616085249629</figcaption>
+</figure>
+<h1 id="知识补全">知识补全</h1>
+<h2 id="kv-缓存条目entry">KV 缓存<strong>条目（entry）</strong></h2>
+<p>当模型处理或生成一个词（Token）时，它会为这个词计算出对应的 Key
+向量（键状态）和 Value 向量（值状态）
+。这两个向量作为一个整体，被存入显存中，这就构成了 KV Cache 中的一个
+<strong>Entry（条目/记录）</strong> 。</p>
+<h2 id="w_o如何理解"><span class="math inline"><em>W</em><sub><em>O</em></sub></span>如何理解</h2>
+<p>多头注意力机制（Multi-Head
+Attention）中有一个全局的输出投影矩阵，写作 <span class="math inline"><em>W</em><sub><em>O</em></sub><sup>global</sup></span>，用于让所有头不同维度上的特征进行加权组合。而这篇论文里写在每个头公式里的
+<span class="math inline"><em>W</em><sub><em>O</em></sub></span>，正是<strong>全局权重矩阵中属于当前头的那一个“切片”（Block/Slice）</strong>。</p>
+<p>为了让多头的信息彻底混合，并且映射回模型的残差连接空间，Transformer
+在多头注意力层的最后，放置了一个全连接线性层。这个线性层的权重矩阵，就是
+<strong><span class="math inline"><em>W</em><sub><em>O</em></sub></span></strong>（维度是
+<span class="math inline"><em>d</em><sub>model</sub> × <em>d</em><sub>model</sub></span>）。</p>
+<h3 id="什么时候进行kvcache的淘汰机制">什么时候进行kvcache的淘汰机制</h3>
+<p><strong>触发条件</strong>：当前缓存里的 Token
+数量已经达到了规定的硬件上限（例如 <span class="math inline">2048</span>
+个），此时第 <span class="math inline">2049</span> 个新生成的 Token
+带着它刚算出来的 <span class="math inline"><em>K</em>, <em>V</em></span>
+向量准备挤进显存。</p>
+<p>在给kvcache显存满的时候，开始进行token的末位淘汰，这个论文就是计算每个每个关键度得分
+<span class="math inline">ℳ<sub><em>i</em></sub> = <em>A</em><sub><em>i</em></sub>⋅∥<em>V</em><sub><em>i</em></sub><em>W</em><sub><em>O</em></sub>∥<sub>1</sub></span>，找出得分最低的那
+1 个 Token，直接从显存里扔掉</p>
 
     </div>
 
@@ -456,8 +649,8 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E8%BF%90%E7%BB%B4%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%99%A8/LLMWeb%E5%BA%94%E7%94%A8%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/" rel="prev" title="LLMWeb应用漏洞挖掘">
-                  <i class="fa fa-angle-left"></i> LLMWeb应用漏洞挖掘
+                <a href="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E8%BF%90%E7%BB%B4%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%99%A8/%E6%9C%8D%E5%8A%A1%E5%99%A8/" rel="prev" title="阿里云服务器">
+                  <i class="fa fa-angle-left"></i> 阿里云服务器
                 </a>
             </div>
             <div class="post-nav-item">

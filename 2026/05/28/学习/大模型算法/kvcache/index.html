@@ -22,12 +22,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="简单回顾attention流程12345678910111213【输入向量 X】(来自上一层或Embedding)       │       ├─── 步骤①：解耦分裂 ───&gt; 动态乘以 Wq, Wk, Wv 权重，生成 Q, K, V 矩阵       │                          (此时 V 矩阵诞生了，和 FFN 还毫无关系)       │       ├">
+    <meta name="description" content="简单回顾attention流程 12345678910111213【输入向量 X】(来自上一层或Embedding)       │       ├─── 步骤①：解耦分裂 ───&gt; 动态乘以 Wq, Wk, Wv 权重，生成 Q, K, V 矩阵       │                          (此时 V 矩阵诞生了，和 FFN 还毫无关系)       │">
 <meta property="og:type" content="article">
 <meta property="og:title" content="kvcache">
 <meta property="og:url" content="http://example.com/2026/05/28/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/kvcache/index.html">
 <meta property="og:site_name" content="Zhang XiJun">
-<meta property="og:description" content="简单回顾attention流程12345678910111213【输入向量 X】(来自上一层或Embedding)       │       ├─── 步骤①：解耦分裂 ───&gt; 动态乘以 Wq, Wk, Wv 权重，生成 Q, K, V 矩阵       │                          (此时 V 矩阵诞生了，和 FFN 还毫无关系)       │       ├">
+<meta property="og:description" content="简单回顾attention流程 12345678910111213【输入向量 X】(来自上一层或Embedding)       │       ├─── 步骤①：解耦分裂 ───&gt; 动态乘以 Wq, Wk, Wv 权重，生成 Q, K, V 矩阵       │                          (此时 V 矩阵诞生了，和 FFN 还毫无关系)       │">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-05-27T16:00:00.000Z">
 <meta property="article:modified_time" content="2026-05-28T05:15:41.228Z">
@@ -144,7 +144,9 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E5%9B%9E%E9%A1%BEattention%E6%B5%81%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">简单回顾attention流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#qkv%E7%9F%A9%E9%98%B5%E7%9A%84%E5%90%AB%E4%B9%89%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84"><span class="nav-number">2.</span> <span class="nav-text">qkv矩阵的含义是怎样的</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Q-Query-%E6%9F%A5%E8%AF%A2"><span class="nav-number">2.1.</span> <span class="nav-text">1. Q (Query - 查询)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-K-Key-%E9%94%AE"><span class="nav-number">2.2.</span> <span class="nav-text">2. K (Key - 键)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-V-Value-%E5%80%BC"><span class="nav-number">2.3.</span> <span class="nav-text">3. V (Value - 值)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kvcache%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">3.</span> <span class="nav-text">kvcache是什么</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%82%A3%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%AD%98q%E7%9F%A9%E9%98%B5%E5%91%A2"><span class="nav-number">4.</span> <span class="nav-text">那为什么不存q矩阵呢</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E4%B8%80%EF%BC%9APrefill%EF%BC%88%E9%A2%84%E5%A1%AB%E5%85%85%E9%98%B6%E6%AE%B5-%E2%80%94%E2%80%94-%E8%AF%BB%E6%87%82%E4%BD%A0%E7%9A%84-Prompt%EF%BC%89"><span class="nav-number">4.1.</span> <span class="nav-text">阶段一：Prefill（预填充阶段 —— 读懂你的 Prompt）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E4%BA%8C%EF%BC%9ADecoding%EF%BC%88%E8%A7%A3%E7%A0%81%E9%98%B6%E6%AE%B5-%E2%80%94%E2%80%94-%E9%80%90%E5%AD%97%E7%94%9F%E6%88%90%EF%BC%89"><span class="nav-number">4.2.</span> <span class="nav-text">阶段二：Decoding（解码阶段 —— 逐字生成）</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E5%9B%9E%E9%A1%BEattention%E6%B5%81%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">简单回顾attention流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#qkv%E7%9F%A9%E9%98%B5%E7%9A%84%E5%90%AB%E4%B9%89%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84"><span class="nav-number">2.</span> <span class="nav-text">qkv矩阵的含义是怎样的</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#q-query---%E6%9F%A5%E8%AF%A2"><span class="nav-number">2.1.</span> <span class="nav-text">1. Q (Query - 查询)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k-key---%E9%94%AE"><span class="nav-number">2.2.</span> <span class="nav-text">2. K (Key - 键)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#v-value---%E5%80%BC"><span class="nav-number">2.3.</span> <span class="nav-text">3. V (Value - 值)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kvcache%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">3.</span> <span class="nav-text">kvcache是什么</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%82%A3%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%AD%98q%E7%9F%A9%E9%98%B5%E5%91%A2"><span class="nav-number">4.</span> <span class="nav-text">那为什么不存q矩阵呢</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E4%B8%80prefill%E9%A2%84%E5%A1%AB%E5%85%85%E9%98%B6%E6%AE%B5-%E8%AF%BB%E6%87%82%E4%BD%A0%E7%9A%84-prompt"><span class="nav-number">4.1.</span> <span class="nav-text">阶段一：Prefill（预填充阶段
+—— 读懂你的 Prompt）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5%E4%BA%8Cdecoding%E8%A7%A3%E7%A0%81%E9%98%B6%E6%AE%B5-%E9%80%90%E5%AD%97%E7%94%9F%E6%88%90"><span class="nav-number">4.2.</span> <span class="nav-text">阶段二：Decoding（解码阶段 ——
+逐字生成）</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -159,18 +161,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">199</span>
+          <span class="site-state-item-count">205</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">69</span>
+        <span class="site-state-item-count">70</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">71</span>
+        <span class="site-state-item-count">72</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -278,48 +280,77 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="简单回顾attention流程"><a href="#简单回顾attention流程" class="headerlink" title="简单回顾attention流程"></a>简单回顾attention流程</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">【输入向量 X】(来自上一层或Embedding)</span><br><span class="line">       │</span><br><span class="line">       ├─── 步骤①：解耦分裂 ───&gt; 动态乘以 Wq, Wk, Wv 权重，生成 Q, K, V 矩阵</span><br><span class="line">       │                          (此时 V 矩阵诞生了，和 FFN 还毫无关系)</span><br><span class="line">       │</span><br><span class="line">       ├─── 步骤②：注意力对齐 ─&gt; 计算 Q 乘以 K 的转置 (Q·K^T)，得到亲疏得分矩阵</span><br><span class="line">       │                          </span><br><span class="line">       ├─── 步骤③：归一化 ─────&gt; 经过 Softmax 激活，把得分变成加起来等于 1 的权重</span><br><span class="line">       │                          </span><br><span class="line">       ├─── 步骤④：财富提取 ─────&gt; 用 Softmax 的权重去乘以 V 矩阵 (Softmax·V)</span><br><span class="line">       │                          </span><br><span class="line">       ▼</span><br><span class="line">【Attention 层的最终输出】 ───&gt; 这时，一次完整的 Attention 计算宣告结束！</span><br></pre></td></tr></table></figure>
-<h1 id="qkv矩阵的含义是怎样的"><a href="#qkv矩阵的含义是怎样的" class="headerlink" title="qkv矩阵的含义是怎样的"></a>qkv矩阵的含义是怎样的</h1><p>我觉得可以从他们本身的名字入手</p>
-<h2 id="1-Q-Query-查询"><a href="#1-Q-Query-查询" class="headerlink" title="1. Q (Query - 查询)"></a>1. Q (Query - 查询)</h2><ul>
+    <div class="post-body" itemprop="articleBody"><h1 id="简单回顾attention流程">简单回顾attention流程</h1>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">【输入向量 X】(来自上一层或Embedding)</span><br><span class="line">       │</span><br><span class="line">       ├─── 步骤①：解耦分裂 ───&gt; 动态乘以 Wq, Wk, Wv 权重，生成 Q, K, V 矩阵</span><br><span class="line">       │                          (此时 V 矩阵诞生了，和 FFN 还毫无关系)</span><br><span class="line">       │</span><br><span class="line">       ├─── 步骤②：注意力对齐 ─&gt; 计算 Q 乘以 K 的转置 (Q·K^T)，得到亲疏得分矩阵</span><br><span class="line">       │                          </span><br><span class="line">       ├─── 步骤③：归一化 ─────&gt; 经过 Softmax 激活，把得分变成加起来等于 1 的权重</span><br><span class="line">       │                          </span><br><span class="line">       ├─── 步骤④：财富提取 ─────&gt; 用 Softmax 的权重去乘以 V 矩阵 (Softmax·V)</span><br><span class="line">       │                          </span><br><span class="line">       ▼</span><br><span class="line">【Attention 层的最终输出】 ───&gt; 这时，一次完整的 Attention 计算宣告结束！</span><br></pre></td></tr></table></figure>
+<h1 id="qkv矩阵的含义是怎样的">qkv矩阵的含义是怎样的</h1>
+<p>我觉得可以从他们本身的名字入手</p>
+<h2 id="q-query---查询">1. Q (Query - 查询)</h2>
+<ul>
 <li><strong>含义</strong>：当前词“试图去关注（或询问）其他词”的向量表示。</li>
-<li><strong>角色</strong>：它是主动方。在 Self-Attention 中，每个词都会轮流作为 $Q$，去询问句子里的所有词（包括它自己）：“你们谁和我有关系？关系有多大？”</li>
+<li><strong>角色</strong>：它是主动方。在 Self-Attention
+中，每个词都会轮流作为 <span class="math inline"><em>Q</em></span>，去询问句子里的所有词（包括它自己）：“你们谁和我有关系？关系有多大？”</li>
 </ul>
-<h2 id="2-K-Key-键"><a href="#2-K-Key-键" class="headerlink" title="2. K (Key - 键)"></a>2. K (Key - 键)</h2><ul>
+<h2 id="k-key---键">2. K (Key - 键)</h2>
+<ul>
 <li><strong>含义</strong>：当前词“被其他词关注时的特征（或身份标签）”的向量表示。</li>
-<li><strong>角色</strong>：它是被动方。它存在的意义就是和 $Q$ 做点积（Dot Product），来计算两个词之间的相关性或相似度。</li>
+<li><strong>角色</strong>：它是被动方。它存在的意义就是和 <span class="math inline"><em>Q</em></span> 做点积（Dot
+Product），来计算两个词之间的相关性或相似度。</li>
 </ul>
-<h2 id="3-V-Value-值"><a href="#3-V-Value-值" class="headerlink" title="3. V (Value - 值)"></a>3. V (Value - 值)</h2><ul>
+<h2 id="v-value---值">3. V (Value - 值)</h2>
+<ul>
 <li><strong>含义</strong>：当前词“本身所包含的、最核心的内容信息”。</li>
-<li><strong>角色</strong>：一旦 $Q$ 和 $K$ 算出了注意力权重（即谁和谁更相关），这些权重就会乘到对应的 $V$ 上。最终把这些加权后的 $V$ 累加起来，就得到了该词融合了上下文信息后的新表示。</li>
+<li><strong>角色</strong>：一旦 <span class="math inline"><em>Q</em></span> 和 <span class="math inline"><em>K</em></span>
+算出了注意力权重（即谁和谁更相关），这些权重就会乘到对应的 <span class="math inline"><em>V</em></span> 上。最终把这些加权后的 <span class="math inline"><em>V</em></span>
+累加起来，就得到了该词融合了上下文信息后的新表示。</li>
 </ul>
 <p>我的理解：</p>
 <p>q可以理解成新词关注历史字符的向量，也就是query，k则是历史字符被关注时的向量，两者相乘可以获得关联度</p>
-<p>v可以代表每一个词在进入这一层时，通过与权重矩阵相乘，提取出了它最核心的、未经污染的<strong>语义特征</strong>（比如“苹果”包含了：水果、甜的、红的、科技公司、iPhone 等属性）。这个 <strong>V</strong> 就是这个词的“属性本体”。</p>
-<h1 id="kvcache是什么"><a href="#kvcache是什么" class="headerlink" title="kvcache是什么"></a>kvcache是什么</h1><p>在多次对话的过程中，前面的历史字完全没变，它们算出来的 $K$（身份标签）和 $V$（词本身的属性）也就是固定不变的。那<strong>算过一次之后，直接把它们存在内存（显存）里，后面就可以直接拿来用</strong>，因此降低了计算量，提高了响应的速度</p>
-<h1 id="那为什么不存q矩阵呢"><a href="#那为什么不存q矩阵呢" class="headerlink" title="那为什么不存q矩阵呢"></a>那为什么不存q矩阵呢</h1><p>这个问题的关键还是要理解qkv矩阵的含义和kvcache的流程</p>
+<p>v可以代表每一个词在进入这一层时，通过与权重矩阵相乘，提取出了它最核心的、未经污染的<strong>语义特征</strong>（比如“苹果”包含了：水果、甜的、红的、科技公司、iPhone
+等属性）。这个 <strong>V</strong> 就是这个词的“属性本体”。</p>
+<h1 id="kvcache是什么">kvcache是什么</h1>
+<p>在多次对话的过程中，前面的历史字完全没变，它们算出来的 <span class="math inline"><em>K</em></span>（身份标签）和 <span class="math inline"><em>V</em></span>（词本身的属性）也就是固定不变的。那<strong>算过一次之后，直接把它们存在内存（显存）里，后面就可以直接拿来用</strong>，因此降低了计算量，提高了响应的速度</p>
+<h1 id="那为什么不存q矩阵呢">那为什么不存q矩阵呢</h1>
+<p>这个问题的关键还是要理解qkv矩阵的含义和kvcache的流程</p>
 <p>q矩阵代表着<strong>最新字符</strong>对于历史字符关注的向量，而新字符是不对吐出来实时变化的，所以存储q矩阵没有意义</p>
 <p>而这里要区分一下大模型生成的两个阶段：</p>
-<h2 id="阶段一：Prefill（预填充阶段-——-读懂你的-Prompt）"><a href="#阶段一：Prefill（预填充阶段-——-读懂你的-Prompt）" class="headerlink" title="阶段一：Prefill（预填充阶段 —— 读懂你的 Prompt）"></a>阶段一：Prefill（预填充阶段 —— 读懂你的 Prompt）</h2><p>当你把一句话（比如“请问什么是Attention”）发给模型时，模型会<strong>一次性</strong>把这几个字全部输入进去。</p>
+<h2 id="阶段一prefill预填充阶段-读懂你的-prompt">阶段一：Prefill（预填充阶段
+—— 读懂你的 Prompt）</h2>
+<p>当你把一句话（比如“请问什么是Attention”）发给模型时，模型会<strong>一次性</strong>把这几个字全部输入进去。</p>
 <ul>
-<li>这个时候，所有词都要互相看。所以<strong>每个词的 $Q、K、V$ 全都要计算</strong>，以此来捕捉整个句子的上下文语义。</li>
-<li>计算完后，模型会把这些历史词的 $K$ 和 $V$ 老老实实地存进内存里。这就是 <strong>KV Cache 的初始化</strong>。</li>
+<li>这个时候，所有词都要互相看。所以<strong>每个词的 <span class="math inline"><em>Q</em>、<em>K</em>、<em>V</em></span>
+全都要计算</strong>，以此来捕捉整个句子的上下文语义。</li>
+<li>计算完后，模型会把这些历史词的 <span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span> 老老实实地存进内存里。这就是
+<strong>KV Cache 的初始化</strong>。</li>
 </ul>
-<h2 id="阶段二：Decoding（解码阶段-——-逐字生成）"><a href="#阶段二：Decoding（解码阶段-——-逐字生成）" class="headerlink" title="阶段二：Decoding（解码阶段 —— 逐字生成）"></a>阶段二：Decoding（解码阶段 —— 逐字生成）</h2><p>这就是你刚才描述的绝妙场景。假设模型现在吐出了一个新词：<strong>“它”</strong>。</p>
+<h2 id="阶段二decoding解码阶段-逐字生成">阶段二：Decoding（解码阶段 ——
+逐字生成）</h2>
+<p>这就是你刚才描述的绝妙场景。假设模型现在吐出了一个新词：<strong>“它”</strong>。</p>
 <ul>
-<li><p><strong>$Q$ 是实时的、一次性的</strong>：</p>
-<p>“它”这个新词作为当前的唯一主角，会产生一个崭新的 $Q<em>{它}$。它需要拿着这个 $Q</em>{它}$ 去跟前面所有的历史词进行比对。</p>
+<li><p><strong><span class="math inline"><em>Q</em></span>
+是实时的、一次性的</strong>：</p>
+<p>“它”这个新词作为当前的唯一主角，会产生一个崭新的 <span class="math inline"><em>Q</em><sub><em>它</em></sub></span>。它需要拿着这个
+<span class="math inline"><em>Q</em><sub><em>它</em></sub></span>
+去跟前面所有的历史词进行比对。</p>
 <blockquote>
-<p>💡 <strong>为什么不用缓存 $Q$？</strong> 因为当“它”这个词处理完、吐出下一个词（比如“是”）之后，主导权就交给了“是”的 $Q$。旧的 $Q_{它}$ 在未来的生成中<strong>永远都不会再被用到</strong>了。它是一次性的消耗品。</p>
-</blockquote>
-</li>
-<li><p><strong>$K$ 和 $V$ 必须死死存住</strong>：</p>
-<p>为了算出“它”和历史词的关联度，你需要历史词的 $K$；为了融合出“它”的新向量，你需要历史词的 $V$。</p>
+<p>💡 <strong>为什么不用缓存 <span class="math inline"><em>Q</em></span>？</strong>
+因为当“它”这个词处理完、吐出下一个词（比如“是”）之后，主导权就交给了“是”的
+<span class="math inline"><em>Q</em></span>。旧的 <span class="math inline"><em>Q</em><sub><em>它</em></sub></span>
+在未来的生成中<strong>永远都不会再被用到</strong>了。它是一次性的消耗品。</p>
+</blockquote></li>
+<li><p><strong><span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span> 必须死死存住</strong>：</p>
+<p>为了算出“它”和历史词的关联度，你需要历史词的 <span class="math inline"><em>K</em></span>；为了融合出“它”的新向量，你需要历史词的
+<span class="math inline"><em>V</em></span>。</p>
 <ul>
-<li>如果我们<strong>不缓存</strong> $K$ 和 $V$，每生成一个新词，模型就得把前面所有的历史词重新做一遍矩阵乘法，去重新算一遍它们的 $K$ 和 $V$。</li>
-<li>随着生成的句子越来越长，这种重复计算会呈爆炸式增长（计算量 $O(N^2)$），模型会越写越卡。</li>
-<li><strong>有了 KV Cache</strong>：历史词的 $K$ 和 $V$ 已经在内存里躺着了。新词“它”算完自己的 $Q、K、V$ 后，拿自己的 $Q$ 去和内存里的一大推历史 $K$ 做乘法，算完后，再顺手把自己的 $K<em>{它}$ 和 $V</em>{它}$ 也追加到缓存的末尾，供下一个词使用。</li>
-</ul>
-</li>
+<li>如果我们<strong>不缓存</strong> <span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span>，每生成一个新词，模型就得把前面所有的历史词重新做一遍矩阵乘法，去重新算一遍它们的
+<span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span>。</li>
+<li>随着生成的句子越来越长，这种重复计算会呈爆炸式增长（计算量 <span class="math inline"><em>O</em>(<em>N</em><sup>2</sup>)</span>），模型会越写越卡。</li>
+<li><strong>有了 KV Cache</strong>：历史词的 <span class="math inline"><em>K</em></span> 和 <span class="math inline"><em>V</em></span>
+已经在内存里躺着了。新词“它”算完自己的 <span class="math inline"><em>Q</em>、<em>K</em>、<em>V</em></span>
+后，拿自己的 <span class="math inline"><em>Q</em></span>
+去和内存里的一大推历史 <span class="math inline"><em>K</em></span>
+做乘法，算完后，再顺手把自己的 <span class="math inline"><em>K</em><sub><em>它</em></sub></span> 和 <span class="math inline"><em>V</em><sub><em>它</em></sub></span>
+也追加到缓存的末尾，供下一个词使用。</li>
+</ul></li>
 </ul>
 
     </div>
@@ -361,8 +392,8 @@
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2026/06/02/%E5%AE%9E%E4%B9%A0/%E9%9D%A2%E8%AF%95/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="next" title="408八股——数据结构">
-                  408八股——数据结构 <i class="fa fa-angle-right"></i>
+                <a href="/2026/06/02/%E5%AE%9E%E4%B9%A0/%E9%9D%A2%E8%AF%95/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="next" title="面试八股——操作系统">
+                  面试八股——操作系统 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>

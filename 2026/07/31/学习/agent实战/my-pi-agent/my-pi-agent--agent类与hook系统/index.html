@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="生命周期事件 1234567891011121314151617&#x2F;&#x2F; Agent 生命周期agent_startagent_end(messages)&#x2F;&#x2F; Turn 生命周期（一轮 &#x3D; 一次助手响应 + 工具调用&#x2F;结果）turn_startturn_end(message, toolResults)&#x2F;&#x2F; 消息生命周期（user &#x2F; assistant &#x2F; toolResult 消息都会发）mes">
+<meta property="og:type" content="article">
+<meta property="og:title" content="my-pi-agent--agent类与hook系统">
+<meta property="og:url" content="http://example.com/2026/07/31/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--agent%E7%B1%BB%E4%B8%8Ehook%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="生命周期事件 1234567891011121314151617&#x2F;&#x2F; Agent 生命周期agent_startagent_end(messages)&#x2F;&#x2F; Turn 生命周期（一轮 &#x3D; 一次助手响应 + 工具调用&#x2F;结果）turn_startturn_end(message, toolResults)&#x2F;&#x2F; 消息生命周期（user &#x2F; assistant &#x2F; toolResult 消息都会发）mes">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-30T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-05T16:00:00.000Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="agent">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2026/07/31/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--agent%E7%B1%BB%E4%B8%8Ehook%E7%B3%BB%E7%BB%9F/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2026/07/31/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--agent%E7%B1%BB%E4%B8%8Ehook%E7%B3%BB%E7%BB%9F/","path":"2026/07/31/学习/agent实战/my-pi-agent/my-pi-agent--agent类与hook系统/","title":"my-pi-agent--agent类与hook系统"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>my-pi-agent--agent类与hook系统 | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E4%BA%8B%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">生命周期事件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">事件的作用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hook%E7%B3%BB%E7%BB%9F"><span class="nav-number">3.</span> <span class="nav-text">hook系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A-hook-%E6%B3%A8%E5%86%8C%E8%A1%A8"><span class="nav-number">3.1.</span> <span class="nav-text">多 hook 注册表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#hookresult-%E5%B9%B2%E9%A2%84"><span class="nav-number">3.2.</span> <span class="nav-text">HookResult 干预</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#agent%E7%B1%BB"><span class="nav-number">4.</span> <span class="nav-text">Agent类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#run-%E5%BE%AA%E7%8E%AF"><span class="nav-number">5.</span> <span class="nav-text">run() 循环</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E8%B0%83%E5%BA%A6"><span class="nav-number">6.</span> <span class="nav-text">工具调度</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E8%A6%81%E7%82%B9"><span class="nav-number">7.</span> <span class="nav-text">设计要点</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">205</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">72</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/07/31/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--agent%E7%B1%BB%E4%B8%8Ehook%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="my-pi-agent--agent类与hook系统 | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          my-pi-agent--agent类与hook系统
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-07-31 00:00:00" itemprop="dateCreated datePublished" datetime="2026-07-31T00:00:00+08:00">2026-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-08-06 00:00:00" itemprop="dateModified" datetime="2026-08-06T00:00:00+08:00">2026-08-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/agent%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">agent实战</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/agent%E5%AE%9E%E6%88%98/my-pi-agent/" itemprop="url" rel="index"><span itemprop="name">my-pi-agent</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="生命周期事件">生命周期事件</h1>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// Agent 生命周期</span><br><span class="line">agent_start</span><br><span class="line">agent_end(messages)</span><br><span class="line"></span><br><span class="line">// Turn 生命周期（一轮 = 一次助手响应 + 工具调用/结果）</span><br><span class="line">turn_start</span><br><span class="line">turn_end(message, toolResults)</span><br><span class="line"></span><br><span class="line">// 消息生命周期（user / assistant / toolResult 消息都会发）</span><br><span class="line">message_start(message)</span><br><span class="line">message_update(message)      // 仅异步流式</span><br><span class="line">message_end(message)</span><br><span class="line"></span><br><span class="line">// 工具执行生命周期（ToolExecutionStart/End 可被 hook 干预）</span><br><span class="line">tool_execution_start(toolCallId, toolName, args)</span><br><span class="line">tool_execution_update(toolCallId, toolName, args, partialResult)  // 仅异步流式</span><br><span class="line">tool_execution_end(toolCallId, toolName, result, isError)</span><br></pre></td></tr></table></figure>
+<p>事件集对齐 pi 的生命周期模型（Agent/Turn/Message/Tool 四组，正常执行
+start/end 成对；被拦截/畸形参数的调用不发射 End）。 每个事件自动带
+timestamp（Unix 秒，实例化时刻）。</p>
+<h1 id="事件的作用">事件的作用</h1>
+<p>一、事件的作用：把「可观察」变成「可扩展」</p>
+<p>一句话：事件机制让 Agent.run()
+成为一个「可被插桩的黑盒」——循环本身写死了，但循环的每一步都广播出去，让任何新功能都能「监听而不改框架」。</p>
+<p>先看现在 run() 里实际发生了什么：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Agent.run(&quot;东京天气&quot;)</span><br><span class="line">│</span><br><span class="line">├─ AgentStart</span><br><span class="line">├─ MessageStart(user) → MessageEnd(user)          # 你的问题进 transcript</span><br><span class="line">├─ TurnStart(1)</span><br><span class="line">│   ├─ MessageStart(assistant) → MessageEnd(assistant)   # 模型想调工具</span><br><span class="line">│   ├─ ToolExecutionStart → ToolExecutionEnd      # 执行 get_weather</span><br><span class="line">│   ├─ MessageStart(tool) → MessageEnd(tool)      # 结果写回</span><br><span class="line">├─ TurnEnd(message=assistant, tool_results=[...])</span><br><span class="line">├─ TurnStart(2)</span><br><span class="line">│   └─ MessageStart(assistant) → MessageEnd(assistant)   # 模型直接回答</span><br><span class="line">├─ AgentEnd(messages=[...], ...)</span><br></pre></td></tr></table></figure>
+<p>这 8
+个事件（同步阶段）就是「循环的完整心电图」——每一段代码执行都对应一个事件。而事件的作用
+= 把「这段代码发生了」告诉任何想知道的人。</p>
+<p>二、核心：为什么事件 = 扩展点</p>
+<p>关键洞察在于——你的所有后续功能，几乎都是「想观察循环在干什么」，而不是「想改循环本身」。事件机制让这些功能都变成「加一个
+hook」，而不是「改 run()」。</p>
+<p>看三个后续阶段怎么用：</p>
+<p>扩展 1：session 落盘（阶段 3）—— Agent 显式双写（不是 hook
+消费事件流）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 实际实现：Agent.run() 里每加一条消息，同时写内存 + 落盘</span><br><span class="line">#   （不走 hook——session 是核心持久化，Agent 显式调用）</span><br><span class="line">self.messages.append(user_msg)                  # 内存 transcript</span><br><span class="line">if self.session is not None:</span><br><span class="line">    self.session.add_message(&quot;user&quot;, user_input)  # 树 + 原子落盘</span><br></pre></td></tr></table></figure>
+<p>（注：早期设计设想过”用 hook 消费事件流写 session”，但实际实现是
+Agent 双写——session 是核心功能，显式调用比 hook
+更直接、不依赖事件顺序。）</p>
+<p>扩展 2：context 压缩（阶段 4）—— prepare 每轮调用（不是监听事件）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 实际实现：prepare() 在每次 llm.chat 前调用，内部判断是否超阈</span><br><span class="line">#   （不走&quot;监听 MessageEnd 计数&quot;——压缩是发送前视图变换，时机在发消息前）</span><br><span class="line">while ...:</span><br><span class="line">    view = self._ctx.prepare(self.messages)     # 四层管线（超阈 → 摘要）</span><br><span class="line">    resp = self.llm.chat(messages=view, tools=...)</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+<p>ContextCompacted 事件早在设计时就预留了（阶段 4
+用）——这就是「事件先定义、后发射」的意义：接口提前定好，实现到时接上。</p>
+<p>扩展 3：coding agent UI（未来）—— 渲染过程</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># 新功能：TUI 渲染 —— 监听事件更新界面</span><br><span class="line">def ui_render(event):</span><br><span class="line">    if isinstance(event, TurnStart):</span><br><span class="line">        ui.show_round(event.iteration)</span><br><span class="line">    elif isinstance(event, ToolExecutionStart):</span><br><span class="line">        ui.show_tool_call(event.tool_name, event.args)</span><br><span class="line">    elif isinstance(event, MessageEnd):</span><br><span class="line">        ui.show_message(event.message.content)</span><br><span class="line">    return None</span><br><span class="line"></span><br><span class="line">agent = Agent(llm=llm, tools=tools)</span><br><span class="line">agent.register_hook(TurnStart, ui_render)</span><br><span class="line">agent.register_hook(ToolExecutionStart, ui_render)</span><br><span class="line">agent.register_hook(MessageEnd, ui_render)</span><br></pre></td></tr></table></figure>
+<h1 id="hook系统">hook系统</h1>
+<h2 id="多-hook-注册表">多 hook 注册表</h2>
+<p>「多 hook 注册表」的机制（仿 CC/Claude Code）。</p>
+<p>核心就两个函数：注册（往里放）和触发（到点调用）。</p>
+<p>注册：把 hook 挂到事件类名下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def register_hook(self, event_cls, callback):</span><br><span class="line">    self._hooks.setdefault(event_cls, []).append(callback)</span><br><span class="line">    #            ↑ 事件类不存在就建空列表   ↑ 追加回调</span><br></pre></td></tr></table></figure>
+<ul>
+<li>event_cls = 事件类（如 ToolExecutionStart）</li>
+<li>callback = 你的函数（(event) -&gt; HookResult | None）</li>
+<li>一个事件类可以挂多个回调，按注册顺序存列表</li>
+</ul>
+<p>触发：到点时逐个调用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">def _emit(self, event):</span><br><span class="line">    for cb in self._hooks.get(type(event), []):</span><br><span class="line">        result = cb(event)      # 逐个调用，传事件对象</span><br><span class="line">        if result is not None:  # 非 None = 干预</span><br><span class="line">            return result       # 短路：第一个非 None 就停</span><br><span class="line">    return None</span><br></pre></td></tr></table></figure>
+<ul>
+<li>到点 = Agent 循环里 <code>self._emit(ToolExecutionStart(...))</code>
+的位置</li>
+<li>逐个调用该事件类型名下所有回调</li>
+<li>短路约定：某个回调返回非 None → 立即返回（拦截），不再调后面的</li>
+</ul>
+<h2 id="hookresult-干预">HookResult 干预</h2>
+<p>hook 回调返回 None = 纯观察；返回 HookResult = 干预。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@dataclass(frozen=True)</span><br><span class="line">class HookResult:</span><br><span class="line">    block: bool = False</span><br><span class="line">    reason: str | None = None          # block 时喂回模型的原因</span><br><span class="line">    updated_args: dict | None = None   # 改参数（ToolExecutionStart 用）</span><br><span class="line">    updated_result: str | None = None  # 改结果（ToolExecutionEnd 用）</span><br></pre></td></tr></table></figure>
+<p>只有 ToolExecutionStart/End 继承 Interceptable（可被 hook
+干预），其余事件纯观察（返回值忽略）。</p>
+<p>用起来的样子</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"># 注册阶段（应用层，构造 Agent 后）</span><br><span class="line">def guard_hook(event) -&gt; HookResult | None:</span><br><span class="line">    &quot;&quot;&quot;权限门控（挂到 ToolExecutionStart，可拦截/改参数）&quot;&quot;&quot;</span><br><span class="line">    if isinstance(event, ToolExecutionStart):</span><br><span class="line">        if event.tool_name == &quot;bash&quot; and &quot;rm -rf&quot; in event.args.get(&quot;command&quot;, &quot;&quot;):</span><br><span class="line">            return HookResult(block=True, reason=&quot;危险命令被拦截&quot;)</span><br><span class="line">        if event.tool_name == &quot;write_file&quot;:</span><br><span class="line">            return HookResult(updated_args=&#123;**event.args, &quot;path&quot;: abs(event.args[&quot;path&quot;])&#125;)</span><br><span class="line">    return None</span><br><span class="line"></span><br><span class="line">def log_hook(event) -&gt; HookResult | None:</span><br><span class="line">    &quot;&quot;&quot;日志（挂到 ToolExecutionStart，纯观察）&quot;&quot;&quot;</span><br><span class="line">    if isinstance(event, ToolExecutionStart):</span><br><span class="line">        print(f&quot;[hook] &#123;event.tool_name&#125;(&#123;event.args&#125;)&quot;)</span><br><span class="line">    return None</span><br><span class="line"></span><br><span class="line">agent = Agent(llm=llm, tools=tools)</span><br><span class="line">agent.register_hook(ToolExecutionStart, guard_hook)   # 同一事件挂多个</span><br><span class="line">agent.register_hook(ToolExecutionStart, log_hook)</span><br></pre></td></tr></table></figure>
+<p>机制一句话：注册表 = 事件类 → 回调列表；触发 =
+到点时按序调用，短路返回。 你说「在某个事件时调用注册的
+hook」——完全正确，_emit 就是那个「到点」的调用点。</p>
+<h1 id="agent类">Agent类</h1>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────────────┐</span><br><span class="line">│                         class Agent                            │</span><br><span class="line">│                    &quot;单层大脑：状态 + 循环 + 调度&quot;                 │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  ┌───────────── __init__ 组装 ─────────────┐                     │</span><br><span class="line">│  │  llm            ← 注入（模型边界）       │                     │</span><br><span class="line">│  │  registry       ← 工具注册表            │                     │</span><br><span class="line">│  │  messages       ← 状态/记忆（公开可读）  │                     │</span><br><span class="line">│  │  max_iterations ← 轮数护栏              │                     │</span><br><span class="line">│  │  _hooks         ← hook 注册表（内部）    │                     │</span><br><span class="line">│  └─────────────────────────────────────────┘                     │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  ┌────────────── run() 核心循环 ──────────────┐                  │</span><br><span class="line">│  │  user消息 → Reason → 有工具? → Act+Observe │                  │</span><br><span class="line">│  │        ↑                      │           │                  │</span><br><span class="line">│  │        └────── 继续循环 ◄─────┘           │                  │</span><br><span class="line">│  │        │                                  │                  │</span><br><span class="line">│  │        └── 无工具 → 返回答案               │                  │</span><br><span class="line">│  └───────────────────────────────────────────┘                  │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  ┌────────── 工具调度（两阶段）──────────┐                        │</span><br><span class="line">│  │  _prepare_tool  解析+ToolExecStart hook│                       │</span><br><span class="line">│  │  _execute_tool  执行+ToolExecEnd hook  │                       │</span><br><span class="line">│  └───────────────────────────────────────┘                        │</span><br><span class="line">│                                                                  │</span><br><span class="line">│  ┌────────── 生命周期 ──────────┐                                 │</span><br><span class="line">│  │  reset()  清记忆保人设        │                                 │</span><br><span class="line">│  └──────────────────────────────┘                                 │</span><br><span class="line">└─────────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+<p>对应代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class Agent:</span><br><span class="line">    def __init__(self, *, llm, tools, system_prompt=None, max_iterations=None,</span><br><span class="line">                 session=None, context_budget=None, keep_recent_tokens=None): ...</span><br><span class="line">    def register_hook(self, event_cls, callback): ...   # 挂 hook 到事件类</span><br><span class="line">    def unregister_hook(self, event_cls, callback): ...  # 移除 hook</span><br><span class="line">    def _emit(self, event) -&gt; HookResult | None: ...    # 触发事件所有 hook，非 None 短路</span><br><span class="line">    def run(self, user_input) -&gt; str | None: ...</span><br><span class="line">    def reset(self) -&gt; None: ...</span><br><span class="line">    def compact(self) -&gt; None: ...   # 手动压缩（context 阶段加）</span><br><span class="line">    def _prepare_tool(self, tc) -&gt; tuple[str, dict, str | None, HookResult | None]: ...</span><br><span class="line">    def _execute_tool(self, tc, args) -&gt; tuple[str, bool]: ...</span><br></pre></td></tr></table></figure>
+<h1 id="run-循环">run() 循环</h1>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">「用户问东京天气，模型先调工具再回答」完整走一遍：</span><br><span class="line"></span><br><span class="line">用户 run(&quot;东京天气&quot;)</span><br><span class="line">  │</span><br><span class="line">  ▼</span><br><span class="line">[0] messages += [user]                      # transcript 记下问题</span><br><span class="line">  │</span><br><span class="line">  ├─ _emit(AgentStart)</span><br><span class="line">  ├─ _emit(MessageStart(user)) / _emit(MessageEnd(user))</span><br><span class="line">  │</span><br><span class="line">  ▼</span><br><span class="line">┌─▶ while 未超 max_iterations ──────────────────────────────────┐</span><br><span class="line">│    │                                                          │</span><br><span class="line">│    ├─ _emit(TurnStart(iteration))                             │</span><br><span class="line">│    │                                                          │</span><br><span class="line">│    ├─[Reason] resp = llm.chat(messages, 工具schema)           │</span><br><span class="line">│    │             ▲                        │                    │</span><br><span class="line">│    │             └── registry.get_schemas()（每轮生成工具说明）│</span><br><span class="line">│    │                                                          │</span><br><span class="line">│    │  messages += [assistant]                                 │</span><br><span class="line">│    │  _emit(MessageStart/End(assistant))                      │</span><br><span class="line">│    │                                                          │</span><br><span class="line">│    ├─&#123; 模型有没有发起 tool_calls? &#125;                            │</span><br><span class="line">│    │        │                                               │</span><br><span class="line">│    │        ├─ 没有 ──▶ _emit(AgentEnd, stop_reason=&quot;end_turn&quot;)│</span><br><span class="line">│    │        │          └──▶ 返回答案（结束）                   │</span><br><span class="line">│    │        │                                               │</span><br><span class="line">│    │        ▼ 有（可能多个工具调用）                            │</span><br><span class="line">│    │  for 每个 tc:                                           │</span><br><span class="line">│    │    name,args,err,_hook = _prepare_tool(tc)               │</span><br><span class="line">│    │      ◄── ① 解析 + ToolExecutionStart hook（拦截/改参数）  │</span><br><span class="line">│    │    if err 非空:                                          │</span><br><span class="line">│    │        observation = err（坏JSON/被拦/异常 → 错误文本）    │</span><br><span class="line">│    │    else:                                                 │</span><br><span class="line">│    │        observation = _execute_tool(tc, args) ◄── ②执行   │</span><br><span class="line">│    │                （内部触发 ToolExecutionEnd hook 改结果）   │</span><br><span class="line">│    │    messages += [tool消息]（配对 tool_call_id）            │</span><br><span class="line">│    │    _emit(MessageStart/End(tool))                         │</span><br><span class="line">│    │                                                          │</span><br><span class="line">│    └─ _emit(TurnEnd) → 回到循环顶 ◄───────────────────────────┘</span><br><span class="line">│</span><br><span class="line">└─▶（到这里说明 max_iterations 耗尽了）</span><br><span class="line">    _emit(AgentEnd, stop_reason=&quot;max_iterations&quot;)</span><br><span class="line">    └──▶ 返回 None</span><br></pre></td></tr></table></figure>
+<h1 id="工具调度">工具调度</h1>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">                 tc = &#123;&quot;function&quot;: &#123;&quot;name&quot;:&quot;get_weather&quot;, &quot;arguments&quot;:&quot;&#123;\&quot;city\&quot;:\&quot;Tokyo\&quot;&#125;&quot;&#125;&#125;</span><br><span class="line">                 │</span><br><span class="line">                 ▼</span><br><span class="line">┌── _prepare_tool(tc) ──────────────────────────────────────┐</span><br><span class="line">│  name = tc[&quot;function&quot;][&quot;name&quot;]                             │</span><br><span class="line">│  args = json.loads(arguments)                              │</span><br><span class="line">│         │                                                  │</span><br><span class="line">│         ├─ 坏JSON? ──▶ return (name, &#123;&#125;, 错误文本, None)    │</span><br><span class="line">│         │                                                  │</span><br><span class="line">│         ▼ 正常                                             │</span><br><span class="line">│  hook = _emit(ToolExecutionStart(...))   ◄── 触发该事件 hook│</span><br><span class="line">│         │                                                  │</span><br><span class="line">│         ├─ hook.block? ──▶ return (name, args, &quot;blocked: reason&quot;, hook)  ← 拦截</span><br><span class="line">│         ├─ hook.updated_args? ──▶ args = 改写后参数         │</span><br><span class="line">│         └─ 否则 ──▶ return (name, args, None, hook)         │</span><br><span class="line">└──────────────────┬─────────────────────────────────────────┘</span><br><span class="line">                   │  拿到改写后的 args（err 非 None 则直接当结果）</span><br><span class="line">                   ▼</span><br><span class="line">┌── _execute_tool(tc, args) ─────────────────────────────────┐</span><br><span class="line">│  effective = 改写args序列化回协议dict                       │</span><br><span class="line">│  result = registry.execute(effective)   ◄── 真正执行        │</span><br><span class="line">│  hook = _emit(ToolExecutionEnd(...))   ◄── 触发该事件 hook  │</span><br><span class="line">│  if hook.updated_result: return (改写结果, False)           │</span><br><span class="line">│  return (result, is_error)                                 │</span><br><span class="line">└──────────────────┬─────────────────────────────────────────┘</span><br><span class="line">                   ▼</span><br><span class="line">messages += [tool消息] → _emit(MessageStart/End)</span><br></pre></td></tr></table></figure>
+<h1 id="设计要点">设计要点</h1>
+<ol type="1">
+<li><strong>单层大脑</strong>：状态（messages）+ 循环（run）+
+工具调度全在一个类（pig-mono 式）</li>
+<li><strong>一切可注入、可观察</strong>：llm 注入（测试塞 FakeLLM
+离线跑）；hook 注册表让外部观察/干预循环</li>
+<li><strong>工具路径永不抛</strong>：所有错误（坏
+JSON/未知工具/校验失败/工具异常/hook 拦截）转成文本喂回模型，保证「每个
+tool_calls 都配上 tool 消息」</li>
+<li><strong>hook 异常语义分裂</strong>：工具路径 hook
+异常转错误字符串（保住配对不变式）；观察路径 hook 异常向上抛（视为使用方
+bug）</li>
+<li><strong>event 是通知，hook
+是干预</strong>：纯观察事件（AgentStart/TurnStart/Message*）hook
+返回值忽略；ToolExecutionStart/End 可被 HookResult 干预</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/agent/" rel="tag"># agent</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/07/31/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" rel="prev" title="my-pi-agent--架构设计">
+                  <i class="fa fa-angle-left"></i> my-pi-agent--架构设计
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/08/04/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/wsl/" rel="next" title="wsl">
+                  wsl <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js","integrity":"sha256-stuqcu2FrjYCXDOytWFA5SoUE/r3nkp6gTglzNSlavU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
