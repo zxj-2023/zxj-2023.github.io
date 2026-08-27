@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="为什么需要异步，哪里需要异步 12345678910111213141516171. 模型层 (packages&#x2F;my-agent-llm) 【已就绪!】   ├── llm.achat(...) ────────► 异步网络请求   └── llm.achat_stream(...) ──► 异步生成器 (Async Generator)，吐出增量 StreamChunk2. 事件层 (my_">
+<meta property="og:type" content="article">
+<meta property="og:title" content="my-pi-agent--异步支持">
+<meta property="og:url" content="http://example.com/2026/08/15/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E5%BC%82%E6%AD%A5%E6%94%AF%E6%8C%81/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="为什么需要异步，哪里需要异步 12345678910111213141516171. 模型层 (packages&#x2F;my-agent-llm) 【已就绪!】   ├── llm.achat(...) ────────► 异步网络请求   └── llm.achat_stream(...) ──► 异步生成器 (Async Generator)，吐出增量 StreamChunk2. 事件层 (my_">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-08-14T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-18T07:22:59.646Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="agent">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2026/08/15/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E5%BC%82%E6%AD%A5%E6%94%AF%E6%8C%81/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2026/08/15/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E5%BC%82%E6%AD%A5%E6%94%AF%E6%8C%81/","path":"2026/08/15/学习/agent实战/my-pi-agent/my-pi-agent--异步支持/","title":"my-pi-agent--异步支持"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>my-pi-agent--异步支持 | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E5%BC%82%E6%AD%A5%E5%93%AA%E9%87%8C%E9%9C%80%E8%A6%81%E5%BC%82%E6%AD%A5"><span class="nav-number">1.</span> <span class="nav-text">为什么需要异步，哪里需要异步</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E5%B9%B6%E5%8F%91"><span class="nav-number">2.</span> <span class="nav-text">工具并发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%98%B2%E6%AD%A2%E5%B7%A5%E5%85%B7%E5%B9%B6%E5%8F%91%E5%86%B2%E7%AA%81"><span class="nav-number">2.1.</span> <span class="nav-text">如何防止工具并发冲突</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E9%81%93%E6%9C%BA%E5%88%B6is_parallel_safe-%E6%99%BA%E8%83%BD%E8%AF%BB%E5%86%99%E5%88%86%E7%B1%BB%E5%AE%89%E5%85%A8%E5%88%86%E6%B5%81"><span class="nav-number">2.1.1.</span> <span class="nav-text">第一道机制：is_parallel_safe
+智能读写分类（安全分流）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%96%E6%B6%88%E6%8E%A7%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">取消控制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BC%82%E6%AD%A5%E8%83%BD%E8%BF%9B%E8%A1%8C%E5%8F%96%E6%B6%88%E6%8E%A7%E5%88%B6"><span class="nav-number">3.1.</span> <span class="nav-text">为什么异步能进行取消控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E4%B8%BA%E4%BB%80%E4%B9%88%E5%90%8C%E6%AD%A5%E4%BB%A3%E7%A0%81%E6%A0%B9%E6%9C%AC%E6%97%A0%E6%B3%95%E8%A2%AB%E4%BC%98%E9%9B%85%E5%8F%AB%E5%81%9C"><span class="nav-number">3.1.1.</span> <span class="nav-text">一、为什么“同步代码”根本无法被优雅叫停？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%96%E6%B6%88%E6%8E%A7%E5%88%B6%E7%9A%84%E6%9C%BA%E5%88%B6"><span class="nav-number">3.2.</span> <span class="nav-text">取消控制的机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%BA%E5%88%B6-1%E5%8F%8C%E8%BD%A8%E8%A7%A6%E5%8F%91%E9%80%9A%E9%81%93%E8%B0%81%E5%8F%AF%E4%BB%A5%E5%8F%AB%E5%81%9C%E5%A4%A7%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.2.1.</span> <span class="nav-text">机制
+1：双轨触发通道（谁可以叫停大模型？）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AD%E9%80%94%E4%B8%AD%E6%96%AD%E5%90%8E%E4%BA%91%E7%AB%AF-api-%E8%BF%98%E4%BC%9A%E7%BB%A7%E7%BB%AD%E8%B7%91%E5%90%97%E4%BC%9A%E6%B5%AA%E8%B4%B9-token-%E6%89%A3%E8%B4%B9%E5%90%97"><span class="nav-number">3.3.</span> <span class="nav-text">中途中断后，云端
+API 还会继续跑吗？会浪费 Token 扣费吗？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%9Aagent%E7%9A%84%E5%B9%B6%E5%8F%91%E6%94%AF%E6%8C%81"><span class="nav-number">4.</span> <span class="nav-text">多agent的并发支持</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">209</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">72</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/08/15/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E5%BC%82%E6%AD%A5%E6%94%AF%E6%8C%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="my-pi-agent--异步支持 | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          my-pi-agent--异步支持
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-08-15 00:00:00" itemprop="dateCreated datePublished" datetime="2026-08-15T00:00:00+08:00">2026-08-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-08-18 15:22:59" itemprop="dateModified" datetime="2026-08-18T15:22:59+08:00">2026-08-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/agent%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">agent实战</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/agent%E5%AE%9E%E6%88%98/my-pi-agent/" itemprop="url" rel="index"><span itemprop="name">my-pi-agent</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="为什么需要异步哪里需要异步">为什么需要异步，哪里需要异步</h1>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">1. 模型层 (packages/my-agent-llm) 【已就绪!】</span><br><span class="line">   ├── llm.achat(...) ────────► 异步网络请求</span><br><span class="line">   └── llm.achat_stream(...) ──► 异步生成器 (Async Generator)，吐出增量 StreamChunk</span><br><span class="line"></span><br><span class="line">2. 事件层 (my_agent_core/events.py) 【已就绪!】</span><br><span class="line">   ├── MessageUpdate ─────────► 携带增量 Token 文本</span><br><span class="line">   └── ToolExecutionUpdate ───► 携带工具运行中的流式进度</span><br><span class="line"></span><br><span class="line">3. 工具层 (my_agent_core/tools/) 【待接入】</span><br><span class="line">   ├── 支持 async def my_tool(...) 异步工具定义</span><br><span class="line">   └── 支持 ToolRegistry.execute_batch 并发执行多个工具</span><br><span class="line"></span><br><span class="line">4. Agent 核心层 (my_agent_core/agent.py) 【核心落地点】</span><br><span class="line">   └── 新增 Agent.arun(prompt)</span><br><span class="line">         ├── 异步调用 ContextManager.prepare()</span><br><span class="line">         ├── 异步驱动 llm.achat_stream 接收 Token 并发射 MessageUpdate</span><br><span class="line">         └── 异步并发调度 tool_calls 并发射 ToolExecutionUpdate</span><br></pre></td></tr></table></figure>
+<p>## 价值 1：工具并发执行（Parallel Tool Execution）</p>
+<ul>
+<li>场景：当 Agent 在做代码重构或审查时，大模型经常会一次性输出 5
+个文件读取请求（read(“a.py”), read(“b.py”), read(“c.py”)…）。</li>
+<li>价值：同步只能逐个读；异步可以直接用 asyncio.gather 同时并发读取 5
+个文件或调用 5 个外部 API，耗时直接从 O(N) 降到 O(1)。</li>
+</ul>
+<p>## 价值 2：打字机流式输出与实时事件（Streaming UX）</p>
+<ul>
+<li>场景：大模型生成一段长篇代码（可能需要 15 秒）。</li>
+<li>价值：
+<ul>
+<li>同步只能等 15 秒后一次性拿到完整文本；</li>
+<li>异步通过我们在 events.py 中预留的 MessageUpdate 与
+ToolExecutionUpdate，可以做到 Token 级别的毫秒级流式回显，在 终端或 Web
+前端呈现丝滑的打字机动画。</li>
+</ul></li>
+</ul>
+<p>## 价值 3：即时可取消性与信号响应（Graceful Cancellation）</p>
+<ul>
+<li>场景：大模型写出了一个死循环 bash
+命令，或者正在进行一个错误的超长推理。</li>
+<li>价值：
+<ul>
+<li>在异步事件循环中，用户按一次 Esc 或 Ctrl+C，框架可以在事件循环中触发
+asyncio.CancelledError，毫秒级掐断网络连接
+、杀掉运行中的子进程，并把当前已产生的上下文安全存盘，绝不破坏 Session
+树。</li>
+</ul></li>
+</ul>
+<p>## 价值 4：多用户并发服务能力（Web / Server 部署）</p>
+<ul>
+<li>场景：未来如果你把这个 Agent 包装成一个 FastAPI 接口，或者部署到 Web
+平台供多人同时使用。</li>
+<li>价值：
+<ul>
+<li>如果是同步代码：一个用户提问（耗时 10 秒），这个 Python
+进程线程就被占死，其他所有用户全都在排队等待；</li>
+<li>如果是异步代码：单个 Python
+进程可以轻松并发服务成百上千个用户同时对话。</li>
+</ul></li>
+</ul>
+<h1 id="工具并发">工具并发</h1>
+<h2 id="如何防止工具并发冲突">如何防止工具并发冲突</h2>
+<h3 id="第一道机制is_parallel_safe-智能读写分类安全分流">第一道机制：is_parallel_safe
+智能读写分类（安全分流）</h3>
+<p>#### 1. 要解决的核心问题：防止“并发写冲突（Race Condition）”</p>
+<p>假设大模型在一轮推理中，同时发起了 3 个工具调用： - tool_0:
+read(“user.py”)（只读，无副作用） - tool_1: write(“user.py”,
+“new_code”)（写操作，有副作用） - tool_2:
+read(“config.py”)（只读，无副作用）</p>
+<p>如果不管三七二十一全部并发执行，可能 read(“user.py”) 读到一半文件被
+write 覆盖了，产生不可预测的破坏。</p>
+<p>#### 2. 机制实现原理：</p>
+<p>在工具定义时，每个工具声明自己是否是“并发安全的（只读无副作用）”： -
+<span class="citation" data-cites="tool">@tool</span>(is_parallel_safe=True)：如
+read、get_weather、db_query（只读）； - 默认 is_parallel_safe=False：如
+write、edit、bash（有写操作/副作用）。</p>
+<p>在执行前，系统自动将这一批工具按原始索引位置分成两拨：</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">原始输入列表: [ 0: read(只读),  1: write(写),  2: read(只读) ]</span><br><span class="line">                     │</span><br><span class="line">        ┌────────────┴────────────┐</span><br><span class="line">        ▼                         ▼</span><br><span class="line">【并发只读组 (Parallel Group)】   【串行写入组 (Sequential Group)】</span><br><span class="line">   - 索引 0: read                   - 索引 1: write</span><br><span class="line">   - 索引 2: read</span><br></pre></td></tr></table></figure></p>
+<p>────────────────────────────────────────────────────────────────────────────────</p>
+<p>### 第二道机制：asyncio.gather 并发（极速执行）</p>
+<p>#### 1. 要解决的核心问题：消灭累加的“网络与 I/O 等待耗时”</p>
+<p>传统的同步模式下，读 2 个文件耗时 2s + 2s = 4s。</p>
+<p>#### 2. 机制实现原理：</p>
+<ul>
+<li>只读组（索引 0 和 2）：使用 asyncio.gather
+一把梭同时扔进事件循环，让操作系统在后台同时发起网络/文件
+I/O。耗时取决于 最慢的那个，直接从 O(N) 降到 O(1)；</li>
+<li>写入组（索引
+1）：在安全的独立通道中按序一个接一个串行执行，确保文件修改的绝对安全。</li>
+</ul>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">只读组 ──► asyncio.gather(task_0, task_2) ──► 两个只读工具在后台同时跑 ⚡</span><br><span class="line">写入组 ──► 按照顺序串行执行 task_1 ──────────► 安全串行执行</span><br></pre></td></tr></table></figure></p>
+<p>────────────────────────────────────────────────────────────────────────────────</p>
+<p>### 第三道机制：严格保序回填（协议对齐）</p>
+<p>#### 1. 要解决的核心问题：大模型对 tool_call_id 的强顺序依赖</p>
+<p>大模型在发请求时，它心里的顺序是：[0号工具, 1号工具, 2号工具]。 -
+在并发执行时，2 号工具可能 0.1 秒就跑完了，而 0 号工具花了 3 秒； -
+如果我们按“谁先跑完谁先写回”，消息列表会变成 [2号结果, 1号结果, 0号结果]
+→ 大模型 API 校验直接报错，或者把 2 号的结 果误当成 0 号的结果！</p>
+<p>#### 2. 机制实现原理：“预分配定长插槽列表”</p>
+<p>在执行前，先根据原始工具数量创建一个空的定长列表：results = [None,
+None, None]。
+无论哪个工具先跑完，必须按照它出发时的原始索引号，精准填回它自己的插槽里！</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">预分配插槽: results = [ None,  None,  None ]</span><br><span class="line">                         ↑      ↑      ↑</span><br><span class="line">                       (索引0) (索引1) (索引2)</span><br><span class="line">                         │      │      │</span><br><span class="line">tc_2 最先跑完 (0.1s) ─────┼──────┼──────┘ ──► results[2] = result_2</span><br><span class="line">tc_1 其次跑完 (1.0s) ─────┼──────┘          ──► results[1] = result_1</span><br><span class="line">tc_0 最后跑完 (3.0s) ─────┘                 ──► results[0] = result_0</span><br><span class="line">                         │</span><br><span class="line">                         ▼</span><br><span class="line">最终拿到的数组: [ result_0, result_1, result_2 ]  (顺序 100% 完美复原!)</span><br></pre></td></tr></table></figure></p>
+<p>然后，框架按照这个保序的数组逐条生成 role: “tool” 消息追加到 messages
+中，安全喂给下一轮大模型。</p>
+<p>────────────────────────────────────────────────────────────────────────────────</p>
+<p>### 总结三者的配合全景图</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">大模型返回: [ 0: 读文件A (耗时3s),  1: 写文件B (耗时1s),  2: 读文件C (耗时0.5s) ]</span><br><span class="line">                                    │</span><br><span class="line">                                    ▼ 【第一道：is_parallel_safe 智能分类】</span><br><span class="line">                    ┌───────────────┴───────────────┐</span><br><span class="line">                    │                               │</span><br><span class="line">                    ▼ (只读组: 索引 0, 2)            ▼ (写入组: 索引 1)</span><br><span class="line">        【第二道：asyncio.gather 并发】          【安全按序串行】</span><br><span class="line">        ├── 0: 读文件A (3s)                      └── 1: 写文件B (1s)</span><br><span class="line">        └── 2: 读文件C (0.5s) 先跑完!</span><br><span class="line">                    │                               │</span><br><span class="line">                    └───────────────┬───────────────┘</span><br><span class="line">                                    │</span><br><span class="line">                                    ▼ 【第三道：严格保序回填】</span><br><span class="line">                       预分配定长列表: [None, None, None]</span><br><span class="line">                       - 把 0 号放回 results[0]</span><br><span class="line">                       - 把 1 号放回 results[1]</span><br><span class="line">                       - 把 2 号放回 results[2]</span><br><span class="line">                                    │</span><br><span class="line">                                    ▼</span><br><span class="line">                       生成的 messages: [Msg_0, Msg_1, Msg_2]</span><br><span class="line">                                    │</span><br><span class="line">                                    ▼</span><br><span class="line">                       安全、合规、零错乱地喂回给大模型！</span><br></pre></td></tr></table></figure></p>
+<h1 id="取消控制">取消控制</h1>
+<h2 id="为什么异步能进行取消控制">为什么异步能进行取消控制</h2>
+<h3 id="一为什么同步代码根本无法被优雅叫停">一、为什么“同步代码”根本无法被优雅叫停？</h3>
+<p>要理解异步为什么能取消，先看看同步代码在操作系统底层发生了什么。</p>
+<p>#### 1. 同步的底层机制：操作系统级阻塞（Blocked Thread）</p>
+<p>当你执行同步代码 resp = requests.post(…) 或 client.chat(…) 时：</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[你的 Python 代码] ──► 调用操作系统网络底层 recv() ──► 线程进入 SLEEP 状态</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>CPU 视角的同步： 操作系统直接把你的 Python 线程“冻结”了，告诉
+CPU：“这个线程在等网卡数据，先不要给它分配任何算力”。</li>
+<li>为什么叫不醒？ 因为当前线程已经被冻结了，它根本无法执行下一行 Python
+代码！ 你哪怕在旁边定义了一个 stop() 函数，只要程序卡在同步网络 I/O
+里，你的 stop() 函数就连被执行的机会都没有。</li>
+<li>唯一能叫醒它的方式： 只能靠极其暴力的手段——用户狂按 Ctrl+C
+发送操作系统的 SIGINT 中断信号，或者直接在任务管理器里 kill
+掉整个进程。这会导致所有内存状态瞬间撕裂，文件损坏。</li>
+</ul>
+<p>────────────────────────────────────────────────────────────────────────────────</p>
+<p>### 二、为什么“异步代码”随时可以被叫停？</p>
+<p>异步（asyncio）彻底改变了程序等待网络的方式：它使用的是 非阻塞
+I/O（Non-blocking I/O） + 事件循环（Event Loop）。</p>
+<p>#### 1. 核心密码：await 的“主动交权机制”</p>
+<p>在异步代码中，每当你写下一个 await（例如 await stream 或 async for
+chunk in stream:）：</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">for</span> chunk <span class="keyword">in</span> <span class="variable language_">self</span>.llm.achat_stream(...):  <span class="comment"># &lt;-- 这里的 async 背后就是一个 await!</span></span><br><span class="line">    ...</span><br></pre></td></tr></table></figure></p>
+<p>它的底层真实动作是： 1. “交出控制权”：Python
+告诉操作系统：“我发起了一个非阻塞网络请求，但我不冻结线程，我把 CPU
+控制权交还给事件循环（Event Loop）”； 2.
+“事件循环插队”：在网卡收到下一个 Token 的这 20~50
+毫秒空档期里，事件循环可以从容地执行其他事情（例如：检查用户有没有按
+Esc、执行用户的 /stop 指令、检查 self._aborted 状态）； 3.
+“随时变卦”：如果在等待下一个 Token
+的过程中，事件循环检测到中止信号，事件循环可以在下一次恢复该协程时，直接给它注入一个取消指令，不再继续读网卡！</p>
+<p>────────────────────────────────────────────────────────────────────────────────</p>
+<p>### 三、图解：同步 vs 异步的取消对比</p>
+<p>#### 同步场景（高速公路上刹不住）：</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[发起网络请求] ──────────────────────────────────────────► [等了 10 秒拿结果]</span><br><span class="line">               ▲</span><br><span class="line">               │ 线程被操作系统完全冻结 (无法执行任何代码)</span><br><span class="line">               用户按 Esc: &quot;我想停!&quot; ──► 操作系统: &quot;线程冻结中，听不见!&quot;</span><br></pre></td></tr></table></figure></p>
+<p>#### 异步场景（每个 Token 都有服务区可以下高速）：</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[发请求] ──► await ──► [第 1 个字] ──► await ──► [第 2 个字] ──► await ──► ...</span><br><span class="line">               │                         │                         │</span><br><span class="line">               ▼                         ▼                         ▼</span><br><span class="line">         【交出 CPU】              【交出 CPU】              【交出 CPU】</span><br><span class="line">         事件循环检查状态:          事件循环检查状态:          事件循环检查状态:</span><br><span class="line">         一切正常，继续跑~          一切正常，继续跑~          ⚡ 发现用户调了 abort()!</span><br><span class="line">                                                               │</span><br><span class="line">                                                               ▼ 立即 break!</span><br><span class="line">                                                         【毫秒级下高速，掐断连接】</span><br></pre></td></tr></table></figure></p>
+<h2 id="取消控制的机制">取消控制的机制</h2>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">【触发源 A：用户按 Esc / 点击停止】             【触发源 B：安全扩展实时监控】</span><br><span class="line">           │                                              │</span><br><span class="line">           ▼                                              ▼</span><br><span class="line"> 调用 agent.abort() ─────────────────┐      @api.on(MessageUpdate)</span><br><span class="line">           │                         │      发现模型正在输出高危指令</span><br><span class="line">           ▼                         │                    │</span><br><span class="line"> 内部标记: self._aborted = True       │                    ▼</span><br><span class="line">           │                         │      返回 HookResult(block=True)</span><br><span class="line">           │                         │                    │</span><br><span class="line">           └─────────────────────────┼────────────────────┘</span><br><span class="line">                                     │</span><br><span class="line">                                     ▼</span><br><span class="line">                   ┌───────────────────────────────────┐</span><br><span class="line">                   │ 流式循环在下一个毫秒瞬间捕获中断: │</span><br><span class="line">                   │ async for chunk in achat_stream:  │</span><br><span class="line">                   │    if self._aborted: break        │</span><br><span class="line">                   └─────────────────┬─────────────────┘</span><br><span class="line">                                     │</span><br><span class="line">                                     ▼</span><br><span class="line">                   ┌───────────────────────────────────┐</span><br><span class="line">                   │ 核心三连动作 (The 3 Actions):     │</span><br><span class="line">                   │ 1. 掐断网络连接，停止烧 Token     │</span><br><span class="line">                   │ 2. 丢弃未完成的半截内容 (不落盘)  │</span><br><span class="line">                   │ 3. 广播 AgentEnd(cancelled)       │</span><br><span class="line">                   └─────────────────┬─────────────────┘</span><br><span class="line">                                     │</span><br><span class="line">                                     ▼</span><br><span class="line">                   优雅返回 &quot;(cancelled)&quot;，会话历史 100% 纯净</span><br></pre></td></tr></table></figure></p>
+<h3 id="机制-1双轨触发通道谁可以叫停大模型">机制
+1：双轨触发通道（谁可以叫停大模型？）</h3>
+<p>你的设计提供了两条平行的触发通道，兼顾了 “人类用户交互” 与
+“程序自动化安全拦截”：</p>
+<p>#### 通道 ①：面向用户交互 —— agent.abort()</p>
+<ul>
+<li>场景：用户在终端按下了 Esc 键、Web
+前端点击了“停止生成”按钮、或者输入了 /stop 命令；</li>
+<li>做法：直接调用 agent.abort()，内部只需一行代码：self._aborted =
+True。</li>
+<li>优点：不需要调用者在 agent.run(prompt) 里传入任何复杂的 cancel
+对象，调用签名保持极致纯净。</li>
+</ul>
+<p>#### 通道 ②：面向扩展安全监控 —— MessageUpdate(Interceptable)</p>
+<ul>
+<li>场景：扩展或安全看门狗在模型吐字的过程中，实时检测内容（如发现模型正在输出
+rm -rf / 或包含敏感词）；</li>
+<li>做法： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@api.on(<span class="params">MessageUpdate</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">safety_guard</span>(<span class="params">event: MessageUpdate, api</span>):</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;rm -rf&quot;</span> <span class="keyword">in</span> event.message.content:</span><br><span class="line">        <span class="comment"># 发现危险，直接返回 HookResult 紧急熔断！</span></span><br><span class="line">        <span class="keyword">return</span> HookResult(block=<span class="literal">True</span>, reason=<span class="string">&quot;触发安全规则紧急熔断&quot;</span>)</span><br></pre></td></tr></table></figure></li>
+<li>优点：复用了框架底层的 HookRegistry 拦截机制，完全零新增概念。</li>
+</ul>
+<p>────────────────────────────────────────────────────────────────────────────────</p>
+<p>### 机制 2：毫秒级响应与即时掐断（怎么停下来的？）</p>
+<p>在大模型流式生成（achat_stream）过程中，每当大模型吐出一个 Token（约
+20~50 毫秒）：</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">for</span> chunk <span class="keyword">in</span> <span class="variable language_">self</span>.llm.achat_stream(...):</span><br><span class="line">    <span class="comment"># 1. 检测通道 ① (是否被 agent.abort 叫停)</span></span><br><span class="line">    <span class="keyword">if</span> <span class="variable language_">self</span>._aborted:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> chunk.content:</span><br><span class="line">        content_acc += chunk.content</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 2. 检测通道 ② (发射 MessageUpdate 并检查是否有 Hook 拦截)</span></span><br><span class="line">    hook = <span class="keyword">await</span> <span class="variable language_">self</span>._emit(MessageUpdate(</span><br><span class="line">        message=Message(role=<span class="string">&quot;assistant&quot;</span>, content=content_acc),</span><br><span class="line">        chunk=chunk</span><br><span class="line">    ))</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">isinstance</span>(hook, HookResult) <span class="keyword">and</span> hook.block:</span><br><span class="line">        <span class="variable language_">self</span>._aborted = <span class="literal">True</span></span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>毫秒级刹车：无论哪个通道触发，在下一个 Token 出来的瞬间，循环
+break，异步流式连接被底层的 Python 异步生成器自动关闭（关闭 Socket
+避免继续消耗 Token）。</li>
+</ul>
+<h2 id="中途中断后云端-api-还会继续跑吗会浪费-token-扣费吗">中途中断后，云端
+API 还会继续跑吗？会浪费 Token 扣费吗？</h2>
+<p>结论：在“异步流式（Streaming）”下只要正确关闭连接，云端 API
+会立刻停止生成，绝不会继续浪费后续的 Token！</p>
+<p>### 底层通信与计费机制深度揭秘</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[用户按 Esc 中断] ──► 你的客户端代码 break 退出 async for 循环</span><br><span class="line">                              │</span><br><span class="line">                              ▼ (关键动作: Python 自动触发 aclose())</span><br><span class="line">                      【客户端主动切断底层 TCP 连接 (发送 TCP FIN 包)】</span><br><span class="line">                              │</span><br><span class="line">                              ▼</span><br><span class="line">                      【OpenAI / Anthropic 云端网关检测到连接断开 (Broken Pipe)】</span><br><span class="line">                              │</span><br><span class="line">                              ▼</span><br><span class="line">                      【云端 GPU 推理引擎立即杀掉该 Generation Task】</span><br><span class="line">                              │</span><br><span class="line">                              ▼</span><br><span class="line">                      【计费停止：只结算断开前已生成的少量 Token】</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>流式（Streaming）计费规则：
+大模型服务商（OpenAI、Anthropic、DeepSeek）的计费引擎是按实际生成的
+Token 计费的。当你主动断开流式连接时，服务商网关捕捉到 Socket
+关闭，会立即终止后续几千个 Token 的推理。
+<ul>
+<li>比如原本要生成 4000 个 Token（价值 0.1 美元），在生成到第 100 个
+Token 时你按了取消；</li>
+<li>云端立刻刹车，你只需要付这 100 个 Token 的费用，后 3900 个 Token
+彻底停止，零扣费！</li>
+</ul></li>
+<li>什么时候会白白浪费 Token？（反模式警告）： 如果你只在前端 UI
+层面把文字隐藏了，但底层的 Python/Node
+进程没有真正退出流式循环（没有调用 stream.close()），那么底层 HTTP
+连接依然连着，云端就会傻傻地把 4000 个 Token 全跑完并计入 账单。
+<ul>
+<li>在我们的异步方案中：async for chunk in achat_stream: 一旦被 break
+或取消，Python 异步生成器会自动触发 <strong>aexit</strong> 关闭底层 HTTP
+连接，从源头确保云端停止计费。</li>
+</ul></li>
+</ul>
+<h1 id="多agent的并发支持">多agent的并发支持</h1>
+<p>## 同步 vs 异步：执行模式对比</p>
+<p>### 1. 在同步模式下（现在的串行阻塞）</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[主 Agent] ──► 派发 task_0 (code-reviewer)</span><br><span class="line">                  │</span><br><span class="line">                  ▼ 【等待 10 秒...】 (主线程完全卡死)</span><br><span class="line">               子代理 0 跑完 3 轮 ReAct 循环，返回审查报告</span><br><span class="line">                  │</span><br><span class="line">                  ▼</span><br><span class="line">               接着派发 task_1 (researcher)</span><br><span class="line">                  │</span><br><span class="line">                  ▼ 【再等待 10 秒...】 (主线程继续卡死)</span><br><span class="line">               子代理 1 跑完 3 轮 ReAct 循环，返回调研报告</span><br><span class="line">                  │</span><br><span class="line">                  ▼</span><br><span class="line">[主 Agent 汇总回答]</span><br><span class="line"></span><br><span class="line">⏳ 总耗时: 10s + 10s = 20 秒！</span><br></pre></td></tr></table></figure></p>
+<p>────────────────────────────────────────────────────────────────────────────────</p>
+<p>### 2. 在异步并发模式下（改造后的多代理并行协同）</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[主 Agent] ──► 一次性发起 2 个委派任务!</span><br><span class="line">                  │</span><br><span class="line">                  ▼ 【asyncio.gather 并发启动】</span><br><span class="line">     ┌────────────┴────────────┐</span><br><span class="line">     │                         │</span><br><span class="line">     ▼ 【后台并发执行】        ▼ 【后台并发执行】</span><br><span class="line">[子代理 0: code-reviewer]  [子代理 1: researcher]</span><br><span class="line">  - 独立 Session 1           - 独立 Session 2</span><br><span class="line">  - 独立 ReAct 循环          - 独立 ReAct 循环</span><br><span class="line">  - 独立调 LLM &amp; 工具        - 独立调 LLM &amp; 工具</span><br><span class="line">  (耗时 10 秒)               (耗时 10 秒)</span><br><span class="line">     │                         │</span><br><span class="line">     └────────────┬────────────┘</span><br><span class="line">                  │ ⚡ 两者在后台同时跑完 (总耗时仅 10 秒!)</span><br><span class="line">                  ▼</span><br><span class="line">[主 Agent 收到两个结果，保序汇总输出]</span><br><span class="line"></span><br><span class="line">⚡ 总耗时: max(10s, 10s) = 10 秒 (时间直接减半!)！</span><br></pre></td></tr></table></figure></p>
+<p>────────────────────────────────────────────────────────────────────────────────</p>
+<p>## 底层为什么能安全并发？（3 大隔离基石）</p>
+<p>你可能会问：两个子 Agent
+同时在后台跑，会不会把会话搞乱？会不会互相冲突？</p>
+<p>答案是：绝对不会！因为我们在之前的阶段已经打下了极其完美的 3
+大隔离地基：</p>
+<p>### 1. 会话文件物理级隔离（Session Isolation）</p>
+<p>在 TaskManager._run 中，每个子代理拥有独立的 Session 文件：</p>
+<p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.my_agent_core/sessions/</span><br><span class="line">   ├── parent_session.jsonl                &lt;-- 父会话文件（完全不被子代理的消息污染）</span><br><span class="line">   └── subagents/</span><br><span class="line">         ├── agent-task_00000001.jsonl     &lt;-- 子代理 0 的独立 ReAct 完整记录</span><br><span class="line">         └── agent-task_00000002.jsonl     &lt;-- 子代理 1 的独立 ReAct 完整记录</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>两个子代理各自向不同的磁盘文件追加 JSONL，完全零文件写锁冲突！</li>
+</ul>
+<p>### 2. 内存上下文隔离（Fresh Context）</p>
+<ul>
+<li>每个子 Agent 都是一个全新的 Agent 类实例；</li>
+<li>它们拥有各自独立的 self.messages = []，各自独立的
+system_prompt；</li>
+<li>它们在内存中没有共享的可变状态，天然满足并发安全性（Thread/Coroutine-Safe）。</li>
+</ul>
+<p>### 3. 工具标记天然安全（is_parallel_safe=True）</p>
+<p>在 tools/builtin/task.py 中：</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">make_task_tool</span>(<span class="params">manager: SubagentManager, parent: <span class="string">&quot;Agent&quot;</span></span>) -&gt; Tool:</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">return</span> Tool(func=task, name=<span class="string">&quot;task&quot;</span>, is_parallel_safe=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>因为子代理拥有上述独立的上下文与会话，所以 task 工具被天然标记为
+is_parallel_safe=True（并发安全）；</li>
+<li>主 Agent 的 ToolRegistry.execute_batch 看到 task
+是只读/并发安全的，就会自动把多个 task 放入 asyncio.gather
+同时并发执行！</li>
+</ul>
+<p>────────────────────────────────────────────────────────────────────────────────</p>
+<p>## 代码执行链路一览</p>
+<p>在 TaskManager 与 Agent 异步化后，整个调用链变得极度丝滑：</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 主 Agent 收到模型发来的 2 个 task 调用</span></span><br><span class="line"><span class="comment"># 2. ToolRegistry.execute_batch 检测到它们都是 is_parallel_safe=True</span></span><br><span class="line"><span class="comment"># 3. 自动并发调度:</span></span><br><span class="line">results = <span class="keyword">await</span> asyncio.gather(</span><br><span class="line">    task_manager.start_task(prompt=<span class="string">&quot;审查 api.py&quot;</span>, subagent_type=<span class="string">&quot;code-reviewer&quot;</span>),</span><br><span class="line">    task_manager.start_task(prompt=<span class="string">&quot;调研迁移方案&quot;</span>, subagent_type=<span class="string">&quot;researcher&quot;</span>),</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. 在后台:</span></span><br><span class="line"><span class="comment">#    child_0.run() 和 child_1.run() 在同一个 asyncio 事件循环中并发运转</span></span><br><span class="line"><span class="comment"># 5. 返回结果:</span></span><br><span class="line"><span class="comment">#    results[0] 对应审查报告</span></span><br><span class="line"><span class="comment">#    results[1] 对应调研报告</span></span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/agent/" rel="tag"># agent</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/08/15/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/title%20my-pi-agent--subagent%E4%B8%8Etask%E5%A7%94%E6%B4%BE/" rel="prev" title="my-pi-agent--subagent与task委派">
+                  <i class="fa fa-angle-left"></i> my-pi-agent--subagent与task委派
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/08/15/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--extension%E6%9C%BA%E5%88%B6%E4%B8%8Emcp/" rel="next" title="my-pi-agent--extension机制与mcp">
+                  my-pi-agent--extension机制与mcp <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js","integrity":"sha256-stuqcu2FrjYCXDOytWFA5SoUE/r3nkp6gTglzNSlavU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

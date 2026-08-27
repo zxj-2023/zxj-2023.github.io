@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="功能设计 在初始设计中，委派执行逻辑（make_task_tool）曾放在 subagents.py 中。但在 2026-08-16 的设计迭代 （subagent-task-manager-design.md）中，架构进行了清晰分层：  subagents.py（定义与仓储）：收窄职责，只负责 Subagent 声明与 SubagentManager 发现管理。 tasks.py（">
+<meta property="og:type" content="article">
+<meta property="og:title" content="my-pi-agent--subagent与task委派">
+<meta property="og:url" content="http://example.com/2026/08/15/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/title%20my-pi-agent--subagent%E4%B8%8Etask%E5%A7%94%E6%B4%BE/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="功能设计 在初始设计中，委派执行逻辑（make_task_tool）曾放在 subagents.py 中。但在 2026-08-16 的设计迭代 （subagent-task-manager-design.md）中，架构进行了清晰分层：  subagents.py（定义与仓储）：收窄职责，只负责 Subagent 声明与 SubagentManager 发现管理。 tasks.py（">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-08-14T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-17T15:44:38.389Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="agent">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2026/08/15/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/title%20my-pi-agent--subagent%E4%B8%8Etask%E5%A7%94%E6%B4%BE/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2026/08/15/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/title%20my-pi-agent--subagent%E4%B8%8Etask%E5%A7%94%E6%B4%BE/","path":"2026/08/15/学习/agent实战/my-pi-agent/title my-pi-agent--subagent与task委派/","title":"my-pi-agent--subagent与task委派"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>my-pi-agent--subagent与task委派 | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.</span> <span class="nav-text">功能设计</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%90agent%E8%B0%83%E7%94%A8%E6%9C%BA%E5%88%B6"><span class="nav-number">1.1.</span> <span class="nav-text">子agent调用机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%90agent%E5%8C%85%E5%90%AB%E7%9A%84%E5%AD%97%E6%AE%B5"><span class="nav-number">1.2.</span> <span class="nav-text">子agent包含的字段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#subagents.py"><span class="nav-number">2.</span> <span class="nav-text">subagents.py</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B-subagent"><span class="nav-number">2.1.</span> <span class="nav-text">数据模型 Subagent</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E6%BC%94%E7%A4%BA"><span class="nav-number">2.2.</span> <span class="nav-text">流程演示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#subagentmanager"><span class="nav-number">2.3.</span> <span class="nav-text">SubagentManager</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%96%B9%E6%B3%95format_prompt"><span class="nav-number">2.3.1.</span> <span class="nav-text">核心方法format_prompt</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tasks.py"><span class="nav-number">3.</span> <span class="nav-text">tasks.py</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84taskstatus-%E4%B8%8E-task"><span class="nav-number">3.1.</span> <span class="nav-text">核心数据结构：TaskStatus 与
+Task</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#prompt-%E4%B8%8E%E6%9D%83%E9%99%90%E9%9A%94%E7%A6%BB"><span class="nav-number">3.2.</span> <span class="nav-text">Prompt 与权限隔离</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#taskmanager"><span class="nav-number">3.3.</span> <span class="nav-text">TaskManager</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#task%E5%B7%A5%E5%85%B7"><span class="nav-number">3.4.</span> <span class="nav-text">task工具</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%98%B2%E6%AD%A2%E5%AD%90%E4%BB%A3%E7%90%86%E4%B8%AD%E5%86%8D%E6%AC%A1%E8%B0%83%E7%94%A8-task-%E5%A7%94%E6%B4%BE%E5%AF%BC%E8%87%B4%E6%97%A0%E9%99%90%E9%80%92%E5%BD%92"><span class="nav-number">4.</span> <span class="nav-text">如何防止子代理中再次调用
+task 委派导致无限递归</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E9%81%93%E9%98%B2%E7%BA%BF%E5%88%87%E6%96%AD%E5%BC%95%E7%94%A8%E7%BB%A7%E6%89%BF-_filter_tools-%E5%BC%BA%E5%88%B6%E5%89%94%E9%99%A4-task%E5%AF%B9%E6%A0%87-learn-claude-code"><span class="nav-number">4.1.</span> <span class="nav-text">1.
+第一道防线：切断引用继承 —— _filter_tools 强制剔除
+task（对标 learn-claude-code）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E9%81%93%E9%98%B2%E7%BA%BF%E6%8A%91%E5%88%B6%E8%87%AA%E5%8F%91%E7%94%9F%E8%A3%85%E9%85%8D-subagent_dirs-%E8%A7%A6%E5%8F%91%E6%B3%A8%E5%86%8C%E7%9F%AD%E8%B7%AF%E5%AF%B9%E6%A0%87-openhands-%E5%B7%A5%E5%8E%82%E9%9A%94%E7%A6%BB"><span class="nav-number">4.2.</span> <span class="nav-text">2.
+第二道防线：抑制自发生装配 —— subagent_dirs&#x3D;[]
+触发注册短路（对标 OpenHands 工厂隔离）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E9%81%93%E9%98%B2%E7%BA%BF%E8%AE%A4%E7%9F%A5%E5%B1%82%E9%9A%94%E7%A6%BB-%E6%8A%91%E5%88%B6-available_agents-%E6%B8%85%E5%8D%95%E6%B3%A8%E5%85%A5"><span class="nav-number">4.3.</span> <span class="nav-text">3.
+第三道防线：认知层隔离 —— 抑制 &lt;available_agents&gt;
+清单注入</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%B7%9F%E8%B8%AAtask%E7%8A%B6%E6%80%81"><span class="nav-number">5.</span> <span class="nav-text">如何跟踪task状态</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#task-%E7%8A%B6%E6%80%81%E6%9C%BA%E4%B8%8E%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%A8%A1%E5%9E%8B"><span class="nav-number">5.1.</span> <span class="nav-text">1. Task 状态机与生命周期模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E4%BC%9A%E8%AF%9D%E6%8B%93%E6%89%91%E6%8C%87%E9%92%88%E7%9A%84%E6%BA%AF%E6%BA%90%E8%B7%9F%E8%B8%AA%E5%AF%B9%E9%BD%90-openhands"><span class="nav-number">5.2.</span> <span class="nav-text">2.
+基于“会话拓扑指针”的溯源跟踪（对齐 OpenHands）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%A8%E9%93%BE%E8%B7%AF%E5%AE%B9%E9%94%99%E4%B8%8E%E7%BB%93%E6%9E%9C%E5%9B%9E%E4%BC%A0"><span class="nav-number">5.3.</span> <span class="nav-text">3. 全链路容错与结果回传</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AD%90agent%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"><span class="nav-number">6.</span> <span class="nav-text">子agent的异常处理流程</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">209</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">72</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/08/15/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/title%20my-pi-agent--subagent%E4%B8%8Etask%E5%A7%94%E6%B4%BE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="my-pi-agent--subagent与task委派 | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          my-pi-agent--subagent与task委派
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-08-15 00:00:00" itemprop="dateCreated datePublished" datetime="2026-08-15T00:00:00+08:00">2026-08-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-08-17 23:44:38" itemprop="dateModified" datetime="2026-08-17T23:44:38+08:00">2026-08-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/agent%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">agent实战</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/agent%E5%AE%9E%E6%88%98/my-pi-agent/" itemprop="url" rel="index"><span itemprop="name">my-pi-agent</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="功能设计">功能设计</h1>
+<p>在初始设计中，委派执行逻辑（make_task_tool）曾放在 subagents.py
+中。但在 2026-08-16 的设计迭代
+（subagent-task-manager-design.md）中，架构进行了清晰分层：</p>
+<ol type="1">
+<li>subagents.py（定义与仓储）：收窄职责，只负责 Subagent 声明与
+SubagentManager 发现管理。</li>
+<li>tasks.py（任务生命周期，对标 OpenHands）：
+<ul>
+<li>引入 Task（拥有 id、status、result、error）与
+TaskStatus（RUNNING、COMPLETED、ERROR）；</li>
+<li>TaskManager 负责任务生命周期的推进（创建任务 → 过滤工具并剔除 task →
+装配子 System Prompt → 独立 Session 落盘到 subagents/ → 驱动子 Agent
+运行 → 标记状态）。</li>
+</ul></li>
+<li>tools/builtin/task.py（工具桥）：
+<ul>
+<li>make_task_tool 移入内置工具包，仅作为连接大模型工具调用与
+TaskManager 的轻量转换层。</li>
+</ul></li>
+</ol>
+<h2 id="子agent调用机制">子agent调用机制</h2>
+<p>调用机制：一个内建工具</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">主 agent（allowedTools 里含 &quot;Agent&quot;）</span><br><span class="line">  │ 模型根据 description 自动决定，或 prompt 里显式点名</span><br><span class="line">  ▼</span><br><span class="line">调 &quot;Agent&quot; 工具：&#123; subagent_type: &quot;code-reviewer&quot;, prompt: &quot;...&quot; &#125;</span><br><span class="line">  │ -------------------------------</span><br><span class="line">  ▼  运行时（harness）接管，模型看不到这层</span><br><span class="line">查定义（程序式 agents dict / .claude/agents/*.md / 内置 general-purpose）</span><br><span class="line">  │</span><br><span class="line">spawn 子代理（新 context window，只收：自己的 prompt + Agent 工具的 prompt 字符串 + 项目 CLAUDE.md + 工具定义）</span><br><span class="line">  │</span><br><span class="line">父逐字收到子代理的【最终消息】作为 Agent 工具结果</span><br></pre></td></tr></table></figure>
+<p>关键点：对模型而言，这就是一个普通 tool_use——block.name ==
+“Agent”，block.input.subagent_type
+是代理名。模型根本不知道背后是”又起了一个 agent”，harness
+负责创建子会话/执行/回收。</p>
+<h2 id="子agent包含的字段">子agent包含的字段</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">name（默认值：文件名主干名）</span><br><span class="line"></span><br><span class="line">description</span><br><span class="line"></span><br><span class="line">tools（默认值：[]）：单个工具名称或工具名称列表</span><br><span class="line"></span><br><span class="line">skills（默认值：[]）：逗号分隔的字符串或技能名称列表</span><br><span class="line"></span><br><span class="line">model（默认值：inherit）：inherit 表示复用父级 LLM；其他值将作为 LLM 配置方案（profile）名称从 profile_store_dir 或默认 profile 存储区加载</span><br><span class="line"></span><br><span class="line">color（可选）</span><br><span class="line"></span><br><span class="line">max_iteration_per_run（可选，正整数）</span><br><span class="line"></span><br><span class="line">max_budget_per_run（可选，以美元计的正数）</span><br><span class="line"></span><br><span class="line">hooks（可选的 hook 配置）</span><br><span class="line"></span><br><span class="line">profile_store_dir（可选的自定义 LLM profile 目录）</span><br><span class="line"></span><br><span class="line">mcp_config（可选的 MCP 服务器映射表）；mcp_servers 为已弃用的别名</span><br><span class="line"></span><br><span class="line">permission_mode（可选）：always_confirm、never_confirm 或 confirm_risky；省略则继承父级的确认策略</span><br><span class="line"></span><br><span class="line">condenser（可选）：省略则使用默认的摘要压缩器（summarizing condenser）；none 或 false 禁用压缩；传入字典映射则用于配置特定压缩器</span><br></pre></td></tr></table></figure>
+<h2 id="流程">流程</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">agents/*.md ──发现──► SubagentManager ──get(name)──► Subagent 定义</span><br><span class="line">                                                        │ spawn</span><br><span class="line">model 调 task(prompt, agent_type) ──────────────────► 子 Agent 实例</span><br><span class="line">        ▲                                              │ run(prompt)</span><br><span class="line">        └──────────── 只回最终文本 ◄────────────────────┘</span><br></pre></td></tr></table></figure>
+<h1 id="subagents.py">subagents.py</h1>
+<h2 id="数据模型-subagent">数据模型 Subagent</h2>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@dataclass(<span class="params">frozen=<span class="literal">True</span></span>)</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Subagent</span>:</span><br><span class="line">    name: <span class="built_in">str</span>                           <span class="comment"># 子代理唯一标识</span></span><br><span class="line">    description: <span class="built_in">str</span>                    <span class="comment"># 描述：主模型根据此意图决定何时委派</span></span><br><span class="line">    content: <span class="built_in">str</span>                        <span class="comment"># 正文：子代理独立的 System Prompt</span></span><br><span class="line">    file_path: Path                     <span class="comment"># 来源文件路径（内置则为 &lt;builtin&gt;）</span></span><br><span class="line">    model: <span class="built_in">str</span> | <span class="literal">None</span> = <span class="literal">None</span>            <span class="comment"># 模型覆盖：None 表示继承父 Agent 的模型</span></span><br><span class="line">    effort: <span class="built_in">str</span> | <span class="literal">None</span> = <span class="literal">None</span>           <span class="comment"># 推理深度（预留字段）</span></span><br><span class="line">    max_turns: <span class="built_in">int</span> | <span class="literal">None</span> = <span class="literal">None</span>        <span class="comment"># 最大轮数限制（对应 maxTurns）</span></span><br><span class="line">    tools: <span class="built_in">tuple</span>[<span class="built_in">str</span>, ...] | <span class="literal">None</span> = <span class="literal">None</span>       <span class="comment"># 工具白名单：None 表示继承父级所有可用工具</span></span><br><span class="line">    disallowed_tools: <span class="built_in">tuple</span>[<span class="built_in">str</span>, ...] = ()     <span class="comment"># 工具黑名单</span></span><br><span class="line">    skills: <span class="built_in">tuple</span>[<span class="built_in">str</span>, ...] | <span class="literal">None</span> = <span class="literal">None</span>      <span class="comment"># 允许该子代理使用的 skill 名称列表</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="流程演示">流程演示</h2>
+<p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">[启动阶段]</span><br><span class="line">Agent.__init__(subagent_dirs=...)</span><br><span class="line">  ├── SubagentManager 发现并解析所有 .agents/agents/*.md</span><br><span class="line">  ├── format_prompt() 将 &lt;available_agents&gt; 拼入 Agent 的 system_prompt 尾部</span><br><span class="line">  └── Agent 自动注册内置工具 make_task_tool (即 task 工具)</span><br><span class="line"></span><br><span class="line">[运行阶段 - ReAct 循环]</span><br><span class="line">1. 用户提问：&quot;帮我审查一下最新的提交&quot;</span><br><span class="line">2. 主 Agent 决定派发：</span><br><span class="line">   -&gt; tool_call: task(prompt=&quot;审查最新 commit&quot;, subagent_type=&quot;code-reviewer&quot;)</span><br><span class="line">3. TaskManager.start_task():</span><br><span class="line">   ├── 从 SubagentManager 中检索 &quot;code-reviewer&quot; 的 Subagent 实体</span><br><span class="line">   ├── 工具过滤：按 tools/disallowed_tools 过滤，强制剔除 task 工具（硬防线：禁止子代理调 task）</span><br><span class="line">   ├── System Prompt 装配：仅包含 Subagent.content + 声明的 skills 清单（不继承父 Prompt）</span><br><span class="line">   ├── 会话隔离：在父会话目录下创建 subagents/agent-task_00000001.jsonl 独立存储子对话</span><br><span class="line">   ├── 实例化子 Agent：</span><br><span class="line">   │     Agent(</span><br><span class="line">   │         llm=parent.llm,</span><br><span class="line">   │         tools=filtered_tools,</span><br><span class="line">   │         session=child_session,</span><br><span class="line">   │         system_prompt=sub_system_prompt,</span><br><span class="line">   │         model=sub.model or parent.model,</span><br><span class="line">   │         max_iterations=sub.max_turns or parent.max_iterations,</span><br><span class="line">   │         subagent_dirs=[],   # 禁用子代理再去扫描子代理</span><br><span class="line">   │         skill_dirs=[],</span><br><span class="line">   │     )</span><br><span class="line">   └── 执行子 Agent.run()，将子 Agent 的最终总结字符串作为 tool_result 返回给主 Agent</span><br></pre></td></tr></table></figure></p>
+<h2 id="subagentmanager">SubagentManager</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[磁盘文件]</span><br><span class="line">.agents/agents/</span><br><span class="line">   ├── code-reviewer.md</span><br><span class="line">   └── researcher.md</span><br><span class="line">          │</span><br><span class="line">          ▼ 扫描、过滤、解析 (utf-8-sig + parse_frontmatter)</span><br><span class="line">┌──────────────────────────────────────────────────────────┐</span><br><span class="line">│                   SubagentManager                        │</span><br><span class="line">│  - self.subagents: &#123;&quot;code-reviewer&quot;: Subagent(...), ...&#125; │</span><br><span class="line">└──────────────┬────────────────────────────┬──────────────┘</span><br><span class="line">               │ 1. format_prompt()          │ 2. manager.get(&quot;code-reviewer&quot;)</span><br><span class="line">               ▼                             ▼</span><br><span class="line">   [Agent.system_prompt 拼装]         [TaskManager._run 委派派生]</span><br><span class="line">   &lt;available_agents&gt;                - 拿到 Subagent 定义</span><br><span class="line">     &lt;agent&gt;...&lt;/agent&gt;               - 取 sub.content 作为子 Agent system_prompt</span><br><span class="line">   &lt;/available_agents&gt;               - 裁剪 tools / model / maxTurns 启动子 Agent</span><br></pre></td></tr></table></figure>
+<h3 id="核心方法format_prompt">核心方法format_prompt</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">format_prompt</span>(<span class="params">self</span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;全部 agents → XML 清单块（名字 + description）；空 → 空串（进 system）。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> <span class="variable language_">self</span>.subagents:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;&quot;</span></span><br><span class="line">    parts = [<span class="string">&quot;&lt;available_agents&gt;&quot;</span>]</span><br><span class="line">    <span class="keyword">for</span> s <span class="keyword">in</span> <span class="variable language_">self</span>.subagents.values():</span><br><span class="line">        parts.append(<span class="string">&quot;  &lt;agent&gt;&quot;</span>)</span><br><span class="line">        parts.append(<span class="string">f&quot;    &lt;name&gt;<span class="subst">&#123;s.name&#125;</span>&lt;/name&gt;&quot;</span>)</span><br><span class="line">        parts.append(<span class="string">f&quot;    &lt;description&gt;<span class="subst">&#123;s.description&#125;</span>&lt;/description&gt;&quot;</span>)</span><br><span class="line">        parts.append(<span class="string">&quot;  &lt;/agent&gt;&quot;</span>)</span><br><span class="line">    parts.append(<span class="string">&quot;&lt;/available_agents&gt;&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;\n&quot;</span>.join(parts)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>低 Token 占用设计： 格式化生成的 XML 仅包含 name 和 description
+两个核心字段，不会将子代理的详细 System Prompt 正文塞入父 Agent。</li>
+<li>自动拼接进 System Prompt： 在 Agent.__init__ 中，如果
+SubagentManager 包含有效子代理，format_prompt() 输出的内容会被用
+自动拼接在父 Agent 的 system_prompt 尾部： <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">available_agents</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">agent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>code-reviewer<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>审查代码提交与潜在缺陷<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">agent</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">agent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>researcher<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>只读模式调研技术文档和架构<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">agent</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">available_agents</span>&gt;</span></span><br></pre></td></tr></table></figure>
+父模型据此便能知道当前拥有哪些子代理可以委派。</li>
+</ul>
+<h1 id="tasks.py">tasks.py</h1>
+<h2 id="核心数据结构taskstatus-与-task">核心数据结构：TaskStatus 与
+Task</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">TaskStatus</span>(<span class="title class_ inherited__">StrEnum</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;委派任务三态。&quot;&quot;&quot;</span></span><br><span class="line">    RUNNING = <span class="string">&quot;running&quot;</span></span><br><span class="line">    COMPLETED = <span class="string">&quot;completed&quot;</span></span><br><span class="line">    ERROR = <span class="string">&quot;error&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@dataclass</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Task</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;一次委派任务：有 id/状态/结果，可查询（不再是一次性返回值）。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="built_in">id</span>: <span class="built_in">str</span></span><br><span class="line">    status: TaskStatus</span><br><span class="line">    result: <span class="built_in">str</span> | <span class="literal">None</span> = <span class="literal">None</span></span><br><span class="line">    error: <span class="built_in">str</span> | <span class="literal">None</span> = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">set_result</span>(<span class="params">self, result: <span class="built_in">str</span></span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        <span class="variable language_">self</span>.result = result</span><br><span class="line">        <span class="variable language_">self</span>.error = <span class="literal">None</span></span><br><span class="line">        <span class="variable language_">self</span>.status = TaskStatus.COMPLETED</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">set_error</span>(<span class="params">self, error: <span class="built_in">str</span></span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        <span class="variable language_">self</span>.error = error</span><br><span class="line">        <span class="variable language_">self</span>.result = <span class="literal">None</span></span><br><span class="line">        <span class="variable language_">self</span>.status = TaskStatus.ERROR</span><br></pre></td></tr></table></figure>
+<h2 id="prompt-与权限隔离">Prompt 与权限隔离</h2>
+<p>在实例化子 Agent 之前，必须对子代理的 Prompt 边界 与 工具权限
+进行精准裁剪：</p>
+<p>### 1. 子代理 System Prompt 装配（_system_for）</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">_system_for</span>(<span class="params">sub: Subagent, parent: <span class="string">&quot;Agent&quot;</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;子代理 system = 正文 + （若有 skills）子集清单；不收父 system prompt（Claude 官方语义）。&quot;&quot;&quot;</span></span><br><span class="line">    parts = [sub.content]</span><br><span class="line">    <span class="keyword">if</span> sub.skills:</span><br><span class="line">        block = parent.skill_manager.format_prompt(sub.skills)</span><br><span class="line">        <span class="keyword">if</span> block:</span><br><span class="line">            parts.append(block)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;\n\n&quot;</span>.join(p <span class="keyword">for</span> p <span class="keyword">in</span> parts <span class="keyword">if</span> p)</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>正文即人设：子代理仅使用自身的 sub.content 作为基础人设，绝不继承父
+Agent 的 system_prompt（遵循 Claude 官方语义，防
+止父级复杂指令干扰子任务）。</li>
+<li>按需注入 Skill 清单：如果子代理定义了 skills: [“git-diff”,
+“python-eval”]，则利用父级 SkillManager 过滤出对应子集的 XML 清单并拼入
+System Prompt 尾部。</li>
+</ul>
+<p>### 2. 工具过滤与防递归硬防线（_filter_tools）</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">_filter_tools</span>(<span class="params">parent: <span class="string">&quot;Agent&quot;</span>, sub: Subagent</span>) -&gt; <span class="built_in">list</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;父工具集按白/黑名单过滤；task 永不出现（防递归）。&quot;&quot;&quot;</span></span><br><span class="line">    tools = [t <span class="keyword">for</span> t <span class="keyword">in</span> parent.registry.<span class="built_in">list</span>() <span class="keyword">if</span> t.name != <span class="string">&quot;task&quot;</span>]</span><br><span class="line">    <span class="keyword">if</span> sub.tools <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">        allowed = <span class="built_in">set</span>(sub.tools)</span><br><span class="line">        tools = [t <span class="keyword">for</span> t <span class="keyword">in</span> tools <span class="keyword">if</span> t.name <span class="keyword">in</span> allowed]</span><br><span class="line">    black = <span class="built_in">set</span>(sub.disallowed_tools)</span><br><span class="line">    tools = [t <span class="keyword">for</span> t <span class="keyword">in</span> tools <span class="keyword">if</span> t.name <span class="keyword">not</span> <span class="keyword">in</span> black]</span><br><span class="line">    <span class="keyword">return</span> tools</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>权限裁剪：先支持白名单 tools 筛选，再进行黑名单 disallowed_tools
+剔除。</li>
+<li>强制剔除 task 工具（硬防线）：无论配置文件的白名单写了什么，task
+工具一律从子工具集中强制剥离，防止子 Agent 在运行中
+再次委派产生死循环。</li>
+</ul>
+<h2 id="taskmanager">TaskManager</h2>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">TaskManager</span>:</span><br><span class="line">   <span class="string">&quot;&quot;&quot;委派任务的生命周期管理器（对标 OpenHands TaskManager）。&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">   <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, manager: SubagentManager, parent: <span class="string">&quot;Agent&quot;</span></span>):</span><br><span class="line">       <span class="variable language_">self</span>._manager = manager     <span class="comment"># 查 agent 定义</span></span><br><span class="line">       <span class="variable language_">self</span>._parent = parent       <span class="comment"># 供 llm/工具集/skill_manager/max_iterations</span></span><br><span class="line">       <span class="variable language_">self</span>._counter = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">   <span class="keyword">def</span> <span class="title function_">start_task</span>(<span class="params">self, prompt: <span class="built_in">str</span>, subagent_type: <span class="built_in">str</span> = <span class="string">&quot;default&quot;</span></span>) -&gt; Task:</span><br><span class="line">       <span class="string">&quot;&quot;&quot;同步阻塞：建 Task(RUNNING) → spawn → run → 更新状态 → 返回。&quot;&quot;&quot;</span></span><br><span class="line">       task = <span class="variable language_">self</span>._create_task(subagent_type)</span><br><span class="line">       <span class="keyword">try</span>:</span><br><span class="line">           task.set_result(<span class="variable language_">self</span>._run(prompt, subagent_type, task.<span class="built_in">id</span>))</span><br><span class="line">       <span class="keyword">except</span> Exception <span class="keyword">as</span> exc:</span><br><span class="line">           task.set_error(<span class="built_in">str</span>(exc))</span><br><span class="line">       <span class="keyword">return</span> task</span><br></pre></td></tr></table></figure></p>
+<p>start_task 是对外的核心方法，它通过 try…except
+兜住整个派生与执行流程。无论是子代理找不到、大模型报错、还是子 Agent
+抛出异常，都会被捕获并转换为 task.set_error(…)，返回包含错误描述的 Task
+对象，绝不让未处理异常打崩父 ReAct 循环。</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line">  ┌────────────────────────────────────────────────────────┐</span><br><span class="line">  │    TaskManager._run(prompt, subagent_type, task_id)    │</span><br><span class="line">  └───────────────────────────┬────────────────────────────┘</span><br><span class="line">                              │</span><br><span class="line">                              ▼</span><br><span class="line">               ┌──────────────────────────────┐</span><br><span class="line">               │ 1. 查阅子代理定义 (Lookup)   │</span><br><span class="line">               │    sub = manager.get(type)   │</span><br><span class="line">               └──────────────┬───────────────┘</span><br><span class="line">                              │</span><br><span class="line">           ┌──────────────────┴──────────────────┐</span><br><span class="line">           │ 是否找到 Subagent 定义？             │</span><br><span class="line">           └─────────┬───────────────────┬───────┘</span><br><span class="line">        [未找到]     │                   │ [找到]</span><br><span class="line">                     ▼                   │</span><br><span class="line">        ┌─────────────────────────┐      │</span><br><span class="line">        │ subagent_type==&quot;default&quot;│      │</span><br><span class="line">        └────┬───────────────┬────┘      │</span><br><span class="line">      [是]   │               │ [否]      │</span><br><span class="line">             ▼               ▼           │</span><br><span class="line">┌─────────────────┐   ┌────────────────┐ │</span><br><span class="line">│使用内置默认定义 │   │抛出 ValueError │ │</span><br><span class="line">│DEFAULT_SUBAGENT │   │列出可用 agents │ │</span><br><span class="line">└────────────┬────┘   └───────┬────────┘ │</span><br><span class="line">             │                │ (失败)   │</span><br><span class="line">             └─────────┬──────┴──────────┘</span><br><span class="line">                       │</span><br><span class="line">                       ▼</span><br><span class="line">    ┌──────────────────────────────────────┐</span><br><span class="line">    │ 2. 创建子代理独立 Session            │</span><br><span class="line">    │    - 路径: subagents/agent-&#123;id&#125;.jsonl│</span><br><span class="line">    │    - 注入 Header 元数据:             │</span><br><span class="line">    │      * agent_type                    │</span><br><span class="line">    │      * parent_session_id             │</span><br><span class="line">    │    - child_session.save()            │</span><br><span class="line">    └──────────────────┬───────────────────┘</span><br><span class="line">                       │</span><br><span class="line">                       ▼</span><br><span class="line">    ┌──────────────────────────────────────┐</span><br><span class="line">    │ 3. 准备隔离环境与权限 (Sanitize)      │</span><br><span class="line">    │    ├─ _system_for(sub, parent)       │</span><br><span class="line">    │    │   正文 + (若有) 声明 skills 清单│</span><br><span class="line">    │    └─ _filter_tools(parent, sub)     │</span><br><span class="line">    │        按白/黑名单过滤，强制剔除 task│</span><br><span class="line">    └──────────────────┬───────────────────┘</span><br><span class="line">                       │</span><br><span class="line">                       ▼</span><br><span class="line">    ┌──────────────────────────────────────┐</span><br><span class="line">    │ 4. 实例化子 Agent (Spawn)            │</span><br><span class="line">    │    Agent(                            │</span><br><span class="line">    │      llm = parent.llm,               │</span><br><span class="line">    │      tools = 过滤后工具集,           │</span><br><span class="line">    │      session = child_session,        │</span><br><span class="line">    │      system_prompt = 子专属 Prompt,  │</span><br><span class="line">    │      model = sub.model 覆盖/继承,    │</span><br><span class="line">    │      max_iterations = 轮数覆盖/继承, │</span><br><span class="line">    │      skill_dirs = [],                │</span><br><span class="line">    │      subagent_dirs = []  &lt;-- 防递归! │</span><br><span class="line">    │    )                                 │</span><br><span class="line">    └──────────────────┬───────────────────┘</span><br><span class="line">                       │</span><br><span class="line">                       ▼</span><br><span class="line">    ┌──────────────────────────────────────┐</span><br><span class="line">    │ 5. 驱动子 Agent 独立运行             │</span><br><span class="line">    │    result = child.run(prompt)        │</span><br><span class="line">    └──────────────────┬───────────────────┘</span><br><span class="line">                       │</span><br><span class="line">           ┌───────────┴───────────┐</span><br><span class="line">           │ 执行是否发生未捕获异常?│</span><br><span class="line">           └─────┬───────────┬─────┘</span><br><span class="line">        [成功]   │           │ [抛出异常]</span><br><span class="line">                 ▼           ▼</span><br><span class="line">  ┌───────────────────────┐ ┌────────────────────────────┐</span><br><span class="line">  │ 结果判空兜底:         │ │ 捕获并包装为:              │</span><br><span class="line">  │ result or &quot;(no summary│ │ RuntimeError(&quot;Subagent...  │</span><br><span class="line">  └──────────────┬────────┘ │   failed: ...&quot;)            │</span><br><span class="line">                 │          └─────────────┬──────────────┘</span><br><span class="line">                 │                        │</span><br><span class="line">                 ▼                        ▼</span><br><span class="line">  ┌───────────────────────────────────────────────────────┐</span><br><span class="line">  │   返回最终文本摘要字符串 / 异常冒泡给 start_task 捕获  │</span><br><span class="line">  └───────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure></p>
+<p>关键技术细节亮点：</p>
+<ol type="1">
+<li>循环导入解解（Circular Import Resolution）： Agent 在初始化时需要
+import make_task_tool（依赖 TaskManager），而 TaskManager._run
+需要实例化 Agent。 这里采用了 TYPE_CHECKING + _run 内部延迟 import Agent
+的标准方案，优雅消解了循环依赖。</li>
+<li>子代理独立持久化（对齐 Claude Code 目录规范）： 子代理拥有专属的
+Session 文件，落盘在父 Session 所在目录下的
+subagents/agent-task_00000001.jsonl 中，且在 Header 的 metadata
+中记录了：
+<ul>
+<li>agent_type：子代理类型；</li>
+<li>parent_session_id：关联的父会话
+ID（通过父子会话拓扑指针关联，保证可溯源且不引入死状态）。
+这使得子代理的交互全流程都可以溯源复盘，同时完全不污染父会话的消息历史。</li>
+</ul></li>
+<li>Fresh Context（全新上下文）： 子 Agent
+拥有全新的消息队列，仅接收当前的 prompt 作为单条 user 消息输入，不携带父
+Agent 之前的长历史，大幅节省 Token 并提升模型注意力。</li>
+</ol>
+<h2 id="task工具">task工具</h2>
+<p>在 tools/builtin/task.py 中，make_task_tool 充当了 Agent 与
+TaskManager 之间的适配层：</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">make_task_tool</span>(<span class="params">manager: SubagentManager, parent: <span class="string">&quot;Agent&quot;</span></span>) -&gt; Tool:</span><br><span class="line">    task_manager = TaskManager(manager, parent)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">task</span>(<span class="params">prompt: <span class="built_in">str</span>, agent_type: <span class="built_in">str</span> = <span class="string">&quot;default&quot;</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">        t = task_manager.start_task(prompt, agent_type)</span><br><span class="line">        <span class="keyword">return</span> t.result <span class="keyword">if</span> t.status <span class="keyword">is</span> TaskStatus.COMPLETED <span class="keyword">else</span> (t.error <span class="keyword">or</span> <span class="string">&quot;(no summary)&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> Tool(func=task, name=<span class="string">&quot;task&quot;</span>)</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>大模型发起工具调用 task(prompt=“…”, agent_type=“…”)；</li>
+<li>工具桥将调用转交给 task_manager.start_task；</li>
+<li>工具桥根据 Task.status 提取 t.result 或
+t.error，作为字符串直接喂回父模型的 ReAct 观察管道（Observation）。</li>
+</ul>
+<h1 id="如何防止子代理中再次调用-task-委派导致无限递归">如何防止子代理中再次调用
+task 委派导致无限递归</h1>
+<p>在框架设计中，防止子代理（Subagent）再次调用 <code>task</code>
+委派导致无限递归死循环（Anti-Recursion Loop），采用的是
+<strong>“切断继承 + 抑制自生成” 的双重硬防线设计</strong>，并辅以
+<strong>认知层隔离</strong>。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">                 子代理派生请求 (TaskManager._run)</span><br><span class="line">                                │</span><br><span class="line">        ┌───────────────────────┴───────────────────────┐</span><br><span class="line">        │                                               │</span><br><span class="line">        ▼ 【第一道防线：防继承】                          ▼ 【第二道防线：防自生】</span><br><span class="line">_filter_tools(parent, sub)                     Agent(..., subagent_dirs=[])</span><br><span class="line">        │                                               │</span><br><span class="line">        ▼                                               ▼</span><br><span class="line">强制过滤 t.name != &quot;task&quot;                      SubagentManager 为空 (len == 0)</span><br><span class="line">        │                                               │</span><br><span class="line">        ▼                                               ▼</span><br><span class="line">传入子 Agent 的 tools 参数无 task               bool(subagent_manager) == False</span><br><span class="line">        │                                               │</span><br><span class="line">        │                                               ▼</span><br><span class="line">        │                                      Agent._register_tools</span><br><span class="line">        │                                      跳过 make_task_tool 注册</span><br><span class="line">        │                                               │</span><br><span class="line">        └───────────────────────┬───────────────────────┘</span><br><span class="line">                                │</span><br><span class="line">                                ▼</span><br><span class="line">                   【子 Agent ToolRegistry】</span><br><span class="line">                   物理上彻底不存在 task 工具</span><br><span class="line">                                │</span><br><span class="line">                                ▼</span><br><span class="line">                   【第三道防线：Prompt 认知隔离】</span><br><span class="line">                   System Prompt 无 &lt;available_agents&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="第一道防线切断引用继承-_filter_tools-强制剔除-task对标-learn-claude-code">1.
+第一道防线：切断引用继承 —— <code>_filter_tools</code> 强制剔除
+<code>task</code>（对标 learn-claude-code）</h2>
+<p>在 <code>tasks.py</code> 中，当 <code>TaskManager</code> 从父 Agent
+提取可用工具准备传递给子 Agent
+时，在工具过滤的最源头就进行了物理级硬剥离：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">_filter_tools</span>(<span class="params">parent: Agent, sub: Subagent</span>) -&gt; <span class="built_in">list</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;父工具集按白/黑名单过滤；task 永不出现（防递归）。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># 核心：第一行就强制剥离 task，不让它进入候选集</span></span><br><span class="line">    tools = [t <span class="keyword">for</span> t <span class="keyword">in</span> parent.registry.<span class="built_in">list</span>() <span class="keyword">if</span> t.name != <span class="string">&quot;task&quot;</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> sub.tools <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">        allowed = <span class="built_in">set</span>(sub.tools)</span><br><span class="line">        tools = [t <span class="keyword">for</span> t <span class="keyword">in</span> tools <span class="keyword">if</span> t.name <span class="keyword">in</span> allowed]</span><br><span class="line"></span><br><span class="line">    black = <span class="built_in">set</span>(sub.disallowed_tools)</span><br><span class="line">    tools = [t <span class="keyword">for</span> t <span class="keyword">in</span> tools <span class="keyword">if</span> t.name <span class="keyword">not</span> <span class="keyword">in</span> black]</span><br><span class="line">    <span class="keyword">return</span> tools</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>无视白名单声明</strong>：即使开发者在
+<code>.agents/agents/xxx.md</code> 的 Frontmatter 中写了
+<code>tools: read, bash, task</code>，由于第一步
+<code>t.name != "task"</code> 已经把 <code>task</code>
+从列表中过滤掉，后续的白名单判定也绝不可能拿到 <code>task</code>。</li>
+<li><strong>解决的问题</strong>：<strong>防止子 Agent 直接“继承”拿到父
+Agent 已经生成的 <code>task</code> 工具对象引用。</strong></li>
+</ul>
+<h2 id="第二道防线抑制自发生装配-subagent_dirs-触发注册短路对标-openhands-工厂隔离">2.
+第二道防线：抑制自发生装配 —— <code>subagent_dirs=[]</code>
+触发注册短路（对标 OpenHands 工厂隔离）</h2>
+<p>仅仅从父级工具列表中剔除 <code>task</code> 还不够，因为
+<code>Agent</code> 自身在初始化时具备<strong>自动探测本地
+<code>.agents/agents/*.md</code> 并自动注册 <code>task</code>
+工具的能力</strong>。</p>
+<p>因此，在 <code>TaskManager._run</code> 中实例化子 Agent
+时，显式传入了 <code>subagent_dirs=[]</code>（禁用态）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">child = Agent(</span><br><span class="line">    llm=<span class="variable language_">self</span>._parent.llm,</span><br><span class="line">    tools=_filter_tools(<span class="variable language_">self</span>._parent, sub),</span><br><span class="line">    session=child_session,</span><br><span class="line">    system_prompt=_system_for(sub, <span class="variable language_">self</span>._parent),</span><br><span class="line">    model=sub.model,</span><br><span class="line">    max_iterations=sub.max_turns <span class="keyword">if</span> sub.max_turns <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span> <span class="keyword">else</span> <span class="variable language_">self</span>._parent.max_iterations,</span><br><span class="line">    skill_dirs=[],</span><br><span class="line">    subagent_dirs=[],  <span class="comment"># &lt;-- 核心防线：显式禁用子代理目录探测与装配</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>内部连锁反应机制： 1.
+<strong>空仓储生成</strong>：<code>SubagentManager([])</code>
+收到空列表，不会扫描任何目录，<code>self.subagents</code> 为空字典
+<code>&#123;&#125;</code>。 2. <strong>利用 Python 容器协议 <code>__len__</code>
+实现布尔截断</strong>： 在 <code>subagents.py</code>
+中，<code>SubagentManager</code> 实现了 <code>__len__</code>：
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">__len__</span>(<span class="params">self</span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">len</span>(<span class="variable language_">self</span>.subagents)</span><br></pre></td></tr></table></figure> 当对象实现了 <code>__len__</code>
+时，<code>bool(obj)</code> 会依据 <code>len(obj) &gt; 0</code>
+来判定。因为 <code>len == 0</code>，所以
+<code>bool(subagent_manager)</code> 严格为 <code>False</code>。 3.
+<strong><code>Agent._register_tools</code> 自动短路</strong>：
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">_register_tools</span>(<span class="params">self, tools: <span class="built_in">list</span>[Tool]</span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> tools:</span><br><span class="line">        <span class="variable language_">self</span>.registry.register(t)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 因为 self.subagent_manager 为 False，以下整个代码块直接跳过！</span></span><br><span class="line">    <span class="keyword">if</span> <span class="variable language_">self</span>.subagent_manager:</span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.registry.get(<span class="string">&quot;task&quot;</span>) <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">&quot;Tool name &#x27;task&#x27; conflicts...&quot;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.registry.register(make_task_tool(<span class="variable language_">self</span>.subagent_manager, <span class="variable language_">self</span>))</span><br></pre></td></tr></table></figure> - <strong>解决的问题</strong>：<strong>防止子 Agent
+在初始化时“自发生成”并注册一个新的 <code>task</code> 工具。</strong></p>
+<h2 id="第三道防线认知层隔离-抑制-available_agents-清单注入">3.
+第三道防线：认知层隔离 —— 抑制 <code>&lt;available_agents&gt;</code>
+清单注入</h2>
+<p>大模型发起工具调用的前提是“知道存在这项能力”。</p>
+<p>由于第二道防线中 <code>SubagentManager</code> 为空，在拼接子代理的
+System Prompt 时： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">format_prompt</span>(<span class="params">self</span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> <span class="variable language_">self</span>.subagents:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;&quot;</span>  <span class="comment"># 仓储为空时直接返回空字符串</span></span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>子 Agent 的 System Prompt 尾部<strong>不会被注入任何
+<code>&lt;available_agents&gt;</code> XML 块</strong>；</li>
+<li><strong>子模型在认知层面根本不知道系统具备“子代理委派”功能</strong>，从源头消除了产生“尝试调用子代理”的幻觉可能。</li>
+</ul>
+<hr>
+<h1 id="如何跟踪task状态">如何跟踪task状态</h1>
+<p>在设计任务跟踪与生命周期管理时，我们借鉴了
+<strong>OpenHands（<code>openhands/tools/task/manager.py</code>）</strong>
+的任务状态机体系与会话拓扑设计，实现了结构化、可落盘且零死状态的状态跟踪体系。</p>
+<h2 id="task-状态机与生命周期模型">1. Task 状态机与生命周期模型</h2>
+<p>将传统的单次函数返回值升级为具备明确生命周期的 <code>Task</code>
+实体与三态状态机：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">TaskStatus</span>(<span class="title class_ inherited__">StrEnum</span>):</span><br><span class="line">    RUNNING = <span class="string">&quot;running&quot;</span>      <span class="comment"># 任务正在由子 Agent 独立执行</span></span><br><span class="line">    COMPLETED = <span class="string">&quot;completed&quot;</span>  <span class="comment"># 任务执行成功并返回了有效的文本总结</span></span><br><span class="line">    ERROR = <span class="string">&quot;error&quot;</span>          <span class="comment"># 任务因未知名 agent_type、异常或超轮数终止</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@dataclass</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Task</span>:</span><br><span class="line">    <span class="built_in">id</span>: <span class="built_in">str</span>                  <span class="comment"># 格式为 task_00000001 的递增唯一标识</span></span><br><span class="line">    status: TaskStatus</span><br><span class="line">    result: <span class="built_in">str</span> | <span class="literal">None</span> = <span class="literal">None</span></span><br><span class="line">    error: <span class="built_in">str</span> | <span class="literal">None</span> = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">set_result</span>(<span class="params">self, result: <span class="built_in">str</span></span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        <span class="variable language_">self</span>.result = result</span><br><span class="line">        <span class="variable language_">self</span>.error = <span class="literal">None</span></span><br><span class="line">        <span class="variable language_">self</span>.status = TaskStatus.COMPLETED</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">set_error</span>(<span class="params">self, error: <span class="built_in">str</span></span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        <span class="variable language_">self</span>.error = error</span><br><span class="line">        <span class="variable language_">self</span>.result = <span class="literal">None</span></span><br><span class="line">        <span class="variable language_">self</span>.status = TaskStatus.ERROR</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>原子互斥更新</strong>：<code>set_result</code> 与
+<code>set_error</code> 确保 <code>result</code> 与 <code>error</code>
+状态严格互斥；</li>
+<li><strong>同步与异步一致性</strong>：在当前的同步阻塞执行模式下，<code>Task</code>
+从 <code>RUNNING</code> 启动，并在 <code>TaskManager.start_task</code>
+返回时即确定为 <code>COMPLETED</code> 或
+<code>ERROR</code>；同时为未来演进至 <code>async</code> /
+<code>background</code> 后台异步委派留出了统一接口。</li>
+</ul>
+<h2 id="基于会话拓扑指针的溯源跟踪对齐-openhands">2.
+基于“会话拓扑指针”的溯源跟踪（对齐 OpenHands）</h2>
+<p>在追踪一个任务会话时，我们摒弃了容易造成冗余死状态的局部深度计数器（如
+<code>spawn_depth</code>），改为采用与 OpenHands / Anthropic SDK 一致的
+<strong>“父子拓扑指针（Parent Linkage）”</strong> 方案：</p>
+<ol type="1">
+<li><strong>子会话独立物理隔离</strong>： 子会话保存在父会话目录下的
+<code>subagents/agent-&#123;task_id&#125;.jsonl</code>
+中，完全不污染父会话的对话历史。</li>
+<li><strong>JSONL Header 元数据溯源</strong>： <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;20260816-220000-abcd1234&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;created_at&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2026-08-16T22:00:00.000000&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;cwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;D:/code/project&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;metadata&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;agent_type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;code-reviewer&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;parent_session_id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;20260816-215000-efgh5678&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong><code>parent_session_id</code></strong>：天然标明当前会话是一个子代理任务，且精确指向派生它的父会话
+ID；</li>
+<li><strong><code>agent_type</code></strong>：标明当前子代理执行时所使用的角色定义。</li>
+</ul></li>
+</ol>
+<h2 id="全链路容错与结果回传">3. 全链路容错与结果回传</h2>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">主模型调 task 工具</span><br><span class="line">  │</span><br><span class="line">  ▼</span><br><span class="line">TaskManager.start_task</span><br><span class="line">  ├── 创建 Task(id=&quot;task_00000001&quot;, status=RUNNING)</span><br><span class="line">  ├── 尝试执行 _run(...)</span><br><span class="line">  │     ├── 成功 ──► task.set_result(summary) ──► status = COMPLETED</span><br><span class="line">  │     └── 失败 ──► task.set_error(err_msg)  ──► status = ERROR</span><br><span class="line">  ▼</span><br><span class="line">make_task_tool 工具桥</span><br><span class="line">  ├── COMPLETED ──► 返回 task.result</span><br><span class="line">  └── ERROR     ──► 返回 task.error</span><br><span class="line">  │</span><br><span class="line">  ▼</span><br><span class="line">作为 Observation 喂回主模型 ReAct 循环（永不抛未捕获异常）</span><br></pre></td></tr></table></figure>
+<p>通过这一闭环，无论子代理成功完成还是中途遇到未知角色/运行报错，任务状态都能被完整捕获并平滑反馈给主模型，主模型据此可继续自我纠错或汇总最终答复。</p>
+<h1 id="子agent的异常处理流程">子agent的异常处理流程</h1>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">步骤 ①：子 Agent 运行崩溃</span><br><span class="line">       │  child.run(prompt) 抛出底层异常 (例如: TimeoutError)</span><br><span class="line">       ▼</span><br><span class="line">步骤 ②：TaskManager._run 捕获并包装</span><br><span class="line">       │  except Exception as exc:</span><br><span class="line">       │      raise RuntimeError(&quot;Subagent &#x27;code-reviewer&#x27; failed: TimeoutError&quot;) from exc</span><br><span class="line">       ▼</span><br><span class="line">步骤 ③：TaskManager.start_task 捕获并沉淀为状态（不再往上抛异常！）</span><br><span class="line">       │  # tasks.py -&gt; start_task</span><br><span class="line">       │  task = self._create_task(...)</span><br><span class="line">       │  try:</span><br><span class="line">       │      task.set_result(self._run(...))</span><br><span class="line">       │  except Exception as exc:</span><br><span class="line">       │      task.set_error(str(exc))   &lt;-- 错误字符串存入 task.error, status 切为 ERROR</span><br><span class="line">       │  return task                   &lt;-- 返回 Task 实体对象给工具桥</span><br><span class="line">       ▼</span><br><span class="line">步骤 ④：make_task_tool 工具桥解包为文本返回给大模型</span><br><span class="line">       │  # tools/builtin/task.py -&gt; make_task_tool</span><br><span class="line">       │  t = task_manager.start_task(...)</span><br><span class="line">       │  return t.result if t.status is COMPLETED else (t.error or &quot;(no summary)&quot;)</span><br><span class="line">       │  # 此处返回纯文本: &quot;Subagent &#x27;code-reviewer&#x27; failed: TimeoutError&quot;</span><br><span class="line">       ▼</span><br><span class="line">步骤 ⑤：父 Agent 的 ReAct 循环接收为工具执行结果 (Observation)</span><br><span class="line">       │  作为一条 role=&quot;tool&quot; 的消息写进父 Agent 的 messages 历史，</span><br><span class="line">       │  父模型看到这行报错，开始思考并自我修正（换工具重试或向用户报告）。</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/agent/" rel="tag"># agent</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/08/14/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--skill%E4%B8%8Eplugin/" rel="prev" title="my-pi-agent--skill与plugin">
+                  <i class="fa fa-angle-left"></i> my-pi-agent--skill与plugin
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/08/15/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E5%BC%82%E6%AD%A5%E6%94%AF%E6%8C%81/" rel="next" title="my-pi-agent--异步支持">
+                  my-pi-agent--异步支持 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js","integrity":"sha256-stuqcu2FrjYCXDOytWFA5SoUE/r3nkp6gTglzNSlavU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

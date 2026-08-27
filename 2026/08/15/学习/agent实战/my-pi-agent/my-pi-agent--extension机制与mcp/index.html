@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="pi 的 extension 机制 extension 就是一个 TypeScript 模块，默认导出一个工厂函数，拿到一个 ExtensionAPI 对象，往里面注册东西。 定义在 core&#x2F;extensions&#x2F;types.ts:1193 的 ExtensionAPI，分六大类：         类别 API 作用     事件订阅 pi.on(eve">
+<meta property="og:type" content="article">
+<meta property="og:title" content="my-pi-agent--extension机制与mcp">
+<meta property="og:url" content="http://example.com/2026/08/15/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--extension%E6%9C%BA%E5%88%B6%E4%B8%8Emcp/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="pi 的 extension 机制 extension 就是一个 TypeScript 模块，默认导出一个工厂函数，拿到一个 ExtensionAPI 对象，往里面注册东西。 定义在 core&#x2F;extensions&#x2F;types.ts:1193 的 ExtensionAPI，分六大类：         类别 API 作用     事件订阅 pi.on(eve">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-08-14T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-25T16:00:00.000Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="agent">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2026/08/15/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--extension%E6%9C%BA%E5%88%B6%E4%B8%8Emcp/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2026/08/15/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--extension%E6%9C%BA%E5%88%B6%E4%B8%8Emcp/","path":"2026/08/15/学习/agent实战/my-pi-agent/my-pi-agent--extension机制与mcp/","title":"my-pi-agent--extension机制与mcp"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>my-pi-agent--extension机制与mcp | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#pi-%E7%9A%84-extension-%E6%9C%BA%E5%88%B6"><span class="nav-number">1.</span> <span class="nav-text">pi 的 extension 机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%BA%E5%88%B6%E5%8E%9F%E7%90%86"><span class="nav-number">1.1.</span> <span class="nav-text">机制原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%8B%A6%E6%88%AA"><span class="nav-number">1.1.1.</span> <span class="nav-text">生命周期拦截</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E4%BD%93%E7%B3%BBpi.registertool"><span class="nav-number">1.1.2.</span> <span class="nav-text">自定义工具体系：pi.registerTool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E5%91%BD%E4%BB%A4%E8%B0%83%E5%BA%A6%E4%B8%8E%E5%8F%8D%E5%B0%84%E8%B7%AF%E7%94%B1bypass-llm-dispatching"><span class="nav-number">1.1.3.</span> <span class="nav-text">本地命令调度与反射路由（Bypass-LLM
+Dispatching）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B"><span class="nav-number">1.1.4.</span> <span class="nav-text">案例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%82%E6%AD%A5%E6%B6%88%E6%81%AF%E5%AF%BC%E6%B5%81%E4%B8%8E%E6%8F%92%E9%98%9F%E6%9C%BA%E5%88%B6message-steering"><span class="nav-number">1.1.5.</span> <span class="nav-text">异步消息导流与插队机制（Message
+Steering）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8-extension-%E5%AE%9E%E7%8E%B0subagent"><span class="nav-number">1.2.</span> <span class="nav-text">如何利用 extension
+实现subagent</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%88%A9%E7%94%A8-extension-%E5%AE%9E%E7%8E%B0mcp"><span class="nav-number">1.3.</span> <span class="nav-text">如何利用 extension 实现mcp</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#extensions.py"><span class="nav-number">2.</span> <span class="nav-text">extensions.py</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#extensionapi"><span class="nav-number">2.1.</span> <span class="nav-text">ExtensionAPI</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E8%83%BD%E5%8A%9B-1%E4%BA%8B%E4%BB%B6%E8%AE%A2%E9%98%85%E7%B3%BB%E7%BB%9F-api.on"><span class="nav-number">2.1.1.</span> <span class="nav-text">核心能力 1：事件订阅系统 ——
+api.on</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%9F%E4%B8%80%E5%B9%B2%E9%A2%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84hookresult-%E4%B8%8E%E4%BA%94%E5%A4%A7%E5%86%B3%E7%AD%96%E7%82%B9"><span class="nav-number">2.1.1.1.</span> <span class="nav-text">统一干预数据结构：HookResult
+与五大决策点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E8%83%BD%E5%8A%9B-2%E5%B7%A5%E5%85%B7%E6%B3%A8%E5%86%8C%E7%B3%BB%E7%BB%9F-api.tool-%E4%B8%8E-api.register_tool"><span class="nav-number">2.1.2.</span> <span class="nav-text">核心能力
+2：工具注册系统 —— api.tool 与 api.register_tool</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E8%83%BD%E5%8A%9B-3%E5%91%BD%E4%BB%A4%E6%B3%A8%E5%86%8C%E7%B3%BB%E7%BB%9F-api.command-%E4%B8%8E-api.register_command"><span class="nav-number">2.1.3.</span> <span class="nav-text">核心能力
+3：命令注册系统 —— api.command 与 api.register_command</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#extensionmanager"><span class="nav-number">2.2.</span> <span class="nav-text">ExtensionManager</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E4%B8%8E%E6%96%B9%E6%B3%95%E5%85%A8%E6%99%AF%E5%9B%BE"><span class="nav-number">2.2.1.</span> <span class="nav-text">生命周期与方法全景图</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#mcp"><span class="nav-number">3.</span> <span class="nav-text">mcp</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E7%B1%BBmcpserverconfig"><span class="nav-number">3.1.</span> <span class="nav-text">配置数据类：MCPServerConfig</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E8%BF%9E%E6%8E%A5%E7%AE%A1%E7%90%86%E5%99%A8mcpconnection"><span class="nav-number">3.2.</span> <span class="nav-text">单连接管理器：MCPConnection</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mcp%E7%9A%84%E5%BA%95%E5%B1%82%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AEjson-rpc-2.0"><span class="nav-number">3.2.1.</span> <span class="nav-text">mcp的底层通信协议：JSON-RPC
+2.0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%A0%E8%BE%93%E5%B1%82%E6%A8%A1%E5%BC%8Fstdio-vs-ssehttp"><span class="nav-number">3.2.2.</span> <span class="nav-text">传输层模式：Stdio vs SSE&#x2F;HTTP</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E6%9C%8D%E5%8A%A1%E5%8D%8F%E8%B0%83%E5%99%A8mcpclientmanager"><span class="nav-number">3.3.</span> <span class="nav-text">多服务协调器：MCPClientManager</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E8%BF%9E%E6%8E%A5%E6%B1%A0%E7%8A%B6%E6%80%81init"><span class="nav-number">3.3.1.</span> <span class="nav-text">一、连接池状态：init</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">209</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">72</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/08/15/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--extension%E6%9C%BA%E5%88%B6%E4%B8%8Emcp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="my-pi-agent--extension机制与mcp | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          my-pi-agent--extension机制与mcp
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-08-15 00:00:00" itemprop="dateCreated datePublished" datetime="2026-08-15T00:00:00+08:00">2026-08-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-08-26 00:00:00" itemprop="dateModified" datetime="2026-08-26T00:00:00+08:00">2026-08-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/agent%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">agent实战</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/agent%E5%AE%9E%E6%88%98/my-pi-agent/" itemprop="url" rel="index"><span itemprop="name">my-pi-agent</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="pi-的-extension-机制">pi 的 extension 机制</h1>
+<p>extension 就是一个 TypeScript 模块，默认导出一个工厂函数，拿到一个
+ExtensionAPI 对象，往里面注册东西。</p>
+<p>定义在 <code>core/extensions/types.ts:1193</code> 的
+<code>ExtensionAPI</code>，分六大类：</p>
+<table>
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr>
+<th>类别</th>
+<th>API</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>事件订阅</strong></td>
+<td><code>pi.on(event, handler)</code></td>
+<td>30+
+种事件：会话（<code>session_start/session_compact</code>…）、Agent（<code>turn_start/message_end/agent_end</code>…）、工具（<code>tool_call/tool_result</code>，可就地改参数或
+block）、模型、输入、context（改发给 LLM 的消息）</td>
+</tr>
+<tr>
+<td><strong>工具注册</strong></td>
+<td><code>pi.registerTool(...)</code></td>
+<td>注册 LLM 能调用的工具（subagent 用的就是它）</td>
+</tr>
+<tr>
+<td><strong>命令/快捷键/flag</strong></td>
+<td><code>registerCommand / registerShortcut / registerFlag</code></td>
+<td>加 <code>/mycmd</code>、按键、CLI flag</td>
+</tr>
+<tr>
+<td><strong>渲染</strong></td>
+<td><code>registerMessageRenderer / registerMarkdownTransformer / registerEntryRenderer</code></td>
+<td>自定义消息、Markdown、条目的 TUI 渲染</td>
+</tr>
+<tr>
+<td><strong>动作</strong></td>
+<td><code>sendMessage / sendUserMessage / appendEntry / setSessionName / exec / setModel / getActiveTools…</code></td>
+<td>主动驱动 agent、持久化状态、切模型</td>
+</tr>
+<tr>
+<td><strong>Provider</strong></td>
+<td><code>registerProvider</code></td>
+<td>注册/覆盖模型供应商</td>
+</tr>
+</tbody>
+</table>
+<h2 id="机制原理">机制原理</h2>
+<p>pi 的扩展系统采用了高度解耦的 “静态注册面（ExtensionAPI） +
+动态运行上下文（ExtensionContext）” 设计：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">               ┌────────────────────────────────────────────────────────┐</span><br><span class="line">               │              Extension Factory Entry                   │</span><br><span class="line">               │        export default function (pi: ExtensionAPI)      │</span><br><span class="line">               └───────────────────────────┬────────────────────────────┘</span><br><span class="line">                                           │</span><br><span class="line">             ┌─────────────────────────────┴─────────────────────────────┐</span><br><span class="line">             ▼ (启动装配阶段)                                              ▼ (运行时触发阶段)</span><br><span class="line">┌────────────────────────────────────────┐                  ┌────────────────────────────────────────┐</span><br><span class="line">│        ExtensionAPI (pi 对象)          │                  │       ExtensionContext (ctx 对象)      │</span><br><span class="line">│  【静态注册面】                         │                  │  【动态运行上下文】                     │</span><br><span class="line">│  - pi.registerTool(...)                │                  │  - ctx.ui (弹窗/选择/通知/底部状态栏)  │</span><br><span class="line">│  - pi.on(event, handler)               │ ──触发事件注入──► │  - ctx.sessionManager (会话树只读访问) │</span><br><span class="line">│  - pi.registerCommand(...)             │                  │  - ctx.modelRegistry (模型与认证)      │</span><br><span class="line">│  - pi.registerProvider(...)            │                  │  - ctx.signal (中止信号 AbortSignal)   │</span><br><span class="line">│  - pi.sendMessage() / sendUserMessage()│                  │  - ctx.cwd / ctx.mode / ctx.hasUI      │</span><br><span class="line">└────────────────────────────────────────┘                  └────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+<ol type="1">
+<li>ExtensionAPI（pi 实体）：
+<ul>
+<li>传给扩展入口函数的参数；</li>
+<li>负责声明<strong>“这个扩展有什么能力”</strong>（注册了哪些工具、订阅了哪些事件、扩展了哪些斜杠命令）。</li>
+</ul></li>
+<li>ExtensionContext（ctx 实体）：
+<ul>
+<li>当事件触发、命令执行或工具被调用时，作为运行时参数动态传入
+Handler；</li>
+<li>负责提供<strong>“当前环境的即时上下文与交互能力”</strong>（当前会话树、TUI
+交互接口、Abort 取消信号等）。</li>
+</ul></li>
+</ol>
+<h3 id="生命周期拦截">生命周期拦截</h3>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">用户输入 (User Prompt)</span><br><span class="line">  │</span><br><span class="line">  ├─► [1. input 事件] ──────────► 扩展可直接 handled (不调LLM) 或 transform (改写Prompt)</span><br><span class="line">  ├─► [2. before_agent_start] ──► 扩展可动态注入上下文消息、改写系统提示词 SystemPrompt</span><br><span class="line">  │</span><br><span class="line">  ▼</span><br><span class="line">进入 Agent ReAct 循环</span><br><span class="line">  │</span><br><span class="line">  ├──► [3. context 事件] ───────► 发送给模型前，扩展可非破坏性过滤/压缩历史 messages</span><br><span class="line">  ├──► [4. before_provider_request] ──► 拦截并修改发往 OpenAI/Anthropic 的原始 HTTP 请求 Payload</span><br><span class="line">  │</span><br><span class="line">  │    LLM 返回 tool_call:</span><br><span class="line">  │    ├──► [5. tool_call 事件] ──► 扩展可原地修改 args 参数，或返回 &#123; block: true &#125; 拦截！</span><br><span class="line">  │    ├──► (执行工具真实逻辑)</span><br><span class="line">  │    └──► [6. tool_result 事件] ─► 扩展可后置篡改返回给模型的 content / details</span><br><span class="line">  │</span><br><span class="line">  └──► [7. turn_end / agent_end]</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong><code>input</code></strong>：截获用户原始输入。返回
+<code>&#123; action: "handled" &#125;</code> 可直接由扩展自行处理而不触发
+LLM；返回 <code>&#123; action: "transform", text: "..." &#125;</code> 可对 Prompt
+进行预处理改写。</li>
+<li><strong><code>before_agent_start</code></strong>：在 Agent
+循环启动前触发，支持动态追加上下文消息，或修改本轮调用的
+<code>systemPrompt</code>。</li>
+<li><strong><code>context</code></strong>：在每次调用 LLM
+前触发，提供对发往模型的 <code>messages</code>
+进行过滤与裁剪（非破坏性视图）。</li>
+<li><strong><code>tool_call</code>（核心拦截点）</strong>：在工具实际执行前触发。支持原地修改
+<code>event.input</code>（参数修补），或返回
+<code>&#123; block: true, reason: "..." &#125;</code> 阻断高危命令执行。</li>
+<li><strong><code>tool_result</code></strong>：在工具执行后触发，支持链式修改返回给模型的
+<code>content</code> 或供前端消费的 <code>details</code>。</li>
+</ul>
+<h3 id="自定义工具体系pi.registertool">自定义工具体系：pi.registerTool</h3>
+<p>扩展是如何把一个普通函数变成大模型能调用的工具的？</p>
+<ol type="1">
+<li>自动契约合成： <span class="citation" data-cites="api.tool">@api.tool</span> 内部复用框架底层的 Pydantic
+动态建模，自动从 Python 函数签名、类型标注和 docstring 提取生成标准的
+OpenAI / Anthropic Function Calling Schema。</li>
+<li>后加载覆盖机制（Overriding Power）： 在 Agent.__init__
+的装配时序中： 注册内置工具与用户工具 → 加载 Extension 扩展工具
+因为扩展是在最后阶段被调用的，所以如果扩展中注册了一个同名工具（如
+read、bash），它会静默覆盖掉默认的内置实现。
+<ul>
+<li>架构价值：开发者无需修改核心代码，就能通过扩展将原生的本地文件读取工具替换为“带权限审计的只读沙箱工具”。</li>
+</ul></li>
+</ol>
+<h3 id="本地命令调度与反射路由bypass-llm-dispatching">本地命令调度与反射路由（Bypass-LLM
+Dispatching）</h3>
+<p>为了向用户提供 0 Token 消耗的本地交互通道，ExtensionAPI
+提供了命令路由系统：</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">用户输入: &quot;/echo hello&quot;</span><br><span class="line">  │</span><br><span class="line">  ▼ CLI 前置拦截 (不调大模型)</span><br><span class="line">ExtensionManager.handle_command(&quot;echo&quot;, &quot;hello&quot;)</span><br><span class="line">  │</span><br><span class="line">  ├─ 1. 查表获取 handler</span><br><span class="line">  ├─ 2. 反射探测形参: inspect.signature(handler).parameters</span><br><span class="line">  │     ├─ 若 len == 0: 执行 handler()</span><br><span class="line">  │     └─ 若 len &gt; 0: 执行 handler(&quot;hello&quot;)</span><br><span class="line">  ▼</span><br><span class="line">直接向控制台返回结果 (0 Token 消耗，不污染会话历史)</span><br></pre></td></tr></table></figure></p>
+<p>通过 Python 的 inspect 反射能力，实现了对无参命令（如
+/stats、/compact）和带参命令（如 /echo foo）的参数自动适配。</p>
+<h3 id="案例">案例</h3>
+<p>在实际开发中，一个扩展往往会同时组合使用这三项能力，形成功能闭环：</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># .agents/extensions/todo_extension.py</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;一个完整的待办事项（Todo）扩展：</span></span><br><span class="line"><span class="string">- 注册 todo_add 工具供大模型调用</span></span><br><span class="line"><span class="string">- 注册 /todos 命令供用户在终端随时查看</span></span><br><span class="line"><span class="string">- 监听 AgentEnd 事件在任务结束时统计待办</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">from</span> my_agent_core.events <span class="keyword">import</span> AgentEnd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 模块级共享状态</span></span><br><span class="line">TODOS: <span class="built_in">list</span>[<span class="built_in">str</span>] = []</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">extension</span>(<span class="params">api</span>):</span><br><span class="line">   <span class="comment"># 1. 【工具注册】：让大模型可以在思考中记录待办</span></span><br><span class="line"><span class="meta">   @api.tool(<span class="params">description=<span class="string">&quot;添加一条待办事项&quot;</span></span>)</span></span><br><span class="line">   <span class="keyword">def</span> <span class="title function_">todo_add</span>(<span class="params">item: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">       TODOS.append(item)</span><br><span class="line">       <span class="keyword">return</span> <span class="string">f&quot;已成功添加待办: <span class="subst">&#123;item&#125;</span>&quot;</span></span><br><span class="line"></span><br><span class="line">   <span class="comment"># 2. 【命令调度】：用户在终端输入 /todos 时直接打印，不花大模型 Token</span></span><br><span class="line"><span class="meta">   @api.command(<span class="params"><span class="string">&quot;todos&quot;</span>, description=<span class="string">&quot;查看所有待办列表&quot;</span></span>)</span></span><br><span class="line">   <span class="keyword">def</span> <span class="title function_">cmd_todos</span>():</span><br><span class="line">       <span class="keyword">if</span> <span class="keyword">not</span> TODOS:</span><br><span class="line">           <span class="keyword">return</span> <span class="string">&quot;当前没有待办事项。&quot;</span></span><br><span class="line">       <span class="keyword">return</span> <span class="string">&quot;\n&quot;</span>.join(<span class="string">f&quot;<span class="subst">&#123;i+<span class="number">1</span>&#125;</span>. <span class="subst">&#123;t&#125;</span>&quot;</span> <span class="keyword">for</span> i, t <span class="keyword">in</span> <span class="built_in">enumerate</span>(TODOS))</span><br><span class="line"></span><br><span class="line">   <span class="comment"># 3. 【事件订阅】：每次对话轮次彻底结束时，若有待办则在终端输出提示</span></span><br><span class="line"><span class="meta">   @api.on(<span class="params">AgentEnd</span>)</span></span><br><span class="line">   <span class="keyword">def</span> <span class="title function_">notify_on_end</span>(<span class="params">event: AgentEnd, api</span>):</span><br><span class="line">       <span class="keyword">if</span> TODOS:</span><br><span class="line">           <span class="built_in">print</span>(<span class="string">f&quot;\n[Todo 扩展提示] 当前还有 <span class="subst">&#123;<span class="built_in">len</span>(TODOS)&#125;</span> 项待办未完成，输入 /todos 查看。&quot;</span>)</span><br></pre></td></tr></table></figure></p>
+<h3 id="异步消息导流与插队机制message-steering">异步消息导流与插队机制（Message
+Steering）</h3>
+<p>当 Agent 正在忙碌地运行一个多轮 ReAct
+循环时，扩展如何向模型传达新指令？</p>
+<p>ExtensionAPI 定义了两种核心的异步分发模式：</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1. 实时插队纠偏 (deliverAs: &quot;steer&quot;):</span><br><span class="line">   LLM 生成 -&gt; 执行工具 1 -&gt; [扩展插队注入 user 消息] -&gt; 下一轮 LLM 生成 (立即生效纠偏!)</span><br><span class="line"></span><br><span class="line">2. 静默排队跟进 (deliverAs: &quot;followUp&quot;):</span><br><span class="line">   LLM 生成 -&gt; 执行工具 1 -&gt; 执行工具 2 -&gt; 任务彻底完成 -&gt; [触发下一轮新任务]</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>steer（方向盘）：当前轮次的工具一跑完，下一次调模型前强行把消息插入队列，实现对模型的“实时急刹车与路线矫正”；</li>
+<li>followUp（待办队列）：等整个 Agent
+任务全部跑完空闲后，才开启下一轮新对话。</li>
+</ul>
+<h2 id="如何利用-extension-实现subagent">如何利用 extension
+实现subagent</h2>
+<p>subagent 实现 = 注册一个名叫 subagent 的”执行器/转接器”工具，具体
+agent 是它的运行时配置数据，不是各自的工具。</p>
+<p>工具表里永远只有一个 subagent，它的参数是
+<code>&#123; agent: "某个名字", task: "..." &#125;</code>（index.ts:448 的
+schema）。模型填的是字符串，然后 execute 去 agents 目录里查对应的 md
+文件。这也解释了为什么要 <code>--append-system-prompt</code>
+写临时文件——agent 的 system prompt
+是运行时读到的字符串，不是编译进工具的代码。</p>
+<p>pi 的 subagent 不是框架里的一等公民，而是用一个通用扩展点
+<code>pi.registerTool</code> 实现出来的。 全部代码就一个文件
+index.ts，主 agent 的模型把”委派任务”当成一次普通工具调用来完成。</p>
+<p>入口：只注册了一个工具</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// index.ts:460</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">function</span> (<span class="params"><span class="attr">pi</span>: <span class="title class_">ExtensionAPI</span></span>) &#123;</span><br><span class="line">  pi.<span class="title function_">registerTool</span>(&#123;</span><br><span class="line">    <span class="attr">name</span>: <span class="string">&quot;subagent&quot;</span>,</span><br><span class="line">    <span class="attr">label</span>: <span class="string">&quot;Subagent&quot;</span>,</span><br><span class="line">    <span class="attr">description</span>: <span class="string">&quot;Delegate tasks to specialized subagents with isolated context...&quot;</span>,</span><br><span class="line">    <span class="attr">parameters</span>: <span class="title class_">SubagentParams</span>,   <span class="comment">// TypeBox schema</span></span><br><span class="line">    <span class="keyword">async</span> <span class="title function_">execute</span>(<span class="params">_toolCallId, params, signal, onUpdate, ctx</span>) &#123;</span><br><span class="line">      <span class="comment">// 1. 查找指定子代理定义 (agents/&lt;name&gt;.md)</span></span><br><span class="line">      <span class="comment">// 2. 创建独立的子 Session 实例 (Fresh Context)</span></span><br><span class="line">      <span class="comment">// 3. 运行子 Agent 独立 ReAct 循环</span></span><br><span class="line">      <span class="comment">// 4. 返回子 Agent 的最终总结文本</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="title function_">renderCall</span>(<span class="params">...</span>)  &#123; <span class="comment">/* 怎么画调用 */</span> &#125;,</span><br><span class="line">    <span class="title function_">renderResult</span>(<span class="params">...</span>) &#123; <span class="comment">/* 怎么画结果 */</span> &#125;,</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="如何利用-extension-实现mcp">如何利用 extension 实现mcp</h2>
+<p>MCP（Model Context
+Protocol）连接器同样不需要作为框架核心的硬编码逻辑，而是通过 Extension
+机制以“外部工具动态桥接”的方式实现：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">MCP 扩展启动 (extension(api))</span><br><span class="line">  ├── 1. 读取配置文件 (.mcp.json)，启动 MCP Server 子进程 (Stdio / SSE 连接)</span><br><span class="line">  ├── 2. 与 MCP Server 进行握手与协议初始化 (initialize)</span><br><span class="line">  ├── 3. 调用 tools/list 获取 MCP Server 暴露的所有外部工具定义</span><br><span class="line">  ├── 4. 将 MCP 工具批量翻译为本地 Tool 对象</span><br><span class="line">  └── 5. 循环调用 api.register_tool(translated_tool) 注册进 Agent!</span><br></pre></td></tr></table></figure>
+<ol type="1">
+<li><strong>协议转换</strong>：Extension 在 <code>initialize</code>
+握手后，通过 <code>tools/list</code> 拿到 MCP Server 声明的所有工具与
+Schema；</li>
+<li><strong>工具注册</strong>：遍历 MCP
+工具，将每个外部工具动态包装为本地的 <code>Tool</code>，调用
+<code>api.register_tool</code> 注入 Agent；</li>
+<li><strong>调用转发</strong>：当模型调用该工具时，包装函数的
+<code>execute</code> 拦截调用，将参数打包为 <code>tools/call</code>
+请求通过 Stdio/SSE 转发给 MCP Server
+进程，并把执行结果原样喂回给大模型。</li>
+</ol>
+<h1 id="extensions.py">extensions.py</h1>
+<p>在我们的 Python 框架中，提炼了 pi 的核心设计，通过
+<code>extensions.py</code> 实现了极简的框架级扩展三件套：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">┌──────────────────────────────────────────────────────────────┐</span><br><span class="line">│                    ExtensionManager                          │</span><br><span class="line">│  - 目录发现 (discover: 递归扫描 **/*.py，跳过 _ 开头文件)     │</span><br><span class="line">│  - 动态加载 (load_extension: importlib 加载模块)             │</span><br><span class="line">│  - 坏扩展隔离 (load: try...except 捕获异常，仅告警不崩进程)   │</span><br><span class="line">│  - 命令调度 (handle_command: 参数个数自适应)                 │</span><br><span class="line">└──────────────┬───────────────────────────────────────────────┘</span><br><span class="line">               │ 构造并持有</span><br><span class="line">               ▼</span><br><span class="line">┌──────────────────────────────────────────────────────────────┐</span><br><span class="line">│                      ExtensionAPI                            │</span><br><span class="line">│  1. 事件订阅: api.on(EventCls, handler) -&gt; (event, api) 双参 │</span><br><span class="line">│  2. 工具注册: @api.tool(...) / api.register_tool             │</span><br><span class="line">│  3. 命令注册: @api.command(&quot;name&quot;) / api.register_command     │</span><br><span class="line">└──────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+<h2 id="extensionapi">ExtensionAPI</h2>
+<p>在 my-pi-agent 框架中，ExtensionAPI 是整个扩展机制的
+“开发者契约面（Developer Surface）”。</p>
+<p>当外部写一个扩展（如 mcp.py 或
+.agents/extensions/my_tool.py）时，入口函数接收到的唯一参数就是 api:
+ExtensionAPI：</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">extension</span>(<span class="params">api: ExtensionAPI</span>):</span><br><span class="line">    <span class="comment"># 扩展开发者只跟 api 对象打交道</span></span><br><span class="line">    ...</span><br></pre></td></tr></table></figure></p>
+<p>ExtensionAPI 的定位是 “将 Agent
+内部复杂的事件系统（HookRegistry）、工具注册表（ToolRegistry）和命令系统，收敛为最简单
+直观的三套对外接口”。</p>
+<h3 id="核心能力-1事件订阅系统-api.on">核心能力 1：事件订阅系统 ——
+api.on</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">ExtensionAPI</span>:</span><br><span class="line"><span class="meta">    @overload</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">on</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self, event_cls: <span class="built_in">type</span>[Event], handler: <span class="literal">None</span> = <span class="literal">None</span></span></span><br><span class="line"><span class="params">    </span>) -&gt; <span class="type">Callable</span>[[<span class="type">Callable</span>[..., <span class="type">Any</span>]], <span class="type">Callable</span>[..., <span class="type">Any</span>]]: ...</span><br><span class="line"></span><br><span class="line"><span class="meta">    @overload</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">on</span>(<span class="params">self, event_cls: <span class="built_in">type</span>[Event], handler: <span class="type">Callable</span>[..., <span class="type">Any</span>]</span>) -&gt; <span class="literal">None</span>: ...</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">on</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self, event_cls: <span class="built_in">type</span>[Event], handler: <span class="type">Callable</span>[..., <span class="type">Any</span>] | <span class="literal">None</span> = <span class="literal">None</span></span></span><br><span class="line"><span class="params">    </span>) -&gt; <span class="type">Any</span>:</span><br><span class="line">        <span class="string">&quot;&quot;&quot;注册事件 handler（可作装饰器）。handler 签名 (event, api)：</span></span><br><span class="line"><span class="string">        返回 None=观察，返回 HookResult=干预。&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">_register</span>(<span class="params">h: <span class="type">Callable</span>[..., <span class="type">Any</span>]</span>) -&gt; <span class="type">Callable</span>[..., <span class="type">Any</span>]:</span><br><span class="line">            <span class="keyword">def</span> <span class="title function_">wrapped</span>(<span class="params">event: Event</span>):</span><br><span class="line">                <span class="comment"># 关键点：将底层的单参 (event) 包装并注入 (event, self) 双参</span></span><br><span class="line">                <span class="keyword">return</span> h(event, <span class="variable language_">self</span>)</span><br><span class="line"></span><br><span class="line">            <span class="variable language_">self</span>.agent.hooks.register(event_cls, wrapped)</span><br><span class="line">            <span class="keyword">return</span> h</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> handler <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            _register(handler)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">None</span></span><br><span class="line">        <span class="keyword">return</span> _register</span><br></pre></td></tr></table></figure>
+<h4 id="统一干预数据结构hookresult-与五大决策点">统一干预数据结构：HookResult
+与五大决策点</h4>
+<p>所有生命周期拦截点共享统一强类型的 <code>HookResult</code>
+数据结构：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@dataclass(<span class="params">frozen=<span class="literal">True</span></span>)</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">HookResult</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Hook 回调的干预结果。返回 None = 纯观察，返回 HookResult = 干预。&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    block: <span class="built_in">bool</span> = <span class="literal">False</span></span><br><span class="line">    reason: <span class="built_in">str</span> | <span class="literal">None</span> = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 决策点 1 (input): 改写用户输入文本</span></span><br><span class="line">    updated_input: <span class="built_in">str</span> | <span class="literal">None</span> = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 决策点 2 (before_agent_start): 动态改写 System Prompt</span></span><br><span class="line">    updated_system_prompt: <span class="built_in">str</span> | <span class="literal">None</span> = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 决策点 3 (context): 临时改写发给大模型的 messages 视图（不污染 Session 树）</span></span><br><span class="line">    updated_messages: <span class="built_in">list</span>[Message] | <span class="literal">None</span> = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 决策点 4 (tool_call): 改写工具入参</span></span><br><span class="line">    updated_args: <span class="built_in">dict</span> | <span class="literal">None</span> = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 决策点 5 (tool_result): 改写工具出参</span></span><br><span class="line">    updated_result: <span class="built_in">str</span> | <span class="literal">None</span> = <span class="literal">None</span></span><br></pre></td></tr></table></figure>
+<p>框架在 <code>Agent.run()</code> 中完整对齐了 Pi 的
+<strong>五大生命周期决策拦截点</strong>： 1.
+<strong><code>UserInput</code></strong>（<code>input</code>）：在用户输入进入
+Session 之前触发，支持 <code>block=True</code> 阻断输入或
+<code>updated_input</code> 改写输入； 2.
+<strong><code>AgentStart</code></strong>（<code>before_agent_start</code>）：在准备好系统消息后触发，支持
+<code>updated_system_prompt</code> 动态更新首条 system 消息； 3.
+<strong><code>BeforeModelCall</code></strong>（<code>context</code>）：在
+<code>_ctx.prepare()</code> 产出 <code>view</code>
+后、调用大模型前触发，支持 <code>updated_messages</code>
+临时改写送给大模型的视图； -
+<strong>关键架构不变式</strong>：<code>updated_messages</code>
+<strong>仅临时修改当前这次发给 LLM 的 <code>view</code>
+变量</strong>，真实 <code>self.messages</code> 与 Session 磁盘 JSONL
+保持绝对纯净，实现 <strong>零历史污染</strong>； 4.
+<strong><code>ToolExecutionStart</code></strong>（<code>tool_call</code>）：工具执行前触发，支持
+<code>block=True</code> 拦截危险调用或 <code>updated_args</code>
+改写入参； 5.
+<strong><code>ToolExecutionEnd</code></strong>（<code>tool_result</code>）：工具执行后触发，支持
+<code>updated_result</code> 改写返回给模型的出参。</p>
+<blockquote>
+<p><strong>流式 Token 级实时熔断（MessageUpdate）</strong>：除上述 5
+大决策点外，<code>MessageUpdate</code> 同样继承了
+<code>Interceptable</code>。在大模型逐 Token
+流式生成的过程中，扩展如果检测到危险输出片段，返回
+<code>HookResult(block=True)</code>
+即可瞬间掐断生成，并且框架会<strong>直接丢弃未完成的半截文本</strong>（不写入
+Session 树），彻底避免模型在下一轮对话中产生“续写断句”的严重幻觉。</p>
+</blockquote>
+<h3 id="核心能力-2工具注册系统-api.tool-与-api.register_tool">核心能力
+2：工具注册系统 —— api.tool 与 api.register_tool</h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">register_tool</span>(<span class="params">self, tool: Tool</span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;注册工具 → agent.registry（撞名静默覆盖，registry 语义）。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="variable language_">self</span>.agent.registry.register(tool)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">tool</span>(<span class="params">self, **kwargs: <span class="type">Any</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;@api.tool(description=...) 装饰器：@tool 包装 + register_tool。&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">decorator</span>(<span class="params">func</span>) -&gt; Tool:</span><br><span class="line">        <span class="comment"># 复用底层 pydantic 动态建模装饰器</span></span><br><span class="line">        t = _tool(**kwargs)(func)</span><br><span class="line">        <span class="variable language_">self</span>.register_tool(t)</span><br><span class="line">        <span class="keyword">return</span> t</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> decorator</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><span class="citation" data-cites="api.tool">@api.tool</span>(…)：面向普通的 Python
+业务函数。扩展开发者写一个原生 Python 函数，加上 <span class="citation" data-cites="api.tool">@api.tool</span>，内部自动通过 Pydantic
+提取函数签名、类型标注和 docstring，生成 OpenAI/Anthropic 兼容的 JSON
+Schema，并注册进 Agent。</li>
+<li>api.register_tool(tool: Tool)：面向复杂的动态工具（如 MCP
+远程工具、Subagent 委派工具）。直接传入已经构造好的 Tool
+实体对象（例如带有 raw_schema 的 MCP 工具）。</li>
+</ul>
+<h3 id="核心能力-3命令注册系统-api.command-与-api.register_command">核心能力
+3：命令注册系统 —— api.command 与 api.register_command</h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">register_command</span>(<span class="params"></span></span><br><span class="line"><span class="params">    self, name: <span class="built_in">str</span>, handler: CommandHandler, description: <span class="built_in">str</span> = <span class="string">&quot;&quot;</span></span></span><br><span class="line"><span class="params"></span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;注册命令（name 不含 /）。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="variable language_">self</span>._commands[name] = handler</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">command</span>(<span class="params">self, name: <span class="built_in">str</span>, description: <span class="built_in">str</span> = <span class="string">&quot;&quot;</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;@api.command(&quot;now&quot;) 装饰器。&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">decorator</span>(<span class="params">func: CommandHandler</span>) -&gt; CommandHandler:</span><br><span class="line">        <span class="variable language_">self</span>.register_command(name, func, description)</span><br><span class="line">        <span class="keyword">return</span> func</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> decorator</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_commands</span>(<span class="params">self</span>) -&gt; <span class="built_in">dict</span>[<span class="built_in">str</span>, CommandHandler]:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;已注册命令的拷贝（name → handler）。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">self</span>._commands.copy()</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>将用户输入的命令名（如 “mcp” 或 “now”）与对应的 Python
+处理函数映射在 self._commands 字典中；</li>
+<li>get_commands()
+返回字典的浅拷贝（.copy()），保护内部字典不被外部意外修改。</li>
+</ul>
+<h2 id="extensionmanager">ExtensionManager</h2>
+<p>ExtensionManager 就是面向 Agent
+框架内部的“扩展总管与调度仓储（Repository）”。</p>
+<p>它对标了框架内的 SkillManager 与 SubagentManager，专门负责： 1.
+解析扫描目录（三态语义：默认探测 / 显式禁用 / 外部指定）； 2.
+递归发现磁盘上的 .py 扩展文件（自动跳过 <code>_</code>
+开头的私有辅助文件）； 3. 通过 importlib 动态加载模块并执行
+<code>extension(api)</code> 握手（原生支持 <code>async def</code>
+协程与同步 <code>def</code> 入口，支持异步长连接初始化）； 4.
+单点故障隔离（坏插件隔离保护：<code>try...except</code>
+捕获异常，单个扩展崩溃仅告警、不影响主 Agent 启动）； 5.
+用户斜杠命令的反射分发与调度（自动适配 0 参 / 1 参 Handler）。</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">1. 启动装配期 (Agent.__init__)</span><br><span class="line">┌──────────────────────────────────────────────────────────┐</span><br><span class="line">│ Agent.__init__()                                         │</span><br><span class="line">│   ├── self._register_tools(tools)                        │</span><br><span class="line">│   ├── self.extension_manager = ExtensionManager(self, ..)│</span><br><span class="line">│   └── self.extension_manager.load()                      │</span><br><span class="line">│         │                                                │</span><br><span class="line">│         ▼ (遍历发现 .py 文件)                             │</span><br><span class="line">│       ExtensionManager.load_extension(&quot;mcp.py&quot;)          │</span><br><span class="line">│         │                                                │</span><br><span class="line">│         ▼ (执行插件入口)                                  │</span><br><span class="line">│       mcp.extension(self.api)                            │</span><br><span class="line">│         ├── api.register_tool(t) ──► 注入 Agent.registry │</span><br><span class="line">│         ├── api.on(Event)        ──► 注入 Agent.hooks    │</span><br><span class="line">│         └── api.command(&quot;mcp&quot;)   ──► 注入 api._commands  │</span><br><span class="line">└──────────────────────────────────────────────────────────┘</span><br><span class="line"></span><br><span class="line">2. 运行交互期</span><br><span class="line">├── [模型调用工具] ──► 查表分发至 Extension 注入的工具 (ReAct 循环)</span><br><span class="line">├── [生命周期事件] ──► 触发 Extension 注册的 Hook (洋葱拦截)</span><br><span class="line">└── [用户输入 /cmd] ──► extension_manager.handle_command(&quot;cmd&quot;, args)</span><br></pre></td></tr></table></figure></p>
+<h3 id="生命周期与方法全景图">生命周期与方法全景图</h3>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">  【启动装配阶段】</span><br><span class="line"></span><br><span class="line">       1. __init__(agent, extension_dirs)</span><br><span class="line">          │  ├─ 绑定 agent</span><br><span class="line">          │  ├─ 创建 ExtensionAPI(agent)</span><br><span class="line">          │  └─ 解析目录路径 (三态: 默认探测 / 显式禁用 / 指定目录)</span><br><span class="line">          ▼</span><br><span class="line">       2. load() ─── 批量加载与单点故障隔离保护</span><br><span class="line">          │</span><br><span class="line">          ├─► 3. discover(directory) ─── 递归扫描文件</span><br><span class="line">          │      │  扫描目录及子目录下的 **/*.py</span><br><span class="line">          │      └─ 自动跳过 _ 开头的私有文件 (_helper.py 等)</span><br><span class="line">          │</span><br><span class="line">          │      ┌─ 针对发现的每个 .py 文件逐个调用 ──────────┐</span><br><span class="line">          │      │  (用 try...except 隔离: 坏扩展只告警不崩溃) │</span><br><span class="line">          ▼      ▼                                             │</span><br><span class="line">       4. load_extension(path) ─── 动态加载单个扩展            │</span><br><span class="line">          │  ├─ importlib 动态载入模块                         │</span><br><span class="line">          │  ├─ 智能识别入口函数: extension(api)               │</span><br><span class="line">          │  └─ 执行 extension_func(self.api)                  │</span><br><span class="line">          │        ├── 注册工具 ──► 注入 Agent.registry        │</span><br><span class="line">          │        ├── 订阅事件 ──► 注入 Agent.hooks           │</span><br><span class="line">          │        └── 注册命令 ──► 存入 self.api._commands    │</span><br><span class="line">          └────────────────────────────────────────────────────┘</span><br><span class="line"></span><br><span class="line">────────────────────────────────────────────────────────────────────────────</span><br><span class="line"></span><br><span class="line">  【运行交互阶段 (0 Token 消耗)】</span><br><span class="line"></span><br><span class="line">  用户在终端输入: &quot;/mcp status&quot;</span><br><span class="line">          │</span><br><span class="line">          ▼</span><br><span class="line">       5. handle_command(&quot;mcp&quot;, &quot;status&quot;) ─── 斜杠命令反射调度</span><br><span class="line">          │  ├─ 查表: 从 self.api._commands 找到对应 handler</span><br><span class="line">          │  ├─ 参数自适应:</span><br><span class="line">          │  │     ├─ 若为无参函数 cmd()  ──► 执行 handler()</span><br><span class="line">          │  │     └─ 若为带参函数 cmd(args) ──► 执行 handler(&quot;status&quot;)</span><br><span class="line">          │  └─ 未知命令抛出清晰错误提示</span><br><span class="line">          ▼</span><br><span class="line">  向终端控制台直接输出结果</span><br></pre></td></tr></table></figure></p>
+<h1 id="mcp">mcp</h1>
+<p>mcp.py 是框架的 MCP (Model Context Protocol) 客户端内置扩展。</p>
+<blockquote>
+<p><strong>分层说明</strong>：在最新的架构重构中，MCP 客户端以 Extension
+插件的形式置于产品层（<code>packages/my-coding-agent/src/my_coding_agent/mcp.py</code>），使框架层
+<code>my-agent-core</code>
+保持极简纯净，同时产品层可随时按需插拔加载。</p>
+</blockquote>
+<p>它不仅是一个完整的 MCP 客户端实现，同时也是一个遵循框架标准规范的
+Extension 插件（包含工具注册与命令注册）。</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">            .mcp.json (工作区配置)</span><br><span class="line">                 │</span><br><span class="line">                 ▼</span><br><span class="line">        MCPClientManager (多 Server 管理)</span><br><span class="line">                 │</span><br><span class="line">     ┌───────────┴───────────┐</span><br><span class="line">     ▼                       ▼</span><br><span class="line">MCPConnection (Server A)  MCPConnection (Server B)</span><br><span class="line">[AsyncExitStack 管理]     [AsyncExitStack 管理]</span><br><span class="line">├── stdio_client 子进程   ├── stdio_client 子进程</span><br><span class="line">└── ClientSession (MCP)   └── ClientSession (MCP)</span><br><span class="line">     │                       │</span><br><span class="line">     └───────────┬───────────┘</span><br><span class="line">                 ▼</span><br><span class="line">         包装为内部 Tool 对象</span><br><span class="line">  (raw_schema=远程Schema, is_parallel_safe=True)</span><br><span class="line">                 │</span><br><span class="line">                 ▼</span><br><span class="line">     ExtensionAPI.register_tool() ──► 注入 Agent.registry</span><br><span class="line">     ExtensionAPI.command(&quot;mcp&quot;)  ──► 注册 /mcp 状态命令</span><br></pre></td></tr></table></figure></p>
+<h2 id="配置数据类mcpserverconfig">配置数据类：MCPServerConfig</h2>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@dataclass</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MCPServerConfig</span>:</span><br><span class="line">    name: <span class="built_in">str</span></span><br><span class="line">    command: <span class="built_in">str</span></span><br><span class="line">    args: <span class="built_in">list</span>[<span class="built_in">str</span>]</span><br><span class="line">    env: <span class="built_in">dict</span>[<span class="built_in">str</span>, <span class="built_in">str</span>] | <span class="literal">None</span> = <span class="literal">None</span></span><br></pre></td></tr></table></figure></p>
+<p>对应 .mcp.json 中配置的单个 Server 条目，如：</p>
+<p><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;mcpServers&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;filesystem&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;npx&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;-y&quot;</span><span class="punctuation">,</span> <span class="string">&quot;@modelcontextprotocol/server-filesystem&quot;</span><span class="punctuation">,</span> <span class="string">&quot;D:/data&quot;</span><span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="单连接管理器mcpconnection">单连接管理器：MCPConnection</h2>
+<p>这是与单个 MCP 子进程打交道的连接实体。</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MCPConnection</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, config: MCPServerConfig</span>):</span><br><span class="line">        <span class="variable language_">self</span>.config = config</span><br><span class="line">        <span class="variable language_">self</span>._session: ClientSession | <span class="literal">None</span> = <span class="literal">None</span></span><br><span class="line">        <span class="variable language_">self</span>._exit_stack = contextlib.AsyncExitStack()</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><p>核心亮点：AsyncExitStack 上下文管理 MCP 官方 SDK 的 stdio_client
+和 ClientSession 都是异步上下文管理器（async
+with）。在不退出当前方法的情况下长期保持连接，使用 AsyncExitStack
+可以将多个异步上下文压栈保存，在需要关闭时 调用 aclose()
+一键安全释放。</p></li>
+<li><p>建立连接与握手 (start)： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">start</span>(<span class="params">self</span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">    params = StdioServerParameters(</span><br><span class="line">        command=<span class="variable language_">self</span>.config.command,</span><br><span class="line">        args=<span class="variable language_">self</span>.config.args,</span><br><span class="line">        env=server_env,</span><br><span class="line">    )</span><br><span class="line">    read_stream, write_stream = <span class="keyword">await</span> <span class="variable language_">self</span>._exit_stack.enter_async_context(</span><br><span class="line">        stdio_client(params)</span><br><span class="line">    )</span><br><span class="line">    session = <span class="keyword">await</span> <span class="variable language_">self</span>._exit_stack.enter_async_context(</span><br><span class="line">        ClientSession(read_stream, write_stream)</span><br><span class="line">    )</span><br><span class="line">    <span class="variable language_">self</span>._session = session</span><br><span class="line">    <span class="keyword">await</span> session.initialize()  <span class="comment"># 完成 MCP 初始化握手协议</span></span><br></pre></td></tr></table></figure></p></li>
+<li><p>调用工具 (call_tool)： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">call_tool</span>(<span class="params">self, name: <span class="built_in">str</span>, arguments: <span class="built_in">dict</span>[<span class="built_in">str</span>, <span class="type">Any</span>]</span>) -&gt; ToolResult:</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>Never-Throw 保障：捕获所有异常，绝不向上抛出导致 Agent
+崩溃，而是包装为 ToolResult(ok=False, error=…) 让大模型自我修正。</li>
+<li>内容格式化：将 MCP 返回的多段 content 抽取为纯文本，并识别 MCP
+协议中的 isError 标记。</li>
+</ul></li>
+</ul>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">┌──────────────────────────────────────────────────────────┐</span><br><span class="line">│                      MCP 架构分层                         │</span><br><span class="line">├──────────────────────────────────────────────────────────┤</span><br><span class="line">│                                                          │</span><br><span class="line">│  【第二扇门】ClientSession (协议层)                       │</span><br><span class="line">│    • list_tools()  • call_tool()  • JSON-RPC 消息解析     │</span><br><span class="line">│  ─────────────────────────┬────────────────────────────  │</span><br><span class="line">│                           │ 依赖底层流传输                │</span><br><span class="line">│                           ▼                              │</span><br><span class="line">│  【第一扇门】stdio_client (传输层)                        │</span><br><span class="line">│    • 启动 Node.js/Python 进程  • 管道管理 (stdin/stdout)  │</span><br><span class="line">│                                                          │</span><br><span class="line">└──────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+<ol type="1">
+<li><p>先有第一扇门，才有第二扇门： 如果没有 stdio_client 启动进程并提供
+read/write_stream，ClientSession
+就根本不知道该向哪里读写协议数据。</p></li>
+<li><p>关闭时必须倒序退出：</p>
+<ul>
+<li>先关 ClientSession（告诉对方我们要结束会话了，把未完成的 RPC
+请求取消）；</li>
+<li>再关
+stdio_client（彻底杀掉子进程，释放操作系统进程句柄与内存）。</li>
+</ul></li>
+</ol>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">┌───────────────────────────────────────────────────────────────┐</span><br><span class="line">│  第一步：stdio_client(params) 【物理与传输层：打通管道】         │</span><br><span class="line">│  操作系统的进程与字节流 (Process &amp; Pipes)                       │</span><br><span class="line">│  输入: command=&quot;npx&quot;, args=[...]                              │</span><br><span class="line">│  产出: 裸管道 (read_stream, write_stream)                      │</span><br><span class="line">└───────────────────────────────┬───────────────────────────────┘</span><br><span class="line">                                │ 传递裸管道</span><br><span class="line">                                ▼</span><br><span class="line">┌───────────────────────────────────────────────────────────────┐</span><br><span class="line">│  第二步：ClientSession(read, write) 【协议与业务层：听懂语言】    │</span><br><span class="line">│  JSON-RPC 2.0 与 MCP 业务对象                                 │</span><br><span class="line">│  输入: 裸管道 (read_stream, write_stream)                      │</span><br><span class="line">│  产出: 高级会话对象 session (能调 list_tools/call_tool)        │</span><br><span class="line">└───────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure></p>
+<h3 id="mcp的底层通信协议json-rpc-2.0">mcp的底层通信协议：JSON-RPC
+2.0</h3>
+<p>MCP 的所有消息交互全部建立在 JSON-RPC 2.0
+规范之上。客户端和服务端通过互相发送结构化的 JSON 文本进行交流。</p>
+<p>常见的几种通信帧：</p>
+<p>#### 1. 工具列表发现（tools/list）</p>
+<ul>
+<li>Client 发出请求： <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;jsonrpc&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;method&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tools/list&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;params&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></li>
+<li>Server 返回结果（带 JSON Schema 参数契约）： <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;jsonrpc&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;result&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;tools&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;calculate_tax&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;计算个人所得税&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;inputSchema&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;object&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;properties&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;income&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;number&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;税前收入&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line">          <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;required&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;income&quot;</span><span class="punctuation">]</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>#### 2. 工具调用执行（tools/call）</p>
+<ul>
+<li>Client 发出执行指令： <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;jsonrpc&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">2</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;method&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tools/call&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;params&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;calculate_tax&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;arguments&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;income&quot;</span><span class="punctuation">:</span> <span class="number">20000</span> <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></li>
+<li>Server 返回执行结果： <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;jsonrpc&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">2</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;result&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">&#123;</span> <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;text&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;text&quot;</span><span class="punctuation">:</span> <span class="string">&quot;应纳个税: 1590 元&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;isError&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="传输层模式stdio-vs-ssehttp">传输层模式：Stdio vs SSE/HTTP</h3>
+<p>MCP 规范定义了两种主要的物理传输通道：</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">1. Stdio（标准输入输出，本地子进程模式 —— 我们框架采用的模式）：</span><br><span class="line">   Client (Python Agent)</span><br><span class="line">     │  stdin (向子进程写 JSON)</span><br><span class="line">     ├───► [MCP Server 子进程 (如 Node.js / Python)]</span><br><span class="line">     ◄───┘ stdout (从子进程读 JSON)</span><br><span class="line">   优点：零网络端口暴露，启动即用，极高安全性，适合本地工具。</span><br><span class="line"></span><br><span class="line">2. SSE / HTTP（Server-Sent Events 远程流式模式）：</span><br><span class="line">   Client ─── HTTP POST / SSE ───► 远程云端 MCP Server (企业内网服务)</span><br><span class="line">   优点：适合连接跨机器的大型企业数据库或云端 API。</span><br></pre></td></tr></table></figure></p>
+<h2 id="多服务协调器mcpclientmanager">多服务协调器：MCPClientManager</h2>
+<p>如果把单个 MCPConnection 比作 “专线接线员”，那么 MCPClientManager
+就是 “接线总调度中心”。</p>
+<p>在实际项目中，用户通常会在 .mcp.json 中配置多个 MCP 服务（比如一个
+GitHub 查 PR、一个 Postgres 查数据库、一个 Filesystem 读文件）。
+MCPClientManager 负责管理所有这些服务的生命周期编排与工具适配。</p>
+<h3 id="一连接池状态init">一、连接池状态：<strong>init</strong></h3>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MCPClientManager</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.connections: <span class="built_in">dict</span>[<span class="built_in">str</span>, MCPConnection] = &#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>维护一个全局字典 self.connections，以服务名称为 key（如
+“github”、“filesystem”），存储对应的 MCPConnection 实例；</li>
+<li>方便后续按服务名查找连接、状态检查（/mcp 命令）和统一关闭。</li>
+</ul>
+<p>### 二、配置解析：load_config(path)</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">load_config</span>(<span class="params">self, path: Path | <span class="built_in">str</span></span>) -&gt; <span class="built_in">list</span>[MCPServerConfig]:</span><br><span class="line">    p = Path(path)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> p.exists():</span><br><span class="line">        <span class="keyword">return</span> []</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        data = json.loads(p.read_text(encoding=<span class="string">&quot;utf-8&quot;</span>))</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> exc:</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">f&quot;Invalid JSON in <span class="subst">&#123;p&#125;</span>: <span class="subst">&#123;exc&#125;</span>&quot;</span>) <span class="keyword">from</span> exc</span><br><span class="line"></span><br><span class="line">    servers = data.get(<span class="string">&quot;mcpServers&quot;</span>, &#123;&#125;)</span><br><span class="line">    configs = []</span><br><span class="line">    <span class="keyword">for</span> name, srv <span class="keyword">in</span> servers.items():</span><br><span class="line">        configs.append(</span><br><span class="line">            MCPServerConfig(</span><br><span class="line">                name=name,</span><br><span class="line">                command=srv.get(<span class="string">&quot;command&quot;</span>, <span class="string">&quot;&quot;</span>),</span><br><span class="line">                args=srv.get(<span class="string">&quot;args&quot;</span>, []),</span><br><span class="line">                env=srv.get(<span class="string">&quot;env&quot;</span>),</span><br><span class="line">            )</span><br><span class="line">        )</span><br><span class="line">    <span class="keyword">return</span> configs</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>契约对齐：完全对齐 Claude Desktop / Cursor / Pi 的标准 .mcp.json
+格式： <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;mcpServers&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;sqlite&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;command&quot;</span><span class="punctuation">:</span> <span class="string">&quot;uvx&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;mcp-server-sqlite&quot;</span><span class="punctuation">,</span> <span class="string">&quot;--db-path&quot;</span><span class="punctuation">,</span> <span class="string">&quot;test.db&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;env&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="attr">&quot;DEBUG&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1&quot;</span><span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></li>
+<li>将 JSON 转换为强类型的 MCPServerConfig 数据类列表。</li>
+</ul>
+<p>### 三、协议适配与工具转换：connect_server(config) —— 最核心方法</p>
+<p>这是整个类最精妙的部分，它完成了从 “MCP 远程服务” 到 “Agent 内部标准
+Tool 对象” 的桥接转换：</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">connect_server</span>(<span class="params">self, config: MCPServerConfig</span>) -&gt; <span class="built_in">list</span>[Tool]:</span><br><span class="line">    <span class="comment"># 1. 建立长连接并完成握手</span></span><br><span class="line">    conn = MCPConnection(config)</span><br><span class="line">    <span class="keyword">await</span> conn.start()</span><br><span class="line">    <span class="variable language_">self</span>.connections[config.name] = conn</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 2. 动态获取远程支持的所有工具</span></span><br><span class="line">    mcp_tools = <span class="keyword">await</span> conn.list_tools()</span><br><span class="line">    wrapped_tools = []</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 3. 逐个包装成 Agent 框架的标准 Tool 对象</span></span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> mcp_tools:</span><br><span class="line">        tool_name = t.name</span><br><span class="line">        schema = <span class="built_in">getattr</span>(t, <span class="string">&quot;input_schema&quot;</span>, <span class="built_in">getattr</span>(t, <span class="string">&quot;inputSchema&quot;</span>, &#123;&#125;))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 闭包生成执行函数</span></span><br><span class="line">        <span class="keyword">def</span> <span class="title function_">_make_handler</span>(<span class="params">target_conn: MCPConnection, target_name: <span class="built_in">str</span></span>):</span><br><span class="line">            <span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">_handler</span>(<span class="params">args: <span class="built_in">dict</span>[<span class="built_in">str</span>, <span class="type">Any</span>]</span>) -&gt; ToolResult:</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">await</span> target_conn.call_tool(target_name, args)</span><br><span class="line">            <span class="keyword">return</span> _handler</span><br><span class="line"></span><br><span class="line">        wrapped = Tool(</span><br><span class="line">            func=_make_handler(conn, tool_name),</span><br><span class="line">            name=tool_name,</span><br><span class="line">            description=t.description <span class="keyword">or</span> <span class="string">&quot;&quot;</span>,</span><br><span class="line">            raw_schema=schema,      <span class="comment"># 关键点 1：直接透传远程 Schema</span></span><br><span class="line">            timeout=<span class="number">120.0</span>,</span><br><span class="line">            is_parallel_safe=<span class="literal">True</span>,  <span class="comment"># 关键点 2：标记为只读并发安全</span></span><br><span class="line">        )</span><br><span class="line">        wrapped_tools.append(wrapped)</span><br><span class="line">    <span class="keyword">return</span> wrapped_tools</span><br></pre></td></tr></table></figure></p>
+<p>这里解决了三个核心工程难点：</p>
+<ol type="1">
+<li><p>Python 循环中的闭包陷阱（Closure Late-Binding Trap）： 如果在 for
+循环里直接写 async def _handler(args): return await
+conn.call_tool(t.name, args)，由于 Python 延迟绑定的特性，所有工具最终都
+会调成最后一个工具！ 通过 _make_handler(conn, tool_name)
+独立工厂函数，确保每个工具在内存中精确绑定属于自己的 conn 和
+tool_name。</p></li>
+<li><p>raw_schema 机制解耦 Python 函数签名： 普通工具需要 Python
+函数类型注解（如 def add(a: int) -&gt; int）来推导 JSON Schema；但 MCP
+工具的代码在远程，框架通过 raw_schema=schema 直 接透传远程给的 JSON
+Schema 字典，大模型能立刻看懂入参结构。</p></li>
+<li><p>is_parallel_safe=True 赋予并发加速能力：
+包装出的工具自动具备前文讲过的只读并发能力（asyncio.gather
+批执行），当模型同时调用多个 MCP 工具时可以并行执行。</p></li>
+</ol>
+<p>### 四、安全清理：close_all()</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="keyword">def</span> <span class="title function_">close_all</span>(<span class="params">self</span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;异步关闭所有连接。&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">for</span> conn <span class="keyword">in</span> <span class="variable language_">self</span>.connections.values():</span><br><span class="line">        <span class="keyword">with</span> contextlib.suppress(Exception):</span><br><span class="line">            <span class="keyword">await</span> conn.close()</span><br><span class="line">    <span class="variable language_">self</span>.connections.clear()</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>资源防泄漏：遍历所有连接逐个调用 close()（进而触发
+AsyncExitStack.aclose() 回收 Stdio 子进程）；</li>
+<li>容错关闭：使用
+contextlib.suppress(Exception)，即使某一个子进程已经意外退出了，也不会中断其他正常子进程的回收；</li>
+<li>重置连接池：清空字典。</li>
+</ul>
+<p>### 总结：MCPClientManager 的定位</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">      .mcp.json</span><br><span class="line">          │</span><br><span class="line">          ▼ (load_config)</span><br><span class="line">   MCPServerConfig 列表</span><br><span class="line">          │</span><br><span class="line">          ▼ (connect_server)</span><br><span class="line">┌────────────────────────────────────────┐</span><br><span class="line">│ MCPClientManager                       │</span><br><span class="line">│                                        │</span><br><span class="line">│  • conn1 (github)     ──► 产出 Tool 列表│──► 统一注入 Agent 注册表</span><br><span class="line">│  • conn2 (filesystem) ──► 产出 Tool 列表│</span><br><span class="line">└──────────────────┬─────────────────────┘</span><br><span class="line">                   │</span><br><span class="line">                   ▼ (close_all)</span><br><span class="line">          一键安全回收全部子进程</span><br></pre></td></tr></table></figure></p>
+<p>它是一个非常干净的装配器（Assembler）+
+门面（Facade），屏蔽了多进程管理的复杂性，对外只提供配置加载、批量连接和统一关闭能力。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/agent/" rel="tag"># agent</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/08/15/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E5%BC%82%E6%AD%A5%E6%94%AF%E6%8C%81/" rel="prev" title="my-pi-agent--异步支持">
+                  <i class="fa fa-angle-left"></i> my-pi-agent--异步支持
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js","integrity":"sha256-stuqcu2FrjYCXDOytWFA5SoUE/r3nkp6gTglzNSlavU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

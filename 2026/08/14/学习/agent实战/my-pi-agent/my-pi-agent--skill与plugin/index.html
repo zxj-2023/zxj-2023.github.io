@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-bounce.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="skill机制 SkillManager SkillManager 是 skill 资源的”仓库管理员”——发现、存储、查询、格式化全部收敛到一个有状态对象里，让外面的代码（Agent）不需要知道 skill 来自文件系统。 12345678910111213141516171819class SkillManager:    &quot;&quot;&quot;skill 仓储（Rep">
+<meta property="og:type" content="article">
+<meta property="og:title" content="my-pi-agent--skill与plugin">
+<meta property="og:url" content="http://example.com/2026/08/14/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--skill%E4%B8%8Eplugin/index.html">
+<meta property="og:site_name" content="Zhang XiJun">
+<meta property="og:description" content="skill机制 SkillManager SkillManager 是 skill 资源的”仓库管理员”——发现、存储、查询、格式化全部收敛到一个有状态对象里，让外面的代码（Agent）不需要知道 skill 来自文件系统。 12345678910111213141516171819class SkillManager:    &quot;&quot;&quot;skill 仓储（Rep">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-08-13T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-17T15:44:49.169Z">
+<meta property="article:author" content="张熙浚">
+<meta property="article:tag" content="agent">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2026/08/14/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--skill%E4%B8%8Eplugin/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2026/08/14/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--skill%E4%B8%8Eplugin/","path":"2026/08/14/学习/agent实战/my-pi-agent/my-pi-agent--skill与plugin/","title":"my-pi-agent--skill与plugin"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>my-pi-agent--skill与plugin | Zhang XiJun</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zhang XiJun</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">BLOGS</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#skill%E6%9C%BA%E5%88%B6"><span class="nav-number">1.</span> <span class="nav-text">skill机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#skillmanager"><span class="nav-number">1.1.</span> <span class="nav-text">SkillManager</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%8A%A0%E8%BD%BDskill"><span class="nav-number">1.2.</span> <span class="nav-text">如何加载skill</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%95%E6%97%B6%E4%BC%9A%E5%8A%A0%E8%BD%BD-skill"><span class="nav-number">1.3.</span> <span class="nav-text">何时会加载 skill</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#skill-%E7%9A%84%E5%93%AA%E4%BA%9B%E5%86%85%E5%AE%B9%E4%BC%9A%E5%8A%A0%E5%85%A5%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="nav-number">1.4.</span> <span class="nav-text">skill 的哪些内容会加入上下文</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%B0%83%E7%94%A8%E6%9F%90%E4%B8%AA-skill"><span class="nav-number">1.5.</span> <span class="nav-text">如何调用某个 skill</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#skill%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">1.6.</span> <span class="nav-text">skill生命周期</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#plugin"><span class="nav-number">2.</span> <span class="nav-text">plugin</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%87%E5%87%86plugin%E7%9A%84%E7%BB%93%E6%9E%84"><span class="nav-number">2.1.</span> <span class="nav-text">标准plugin的结构</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="张熙浚"
+      src="/images/zxjavatar.gif">
+  <p class="site-author-name" itemprop="name">张熙浚</p>
+  <div class="site-description" itemprop="description">zxj Blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">209</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">70</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">72</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zxj-2023" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zxj-2023" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://wpa.qq.com/msgrd?v=3&uin=2902065320&site=qq&menu=yes" title="QQ → http:&#x2F;&#x2F;wpa.qq.com&#x2F;msgrd?v&#x3D;3&amp;uin&#x3D;2902065320&amp;site&#x3D;qq&amp;menu&#x3D;yes" rel="noopener me" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://zxj-2023.github.io/" title="https:&#x2F;&#x2F;zxj-2023.github.io" rel="noopener" target="_blank">Zhang XiJun</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://theme-next.js.org/" title="https:&#x2F;&#x2F;theme-next.js.org" rel="noopener" target="_blank">NexT</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/08/14/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--skill%E4%B8%8Eplugin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="my-pi-agent--skill与plugin | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          my-pi-agent--skill与plugin
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-08-14 00:00:00" itemprop="dateCreated datePublished" datetime="2026-08-14T00:00:00+08:00">2026-08-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-08-17 23:44:49" itemprop="dateModified" datetime="2026-08-17T23:44:49+08:00">2026-08-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/agent%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">agent实战</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/agent%E5%AE%9E%E6%88%98/my-pi-agent/" itemprop="url" rel="index"><span itemprop="name">my-pi-agent</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="本文总阅读量 far fa-eye 次"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="skill机制">skill机制</h1>
+<h2 id="skillmanager">SkillManager</h2>
+<p>SkillManager 是 skill
+资源的”仓库管理员”——发现、存储、查询、格式化全部收敛到一个有状态对象里，让外面的代码（Agent）不需要知道
+skill 来自文件系统。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">class SkillManager:</span><br><span class="line">    &quot;&quot;&quot;skill 仓储（Repository）：发现 + 按名索引 + 清单/调用文本生成。&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    def __init__(self, dirs: list[str | Path] | None = None):</span><br><span class="line">        &quot;&quot;&quot;构造即发现：None → 探测 &lt;cwd&gt;/.agents/skills；[] → 禁用；非空 → 显式目录。&quot;&quot;&quot;</span><br><span class="line">    def _discover_dir(self, root: Path) -&gt; None:</span><br><span class="line">        &quot;&quot;&quot;扫单一来源目录的一层子目录（不递归、不认根级 .md、跳过隐藏目录）。&quot;&quot;&quot;</span><br><span class="line">    def _load_one(self, path: Path) -&gt; Skill | None:</span><br><span class="line">        &quot;&quot;&quot;读单个 SKILL.md → Skill；任何失败/缺 description → None（静默）。&quot;&quot;&quot;</span><br><span class="line">    def get(self, name: str) -&gt; Skill | None:</span><br><span class="line">        &quot;&quot;&quot;按名查询（Repository 主查询）。&quot;&quot;&quot;</span><br><span class="line">    def list(self) -&gt; list[Skill]:</span><br><span class="line">        &quot;&quot;&quot;全部 skills，发现顺序。&quot;&quot;&quot;</span><br><span class="line">        </span><br><span class="line">    def format_prompt(self) -&gt; str:</span><br><span class="line">        &quot;&quot;&quot;全部 skills → XML 清单块；空 → 空串（进 system prompt）。&quot;&quot;&quot;</span><br><span class="line"></span><br><span class="line">    def format_invocation(self, name: str, instructions: str = &quot;&quot;) -&gt; str:</span><br><span class="line">        &quot;&quot;&quot;按名取正文 → &lt;skill&gt; 包装 + 可选附言；未知名 → ValueError（列可用名字）。&quot;&quot;&quot;</span><br></pre></td></tr></table></figure>
+<h2 id="如何加载skill">如何加载skill</h2>
+<p>你传什么决定扫哪：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class SkillManager:</span><br><span class="line">    def __init__(self, dirs=None):</span><br><span class="line">        self.skills: dict[str, Skill] = &#123;&#125;          # 先建空巢</span><br><span class="line">        if dirs is None:</span><br><span class="line">            dirs = [Path.cwd() / &quot;.agents&quot; / &quot;skills&quot;]  # None → 探测默认目录</span><br><span class="line">        for root in dirs:</span><br><span class="line">            self._discover_dir(Path(root))              # 逐目录发现</span><br><span class="line">┌─────────────────────────────────┬───────────────────────────────────────┐</span><br><span class="line">│              传参               │                 行为                  │</span><br><span class="line">├─────────────────────────────────┼───────────────────────────────────────┤</span><br><span class="line">│ Agent(skill_dirs=None)（默认）  │ 探测 &lt;cwd&gt;/.agents/skills，不存在则空 │</span><br><span class="line">├─────────────────────────────────┼───────────────────────────────────────┤</span><br><span class="line">│ Agent(skill_dirs=[&quot;my_skills&quot;]) │ 只扫 my_skills/ 这一个目录            │</span><br><span class="line">├─────────────────────────────────┼───────────────────────────────────────┤</span><br><span class="line">│ Agent(skill_dirs=[])            │ 显式禁用，空 dict                     │</span><br><span class="line">└─────────────────────────────────┴───────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">Agent(skill_dirs=[&quot;my_skills&quot;])   ← 触发点：Agent 构造一次</span><br><span class="line">  │</span><br><span class="line">  ▼</span><br><span class="line">SkillManager([&quot;my_skills&quot;])</span><br><span class="line">  │  self.skills = &#123;&#125;</span><br><span class="line">  │</span><br><span class="line">  ├── 来源目录: my_skills/</span><br><span class="line">  │   │</span><br><span class="line">  │   ▼ _discover_dir(my_skills)</span><br><span class="line">  │   │</span><br><span class="line">  │   ├─ my_skills/code-review/</span><br><span class="line">  │   │   │  is_dir ✓, 非隐藏 ✓</span><br><span class="line">  │   │   │  code-review/SKILL.md 存在 ✓</span><br><span class="line">  │   │   ▼ _load_one(SKILL.md)</span><br><span class="line">  │   │   │  read utf-8-sig ──OSError──→ None (丢弃)</span><br><span class="line">  │   │   │  parse_frontmatter ──坏/无 YAML──→ (&#123;&#125;, 全文)</span><br><span class="line">  │   │   │  description? ──缺──→ None (守门跳过)</span><br><span class="line">  │   │   │  description=&quot;Perform thorough code reviews...&quot; ✓</span><br><span class="line">  │   │   ▼</span><br><span class="line">  │   │   Skill(code-review, 正文, path) ──► skills[&quot;code-review&quot;]</span><br><span class="line">  │   │</span><br><span class="line">  │   ├─ my_skills/pdf/</span><br><span class="line">  │   │   └─ ... ──► skills[&quot;pdf&quot;]</span><br><span class="line">  │   │</span><br><span class="line">  │   ├─ my_skills/README.md        ✗ 不是目录 → 跳过</span><br><span class="line">  │   ├─ my_skills/.hidden/         ✗ 隐藏目录 → 跳过</span><br><span class="line">  │   └─ my_skills/notes/           ✗ 无 SKILL.md → 跳过</span><br><span class="line">  │</span><br><span class="line">  ▼</span><br><span class="line">self.skills = &#123;&quot;code-review&quot;: Skill, &quot;pdf&quot;: Skill&#125;</span><br><span class="line">  │</span><br><span class="line">  ▼（下一步，非加载）</span><br><span class="line">agent 组装 system = 用户 prompt + SkillManager.format_prompt() 清单块</span><br></pre></td></tr></table></figure>
+<h2 id="何时会加载-skill">何时会加载 skill</h2>
+<p>发现加载（读文件到内存）只在 Agent 初始化时发生一次：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># agent.py:59</span><br><span class="line">self.skills: list[Skill] = load_skills(skill_dirs)</span><br></pre></td></tr></table></figure>
+<p>也就是说： - Agent(skill_dirs=[…]) 或 Agent()（默认 None 探测
+.agents/skills）构造的那一刻，扫描目录、解析 frontmatter、构建
+self.skills 列表 - 之后不再刷新——你改了某个 SKILL.md，要新开会话/新建
+Agent 才生效（这正是设计决策 4：skill
+配置变更新会话生效，刻意不做动态刷新）</p>
+<p>正文进入模型上下文则是另一个时机：初始化只把清单放进去，正文完全不会在初始化时加载——只有宿主显式
+invoke_skill
+的时刻才进模型。所以”何时加载”的准确答案是：发现=初始化一次；正文=按需、宿主显式注入时才出现。</p>
+<h2 id="skill-的哪些内容会加入上下文">skill 的哪些内容会加入上下文</h2>
+<p>分两个阶段，内容完全不同：</p>
+<p>阶段一：初始化，只加清单（很小）——每个 skill 只贡献 name +
+description，拼成 XML 块追加到 system prompt 尾部：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;available_skills&gt;</span><br><span class="line">  &lt;skill&gt;</span><br><span class="line">    &lt;name&gt;code-review&lt;/name&gt;</span><br><span class="line">    &lt;description&gt;Perform thorough code reviews...&lt;/description&gt;</span><br><span class="line">  &lt;/skill&gt;</span><br><span class="line">  &lt;skill&gt;...&lt;/skill&gt;</span><br><span class="line">&lt;/available_skills&gt;</span><br></pre></td></tr></table></figure>
+<p>正文（content）不进，frontmatter 其他字段（name、tags 等）不进。每个
+skill 大约几十 token，这是渐进式披露的 token 经济学。</p>
+<p>阶段二：invoke_skill 时，加正文（wholesale）——整个
+<skill name location>正文</skill> 作为一个 user 消息进入上下文：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;skill name=&quot;code-review&quot; location=&quot;D:\...\code-review\SKILL.md&quot;&gt;</span><br><span class="line">  完整正文（frontmatter 以下的全部 markdown 指令）</span><br><span class="line">&lt;/skill&gt;</span><br></pre></td></tr></table></figure>
+<p>注意：附件文件（skill 目录里的 references/ scripts/ 等）从不加载——v1
+只认 SKILL.md 正文本身。frontmatter 里除 description 外的键（比如
+name、tags）也从不进上下文。</p>
+<h2 id="如何调用某个-skill">如何调用某个 skill</h2>
+<p>唯一的调用入口是 Agent.invoke_skill(name, instructions=““)：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># agent.py:188</span><br><span class="line">def invoke_skill(self, name: str, instructions: str = &quot;&quot;) -&gt; str | None:</span><br><span class="line">    skill = self._skills_by_name.get(name)          # 按名查内存 dict</span><br><span class="line">    if skill is None:</span><br><span class="line">        available = &quot;, &quot;.join(sorted(self._skills_by_name)) or &quot;(none)&quot;</span><br><span class="line">        raise ValueError(f&quot;Unknown skill &#x27;&#123;name&#125;&#x27;. Available: &#123;available&#125;&quot;)</span><br><span class="line">    return self.run(format_skill_invocation(skill, instructions))  # 包装 → 跑一轮</span><br></pre></td></tr></table></figure>
+<p>调用方式（宿主侧代码）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">agent = Agent(llm=llm, tools=[...], skill_dirs=[&quot;my_skills&quot;])</span><br><span class="line">agent.invoke_skill(&quot;code-review&quot;, &quot;重点看并发安全&quot;)</span><br><span class="line"># run(&#x27;&lt;skill name=&quot;code-review&quot; ...&gt;正文&lt;/skill&gt;\n\n重点看并发安全&#x27;)</span><br><span class="line"># → 模型按正文干活，返回最终文本</span><br></pre></td></tr></table></figure>
+<h2 id="skill生命周期">skill生命周期</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line">① 落地（用户/宿主写文件）</span><br><span class="line">   my_skills/code-review/SKILL.md</span><br><span class="line">   │  ┌── frontmatter ──────────┐</span><br><span class="line">   │  │ description: ...        │ ← 唯一读取字段，缺了被守门跳过</span><br><span class="line">   │  └─────────────────────────┘</span><br><span class="line">   │  ┌── 正文 markdown ────────┐</span><br><span class="line">   │  │ 完整操作指令             │ ← 将来注入模型的 content</span><br><span class="line">   │  └─────────────────────────┘</span><br><span class="line">   ▼</span><br><span class="line">② 发现（Agent 构造时，只此一次）</span><br><span class="line">   Agent(skill_dirs=[&quot;my_skills&quot;])</span><br><span class="line">     └─► self.skill_manager = SkillManager([&quot;my_skills&quot;])</span><br><span class="line">            │  dirs 三态：None 探测 .agents/skills / [] 禁用 / 显式目录</span><br><span class="line">            ▼</span><br><span class="line">          _discover_dir(my_skills)</span><br><span class="line">            │  iterdir 一层</span><br><span class="line">            │  ① 非目录 → 跳过     ② 隐藏目录(.开头) → 跳过</span><br><span class="line">            │  ③ 无 SKILL.md → 跳过</span><br><span class="line">            ▼</span><br><span class="line">③ 解析 + 守门（_load_one）</span><br><span class="line"></span><br><span class="line">① 落地（用户/宿主写文件）</span><br><span class="line">   my_skills/code-review/SKILL.md</span><br><span class="line">   │  ┌── frontmatter ──────────┐</span><br><span class="line">   │  │ description: ...        │ ← 唯一读取字段，缺了被守门跳过</span><br><span class="line">   │  └─────────────────────────┘</span><br><span class="line">   │  ┌── 正文 markdown ────────┐</span><br><span class="line">   │  │ 完整操作指令             │ ← 将来注入模型的 content</span><br><span class="line">   │  └─────────────────────────┘</span><br><span class="line">   ▼</span><br><span class="line">② 发现（Agent 构造时，只此一次）</span><br><span class="line">   Agent(skill_dirs=[&quot;my_skills&quot;])</span><br><span class="line">     └─► self.skill_manager = SkillManager([&quot;my_skills&quot;])</span><br><span class="line">            │  dirs 三态：None 探测 .agents/skills / [] 禁用 / 显式目录</span><br><span class="line">            ▼</span><br><span class="line">          _discover_dir(my_skills)</span><br><span class="line">            │  iterdir 一层</span><br><span class="line">            │  ① 非目录 → 跳过     ② 隐藏目录(.开头) → 跳过</span><br><span class="line">            │  ③ 无 SKILL.md → 跳过</span><br><span class="line">            ▼</span><br><span class="line">③ 解析 + 守门（_load_one）</span><br><span class="line">   read_text(utf-8-sig) ────读失败(OSError)───► None（静默丢弃）</span><br><span class="line">        │</span><br><span class="line">        ▼</span><br><span class="line">   parse_frontmatter(text)</span><br><span class="line">        │  无 --- 头 / 闭合缺失 / 坏 YAML / 非 dict → 全部降级为 (&#123;&#125;, 全文)</span><br><span class="line">        ▼</span><br><span class="line">   meta.get(&quot;description&quot;) ────缺失 / 空────► None（守门跳过）</span><br><span class="line">        │ description 存在</span><br><span class="line">        ▼</span><br><span class="line">   Skill(name=&quot;code-review&quot;, description=&quot;...&quot;, content=&quot;正文&quot;, file_path=...)</span><br><span class="line">   │</span><br><span class="line">   ▼</span><br><span class="line">④ 入巢 + 清单可见</span><br><span class="line">   self.skills[&quot;code-review&quot;] = Skill        # key = 目录名，dict 保持发现顺序</span><br><span class="line">        │</span><br><span class="line">        ├─► format_prompt() ──► XML 清单（name+description）</span><br><span class="line">        │        如 &lt;available_skills&gt;&lt;skill&gt;&lt;name&gt;... ──► 进 system prompt（常驻）</span><br><span class="line">        │</span><br><span class="line">        ▼</span><br><span class="line">⑤ 调用（宿主显式，模型无自助通道）</span><br><span class="line">   agent.invoke_skill(&quot;code-review&quot;, &quot;重点看并发&quot;)</span><br><span class="line">        │</span><br><span class="line">        ▼</span><br><span class="line">   skill_manager.format_invocation(&quot;code-review&quot;, &quot;重点看并发&quot;)</span><br><span class="line">        │  get(&quot;code-review&quot;)</span><br><span class="line">        │    ──── 未知名 ────► ValueError（列可用名字）★ 唯一显式失败</span><br><span class="line">        ▼</span><br><span class="line">   &lt;skill name=&quot;code-review&quot; location=&quot;D:\...\SKILL.md&quot;&gt;</span><br><span class="line">     正文 markdown</span><br><span class="line">   &lt;/skill&gt;</span><br><span class="line"></span><br><span class="line">   重点看并发</span><br><span class="line">        │  包装成一个 user 消息</span><br><span class="line">        ▼</span><br><span class="line">⑥ 执行（进入模型上下文）</span><br><span class="line">   Agent.run(包装文本)</span><br><span class="line">        │  user 消息追加进 messages</span><br><span class="line">        ▼</span><br><span class="line">   llm.chat(messages, tools) ──► 模型看到正文指令 ──► 干活（可再调工具）──► 返回最终文本</span><br></pre></td></tr></table></figure>
+<p>阶段 ①②③ 合称”加载”——磁盘 → 内存 Skill 对象。只在 Agent
+构造时发生一次。每个失败点都静默（丢弃 None），不阻塞 Agent 启动。</p>
+<p>阶段 ④ 是”渐进式披露”第一层——模型此刻只看到
+name+description（清单），看不到正文。这是 token 经济学：每个 skill 在
+system 里只占几十 token。</p>
+<p>阶段 ⑤⑥ 合称”调用”——正文从内存进模型上下文。触发者是宿主（应用层代码
+/ 未来的 REPL），不是模型。format_invocation
+是唯一”查不到就报错”的地方。</p>
+<p>阶段 ⑦ 是关键边界：skill 生命周期不随会话走——Agent.reset() 清
+messages 不清 skills；改文件必须重开 Agent。skill
+是代码级配置（构造时定死），不是会话状态。</p>
+<h1 id="plugin">plugin</h1>
+<h2 id="标准plugin的结构">标准plugin的结构</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">my-plugin/</span><br><span class="line">├── .claude-plugin/</span><br><span class="line">│   └── plugin.json          # Plugin 清单（可选，不需要它也能自动发现组件）</span><br><span class="line">├── skills/                   # Agent Skills（自主调用或通过 /skill-name）</span><br><span class="line">│   └── my-skill/</span><br><span class="line">│       └── SKILL.md</span><br><span class="line">├── commands/                 # 旧版：改用 skills/ 代替</span><br><span class="line">│   └── custom-cmd.md</span><br><span class="line">├── agents/                   # 自定义 agents</span><br><span class="line">│   └── specialist.md</span><br><span class="line">├── hooks/                    # 事件处理程序</span><br><span class="line">│   └── hooks.json</span><br><span class="line">└── .mcp.json                # MCP 服务器定义</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="张熙浚 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.png" alt="张熙浚 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/agent/" rel="tag"># agent</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/08/11/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--context%E7%AE%A1%E7%90%86/" rel="prev" title="my-pi-agent--context管理">
+                  <i class="fa fa-angle-left"></i> my-pi-agent--context管理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/08/15/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/title%20my-pi-agent--subagent%E4%B8%8Etask%E5%A7%94%E6%B4%BE/" rel="next" title="my-pi-agent--subagent与task委派">
+                  my-pi-agent--subagent与task委派 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">张熙浚</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="本站访问数 fa fa-user 次"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="本站总访问量 fa fa-eye 次"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script size="400" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.1.0/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js" integrity="sha256-j+yj56cdEY2CwkVtGyz18fNybFGpMGJ8JxG3GSyO2+I=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script><script src="/js/pjax.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js","integrity":"sha256-stuqcu2FrjYCXDOytWFA5SoUE/r3nkp6gTglzNSlavU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"all","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
