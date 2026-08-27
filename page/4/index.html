@@ -155,7 +155,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">209</span>
+          <span class="site-state-item-count">210</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -206,6 +206,366 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/05/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/openai%E4%B8%8Eclaude%E5%93%8D%E5%BA%94%E6%A0%BC%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/05/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/openai%E4%B8%8Eclaude%E5%93%8D%E5%BA%94%E6%A0%BC%E5%BC%8F/" class="post-title-link" itemprop="url">openai与claude响应格式</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-05-25 00:00:00" itemprop="dateCreated datePublished" datetime="2026-05-25T00:00:00+08:00">2026-05-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-05-27 18:59:20" itemprop="dateModified" datetime="2026-05-27T18:59:20+08:00">2026-05-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/" itemprop="url" rel="index"><span itemprop="name">后端相关</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="claude-的-messages-api-与-openai-的-responses-api">Claude 的
+Messages API 与 OpenAI 的 Responses API</h1>
+<p>前者是<strong>无状态（Stateless）</strong>，每次对话会将<strong>历史记录传回服务端</strong>，利用<strong>promptcaching技术</strong>（大模型服务器의网关会计算你这段历史文本的<strong>哈希值（Hash）</strong>，当发现前面的字符和之前一致时，会从<strong>内存的
+KV Cache</strong>读取，而不是重新计算）。</p>
+<p>前者第二个特点是<strong>结构上的</strong>，核心差别就是claude选择使用<strong>数组存储</strong>，称之为
+<strong>(Content
+Blocks)</strong>，里面<strong>按时间顺序并列存放</strong>不同的“块”（如思维链块、文本块、工具调用块）。这里可以和传统的<strong>openaiCompletions
+api</strong>进行对比思考，传统的Completions是将对话存入一个”message”对象的字段下，“message”对象内包含”content”“reasoning_content”“role”等字段。</p>
+<p>但核心问题就是，<strong>JSON
+语法绝对不允许出现重复的键（Key）</strong>，如果单次对话出现<strong>多次工具调用或思考</strong>，Completions很难正确表示这个过程。</p>
+<p>我的分析是，旧的Completions还停留在与模型对话<strong>一问一答的形式</strong>，而现在<strong>agent通常一次对话包含多次工具调用或模型思考</strong>，因此<strong>Completions不再适用</strong>，从而claude选择使用<strong>数组存储多个json对象</strong>，每个json使用<strong>type区分块的功能</strong>。</p>
+<p>后者结构上<strong>沿用和Claude相同的设计</strong>，使用<strong>json数组</strong>实现对对话内容的存储，每次请求和响应<strong>只会包含最新的一轮对话</strong>，而不像claude完整的历史记录，每个Response都会包含一个<strong>id</strong>，从而<strong>支持随时回滚</strong>；而<strong>item的id</strong>可以类比claude的type，说明单次的功能。</p>
+<p>Plaintext</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[第 1 轮对话]</span><br><span class="line">Response (最顶层对象) ──&gt;【你的本地数据库存它！】id: &quot;**resp_A1B2C3...**&quot;</span><br><span class="line">   │</span><br><span class="line">   └── output (内部数组)</span><br><span class="line">         ├── Item 1 (思考块) ──&gt; id: &quot;**item_thinking_001**&quot;</span><br><span class="line">         ├── Item 2 (工具调用) ──&gt; id: &quot;**item_tool_002**&quot;</span><br><span class="line">         └── Item 3 (最终回复) ──&gt; id: &quot;**item_text_003**&quot;</span><br></pre></td></tr></table></figure>
+<p>后者最大的特点是在<strong>服务端是有状态（Stateful）</strong>，<strong>工具调用和上下文历史管理完全托管在云端服务器</strong>。</p>
+<p>这样的好处有：</p>
+<ol type="1">
+<li>发新请求时，<strong>不用反复传完整的聊天记录</strong>，只要带上上一次回复的
+<strong>previous_response_id</strong>，服务端会自动在后台<strong>回溯、拼接历史</strong>，甚至自动触发<strong>上下文压缩（Compaction）</strong>。</li>
+<li>云厂商将网络搜索、代码解释器等工具<strong>直接托管在云端</strong>。在单次
+API
+请求的生命周期内，模型如果发现需要联网或跑代码，会在<strong>云端沙盒里自己反复调用并纠错</strong>，跑完整个智能体循环后，<strong>直接把最终成果包吐给客户端</strong>，客户端只负责“解析最终数据”。</li>
+<li>模型方面，openai可以因此<strong>保护模型的隐藏推理链（Reasoning
+Traces）</strong>，OpenAI
+就可以把所有的推理中间态<strong>完美地封锁在自己的云端服务器里</strong>，客户端只能拿到剥离后的干净结果。</li>
+<li>数据方面，一旦<strong>完全托管在服务端</strong>，由于数据是由 OpenAI
+的数据库<strong>统一规范存储的</strong>，服务器在计算 <strong>KV
+Cache</strong>
+的持久化和重用时，可以做到<strong>对齐和命中</strong>。</li>
+</ol>
+<p>但这样也有坏处：</p>
+<p>由于是<strong>云端调用工具</strong>，除了 <strong>Token
+费</strong>，调用内置的联网搜索、代码沙箱通常需要<strong>额外支付固定通道费或容器会话费</strong>。</p>
+<figure>
+<img src="/2026/05/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/openai%E4%B8%8Eclaude%E5%93%8D%E5%BA%94%E6%A0%BC%E5%BC%8F/image-20260527180345112.png" alt="image-20260527180345112">
+<figcaption aria-hidden="true">image-20260527180345112</figcaption>
+</figure>
+<h1 id="prompt-caching">prompt caching</h1>
+<p>kvcache的原理不多赘述，简单来说，就是大模型会把kv矩阵计算的值存储起来，再次遇到历史字符时就不用计算了，只计算新字符的矩阵，最后拼接起来。</p>
+<p>对于Completions API和Anthropic 官方的 <strong>Messages
+API</strong>，他们每次请求与详细都会传输完整的上下文，因此为了节省token的消耗，prompt
+caching便是关键</p>
+<p>这里可以参考<a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/prompt-caching#prompt-cache-retention">提示缓存
+|OpenAI API</a></p>
+<blockquote>
+<p>模型提示通常包含重复内容，如系统提示和通用指令。OpenAI 将 API
+请求路由到最近处理过相同提示的服务器，这使得它比从零开始处理提示更便宜、更快。提示缓存可将延迟降低高达80%，输入令牌成本降低高达90%。提示缓存会自动处理你所有的
+API 请求（无需修改代码），且没有额外费用。</p>
+</blockquote>
+<p>缓存命中只能针对提示内的精确前缀匹配。</p>
+<figure>
+<img src="/2026/05/25/%E5%AD%A6%E4%B9%A0/%E5%90%8E%E7%AB%AF%E7%9B%B8%E5%85%B3/openai%E4%B8%8Eclaude%E5%93%8D%E5%BA%94%E6%A0%BC%E5%BC%8F/image-20260527185035144.png" alt="image-20260527185035144">
+<figcaption aria-hidden="true">image-20260527185035144</figcaption>
+</figure>
+<h2 id="工作流程">工作流程</h2>
+<p>缓存功能对于1024个token及以上的提示会自动启用。当您发送API请求时，会执行以下步骤：</p>
+<p>1.根据提示词初始前缀计算哈希值，去内存的 <strong>KV Cache
+索引表</strong>里检索。</p>
+<p>2.如果找到匹配的前缀，系统会使用缓存结果。</p>
+<h2 id="kv的存储">kv的存储</h2>
+<p>它最初在 GPU 显存（VRAM）里，但为了存更久，会被“吐”到 GPU 本地的 NVMe
+SSD 硬盘或内存中。</p>
+<p>大模型的显存（VRAM）是极其昂贵且稀缺的资源。如果把所有用户的 KV
+缓存都永久塞在 GPU 显存里，GPU
+瞬间就会爆显存（OOM）。因此，厂商引入了<strong>分层存储</strong>架构：</p>
+<ul>
+<li><p><strong>热缓存（In-Memory
+状态）</strong>：当模型刚处理完你的请求时，生成的 KV
+张量确实老老实实呆在 <strong>GPU 显存（VRAM）</strong> 或该服务器节点的
+<strong>系统内存（RAM）</strong>
+中。因为读写速度最快，随时准备应对你几分钟内的下一轮对话。</p></li>
+<li><p><strong>冷缓存（Extended
+状态）</strong>：当缓存需要保存几小时甚至 24 小时时，服务器会把这些 KV
+张量进行<strong>加密</strong>，然后从珍贵的显存中释放出来，转储到
+<strong>GPU 本地服务器的高速 NVMe SSD 硬盘</strong> 上。</p>
+<blockquote>
+<p>当你下一次请求命中缓存时，服务器会以极快的速度把加密的 KV
+张量从本地硬盘重新加载（Load）回 GPU
+显存中。虽然比纯显存慢一点点，但比起让大模型重新推理一遍几万字的输入，速度依然快了
+80% 以上。</p>
+</blockquote></li>
+</ul>
+<h1 id="openai-completions-api和responses-api区别">openai Completions
+API和Responses API区别</h1>
+<h2 id="响应数据结构json对比">1. 响应数据结构（JSON）对比</h2>
+<p>两者的最直观区别在于返回的 JSON 报文层级和字段设计。</p>
+<h3 id="传统的-completions-api-以-chat-completions-为例">传统的
+Completions API (以 Chat Completions 为例)</h3>
+<p>在传统规范中，模型生成的内容被深度嵌套在 <code>choices</code>
+数组中：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;id&quot;: &quot;chatcmpl-123&quot;,</span><br><span class="line">  &quot;object&quot;: &quot;chat.completion&quot;,</span><br><span class="line">  &quot;created&quot;: 1716584520,</span><br><span class="line">  &quot;model&quot;: &quot;qwen-plus&quot;,</span><br><span class="line">  &quot;choices&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;index&quot;: 0,</span><br><span class="line">      &quot;message&quot;: &#123;</span><br><span class="line">        &quot;role&quot;: &quot;assistant&quot;,</span><br><span class="line">        &quot;content&quot;: &quot;你好！请问有什么我可以帮你的？&quot;</span><br><span class="line">      &#125;,</span><br><span class="line">      &quot;finish_reason&quot;: &quot;stop&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  &quot;usage&quot;: &#123;</span><br><span class="line">    &quot;prompt_tokens&quot;: 9,</span><br><span class="line">    &quot;completion_tokens&quot;: 12,</span><br><span class="line">    &quot;total_tokens&quot;: 21</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>代码提取路径</strong>：<code>response.choices[0].message.content</code></li>
+<li><strong>痛点</strong>：层级过深；由于早期的设计允许返回多个结果（通过
+<code>n</code> 参数控制 <code>choices</code>
+的数量），导致普通的单次对话也必须套一层数组。</li>
+</ul>
+<h3 id="全新的-responses-api">全新的 Responses API</h3>
+<p>为了简化代码并原生支持更复杂的 AI 行为，新规范将结构打平，引入了
+<code>output</code> 概念：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;id&quot;: &quot;resp_123&quot;,</span><br><span class="line">  &quot;object&quot;: &quot;response&quot;,</span><br><span class="line">  &quot;model&quot;: &quot;qwen3.5-122b&quot;,</span><br><span class="line">  &quot;output&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;type&quot;: &quot;message&quot;,</span><br><span class="line">      &quot;reasoning&quot;: &quot;用户询问两者的区别，我需要用表格和对比清晰展现...&quot;, </span><br><span class="line">      &quot;message&quot;: &#123;</span><br><span class="line">        &quot;role&quot;: &quot;assistant&quot;,</span><br><span class="line">        &quot;content&quot;: &quot;两者的主要区别在于...&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  &quot;usage&quot;: &#123;</span><br><span class="line">    &quot;prompt_tokens&quot;: 15,</span><br><span class="line">    &quot;completion_tokens&quot;: 45,</span><br><span class="line">    &quot;total_tokens&quot;: 60</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>代码提取路径</strong>：在新版 SDK 中，通常可以直接通过
+<code>response.output_text</code> 拿到最终文本。</li>
+<li><strong>亮点</strong>：<strong>原生支持深度思考（Reasoning）</strong>。当使用具备类
+o1/Qwen3.5
+等带有思维链（CoT）功能的推理模型时，其思考过程会直接作为平级的
+<code>reasoning</code> 字段输出，无需再像以前那样通过特殊的
+<code>content</code> 拼接或不透明的魔改字段来传输。</li>
+</ul>
+<h2 id="核心维度深度对比">2. 核心维度深度对比</h2>
+<table>
+<colgroup>
+<col style="width: 20%">
+<col style="width: 40%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr>
+<th><strong>维度</strong></th>
+<th><strong>Completions API (传统)</strong></th>
+<th><strong>Responses API (新一代)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>设计定位</strong></td>
+<td>纯文本生成 / 简单对话交互</td>
+<td>彻底面向<strong>智能体 (Agentic Loop)</strong>
+和新型推理模型设计</td>
+</tr>
+<tr>
+<td><strong>结构复杂度</strong></td>
+<td>较高。嵌套在 <code>choices[0].message</code> 内</td>
+<td>较低。外层通常直接暴露 <code>output</code> 或扁平化字段</td>
+</tr>
+<tr>
+<td><strong>思维链支持 (Reasoning)</strong></td>
+<td>较弱。通常需要占用 <code>content</code> 空间或使用魔改字段透传</td>
+<td><strong>原生支持</strong>。拥有独立的 <code>reasoning</code>
+字段，与最终回答完美分离</td>
+</tr>
+<tr>
+<td><strong>多步骤工具调用 (Tool Call)</strong></td>
+<td>复杂。多轮 Tool
+调用需要开发者在代码里频繁手动拼装、维护上下文历史</td>
+<td><strong>原生自动化</strong>。支持单次请求内模型自主进行多步工具调用（如网络搜索、执行代码）并直接返回最终
+Response</td>
+</tr>
+<tr>
+<td><strong>存储与状态保持</strong></td>
+<td>默认无状态（Stateless），每次交互需全量上传历史记录</td>
+<td>部分环境支持原生上下文状态保持（Stateful），降低长对话的 Token
+传输成本</td>
+</tr>
+</tbody>
+</table>
+<h1 id="anthropic-官方的-messages-api-规范">Anthropic 官方的
+<strong>Messages API</strong> 规范</h1>
+<p>样例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;id&quot;: &quot;msg_01A4zFr95E9A3daS7kL28xWq&quot;,</span><br><span class="line">  &quot;type&quot;: &quot;message&quot;,</span><br><span class="line">  &quot;role&quot;: &quot;assistant&quot;,</span><br><span class="line">  &quot;model&quot;: &quot;claude-3-7-sonnet-20250219&quot;,</span><br><span class="line">  &quot;content&quot;: [</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;type&quot;: &quot;text&quot;,</span><br><span class="line">      &quot;text&quot;: &quot;没问题，我正在为您查询数据库中状态为活跃的前5个用户。&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      &quot;type&quot;: &quot;tool_use&quot;,</span><br><span class="line">      &quot;id&quot;: &quot;toolu_01827391aBcDeFgHiJk&quot;,</span><br><span class="line">      &quot;name&quot;: &quot;query_database&quot;,</span><br><span class="line">      &quot;input&quot;: &#123;</span><br><span class="line">        &quot;sql&quot;: &quot;SELECT user_id, username FROM users WHERE status = &#x27;active&#x27; LIMIT 5;&quot;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  ],</span><br><span class="line">  &quot;stop_reason&quot;: &quot;tool_use&quot;,</span><br><span class="line">  &quot;stop_sequence&quot;: null,</span><br><span class="line">  &quot;usage&quot;: &#123;</span><br><span class="line">    &quot;input_tokens&quot;: 420,</span><br><span class="line">    &quot;cache_creation_input_tokens&quot;: 350,</span><br><span class="line">    &quot;cache_read_input_tokens&quot;: 0,</span><br><span class="line">    &quot;output_tokens&quot;: 85</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="核心对比矩阵">核心对比矩阵</h3>
+<table>
+<colgroup>
+<col style="width: 11%">
+<col style="width: 44%">
+<col style="width: 44%">
+</colgroup>
+<thead>
+<tr>
+<th><strong>维度</strong></th>
+<th><strong>Claude 响应格式 (Messages API)</strong></th>
+<th><strong>OpenAI Responses API</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>设计核心</strong></td>
+<td><strong>富内容块 (Rich Content Blocks)</strong> 驱动</td>
+<td><strong>智能体循环 (Agentic Loop)</strong> 与托管工具驱动</td>
+</tr>
+<tr>
+<td><strong>基础数据对象</strong></td>
+<td>消息 (<code>messages</code>) 与 内容块 (<code>content</code>)</td>
+<td>项 (<code>items</code>) 与 响应对象 (<code>response</code>)</td>
+</tr>
+<tr>
+<td><strong>多轮状态管理</strong></td>
+<td><strong>无状态
+(Stateless)</strong>：需由客户端每次回传完整上下文（配合 Prompt Caching
+优化成本）</td>
+<td><strong>有状态 (Stateful)</strong>：支持通过
+<code>previous_response_id</code> 在服务端自动链式追踪状态</td>
+</tr>
+<tr>
+<td><strong>工具调用机制</strong></td>
+<td><strong>客户端编排</strong>：模型返回
+<code>tool_use</code>，开发者在本地执行后用 <code>tool_result</code>
+回传</td>
+<td><strong>服务端托管</strong>：一次请求内，服务端自动运行多轮内置工具（Web
+搜索、代码执行、MCP等）</td>
+</tr>
+<tr>
+<td><strong>结构化输出</strong></td>
+<td>支持 JSON Schema / 借助 SDK 的 <code>messages.parse</code>
+确保强一致性</td>
+<td>原生支持强类型的 Structured Outputs 和自动修复</td>
+</tr>
+</tbody>
+</table>
+<h3 id="核心差异深度解析">核心差异深度解析</h3>
+<h3 id="返回数据结构content-blocks-vs-output-items">1.
+返回数据结构：Content Blocks vs Output Items</h3>
+<ul>
+<li><p><strong>Claude 的响应格式（块结构）</strong></p>
+<p>Claude 的核心创新在于将响应内容拆解为一个个并列的 <strong>Content
+Block（内容块）</strong>。一条响应的 <code>content</code>
+是一个数组，里面可以同时包含思维链（thinking）、文本、工具调用等多种类型。</p>
+<p>JSON</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&quot;content&quot;: [</span><br><span class="line">  &#123; &quot;type&quot;: &quot;thinking&quot;, &quot;thinking&quot;: &quot;用户需要计算...&quot; &#125;,</span><br><span class="line">  &#123; &quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;好的，我为你算一下。&quot; &#125;,</span><br><span class="line">  &#123; &quot;type&quot;: &quot;tool_use&quot;, &quot;id&quot;: &quot;toolu_123&quot;, &quot;name&quot;: &quot;calculator&quot;, &quot;input&quot;: &#123;...&#125; &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>这种设计的优势在于<strong>透明度高、扩展性极强</strong>，完美融合了文本、多媒体（PDF/图片）和原生推理。</p></li>
+<li><p><strong>OpenAI Responses API（对象与项结构）</strong></p>
+<p>Responses API 彻底抛弃了早期 Chat Completions 繁琐的
+<code>choices[0].message</code> 嵌套，返回一个具有独立 <code>id</code>
+的 <code>response</code> 对象，其内部核心是 <code>output</code>
+数组，由各种类型的 <strong>Item（项）</strong> 组成。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&quot;output&quot;: [</span><br><span class="line">  &#123; &quot;id&quot;: &quot;item_abc&quot;, &quot;type&quot;: &quot;message&quot;, &quot;message&quot;: &#123; &quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: [...] &#125; &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>它在顶层解耦了 <code>instructions</code>（系统指令）和
+<code>input</code>（用户输入），语义更加符合现代 Agent 架构。</p></li>
+</ul>
+<h3 id="状态与多轮对话管理">2. 状态与多轮对话管理</h3>
+<ul>
+<li><p><strong>Claude：客户端保留 + 提示词缓存 (Prompt
+Caching)</strong></p>
+<p>Claude API
+本身是无状态的。这意味着做多轮对话时，你必须把之前的聊天历史全部打包传回去。</p>
+<blockquote>
+<p><strong>巧妙的优化：</strong> 尽管每次都要重传历史，但 Claude
+提供了极其强大的 <strong>Prompt
+Caching（瞬时缓存）</strong>。只要历史对话没有变，重复传入的部分会直接命中缓存，不仅响应速度极快，还能帮你省下高达
+90% 的输入 Token 费用。</p>
+</blockquote></li>
+<li><p><strong>OpenAI Responses API：服务端自动追踪 + 引用
+ID</strong></p>
+<p>Responses API
+引入了真正的“有状态”模式。你不需要在客户端维护一个长长的数组，你只需要传入当前最新的用户输入，并附带上一次的
+<code>previous_response_id</code>：</p>
+<p>Python</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">response2 = client.responses.create(</span><br><span class="line">    model=&quot;gpt-5&quot;,</span><br><span class="line">    previous_response_id=response1.id,</span><br><span class="line">    input=&quot;那它的常住人口是多少？&quot;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>OpenAI
+的服务器会自动在后台保留和拼接历史，甚至在上下文过长时自动触发<strong>服务端压缩
+(Compaction)</strong>，免去了开发者手动管理长上下文的痛苦。</p></li>
+</ul>
+<h3 id="工具调用与智能体编排-tool-use-agentic-loop">3.
+工具调用与智能体编排 (Tool Use &amp; Agentic Loop)</h3>
+<ul>
+<li><p><strong>Claude：协作式编排</strong></p>
+<p>当你给 Claude 绑定自定义工具时，交互是“回合制”的：客户端发请求 <span class="math inline">→</span> Claude 返回 <code>tool_use</code>
+块并中断请求 <span class="math inline">→</span>
+<strong>你的代码在本地执行该工具</strong> <span class="math inline">→</span> 你的代码把 <code>tool_result</code> 发回给
+Claude <span class="math inline">→</span> Claude
+给出最终文本。这种模式下，<strong>控制权完全在开发者手里</strong>，你可以非常安全地在本地读取数据库或执行敏感操作。</p></li>
+<li><p><strong>OpenAI Responses API：全面托管的自动循环</strong></p>
+<p>Responses API 的最大杀手锏是它的 <strong>Agentic by
+default（默认智能体化）</strong>。它把工具调用的控制权收归到了云端。</p>
+<p>它内建了诸如 <strong>Web Search（网络搜索）、File
+Search（文件搜索）、Code Interpreter（代码解释器）以及远程
+MCP（模型上下文协议）服务器</strong>。当你发出一个请求时，模型可以在一次
+API
+调用的生命周期内，自己在云端反复调用多次工具，直到得出完美答案。开发者不需要写任何多轮编排的代码。</p></li>
+</ul>
+<h1 id="参考资料">参考资料</h1>
+<p><a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/your-data">Data
+controls in the OpenAI platform</a></p>
+<p><a target="_blank" rel="noopener" href="https://developers.openai.com/api/docs/guides/prompt-caching#prompt-cache-retention">Prompt
+caching | OpenAI API</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -12040,200 +12400,6 @@ UNDO-LIST 移到 <strong>REDO-LIST</strong>。
 <li><strong>重做 (Redo)</strong>：对 REDO 队列中的事务 (<span class="math inline"><em>T</em><sub>2</sub>, <em>T</em><sub>4</sub></span>)
 执行<strong>正向扫描</strong>和重做操作。</li>
 </ol>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/12/20/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9F%A5%E8%AF%86%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/12/20/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9F%A5%E8%AF%86%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA/" class="post-title-link" itemprop="url">深度学习知识查漏补缺</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2025-12-20 00:00:00 / 修改时间：19:18:25" itemprop="dateCreated datePublished" datetime="2025-12-20T00:00:00+08:00">2025-12-20</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">大模型算法</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="梯度消失和梯度爆炸">梯度消失和梯度爆炸</h2>
-<p>梯度消失（Gradient Vanishing）和梯度爆炸（Gradient
-Exploding）是深度学习（尤其是深度神经网络和循环神经网络
-RNN）训练中常见的两个核心问题。它们都会导致模型<strong>无法有效训练</strong>，但表现形式相反。</p>
-<p>简单来说，这两个问题都源于<strong>反向传播（Backpropagation）*<em>中的*</em>连乘效应</strong>。</p>
-<hr>
-<h3 id="核心机制为什么会出现这个问题">1.
-核心机制：为什么会出现这个问题？</h3>
-<p>在神经网络中，我们通过<strong>反向传播算法</strong>来更新参数。为了计算靠近输入层（浅层）参数的梯度，需要利用<strong>链式法则（Chain
-Rule）</strong>，将后面所有层的梯度乘起来。</p>
-<p><span class="math display">$$\frac{\partial Loss}{\partial w_1} =
-\frac{\partial Loss}{\partial y} \cdot \frac{\partial y}{\partial h_n}
-\cdot ... \cdot \frac{\partial h_2}{\partial h_1} \cdot \frac{\partial
-h_1}{\partial w_1}$$</span></p>
-<p>想象你有一长串数字相乘：</p>
-<ul>
-<li><strong>梯度消失</strong>：如果这些数字大部分都<strong>小于
-1</strong>（例如 0.9），乘得越多，结果越接近 <strong>0</strong>。</li>
-<li><strong>梯度爆炸</strong>：如果这些数字大部分都<strong>大于
-1</strong>（例如 1.1），乘得越多，结果就会趋向
-<strong>无穷大</strong>。</li>
-</ul>
-<hr>
-<h3 id="梯度消失-gradient-vanishing">2. 梯度消失 (Gradient
-Vanishing)</h3>
-<h4 id="现象"><strong>现象</strong></h4>
-<ul>
-<li>在深层网络中，<strong>靠近输入层（浅层）的参数几乎不更新</strong>，而靠近输出层的参数更新正常。</li>
-<li>模型看起来在训练，但实际上前几层只是在做随机特征提取，导致整体模型无法收敛或性能很差。</li>
-</ul>
-<h4 id="主要原因"><strong>主要原因</strong></h4>
-<ol type="1">
-<li><strong>激活函数选择不当</strong>：使用了 <strong>Sigmoid</strong>
-或 <strong>Tanh</strong> 函数。
-<ul>
-<li>Sigmoid 的导数最大值只有
-<strong>0.25</strong>。当网络很深时，多个小于 0.25
-的数相乘，梯度会以指数级衰减。</li>
-</ul></li>
-<li><strong>网络太深</strong>：层数越多，连乘链条越长，衰减越严重。</li>
-</ol>
-<h4 id="解决方法"><strong>解决方法</strong></h4>
-<ul>
-<li><strong>更换激活函数</strong>：使用 <strong>ReLU (Rectified Linear
-Unit)</strong> 及其变体（Leaky ReLU）。ReLU 在正区间的导数恒为
-1，解决了连乘导致的衰减问题。</li>
-<li><strong>Batch Normalization
-(BN)</strong>：通过规范化每一层的输入，强行将数据拉回到激活函数的敏感区间，防止梯度变小。</li>
-<li><strong>残差结构 (ResNet)</strong>：引入 “Shortcut
-Connection”（捷径），让梯度可以通过“高速公路”直接传到浅层，不再完全依赖层层相乘。</li>
-</ul>
-<hr>
-<h3 id="梯度爆炸-gradient-exploding">3. 梯度爆炸 (Gradient
-Exploding)</h3>
-<h4 id="现象-1"><strong>现象</strong></h4>
-<ul>
-<li><strong>Loss 震荡</strong>：损失函数（Loss）忽大忽小，甚至变成
-<code>NaN</code>（非数字）。</li>
-<li><strong>权重剧变</strong>：模型参数更新幅度过大，直接飞出合理范围。</li>
-<li>多见于 <strong>RNN (循环神经网络)</strong> 处理长序列数据时。</li>
-</ul>
-<h4 id="主要原因-1"><strong>主要原因</strong></h4>
-<ol type="1">
-<li><strong>权重初始化过大</strong>：初始参数值太大，导致每一层的输出和梯度都成倍放大。</li>
-<li><strong>网络结构问题</strong>：在 RNN
-中，同一个权重矩阵在时间步上被反复相乘，极易导致数值溢出。</li>
-</ol>
-<h4 id="解决方法-1"><strong>解决方法</strong></h4>
-<ul>
-<li><strong>梯度裁剪 (Gradient
-Clipping)</strong>：简单粗暴但有效。如果梯度的范数（Norm）超过某个阈值（比如
-5），就强行把它截断（缩放）到这个阈值以内。</li>
-<li><strong>改善权重初始化</strong>：使用 <strong>Xavier</strong> 或
-<strong>He
-Initialization</strong>，根据每层的神经元数量科学地设置初始权重的范围。</li>
-<li><strong>使用 LSTM/GRU</strong>：在处理序列数据时，LSTM
-通过“门控机制”专门设计了梯度的传输通道，缓解了长序列中的梯度问题。</li>
-</ul>
-<hr>
-<h3 id="总结对比">总结对比</h3>
-<table>
-<colgroup>
-<col style="width: 14%">
-<col style="width: 45%">
-<col style="width: 40%">
-</colgroup>
-<thead>
-<tr>
-<th><strong>特性</strong></th>
-<th><strong>梯度消失 (Vanishing)</strong></th>
-<th><strong>梯度爆炸 (Exploding)</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>本质</strong></td>
-<td>连乘项 &lt; 1，梯度趋近于 0</td>
-<td>连乘项 &gt; 1，梯度趋近于无穷</td>
-</tr>
-<tr>
-<td><strong>后果</strong></td>
-<td>浅层参数不更新，模型学不到东西</td>
-<td>权重数值溢出 (NaN)，无法收敛</td>
-</tr>
-<tr>
-<td><strong>高发场景</strong></td>
-<td>深层网络 (Deep CNN/MLP)，使用 Sigmoid</td>
-<td>循环神经网络 (RNN)，深层网络</td>
-</tr>
-<tr>
-<td><strong>核心解法</strong></td>
-<td><strong>ReLU</strong>, BatchNorm, ResNet</td>
-<td><strong>Gradient Clipping</strong>, 权重正则化</td>
-</tr>
-</tbody>
-</table>
 
       
     </div>

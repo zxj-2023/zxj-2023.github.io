@@ -155,7 +155,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">209</span>
+          <span class="site-state-item-count">210</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -206,6 +206,415 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/08/27/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--memory%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/08/27/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--memory%E7%B3%BB%E7%BB%9F/" class="post-title-link" itemprop="url">my-pi-agent--memory系统</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-08-27 00:00:00 / 修改时间：15:35:02" itemprop="dateCreated datePublished" datetime="2026-08-27T00:00:00+08:00">2026-08-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/agent%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">agent实战</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/agent%E5%AE%9E%E6%88%98/my-pi-agent/" itemprop="url" rel="index"><span itemprop="name">my-pi-agent</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="hermes-agent的记忆系统">hermes agent的记忆系统</h1>
+<h2 id="双层记忆架构全景">双层记忆架构全景</h2>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">┌────────────────────────────────────────────────────────────────────────┐</span><br><span class="line">│                          Hermes Agent 记忆体系                          │</span><br><span class="line">├────────────────────────────────────────────────────────────────────────┤</span><br><span class="line">│                                                                        │</span><br><span class="line">│  【第一层：内置精选文件记忆 (Builtin Curated Memory)】                  │</span><br><span class="line">│    • 定位：持久化、高信号、强控制、极低 Token 消耗                      │</span><br><span class="line">│    • 载体：MEMORY.md (Agent 笔记) + USER.md (用户画像)                   │</span><br><span class="line">│    • 机制：启动时冻结快照注入 System Prompt + 运行时受控 memory 工具维护 │</span><br><span class="line">│  ────────────────────────────────────────────────────────────────────  │</span><br><span class="line">│                                                                        │</span><br><span class="line">│  【第二层：可插拔外部提供商 (Pluggable Memory Providers)】              │</span><br><span class="line">│    • 定位：开放生态、大规模语义检索、跨设备云同步 (Honcho / Mem0 等)    │</span><br><span class="line">│    • 机制：MemoryManager 单例控制 (一次只开一个)，提供 per-turn prefetch │</span><br><span class="line">│                                                                        │</span><br><span class="line">└────────────────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure></p>
+<p>对于单机本地 Agent 而言，第一层（内置精选文件记忆） 是 Hermes
+最核心的灵魂所在。</p>
+<h2 id="内置文件记忆的工程设计">内置文件记忆的工程设计</h2>
+<h3 id="核心不变式frozen-snapshot冻结快照与-prefix-cache-保护">1.
+核心不变式：Frozen Snapshot（冻结快照）与 Prefix Cache 保护</h3>
+<p>大模型 API（如 Claude Prompt Caching、OpenAI/DeepSeek Prefix
+Caching）能够极大降低推理延迟与成本，但前提是 System Prompt
+和开头的历史消息必须严格保持不变（哈希一致）。</p>
+<p>传统的做法是：Agent 一旦学到新知识，就立刻修改 System
+Prompt。这会导致整条上下文的前缀缓存全部失效，下一轮必须重新
+Prefill。</p>
+<p>Hermes 的解法：双状态并行（Parallel States）</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">                启动时: 读磁盘 ──► 捕获 Frozen Snapshot (冻结快照)</span><br><span class="line">                                         │</span><br><span class="line">                                         ▼ 注入 System Prompt (本会话全程静止!)</span><br><span class="line">                                ┌─────────────────┐</span><br><span class="line">                                │  System Prompt  │ (KV Cache 命中率 100%)</span><br><span class="line">                                └─────────────────┘</span><br><span class="line">                                         ▲</span><br><span class="line">                                         │ 绝不修改快照!</span><br><span class="line">LLM 调用 memory(action=&quot;add&quot;) ───────────┴──► 立即落盘 MEMORY.md (持久化)</span><br><span class="line">                                                │</span><br><span class="line">                                                ▼</span><br><span class="line">                                     下次启动/新会话时才加载最新快照</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>System Prompt 快照冻结：会话进行中，无论调用多少次 memory
+工具写入，当前会话的 System Prompt 绝对静止，Prefix Cache
+绝不失效；</li>
+<li>磁盘实时持久化：新写入的记忆立即原子落盘，下一次开启新会话时自动生效。</li>
+</ul>
+<p>### 2. 双 Store 与字符预算硬限制（Character Budget Limits）</p>
+<p>Hermes 将长期记忆严格拆分为两个 Markdown
+文件，并且采用字符数（Characters）而非 Token
+数作为预算硬约束（因为字符计算是 模型无关且 100% 确定的）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">┌───────────┬────────────┬────────────────────────────────────────────────────────────┐</span><br><span class="line">│ 记忆载体  │ 预算上限   │ 存储内容与语义                                             │</span><br><span class="line">├───────────┼────────────┼────────────────────────────────────────────────────────────┤</span><br><span class="line">│ MEMORY.md │ 2,200 字符 │ Agent 自己的笔记（环境事实、项目规范、工具踩坑、业务结论） │</span><br><span class="line">├───────────┼────────────┼────────────────────────────────────────────────────────────┤</span><br><span class="line">│ USER.md   │ 1,375 字符 │ 用户画像（偏好风格、语言习惯、角色设定、禁忌事项）         │</span><br><span class="line">└───────────┴────────────┴────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+<p>#### 为什么设置严格的字符上限？</p>
+<p>防止长期使用后记忆无界膨胀冲垮大模型上下文。当总字符即将超过上限时，系统会拒绝追加写入，并把当前所有条目打印给模型，迫
+使模型在当前轮次内调用 replace 合并精简旧记忆（Consolidation）或 remove
+删除过时记忆。</p>
+<p>### 3. 单工具多 Action (memory) 与唯原子串定位</p>
+<p>Hermes 没有提供零散的 remember / recall / search_memory
+工具，而是收敛为一个高度紧凑的单工具：</p>
+<p><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;memory&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;parameters&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;target&quot;</span><span class="punctuation">:</span> <span class="string">&quot;memory | user&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;action&quot;</span><span class="punctuation">:</span> <span class="string">&quot;add | replace | remove&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;新条目内容 (用于 add)&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;old_text&quot;</span><span class="punctuation">:</span> <span class="string">&quot;唯原子串定位 (用于 replace / remove)&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;new_content&quot;</span><span class="punctuation">:</span> <span class="string">&quot;替换后的内容 (用于 replace)&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>#### ① 特殊条目分隔符：§</p>
+<p>Hermes 选用 §（Section Sign）作为条目分隔符，条目内部允许包含多行
+Markdown，避免普通换行造成切分歧义。</p>
+<p>#### ② 唯原子串定位（Unique Substring Match）</p>
+<p>在 replace 和 remove 操作中，模型不需要记住数字 ID（如
+id=12），也不需要复制整段冗长的原始文本，只需传入一段具有唯一性
+的文本子串（old_text）： - 歧义拦截（Ambiguity Guard）：如果 old_text
+同时匹配了多条记录，系统会直接拦截并报错，把命中的多条记录全部列出，要求
+模型给出更精确的关键词，彻底杜绝误删误改； -
+精准替换：只命中唯一样本时才执行替换/删除并原子写盘。</p>
+<p>## 一、特殊条目分隔符：§</p>
+<p>### 1. 它要解决什么痛点？</p>
+<p>如果我们把长期记忆存成一个 Markdown
+文本文件（MEMORY.md），程序该如何区分“条目 1”和“条目 2”？</p>
+<ul>
+<li>如果按普通换行（）切分：
+如果某一条记忆是多行的（比如包含代码片段、列表或换行说明），程序就会错误地把它切成好几条碎片！</li>
+<li>如果存成 JSON： 人类打开 MEMORY.md
+直接阅读或手工编辑时很不友好，而且大模型写 JSON
+容易出现转义符号错误。</li>
+</ul>
+<p>### 2. Hermes 的解法：用 § 做切分线</p>
+<p>§（Section
+Sign，章节符）是一个在日常代码和自然语言中极少出现的特殊字符。Hermes
+规定两条记忆之间必须用 §隔开。</p>
+<p>实际效果示例：</p>
+<p>假设你的 MEMORY.md 里面存了 2 条记忆，文件内容长这样：</p>
+<p><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">项目构建规范：</span><br><span class="line"><span class="bullet">1.</span> 必须使用 uv 管理依赖</span><br><span class="line"><span class="bullet">2.</span> 运行测试命令为 <span class="code">`uv run pytest`</span></span><br><span class="line">§</span><br><span class="line">数据库配置备忘：</span><br><span class="line"><span class="bullet">-</span> 本地端口为 5432</span><br><span class="line"><span class="bullet">-</span> 用户名 postgres，密码在 .env 中</span><br></pre></td></tr></table></figure></p>
+<p>程序怎么读写？ - 读取解析：entries = file_text.split(“§”) ➔
+稳稳当当地拿到 2 个完整的字符串列表，哪怕每个条目内部换了 10 行，也不
+会被切碎！ - 保存写盘：“§”.join(entries) ➔ 重新拼装成漂亮的 Markdown
+文件。</p>
+<p>## 二、唯一子串定位（Unique Substring Match）</p>
+<p>│ （注：前面文档里的“唯原子串”是 唯一子串（Unique Substring）
+的意思）</p>
+<p>### 1. 它要解决什么痛点？</p>
+<p>当大模型想要<strong>修改（replace）或删除（remove）</strong>某条旧记忆时，它该如何告诉程序“我要改哪一条”？</p>
+<ul>
+<li>方案 A（按数字编号 ID=1, 2, 3 定位）：
+<ul>
+<li>❌ 缺点：大模型特别容易记错 ID；而且一旦删除了第 1
+条，后面的编号全变了，很容易误删其它记忆。</li>
+</ul></li>
+<li>方案 B（必须 100% 完整复制原句）：
+<ul>
+<li>❌ 缺点：极费
+Token，而且大模型只要漏复制一个标点或空格，程序就报错“找不到该内容”。</li>
+</ul></li>
+</ul>
+<p>### 2. Hermes 的解法：只要提供一段“唯一的特征片段”</p>
+<p>大模型只需要传入旧记忆里独一无二的一小段关键词（old_text），程序在后台进行子串匹配：</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 找到所有包含 old_text 的记忆条目</span></span><br><span class="line">matches = [i <span class="keyword">for</span> i, entry <span class="keyword">in</span> <span class="built_in">enumerate</span>(entries) <span class="keyword">if</span> old_text <span class="keyword">in</span> entry]</span><br></pre></td></tr></table></figure></p>
+<p>### 3. 运行时的三种情况：</p>
+<p>✅ 情况 1：精准唯一命中（执行修改）</p>
+<ul>
+<li>现有记忆条目：
+<ul>
+<li>条目 A：“用户偏好使用 Python 3.11 编写代码”</li>
+<li>条目 B：“项目部署在阿里云 K8s 集群”</li>
+</ul></li>
+<li>模型调用工具：
+<ul>
+<li>memory(action=“replace”, old_text=“Python 3.11”,
+new_content=“用户偏好使用 Python 3.12”)</li>
+</ul></li>
+<li>系统判定：只有条目 A 包含 “Python 3.11”（命中数量 = 1）➔
+精准定位，替换成功！</li>
+</ul>
+<p>⚠️ 情况 2：歧义多处命中（主动拦截报警，防止误删！）</p>
+<ul>
+<li>现有记忆条目：
+<ul>
+<li>条目 A：“用户在前端偏好使用 Vue3”</li>
+<li>条目 B：“用户在后端偏好使用 FastAPI”</li>
+</ul></li>
+<li>模型调用工具：
+<ul>
+<li>memory(action=“remove”, old_text=“偏好使用”)</li>
+</ul></li>
+<li>系统判定：old_text=“偏好使用” 同时出现在了条目 A 和条目 B
+里（命中数量 = 2）！</li>
+<li>系统的防误删保护触发： 系统立刻拒绝删除，并给模型报错返回： │
+“Ambiguous match: found 2 entries matching ‘偏好使用’. Please provide a
+more specific old_text.” │
+（匹配到多条记录，存在歧义！请提供更精准的特征词，比如 ‘前端偏好’ 或
+‘后端偏好’）</li>
+</ul>
+<p>❌ 情况 3：未命中</p>
+<ul>
+<li>模型传入了一个不存在的词 ➔ 系统返回 Text ‘xxx’ not found in
+memory，提示模型检查现有清单。</li>
+</ul>
+<h2 id="什么该保存什么该跳过">什么该保存，什么该跳过</h2>
+<h3 id="主动保存这些内容">主动保存这些内容</h3>
+<p>Agent 会自动保存——无需你主动要求。当它学到以下内容时会保存：</p>
+<ul>
+<li><strong>用户偏好：</strong> “我更喜欢 TypeScript 而非 JavaScript” →
+保存到 <code>user</code></li>
+<li><strong>环境事实：</strong> “此服务器运行 Debian 12，安装了
+PostgreSQL 16” → 保存到 <code>memory</code></li>
+<li><strong>纠正信息：</strong> “Docker 命令不要用
+<code>sudo</code>，用户已在 docker 组中” → 保存到
+<code>memory</code></li>
+<li><strong>约定：</strong> “项目使用 tab 缩进、120 字符行宽、Google
+风格 docstring” → 保存到 <code>memory</code></li>
+<li><strong>已完成的工作：</strong> “2026-01-15 将数据库从 MySQL 迁移到
+PostgreSQL” → 保存到 <code>memory</code></li>
+<li><strong>明确请求：</strong> “记住我的 API 密钥每月轮换一次” → 保存到
+<code>memory</code></li>
+</ul>
+<h3 id="跳过这些内容">跳过这些内容</h3>
+<ul>
+<li><strong>琐碎/显而易见的信息：</strong> “用户询问了
+Python”——太模糊，没有实用价值</li>
+<li><strong>容易重新发现的事实：</strong> “Python 3.12 支持 f-string
+嵌套”——可以网络搜索</li>
+<li><strong>原始数据转储：</strong>
+大型代码块、日志文件、数据表——对记忆来说太大</li>
+<li><strong>会话特定的临时内容：</strong>
+临时文件路径、一次性调试上下文</li>
+<li><strong>已在上下文文件中的信息：</strong> SOUL.md 和 AGENTS.md
+的内容</li>
+</ul>
+<h2 id="提示词与-schema-中是如何定义的">提示词与 Schema
+中是如何定义的？</h2>
+<p>在 Hermes 和 my-agent-core
+中，大模型在开始思考前，能同时看到两处关键指引：</p>
+<p>### 1. 工具描述里的执行契约（memory Tool Schema）</p>
+<p>在每个工具注册到大模型时，memory 工具的 description
+字段里写满了具体的触发条件：</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">【WHEN 触发时机】</span><br><span class="line">- 当用户表达偏好、纠正你的错误或提供个人信息时，主动保存；</span><br><span class="line">- 当你了解到关于用户开发环境、项目规范或工作流的稳定事实时，主动保存；</span><br><span class="line">- 优先级排序：用户偏好与纠错 &gt; 环境与项目事实 &gt; 流程经验。</span><br><span class="line">- 黄金准则：最优秀的记忆，是让用户永远不需要重复说第二遍。</span><br><span class="line"></span><br><span class="line">【TARGETS 存储目标】</span><br><span class="line">- &#x27;user&#x27;：用户画像（姓名、角色、代码偏好、沟通风格、忌讳事项）；</span><br><span class="line">- &#x27;memory&#x27;：Agent 自己的笔记（环境事实、项目规范、依赖怪癖、踩坑教训）。</span><br><span class="line"></span><br><span class="line">【SKIP 明确禁止记录的内容】</span><br><span class="line">- 严禁记录临时任务进度、已完成工作日志、临时 TODO 待办（用 session 或 todo 管理）；</span><br><span class="line">- 严禁记录容易随时重新发现的事实或大段原始数据；</span><br><span class="line">- 严禁记录多步骤可复用的操作流程（操作流程应写进 Skill，而非 Memory）。</span><br></pre></td></tr></table></figure></p>
+<p>### 2. System Prompt 里的持久化上下文块（<MEMORY_CONTEXT>）</MEMORY_CONTEXT></p>
+<p>在 System Prompt
+首条消息中，会动态注入当前已有的记忆，并给模型明确的角色定位：</p>
+<p><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">MEMORY_CONTEXT</span>&gt;</span></span></span><br><span class="line">以下是你跨会话保留的长期记忆。</span><br><span class="line">当你从对话中学习到新的事实、用户偏好或被用户纠错时，请主动调用 <span class="code">`memory`</span> 工具进行更新维护。</span><br><span class="line"></span><br><span class="line"><span class="section">## MEMORY.md (Agent 笔记)</span></span><br><span class="line"><span class="bullet">-</span> 项目使用 uv 管理依赖，测试命令为 uv run pytest</span><br><span class="line"><span class="bullet">-</span> Python 版本为 3.11+，禁止使用 3.10 以下废弃语法</span><br><span class="line"></span><br><span class="line"><span class="section">## USER.md (用户画像)</span></span><br><span class="line"><span class="bullet">-</span> 用户偏好简洁、强类型的代码风格</span><br><span class="line"><span class="bullet">-</span> 拒绝过度设计，单函数尽量保持在 50 行以内</span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">MEMORY_CONTEXT</span>&gt;</span></span></span><br></pre></td></tr></table></figure></p>
+<h2 id="如何发现并触发更新记忆">如何发现并触发“更新记忆”</h2>
+<h3 id="通道一大模型主动识别与实时更新主通道">通道一：大模型主动识别与实时更新（主通道）</h3>
+<p>在正常对话交互中，大模型是记忆更新的第一责任人。Hermes 通过在 工具
+Schema Description 与 System Prompt 中注入极度明确 的
+“触发信号指引（WHEN / PRIORITY / SKIP）”，让大模型在 ReAct
+循环中主动调用 memory 工具。</p>
+<p>#### 1. 触发场景与优先级规则（WHEN &amp; PRIORITY）</p>
+<p>Hermes 在 MEMORY_SCHEMA 描述中规定了清晰的记忆更新等级：</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">┌──────────────────────────────────────────────────────────────┐</span><br><span class="line">│  最高优先级：用户纠错与偏好声明 (User Preferences &amp; Corrections) │</span><br><span class="line">│  - 用户纠正你：&quot;记住，以后不要用 xxx&quot; / &quot;改成用 pnpm&quot;           │</span><br><span class="line">│  - 用户分享个人画像：技术栈、时区、命名习惯、禁忌事项           │</span><br><span class="line">│  =&gt; 立即调用: memory(target=&quot;user&quot;, action=&quot;add/replace&quot;)     │</span><br><span class="line">├──────────────────────────────────────────────────────────────┤</span><br><span class="line">│  次高优先级：环境事实与工具踩坑 (Environment Facts &amp; Quirks)     │</span><br><span class="line">│  - 发现项目特性：&quot;这个库在 Python 3.12 下有兼容性 bug&quot;          │</span><br><span class="line">│  - 部署/构建约定：&quot;发布前必须先编译静态资源&quot;                     │</span><br><span class="line">│  =&gt; 立即调用: memory(target=&quot;memory&quot;, action=&quot;add/replace&quot;)   │</span><br><span class="line">├──────────────────────────────────────────────────────────────┤</span><br><span class="line">│  过滤垃圾信息 (SKIP - 绝不记录)                               │</span><br><span class="line">│  - 任务进度、已完成工作日志、临时 TODO (交给 session / task)   │</span><br><span class="line">│  - 容易随时重新获取的事实、大段原始数据 dump                   │</span><br><span class="line">│  - 可复用的多步骤操作流程 (应写入 Skill，而非 Memory)           │</span><br><span class="line">└──────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure></p>
+<p>#### 2. 真实工作流示例</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">用户: &quot;我本地没有装 Docker，所有的测试都用本地 sqlite 跑，不要去启动容器。&quot;</span><br><span class="line">  │</span><br><span class="line">  ▼ LLM 思考 (ReAct 内部)</span><br><span class="line">  │ [检测到高优先级用户环境与偏好声明]</span><br><span class="line">  │ &quot;这属于长期有效事实，未来所有会话都适用，必须立即持久化。&quot;</span><br><span class="line">  ▼</span><br><span class="line">发起工具调用:</span><br><span class="line">  memory(target=&quot;user&quot;, action=&quot;add&quot;, content=&quot;本地无 Docker，测试均使用本地 sqlite 运行&quot;)</span><br><span class="line">  │</span><br><span class="line">  ▼ 工具执行成功落盘</span><br><span class="line">  │</span><br><span class="line">继续回答用户:</span><br><span class="line">  &quot;已记住您的环境配置，后续测试将直接使用本地 sqlite 运行...&quot;</span><br></pre></td></tr></table></figure></p>
+<p>────────────────────────────────────────────────────────────────────────────────</p>
+<p>### 通道二：生命周期钩子提取与兜底（后台被动通道）</p>
+<p>如果大模型在长会话中聊得太投入，“忘记”了主动调用 memory
+工具记录，Hermes 还设计了生命周期的后台兜底机制：</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">     会话消息逐渐增长 (接近 Context Window 阈值)</span><br><span class="line">                        │</span><br><span class="line">                        ▼</span><br><span class="line">     触发上下文压缩阶段 (Context Compression)</span><br><span class="line">                        │</span><br><span class="line">                        ▼</span><br><span class="line">      【on_pre_compress(messages) 钩子触发】</span><br><span class="line">┌──────────────────────────────────────────────────┐</span><br><span class="line">│  在丢弃/压缩早期历史消息前，调用专门的提炼模型   │</span><br><span class="line">│  扫描对话历史，自动提取尚未持久化的事实/偏好     │</span><br><span class="line">└───────────────────────┬──────────────────────────┘</span><br><span class="line">                        │ 提炼出关键事实</span><br><span class="line">                        ▼</span><br><span class="line">            自动写入 MEMORY.md / USER.md</span><br><span class="line">                        │</span><br><span class="line">                        ▼</span><br><span class="line">          执行会话压缩 (L4 摘要 + 裁切)</span><br></pre></td></tr></table></figure></p>
+<ol type="1">
+<li>on_pre_compress(messages)（压缩前抢救事实）： 当对话轮次过多触发
+Context
+压缩裁切时，如果不提前提取，早期的重要对话细节就会被压缩丢失。Hermes
+会在裁切前触发
+on_pre_compress，自动提炼有价值的偏好并持久化到文件；</li>
+<li>on_session_end(messages)（会话结束提炼）：
+在会话正常退出或保存时，对整场会话进行复盘总结。</li>
+</ol>
+<h1 id="模块整体布局">模块整体布局</h1>
+<p>memory.py 主要由两个实体组成： 1.
+MemoryStore：底层的条目化存储仓储，管理 Markdown 文件持久化、字符预算与
+Frozen Snapshot（冻结快照）； 2.
+make_memory_tool：上层的工具工厂函数，将 MemoryStore 包装为符合 OpenAI
+Function Calling 标准的 memory 工具（供大模 型调用）。</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">┌────────────────────────────────────────────────────────────────────────┐</span><br><span class="line">│                               memory.py                                │</span><br><span class="line">├────────────────────────────────────────────────────────────────────────┤</span><br><span class="line">│                                                                        │</span><br><span class="line">│  【核心常量与契约】                                                     │</span><br><span class="line">│    ENTRY_DELIMITER = &quot;\n§\n&quot;                                           │</span><br><span class="line">│    MEMORY_CHAR_LIMIT = 2200 (Agent 笔记上限)                            │</span><br><span class="line">│    USER_CHAR_LIMIT = 1375   (用户画像上限)                              │</span><br><span class="line">│                                                                        │</span><br><span class="line">│  【底层仓储：MemoryStore】                                              │</span><br><span class="line">│    - load_from_disk(): 读 MEMORY.md/USER.md + 保序去重 + 捕获冻结快照     │</span><br><span class="line">│    - _atomic_save(): mkstemp + fsync + os.replace 原子落盘              │</span><br><span class="line">│    - add() / replace() / remove(): 增删改 + 唯一子串匹配 + 预算超限拦截 │</span><br><span class="line">│    - format_all_for_system_prompt(): 渲染 &lt;MEMORY_CONTEXT&gt; 提示词块     │</span><br><span class="line">│                                                                        │</span><br><span class="line">│  【工具工厂：make_memory_tool(store)】                                  │</span><br><span class="line">│    - @tool 包装为标准 memory 工具 (target, action, content, ...)       │</span><br><span class="line">│    - 内部错误捕获与 Never-Throw 保证 (转换为 ToolResult 引导 LLM 自愈)    │</span><br><span class="line">│                                                                        │</span><br><span class="line">└────────────────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure></p>
+<h1 id="memorystore">MemoryStore</h1>
+<h2 id="内部核心状态">内部核心状态</h2>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MemoryStore</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params"></span></span><br><span class="line"><span class="params">        self,</span></span><br><span class="line"><span class="params">        mem_dir: Path | <span class="built_in">str</span>,</span></span><br><span class="line"><span class="params">        memory_char_limit: <span class="built_in">int</span> = MEMORY_CHAR_LIMIT,  <span class="comment"># 默认 2200 字符</span></span></span><br><span class="line"><span class="params">        user_char_limit: <span class="built_in">int</span> = USER_CHAR_LIMIT,      <span class="comment"># 默认 1375 字符</span></span></span><br><span class="line"><span class="params">    </span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        <span class="variable language_">self</span>.mem_dir = Path(mem_dir)</span><br><span class="line">        <span class="variable language_">self</span>.limits: <span class="built_in">dict</span>[<span class="built_in">str</span>, <span class="built_in">int</span>] = &#123;</span><br><span class="line">            <span class="string">&quot;memory&quot;</span>: memory_char_limit,</span><br><span class="line">            <span class="string">&quot;user&quot;</span>: user_char_limit,</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="variable language_">self</span>.files: <span class="built_in">dict</span>[<span class="built_in">str</span>, <span class="built_in">str</span>] = &#123;</span><br><span class="line">            <span class="string">&quot;memory&quot;</span>: <span class="string">&quot;MEMORY.md&quot;</span>,</span><br><span class="line">            <span class="string">&quot;user&quot;</span>: <span class="string">&quot;USER.md&quot;</span>,</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment"># ① Live 实时状态：工具增删改时立即变化</span></span><br><span class="line">        <span class="variable language_">self</span>._entries: <span class="built_in">dict</span>[<span class="built_in">str</span>, <span class="built_in">list</span>[<span class="built_in">str</span>]] = &#123;<span class="string">&quot;memory&quot;</span>: [], <span class="string">&quot;user&quot;</span>: []&#125;</span><br><span class="line">        <span class="comment"># ② 冻结快照：启动或 reset 时捕获一次，本会话内绝对静止</span></span><br><span class="line">        <span class="variable language_">self</span>._snapshot: <span class="built_in">dict</span>[<span class="built_in">str</span>, <span class="built_in">str</span>] = &#123;<span class="string">&quot;memory&quot;</span>: <span class="string">&quot;&quot;</span>, <span class="string">&quot;user&quot;</span>: <span class="string">&quot;&quot;</span>&#125;</span><br></pre></td></tr></table></figure></p>
+<p>### 核心亮点：双状态并行（Parallel States）</p>
+<p>MemoryStore 内部最精妙的设计是维护了 _entries 和 _snapshot
+两个互不干扰的字典： -
+_entries（实时运行态）：保存当前内存中最新的记忆条目列表。当模型调用
+add/replace/remove 时，它会实时增删； -
+_snapshot（系统提示词冻结态）：在启动时把文件内容拼成纯文本固化下来。当前会话无论怎么写，_snapshot
+永远不变！这就是 为什么大模型的 System Prompt 不会频繁变动，Prefix
+Cache（前缀缓存）命中率能达到 100% 的根本原因。</p>
+<h2 id="核心方法">核心方法</h2>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">                                   MemoryStore 核心方法全景</span><br><span class="line">                                             │</span><br><span class="line">           ┌─────────────────────────────────┼─────────────────────────────────┐</span><br><span class="line">           ▼                                 ▼                                 ▼</span><br><span class="line">   【启动与重置阶段】                【运行修改阶段 (写落盘)】        【提示词组装阶段 (读快照)】</span><br><span class="line">    load_from_disk()             - add(target, content)  -format_for_system_prompt()</span><br><span class="line">(读盘 -&gt; 保序去重 -&gt; 捕获快照)  - replace(target, old, new)    -                                                                                  format_all_for_system_prompt()</span><br><span class="line">                               - remove(target, old)       (生成&lt;MEMORY_CONTEXT&gt; XML 块)</span><br><span class="line">                                  - _atomic_save(target)</span><br></pre></td></tr></table></figure>
+<table>
+<colgroup>
+<col style="width: 31%">
+<col style="width: 22%">
+<col style="width: 46%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">方法名</th>
+<th style="text-align: left;">调用方</th>
+<th style="text-align: left;">核心作用与职责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>load_from_disk()</code></td>
+<td style="text-align: left;">Agent 内部（启动 / 重置时）</td>
+<td style="text-align: left;">冷启动与快照冻结：从磁盘读取
+<code>MEMORY.md</code> 和
+<code>USER.md</code>，自动去重，并生成一份只读的 <strong>System Prompt
+快照（Snapshot）</strong>。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>format_all_for_system_prompt()</code></td>
+<td style="text-align: left;">Agent 内部（拼装提示词时）</td>
+<td style="text-align: left;">提示词注入：把启动时冻结的快照格式化为带有
+XML 标签的 <code>&lt;MEMORY_CONTEXT&gt;</code> 提示词文本，塞进 System
+消息。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>add(target, content)</code></td>
+<td style="text-align: left;"><code>memory</code>
+工具（大模型发起时）</td>
+<td style="text-align: left;">追加新事实：校验非空与重复，检查是否超过字符预算上限；若通过则追加到列表并立即写盘。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>replace(target, old_text, new_content)</code></td>
+<td style="text-align: left;"><code>memory</code>
+工具（大模型发起时）</td>
+<td style="text-align: left;">修改/更新旧记忆：通过
+<code>old_text</code>
+关键词定位唯一条目；若匹配到多条则拦截报错（防误改）；通过后替换内容并写盘。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>remove(target, old_text)</code></td>
+<td style="text-align: left;"><code>memory</code>
+工具（大模型发起时）</td>
+<td style="text-align: left;">删除过时记忆：通过 <code>old_text</code>
+关键词定位唯一条目，防歧义删除，并从磁盘中移除。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>_atomic_save(target)</code></td>
+<td style="text-align: left;"><code>MemoryStore</code> 内部私有方法</td>
+<td style="text-align: left;">崩溃安全落盘：通过“临时文件 + 物理刷盘
++</td>
+</tr>
+</tbody>
+</table>
+<h2 id="方法调用时序全景图">方法调用时序全景图</h2>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line">══════════════════════════════════════════════════════════════════════════════════════</span><br><span class="line">阶段 1：Agent 实例化冷启动（应用启动阶段）</span><br><span class="line">══════════════════════════════════════════════════════════════════════════════════════</span><br><span class="line"></span><br><span class="line"> 用户代码: agent = Agent(..., memory_dir=&quot;./memory&quot;)</span><br><span class="line">   │</span><br><span class="line">   ▼</span><br><span class="line">   ├─► ① 构造 MemoryStore(mem_dir)</span><br><span class="line">   │</span><br><span class="line">   ├─► ② 调用: store.load_from_disk()</span><br><span class="line">   │     └─ 读磁盘 MEMORY.md / USER.md ➔ 去重 ➔ 捕获 _snapshot 冻结快照</span><br><span class="line">   │</span><br><span class="line">   ├─► ③ 调用: store.format_all_for_system_prompt()</span><br><span class="line">   │     └─ 提取快照，拼装为 &lt;MEMORY_CONTEXT&gt;... 注入首条 System Message</span><br><span class="line">   │</span><br><span class="line">   └─► ④ 调用: make_memory_tool(store) ➔ 注册 memory 工具到 Agent 工具表</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">══════════════════════════════════════════════════════════════════════════════════════</span><br><span class="line">阶段 2：会话运行中（Agent.run 内联 ReAct 循环）</span><br><span class="line">══════════════════════════════════════════════════════════════════════════════════════</span><br><span class="line"></span><br><span class="line"> 用户: &quot;记住，这个项目必须用 pytest 跑测试&quot;</span><br><span class="line">   │</span><br><span class="line">   ▼ LLM 思考后发起工具调用: memory(target=&quot;memory&quot;, action=&quot;add&quot;, content=&quot;...&quot;)</span><br><span class="line">   │</span><br><span class="line">   ├─► ⑤ 调用: store.add(&quot;memory&quot;, &quot;项目使用 pytest 跑测试&quot;)</span><br><span class="line">   │     ├─ 检查是否超过 2200 字符限制</span><br><span class="line">   │     ├─ 触发私有: store._atomic_save(&quot;memory&quot;) ➔ 写入磁盘</span><br><span class="line">   │     └─ 【注意】绝不修改阶段 1 的 _snapshot（System Prompt 保持静止，保缓存）</span><br><span class="line">   │</span><br><span class="line"> (若用户说: &quot;测试框架改成 vitest 吧&quot;)</span><br><span class="line">   │</span><br><span class="line">   ▼ LLM 发起工具调用: memory(target=&quot;memory&quot;, action=&quot;replace&quot;, old_text=&quot;pytest&quot;, ...)</span><br><span class="line">   │</span><br><span class="line">   ├─► ⑥ 调用: store.replace(&quot;memory&quot;, old_text=&quot;pytest&quot;, new_content=&quot;...&quot;)</span><br><span class="line">   │     ├─ 定位含 &quot;pytest&quot; 的唯一条目（多处命中则报错防误改）</span><br><span class="line">   │     └─ 触发私有: store._atomic_save(&quot;memory&quot;) ➔ 更新磁盘</span><br><span class="line">   │</span><br><span class="line"> (若用户说: &quot;把刚才关于测试的备注删掉&quot;)</span><br><span class="line">   │</span><br><span class="line">   ▼ LLM 发起工具调用: memory(target=&quot;memory&quot;, action=&quot;remove&quot;, old_text=&quot;vitest&quot;)</span><br><span class="line">   │</span><br><span class="line">   └─► ⑦ 调用: store.remove(&quot;memory&quot;, old_text=&quot;vitest&quot;)</span><br><span class="line">         └─ 触发私有: store._atomic_save(&quot;memory&quot;) ➔ 磁盘删除</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">══════════════════════════════════════════════════════════════════════════════════════</span><br><span class="line">阶段 3：跨会话召回（第二天开启全新的 Session B）</span><br><span class="line">══════════════════════════════════════════════════════════════════════════════════════</span><br><span class="line"></span><br><span class="line"> 用户代码: new_agent = Agent(..., memory_dir=&quot;./memory&quot;)  # 新实例</span><br><span class="line">   │</span><br><span class="line">   ├─► 重新走阶段 1 的 ① ② ③ 步 (load_from_disk 读到昨天落盘的新内容)</span><br><span class="line">   │</span><br><span class="line">   ▼ 用户提问: &quot;这个项目用什么跑测试？&quot;</span><br><span class="line">   │ (此时 System Prompt 的 &lt;MEMORY_CONTEXT&gt; 里已经有昨天的记忆了)</span><br><span class="line">   │</span><br><span class="line">   └─► ⑧ LLM 0 工具调用，直接回答: &quot;根据记忆，该项目使用 vitest 运行测试。&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">══════════════════════════════════════════════════════════════════════════════════════</span><br><span class="line">阶段 4：会话重置（调用 agent.reset() 时）</span><br><span class="line">══════════════════════════════════════════════════════════════════════════════════════</span><br><span class="line"></span><br><span class="line"> 用户代码: agent.reset()</span><br><span class="line">   │</span><br><span class="line">   ▼</span><br><span class="line">   ├─► ⑨ 重新调用: store.load_from_disk() ➔ 从磁盘重新载入最新记忆，刷新快照</span><br><span class="line">   └─► ⑩ 重新调用: store.format_all_for_system_prompt() ➔ 重新拼装 System Prompt</span><br></pre></td></tr></table></figure></p>
+<h2 id="add-方法追加新记忆">add 方法：追加新记忆</h2>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">self, target: <span class="built_in">str</span>, content: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span></span><br></pre></td></tr></table></figure></p>
+<p>### 1. 核心作用</p>
+<p>当 Agent
+发现新的长期有效事实、用户习惯或纠错信息时，将这条新记忆追加到对应的记忆库（MEMORY.md
+或 USER.md）末尾并原子 写盘。</p>
+<p>### 2. 内部执行步骤与安全防线</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">传入: target (&quot;memory&quot;|&quot;user&quot;), content (&quot;内容...&quot;)</span><br><span class="line">  │</span><br><span class="line">  ├─► [校验 1：目标与非空检查] ── target 必须合法，content.strip() 不能为空</span><br><span class="line">  │</span><br><span class="line">  ├─► [校验 2：精确重复拦截] ── 检查 content 是否已经在已有条目中</span><br><span class="line">  │     └─ 若已存在: 提示 &quot;Entry already exists&quot;，不重复写盘，省 I/O</span><br><span class="line">  │</span><br><span class="line">  ├─► [校验 3：预算硬上限检查 (Budget Check)]</span><br><span class="line">  │     └─ 试算: (现有全部内容 + 新条目 + 分隔符) 的总字符数</span><br><span class="line">  │     └─ 若 &gt; 上限: 【超限拦截】拒绝写入！</span><br><span class="line">  │           - 打印错误信息</span><br><span class="line">  │           - 把库里当前所有条目列出来打印给模型</span><br><span class="line">  │           - 引导模型先调用 replace/remove 精简或删除旧记忆 (Consolidate)</span><br><span class="line">  │</span><br><span class="line">  └─► [执行：写入与落盘]</span><br><span class="line">        - 追加到 live 条目列表: self._entries[target].append(content)</span><br><span class="line">        - 触发原子写盘: self._atomic_save(target)</span><br><span class="line">        - 返回成功信息: &quot;Added to memory (120/2200 chars used).&quot;</span><br></pre></td></tr></table></figure></p>
+<h2 id="replace-方法修改-替换旧记忆">replace 方法：修改 /
+替换旧记忆</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">replace</span>(<span class="params">self, target: <span class="built_in">str</span>, old_text: <span class="built_in">str</span>, new_content: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span></span><br></pre></td></tr></table></figure>
+<p>### 1. 核心作用</p>
+<p>当旧记忆发生变更（如用户换了技术栈、配置更新）、或者需要将多条冗长的旧记忆合并精简为一句时，通过关键词定位旧条目并进行
+内容更新。</p>
+<p>### 2. 内部执行步骤与安全防线</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">传入: target, old_text (&quot;旧条目特征词&quot;), new_content (&quot;新内容...&quot;)</span><br><span class="line">  │</span><br><span class="line">  ├─► [校验 1：参数非空检查] ── old_text 和 new_content 均不能为空</span><br><span class="line">  │</span><br><span class="line">  ├─► [步骤 2：唯一子串定位 (Unique Substring Match)]</span><br><span class="line">  │     └─ 扫描库中所有包含 old_text 的条目:</span><br><span class="line">  │        matches = [i for i, entry in enumerate(entries) if old_text in entry]</span><br><span class="line">  │</span><br><span class="line">  ├─► [分支判断 A：命中 0 条]</span><br><span class="line">  │     └─ 报错返回: &quot;Text &#x27;xxx&#x27; not found&quot;，提醒模型检查关键词</span><br><span class="line">  │</span><br><span class="line">  ├─► [分支判断 B：命中 2 条及以上 (歧义命中)]</span><br><span class="line">  │     └─ 🚨【歧义拦截安全网触发！】</span><br><span class="line">  │     └─ 拒绝执行修改！</span><br><span class="line">  │     └─ 把命中的多条不同记录全部列出返回给模型</span><br><span class="line">  │     └─ 强制要求模型提供更具区分度的特征词（彻底防止误改相邻记忆）</span><br><span class="line">  │</span><br><span class="line">  ├─► [分支判断 C：精准命中唯一样本]</span><br><span class="line">  │     ├─ 试算替换后的总字符数是否超过预算限制</span><br><span class="line">  │     ├─ 更新 live 条目列表: self._entries[target][idx] = new_content</span><br><span class="line">  │     └─ 触发原子写盘: self._atomic_save(target)</span><br><span class="line">  │     └─ 返回成功信息: &quot;Replaced in memory (150/2200 chars used).&quot;</span><br></pre></td></tr></table></figure></p>
+<h2 id="remove-方法删除过时记忆">remove 方法：删除过时记忆</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">remove</span>(<span class="params">self, target: <span class="built_in">str</span>, old_text: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span></span><br></pre></td></tr></table></figure>
+<p>### 1. 核心作用</p>
+<p>当某些记忆已不再适用、或者库满了需要清理低价值的过期记录时，通过关键词定位并彻底从磁盘中抹除该条目。</p>
+<p>### 2. 内部执行步骤与安全防线</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">传入: target, old_text (&quot;要删除的特征词&quot;)</span><br><span class="line">  │</span><br><span class="line">  ├─► [校验 1：参数非空检查] ── old_text 不能为空</span><br><span class="line">  │</span><br><span class="line">  ├─► [步骤 2：唯一子串定位]</span><br><span class="line">  │     └─ matches = [i for i, entry in enumerate(entries) if old_text in entry]</span><br><span class="line">  │</span><br><span class="line">  ├─► [分支 A：未找到] ── 返回 &quot;Text &#x27;xxx&#x27; not found&quot;</span><br><span class="line">  │</span><br><span class="line">  ├─► [分支 B：歧义多处命中]</span><br><span class="line">  │     └─ 🚨【防误删保护触发！】</span><br><span class="line">  │     └─ 拒绝删除！打印所有冲突条目，要求模型提供更精确的子串</span><br><span class="line">  │</span><br><span class="line">  └─► [分支 C：精准命中 1 条]</span><br><span class="line">        - 从列表中剔除该索引条目</span><br><span class="line">        - 触发原子写盘: self._atomic_save(target)</span><br><span class="line">        - 返回成功信息: &quot;Removed from memory (90/2200 chars used).&quot;</span><br></pre></td></tr></table></figure></p>
+<h1 id="make_memory_tool工具">make_memory_tool工具</h1>
+<h2 id="为什么它是一个工厂函数-make_memory_toolstore">为什么它是一个工厂函数
+make_memory_tool(store)？</h2>
+<p>你可能会问：“为什么不直接写一个普通的 <span class="citation" data-cites="tool">@tool</span> def memory(…)，而要写一个
+make_memory_tool(store) 工厂函数？”</p>
+<p>这体现了专业框架的 依赖注入（Dependency Injection） 与
+闭包数据隔离（Closure Isolation） 思想：</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">     Agent A 实例                       Agent B 实例</span><br><span class="line">          │                                  │</span><br><span class="line">          ▼                                  ▼</span><br><span class="line">MemoryStore(dir=&quot;./mem_a&quot;)         MemoryStore(dir=&quot;./mem_b&quot;)</span><br><span class="line">          │                                  │</span><br><span class="line">          ▼                                  ▼</span><br><span class="line">make_memory_tool(store_a)          make_memory_tool(store_b)</span><br><span class="line">          │                                  │</span><br><span class="line">          ▼                                  ▼</span><br><span class="line"> Tool 实例 A (绑定 store_a)         Tool 实例 B (绑定 store_b)</span><br></pre></td></tr></table></figure></p>
+<ol type="1">
+<li>多实例隔离：如果一个进程里同时跑了两个不同的 Agent（比如 Agent A
+操作目录 A，Agent B 操作目录 B），工厂函数通过 Python 闭包，让每个
+memory 工具实例精准绑定自己专属的 MemoryStore，互不干扰；</li>
+<li>生命周期绑定：Agent 在初始化时，只用调一次
+make_memory_tool(self.memory_store)，就能把工具挂载进注册表。</li>
+</ol>
+<h2 id="action-分发与人性化参数容错">Action 分发与人性化参数容错</h2>
+<p>大模型在生成 JSON 参数时，偶尔会有小偏差（例如把 replace 的新内容放进
+content 而不是 new_content）。make_memory_tool
+在分发时做了精细的校验与容错：</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> action == <span class="string">&quot;add&quot;</span>:</span><br><span class="line">    <span class="comment"># 1. add 必须有 content</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> content:</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">&quot;`content` is required when action is &#x27;add&#x27;.&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> store.add(target, content)</span><br><span class="line"></span><br><span class="line"><span class="keyword">elif</span> action == <span class="string">&quot;replace&quot;</span>:</span><br><span class="line">    <span class="comment"># 2. replace 必须有定位关键词 old_text</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> old_text:</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">&quot;`old_text` is required when action is &#x27;replace&#x27;.&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 【人性化容错】：模型可能传了 new_content，也可能把新内容写在 content 里</span></span><br><span class="line">    effective_new = new_content <span class="keyword">or</span> content</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> effective_new:</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">&quot;`new_content` is required when action is &#x27;replace&#x27;.&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> store.replace(target, old_text, effective_new)</span><br><span class="line"></span><br><span class="line"><span class="keyword">elif</span> action == <span class="string">&quot;remove&quot;</span>:</span><br><span class="line">    <span class="comment"># 3. remove 必须有定位关键词 old_text</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> old_text:</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">&quot;`old_text` is required when action is &#x27;remove&#x27;.&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> store.remove(target, old_text)</span><br><span class="line"></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="keyword">raise</span> ValueError(<span class="string">f&quot;Unknown action &#x27;<span class="subst">&#123;action&#125;</span>&#x27;. Must be &#x27;add&#x27;, &#x27;replace&#x27;, or &#x27;remove&#x27;.&quot;</span>)</span><br></pre></td></tr></table></figure></p>
+<h2 id="never-throw-架构保证永不崩溃与自愈">Never-Throw
+架构保证（永不崩溃与自愈）</h2>
+<p>如果模型调用时漏传了字段（例如发起了 action=“replace” 却没传
+old_text），代码里抛出了 raise ValueError(…)，这会导致 Python
+进程报错退出吗？</p>
+<p>绝对不会！</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">LLM 发起错误调用: memory(action=&quot;replace&quot;) ──(漏传 old_text)──┐</span><br><span class="line">                                                               │</span><br><span class="line">                                                               ▼</span><br><span class="line">                make_memory_tool 内部抛出: ValueError(&quot;`old_text` is required...&quot;)</span><br><span class="line">                                                               │</span><br><span class="line">                                                               ▼</span><br><span class="line">           ┌────────────────────────────────────────────────────────┐</span><br><span class="line">           │  底层的 Tool.execute() 拦截层 (Never-Throw Guard)       │</span><br><span class="line">           │  捕获 ValueError 异常，包装为标准 ToolResult 结构:      │</span><br><span class="line">           │  ToolResult(ok=False, error=&quot;`old_text` is required...&quot;)│</span><br><span class="line">           └───────────────────────────┬────────────────────────────┘</span><br><span class="line">                                       │</span><br><span class="line">                                       ▼</span><br><span class="line">      把错误字符串塞进 Tool 消息写回对话历史: role=&quot;tool&quot;, content=&quot;Error: `old_text` is required...&quot;</span><br><span class="line">                                       │</span><br><span class="line">                                       ▼</span><br><span class="line">                 下一轮 LLM 看到错误提示，立即自我修正并重新调用！</span><br></pre></td></tr></table></figure></p>
+<p>这就是我们框架的核心设计原则：工具内部抛出的所有业务校验异常，都会被底层的
+Tool.execute() 拦截转化为给大模型的结构化反 馈，Agent
+永远不会因为参数错误而崩溃，而是引导大模型自我纠错。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1317,7 +1726,7 @@ ID；</li>
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-08-17 23:44:49" itemprop="dateModified" datetime="2026-08-17T23:44:49+08:00">2026-08-17</time>
+      <time title="修改时间：2026-08-27 21:45:54" itemprop="dateModified" datetime="2026-08-27T21:45:54+08:00">2026-08-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -1398,6 +1807,313 @@ messages 不清 skills；改文件必须重开 Agent。skill
 <h1 id="plugin">plugin</h1>
 <h2 id="标准plugin的结构">标准plugin的结构</h2>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">my-plugin/</span><br><span class="line">├── .claude-plugin/</span><br><span class="line">│   └── plugin.json          # Plugin 清单（可选，不需要它也能自动发现组件）</span><br><span class="line">├── skills/                   # Agent Skills（自主调用或通过 /skill-name）</span><br><span class="line">│   └── my-skill/</span><br><span class="line">│       └── SKILL.md</span><br><span class="line">├── commands/                 # 旧版：改用 skills/ 代替</span><br><span class="line">│   └── custom-cmd.md</span><br><span class="line">├── agents/                   # 自定义 agents</span><br><span class="line">│   └── specialist.md</span><br><span class="line">├── hooks/                    # 事件处理程序</span><br><span class="line">│   └── hooks.json</span><br><span class="line">└── .mcp.json                # MCP 服务器定义</span><br></pre></td></tr></table></figure>
+<table>
+<colgroup>
+<col style="width: 20%">
+<col style="width: 7%">
+<col style="width: 72%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">目录</th>
+<th style="text-align: left;">位置</th>
+<th style="text-align: left;">目的</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>.claude-plugin/</code></td>
+<td style="text-align: left;">插件根</td>
+<td style="text-align: left;">包含 <code>plugin.json</code>
+清单（如果组件使用默认位置，则可选）</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>skills/</code></td>
+<td style="text-align: left;">插件根</td>
+<td style="text-align: left;">Skills 作为
+<code>&lt;name&gt;/SKILL.md</code> 目录</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>commands/</code></td>
+<td style="text-align: left;">插件根</td>
+<td style="text-align: left;">Skills 作为平面 Markdown
+文件。为新插件使用 <code>skills/</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>agents/</code></td>
+<td style="text-align: left;">插件根</td>
+<td style="text-align: left;">自定义 agent 定义</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>hooks/</code></td>
+<td style="text-align: left;">插件根</td>
+<td style="text-align: left;"><code>hooks.json</code>
+中的事件处理程序</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>.mcp.json</code></td>
+<td style="text-align: left;">插件根</td>
+<td style="text-align: left;">MCP server 配置</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>.lsp.json</code></td>
+<td style="text-align: left;">插件根</td>
+<td style="text-align: left;">用于代码智能的 LSP server 配置</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>monitors/</code></td>
+<td style="text-align: left;">插件根</td>
+<td style="text-align: left;"><code>monitors.json</code>
+中的后台监视器配置</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>bin/</code></td>
+<td style="text-align: left;">插件根</td>
+<td style="text-align: left;">在启用插件时添加到 Bash tool 的
+<code>PATH</code> 的可执行文件</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>settings.json</code></td>
+<td style="text-align: left;">插件根</td>
+<td style="text-align: left;">启用插件时应用的默认<a target="_blank" rel="noopener" href="https://code.claude.com/docs/zh-CN/settings">设置</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="架构全景">架构全景</h2>
+<p>在我们的框架中，底层的
+SkillManager（技能）、SubagentManager（子代理）以及 MCP
+客户端已经非常成熟。 因此，PluginManager
+的定位不是重写一套执行引擎，而是作为一个“标准插件包的扫描、校验与解构分发器”：</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">               Claude Code 格式插件目录包 (例如 .agents/plugins/my-plugin/)</span><br><span class="line">               ├── .claude-plugin/plugin.json (或 .plugin/plugin.json)</span><br><span class="line">               ├── skills/ (或根目录 SKILL.md 单技能简写)</span><br><span class="line">               ├── agents/</span><br><span class="line">               └── .mcp.json</span><br><span class="line">                                     │</span><br><span class="line">                                     ▼</span><br><span class="line">                           ┌───────────────────┐</span><br><span class="line">                           │   PluginManager   │ (扫描目录、解析 Manifest、提取组件路径)</span><br><span class="line">                           └─────────┬─────────┘</span><br><span class="line">                                     │</span><br><span class="line">         ┌───────────────────────────┼───────────────────────────┐</span><br><span class="line">         │                           │                           │</span><br><span class="line">         ▼                           ▼                           ▼</span><br><span class="line">  get_skill_dirs()           get_subagent_dirs()        get_mcp_config_paths()</span><br><span class="line">  [Path(&quot;.../skills&quot;)]       [Path(&quot;.../agents&quot;)]       [Path(&quot;.../.mcp.json&quot;)]</span><br><span class="line">         │                           │                           │</span><br><span class="line">         ▼                           ▼                           ▼</span><br><span class="line">┌───────────────────┐       ┌───────────────────┐       ┌───────────────────┐</span><br><span class="line">│   SkillManager    │       │  SubagentManager  │       │   MCP 客户端扩展   │</span><br><span class="line">│ (通过 extra_dirs) │       │ (通过 extra_dirs) │       │  (按需加载 MCP)   │</span><br><span class="line">└───────────────────┘       └───────────────────┘       └───────────────────┘</span><br></pre></td></tr></table></figure></p>
+<h2 id="pluginmanifest和pluginauthor">PluginManifest和PluginAuthor</h2>
+<p>### 1. PluginAuthor：格式抹平器与作者归属元数据</p>
+<ul>
+<li>地位：细粒度值对象（Value Object）；</li>
+<li>核心作用：抹平社区中 “Name <email>”、“Name”
+以及字典对象等不同写法的差异，对外提供统一的 .name、.email、.url
+属性。在向用户展 示插件作者归属时提供精确支持。</email></li>
+</ul>
+<p>### 2. PluginManifest：插件的法定身份证</p>
+<ul>
+<li>地位：插件元数据的核心领域实体（Core Entity）；</li>
+<li>三大核心作用：
+<ol type="1">
+<li>确定唯一命名空间（Namespace Anchor）：
+<ul>
+<li>在 Claude Code 生态中，manifest.name
+是最核心的字段。它决定了这个插件带来的所有技能在提示词里的命名空间（例如
+/code-quality:lint），防止多个插件之间产生技能重名冲突；</li>
+</ul></li>
+<li>版本控制与兼容性（Version Tracking）：
+<ul>
+<li>保存 version（默认
+“1.0.0”）。未来做插件热更新、版本依赖检查时，它是唯一权威依据；</li>
+</ul></li>
+<li>插件市场与用户界面展示（Marketplace &amp; UI Representation）：
+<ul>
+<li>在终端输入 /plugins list 或在 Web
+界面查看已安装插件时，界面展示的名称、版本、简介、作者、开源协议（License）、主页链
+接，全量来源于 PluginManifest。</li>
+</ul></li>
+</ol></li>
+</ul>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">磁盘上的 .claude-plugin/plugin.json</span><br><span class="line">&#123;</span><br><span class="line">  &quot;name&quot;: &quot;code-quality&quot;,</span><br><span class="line">  &quot;version&quot;: &quot;1.2.0&quot;,</span><br><span class="line">  &quot;author&quot;: &quot;OpenHands &lt;dev@openhands.dev&gt;&quot;</span><br><span class="line">&#125;</span><br><span class="line">               │</span><br><span class="line">               ▼ json.loads() 读取</span><br><span class="line">               │</span><br><span class="line">               ▼ PluginAuthor.from_value() 弹性解析</span><br><span class="line">               │</span><br><span class="line">               ▼ 封装为强类型对象</span><br><span class="line">PluginManifest(</span><br><span class="line">    name=&quot;code-quality&quot;,</span><br><span class="line">    version=&quot;1.2.0&quot;,</span><br><span class="line">    author=PluginAuthor(name=&quot;OpenHands&quot;, email=&quot;dev@openhands.dev&quot;)</span><br><span class="line">)</span><br><span class="line">               │</span><br><span class="line">               ▼</span><br><span class="line">供 PluginManager、Agent 以及上层 CLI 随时安全读取！</span><br></pre></td></tr></table></figure></p>
+<h2 id="plugin对象">Plugin对象</h2>
+<p>### 一、Plugin 在系统中的定位</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">┌────────────────────────────────────────────────────────┐</span><br><span class="line">│                 Plugin 实体对象                        │</span><br><span class="line">├────────────────────────────────────────────────────────┤</span><br><span class="line">│                                                        │</span><br><span class="line">│  1. 插件名称 (name)                                    │</span><br><span class="line">│  2. 物理目录 (path: Path(&quot;.../my-plugin&quot;))             │</span><br><span class="line">│  3. 插件身份证 (manifest: PluginManifest)              │</span><br><span class="line">│  4. 启用开关 (enabled: True/False)                     │</span><br><span class="line">│                                                        │</span><br><span class="line">│  【动态资源探测器 (计算属性 Properties)】              │</span><br><span class="line">│  • skills_dir       ──► 自动探测 skills/ 或 SKILL.md   │</span><br><span class="line">│  • agents_dir       ──► 自动探测 agents/ 目录          │</span><br><span class="line">│  • mcp_config_path  ──► 自动探测 .mcp.json 配置文件    │</span><br><span class="line">│                                                        │</span><br><span class="line">└────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure></p>
+<h3 id="两个核心任务">两个核心任务</h3>
+<p>Plugin 这个类主要完成了两件极其关键的工作：</p>
+<p>#### 任务 1：从文件夹一键加载插件（Plugin.from_directory
+工厂方法）</p>
+<p>你只要给它传一个文件夹路径（比如
+Path(“.agents/plugins/code-review”)），它会自动完成一整套容错加载流程：
+1. 多级查找 Manifest： 先看有没有 .claude-plugin/plugin.json ➔ 再看
+.plugin/plugin.json ➔ 最后看根目录 plugin.json； 2. 安全读取与解析：
+采用 utf-8-sig 编码读取（不怕 Windows BOM 乱码），解析成 PluginManifest
+对象； 3. 智能兜底（Fallback）： 如果这个文件夹里根本没有
+plugin.json（比如用户随手建的本地测试目录），它绝不报错罢工，而是自动以文件夹名作为插件名，生成一个
+默认的 PluginManifest。</p>
+<p>#### 任务 2：子资源动态解构与路由（三个属性探测器）</p>
+<p>它不需要在内存里把所有文件都读出来，而是提供了三个极其轻量、即用即算的属性：</p>
+<table>
+<colgroup>
+<col style="width: 24%">
+<col style="width: 60%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">属性名称</th>
+<th style="text-align: left;">作用与探测逻辑</th>
+<th style="text-align: left;">返回结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>plugin.skills_dir</code></td>
+<td style="text-align: left;">技能目录探测器<br>①优先找
+<code>skills/</code> 子目录；<br>②若没有，找旧版兼容的
+<code>commands/</code> 目录；<br>③若根目录直接有
+<code>SKILL.md</code>（单技能插件简写），直接返回插件根目录。</td>
+<td style="text-align: left;"><code>Path</code> 或
+<code>None</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>plugin.agents_dir</code></td>
+<td style="text-align: left;">子代理目录探测器<br>探测是否存在
+<code>agents/</code> 子目录。</td>
+<td style="text-align: left;"><code>Path</code> 或
+<code>None</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>plugin.mcp_config_path</code></td>
+<td style="text-align: left;">MCP 配置文件探测器<br>探测是否存在
+<code>.mcp.json</code> 配置文件。</td>
+<td style="text-align: left;"><code>Path</code> 或
+<code>None</code></td>
+</tr>
+</tbody>
+</table>
+<p>### 为什么要把这三个资源做成属性（Property）？</p>
+<p><span class="citation" data-cites="property">@property</span>
+的作用是什么？</p>
+<p>简单一句话：<span class="citation" data-cites="property">@property</span>
+把一个“方法（函数）”，伪装成一个“只读属性（变量）”。</p>
+<p>#### 1. 没有 <span class="citation" data-cites="property">@property</span> 时的写法（普通方法）</p>
+<p>如果你不用 <span class="citation" data-cites="property">@property</span>，你必须这样定义和调用：</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Plugin</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get_skills_dir</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="comment"># 逻辑...</span></span><br><span class="line">        <span class="keyword">return</span> path</span><br><span class="line"></span><br><span class="line"><span class="comment"># 外部调用时，必须加上圆括号 ()</span></span><br><span class="line">p = Plugin(...)</span><br><span class="line">dir_path = p.get_skills_dir()  <span class="comment"># 必须带 () 调用</span></span><br></pre></td></tr></table></figure></p>
+<p>#### 2. 加上 <span class="citation" data-cites="property">@property</span> 后的写法（计算属性）</p>
+<p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Plugin</span>:</span><br><span class="line"><span class="meta">    @property</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">skills_dir</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="comment"># 逻辑...</span></span><br><span class="line">        <span class="keyword">return</span> path</span><br><span class="line"></span><br><span class="line"><span class="comment"># 外部调用时，像访问普通变量一样，不需要写 ()！</span></span><br><span class="line">p = Plugin(...)</span><br><span class="line">dir_path = p.skills_dir  <span class="comment"># 像读变量一样直观：p.skills_dir</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="为什么不直接在-init-里存一个普通变量非要用-property">3.
+为什么不直接在 <strong>init</strong> 里存一个普通变量，非要用 <span class="citation" data-cites="property">@property</span>？</h4>
+<table>
+<colgroup>
+<col style="width: 9%">
+<col style="width: 45%">
+<col style="width: 45%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">方案</th>
+<th style="text-align: left;"><code>__init__</code> 直接存变量
+(<code>self.skills_dir = ...</code>)</th>
+<th style="text-align: left;">用 <code>@property</code>
+计算属性（我们的方案）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>计算时机</strong></td>
+<td style="text-align: left;">在创建对象时写死了一次，如果磁盘文件后来变动，变量值就过时了。</td>
+<td style="text-align: left;">即用即算（<strong>On-Demand</strong>）。每次有人访问
+<code>p.skills_dir</code>
+时，现场去磁盘快速探测一次，保证结果永远是最新的。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>可读性</strong></td>
+<td style="text-align: left;">容易被外部代码不小心修改：<code>p.skills_dir = "xxx"</code></td>
+<td style="text-align: left;">只读保护。外部代码如果试图修改
+<code>p.skills_dir = 123</code>，Python
+会直接报错拒绝，防止属性被意外污染。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pluginmanager">PluginManager</h2>
+<p>### 第一阶段：三态扫描与路径判断</p>
+<p>这一步的核心任务是：搞清楚用户想怎么加载插件，并找到所有候选文件夹。</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">               Agent 启动: Agent(plugin_dirs=...)</span><br><span class="line">                               │</span><br><span class="line">                               ▼</span><br><span class="line">               【检查 plugin_dirs 三态参数】</span><br><span class="line">                               │</span><br><span class="line">       ┌───────────────────────┼───────────────────────┐</span><br><span class="line">       ▼ (plugin_dirs is None) ▼ (plugin_dirs == [])   ▼ (plugin_dirs 为路径列表)</span><br><span class="line">┌──────────────┐        ┌──────────────┐        ┌────────────────────────┐</span><br><span class="line">│ 默认自动探测 │           │ 显式完全禁用 │        │ 遍历每个传入路径 p     │</span><br><span class="line">│ .agents/     │        │ 插件字典保持 │        └───────────┬────────────┘</span><br><span class="line">│ plugins/     │        │ 为空，直接结 │                    │</span><br><span class="line">└──────┬───────┘        │ 束装配       │                    ▼</span><br><span class="line">       │                └──────────────┘        【_is_single_plugin(p)?】</span><br><span class="line">       │                                                    │</span><br><span class="line">       │                                     ┌──────────────┴──────────────┐</span><br><span class="line">       │                                 ▼ (是单个插件)          ▼ (是包含多个插件的目录)</span><br><span class="line">       │                              直接作为单个目标       调用 _discover_from_dir(p)</span><br><span class="line">       │                                     │                   遍历其下所有子文件夹</span><br><span class="line">       │                                     │                             │</span><br><span class="line">       └─────────────────────────────────────┼─────────────────────────────┘</span><br><span class="line">                                             │</span><br><span class="line">                                             ▼</span><br><span class="line">                               进入【第二阶段：单插件加载】</span><br></pre></td></tr></table></figure></p>
+<p>### 第二阶段：单插件加载与防爆安检（_load_one_plugin）</p>
+<p>这一步的核心任务是：把每一个找到的文件夹变成合法的 Plugin
+对象，坏了也不崩。</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">              接收到目标文件夹路径: p</span><br><span class="line">                        │</span><br><span class="line">                        ▼</span><br><span class="line">            ┌─────────────────────────┐</span><br><span class="line">            │ 调用 Plugin.from_dir(p) │</span><br><span class="line">            │ 尝试读取 plugin.json    │</span><br><span class="line">            └───────────┬─────────────┘</span><br><span class="line">                        │</span><br><span class="line">        ┌───────────────┴───────────────┐</span><br><span class="line">        ▼ (读取成功)                    ▼ (文件缺失或 JSON 损坏)</span><br><span class="line"> 解析并提取 Manifest                     触发智能兜底机制:</span><br><span class="line"> (name, version, author...)             用目录名自动推断默认 Manifest</span><br><span class="line">        │                                       │</span><br><span class="line">        └───────────────┬───────────────────────┘</span><br><span class="line">                        │</span><br><span class="line">                        ▼ 组装成 Plugin 实体</span><br><span class="line">         ┌─────────────────────────────┐</span><br><span class="line">         │ 放入 try...except 安全沙箱  │</span><br><span class="line">         └──────────────┬──────────────┘</span><br><span class="line">                        │</span><br><span class="line">        ┌───────────────┴───────────────┐</span><br><span class="line">        ▼ (无致命错误)                  ▼ (发生异常/坏插件)</span><br><span class="line">┌────────────────────────┐      ┌────────────────────────┐</span><br><span class="line">│ 登记入库:              │      │ 【单点故障隔离】       │</span><br><span class="line">│ self.plugins[name] = p │      │ 打印 Warning 日志      │</span><br><span class="line">└───────────┬────────────┘      │ 自动跳过，绝不崩溃主程序│</span><br><span class="line">            │                   └────────────────────────┘</span><br><span class="line">            ▼</span><br><span class="line">   该插件加载完毕，等待分发</span><br></pre></td></tr></table></figure></p>
+<p>### 第三阶段：资源解构与管家分发</p>
+<p>这一步的核心任务是：把已加载的所有插件拆包，分给各个专业管家。</p>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">              所有插件已登记在 self.plugins 字典中</span><br><span class="line">                                │</span><br><span class="line">    ┌───────────────────────────┼───────────────────────────┐</span><br><span class="line">    │ 1. 提取技能               │ 2. 提取子代理             │ 3. 提取 MCP 配置</span><br><span class="line">    ▼                           ▼                           ▼</span><br><span class="line">get_skill_dirs()            get_subagent_dirs()         get_mcp_config_paths()</span><br><span class="line">收集所有 skills/ 路径       收集所有 agents/ 路径       收集所有 .mcp.json 路径</span><br><span class="line">    │                           │                           │</span><br><span class="line">    ▼                           ▼                           ▼</span><br><span class="line">注入 SkillManager           注入 SubagentManager        注入 MCP 客户端扩展</span><br><span class="line">(System Prompt              (自动注册 task 委派         (自动建立 Stdio 进程</span><br><span class="line"> 自动呈现技能清单)           工具，支持调用专员)         桥接外部工具)</span><br><span class="line">    │                           │                           │</span><br><span class="line">    └───────────────────────────┼───────────────────────────┘</span><br><span class="line">                                │</span><br><span class="line">                                ▼</span><br><span class="line">                    主 Agent 获得所有插件能力，</span><br><span class="line">                         装配完成，正式就绪！</span><br></pre></td></tr></table></figure></p>
+<h2 id="plugin.json">plugin.json</h2>
+<p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">               ┌────────────────────────────────────────────────────────┐</span><br><span class="line">               │         一个下载或手写的插件文件夹: my-plugin/          │</span><br><span class="line">               └───────────────────────────┬────────────────────────────┘</span><br><span class="line">                                           │</span><br><span class="line">         ┌─────────────────────────────────┼─────────────────────────────────┐</span><br><span class="line">         ▼                                 ▼                                 ▼</span><br><span class="line">【第 1 优先级：官方标准】          【第 2 优先级：社区通用】          【第 3 优先级：极简根级】</span><br><span class="line"> .claude-plugin/plugin.json        .plugin/plugin.json               ./plugin.json</span><br><span class="line"> (Claude Code 官方最新规范)        (OpenHands/开源社区通用标准)       (本地快速手写极简风格)</span><br></pre></td></tr></table></figure></p>
+<h3 id="plugin.json-的标准格式是怎样的">plugin.json
+的标准格式是怎样的？</h3>
+<p><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;code-quality&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1.2.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;一套用于代码审查、格式化和 Lint 检查的开发质量插件套件&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;author&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Anthropic&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;email&quot;</span><span class="punctuation">:</span> <span class="string">&quot;support@anthropic.com&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;url&quot;</span><span class="punctuation">:</span> <span class="string">&quot;https://anthropic.com&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;homepage&quot;</span><span class="punctuation">:</span> <span class="string">&quot;https://github.com/example/code-quality&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;repository&quot;</span><span class="punctuation">:</span> <span class="string">&quot;https://github.com/example/code-quality.git&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;license&quot;</span><span class="punctuation">:</span> <span class="string">&quot;MIT&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;keywords&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="string">&quot;lint&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;code-review&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;python&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;quality&quot;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></p>
+<table>
+<colgroup>
+<col style="width: 9%">
+<col style="width: 13%">
+<col style="width: 5%">
+<col style="width: 43%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">字段名称</th>
+<th style="text-align: left;">类型</th>
+<th style="text-align: left;">是否必填</th>
+<th style="text-align: left;">作用与含义</th>
+<th style="text-align: left;">例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>name</code></td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;">强烈建议</td>
+<td style="text-align: left;">插件的唯一代号。在 Claude Code
+中它同时是技能的命名空间前缀（防止与其他插件重名）。</td>
+<td style="text-align: left;"><code>"code-quality"</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>version</code></td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;">可选</td>
+<td style="text-align: left;">版本号（默认
+<code>"1.0.0"</code>）。遵循语义化版本规范。</td>
+<td style="text-align: left;"><code>"1.2.0"</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>description</code></td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;">可选</td>
+<td style="text-align: left;">插件功能简介。在列出插件清单时展示给用户看。</td>
+<td style="text-align: left;"><code>"代码质量检查工具集"</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>author</code></td>
+<td style="text-align: left;"><code>object</code> /
+<code>string</code></td>
+<td style="text-align: left;">可选</td>
+<td style="text-align: left;">作者信息。<br>既可以写成对象：<code>&#123;"name": "...", "email": "..."&#125;</code><br>也可以写成纯字符串：<code>"OpenHands &lt;dev@openhands.dev&gt;"</code></td>
+<td style="text-align: left;"><code>"Anthropic &lt;support@anthropic.com&gt;"</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>homepage</code></td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;">可选</td>
+<td style="text-align: left;">插件的官方主页或文档网址。</td>
+<td style="text-align: left;"><code>"https://example.com"</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>repository</code></td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;">可选</td>
+<td style="text-align: left;">插件的开源 Git 代码仓库地址。</td>
+<td style="text-align: left;"><code>"https://github.com/..."</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>license</code></td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;">可选</td>
+<td style="text-align: left;">开源许可证类型。</td>
+<td style="text-align: left;"><code>"MIT"</code> 或
+<code>"Apache-2.0"</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>keywords</code></td>
+<td style="text-align: left;"><code>array</code></td>
+<td style="text-align: left;">可选</td>
+<td style="text-align: left;">标签列表</td>
+<td style="text-align: left;"><code>["test", "review"]</code></td>
+</tr>
+</tbody>
+</table>
 
       
     </div>
@@ -2732,324 +3448,6 @@ bug）</li>
 是干预</strong>：纯观察事件（AgentStart/TurnStart/Message*）hook
 返回值忽略；ToolExecutionStart/End 可被 HookResult 干预</li>
 </ol>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2026/07/31/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E5%B7%A5%E5%85%B7%E7%B3%BB%E7%BB%9F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/07/31/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E5%B7%A5%E5%85%B7%E7%B3%BB%E7%BB%9F/" class="post-title-link" itemprop="url">my-pi-agent--工具系统</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2026-07-31 00:00:00" itemprop="dateCreated datePublished" datetime="2026-07-31T00:00:00+08:00">2026-07-31</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-08-16 13:19:50" itemprop="dateModified" datetime="2026-08-16T13:19:50+08:00">2026-08-16</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/agent%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">agent实战</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/agent%E5%AE%9E%E6%88%98/my-pi-agent/" itemprop="url" rel="index"><span itemprop="name">my-pi-agent</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="前言">前言</h1>
-<p>为了更深入理解agent的工程实现，本文会逐步从底层搭建一个agent（不借助任何框架如langchain等），agent是在循环中调用工具的模型，直到给定任务完成（ReAct架构），如下图所示。</p>
-<figure>
-<img src="/2026/07/31/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E5%B7%A5%E5%85%B7%E7%B3%BB%E7%BB%9F/image-20260731213620331.png" alt="image-20260731213620331">
-<figcaption aria-hidden="true">image-20260731213620331</figcaption>
-</figure>
-<p>核心组件如下</p>
-<figure>
-<img src="/2026/07/31/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E5%B7%A5%E5%85%B7%E7%B3%BB%E7%BB%9F/image-20260731214119395.png" alt="image-20260731214119395">
-<figcaption aria-hidden="true">image-20260731214119395</figcaption>
-</figure>
-<h1 id="工具系统">工具系统</h1>
-<h2 id="先纠正一个常见误解">先纠正一个常见误解</h2>
-<p><strong>模型是怎么知道”该调工具了”还是”该直接输出答案”的？这个判断是
-LangChain/LangGraph 实现的吗？</strong></p>
-<p><strong>“判断”根本不是 LangChain/LangGraph
-实现的，是模型本身的能力。</strong></p>
-<p>OpenAI 等厂商对模型做过 function
-calling（工具调用）专项训练：模型学会了一件事——当请求里带有工具描述、且对话内容需要工具时，输出一个结构化的
-<code>tool_calls</code>；不需要时，输出普通文本。这个决策发生在
-<strong>OpenAI 服务器上的模型推理过程中</strong>，LangChain
-源码里没有、也不可能有一行”决定何时调工具”的逻辑。</p>
-<h2 id="工具调用流程">工具调用流程</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">=== 1. 上行翻译：Python 函数 -&gt; 模型看得懂的 JSON schema ===</span><br><span class="line">&#123;</span><br><span class="line">  &quot;type&quot;: &quot;function&quot;,</span><br><span class="line">  &quot;function&quot;: &#123;</span><br><span class="line">    &quot;name&quot;: &quot;multiply&quot;,                        ← 来自函数名</span><br><span class="line">    &quot;description&quot;: &quot;Multiply two integers.&quot;,   ← 来自 docstring</span><br><span class="line">    &quot;parameters&quot;: &#123;                            ← 来自类型标注 a: int, b: int</span><br><span class="line">      &quot;properties&quot;: &#123;</span><br><span class="line">        &quot;a&quot;: &#123; &quot;type&quot;: &quot;integer&quot; &#125;,</span><br><span class="line">        &quot;b&quot;: &#123; &quot;type&quot;: &quot;integer&quot; &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &quot;required&quot;: [&quot;a&quot;, &quot;b&quot;],</span><br><span class="line">      &quot;type&quot;: &quot;object&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">=== 2. 实际发给 OpenAI 的完整请求 payload ===</span><br><span class="line">&#123;</span><br><span class="line">  &quot;model&quot;: &quot;gpt-4.1-mini&quot;,</span><br><span class="line">  &quot;stream&quot;: false,</span><br><span class="line">  &quot;tools&quot;: [ ...上面那段 schema... ],           ← tools 是请求的顶层字段</span><br><span class="line">  &quot;messages&quot;: [</span><br><span class="line">    &#123; &quot;content&quot;: &quot;Use the multiply tool to calculate 37 times 19.&quot;, &quot;role&quot;: &quot;user&quot; &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">=== 3. 下行翻译：OpenAI 原始响应 -&gt; AIMessage.tool_calls ===</span><br><span class="line">message 类型: AIMessage</span><br><span class="line">content: &#x27;&#x27;</span><br><span class="line">tool_calls: [&#123;&#x27;name&#x27;: &#x27;multiply&#x27;, &#x27;args&#x27;: &#123;&#x27;a&#x27;: 37, &#x27;b&#x27;: 19&#125;, &#x27;id&#x27;: &#x27;call_abc123&#x27;, &#x27;type&#x27;: &#x27;tool_call&#x27;&#125;]</span><br><span class="line">路由判断 bool(msg.tool_calls) = True -&gt; 去 tools 节点</span><br><span class="line"></span><br><span class="line">=== 4. 模型决定直接回答（不调工具）时 ===</span><br><span class="line">tool_calls: []</span><br><span class="line">bool(msg2.tool_calls) = False -&gt; 去 __end__</span><br></pre></td></tr></table></figure>
-<figure>
-<img src="/2026/07/31/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E5%B7%A5%E5%85%B7%E7%B3%BB%E7%BB%9F/image-20260731221318443.png" alt="image-20260731221318443">
-<figcaption aria-hidden="true">image-20260731221318443</figcaption>
-</figure>
-<h2 id="工具参数">工具参数</h2>
-<p>人类选择工具前需了解工具的功能、使用场景和输入参数。大模型同理——模型依据这些信息选择合适的工具。按以下JSON格式提供工具信息。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;type&quot;: &quot;function&quot;,</span><br><span class="line">    &quot;function&quot;: &#123;</span><br><span class="line">        &quot;name&quot;: &quot;get_current_weather&quot;,</span><br><span class="line">        &quot;description&quot;: &quot;当你想查询指定城市的天气时非常有用。&quot;,</span><br><span class="line">        &quot;parameters&quot;: &#123;</span><br><span class="line">            &quot;type&quot;: &quot;object&quot;,</span><br><span class="line">            &quot;properties&quot;: &#123;</span><br><span class="line">                &quot;location&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;string&quot;,</span><br><span class="line">                    &quot;description&quot;: &quot;城市或县区，比如北京市、杭州市、余杭区等。&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;required&quot;: [&quot;location&quot;]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><code>type</code>字段固定为<code>"function"</code>；</li>
-<li><code>function</code>字段为 Object 类型；
-<ul>
-<li><code>name</code>字段为自定义的工具函数名称，建议使用与函数相同的名称，如<code>get_current_weather</code>或<code>get_current_time</code>；</li>
-<li><code>description</code>字段是对工具函数功能的描述，大模型会参考该字段来选择是否使用该工具函数。</li>
-<li><code>parameters</code>字段是对工具函数入参的描述，类型是 Object
-，大模型会参考该字段来进行入参的提取。如果工具函数不需要输入参数，则无需指定<code>parameters</code>参数。
-<ul>
-<li><code>type</code>字段固定为<code>"object"</code>；</li>
-<li><code>properties</code>字段描述了入参的名称、数据类型与描述，为
-Object 类型，Key 值为入参的名称，Value 值为入参的数据类型与描述；</li>
-<li><code>required</code>字段指定哪些参数为必填项，为 Array 类型。</li>
-</ul></li>
-</ul></li>
-</ul>
-<p>发起 Function Calling
-前，在代码中定义工具信息数组（tools），包含每个工具的函数名、描述和参数定义。该数组在后续请求时作为参数传入。</p>
-<h1 id="工具注册机制">工具注册机制</h1>
-<p>把一个函数变成可调用的工具”其实分两步：</p>
-<ol type="1">
-<li><span class="citation" data-cites="tool">@tool</span>（打包）：把一个函数 → 一个 Tool（说明书 +
-函数本体）。产出的是一个对象。</li>
-<li>ToolRegistry.register（注册）：把一堆 Tool 收进注册表（内部 name →
-Tool 字典）。产出的才是一张能按名查人的花名册，registry.execute
-就靠它，凭模型回传的名字字符串反查到真函数。</li>
-</ol>
-<h2 id="函数注册为工具">函数注册为工具</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@tool</span><br><span class="line">def multiply(a: int, b: int) -&gt; int:</span><br><span class="line">    &quot;&quot;&quot;Multiply two integers.&quot;&quot;&quot;</span><br><span class="line">    return a * b</span><br></pre></td></tr></table></figure>
-<p>这段和下面完全等价：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">def multiply(a: int, b: int) -&gt; int:</span><br><span class="line">    &quot;&quot;&quot;Multiply two integers.&quot;&quot;&quot;</span><br><span class="line">    return a * b</span><br><span class="line"></span><br><span class="line">multiply = tool(multiply)   # ← @tool 就是帮你写了这一行</span><br></pre></td></tr></table></figure>
-<p>所以 tool 就是个普通函数：吃进去一个函数，吐出来一个 Tool。@
-只是语法糖。</p>
-<p>这里藏着一个你最好亲自验证一下的事实——执行完 multiply =
-tool(multiply) 之后，multiply 这个名字已经不是函数了，而是一个 Tool
-对象。原来的函数被塞进了 Tool.func 里存着。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class Tool:</span><br><span class="line">    &quot;&quot;&quot;一个可被模型调用的工具：函数本体 + 发给模型的 JSON schema（类化重构后）。&quot;&quot;&quot;</span><br><span class="line">    func: Callable[..., Any]            # 函数本体</span><br><span class="line">    name: str                           # 工具名（默认函数名）</span><br><span class="line">    description: str                    # 描述（默认 docstring）</span><br><span class="line">    params_model: type[BaseModel]       # pydantic 参数模型（create_model 动态建模）</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><code>Callable[..., Any]</code> 是什么</p>
-<p><code>Callable</code> 来自
-<code>from typing import Callable</code>（第 12
-行），它是一个<strong>泛型类型</strong>，写法是
-<code>Callable[[参数类型...], 返回类型]</code>。比如：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Callable</span>[[<span class="built_in">int</span>, <span class="built_in">str</span>], <span class="built_in">bool</span>]</span><br><span class="line"><span class="comment">#         └──┬───┘  └┬┘</span></span><br><span class="line"><span class="comment">#        接收 int和str  返回 bool</span></span><br></pre></td></tr></table></figure>
-</blockquote>
-<h2 id="完整调用链">完整调用链</h2>
-<p>第 1 步：装饰时把函数存进 Tool</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">return Tool(</span><br><span class="line">    name=func.__name__,          # 比如 &quot;get_weather&quot;</span><br><span class="line">    ...</span><br><span class="line">    func=func,                   # ← 原函数本体存进来了</span><br><span class="line">)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>第 2 步：调用时按名字找回这个包裹（registry.execute 内部）</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">name = tc[&quot;function&quot;][&quot;name&quot;]           # 模型说：&quot;我要调 get_weather&quot;</span><br><span class="line">target = registry.get(name)             # 查注册表，拿到对应的 Tool 对象（没有则 None）</span><br></pre></td></tr></table></figure>
-<p>第 3 步：解析模型给的参数（registry.execute 内部）</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">args = json.loads(tool_call.function.arguments)</span><br><span class="line"># 模型传来的是 JSON 字符串，比如 &#x27;&#123;&quot;city&quot;: &quot;北京&quot;&#125;&#x27;</span><br><span class="line"># 解析后变成 Python dict：&#123;&quot;city&quot;: &quot;北京&quot;&#125;</span><br></pre></td></tr></table></figure>
-<p>第 4 步：用 func 真正调用（Tool.execute 内部）</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">result = target.execute(args)           # 校验 + 执行（pydantic 参数校验，永不抛）</span><br><span class="line"># 等价于：get_weather(city=&quot;北京&quot;)</span><br></pre></td></tr></table></figure>
-<p>**args 是字典解包，把 {“city”: “北京”} 展开成关键字参数 city=“北京”
-传给 func。这就是「利用 Tool 对象的 func 调用函数」的确切时刻。</p>
-<h2 id="create_model-动态建模工具参数">create_model
-动态建模工具参数</h2>
-<h3 id="为什么必须动态">为什么必须动态？</h3>
-<p>框架是「库」，不知道你会写什么工具</p>
-<p>my_agent_core 是被 main.py
-使用的库。库的代码在写的时候，根本不知道使用者会注册哪些工具：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@tool</span><br><span class="line">def get_weather(city: str) -&gt; str: ...        # 用户可能写 1 个字段</span><br><span class="line"></span><br><span class="line">@tool</span><br><span class="line">def multiply(a: int, b: int) -&gt; int: ...      # 可能写 2 个字段</span><br><span class="line"></span><br><span class="line">@tool</span><br><span class="line">def search_docs(query: str, tags: list[str], limit: int = 5) -&gt; str: ...  # 3 个字段，类型各异</span><br></pre></td></tr></table></figure>
-<p>每个工具的参数形状都不一样。如果模型类是静态的，框架就得在源码里把「所有可能的工具签名」都写成类——那是不可能的。唯一的出路是：模型类在运行时、根据实际收到的函数来造。</p>
-<h3 id="实现">实现</h3>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># tools.py:76</span><br><span class="line">model = create_model(</span><br><span class="line">    f&quot;&#123;func.__name__&#125;_Args&quot;,          # 类名，如 &quot;get_weather_Args&quot;</span><br><span class="line">    __config__=ConfigDict(extra=&quot;forbid&quot;),</span><br><span class="line">    **fields,                         # ← 关键</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-<p>**fields 把 {“city”: (str, …)} 展开成关键字参数，等价于直接写：</p>
-<p><code>create_model("get_weather_Args", __config__=..., city=(str, ...))</code></p>
-<h1 id="schema-在完整闭环里的角色">schema 在完整闭环里的角色</h1>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">① 框架 → 模型：发送 schema（&quot;我有这些工具，参数格式如下&quot;）</span><br><span class="line">                    │</span><br><span class="line">② 模型 → 框架：返回 tool_call</span><br><span class="line">       name: &quot;multiply&quot;</span><br><span class="line">       arguments: &#x27;&#123;&quot;a&quot;: 37, &quot;b&quot;: 19&#125;&#x27;   ← 模型按契约生成的合规参数</span><br><span class="line">                    │</span><br><span class="line">③ 框架执行：json.loads(arguments) → &#123;&quot;a&quot;: 37, &quot;b&quot;: 19&#125;</span><br><span class="line">            func(**args) → 703            ← registry.execute 内部</span><br></pre></td></tr></table></figure>
-<p>第 ② 步值得多看一眼：‘{“a”: 37, “b”: 19}’ 这个 JSON
-字符串是模型自己生成的——它读了 schema，知道该给 a 和 b
-各传一个整数，于是按格式”填表”。schema 写得好不好（尤其
-description），直接决定模型用得对不对。这也是为什么文件开头把这一层叫「上行翻译层」：把
-Python 函数翻译成模型能读懂的 JSON 说明书。</p>
-<blockquote>
-<p>生成的 Tool.parameters 就是一份标准 JSON Schema：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;type&quot;: &quot;object&quot;,</span><br><span class="line">    &quot;properties&quot;: &#123;</span><br><span class="line">        &quot;a&quot;: &#123;&quot;type&quot;: &quot;integer&quot;&#125;,</span><br><span class="line">        &quot;b&quot;: &#123;&quot;type&quot;: &quot;integer&quot;&#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;required&quot;: [&quot;a&quot;, &quot;b&quot;],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>读作：「参数是一个对象，含 a、b 两个字段，都是整数，都必填」。注意第
-56~57 行的循环就是在逐参数填这张「表」。</p>
-<p>然后 Tool.to_openai_schema（或 registry.get_schemas 批量）再包一层
-OpenAI API 要求的外壳：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[&#123;</span><br><span class="line">    &quot;type&quot;: &quot;function&quot;,</span><br><span class="line">    &quot;function&quot;: &#123;</span><br><span class="line">        &quot;name&quot;: &quot;multiply&quot;,</span><br><span class="line">        &quot;description&quot;: &quot;Multiply two integers.&quot;,</span><br><span class="line">        &quot;parameters&quot;: &#123; ...上面那份 schema... &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure>
-</blockquote>
-<h1 id="最终实现">最终实现</h1>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">agent.py（循环）      → 只做：调用 registry.execute + 配对写回</span><br><span class="line">   │</span><br><span class="line">registry.py（注册表） → 收完整 tool_call：json.loads + 查表 + 错误转 ToolResult</span><br><span class="line">   │</span><br><span class="line">tools.py（工具本体）  → Tool 类：动态建模 + to_openai_schema + execute + __call__</span><br><span class="line">   │</span><br><span class="line">ToolResult（结果）    → 永不抛，ok/data/error，serialize 转字符串</span><br><span class="line">---------------------</span><br><span class="line">@tool def get_weather(city: str) -&gt; str: ...   # 一行定义</span><br><span class="line">       ↓</span><br><span class="line">Tool 类（动态建模 + to_openai_schema + execute + __call__）</span><br><span class="line">       ↓</span><br><span class="line">ToolRegistry.register(tool) / execute(tool_call)   # 注册表分发</span><br><span class="line">       ↓</span><br><span class="line">agent.py: registry.execute(tc).serialize()   # 循环只做调用 + 写回</span><br></pre></td></tr></table></figure>
-<table>
-<colgroup>
-<col style="width: 21%">
-<col style="width: 27%">
-<col style="width: 51%">
-</colgroup>
-<thead>
-<tr>
-<th></th>
-<th><strong>Tool</strong></th>
-<th><strong>ToolRegistry</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>视角</strong></td>
-<td>单个工具</td>
-<td>一群工具</td>
-</tr>
-<tr>
-<td><strong>知道其他工具吗</strong></td>
-<td>不知道，只管自己</td>
-<td>知道全部，管它们的集合</td>
-</tr>
-<tr>
-<td><strong>懂协议格式吗</strong></td>
-<td>不懂（只收 args: dict）</td>
-<td>懂（收完整 tool_call，内部解析）</td>
-</tr>
-<tr>
-<td><strong>一句话</strong></td>
-<td>「我怎么跑」</td>
-<td>「谁在我这里，模型想调谁，我帮它找到并执行」</td>
-</tr>
-</tbody>
-</table>
-<h2 id="my_agent_coretool.py">my_agent_core/tool.py</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">ToolResult（dataclass）</span><br><span class="line"></span><br><span class="line">@dataclass</span><br><span class="line">class ToolResult:</span><br><span class="line">    ok: bool              # 是否成功</span><br><span class="line">    data: Any = None      # 成功时的结果数据</span><br><span class="line">    error: str | None = None  # 失败时的错误消息</span><br><span class="line"></span><br><span class="line">    def serialize(self) -&gt; str:</span><br><span class="line">        # 转成写入 messages 的字符串；失败返回错误文本</span><br><span class="line"></span><br><span class="line">Tool（类）</span><br><span class="line"></span><br><span class="line">class Tool:</span><br><span class="line">    def __init__(self, func, *, name=None, description=None, params_model=None):</span><br><span class="line">        # 构造工具：存函数本体；name 默认为函数名；description 默认取 docstring；</span><br><span class="line">        # params_model 默认由 _create_params_model 从签名动态建模（也可外部传入）</span><br><span class="line"></span><br><span class="line">    def _create_params_model(self, func) -&gt;</span><br><span class="line">        # 从函数签名动态建 pydantic 参数模型；fail-loud 三拒绝：</span><br><span class="line">        # 无标注参数 / *args、**kwargs / 无法建模的类型 → 装饰时 TypeError</span><br><span class="line"></span><br><span class="line">    def to_openai_schema(self) -&gt; dict:</span><br><span class="line">        # 生成 OpenAI tools 参数（pydantic 原始 schema）：type/function/name/description/parameters</span><br><span class="line"></span><br><span class="line">    def execute(self, args: dict) -&gt; ToolResult:</span><br><span class="line">        # 校验 + 执行，永不抛：pydantic 校验失败或工具异常 → ToolResult(ok=False, error=...)</span><br><span class="line"></span><br><span class="line">    def __call__(self, *args, **kwargs):</span><br><span class="line">        # 直接调用函数本体，把 Tool 当普通函</span><br><span class="line"></span><br><span class="line">tool（模块级函数，装饰器工厂）</span><br><span class="line"></span><br><span class="line">def tool(func=None, *, name=None, description=None, params_model=None):</span><br><span class="line">    # @tool 装饰器工厂：支持 @tool 和 @tool(name=..., description=..., params_model=...)</span><br><span class="line">    # 内部造 Tool 对象并返回</span><br></pre></td></tr></table></figure>
-<h2 id="my_agent_coreregistry.py">my_agent_core/registry.py</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">ToolRegistry（类）</span><br><span class="line"></span><br><span class="line">class ToolRegistry:</span><br><span class="line">    def __init__(self):</span><br><span class="line">        # 构造注册表：内部持有 dict，名字 → Tool 对象</span><br><span class="line"></span><br><span class="line">    def register(self, tool: Tool) -&gt; None:</span><br><span class="line">        # 注册工具：按 tool.name 存入内部 dict（同名覆盖）</span><br><span class="line"></span><br><span class="line">    def unregister(self, name: str) -&gt; None:</span><br><span class="line">        # 注销工具：按名字移除（不存在则静默）</span><br><span class="line"></span><br><span class="line">    def get(self, name: str) -&gt; Tool | None:</span><br><span class="line">        # 查表：按名字取 Tool，不存在返回 None</span><br><span class="line"></span><br><span class="line">    def get_schemas(self) -&gt; list[dict]:</span><br><span class="line">        # 批量生成全部工具的 OpenAI tools 参数（供请求 tools 字段）</span><br><span class="line"></span><br><span class="line">    def execute(self, tool_call) -&gt; ToolResult:</span><br><span class="line">        # 执行单个 tool_call（收完整协议对象，内部解析 JSON + 查表）</span><br><span class="line">        # 永不抛：坏 JSON → ToolResult(ok=False, &quot;Invalid JSON arguments...&quot;)</span><br><span class="line">        # 未知工具 → ToolResult(ok=False, &quot;Unknown tool &#x27;X&#x27;. Available: ...&quot;)</span><br><span class="line">        # 其余交给 Tool.execute</span><br></pre></td></tr></table></figure>
-<h1 id="内部工具">内部工具</h1>
-<p>框架层除了让用户自己 <code>@tool</code>，还内置了一批工具——放在
-<code>my_agent_core.tools.builtin</code>
-包，用<strong>工厂函数</strong>构造。其中四个文件工具对标 pi
-的基本四件套：</p>
-<table>
-<thead>
-<tr>
-<th>工具</th>
-<th>签名</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>read</code></td>
-<td><code>read(path, limit=None)</code></td>
-<td>读文件，<code>limit</code> 按行截断</td>
-</tr>
-<tr>
-<td><code>write</code></td>
-<td><code>write(path, content)</code></td>
-<td>写文件（自动建父目录、覆盖）</td>
-</tr>
-<tr>
-<td><code>edit</code></td>
-<td><code>edit(path, old_text, new_text)</code></td>
-<td>精确替换一处文本</td>
-</tr>
-<tr>
-<td><code>bash</code></td>
-<td><code>bash(command)</code></td>
-<td>在 workspace 根执行 shell</td>
-</tr>
-</tbody>
-</table>
-<h2 id="两个共同的关键点">两个共同的关键点</h2>
-<p><strong>① 工厂函数收
-<code>root</code>——路径逃逸防护的边界</strong></p>
-<p>四个工具都长这样（工厂函数吃 <code>root</code>，吐
-<code>Tool</code>）：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">make_read_tool</span>(<span class="params">root: <span class="built_in">str</span> | Path</span>) -&gt; Tool:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">read</span>(<span class="params">path: <span class="built_in">str</span>, limit: <span class="built_in">int</span> | <span class="literal">None</span> = <span class="literal">None</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">        ...</span><br><span class="line">    <span class="keyword">return</span> Tool(func=read, name=<span class="string">&quot;read&quot;</span>)</span><br></pre></td></tr></table></figure>
-<p><code>root</code> 是「工作区根目录」，工具内部每条路径都先过一遍
-<code>_safe_path</code>：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">_safe_path</span>(<span class="params">root: Path, p: <span class="built_in">str</span></span>) -&gt; Path:</span><br><span class="line">    path = (root / p).resolve()          <span class="comment"># 消掉 .. 和符号链接</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> path.is_relative_to(root):    <span class="comment"># 逃出根目录了？</span></span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">f&quot;Path escapes workspace: <span class="subst">&#123;p&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> path</span><br></pre></td></tr></table></figure>
-<p><code>resolve()</code> 把 <code>../etc/passwd</code>
-折算成绝对路径，<code>is_relative_to(root)</code>
-检查它还在不在根里，逃逸就报错——这是文件工具的第一道安全门。</p>
-<p><strong>② 错误不抛，转成字符串喂回模型</strong></p>
-<p>四个工具内部都是 <code>try/except</code>，把异常转成
-<code>"Error: ..."</code>
-字符串返回，而不是抛异常。这样模型能看到错误描述、自己改参数重试（和上面
-<code>ToolResult</code>
-的容错同一套思路）。文件不存在、<code>edit</code> 找不到
-<code>old_text</code>、命令超时……统统返回描述性字符串。</p>
-<h2 id="bash-的额外两道防护">bash 的额外两道防护</h2>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">_DANGEROUS = [<span class="string">&quot;rm -rf /&quot;</span>, <span class="string">&quot;sudo&quot;</span>, <span class="string">&quot;shutdown&quot;</span>, <span class="string">&quot;reboot&quot;</span>, <span class="string">&quot;&gt; /dev/&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">bash</span>(<span class="params">command: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">any</span>(d <span class="keyword">in</span> command <span class="keyword">for</span> d <span class="keyword">in</span> _DANGEROUS):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Error: Dangerous command blocked&quot;</span></span><br><span class="line">    r = subprocess.run(command, shell=<span class="literal">True</span>, cwd=root,</span><br><span class="line">                       capture_output=<span class="literal">True</span>, text=<span class="literal">True</span>, timeout=<span class="number">120</span>)</span><br><span class="line">    <span class="keyword">return</span> (r.stdout + r.stderr).strip() <span class="keyword">or</span> <span class="string">&quot;(no output)&quot;</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li><strong>危险命令黑名单</strong>：<code>rm -rf /</code>、<code>sudo</code>
-这类直接拦下。是「尽力而为」的字符串匹配，不是真沙箱（真隔离得靠容器/权限层，那是
-coding agent 层的事）。</li>
-<li><strong>120 秒超时</strong>：<code>sleep 1000</code>
-这种挂死命令不会无限等，超时返回
-<code>"Error: Timeout (120s)"</code>。</li>
-</ul>
-<h2 id="为什么是工厂函数而不是直接一个工具">为什么是「工厂函数」而不是「直接一个工具」</h2>
-<p>因为 <code>root</code>
-是显式的、每个应用不同——框架层不知道你的工作区在哪。所以工具是
-<code>make_read_tool(root)</code> 现造的，调用方（将来 coding agent
-层）传自己的 workspace 根进去，再
-<code>Agent(tools=[make_read_tool(root), ...])</code>
-装配。这和「<code>@tool</code>
-装饰器直接定义」的区别在于：内置工具需要一个运行时才知道的参数（root）注入。</p>
 
       
     </div>

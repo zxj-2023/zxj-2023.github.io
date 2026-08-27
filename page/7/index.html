@@ -155,7 +155,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">209</span>
+          <span class="site-state-item-count">210</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -206,6 +206,127 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/10/19/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/python%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/10/19/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/python%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="post-title-link" itemprop="url">python设计模式</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-10-19 00:00:00 / 修改时间：14:48:06" itemprop="dateCreated datePublished" datetime="2025-10-19T00:00:00+08:00">2025-10-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">学习</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%AD%A6%E4%B9%A0/python%E7%9B%B8%E5%85%B3/" itemprop="url" rel="index"><span itemprop="name">python相关</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h3 id="为什么要有设计模式">为什么要有设计模式</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">class DatabaseConnection:</span><br><span class="line">    def __init__(self, host, port, username, password):</span><br><span class="line">        self.host = host</span><br><span class="line">        self.port = port</span><br><span class="line">        self.username = username</span><br><span class="line">        self.password = password</span><br><span class="line"></span><br><span class="line">    def connect(self):</span><br><span class="line">        return f&quot;Connecting to database at &#123;self.host&#125;:&#123;self.port&#125; with username &#x27;&#123;self.username&#125;&#x27;&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def client():</span><br><span class="line">    main_db = DatabaseConnection(&#x27;localhost&#x27;, 3306, &#x27;root&#x27;, &#x27;password123&#x27;)</span><br><span class="line">    analytics_db = DatabaseConnection(&#x27;192.168.1.1&#x27;, 5432, &#x27;admin&#x27;, &#x27;securepass&#x27;)</span><br><span class="line">    cache_db = DatabaseConnection(&#x27;10.0.0.1&#x27;, 27017, &#x27;cacheuser&#x27;, &#x27;cachepass&#x27;)</span><br><span class="line"></span><br><span class="line">    print(main_db.connect())</span><br><span class="line">    print(analytics_db.connect())</span><br><span class="line">    print(cache_db.connect())</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">client()</span><br></pre></td></tr></table></figure>
+<p>这是数据库连接类的范例，其存在以下问题</p>
+<ol type="1">
+<li>数据库连接信息（主机、端口、用户名、密码）直接写在代码中，缺乏配置管理，难以在不同环境间切换，如果要更改数据库的信息，就要更改项目中每一处的连接数据库的参数，难以维护</li>
+<li>每次都需要手动传入相同类型的参数，增加出错的风险</li>
+</ol>
+<h3 id="工厂模式factory-pattern">工厂模式（Factory Pattern）</h3>
+<p><strong>工厂模式</strong>
+是一种创建型设计模式，它提供了一种<strong>创建对象的接口</strong>，但让子类决定实例化哪一个类。换句话说：<strong>把对象的创建过程封装起来</strong>，调用者不需要关心具体创建的是哪个类，只需要知道“我要一个某种类型的东西”。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">def connection_factory(db_type):</span><br><span class="line">    db_configs = &#123;</span><br><span class="line">        &#x27;main&#x27;: &#123;</span><br><span class="line">            &#x27;host&#x27;: &#x27;localhost&#x27;,</span><br><span class="line">            &#x27;port&#x27;: 3306,</span><br><span class="line">            &#x27;username&#x27;: &#x27;root&#x27;,</span><br><span class="line">            &#x27;password&#x27;: &#x27;password123&#x27;</span><br><span class="line">        &#125;,</span><br><span class="line">        &#x27;analytics&#x27;: &#123;</span><br><span class="line">            &#x27;host&#x27;: &#x27;192.168.1.1&#x27;,</span><br><span class="line">            &#x27;port&#x27;: 5432,</span><br><span class="line">            &#x27;username&#x27;: &#x27;admin&#x27;,</span><br><span class="line">            &#x27;password&#x27;: &#x27;securepass&#x27;</span><br><span class="line">        &#125;,</span><br><span class="line">        &#x27;cache&#x27;: &#123;</span><br><span class="line">            &#x27;host&#x27;: &#x27;10.0.0.1&#x27;,</span><br><span class="line">            &#x27;port&#x27;: 27017,</span><br><span class="line">            &#x27;username&#x27;: &#x27;cacheuser&#x27;,</span><br><span class="line">            &#x27;password&#x27;: &#x27;cachepass&#x27;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return DatabaseConnection(**db_configs[db_type])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 测试工厂模式</span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    # 使用工厂函数创建不同类型的数据库连接</span><br><span class="line">    main_db = connection_factory(&#x27;main&#x27;)</span><br><span class="line">    analytics_db = connection_factory(&#x27;analytics&#x27;)</span><br><span class="line">    cache_db = connection_factory(&#x27;cache&#x27;)</span><br><span class="line">    </span><br><span class="line">    # 测试连接</span><br><span class="line">    print(main_db.connect())</span><br><span class="line">    print(analytics_db.connect())</span><br><span class="line">    print(cache_db.connect())</span><br></pre></td></tr></table></figure>
+<p>将数据库的配置信息提取到config.py</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">#factory_pattern.py</span><br><span class="line">def connection_factory(db_type):</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    工厂函数：根据数据库类型创建相应的数据库连接</span><br><span class="line">    </span><br><span class="line">    Args:</span><br><span class="line">        db_type (str): 数据库类型 (&#x27;main&#x27;, &#x27;analytics&#x27;, &#x27;cache&#x27;)</span><br><span class="line">    </span><br><span class="line">    Returns:</span><br><span class="line">        DatabaseConnection: 数据库连接实例</span><br><span class="line">    </span><br><span class="line">    Raises:</span><br><span class="line">        KeyError: 当提供的数据库类型不存在时</span><br><span class="line">    &quot;&quot;&quot;</span><br><span class="line">    from config import DATABASE_CONFIGS</span><br><span class="line">    if db_type not in DATABASE_CONFIGS:</span><br><span class="line">        raise ValueError(f&quot;Unknown database type: &#123;db_type&#125;. Available types: &#123;list(DATABASE_CONFIGS.keys())&#125;&quot;)</span><br><span class="line">    </span><br><span class="line">    return DatabaseConnection(**DATABASE_CONFIGS[db_type])</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">#config.py</span><br><span class="line"># 数据库配置字典</span><br><span class="line">DATABASE_CONFIGS = &#123;</span><br><span class="line">    &#x27;main&#x27;: &#123;</span><br><span class="line">        &#x27;host&#x27;: &#x27;localhost&#x27;,</span><br><span class="line">        &#x27;port&#x27;: 3306,</span><br><span class="line">        &#x27;username&#x27;: &#x27;root&#x27;,</span><br><span class="line">        &#x27;password&#x27;: &#x27;password123&#x27;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#x27;analytics&#x27;: &#123;</span><br><span class="line">        &#x27;host&#x27;: &#x27;192.168.1.1&#x27;,</span><br><span class="line">        &#x27;port&#x27;: 5432,</span><br><span class="line">        &#x27;username&#x27;: &#x27;admin&#x27;,</span><br><span class="line">        &#x27;password&#x27;: &#x27;securepass&#x27;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#x27;cache&#x27;: &#123;</span><br><span class="line">        &#x27;host&#x27;: &#x27;10.0.0.1&#x27;,</span><br><span class="line">        &#x27;port&#x27;: 27017,</span><br><span class="line">        &#x27;username&#x27;: &#x27;cacheuser&#x27;,</span><br><span class="line">        &#x27;password&#x27;: &#x27;cachepass&#x27;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为什么要这么做</p>
+<ul>
+<li>所有配置信息都在一个地方，便于统一管理和维护</li>
+<li>易于修改 ：配置变更不需要修改业务逻辑代码</li>
+</ul>
+<p>工厂模式的核心就是工厂函数</p>
+<p><strong>工厂函数</strong>是一个<strong>返回对象的函数</strong>（而不是类），它封装了对象的创建逻辑，根据输入参数决定返回哪种具体对象。</p>
+<h3 id="建造者模式builder-pattern">建造者模式（Builder Pattern）</h3>
+<p>当你需要创建一个有很多属性、配置步骤繁多的对象时（比如一辆汽车、一个
+HTTP 请求、一个数据库连接配置），直接用构造函数会非常混乱。
+<strong>建造者模式通过“分步构建 +
+最终组装”的方式，让创建过程清晰、灵活、可读性强。</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">class DatabaseConnectionBuilder:</span><br><span class="line">    &quot;&quot;&quot;数据库连接建造者类&quot;&quot;&quot;</span><br><span class="line">    </span><br><span class="line">    def __init__(self,host,port,username,password):</span><br><span class="line">        self._config = &#123;</span><br><span class="line">            &#x27;host&#x27;: host,</span><br><span class="line">            &#x27;port&#x27;: port,</span><br><span class="line">            &#x27;username&#x27;: username,</span><br><span class="line">            &#x27;password&#x27;: password,</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    def set_max_connections(self, max_connections):</span><br><span class="line">        &quot;&quot;&quot;设置最大连接数&quot;&quot;&quot;</span><br><span class="line">        if max_connections is not None and max_connections &lt;= 0:</span><br><span class="line">            raise ValueError(&quot;Max connections must be positive&quot;)</span><br><span class="line">        self._config[&#x27;max_connections&#x27;] = max_connections</span><br><span class="line">        return self</span><br><span class="line">    </span><br><span class="line">    def set_timeout(self, timeout):</span><br><span class="line">        &quot;&quot;&quot;设置超时时间&quot;&quot;&quot;</span><br><span class="line">        if timeout is not None and timeout &lt;= 0:</span><br><span class="line">            raise ValueError(&quot;Connect timeout must be positive&quot;)</span><br><span class="line">        self._config[&#x27;timeout&#x27;] = timeout</span><br><span class="line">        return self</span><br><span class="line">        </span><br><span class="line">    def build(self):</span><br><span class="line">        &quot;&quot;&quot;构建最终的数据库连接对象&quot;&quot;&quot;  </span><br><span class="line">        return DatabaseConnection(**self._config)</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line"># 演示建造者模式的使用</span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    # 创建一个数据库连接建造者</span><br><span class="line">    builder = DatabaseConnectionBuilder(</span><br><span class="line">        host=&#x27;localhost&#x27;,</span><br><span class="line">        port=3306,</span><br><span class="line">        username=&#x27;root&#x27;,</span><br><span class="line">        password=&#x27;password123&#x27;</span><br><span class="line">    )</span><br><span class="line">    </span><br><span class="line">    # 使用建造者模式构建数据库连接</span><br><span class="line">    connection = builder.set_max_connections(100) \</span><br><span class="line">                        .set_timeout(30) \</span><br><span class="line">                        .enable_ssl() \</span><br><span class="line">                        .set_connection_pool(&#x27;my_pool&#x27;) \</span><br><span class="line">                        .set_retry_attempts(3) \</span><br><span class="line">                        .enable_compression() \</span><br><span class="line">                        .set_read_preference(&#x27;secondaryPreferred&#x27;) \</span><br><span class="line">                        .build()</span><br></pre></td></tr></table></figure>
+<h3 id="单例模式singleton-pattern">单例模式（Singleton Pattern）</h3>
+<blockquote>
+<p><strong>单例模式</strong>确保一个类<strong>只有一个实例</strong>，并提供一个<strong>全局访问点</strong>来获取该实例。</p>
+</blockquote>
+<p>换句话说：
+无论你调用多少次“创建对象”，返回的始终是<strong>同一个对象</strong>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">class DatabaseConnection:</span><br><span class="line">    &quot;&quot;&quot;数据库连接单例类&quot;&quot;&quot;</span><br><span class="line">    </span><br><span class="line">    _instance = None</span><br><span class="line">    _lock = threading.Lock()  # 线程锁，确保线程安全</span><br><span class="line">    </span><br><span class="line">    def __new__(cls, *args, **kwargs):</span><br><span class="line">        &quot;&quot;&quot;重写__new__方法实现单例模式&quot;&quot;&quot;</span><br><span class="line">        if cls._instance is None:</span><br><span class="line">            with cls._lock:  # 使用双重检查锁定</span><br><span class="line">                if cls._instance is None:</span><br><span class="line">                    cls._instance = super().__new__(cls)</span><br><span class="line">        return cls._instance</span><br><span class="line">    </span><br><span class="line">    def __init__(self, host, port, username, password):</span><br><span class="line">        &quot;&quot;&quot;初始化数据库连接参数&quot;&quot;&quot;</span><br><span class="line">        # 防止重复初始化</span><br><span class="line">        if hasattr(self, &#x27;_initialized&#x27;):</span><br><span class="line">            return</span><br><span class="line">        </span><br><span class="line">        self.host = host</span><br><span class="line">        self.port = port</span><br><span class="line">        self.username = username</span><br><span class="line">        self.password = password</span><br><span class="line">        self._initialized = True</span><br><span class="line">    </span><br><span class="line">    def connect(self):</span><br><span class="line">        &quot;&quot;&quot;连接数据库&quot;&quot;&quot;</span><br><span class="line">        return f&quot;Connecting to database at &#123;self.host&#125;:&#123;self.port&#125; with username &#x27;&#123;self.username&#125;&#x27;&quot;</span><br><span class="line"></span><br><span class="line">def client():</span><br><span class="line">    db1 = DatabaseConnection(host=&#x27;localhost&#x27;, port=3306, username=&#x27;root&#x27;, password=&#x27;password&#x27;)</span><br><span class="line">    db2 = DatabaseConnection(host=&#x27;localhost&#x27;, port=3306, username=&#x27;root&#x27;, password=&#x27;password&#x27;)</span><br><span class="line">    print(db1 is db2)</span><br><span class="line"></span><br><span class="line">client()</span><br></pre></td></tr></table></figure>
+<h3 id="参考资料">参考资料</h3>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV131421876N/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">【设计模式
+inPy】一个视频搞懂三种设计模式：工厂、建造者和单例_哔哩哔哩_bilibili</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1j7HLzkE6q/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">为什么你应该忘掉设计模式？_哔哩哔哩_bilibili</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV19E42137eX/?spm_id_from=333.337.search-card.all.click&amp;vd_source=bacf29bd4bb51f2ecf08a1ac7c7d8f11">【设计模式inPython】策略模式：不要再用一个类装所有方法啦！_哔哩哔哩_bilibili</a></p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -2573,143 +2694,6 @@ Retinex 增强方法实现图像增强</h3>
 <p>5.4代码</p>
 <p>opencv</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line"></span><br><span class="line"># --- Step 1: 构造原始图像 ---</span><br><span class="line">gray_levels = np.array([0, 1/7, 2/7, 3/7, 4/7, 5/7, 6/7, 1])  # 原始灰度值 (0~1)</span><br><span class="line">pixel_counts = np.array([560, 920, 1046, 705, 356, 267, 170, 72])</span><br><span class="line">total_pixels = 64 * 64  # 4096</span><br><span class="line"></span><br><span class="line"># 将灰度值映射到整数 0~7 用于图像存储</span><br><span class="line">int_gray_levels = np.round(gray_levels * 7).astype(int)  # [0,1,2,3,4,5,6,7]</span><br><span class="line"></span><br><span class="line"># 创建图像数组</span><br><span class="line">img = np.zeros(total_pixels, dtype=np.uint8)</span><br><span class="line"></span><br><span class="line">start_idx = 0</span><br><span class="line">for i, count in enumerate(pixel_counts):</span><br><span class="line">    img[start_idx:start_idx + count] = int_gray_levels[i]</span><br><span class="line">    start_idx += count</span><br><span class="line"></span><br><span class="line">img = img.reshape((64, 64))  # 重塑为 64x64 图像</span><br><span class="line"></span><br><span class="line"># --- Step 2: 直方图均衡化 ---</span><br><span class="line">hist, _ = np.histogram(img, bins=8, range=(0, 8))</span><br><span class="line">cdf = np.cumsum(hist) / total_pixels</span><br><span class="line">mapping = np.round(cdf * 7).astype(int)</span><br><span class="line">equalized_img = mapping[img]</span><br><span class="line"></span><br><span class="line"># --- Step 3: 可视化对比 ---</span><br><span class="line">plt.figure(figsize=(8, 4))</span><br><span class="line"></span><br><span class="line">plt.subplot(1, 2, 1)</span><br><span class="line">plt.imshow(img, cmap=&#x27;gray&#x27;, vmin=0, vmax=7)</span><br><span class="line">plt.title(&#x27;Original&#x27;)</span><br><span class="line">plt.axis(&#x27;off&#x27;)</span><br><span class="line"></span><br><span class="line">plt.subplot(1, 2, 2)</span><br><span class="line">plt.imshow(equalized_img, cmap=&#x27;gray&#x27;, vmin=0, vmax=7)</span><br><span class="line">plt.title(&#x27;Equalized&#x27;)</span><br><span class="line">plt.axis(&#x27;off&#x27;)</span><br><span class="line"></span><br><span class="line">plt.tight_layout()</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/09/14/%E5%AE%9E%E4%B9%A0/Tosea.ai/landingpage%E8%B0%83%E7%A0%94/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/09/14/%E5%AE%9E%E4%B9%A0/Tosea.ai/landingpage%E8%B0%83%E7%A0%94/" class="post-title-link" itemprop="url">landingpage调研</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-09-14 00:00:00" itemprop="dateCreated datePublished" datetime="2025-09-14T00:00:00+08:00">2025-09-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-09-15 23:02:07" itemprop="dateModified" datetime="2025-09-15T23:02:07+08:00">2025-09-15</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%AE%9E%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">实习</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E5%AE%9E%E4%B9%A0/Tosea-ai/" itemprop="url" rel="index"><span itemprop="name">Tosea.ai</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h3 id="landingpage的组成">landingpage的组成</h3>
-<p>1.开始界面，大概说明产品的定位和作用，让用户可以快速注册后进入</p>
-<p><a target="_blank" rel="noopener" href="https://www.grammarly.com/">Grammarly: Free AI Writing
-Assistance</a></p>
-<figure>
-<img src="/2025/09/14/%E5%AE%9E%E4%B9%A0/Tosea.ai/landingpage%E8%B0%83%E7%A0%94/image-20250914185941887.png" alt="image-20250914185941887">
-<figcaption aria-hidden="true">image-20250914185941887</figcaption>
-</figure>
-<figure>
-<img src="/2025/09/14/%E5%AE%9E%E4%B9%A0/Tosea.ai/landingpage%E8%B0%83%E7%A0%94/image-20250914194430975.png" alt="image-20250914194430975">
-<figcaption aria-hidden="true">image-20250914194430975</figcaption>
-</figure>
-<p>2.展示产品的特点功能和使用范例：1.特点功能这块可以像manus把使用过程中比较有特点的功能截屏，做成下面这样；2.范例部分结构可以参考<a target="_blank" rel="noopener" href="https://manus.im/?index=1">manus</a>或者<a target="_blank" rel="noopener" href="https://www.lovart.ai/zh">lovart</a>垂直滑动的效果，效果可以参考genspack<a target="_blank" rel="noopener" href="https://www.genspark.ai/agents?type=slides_agent">Genspark - AI
-幻灯片</a></p>
-<figure>
-<img src="/2025/09/14/%E5%AE%9E%E4%B9%A0/Tosea.ai/landingpage%E8%B0%83%E7%A0%94/image-20250914190352267.png" alt="image-20250914190352267">
-<figcaption aria-hidden="true">image-20250914190352267</figcaption>
-</figure>
-<figure>
-<img src="/2025/09/14/%E5%AE%9E%E4%B9%A0/Tosea.ai/landingpage%E8%B0%83%E7%A0%94/image-20250914192344320.png" alt="image-20250914192344320">
-<figcaption aria-hidden="true">image-20250914192344320</figcaption>
-</figure>
-<p><a target="_blank" rel="noopener" href="https://gamma.app/zh-cn/products/presentations">专为演示文稿打造的
-Gamma | 利用 AI 立即构建演示文稿 | Gamma</a></p>
-<figure>
-<img src="/2025/09/14/%E5%AE%9E%E4%B9%A0/Tosea.ai/landingpage%E8%B0%83%E7%A0%94/image-20250914194941544.png" alt="image-20250914194941544">
-<figcaption aria-hidden="true">image-20250914194941544</figcaption>
-</figure>
-<p>3.用户的声音，价格。用户声音我觉得参考lovart就可以，声音这边也可以使用一个滚动的效果</p>
-<p><a target="_blank" rel="noopener" href="https://www.trae.ai/">TRAE - Collaborate with
-Intelligence</a></p>
-<figure>
-<img src="/2025/09/14/%E5%AE%9E%E4%B9%A0/Tosea.ai/landingpage%E8%B0%83%E7%A0%94/image-20250914193756695.png" alt="image-20250914193756695">
-<figcaption aria-hidden="true">image-20250914193756695</figcaption>
-</figure>
-<figure>
-<img src="/2025/09/14/%E5%AE%9E%E4%B9%A0/Tosea.ai/landingpage%E8%B0%83%E7%A0%94/image-20250914200906675.png" alt="image-20250914200906675">
-<figcaption aria-hidden="true">image-20250914200906675</figcaption>
-</figure>
-<p>我感觉我们的风格应该还是要简约大气</p>
-<h3 id="pptyoda技术调用"><a target="_blank" rel="noopener" href="https://github.com/maquedexiju/PPtYoda">PPtYoda</a>技术调用</h3>
-<p>这个项目的核心就是基于python-pptx的这个包，其实跟我们不是很符合。</p>
-<p>他们ppt生成的逻辑核心是模板，一定要有pptx模板，并带有每个部分的备注，上传后解析，把ppt的各个结构转化成json存储</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">file = models.FileField(</span><br><span class="line">        upload_to=get_template_path,</span><br><span class="line">        storage=ppt_storage,</span><br><span class="line">    )</span><br><span class="line">    created_at = models.DateTimeField(auto_now_add=True)</span><br><span class="line"></span><br><span class="line">    cover_template = models.JSONField(null=True, blank=True, default=dict)</span><br><span class="line">    toc_template = models.JSONField(null=True, blank=True, default=dict)</span><br><span class="line">    chapter_L1_template = models.JSONField(null=True, blank=True, default=dict)</span><br><span class="line">    chapter_L2_template = models.JSONField(null=True, blank=True, default=dict)</span><br><span class="line">    blank_template = models.JSONField(null=True, blank=True, default=dict)</span><br><span class="line"></span><br><span class="line">    slide_templates = models.JSONField(null=True, blank=True, default=list)</span><br><span class="line">    components = models.JSONField(null=True, blank=True, default=list)</span><br><span class="line">    sections = models.JSONField(null=True, blank=True, default=dict)</span><br></pre></td></tr></table></figure>
-<p>生成ppt时，也是让大模型生成符合这种规范的json，然后通过python-pptx填入。</p>
-<p>这样好处确实是解决了使用python-pptx时，生成的ppt结构混乱的问题，但是这样生成的ppt完全依赖于你输入的模板，灵活性上有所缺陷。</p>
-<h3 id="后续任务">后续任务</h3>
-<p>1.导出speaknotes-pdf后端</p>
-<p>2.生成完整presentation</p>
 
       
     </div>

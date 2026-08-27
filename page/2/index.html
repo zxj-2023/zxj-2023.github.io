@@ -155,7 +155,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">209</span>
+          <span class="site-state-item-count">210</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -215,6 +215,324 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2026/07/31/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E5%B7%A5%E5%85%B7%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/zxjavatar.gif">
+      <meta itemprop="name" content="张熙浚">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhang XiJun">
+      <meta itemprop="description" content="zxj Blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Zhang XiJun">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/07/31/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E5%B7%A5%E5%85%B7%E7%B3%BB%E7%BB%9F/" class="post-title-link" itemprop="url">my-pi-agent--工具系统</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-07-31 00:00:00" itemprop="dateCreated datePublished" datetime="2026-07-31T00:00:00+08:00">2026-07-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-08-16 13:19:50" itemprop="dateModified" datetime="2026-08-16T13:19:50+08:00">2026-08-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/agent%E5%AE%9E%E6%88%98/" itemprop="url" rel="index"><span itemprop="name">agent实战</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/agent%E5%AE%9E%E6%88%98/my-pi-agent/" itemprop="url" rel="index"><span itemprop="name">my-pi-agent</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="前言">前言</h1>
+<p>为了更深入理解agent的工程实现，本文会逐步从底层搭建一个agent（不借助任何框架如langchain等），agent是在循环中调用工具的模型，直到给定任务完成（ReAct架构），如下图所示。</p>
+<figure>
+<img src="/2026/07/31/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E5%B7%A5%E5%85%B7%E7%B3%BB%E7%BB%9F/image-20260731213620331.png" alt="image-20260731213620331">
+<figcaption aria-hidden="true">image-20260731213620331</figcaption>
+</figure>
+<p>核心组件如下</p>
+<figure>
+<img src="/2026/07/31/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E5%B7%A5%E5%85%B7%E7%B3%BB%E7%BB%9F/image-20260731214119395.png" alt="image-20260731214119395">
+<figcaption aria-hidden="true">image-20260731214119395</figcaption>
+</figure>
+<h1 id="工具系统">工具系统</h1>
+<h2 id="先纠正一个常见误解">先纠正一个常见误解</h2>
+<p><strong>模型是怎么知道”该调工具了”还是”该直接输出答案”的？这个判断是
+LangChain/LangGraph 实现的吗？</strong></p>
+<p><strong>“判断”根本不是 LangChain/LangGraph
+实现的，是模型本身的能力。</strong></p>
+<p>OpenAI 等厂商对模型做过 function
+calling（工具调用）专项训练：模型学会了一件事——当请求里带有工具描述、且对话内容需要工具时，输出一个结构化的
+<code>tool_calls</code>；不需要时，输出普通文本。这个决策发生在
+<strong>OpenAI 服务器上的模型推理过程中</strong>，LangChain
+源码里没有、也不可能有一行”决定何时调工具”的逻辑。</p>
+<h2 id="工具调用流程">工具调用流程</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">=== 1. 上行翻译：Python 函数 -&gt; 模型看得懂的 JSON schema ===</span><br><span class="line">&#123;</span><br><span class="line">  &quot;type&quot;: &quot;function&quot;,</span><br><span class="line">  &quot;function&quot;: &#123;</span><br><span class="line">    &quot;name&quot;: &quot;multiply&quot;,                        ← 来自函数名</span><br><span class="line">    &quot;description&quot;: &quot;Multiply two integers.&quot;,   ← 来自 docstring</span><br><span class="line">    &quot;parameters&quot;: &#123;                            ← 来自类型标注 a: int, b: int</span><br><span class="line">      &quot;properties&quot;: &#123;</span><br><span class="line">        &quot;a&quot;: &#123; &quot;type&quot;: &quot;integer&quot; &#125;,</span><br><span class="line">        &quot;b&quot;: &#123; &quot;type&quot;: &quot;integer&quot; &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &quot;required&quot;: [&quot;a&quot;, &quot;b&quot;],</span><br><span class="line">      &quot;type&quot;: &quot;object&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">=== 2. 实际发给 OpenAI 的完整请求 payload ===</span><br><span class="line">&#123;</span><br><span class="line">  &quot;model&quot;: &quot;gpt-4.1-mini&quot;,</span><br><span class="line">  &quot;stream&quot;: false,</span><br><span class="line">  &quot;tools&quot;: [ ...上面那段 schema... ],           ← tools 是请求的顶层字段</span><br><span class="line">  &quot;messages&quot;: [</span><br><span class="line">    &#123; &quot;content&quot;: &quot;Use the multiply tool to calculate 37 times 19.&quot;, &quot;role&quot;: &quot;user&quot; &#125;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">=== 3. 下行翻译：OpenAI 原始响应 -&gt; AIMessage.tool_calls ===</span><br><span class="line">message 类型: AIMessage</span><br><span class="line">content: &#x27;&#x27;</span><br><span class="line">tool_calls: [&#123;&#x27;name&#x27;: &#x27;multiply&#x27;, &#x27;args&#x27;: &#123;&#x27;a&#x27;: 37, &#x27;b&#x27;: 19&#125;, &#x27;id&#x27;: &#x27;call_abc123&#x27;, &#x27;type&#x27;: &#x27;tool_call&#x27;&#125;]</span><br><span class="line">路由判断 bool(msg.tool_calls) = True -&gt; 去 tools 节点</span><br><span class="line"></span><br><span class="line">=== 4. 模型决定直接回答（不调工具）时 ===</span><br><span class="line">tool_calls: []</span><br><span class="line">bool(msg2.tool_calls) = False -&gt; 去 __end__</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="/2026/07/31/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E5%B7%A5%E5%85%B7%E7%B3%BB%E7%BB%9F/image-20260731221318443.png" alt="image-20260731221318443">
+<figcaption aria-hidden="true">image-20260731221318443</figcaption>
+</figure>
+<h2 id="工具参数">工具参数</h2>
+<p>人类选择工具前需了解工具的功能、使用场景和输入参数。大模型同理——模型依据这些信息选择合适的工具。按以下JSON格式提供工具信息。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;type&quot;: &quot;function&quot;,</span><br><span class="line">    &quot;function&quot;: &#123;</span><br><span class="line">        &quot;name&quot;: &quot;get_current_weather&quot;,</span><br><span class="line">        &quot;description&quot;: &quot;当你想查询指定城市的天气时非常有用。&quot;,</span><br><span class="line">        &quot;parameters&quot;: &#123;</span><br><span class="line">            &quot;type&quot;: &quot;object&quot;,</span><br><span class="line">            &quot;properties&quot;: &#123;</span><br><span class="line">                &quot;location&quot;: &#123;</span><br><span class="line">                    &quot;type&quot;: &quot;string&quot;,</span><br><span class="line">                    &quot;description&quot;: &quot;城市或县区，比如北京市、杭州市、余杭区等。&quot;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            &quot;required&quot;: [&quot;location&quot;]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>type</code>字段固定为<code>"function"</code>；</li>
+<li><code>function</code>字段为 Object 类型；
+<ul>
+<li><code>name</code>字段为自定义的工具函数名称，建议使用与函数相同的名称，如<code>get_current_weather</code>或<code>get_current_time</code>；</li>
+<li><code>description</code>字段是对工具函数功能的描述，大模型会参考该字段来选择是否使用该工具函数。</li>
+<li><code>parameters</code>字段是对工具函数入参的描述，类型是 Object
+，大模型会参考该字段来进行入参的提取。如果工具函数不需要输入参数，则无需指定<code>parameters</code>参数。
+<ul>
+<li><code>type</code>字段固定为<code>"object"</code>；</li>
+<li><code>properties</code>字段描述了入参的名称、数据类型与描述，为
+Object 类型，Key 值为入参的名称，Value 值为入参的数据类型与描述；</li>
+<li><code>required</code>字段指定哪些参数为必填项，为 Array 类型。</li>
+</ul></li>
+</ul></li>
+</ul>
+<p>发起 Function Calling
+前，在代码中定义工具信息数组（tools），包含每个工具的函数名、描述和参数定义。该数组在后续请求时作为参数传入。</p>
+<h1 id="工具注册机制">工具注册机制</h1>
+<p>把一个函数变成可调用的工具”其实分两步：</p>
+<ol type="1">
+<li><span class="citation" data-cites="tool">@tool</span>（打包）：把一个函数 → 一个 Tool（说明书 +
+函数本体）。产出的是一个对象。</li>
+<li>ToolRegistry.register（注册）：把一堆 Tool 收进注册表（内部 name →
+Tool 字典）。产出的才是一张能按名查人的花名册，registry.execute
+就靠它，凭模型回传的名字字符串反查到真函数。</li>
+</ol>
+<h2 id="函数注册为工具">函数注册为工具</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@tool</span><br><span class="line">def multiply(a: int, b: int) -&gt; int:</span><br><span class="line">    &quot;&quot;&quot;Multiply two integers.&quot;&quot;&quot;</span><br><span class="line">    return a * b</span><br></pre></td></tr></table></figure>
+<p>这段和下面完全等价：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">def multiply(a: int, b: int) -&gt; int:</span><br><span class="line">    &quot;&quot;&quot;Multiply two integers.&quot;&quot;&quot;</span><br><span class="line">    return a * b</span><br><span class="line"></span><br><span class="line">multiply = tool(multiply)   # ← @tool 就是帮你写了这一行</span><br></pre></td></tr></table></figure>
+<p>所以 tool 就是个普通函数：吃进去一个函数，吐出来一个 Tool。@
+只是语法糖。</p>
+<p>这里藏着一个你最好亲自验证一下的事实——执行完 multiply =
+tool(multiply) 之后，multiply 这个名字已经不是函数了，而是一个 Tool
+对象。原来的函数被塞进了 Tool.func 里存着。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class Tool:</span><br><span class="line">    &quot;&quot;&quot;一个可被模型调用的工具：函数本体 + 发给模型的 JSON schema（类化重构后）。&quot;&quot;&quot;</span><br><span class="line">    func: Callable[..., Any]            # 函数本体</span><br><span class="line">    name: str                           # 工具名（默认函数名）</span><br><span class="line">    description: str                    # 描述（默认 docstring）</span><br><span class="line">    params_model: type[BaseModel]       # pydantic 参数模型（create_model 动态建模）</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>Callable[..., Any]</code> 是什么</p>
+<p><code>Callable</code> 来自
+<code>from typing import Callable</code>（第 12
+行），它是一个<strong>泛型类型</strong>，写法是
+<code>Callable[[参数类型...], 返回类型]</code>。比如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Callable</span>[[<span class="built_in">int</span>, <span class="built_in">str</span>], <span class="built_in">bool</span>]</span><br><span class="line"><span class="comment">#         └──┬───┘  └┬┘</span></span><br><span class="line"><span class="comment">#        接收 int和str  返回 bool</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<h2 id="完整调用链">完整调用链</h2>
+<p>第 1 步：装饰时把函数存进 Tool</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">return Tool(</span><br><span class="line">    name=func.__name__,          # 比如 &quot;get_weather&quot;</span><br><span class="line">    ...</span><br><span class="line">    func=func,                   # ← 原函数本体存进来了</span><br><span class="line">)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>第 2 步：调用时按名字找回这个包裹（registry.execute 内部）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">name = tc[&quot;function&quot;][&quot;name&quot;]           # 模型说：&quot;我要调 get_weather&quot;</span><br><span class="line">target = registry.get(name)             # 查注册表，拿到对应的 Tool 对象（没有则 None）</span><br></pre></td></tr></table></figure>
+<p>第 3 步：解析模型给的参数（registry.execute 内部）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">args = json.loads(tool_call.function.arguments)</span><br><span class="line"># 模型传来的是 JSON 字符串，比如 &#x27;&#123;&quot;city&quot;: &quot;北京&quot;&#125;&#x27;</span><br><span class="line"># 解析后变成 Python dict：&#123;&quot;city&quot;: &quot;北京&quot;&#125;</span><br></pre></td></tr></table></figure>
+<p>第 4 步：用 func 真正调用（Tool.execute 内部）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">result = target.execute(args)           # 校验 + 执行（pydantic 参数校验，永不抛）</span><br><span class="line"># 等价于：get_weather(city=&quot;北京&quot;)</span><br></pre></td></tr></table></figure>
+<p>**args 是字典解包，把 {“city”: “北京”} 展开成关键字参数 city=“北京”
+传给 func。这就是「利用 Tool 对象的 func 调用函数」的确切时刻。</p>
+<h2 id="create_model-动态建模工具参数">create_model
+动态建模工具参数</h2>
+<h3 id="为什么必须动态">为什么必须动态？</h3>
+<p>框架是「库」，不知道你会写什么工具</p>
+<p>my_agent_core 是被 main.py
+使用的库。库的代码在写的时候，根本不知道使用者会注册哪些工具：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@tool</span><br><span class="line">def get_weather(city: str) -&gt; str: ...        # 用户可能写 1 个字段</span><br><span class="line"></span><br><span class="line">@tool</span><br><span class="line">def multiply(a: int, b: int) -&gt; int: ...      # 可能写 2 个字段</span><br><span class="line"></span><br><span class="line">@tool</span><br><span class="line">def search_docs(query: str, tags: list[str], limit: int = 5) -&gt; str: ...  # 3 个字段，类型各异</span><br></pre></td></tr></table></figure>
+<p>每个工具的参数形状都不一样。如果模型类是静态的，框架就得在源码里把「所有可能的工具签名」都写成类——那是不可能的。唯一的出路是：模型类在运行时、根据实际收到的函数来造。</p>
+<h3 id="实现">实现</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># tools.py:76</span><br><span class="line">model = create_model(</span><br><span class="line">    f&quot;&#123;func.__name__&#125;_Args&quot;,          # 类名，如 &quot;get_weather_Args&quot;</span><br><span class="line">    __config__=ConfigDict(extra=&quot;forbid&quot;),</span><br><span class="line">    **fields,                         # ← 关键</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>**fields 把 {“city”: (str, …)} 展开成关键字参数，等价于直接写：</p>
+<p><code>create_model("get_weather_Args", __config__=..., city=(str, ...))</code></p>
+<h1 id="schema-在完整闭环里的角色">schema 在完整闭环里的角色</h1>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">① 框架 → 模型：发送 schema（&quot;我有这些工具，参数格式如下&quot;）</span><br><span class="line">                    │</span><br><span class="line">② 模型 → 框架：返回 tool_call</span><br><span class="line">       name: &quot;multiply&quot;</span><br><span class="line">       arguments: &#x27;&#123;&quot;a&quot;: 37, &quot;b&quot;: 19&#125;&#x27;   ← 模型按契约生成的合规参数</span><br><span class="line">                    │</span><br><span class="line">③ 框架执行：json.loads(arguments) → &#123;&quot;a&quot;: 37, &quot;b&quot;: 19&#125;</span><br><span class="line">            func(**args) → 703            ← registry.execute 内部</span><br></pre></td></tr></table></figure>
+<p>第 ② 步值得多看一眼：‘{“a”: 37, “b”: 19}’ 这个 JSON
+字符串是模型自己生成的——它读了 schema，知道该给 a 和 b
+各传一个整数，于是按格式”填表”。schema 写得好不好（尤其
+description），直接决定模型用得对不对。这也是为什么文件开头把这一层叫「上行翻译层」：把
+Python 函数翻译成模型能读懂的 JSON 说明书。</p>
+<blockquote>
+<p>生成的 Tool.parameters 就是一份标准 JSON Schema：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;type&quot;: &quot;object&quot;,</span><br><span class="line">    &quot;properties&quot;: &#123;</span><br><span class="line">        &quot;a&quot;: &#123;&quot;type&quot;: &quot;integer&quot;&#125;,</span><br><span class="line">        &quot;b&quot;: &#123;&quot;type&quot;: &quot;integer&quot;&#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;required&quot;: [&quot;a&quot;, &quot;b&quot;],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>读作：「参数是一个对象，含 a、b 两个字段，都是整数，都必填」。注意第
+56~57 行的循环就是在逐参数填这张「表」。</p>
+<p>然后 Tool.to_openai_schema（或 registry.get_schemas 批量）再包一层
+OpenAI API 要求的外壳：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[&#123;</span><br><span class="line">    &quot;type&quot;: &quot;function&quot;,</span><br><span class="line">    &quot;function&quot;: &#123;</span><br><span class="line">        &quot;name&quot;: &quot;multiply&quot;,</span><br><span class="line">        &quot;description&quot;: &quot;Multiply two integers.&quot;,</span><br><span class="line">        &quot;parameters&quot;: &#123; ...上面那份 schema... &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h1 id="最终实现">最终实现</h1>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">agent.py（循环）      → 只做：调用 registry.execute + 配对写回</span><br><span class="line">   │</span><br><span class="line">registry.py（注册表） → 收完整 tool_call：json.loads + 查表 + 错误转 ToolResult</span><br><span class="line">   │</span><br><span class="line">tools.py（工具本体）  → Tool 类：动态建模 + to_openai_schema + execute + __call__</span><br><span class="line">   │</span><br><span class="line">ToolResult（结果）    → 永不抛，ok/data/error，serialize 转字符串</span><br><span class="line">---------------------</span><br><span class="line">@tool def get_weather(city: str) -&gt; str: ...   # 一行定义</span><br><span class="line">       ↓</span><br><span class="line">Tool 类（动态建模 + to_openai_schema + execute + __call__）</span><br><span class="line">       ↓</span><br><span class="line">ToolRegistry.register(tool) / execute(tool_call)   # 注册表分发</span><br><span class="line">       ↓</span><br><span class="line">agent.py: registry.execute(tc).serialize()   # 循环只做调用 + 写回</span><br></pre></td></tr></table></figure>
+<table>
+<colgroup>
+<col style="width: 21%">
+<col style="width: 27%">
+<col style="width: 51%">
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th><strong>Tool</strong></th>
+<th><strong>ToolRegistry</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>视角</strong></td>
+<td>单个工具</td>
+<td>一群工具</td>
+</tr>
+<tr>
+<td><strong>知道其他工具吗</strong></td>
+<td>不知道，只管自己</td>
+<td>知道全部，管它们的集合</td>
+</tr>
+<tr>
+<td><strong>懂协议格式吗</strong></td>
+<td>不懂（只收 args: dict）</td>
+<td>懂（收完整 tool_call，内部解析）</td>
+</tr>
+<tr>
+<td><strong>一句话</strong></td>
+<td>「我怎么跑」</td>
+<td>「谁在我这里，模型想调谁，我帮它找到并执行」</td>
+</tr>
+</tbody>
+</table>
+<h2 id="my_agent_coretool.py">my_agent_core/tool.py</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">ToolResult（dataclass）</span><br><span class="line"></span><br><span class="line">@dataclass</span><br><span class="line">class ToolResult:</span><br><span class="line">    ok: bool              # 是否成功</span><br><span class="line">    data: Any = None      # 成功时的结果数据</span><br><span class="line">    error: str | None = None  # 失败时的错误消息</span><br><span class="line"></span><br><span class="line">    def serialize(self) -&gt; str:</span><br><span class="line">        # 转成写入 messages 的字符串；失败返回错误文本</span><br><span class="line"></span><br><span class="line">Tool（类）</span><br><span class="line"></span><br><span class="line">class Tool:</span><br><span class="line">    def __init__(self, func, *, name=None, description=None, params_model=None):</span><br><span class="line">        # 构造工具：存函数本体；name 默认为函数名；description 默认取 docstring；</span><br><span class="line">        # params_model 默认由 _create_params_model 从签名动态建模（也可外部传入）</span><br><span class="line"></span><br><span class="line">    def _create_params_model(self, func) -&gt;</span><br><span class="line">        # 从函数签名动态建 pydantic 参数模型；fail-loud 三拒绝：</span><br><span class="line">        # 无标注参数 / *args、**kwargs / 无法建模的类型 → 装饰时 TypeError</span><br><span class="line"></span><br><span class="line">    def to_openai_schema(self) -&gt; dict:</span><br><span class="line">        # 生成 OpenAI tools 参数（pydantic 原始 schema）：type/function/name/description/parameters</span><br><span class="line"></span><br><span class="line">    def execute(self, args: dict) -&gt; ToolResult:</span><br><span class="line">        # 校验 + 执行，永不抛：pydantic 校验失败或工具异常 → ToolResult(ok=False, error=...)</span><br><span class="line"></span><br><span class="line">    def __call__(self, *args, **kwargs):</span><br><span class="line">        # 直接调用函数本体，把 Tool 当普通函</span><br><span class="line"></span><br><span class="line">tool（模块级函数，装饰器工厂）</span><br><span class="line"></span><br><span class="line">def tool(func=None, *, name=None, description=None, params_model=None):</span><br><span class="line">    # @tool 装饰器工厂：支持 @tool 和 @tool(name=..., description=..., params_model=...)</span><br><span class="line">    # 内部造 Tool 对象并返回</span><br></pre></td></tr></table></figure>
+<h2 id="my_agent_coreregistry.py">my_agent_core/registry.py</h2>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">ToolRegistry（类）</span><br><span class="line"></span><br><span class="line">class ToolRegistry:</span><br><span class="line">    def __init__(self):</span><br><span class="line">        # 构造注册表：内部持有 dict，名字 → Tool 对象</span><br><span class="line"></span><br><span class="line">    def register(self, tool: Tool) -&gt; None:</span><br><span class="line">        # 注册工具：按 tool.name 存入内部 dict（同名覆盖）</span><br><span class="line"></span><br><span class="line">    def unregister(self, name: str) -&gt; None:</span><br><span class="line">        # 注销工具：按名字移除（不存在则静默）</span><br><span class="line"></span><br><span class="line">    def get(self, name: str) -&gt; Tool | None:</span><br><span class="line">        # 查表：按名字取 Tool，不存在返回 None</span><br><span class="line"></span><br><span class="line">    def get_schemas(self) -&gt; list[dict]:</span><br><span class="line">        # 批量生成全部工具的 OpenAI tools 参数（供请求 tools 字段）</span><br><span class="line"></span><br><span class="line">    def execute(self, tool_call) -&gt; ToolResult:</span><br><span class="line">        # 执行单个 tool_call（收完整协议对象，内部解析 JSON + 查表）</span><br><span class="line">        # 永不抛：坏 JSON → ToolResult(ok=False, &quot;Invalid JSON arguments...&quot;)</span><br><span class="line">        # 未知工具 → ToolResult(ok=False, &quot;Unknown tool &#x27;X&#x27;. Available: ...&quot;)</span><br><span class="line">        # 其余交给 Tool.execute</span><br></pre></td></tr></table></figure>
+<h1 id="内部工具">内部工具</h1>
+<p>框架层除了让用户自己 <code>@tool</code>，还内置了一批工具——放在
+<code>my_agent_core.tools.builtin</code>
+包，用<strong>工厂函数</strong>构造。其中四个文件工具对标 pi
+的基本四件套：</p>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>签名</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>read</code></td>
+<td><code>read(path, limit=None)</code></td>
+<td>读文件，<code>limit</code> 按行截断</td>
+</tr>
+<tr>
+<td><code>write</code></td>
+<td><code>write(path, content)</code></td>
+<td>写文件（自动建父目录、覆盖）</td>
+</tr>
+<tr>
+<td><code>edit</code></td>
+<td><code>edit(path, old_text, new_text)</code></td>
+<td>精确替换一处文本</td>
+</tr>
+<tr>
+<td><code>bash</code></td>
+<td><code>bash(command)</code></td>
+<td>在 workspace 根执行 shell</td>
+</tr>
+</tbody>
+</table>
+<h2 id="两个共同的关键点">两个共同的关键点</h2>
+<p><strong>① 工厂函数收
+<code>root</code>——路径逃逸防护的边界</strong></p>
+<p>四个工具都长这样（工厂函数吃 <code>root</code>，吐
+<code>Tool</code>）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">make_read_tool</span>(<span class="params">root: <span class="built_in">str</span> | Path</span>) -&gt; Tool:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">read</span>(<span class="params">path: <span class="built_in">str</span>, limit: <span class="built_in">int</span> | <span class="literal">None</span> = <span class="literal">None</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">        ...</span><br><span class="line">    <span class="keyword">return</span> Tool(func=read, name=<span class="string">&quot;read&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p><code>root</code> 是「工作区根目录」，工具内部每条路径都先过一遍
+<code>_safe_path</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">_safe_path</span>(<span class="params">root: Path, p: <span class="built_in">str</span></span>) -&gt; Path:</span><br><span class="line">    path = (root / p).resolve()          <span class="comment"># 消掉 .. 和符号链接</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> path.is_relative_to(root):    <span class="comment"># 逃出根目录了？</span></span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">f&quot;Path escapes workspace: <span class="subst">&#123;p&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> path</span><br></pre></td></tr></table></figure>
+<p><code>resolve()</code> 把 <code>../etc/passwd</code>
+折算成绝对路径，<code>is_relative_to(root)</code>
+检查它还在不在根里，逃逸就报错——这是文件工具的第一道安全门。</p>
+<p><strong>② 错误不抛，转成字符串喂回模型</strong></p>
+<p>四个工具内部都是 <code>try/except</code>，把异常转成
+<code>"Error: ..."</code>
+字符串返回，而不是抛异常。这样模型能看到错误描述、自己改参数重试（和上面
+<code>ToolResult</code>
+的容错同一套思路）。文件不存在、<code>edit</code> 找不到
+<code>old_text</code>、命令超时……统统返回描述性字符串。</p>
+<h2 id="bash-的额外两道防护">bash 的额外两道防护</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">_DANGEROUS = [<span class="string">&quot;rm -rf /&quot;</span>, <span class="string">&quot;sudo&quot;</span>, <span class="string">&quot;shutdown&quot;</span>, <span class="string">&quot;reboot&quot;</span>, <span class="string">&quot;&gt; /dev/&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">bash</span>(<span class="params">command: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">any</span>(d <span class="keyword">in</span> command <span class="keyword">for</span> d <span class="keyword">in</span> _DANGEROUS):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Error: Dangerous command blocked&quot;</span></span><br><span class="line">    r = subprocess.run(command, shell=<span class="literal">True</span>, cwd=root,</span><br><span class="line">                       capture_output=<span class="literal">True</span>, text=<span class="literal">True</span>, timeout=<span class="number">120</span>)</span><br><span class="line">    <span class="keyword">return</span> (r.stdout + r.stderr).strip() <span class="keyword">or</span> <span class="string">&quot;(no output)&quot;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>危险命令黑名单</strong>：<code>rm -rf /</code>、<code>sudo</code>
+这类直接拦下。是「尽力而为」的字符串匹配，不是真沙箱（真隔离得靠容器/权限层，那是
+coding agent 层的事）。</li>
+<li><strong>120 秒超时</strong>：<code>sleep 1000</code>
+这种挂死命令不会无限等，超时返回
+<code>"Error: Timeout (120s)"</code>。</li>
+</ul>
+<h2 id="为什么是工厂函数而不是直接一个工具">为什么是「工厂函数」而不是「直接一个工具」</h2>
+<p>因为 <code>root</code>
+是显式的、每个应用不同——框架层不知道你的工作区在哪。所以工具是
+<code>make_read_tool(root)</code> 现造的，调用方（将来 coding agent
+层）传自己的 workspace 根进去，再
+<code>Agent(tools=[make_read_tool(root), ...])</code>
+装配。这和「<code>@tool</code>
+装饰器直接定义」的区别在于：内置工具需要一个运行时才知道的参数（root）注入。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="http://example.com/2026/07/31/%E5%AD%A6%E4%B9%A0/agent%E5%AE%9E%E6%88%98/my-pi-agent/my-pi-agent--%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -251,7 +569,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-08-26 13:06:24" itemprop="dateModified" datetime="2026-08-26T13:06:24+08:00">2026-08-26</time>
+      <time title="修改时间：2026-08-27 15:28:11" itemprop="dateModified" datetime="2026-08-27T15:28:11+08:00">2026-08-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -346,6 +664,29 @@ Layer）解耦，在 Agent 生命周期的关键切面上暴露钩子。</p>
 </tbody>
 </table>
 <h1 id="概念解析trace与turn">概念解析：Trace与Turn</h1>
+<h3 id="trace一次完整运行">Trace（一次完整运行）</h3>
+<p>一个 Trace 是从用户按下回车、到 Agent 彻底停下来、发出
+<code>agent_end</code> 事件的<strong>整个过程</strong>。一个 Trace
+包含多个 Turn。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">一个 Trace（一次 agent_start 到 agent_end）</span><br><span class="line">│</span><br><span class="line">├── Turn 1：调模型 → 模型返回 toolUse（要读文件）→ 执行 read 工具</span><br><span class="line">│</span><br><span class="line">├── Turn 2：带着工具结果再调模型 → 模型返回 toolUse（还要改文件）→ 执行 edit 工具</span><br><span class="line">│</span><br><span class="line">└── Turn 3：带着工具结果再调模型 → 模型返回 stop（改好了，没有工具调用）→ agent_end</span><br></pre></td></tr></table></figure>
+<h3 id="turn一个轮次">Turn（一个轮次）</h3>
+<p>一个 Turn 的定义非常精确：<strong>一次模型调用 +
+这次调用触发的所有工具执行。</strong></p>
+<p>每个 Turn 由一对 <code>turn_start</code> 和 <code>turn_end</code>
+事件包裹。关键点：<strong>一个 Turn 只有一次模型调用。</strong>
+模型返回了 toolUse → 执行那批工具 → 发送 turn_end → 这个 Turn
+就结束了。把工具结果喂回去再调模型，那是<strong>下一个
+Turn</strong>。</p>
+<h3 id="所以-trace-和-turn-的关系就是">所以 Trace 和 Turn
+的关系就是</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Trace（一次完整运行）</span><br><span class="line">│  agent_start</span><br><span class="line">│</span><br><span class="line">├── Turn 1</span><br><span class="line">│   │  turn_start</span><br><span class="line">│   ├── 调模型 → toolUse → 执行工具（read + grep）</span><br><span class="line">│   │  turn_end</span><br><span class="line">│   │</span><br><span class="line">├── Turn 2</span><br><span class="line">│   │  turn_start</span><br><span class="line">│   ├── 调模型 → toolUse → 执行工具（edit）</span><br><span class="line">│   │  turn_end</span><br><span class="line">│   │</span><br><span class="line">├── Turn 3</span><br><span class="line">│   │  turn_start</span><br><span class="line">│   ├── 调模型 → stop → 没有工具</span><br><span class="line">│   │  turn_end</span><br><span class="line">│   │</span><br><span class="line">│  agent_end</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：首轮 Turn 的 <code>turn_start</code> 是在
+<code>runAgentLoop()</code> 入口就发出的，然后 <code>runLoop()</code>
+内用 <code>firstTurn</code> 标志跳过首圈的 turn_start，避免重复。</p>
+</blockquote>
+<h3 id="流程全景">流程全景</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">你按下回车：&quot;帮我读一下 src/main.ts&quot;</span><br><span class="line">│</span><br><span class="line">│  ① 你的输入变成一条消息</span><br><span class="line">│</span><br><span class="line">UserMessage &#123; role: &quot;user&quot;, content: &quot;帮我读一下 src/main.ts&quot; &#125;</span><br><span class="line">│</span><br><span class="line">│  ② 进入循环（agentLoop 入口）—— agent_start（一个 Trace 开始了）</span><br><span class="line">│</span><br><span class="line">└── runLoop()</span><br><span class="line">    │</span><br><span class="line">    │  ③ 消息转换（AgentMessage → LLM 认识的 Message）</span><br><span class="line">    │</span><br><span class="line">    │  ┌── Turn 1 ──────────────────────────────────────────┐</span><br><span class="line">    │  │  turn_start                                         │</span><br><span class="line">    │  │  ④ 调用 Model（每 Turn 仅一次模型调用）               │</span><br><span class="line">    │  │  streamSimple(model, &#123; systemPrompt, messages &#125;)    │</span><br><span class="line">    │  │       ↓ 逐 token 流式返回                            │</span><br><span class="line">    │  │  AssistantMessage &#123;                                  │</span><br><span class="line">    │  │      content: [ ..., ToolCall &#123; name: &quot;read&quot;, ... &#125; ],│</span><br><span class="line">    │  │      stopReason: &quot;toolUse&quot;  ← 有工具调用，继续转      │</span><br><span class="line">    │  │  &#125;                                                  │</span><br><span class="line">    │  │  ⑤ 执行 Tool（工具的五步管道，详见第5章）              │</span><br><span class="line">    │  │  ToolResultMessage &#123; content: [&#123; text: &quot;文件内容&quot; &#125;] &#125;│</span><br><span class="line">    │  │  turn_end                                            │</span><br><span class="line">    │  └─────────────────────────────────────────────────────┘</span><br><span class="line">    │</span><br><span class="line">    │  循环判断：stopReason 是 toolUse → hasMoreToolCalls = true → 继续</span><br><span class="line">    │</span><br><span class="line">    │  ┌── Turn 2 ──────────────────────────────────────────┐</span><br><span class="line">    │  │  turn_start                                         │</span><br><span class="line">    │  │  ⑥ 第二次调用 Model（工具结果已追加到消息列表）         │</span><br><span class="line">    │  │  streamSimple(model, &#123; messages: [..., toolResult] &#125;)│</span><br><span class="line">    │  │       ↓ 模型看到文件内容，开始解释                      │</span><br><span class="line">    │  │  AssistantMessage &#123;                                  │</span><br><span class="line">    │  │      content: [ TextContent &#123; text: &quot;这个文件...&quot; &#125; ],│</span><br><span class="line">    │  │      stopReason: &quot;stop&quot;  ← 没有工具调用，准备停        │</span><br><span class="line">    │  │  &#125;                                                  │</span><br><span class="line">    │  │  turn_end                                            │</span><br><span class="line">    │  └─────────────────────────────────────────────────────┘</span><br><span class="line">    │</span><br><span class="line">    │  循环判断：hasMoreToolCalls = false，pendingMessages 为空</span><br><span class="line">    │  → 内层循环退出</span><br><span class="line">    │  → 外层循环检查 followUp → 空 → 外层循环退出</span><br><span class="line">    │</span><br><span class="line">    └── agent_end（一个 Trace 结束，共 2 个 Turn）</span><br></pre></td></tr></table></figure>
 <h1 id="项目结构设计">项目结构设计</h1>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">pig-tui / pig-web-ui / pig-messenger   ← 界面层（用户交互）</span><br><span class="line">        │</span><br><span class="line">pig-coding-agent                        ← 应用层（coding agent）</span><br><span class="line">        │</span><br><span class="line">pig-agent-core                          ← 框架层（ReAct 循环、工具、会话）</span><br><span class="line">        │  depends on pig-llm</span><br><span class="line">pig-llm                                 ← 模型边界层（最底层地基）</span><br></pre></td></tr></table></figure>
 <h1 id="为什么使用ts而不是py">为什么使用ts而不是py</h1>
@@ -3901,265 +4242,6 @@ Attention）中有一个全局的输出投影矩阵，写作 <span class="math i
 <p>在给kvcache显存满的时候，开始进行token的末位淘汰，这个论文就是计算每个每个关键度得分
 <span class="math inline">ℳ<sub><em>i</em></sub> = <em>A</em><sub><em>i</em></sub>⋅∥<em>V</em><sub><em>i</em></sub><em>W</em><sub><em>O</em></sub>∥<sub>1</sub></span>，找出得分最低的那
 1 个 Token，直接从显存里扔掉</p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2026/06/11/%E5%AD%A6%E4%B9%A0/%E8%BF%90%E7%BB%B4%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%99%A8/%E6%9C%8D%E5%8A%A1%E5%99%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/zxjavatar.gif">
-      <meta itemprop="name" content="张熙浚">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Zhang XiJun">
-      <meta itemprop="description" content="zxj Blogs">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Zhang XiJun">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E8%BF%90%E7%BB%B4%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%99%A8/%E6%9C%8D%E5%8A%A1%E5%99%A8/" class="post-title-link" itemprop="url">阿里云服务器</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2026-06-11 00:00:00" itemprop="dateCreated datePublished" datetime="2026-06-11T00:00:00+08:00">2026-06-11</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2026-06-12 12:30:13" itemprop="dateModified" datetime="2026-06-12T12:30:13+08:00">2026-06-12</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%E8%BF%90%E7%BB%B4/" itemprop="url" rel="index"><span itemprop="name">运维</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="宝塔面板bt-panel"><strong>宝塔面板（BT Panel）</strong></h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget -O install.sh https://download.bt.cn/install/install-ubuntu_6.0.sh &amp;&amp; sudo bash install.sh ed8484bec</span><br><span class="line">bt default</span><br></pre></td></tr></table></figure>
-<figure>
-<img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E8%BF%90%E7%BB%B4%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%99%A8/%E6%9C%8D%E5%8A%A1%E5%99%A8/image-20260611130146198.png" alt="image-20260611130146198">
-<figcaption aria-hidden="true">image-20260611130146198</figcaption>
-</figure>
-<h2 id="为宝塔面板配置安全组">为宝塔面板配置安全组</h2>
-<figure>
-<img src="/2026/06/11/%E5%AD%A6%E4%B9%A0/%E8%BF%90%E7%BB%B4%E4%B8%8E%E6%9C%8D%E5%8A%A1%E5%99%A8/%E6%9C%8D%E5%8A%A1%E5%99%A8/image-20260611125654475.png" alt="image-20260611125654475">
-<figcaption aria-hidden="true">image-20260611125654475</figcaption>
-</figure>
-<h3 id="安全组是什么">安全组是什么</h3>
-<p><strong>安全组就是阿里云为你服务器配备的“虚拟防火墙”。</strong></p>
-<h4 id="它是白名单机制默认拒绝所有人">1.
-它是“白名单”机制（默认拒绝所有人）</h4>
-<p>保安的默认原则是：<strong>只要我没在名单上看到你的名字，你就绝对不准进。</strong></p>
-<ul>
-<li>如果你什么都不配置，你的服务器就是一座孤岛，谁也访问不了（网站打不开，你也连不上）。</li>
-<li>你必须主动给保安下发“通行证”（配置规则），比如“允许访问 80
-端口（网站）的人进来”。</li>
-</ul>
-<h4 id="它控制进出两个方向">2. 它控制“进出”两个方向</h4>
-<ul>
-<li><strong>入方向（别人访问你）：</strong>
-保安严查！必须看通行证。比如网友访问你的网站（80端口），或者你登录宝塔面板（8888端口），都需要在安全组里提前开放对应端口。</li>
-<li><strong>出方向（你访问别人）：</strong>
-保安很宽容！默认允许你的服务器主动去外网下载软件、更新系统。</li>
-</ul>
-<h4 id="它是虚拟的且极其靠近你的服务器">3.
-它是“虚拟”的，且极其靠近你的服务器</h4>
-<p>在传统的机房里，防火墙是一台独立的硬件机器。但在阿里云，安全组是直接<strong>绑定在你的服务器虚拟网卡上</strong>的。</p>
-<ul>
-<li><strong>好处：</strong>
-恶意流量在到达你的操作系统（Ubuntu）之前，在底层就被保安直接拦截丢弃了。你的系统根本感觉不到黑客的攻击，极其安全。</li>
-</ul>
-<h3 id="安全组到底部署在哪里">安全组到底部署在哪里？</h3>
-<p>在物理机房，防火墙是一台独立的硬件盒子（网关）。但在阿里云，你的服务器是一台<strong>虚拟机（VM）</strong>。</p>
-<ul>
-<li><strong>物理位置</strong>：安全组代码运行在<strong>宿主机（物理机）的
-Hypervisor（虚拟机监视器）层</strong>。</li>
-<li><strong>逻辑位置</strong>：它直接绑定在你的<strong>虚拟网卡（vNIC）</strong>
-上。</li>
-<li><strong>数据流向</strong>：外部数据包 -&gt; 物理网卡 -&gt;
-虚拟交换机 -&gt; <strong>安全组拦截检查</strong> -&gt; 虚拟网卡 -&gt;
-你的 Ubuntu 操作系统。</li>
-<li><strong>结论</strong>：如果安全组拒绝了数据包，这个包在到达你的
-Ubuntu
-系统之前，<strong>就已经在内核底层被丢弃（Drop）了</strong>。你的系统根本不知道有人试图访问你，这就极大地降低了被攻击的风险。</li>
-</ul>
-<h3 id="五元组匹配packet-filtering">五元组匹配（Packet Filtering）</h3>
-<p>当数据包到达安全组时，安全组会剥离数据链路层的帧头，查看
-<strong>网络层（IP）</strong> 和 <strong>传输层（TCP/UDP）</strong>
-的头部信息。它会提取出<strong>五元组（5-Tuple）</strong>：</p>
-<table>
-<colgroup>
-<col style="width: 24%">
-<col style="width: 16%">
-<col style="width: 26%">
-<col style="width: 34%">
-</colgroup>
-<thead>
-<tr>
-<th style="text-align: left;">五元组</th>
-<th style="text-align: left;">所在协议层</th>
-<th style="text-align: left;">作用</th>
-<th style="text-align: left;">示例</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><strong>源 IP (Source IP)</strong></td>
-<td style="text-align: left;">网络层 (IP)</td>
-<td style="text-align: left;">标识发送方是谁</td>
-<td style="text-align: left;"><code>114.24.56.78</code> (你的电脑)</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>目的 IP (Dest IP)</strong></td>
-<td style="text-align: left;">网络层 (IP)</td>
-<td style="text-align: left;">标识接收方是谁</td>
-<td style="text-align: left;"><code>139.196.213.60</code>
-(你的服务器)</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>源端口 (Source Port)</strong></td>
-<td style="text-align: left;">传输层 (TCP/UDP)</td>
-<td style="text-align: left;">标识发送方用的哪个程序</td>
-<td style="text-align: left;"><code>54321</code>
-(浏览器随机生成的临时端口)</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>目的端口 (Dest Port)</strong></td>
-<td style="text-align: left;">传输层 (TCP/UDP)</td>
-<td style="text-align: left;">标识想访问服务器的哪个服务</td>
-<td style="text-align: left;"><code>8888</code> (宝塔面板)</td>
-</tr>
-<tr>
-<td style="text-align: left;"><strong>协议 (Protocol)</strong></td>
-<td style="text-align: left;">网络层/传输层</td>
-<td style="text-align: left;">标识使用的传输协议</td>
-<td style="text-align: left;"><code>TCP</code> 或 <code>UDP</code></td>
-</tr>
-</tbody>
-</table>
-<p><strong>匹配过程</strong>：安全组内存里有一张
-ACL（访问控制列表）表。数据包来了，提取五元组，从上到下逐条比对。匹配到“允许”就放行，匹配到“拒绝”就丢弃。如果到最后都没匹配到，执行<strong>默认策略（拒绝）</strong>。</p>
-<h3 id="最核心的技术状态检测stateful-inspection">最核心的技术：状态检测（Stateful
-Inspection）</h3>
-<p>这是新手最容易困惑的地方：<strong>“我只配了入方向的
-8888，为什么服务器返回给我的数据能顺利通过？”</strong></p>
-<p><strong>解答：因为安全组是“有状态”的。</strong></p>
-<ul>
-<li><strong>无状态防火墙（如老式路由器
-ACL）</strong>：只认死理。去程包符合规则就放，回程包必须也有一条明确的规则才放。</li>
-<li><strong>有状态防火墙（安全组）</strong>：它内部维护了一张<strong>连接追踪表（Connection
-Tracking Table）</strong>。</li>
-</ul>
-<p><strong>TCP 三次握手在安全组中的微观过程：</strong></p>
-<ol type="1">
-<li><strong>第一次握手 (SYN)</strong>：你的浏览器向服务器
-<code>8888</code> 端口发送 SYN 包。
-<ul>
-<li>安全组检查入方向规则 -&gt; 发现允许 <code>8888</code> -&gt;
-<strong>放行</strong>。</li>
-<li><strong>关键动作</strong>：安全组在内存的“状态表”中记下一笔：<code>[源IP:源端口] &lt;-&gt; [目的IP:8888] 状态:新建</code>。</li>
-</ul></li>
-<li><strong>第二次握手 (SYN-ACK)</strong>：服务器的宝塔面板回复 SYN-ACK
-包（源端口 8888，目的端口 54321）。
-<ul>
-<li>安全组检查出方向规则（通常全放行） -&gt;
-<strong>放行</strong>。</li>
-<li><strong>关键动作</strong>：更新状态表：<code>状态:已建立</code>。</li>
-</ul></li>
-<li><strong>第三次握手及后续数据传输 (ACK/PSH)</strong>：
-<ul>
-<li>当后续的数据包到达时，安全组<strong>首先检查状态表</strong>。</li>
-<li>发现这个包属于“已建立”的连接 -&gt; <strong>直接放行，根本不去查 ACL
-规则表！</strong></li>
-</ul></li>
-</ol>
-<p><strong>总结</strong>：有状态检测让安全组变得极其聪明，它知道“谁先发起的对话”，从而自动放行合法的回应流量，省去了配置复杂回程规则的麻烦。</p>
-<h2 id="部署sub2api">部署sub2api</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 1. 创建部署目录并进入</span><br><span class="line">mkdir -p /www/sub2api &amp;&amp; cd /www/sub2api</span><br><span class="line"></span><br><span class="line"># 2. 下载部署脚本并执行</span><br><span class="line">curl -sSL https://raw.githubusercontent.com/Wei-Shaw/sub2api/main/deploy/docker-deploy.sh | bash</span><br><span class="line"></span><br><span class="line"># 3. 查看生成的配置（重要！）</span><br><span class="line">cat .env</span><br></pre></td></tr></table></figure>
-<p>使用ping测试连通性</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping raw.githubusercontent.com</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p><strong><code>ping</code> 命令不能用来测试网址（URL）！</strong></p>
-<ul>
-<li><strong><code>ping</code> 的原理</strong>：<code>ping</code>
-使用的是 <strong>ICMP
-协议</strong>（网络层），它只能测试<strong>域名</strong>（如
-<code>baidu.com</code>）或 <strong>IP 地址</strong>（如
-<code>139.196.213.60</code>）是否连通。</li>
-<li><strong>URL
-是什么</strong>：<code>https://raw.githubusercontent.com/...</code>
-是一个完整的 <strong>HTTP
-网址</strong>（应用层），包含了协议头（<code>https://</code>）和路径（<code>/Wei-Shaw/...</code>）。<code>ping</code>
-根本不认识 <code>https://</code>
-这种东西，所以它报错“未知的名称或服务”。</li>
-</ul>
-</blockquote>
-<h3 id="ssh连接">ssh连接</h3>
-<p>步骤1：修改 SSH 配置文件 在 Workbench
-的黑框框里，复制粘贴以下命令并回车（这会打开一个文本编辑器）：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nano /etc/ssh/sshd_config</span><br></pre></td></tr></table></figure>
-<p>步骤2：修改关键配置</p>
-<p>降 <code>PasswordAuthentication no</code> 改成yes</p>
-<p>步骤3：保存并退出</p>
-<p>按 <code>Ctrl + X</code> 退出编辑器。</p>
-<p>步骤4：重启 SSH 服务让配置生效</p>
-<p>在黑框框里输入以下命令并回车： <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart ssh</span><br></pre></td></tr></table></figure></p>
-<p>步骤5：再次尝试本地连接</p>
-<p>回到你的 Windows PowerShell，再次输入： <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh root@<span class="number">139.196</span>.<span class="number">213.60</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="docker部署">docker部署</h3>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 1. 进入之前创建的项目目录</span><br><span class="line">cd /www/sub2api</span><br><span class="line"></span><br><span class="line"># 2. 启动所有服务（包括数据库、Redis和主程序）</span><br><span class="line"># 第一次启动需要下载 Docker 镜像，可能需要几分钟，请耐心等待</span><br><span class="line">docker compose up -d</span><br></pre></td></tr></table></figure>
-<p>然后记得配置安全组</p>
 
       
     </div>
